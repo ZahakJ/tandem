@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 96" role="img" aria-label="Pip, the Tandem mascot"><title>Pip, the Tandem mascot</title>
+<g class="pip">
+  <rect x="30" y="47" width="40" height="10" rx="5" fill="#B8A8FF" fill-opacity=".7"/>
+  <rect x="8" y="4" width="84" height="44" rx="14" fill="#8EECC8"/>
+  <rect x="14" y="56" width="72" height="36" rx="14" fill="#8FD3FF"/>
+  <rect x="15" y="11" width="70" height="30" rx="8" fill="#0B0A12"/>
+  <rect x="21" y="61.6" width="58" height="24.8" rx="7" fill="#13121C"/>
+  <g class="pip-eyes">
+    <ellipse cx="33.2" cy="25.12" rx="5.5" ry="5.5" fill="#F6F3FF"/>
+    <ellipse cx="66.8" cy="25.12" rx="5.5" ry="5.5" fill="#F6F3FF"/>
+    <circle cx="34.58" cy="24.02" r="2.48" fill="#0B0A12"/>
+    <circle cx="68.18" cy="24.02" r="2.48" fill="#0B0A12"/>
+    <circle cx="35.68" cy="22.65" r="1.21" fill="#F6F3FF"/>
+    <circle cx="69.28" cy="22.65" r="1.21" fill="#F6F3FF"/>
+  </g>
+  <circle cx="23.96" cy="31.12" r="4" fill="#FFB4A2" fill-opacity=".75"/>
+  <circle cx="76.04" cy="31.12" r="4" fill="#FFB4A2" fill-opacity=".75"/>
+  <path d="M56.58 32.83A7 5 0 0 1 43.42 32.83" fill="none" stroke="#F6F3FF" stroke-width="3" stroke-linecap="round"/>
+  <rect x="26.69" y="72.47" width="13.5" height="4.5" rx="1.5" fill="#B8A8FF"/>
+  <rect x="31.19" y="67.97" width="4.5" height="13.5" rx="1.5" fill="#B8A8FF"/>
+  <circle cx="65.84" cy="72.02" r="3.5" fill="#FFB4A2"/>
+  <circle cx="73.04" cy="77.42" r="3.5" fill="#FFE49A"/>
+</g>
+</svg>

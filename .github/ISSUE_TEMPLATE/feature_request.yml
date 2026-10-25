@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest something Tandem should do.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check the [roadmap](https://github.com/ZahakJ/tandem/blob/main/ROADMAP.md) first; your idea may already be planned, and a thumbs-up on its issue helps decide what comes next.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you are trying to do
+      description: Describe the situation and what gets in the way, before the solution. The best fix is sometimes a different one from the first idea.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you have in mind
+      description: How it could work. With a controller, which buttons? On which screen, top or bottom?
+  - type: textarea
+    id: elsewhere
+    attributes:
+      label: Seen it somewhere else?
+      description: If another frontend or launcher does this well, describe how it works there.
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Fits Tandem's principles
+      description: Tandem is controller-first, works offline and never tracks anyone.
+      options:
+        - label: This works with a controller, and needs no account or tracking.

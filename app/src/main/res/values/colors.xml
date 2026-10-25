@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Backdrop colours for MainActivity's starting window (StartLook.kt): the middle of a theme's backdrop
+         gradient. The first is Pastel Night, the default theme; the rest cover the other built-in themes. -->
+    <color name="start_night">#FF0F0E17</color>
+    <color name="start_black">#FF000000</color>
+    <color name="start_navy">#FF06101F</color>
+    <color name="start_violet">#FF140B27</color>
+    <color name="start_slate">#FF141626</color>
+    <color name="start_green">#FF0D1811</color>
+    <color name="start_warm">#FF150D0F</color>
+    <color name="start_cream">#FFF0E6D1</color>
+    <color name="start_blush">#FFFBEBF5</color>
+    <color name="start_lime">#FF93B40F</color>
+</resources>

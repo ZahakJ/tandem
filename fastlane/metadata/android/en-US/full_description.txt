@@ -1,0 +1,32 @@
+<p>Tandem is a free game frontend for Android handhelds, made for dual-screen devices like the AYN Thor. Your library is on the top screen and the art and details for whatever you highlight are on the bottom. Pick a game and Tandem starts it in the right emulator. Press Home, pick it again later, and you are back where you left off instead of at the title screen.</p>
+
+<p><b>Made for handhelds</b></p>
+<ul>
+<li><b>Dual-screen:</b> browse on top, see art, details and play time below; swap the screens with X. Works on a single screen too.</li>
+<li><b>While you play:</b> the bottom screen can show the game's art and session time, or a companion with a clock and quick controls.</li>
+<li><b>Controller first:</b> every screen works from the pad, with an on-screen keyboard for search, a Start panel, and a quick panel for brightness, volume and Wi-Fi. Touch works everywhere.</li>
+<li><b>Resume:</b> if a game is still open in its emulator, Tandem brings it back instead of restarting it, and a game switcher lists every running game (needs Shizuku, optional).</li>
+<li><b>Home-screen mode</b> with an apps drawer and a dock, an Android screensaver, and support for Bluetooth controllers' Home button.</li>
+</ul>
+
+<p><b>Make it yours</b></p>
+<ul>
+<li>24 built-in themes, five home layouts (including an icon grid with 1 to 5 rows), theme packs, wallpapers and 15 widgets.</li>
+<li>Original background music, five UI sound packs, and your own music if you like.</li>
+</ul>
+
+<p><b>Your library, your files</b></p>
+<ul>
+<li>Reads the ROMs folder you already have, one subfolder per system; subfolders become folders.</li>
+<li>Optional artwork and details scraping from LaunchBox, libretro thumbnails, ScreenScraper, IGDB, SteamGridDB and HowLongToBeat, saved next to your games.</li>
+<li>Imports titles, descriptions, genres, favorites and play time from ES-DE gamelists and other launchers' backups.</li>
+<li>Collections, play time and stats, a play journal, and RetroAchievements progress.</li>
+<li>Folders, collections and favourites; hide anything you'd rather not see.</li>
+<li>Over 100 systems in an editable platforms.json: add any emulator without an app update.</li>
+</ul>
+
+<p><b>Private</b>: no analytics, no ads, no accounts. Tandem goes online only for scraping you start and for RetroAchievements if you sign in.</p>
+
+<p>Tandem doesn't include or download any games, BIOS files or emulators.</p>
+
+<p><b>Permissions</b>: All files access, to read your ROMs folder and save artwork. See all installed apps, to find your emulators. Internet and network state, for optional scraping and RetroAchievements. Wi-Fi state and Modify system settings, for the quick panel. Shizuku (optional), to tell whether an emulator is still running.</p>

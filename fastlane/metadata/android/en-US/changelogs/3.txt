@@ -1,0 +1,9 @@
+Tandem 0.2.1
+• Home grid: widgets, multi-cell tiles, nested folders, multi-select and undo
+• Smart folders that fill themselves from rules
+• Touch drag and drop, and long press for options
+• Swap screens: move an app up and the library goes to the bottom
+• Per-game extras: jingle, companion app, logo fit
+• Hold to confirm anything that can't be undone
+• Animated splash, smoother home and less battery when idle
+• Readable text in every theme

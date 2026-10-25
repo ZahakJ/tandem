@@ -1,0 +1,56 @@
+{
+  "name": "Example Night",
+  "author": "Example Author",
+  "version": "1.0",
+  "description": "A made-up theme that shows the fields Tandem reads. The values are placeholders.",
+  "theme_mode": "oled",
+  "color_scheme": {
+    "background_gradient_start": "#000000",
+    "background_gradient_end": "#05060A",
+    "card_gradient_start": "#181A20",
+    "card_gradient_end": "#0E1014",
+    "text_primary": "#F5F5F7",
+    "text_secondary": "#B8BCC6",
+    "icon_tint": "#F5F5F7",
+    "tile_background": "#000000",
+    "tile_border": "#1A1C22",
+    "toggle_off_gradient_start": "#2A2C32",
+    "toggle_off_gradient_end": "#1A1C22",
+    "toggle_thumb_gradient_start": "#FFFFFF",
+    "toggle_thumb_gradient_end": "#EEF1F6",
+    "drop_shadow": "rgba(0,0,0,0.5)",
+    "inner_shadow_light": "rgba(255,255,255,0.06)",
+    "inner_shadow_dark": "rgba(0,0,0,0.5)",
+    "success": "#3CB371",
+    "warning": "#F0A030",
+    "divider": "#202228",
+    "accent_gradient_start": "#3A7BFF",
+    "accent_gradient_end": "#8A5CFF",
+    "accent_glow": "rgba(138,92,255,0.3)"
+  },
+  "settings": {
+    "icon_roundness": 0.1,
+    "hero_display_style": "FULLSCREEN",
+    "hero_logo_scale": 0.5,
+    "hero_folder_logo_scale": 0.5,
+    "hero_gradient_style": "NONE",
+    "icon_scale": 1,
+    "hover_scale": 1
+  },
+  "wallpaper_external": "external.webm",
+  "wallpaper_main": "main.mp4",
+  "asset_refs": [
+    {
+      "id": "example-smart-folders-000000",
+      "name": "Example - Smart Folders",
+      "category": "smart_folders",
+      "version": "1.0"
+    },
+    {
+      "id": "example-icon-overlays-000000",
+      "name": "Example - Icon Overlays",
+      "category": "icon_overlays",
+      "version": "1.0"
+    }
+  ]
+}

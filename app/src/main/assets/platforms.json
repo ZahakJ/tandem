@@ -1,0 +1,2849 @@
+{
+ "_comment": "Systems Tandem knows about. Copy this file to ROMs/tandem/platforms.json to customise it. 'folders' are looked up under the ROMs folder (or full paths); subfolders become folders in Tandem. 'aliases' are other names for the system (used to match Cocoon/Daijisho platform files). Each system lists its 'players' (emulators); the first installed one is the default. A player is either {\"core\": \"mgba\"} (RetroArch with that core; add \"package\" for another RetroArch build) or {\"component\": \"pkg/activity\", \"action\": ..., \"game\": ..., \"extras\": {...}}. 'game' says how the emulator receives the game: 'data' (shared link as the intent data), 'data-file' (file:// link), 'extra-uri:<key>' (shared link in a string extra), 'extra-path:<key>' (file path in a string extra) or 'none'. Extras keep their JSON type: string, list (string array), true/false, number; templated numbers are written {\"int\": \"{file.id}\"} (also long, float, bool, uri). 'data' and 'type' are templates for the intent data and MIME type. Templates: {file.path} {file.uri} {file.fileuri} {file.name} {file.stem} {file.ext} {file.dir} {file.mime} {file.id} (the id inside a small shortcut file such as a Vita .dpt or GameNative .pcgame) {file.text} {tags.<name>} (a '[name] value' line in the file) {storage} {roms} {package}. 'byExtension' changes a player for one extension, or 'dir' for games that are folders. 'store' is where to get the emulator (GitHub releases open in Obtainium when it is installed); without it the Play Store is used. 'note' marks launch details still to verify on a device. Component '*' opens the file with the default app.",
+ "platforms": [
+  {
+   "id": "n3ds",
+   "name": "Nintendo 3DS",
+   "short": "3DS",
+   "folders": [
+    "n3ds",
+    "3ds"
+   ],
+   "extensions": [
+    "3ds",
+    "cia",
+    "cci",
+    "cxi",
+    "3dsx",
+    "app",
+    "zcci",
+    "zcxi",
+    "z3dsx",
+    "elf",
+    "axf"
+   ],
+   "aliases": [
+    "3ds"
+   ],
+   "art": [
+    "n3ds",
+    "3ds"
+   ],
+   "skipDirs": [
+    "cheats",
+    "config",
+    "gpu_drivers",
+    "log",
+    "nand",
+    "sdmc",
+    "shaders",
+    "sysdata",
+    "load",
+    "dump"
+   ],
+   "players": [
+    {
+     "name": "Azahar",
+     "component": "org.azahar_emu.azahar/org.citra.citra_emu.activities.EmulationActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/azahar-emu/azahar/releases"
+    },
+    {
+     "name": "RetroArch · Citra",
+     "core": "citra"
+    }
+   ]
+  },
+  {
+   "id": "nds",
+   "name": "Nintendo DS",
+   "short": "DS",
+   "folders": [
+    "nds"
+   ],
+   "extensions": [
+    "nds",
+    "dsi",
+    "ids",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "ndsi",
+    "dsi"
+   ],
+   "players": [
+    {
+     "name": "melonDS Dual",
+     "component": "me.magnum.melondualds/me.magnum.melonds.ui.emulator.EmulatorActivity",
+     "action": "me.magnum.melondualds.LAUNCH_ROM",
+     "game": "extra-uri:uri",
+     "note": "verify: fork of melonDS; other frontends send me.magnum.melonds(.dev).LAUNCH_ROM"
+    },
+    {
+     "name": "melonDS",
+     "component": "me.magnum.melonds/me.magnum.melonds.ui.emulator.EmulatorActivity",
+     "action": "me.magnum.melonds.LAUNCH_ROM",
+     "game": "extra-uri:uri",
+     "store": "https://github.com/rafaelvcaetano/melonDS-android/releases"
+    },
+    {
+     "name": "DraStic",
+     "component": "com.dsemu.drastic/com.dsemu.drastic.DraSticActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data"
+    },
+    {
+     "name": "RetroArch · melonDS DS",
+     "core": "melondsds"
+    },
+    {
+     "name": "RetroArch · DeSmuME",
+     "core": "desmume"
+    }
+   ]
+  },
+  {
+   "id": "switch",
+   "name": "Nintendo Switch",
+   "short": "Switch",
+   "folders": [
+    "switch"
+   ],
+   "extensions": [
+    "nsp",
+    "xci",
+    "nca",
+    "nro",
+    "nso"
+   ],
+   "players": [
+    {
+     "name": "Eden",
+     "component": "dev.eden.eden_emulator/org.yuzu.yuzu_emu.activities.EmulationActivity",
+     "action": "android.nfc.action.TECH_DISCOVERED",
+     "game": "data",
+     "store": "https://github.com/eden-emulator/Releases/releases",
+     "note": "verify store page"
+    }
+   ]
+  },
+  {
+   "id": "wiiu",
+   "name": "Nintendo Wii U",
+   "short": "Wii U",
+   "folders": [
+    "wiiu"
+   ],
+   "extensions": [
+    "wux",
+    "wud",
+    "wua",
+    "rpx",
+    "wuhb"
+   ],
+   "players": [
+    {
+     "name": "Cemu",
+     "component": "info.cemu.cemu/info.cemu.cemu.emulation.EmulationActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/SSimco/Cemu/releases",
+     "note": "verify store page"
+    }
+   ]
+  },
+  {
+   "id": "wii",
+   "name": "Nintendo Wii",
+   "short": "Wii",
+   "folders": [
+    "wii"
+   ],
+   "extensions": [
+    "iso",
+    "rvz",
+    "wbfs",
+    "wia",
+    "gcz",
+    "ciso",
+    "wad",
+    "dol",
+    "elf",
+    "m3u"
+   ],
+   "aliases": [
+    "wiiware"
+   ],
+   "players": [
+    {
+     "name": "Dolphin",
+     "component": "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-uri:AutoStartFile"
+    },
+    {
+     "name": "RetroArch · Dolphin",
+     "core": "dolphin"
+    }
+   ]
+  },
+  {
+   "id": "gc",
+   "name": "Nintendo GameCube",
+   "short": "GC",
+   "folders": [
+    "gc",
+    "gamecube",
+    "ngc"
+   ],
+   "extensions": [
+    "iso",
+    "rvz",
+    "gcz",
+    "gcm",
+    "ciso",
+    "wia",
+    "tgc",
+    "dol",
+    "elf",
+    "m3u"
+   ],
+   "aliases": [
+    "gamecube",
+    "ngc"
+   ],
+   "players": [
+    {
+     "name": "Dolphin",
+     "component": "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-uri:AutoStartFile"
+    },
+    {
+     "name": "RetroArch · Dolphin",
+     "core": "dolphin"
+    }
+   ]
+  },
+  {
+   "id": "n64",
+   "name": "Nintendo 64",
+   "short": "N64",
+   "folders": [
+    "n64"
+   ],
+   "extensions": [
+    "n64",
+    "z64",
+    "v64",
+    "ndd",
+    "u1",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Mupen64Plus-Next",
+     "core": "mupen64plus_next_gles3"
+    },
+    {
+     "name": "RetroArch · ParaLLEl N64",
+     "core": "parallel_n64"
+    },
+    {
+     "name": "Mupen64Plus FZ",
+     "component": "org.mupen64plusae.v3.fzurita/paulscode.android.mupen64plusae.SplashActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data"
+    }
+   ]
+  },
+  {
+   "id": "snes",
+   "name": "Super Nintendo",
+   "short": "SNES",
+   "folders": [
+    "snes",
+    "sfc",
+    "snesna",
+    "satellaview",
+    "snesmsu1"
+   ],
+   "extensions": [
+    "sfc",
+    "smc",
+    "fig",
+    "swc",
+    "bs",
+    "st",
+    "bsx",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "sfc",
+    "satellaview",
+    "snesmsu1"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Snes9x",
+     "core": "snes9x"
+    },
+    {
+     "name": "RetroArch · bsnes",
+     "core": "bsnes"
+    },
+    {
+     "name": "RetroArch · Mesen-S",
+     "core": "mesen-s"
+    }
+   ]
+  },
+  {
+   "id": "nes",
+   "name": "Nintendo Entertainment System",
+   "short": "NES",
+   "folders": [
+    "nes",
+    "famicom"
+   ],
+   "extensions": [
+    "nes",
+    "unf",
+    "unif",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "famicom"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FCEUmm",
+     "core": "fceumm"
+    },
+    {
+     "name": "RetroArch · Nestopia",
+     "core": "nestopia"
+    },
+    {
+     "name": "RetroArch · Mesen",
+     "core": "mesen"
+    }
+   ]
+  },
+  {
+   "id": "fds",
+   "name": "Famicom Disk System",
+   "short": "FDS",
+   "folders": [
+    "fds"
+   ],
+   "extensions": [
+    "fds",
+    "qd",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FCEUmm",
+     "core": "fceumm"
+    },
+    {
+     "name": "RetroArch · Nestopia",
+     "core": "nestopia"
+    },
+    {
+     "name": "RetroArch · Mesen",
+     "core": "mesen"
+    }
+   ]
+  },
+  {
+   "id": "gba",
+   "name": "Game Boy Advance",
+   "short": "GBA",
+   "folders": [
+    "gba"
+   ],
+   "extensions": [
+    "gba",
+    "agb",
+    "gbz",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · mGBA",
+     "core": "mgba"
+    },
+    {
+     "name": "RetroArch · gpSP",
+     "core": "gpsp"
+    },
+    {
+     "name": "RetroArch · VBA-M",
+     "core": "vbam"
+    }
+   ]
+  },
+  {
+   "id": "gbc",
+   "name": "Game Boy Color",
+   "short": "GBC",
+   "folders": [
+    "gbc"
+   ],
+   "extensions": [
+    "gbc",
+    "gb",
+    "cgb",
+    "sgb",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Gambatte",
+     "core": "gambatte"
+    },
+    {
+     "name": "RetroArch · mGBA",
+     "core": "mgba"
+    },
+    {
+     "name": "RetroArch · SameBoy",
+     "core": "sameboy"
+    },
+    {
+     "name": "RetroArch · Gearboy",
+     "core": "gearboy"
+    }
+   ]
+  },
+  {
+   "id": "gb",
+   "name": "Game Boy",
+   "short": "GB",
+   "folders": [
+    "gb"
+   ],
+   "extensions": [
+    "gb",
+    "dmg",
+    "sgb",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Gambatte",
+     "core": "gambatte"
+    },
+    {
+     "name": "RetroArch · mGBA",
+     "core": "mgba"
+    },
+    {
+     "name": "RetroArch · SameBoy",
+     "core": "sameboy"
+    },
+    {
+     "name": "RetroArch · Gearboy",
+     "core": "gearboy"
+    }
+   ]
+  },
+  {
+   "id": "virtualboy",
+   "name": "Virtual Boy",
+   "short": "VB",
+   "folders": [
+    "virtualboy"
+   ],
+   "extensions": [
+    "vb",
+    "vboy",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle VB",
+     "core": "mednafen_vb"
+    },
+    {
+     "name": "Virtual Virtual Boy",
+     "component": "com.simongellis.vvb/com.simongellis.vvb.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "pokemini",
+   "name": "Pokémon Mini",
+   "short": "Mini",
+   "folders": [
+    "pokemini"
+   ],
+   "extensions": [
+    "min",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PokeMini",
+     "core": "pokemini"
+    }
+   ]
+  },
+  {
+   "id": "gameandwatch",
+   "name": "Game & Watch",
+   "short": "G&W",
+   "folders": [
+    "gameandwatch"
+   ],
+   "extensions": [
+    "mgw",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "gw"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Game & Watch",
+     "core": "gw"
+    },
+    {
+     "name": "RetroArch · MAME (MESS)",
+     "core": "mamemess"
+    }
+   ]
+  },
+  {
+   "id": "psx",
+   "name": "PlayStation",
+   "short": "PS1",
+   "folders": [
+    "psx",
+    "ps1"
+   ],
+   "extensions": [
+    "cue",
+    "chd",
+    "pbp",
+    "m3u",
+    "iso",
+    "img",
+    "ccd",
+    "mds",
+    "toc",
+    "ecm",
+    "exe",
+    "7z",
+    "zip"
+   ],
+   "aliases": [
+    "ps1",
+    "playstation"
+   ],
+   "players": [
+    {
+     "name": "DuckStation",
+     "component": "com.github.stenzek.duckstation/com.github.stenzek.duckstation.EmulationActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-uri:bootPath",
+     "extras": {
+      "resumeState": false
+     }
+    },
+    {
+     "name": "RetroArch · SwanStation",
+     "core": "swanstation"
+    },
+    {
+     "name": "RetroArch · PCSX ReARMed",
+     "core": "pcsx_rearmed"
+    },
+    {
+     "name": "RetroArch · Beetle PSX HW",
+     "core": "mednafen_psx_hw"
+    },
+    {
+     "name": "ARMSX1",
+     "component": "com.nanodata.armsx/com.armsx2.Main",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/ARMSX2/ARMSX1/releases",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "ps2",
+   "name": "PlayStation 2",
+   "short": "PS2",
+   "folders": [
+    "ps2"
+   ],
+   "extensions": [
+    "iso",
+    "chd",
+    "cso",
+    "zso",
+    "gz",
+    "bin",
+    "img",
+    "mdf",
+    "nrg",
+    "isz",
+    "elf",
+    "m3u"
+   ],
+   "aliases": [
+    "playstation2",
+    "namcops2"
+   ],
+   "players": [
+    {
+     "name": "ARMSX2",
+     "component": "com.armsx2/com.armsx2.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/ARMSX2/ARMSX2/releases",
+     "note": "verify: MainActivity is an alias of com.armsx2.Main"
+    },
+    {
+     "name": "NetherSX2",
+     "component": "xyz.aethersx2.android/xyz.aethersx2.android.EmulationActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-uri:bootPath",
+     "store": "https://github.com/Trixarian/NetherSX2-patch/releases"
+    },
+    {
+     "name": "RetroArch · LRPS2",
+     "core": "pcsx2"
+    }
+   ]
+  },
+  {
+   "id": "ps3",
+   "name": "PlayStation 3",
+   "short": "PS3",
+   "folders": [
+    "ps3"
+   ],
+   "extensions": [
+    "iso",
+    "ps3",
+    "ps3folder",
+    "ps3titleid"
+   ],
+   "players": [
+    {
+     "name": "aPS3e",
+     "component": "aenu.aps3e/aenu.aps3e.EmulatorActivity",
+     "action": "aenu.intent.action.APS3E",
+     "game": "extra-uri:iso_uri",
+     "store": "https://github.com/aenu1/aps3e/releases",
+     "byExtension": {
+      "dir": {
+       "game": "none",
+       "extras": {
+        "game_dir": "{file.path}"
+       }
+      },
+      "ps3": {
+       "game": "none",
+       "extras": {
+        "game_dir": "{storage}/Android/data/{package}/files/aps3e/config/dev_hdd0/game/{file.id}"
+       }
+      }
+     }
+    },
+    {
+     "name": "ARMSX3",
+     "component": "com.armsx3/com.armsx2.Main",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/ARMSX2/ARMSX3/releases",
+     "byExtension": {
+      "dir": {
+       "game": "none",
+       "extras": {
+        "path": "{file.path}"
+       }
+      },
+      "ps3": {
+       "game": "none",
+       "extras": {
+        "title_id": "{file.id}"
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "psp",
+   "name": "PlayStation Portable",
+   "short": "PSP",
+   "folders": [
+    "psp"
+   ],
+   "extensions": [
+    "iso",
+    "cso",
+    "chd",
+    "pbp",
+    "elf",
+    "prx"
+   ],
+   "aliases": [
+    "pspminis"
+   ],
+   "players": [
+    {
+     "name": "PPSSPP",
+     "component": "org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "categories": [
+      "android.intent.category.DEFAULT"
+     ]
+    },
+    {
+     "name": "PPSSPP Gold",
+     "component": "org.ppsspp.ppssppgold/org.ppsspp.ppsspp.PpssppActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "categories": [
+      "android.intent.category.DEFAULT"
+     ]
+    },
+    {
+     "name": "RetroArch · PPSSPP",
+     "core": "ppsspp"
+    }
+   ]
+  },
+  {
+   "id": "psvita",
+   "name": "PlayStation Vita",
+   "short": "Vita",
+   "folders": [
+    "psvita",
+    "vita"
+   ],
+   "extensions": [
+    "dpt",
+    "psvita"
+   ],
+   "aliases": [
+    "vita"
+   ],
+   "players": [
+    {
+     "name": "Vita3K",
+     "component": "org.vita3k.emulator/org.vita3k.emulator.Emulator",
+     "action": "android.intent.action.MAIN",
+     "game": "none",
+     "store": "https://github.com/Vita3K/Vita3K-Android/releases",
+     "extras": {
+      "AppStartParameters": [
+       "-r",
+       "{file.id}"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "genesis",
+   "name": "Sega Genesis",
+   "short": "Genesis",
+   "folders": [
+    "genesis",
+    "megadrive",
+    "md",
+    "genesismsu"
+   ],
+   "extensions": [
+    "md",
+    "gen",
+    "smd",
+    "bin",
+    "68k",
+    "sgd",
+    "chd",
+    "cue",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "megadrive",
+    "genesismsu"
+   ],
+   "art": [
+    "genesis",
+    "megadrive"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Genesis Plus GX",
+     "core": "genesis_plus_gx"
+    },
+    {
+     "name": "RetroArch · PicoDrive",
+     "core": "picodrive"
+    }
+   ]
+  },
+  {
+   "id": "mastersystem",
+   "name": "Sega Master System",
+   "short": "SMS",
+   "folders": [
+    "mastersystem",
+    "sms",
+    "master"
+   ],
+   "extensions": [
+    "sms",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "master",
+    "sms"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Genesis Plus GX",
+     "core": "genesis_plus_gx"
+    },
+    {
+     "name": "RetroArch · Gearsystem",
+     "core": "gearsystem"
+    },
+    {
+     "name": "RetroArch · SMS Plus GX",
+     "core": "smsplus"
+    }
+   ]
+  },
+  {
+   "id": "gamegear",
+   "name": "Sega Game Gear",
+   "short": "GG",
+   "folders": [
+    "gamegear"
+   ],
+   "extensions": [
+    "gg",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Genesis Plus GX",
+     "core": "genesis_plus_gx"
+    },
+    {
+     "name": "RetroArch · Gearsystem",
+     "core": "gearsystem"
+    },
+    {
+     "name": "RetroArch · SMS Plus GX",
+     "core": "smsplus"
+    }
+   ]
+  },
+  {
+   "id": "sg1000",
+   "name": "Sega SG-1000",
+   "short": "SG-1000",
+   "folders": [
+    "sg1000"
+   ],
+   "extensions": [
+    "sg",
+    "sc",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Gearsystem",
+     "core": "gearsystem"
+    },
+    {
+     "name": "RetroArch · Genesis Plus GX",
+     "core": "genesis_plus_gx"
+    },
+    {
+     "name": "RetroArch · blueMSX",
+     "core": "bluemsx"
+    }
+   ]
+  },
+  {
+   "id": "sega32x",
+   "name": "Sega 32X",
+   "short": "32X",
+   "folders": [
+    "sega32x"
+   ],
+   "extensions": [
+    "32x",
+    "bin",
+    "md",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PicoDrive",
+     "core": "picodrive"
+    }
+   ]
+  },
+  {
+   "id": "segacd",
+   "name": "Sega CD",
+   "short": "Sega CD",
+   "folders": [
+    "segacd"
+   ],
+   "extensions": [
+    "chd",
+    "cue",
+    "iso",
+    "m3u"
+   ],
+   "aliases": [
+    "megacd"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Genesis Plus GX",
+     "core": "genesis_plus_gx"
+    },
+    {
+     "name": "RetroArch · PicoDrive",
+     "core": "picodrive"
+    }
+   ]
+  },
+  {
+   "id": "pico",
+   "name": "Sega Pico",
+   "short": "Pico",
+   "folders": [
+    "pico"
+   ],
+   "extensions": [
+    "md",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PicoDrive",
+     "core": "picodrive"
+    }
+   ]
+  },
+  {
+   "id": "saturn",
+   "name": "Sega Saturn",
+   "short": "Saturn",
+   "folders": [
+    "saturn"
+   ],
+   "extensions": [
+    "chd",
+    "cue",
+    "iso",
+    "ccd",
+    "mds",
+    "toc",
+    "m3u",
+    "zip"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · YabaSanshiro",
+     "core": "yabasanshiro"
+    },
+    {
+     "name": "RetroArch · Beetle Saturn",
+     "core": "mednafen_saturn"
+    },
+    {
+     "name": "Yaba Sanshiro 2",
+     "component": "org.devmiyax.yabasanshioro2/org.uoyabause.android.Yabause",
+     "action": "android.intent.action.VIEW",
+     "game": "extra-path:org.uoyabause.android.FileNameUri",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "dreamcast",
+   "name": "Sega Dreamcast",
+   "short": "DC",
+   "folders": [
+    "dreamcast"
+   ],
+   "extensions": [
+    "chd",
+    "gdi",
+    "cdi",
+    "cue",
+    "m3u",
+    "elf",
+    "lst",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "dc"
+   ],
+   "players": [
+    {
+     "name": "Flycast",
+     "component": "com.flycast.emulator/com.flycast.emulator.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/flyinghead/flycast/releases"
+    },
+    {
+     "name": "RetroArch · Flycast",
+     "core": "flycast"
+    },
+    {
+     "name": "Redream",
+     "component": "io.recompiled.redream/io.recompiled.redream.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data"
+    }
+   ]
+  },
+  {
+   "id": "naomi",
+   "name": "Sega NAOMI",
+   "short": "NAOMI",
+   "folders": [
+    "naomi"
+   ],
+   "extensions": [
+    "zip",
+    "7z",
+    "dat",
+    "lst"
+   ],
+   "players": [
+    {
+     "name": "Flycast",
+     "component": "com.flycast.emulator/com.flycast.emulator.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/flyinghead/flycast/releases"
+    },
+    {
+     "name": "RetroArch · Flycast",
+     "core": "flycast"
+    }
+   ]
+  },
+  {
+   "id": "atomiswave",
+   "name": "Atomiswave",
+   "short": "AW",
+   "folders": [
+    "atomiswave"
+   ],
+   "extensions": [
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "Flycast",
+     "component": "com.flycast.emulator/com.flycast.emulator.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/flyinghead/flycast/releases"
+    },
+    {
+     "name": "RetroArch · Flycast",
+     "core": "flycast"
+    }
+   ]
+  },
+  {
+   "id": "model3",
+   "name": "Sega Model 3",
+   "short": "Model 3",
+   "folders": [
+    "model3"
+   ],
+   "extensions": [
+    "zip"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Supermodel",
+     "core": "supermodel"
+    }
+   ]
+  },
+  {
+   "id": "stv",
+   "name": "Sega Titan Video",
+   "short": "ST-V",
+   "folders": [
+    "stv"
+   ],
+   "extensions": [
+    "zip"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle Saturn",
+     "core": "mednafen_saturn"
+    }
+   ]
+  },
+  {
+   "id": "xbox",
+   "name": "Xbox",
+   "short": "Xbox",
+   "folders": [
+    "xbox"
+   ],
+   "extensions": [
+    "iso",
+    "xiso"
+   ],
+   "players": [
+    {
+     "name": "X1 BOX",
+     "component": "com.izzy2lost.x1box/com.izzy2lost.x1box.LauncherActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "store": "https://github.com/izzy2lost/x1box/releases"
+    }
+   ]
+  },
+  {
+   "id": "xbox360",
+   "name": "Xbox 360",
+   "short": "360",
+   "folders": [
+    "xbox360"
+   ],
+   "extensions": [
+    "iso",
+    "xex",
+    "zar"
+   ],
+   "players": [
+    {
+     "name": "XenDroid",
+     "component": "xendroid.compose/xendroid.compose.EmulatorHostActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify: some frontends pass game_uri as an extra",
+     "extras": {
+      "game_uri": "{file.uri}"
+     }
+    },
+    {
+     "name": "aX360e",
+     "component": "aenu.ax360e/aenu.ax360e.EmulatorActivity",
+     "action": "aenu.intent.action.AX360E",
+     "game": "extra-uri:game_uri",
+     "store": "https://github.com/aenu1/ax360e/releases"
+    }
+   ]
+  },
+  {
+   "id": "windows",
+   "name": "Windows",
+   "short": "PC",
+   "folders": [
+    "windows",
+    "pc",
+    "steam"
+   ],
+   "extensions": [
+    "pcgame",
+    "steam",
+    "epic",
+    "gog",
+    "amazon",
+    "customgame",
+    "steamappid",
+    "epicgame",
+    "desktop",
+    "lnk"
+   ],
+   "aliases": [
+    "steam",
+    "pc"
+   ],
+   "players": [
+    {
+     "name": "GameNative",
+     "component": "app.gamenative/app.gamenative.MainActivity",
+     "action": "app.gamenative.LAUNCH_GAME",
+     "game": "none",
+     "store": "https://github.com/utkarshdalal/GameNative/releases",
+     "extras": {
+      "app_id": {
+       "int": "{file.id}"
+      },
+      "game_source": "STEAM"
+     },
+     "byExtension": {
+      "pcgame": {
+       "extras": {
+        "game_source": "CUSTOM_GAME"
+       }
+      },
+      "customgame": {
+       "extras": {
+        "game_source": "CUSTOM_GAME"
+       }
+      },
+      "steam": {
+       "extras": {
+        "game_source": "STEAM"
+       }
+      },
+      "steamappid": {
+       "extras": {
+        "game_source": "STEAM"
+       }
+      },
+      "epic": {
+       "extras": {
+        "game_source": "EPIC"
+       }
+      },
+      "epicgame": {
+       "extras": {
+        "game_source": "EPIC"
+       }
+      },
+      "gog": {
+       "extras": {
+        "game_source": "GOG"
+       }
+      },
+      "amazon": {
+       "extras": {
+        "game_source": "AMAZON"
+       }
+      }
+     }
+    },
+    {
+     "name": "Winlator",
+     "component": "com.winlator/com.winlator.XServerDisplayActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-path:shortcut_path",
+     "store": "https://github.com/brunodev85/winlator/releases"
+    },
+    {
+     "name": "Winlator Cmod",
+     "component": "com.winlator.cmod/com.winlator.cmod.XServerDisplayActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "extra-path:shortcut_path",
+     "store": "https://github.com/coffincolors/winlator/releases",
+     "note": "verify store page"
+    }
+   ]
+  },
+  {
+   "id": "dos",
+   "name": "DOS",
+   "short": "DOS",
+   "folders": [
+    "dos"
+   ],
+   "extensions": [
+    "zip",
+    "dosz",
+    "exe",
+    "com",
+    "bat",
+    "iso",
+    "cue",
+    "img",
+    "m3u",
+    "conf"
+   ],
+   "aliases": [
+    "pcdos"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · DOSBox Pure",
+     "core": "dosbox_pure"
+    }
+   ]
+  },
+  {
+   "id": "arcade",
+   "name": "Arcade",
+   "short": "Arcade",
+   "folders": [
+    "arcade",
+    "mame",
+    "fbneo",
+    "cps1",
+    "cps2",
+    "cps3"
+   ],
+   "extensions": [
+    "zip",
+    "7z",
+    "chd"
+   ],
+   "aliases": [
+    "mame",
+    "fbneo",
+    "cps1",
+    "cps2",
+    "cps3"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FinalBurn Neo",
+     "core": "fbneo"
+    },
+    {
+     "name": "RetroArch · MAME 2003-Plus",
+     "core": "mame2003_plus"
+    },
+    {
+     "name": "RetroArch · MAME",
+     "core": "mamearcade"
+    },
+    {
+     "name": "MAME4droid",
+     "component": "com.seleuco.mame4d2024/com.seleuco.mame4droid.MAME4droid",
+     "action": "android.intent.action.VIEW",
+     "game": "data"
+    }
+   ]
+  },
+  {
+   "id": "neogeo",
+   "name": "Neo Geo",
+   "short": "Neo Geo",
+   "folders": [
+    "neogeo"
+   ],
+   "extensions": [
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FinalBurn Neo",
+     "core": "fbneo"
+    },
+    {
+     "name": "RetroArch · Geolith",
+     "core": "geolith"
+    }
+   ]
+  },
+  {
+   "id": "neogeocd",
+   "name": "Neo Geo CD",
+   "short": "NGCD",
+   "folders": [
+    "neogeocd"
+   ],
+   "extensions": [
+    "chd",
+    "cue"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · NeoCD",
+     "core": "neocd"
+    }
+   ]
+  },
+  {
+   "id": "ngp",
+   "name": "Neo Geo Pocket",
+   "short": "NGP",
+   "folders": [
+    "ngp"
+   ],
+   "extensions": [
+    "ngp",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle NeoPop",
+     "core": "mednafen_ngp"
+    },
+    {
+     "name": "RetroArch · RACE",
+     "core": "race"
+    }
+   ]
+  },
+  {
+   "id": "ngpc",
+   "name": "Neo Geo Pocket Color",
+   "short": "NGPC",
+   "folders": [
+    "ngpc"
+   ],
+   "extensions": [
+    "ngc",
+    "ngpc",
+    "ngp",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle NeoPop",
+     "core": "mednafen_ngp"
+    },
+    {
+     "name": "RetroArch · RACE",
+     "core": "race"
+    }
+   ]
+  },
+  {
+   "id": "pcengine",
+   "name": "PC Engine / TurboGrafx-16",
+   "short": "PCE",
+   "folders": [
+    "pcengine",
+    "tg16",
+    "turbografx16"
+   ],
+   "extensions": [
+    "pce",
+    "sgx",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "tg16",
+    "turbografx16"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle PCE Fast",
+     "core": "mednafen_pce_fast"
+    },
+    {
+     "name": "RetroArch · Beetle PCE",
+     "core": "mednafen_pce"
+    }
+   ]
+  },
+  {
+   "id": "pcenginecd",
+   "name": "PC Engine CD / TurboGrafx-CD",
+   "short": "PCE CD",
+   "folders": [
+    "pcenginecd",
+    "tgcd"
+   ],
+   "extensions": [
+    "chd",
+    "cue",
+    "ccd",
+    "m3u"
+   ],
+   "aliases": [
+    "tgcd"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle PCE Fast",
+     "core": "mednafen_pce_fast"
+    },
+    {
+     "name": "RetroArch · Beetle PCE",
+     "core": "mednafen_pce"
+    }
+   ]
+  },
+  {
+   "id": "supergrafx",
+   "name": "SuperGrafx",
+   "short": "SGX",
+   "folders": [
+    "supergrafx"
+   ],
+   "extensions": [
+    "sgx",
+    "pce",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle SuperGrafx",
+     "core": "mednafen_supergrafx"
+    },
+    {
+     "name": "RetroArch · Beetle PCE",
+     "core": "mednafen_pce"
+    }
+   ]
+  },
+  {
+   "id": "pcfx",
+   "name": "PC-FX",
+   "short": "PC-FX",
+   "folders": [
+    "pcfx"
+   ],
+   "extensions": [
+    "chd",
+    "cue",
+    "ccd",
+    "toc"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle PC-FX",
+     "core": "mednafen_pcfx"
+    }
+   ]
+  },
+  {
+   "id": "pc88",
+   "name": "NEC PC-88",
+   "short": "PC-88",
+   "folders": [
+    "pc88"
+   ],
+   "extensions": [
+    "d88",
+    "u88",
+    "m3u"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · QUASI88",
+     "core": "quasi88"
+    }
+   ]
+  },
+  {
+   "id": "pc98",
+   "name": "NEC PC-98",
+   "short": "PC-98",
+   "folders": [
+    "pc98"
+   ],
+   "extensions": [
+    "d98",
+    "fdi",
+    "hdi",
+    "hdm",
+    "fdd",
+    "nhd",
+    "tfd",
+    "xdf",
+    "zip"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Neko Project II Kai",
+     "core": "np2kai"
+    }
+   ]
+  },
+  {
+   "id": "atari2600",
+   "name": "Atari 2600",
+   "short": "2600",
+   "folders": [
+    "atari2600"
+   ],
+   "extensions": [
+    "a26",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Stella",
+     "core": "stella"
+    }
+   ]
+  },
+  {
+   "id": "atari5200",
+   "name": "Atari 5200",
+   "short": "5200",
+   "folders": [
+    "atari5200"
+   ],
+   "extensions": [
+    "a52",
+    "bin",
+    "car",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · a5200",
+     "core": "a5200"
+    },
+    {
+     "name": "RetroArch · Atari800",
+     "core": "atari800"
+    }
+   ]
+  },
+  {
+   "id": "atari7800",
+   "name": "Atari 7800",
+   "short": "7800",
+   "folders": [
+    "atari7800"
+   ],
+   "extensions": [
+    "a78",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · ProSystem",
+     "core": "prosystem"
+    }
+   ]
+  },
+  {
+   "id": "atarijaguar",
+   "name": "Atari Jaguar",
+   "short": "Jaguar",
+   "folders": [
+    "atarijaguar"
+   ],
+   "extensions": [
+    "j64",
+    "jag",
+    "abs",
+    "cof",
+    "rom",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "jaguar"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Virtual Jaguar",
+     "core": "virtualjaguar"
+    }
+   ]
+  },
+  {
+   "id": "atarilynx",
+   "name": "Atari Lynx",
+   "short": "Lynx",
+   "folders": [
+    "atarilynx"
+   ],
+   "extensions": [
+    "lnx",
+    "o",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "lynx"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Handy",
+     "core": "handy"
+    },
+    {
+     "name": "RetroArch · Beetle Lynx",
+     "core": "mednafen_lynx"
+    }
+   ]
+  },
+  {
+   "id": "atarist",
+   "name": "Atari ST",
+   "short": "ST",
+   "folders": [
+    "atarist"
+   ],
+   "extensions": [
+    "st",
+    "msa",
+    "stx",
+    "dim",
+    "ipf",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Hatari",
+     "core": "hatari"
+    }
+   ]
+  },
+  {
+   "id": "3do",
+   "name": "3DO",
+   "short": "3DO",
+   "folders": [
+    "3do"
+   ],
+   "extensions": [
+    "iso",
+    "chd",
+    "cue"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Opera",
+     "core": "opera"
+    }
+   ]
+  },
+  {
+   "id": "cdimono1",
+   "name": "Philips CD-i",
+   "short": "CD-i",
+   "folders": [
+    "cdimono1"
+   ],
+   "extensions": [
+    "chd",
+    "cue",
+    "iso"
+   ],
+   "aliases": [
+    "cdi"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · SAME CDi",
+     "core": "same_cdi"
+    }
+   ]
+  },
+  {
+   "id": "colecovision",
+   "name": "ColecoVision",
+   "short": "Coleco",
+   "folders": [
+    "colecovision"
+   ],
+   "extensions": [
+    "col",
+    "cv",
+    "bin",
+    "rom",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "coleco"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Gearcoleco",
+     "core": "gearcoleco"
+    },
+    {
+     "name": "RetroArch · blueMSX",
+     "core": "bluemsx"
+    }
+   ]
+  },
+  {
+   "id": "intellivision",
+   "name": "Intellivision",
+   "short": "Intv",
+   "folders": [
+    "intellivision"
+   ],
+   "extensions": [
+    "int",
+    "bin",
+    "rom",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FreeIntv",
+     "core": "freeintv"
+    }
+   ]
+  },
+  {
+   "id": "vectrex",
+   "name": "Vectrex",
+   "short": "Vectrex",
+   "folders": [
+    "vectrex"
+   ],
+   "extensions": [
+    "vec",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · vecx",
+     "core": "vecx"
+    }
+   ]
+  },
+  {
+   "id": "channelf",
+   "name": "Fairchild Channel F",
+   "short": "Ch F",
+   "folders": [
+    "channelf"
+   ],
+   "extensions": [
+    "chf",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FreeChaF",
+     "core": "freechaf"
+    }
+   ]
+  },
+  {
+   "id": "odyssey2",
+   "name": "Magnavox Odyssey 2",
+   "short": "O2",
+   "folders": [
+    "odyssey2"
+   ],
+   "extensions": [
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "videopac",
+    "g7400"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · O2EM",
+     "core": "o2em"
+    }
+   ]
+  },
+  {
+   "id": "vc4000",
+   "name": "Interton VC 4000",
+   "short": "VC4000",
+   "folders": [
+    "vc4000"
+   ],
+   "extensions": [
+    "bin",
+    "rom",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · MAME (MESS)",
+     "core": "mamemess"
+    }
+   ]
+  },
+  {
+   "id": "arcadia",
+   "name": "Arcadia 2001",
+   "short": "Arcadia",
+   "folders": [
+    "arcadia"
+   ],
+   "extensions": [
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · MAME (MESS)",
+     "core": "mamemess"
+    }
+   ]
+  },
+  {
+   "id": "megaduck",
+   "name": "Mega Duck",
+   "short": "Duck",
+   "folders": [
+    "megaduck"
+   ],
+   "extensions": [
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · SameDuck",
+     "core": "sameduck"
+    }
+   ]
+  },
+  {
+   "id": "supervision",
+   "name": "Watara Supervision",
+   "short": "SV",
+   "folders": [
+    "supervision"
+   ],
+   "extensions": [
+    "sv",
+    "bin",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Potator",
+     "core": "potator"
+    }
+   ]
+  },
+  {
+   "id": "wonderswan",
+   "name": "WonderSwan",
+   "short": "WS",
+   "folders": [
+    "wonderswan"
+   ],
+   "extensions": [
+    "ws",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "ws"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle Cygne",
+     "core": "mednafen_wswan"
+    }
+   ]
+  },
+  {
+   "id": "wonderswancolor",
+   "name": "WonderSwan Color",
+   "short": "WSC",
+   "folders": [
+    "wonderswancolor"
+   ],
+   "extensions": [
+    "wsc",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "wsc"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Beetle Cygne",
+     "core": "mednafen_wswan"
+    }
+   ]
+  },
+  {
+   "id": "uzebox",
+   "name": "Uzebox",
+   "short": "Uzebox",
+   "folders": [
+    "uzebox"
+   ],
+   "extensions": [
+    "uze",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Uzem",
+     "core": "uzem"
+    }
+   ]
+  },
+  {
+   "id": "amiga",
+   "name": "Commodore Amiga",
+   "short": "Amiga",
+   "folders": [
+    "amiga"
+   ],
+   "extensions": [
+    "adf",
+    "adz",
+    "dms",
+    "ipf",
+    "hdf",
+    "hdz",
+    "lha",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PUAE",
+     "core": "puae"
+    }
+   ]
+  },
+  {
+   "id": "c64",
+   "name": "Commodore 64",
+   "short": "C64",
+   "folders": [
+    "c64"
+   ],
+   "extensions": [
+    "d64",
+    "d71",
+    "d81",
+    "t64",
+    "tap",
+    "prg",
+    "crt",
+    "g64",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · VICE x64sc",
+     "core": "vice_x64sc"
+    },
+    {
+     "name": "RetroArch · VICE x64",
+     "core": "vice_x64"
+    }
+   ]
+  },
+  {
+   "id": "pet",
+   "name": "Commodore PET",
+   "short": "PET",
+   "folders": [
+    "pet"
+   ],
+   "extensions": [
+    "d64",
+    "prg",
+    "tap",
+    "t64",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · VICE xpet",
+     "core": "vice_xpet"
+    }
+   ]
+  },
+  {
+   "id": "plus4",
+   "name": "Commodore Plus/4",
+   "short": "Plus/4",
+   "folders": [
+    "plus4"
+   ],
+   "extensions": [
+    "d64",
+    "prg",
+    "tap",
+    "t64",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · VICE xplus4",
+     "core": "vice_xplus4"
+    }
+   ]
+  },
+  {
+   "id": "vic20",
+   "name": "Commodore VIC-20",
+   "short": "VIC-20",
+   "folders": [
+    "vic20"
+   ],
+   "extensions": [
+    "20",
+    "40",
+    "60",
+    "a0",
+    "b0",
+    "crt",
+    "d64",
+    "prg",
+    "tap",
+    "t64",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · VICE xvic",
+     "core": "vice_xvic"
+    }
+   ]
+  },
+  {
+   "id": "amstradcpc",
+   "name": "Amstrad CPC",
+   "short": "CPC",
+   "folders": [
+    "amstradcpc"
+   ],
+   "extensions": [
+    "dsk",
+    "sna",
+    "cdt",
+    "voc",
+    "tap",
+    "cpr",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "aliases": [
+    "cpc"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Caprice32",
+     "core": "cap32"
+    },
+    {
+     "name": "RetroArch · CrocoDS",
+     "core": "crocods"
+    }
+   ]
+  },
+  {
+   "id": "msx",
+   "name": "MSX",
+   "short": "MSX",
+   "folders": [
+    "msx",
+    "msx1",
+    "msx2"
+   ],
+   "extensions": [
+    "rom",
+    "mx1",
+    "mx2",
+    "dsk",
+    "cas",
+    "col",
+    "ri",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · blueMSX",
+     "core": "bluemsx"
+    },
+    {
+     "name": "RetroArch · fMSX",
+     "core": "fmsx"
+    }
+   ]
+  },
+  {
+   "id": "zxspectrum",
+   "name": "ZX Spectrum",
+   "short": "ZX",
+   "folders": [
+    "zxspectrum"
+   ],
+   "extensions": [
+    "tzx",
+    "tap",
+    "z80",
+    "sna",
+    "dsk",
+    "scl",
+    "trd",
+    "rzx",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Fuse",
+     "core": "fuse"
+    }
+   ]
+  },
+  {
+   "id": "zx81",
+   "name": "ZX81",
+   "short": "ZX81",
+   "folders": [
+    "zx81"
+   ],
+   "extensions": [
+    "p",
+    "t81",
+    "tzx",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · EightyOne",
+     "core": "81"
+    }
+   ]
+  },
+  {
+   "id": "x1",
+   "name": "Sharp X1",
+   "short": "X1",
+   "folders": [
+    "x1"
+   ],
+   "extensions": [
+    "2hd",
+    "88d",
+    "d88",
+    "dx1",
+    "dup",
+    "hdm",
+    "tap",
+    "cmd",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · X Millennium",
+     "core": "x1"
+    }
+   ]
+  },
+  {
+   "id": "x68000",
+   "name": "Sharp X68000",
+   "short": "X68K",
+   "folders": [
+    "x68000"
+   ],
+   "extensions": [
+    "dim",
+    "d88",
+    "88d",
+    "hdm",
+    "dup",
+    "2hd",
+    "xdf",
+    "hdf",
+    "cmd",
+    "m3u",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PX68k",
+     "core": "px68k"
+    }
+   ]
+  },
+  {
+   "id": "bbcmicro",
+   "name": "BBC Micro",
+   "short": "BBC",
+   "folders": [
+    "bbcmicro"
+   ],
+   "extensions": [
+    "ssd",
+    "dsd"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · b2",
+     "core": "b2"
+    }
+   ]
+  },
+  {
+   "id": "apple2",
+   "name": "Apple II",
+   "short": "Apple II",
+   "folders": [
+    "apple2"
+   ],
+   "extensions": [
+    "dsk",
+    "do",
+    "po",
+    "nib",
+    "woz",
+    "2mg",
+    "cmd"
+   ],
+   "aliases": [
+    "appleii"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · MAME (MESS)",
+     "core": "mamemess"
+    }
+   ]
+  },
+  {
+   "id": "palm",
+   "name": "Palm OS",
+   "short": "Palm",
+   "folders": [
+    "palm"
+   ],
+   "extensions": [
+    "prc",
+    "pdb",
+    "pqa",
+    "img"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Mu",
+     "core": "mu"
+    }
+   ]
+  },
+  {
+   "id": "j2me",
+   "name": "Java ME",
+   "short": "J2ME",
+   "folders": [
+    "j2me"
+   ],
+   "extensions": [
+    "jar",
+    "jad"
+   ],
+   "aliases": [
+    "javame"
+   ],
+   "players": [
+    {
+     "name": "J2ME Loader",
+     "component": "ru.playsoftware.j2meloader/ru.playsoftware.j2meloader.MainActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data"
+    },
+    {
+     "name": "RetroArch · SquirrelJME",
+     "core": "squirreljme"
+    }
+   ]
+  },
+  {
+   "id": "ngage",
+   "name": "Nokia N-Gage",
+   "short": "N-Gage",
+   "folders": [
+    "ngage"
+   ],
+   "extensions": [
+    "ngage",
+    "zip",
+    "json"
+   ],
+   "players": [
+    {
+     "name": "EKA2L1",
+     "component": "com.github.eka2l1/com.github.eka2l1.emu.EmulatorActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "pico8",
+   "name": "PICO-8",
+   "short": "PICO-8",
+   "folders": [
+    "pico8"
+   ],
+   "extensions": [
+    "p8",
+    "png"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · FAKE-08",
+     "core": "fake08"
+    },
+    {
+     "name": "RetroArch · Retro8",
+     "core": "retro8"
+    },
+    {
+     "name": "PICO-8",
+     "component": "io.wip.pico8/com.godot.game.GodotAppLauncher",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "tic80",
+   "name": "TIC-80",
+   "short": "TIC-80",
+   "folders": [
+    "tic80"
+   ],
+   "extensions": [
+    "tic"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · TIC-80",
+     "core": "tic80"
+    }
+   ]
+  },
+  {
+   "id": "wasm4",
+   "name": "WASM-4",
+   "short": "WASM-4",
+   "folders": [
+    "wasm4"
+   ],
+   "extensions": [
+    "wasm"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · WASM-4",
+     "core": "wasm4"
+    }
+   ]
+  },
+  {
+   "id": "lowresnx",
+   "name": "LowRes NX",
+   "short": "LowRes",
+   "folders": [
+    "lowresnx"
+   ],
+   "extensions": [
+    "nx"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · LowRes NX",
+     "core": "lowresnx"
+    }
+   ]
+  },
+  {
+   "id": "arduboy",
+   "name": "Arduboy",
+   "short": "Arduboy",
+   "folders": [
+    "arduboy"
+   ],
+   "extensions": [
+    "hex",
+    "arduboy"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Arduous",
+     "core": "arduous"
+    }
+   ]
+  },
+  {
+   "id": "chip8",
+   "name": "CHIP-8",
+   "short": "CHIP-8",
+   "folders": [
+    "chip8"
+   ],
+   "extensions": [
+    "ch8",
+    "zip",
+    "7z"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · JAXE",
+     "core": "jaxe"
+    }
+   ]
+  },
+  {
+   "id": "doom",
+   "name": "DOOM",
+   "short": "DOOM",
+   "folders": [
+    "doom"
+   ],
+   "extensions": [
+    "wad",
+    "iwad",
+    "pwad"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · PrBoom",
+     "core": "prboom"
+    }
+   ]
+  },
+  {
+   "id": "quake",
+   "name": "Quake",
+   "short": "Quake",
+   "folders": [
+    "quake"
+   ],
+   "extensions": [
+    "pak"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · TyrQuake",
+     "core": "tyrquake"
+    }
+   ]
+  },
+  {
+   "id": "quake2",
+   "name": "Quake II",
+   "short": "Quake II",
+   "folders": [
+    "quake2"
+   ],
+   "extensions": [
+    "pak"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · vitaQuake 2",
+     "core": "vitaquake2"
+    }
+   ]
+  },
+  {
+   "id": "cavestory",
+   "name": "Cave Story",
+   "short": "Cave Story",
+   "folders": [
+    "cavestory"
+   ],
+   "extensions": [
+    "exe"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · NXEngine",
+     "core": "nxengine"
+    }
+   ]
+  },
+  {
+   "id": "cannonball",
+   "name": "Cannonball (OutRun)",
+   "short": "OutRun",
+   "folders": [
+    "cannonball"
+   ],
+   "extensions": [
+    "88",
+    "game"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · Cannonball",
+     "core": "cannonball"
+    }
+   ]
+  },
+  {
+   "id": "flashback",
+   "name": "Flashback",
+   "short": "Flashback",
+   "folders": [
+    "flashback"
+   ],
+   "extensions": [
+    "map",
+    "aba",
+    "seq",
+    "lev"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · REminiscence",
+     "core": "reminiscence"
+    }
+   ]
+  },
+  {
+   "id": "easyrpg",
+   "name": "RPG Maker",
+   "short": "RPG",
+   "folders": [
+    "easyrpg"
+   ],
+   "extensions": [
+    "ldb",
+    "easyrpg",
+    "zip"
+   ],
+   "aliases": [
+    "rpgmaker"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · EasyRPG",
+     "core": "easyrpg"
+    },
+    {
+     "name": "EasyRPG",
+     "component": "org.easyrpg.player/org.easyrpg.player.player.EasyRpgPlayerActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "scummvm",
+   "name": "ScummVM",
+   "short": "ScummVM",
+   "folders": [
+    "scummvm"
+   ],
+   "extensions": [
+    "scummvm",
+    "svm"
+   ],
+   "players": [
+    {
+     "name": "RetroArch · ScummVM",
+     "core": "scummvm"
+    },
+    {
+     "name": "ScummVM",
+     "component": "org.scummvm.scummvm/org.scummvm.scummvm.SplashActivity",
+     "action": "android.intent.action.MAIN",
+     "game": "none",
+     "note": "verify: .scummvm files hold the game id",
+     "data": "{file.id}"
+    }
+   ]
+  },
+  {
+   "id": "flash",
+   "name": "Adobe Flash",
+   "short": "Flash",
+   "folders": [
+    "flash"
+   ],
+   "extensions": [
+    "swf"
+   ],
+   "aliases": [
+    "adobeflash"
+   ],
+   "players": [
+    {
+     "name": "Ruffle",
+     "component": "rs.ruffle/rs.ruffle.PlayerActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "data",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "ports",
+   "name": "Ports",
+   "short": "Ports",
+   "folders": [
+    "ports"
+   ],
+   "extensions": [
+    "port"
+   ],
+   "players": [
+    {
+     "name": "Starboard",
+     "component": "org.force9.starboard/org.force9.starboard.ui.game.GameActivity",
+     "action": "android.intent.action.VIEW",
+     "game": "extra-path:port_file",
+     "note": "verify"
+    }
+   ]
+  },
+  {
+   "id": "moonlight",
+   "name": "Moonlight",
+   "short": "Stream",
+   "folders": [
+    "moonlight"
+   ],
+   "extensions": [
+    "moonlight"
+   ],
+   "players": [
+    {
+     "name": "Moonlight",
+     "component": "com.limelight/com.limelight.ShortcutTrampoline",
+     "action": "android.intent.action.VIEW",
+     "game": "none",
+     "note": "verify: .moonlight file lines '[uuid] <host uuid>' and '[appid] <app id>'",
+     "extras": {
+      "UUID": "{tags.uuid}",
+      "AppId": "{tags.appid}"
+     }
+    }
+   ]
+  },
+  {
+   "id": "videos",
+   "name": "Videos",
+   "short": "Video",
+   "folders": [
+    "videos"
+   ],
+   "extensions": [
+    "mp4",
+    "mkv",
+    "webm",
+    "avi",
+    "mov",
+    "m4v",
+    "mpg",
+    "mpeg"
+   ],
+   "aliases": [
+    "videoplayer"
+   ],
+   "players": [
+    {
+     "name": "Default app",
+     "component": "*",
+     "action": "android.intent.action.VIEW",
+     "game": "none",
+     "data": "{file.uri}",
+     "type": "{file.mime}"
+    }
+   ]
+  },
+  {
+   "id": "books",
+   "name": "Books",
+   "short": "Books",
+   "folders": [
+    "books"
+   ],
+   "extensions": [
+    "pdf",
+    "epub",
+    "cbz",
+    "cbr",
+    "mobi",
+    "azw3",
+    "djvu",
+    "fb2"
+   ],
+   "aliases": [
+    "ebook",
+    "bookreader"
+   ],
+   "players": [
+    {
+     "name": "Default app",
+     "component": "*",
+     "action": "android.intent.action.VIEW",
+     "game": "none",
+     "data": "{file.uri}",
+     "type": "{file.mime}"
+    }
+   ]
+  }
+ ]
+}

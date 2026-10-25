@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tandem</string>
+    <string name="controller_home_label">Tandem: Controller Home button</string>
+    <string name="controller_home_description">Makes the Home (guide) button on a Bluetooth or USB game controller work everywhere, like Android\'s Home button. Many controllers in X-input mode send it as a button Android ignores. Tap: go Home. Hold: recent apps or Tandem\'s game switcher (pick in Tandem, Settings, Controls). It also watches Back: holding it moves the app in front to the other screen (switch this off in Tandem, Settings, Two screens). Tandem keeps only the Home button from external controllers, and the rest of a Back press it held; every other button and everything on screen are left alone.</string>
+</resources>

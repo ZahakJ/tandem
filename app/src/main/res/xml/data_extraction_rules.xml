@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 12 and newer: keep account keys (RetroAchievements, scraping sources) out of cloud backups and device
+  transfers, and the LaunchBox index and its lookup cache too (both are rebuilt on the device).
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="achievements.json" />
+        <exclude domain="file" path="scraping.json" />
+        <exclude domain="file" path="launchbox/" />
+        <exclude domain="file" path="details-tried.tsv" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="achievements.json" />
+        <exclude domain="file" path="scraping.json" />
+        <exclude domain="file" path="launchbox/" />
+        <exclude domain="file" path="details-tried.tsv" />
+    </device-transfer>
+</data-extraction-rules>

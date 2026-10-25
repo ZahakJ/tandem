@@ -1,0 +1,62 @@
+# Publishes the website (site/) and the documentation built from docs/ to
+# GitHub Pages at https://zahakj.github.io/tandem/.
+#
+# Ready to go, but it does nothing until the repository is public (or the
+# repository variable PAGES_ENABLED is set to "true", for a plan that has
+# Pages on private repositories). To switch it on:
+#
+#   1. Settings > Pages > Build and deployment > Source: "GitHub Actions".
+#   2. Make the repository public, or set the PAGES_ENABLED variable.
+#   3. Run this workflow once from the Actions tab, or push to main.
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "docs/**"
+      - "CONTRIBUTING.md"
+      - "scripts/build-docs.mjs"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and never cancel one halfway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: ${{ !github.event.repository.private || vars.PAGES_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the whole history, for each page's "Last updated" date
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - uses: actions/configure-pages@v6
+      - name: Build the documentation
+        run: node scripts/build-docs.mjs
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

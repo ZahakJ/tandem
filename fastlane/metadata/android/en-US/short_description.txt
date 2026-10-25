@@ -1,0 +1,1 @@
+A cozy, open-source game frontend for dual-screen Android handhelds

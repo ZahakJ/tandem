@@ -1,0 +1,52 @@
+name: New emulator or system
+description: Ask for (or share) support for an emulator or system Tandem doesn't know yet.
+title: "Emulator: "
+labels: [emulator]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tandem starts emulators using entries in `platforms.json`. If you already got one working in your own `ROMs/tandem/platforms.json`, pasting the entry below is the fastest way to get it built in. [Systems and emulators](https://zahakj.github.io/tandem/docs/platforms/) explains the format.
+
+        Please don't link to games, BIOS files, keys or firmware.
+  - type: input
+    id: system
+    attributes:
+      label: System
+      placeholder: "Sony PlayStation Portable"
+    validations:
+      required: true
+  - type: input
+    id: emulator
+    attributes:
+      label: Emulator, and where to get it
+      description: Its name, and a link to the project or store page.
+      placeholder: "PPSSPP, https://www.ppsspp.org/"
+    validations:
+      required: true
+  - type: input
+    id: package
+    attributes:
+      label: Package name, if you know it
+      placeholder: "org.ppsspp.ppsspp"
+  - type: input
+    id: folders
+    attributes:
+      label: ROM folder name and file extensions
+      placeholder: "psp: iso, cso, pbp, chd"
+  - type: textarea
+    id: entry
+    attributes:
+      label: A working platforms.json entry
+      description: If you have one. Otherwise, any notes on how the emulator expects to be launched (from its docs or from ES-DE's configuration) help a lot.
+      render: json
+  - type: dropdown
+    id: tested
+    attributes:
+      label: Have you tested it?
+      options:
+        - "Yes, it works in my platforms.json"
+        - "Partly, see notes"
+        - "No, this is a request"
+    validations:
+      required: true

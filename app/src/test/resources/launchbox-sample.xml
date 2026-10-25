@@ -1,0 +1,166 @@
+<?xml version="1.0" standalone="yes"?>
+<!-- A tiny hand-written sample in the shape of LaunchBox's Metadata.xml (Games, then alternate names, then images). -->
+<LaunchBox>
+  <Game>
+    <Name>Super Mario Odyssey</Name>
+    <ReleaseDate>2017-10-27</ReleaseDate>
+    <Overview>Join Mario on a globe-trotting 3D adventure.
+
+Collect Moons &amp; rescue Peach.</Overview>
+    <MaxPlayers>2</MaxPlayers>
+    <ReleaseType>Released</ReleaseType>
+    <VideoURL>https://www.youtube.com/watch?v=abc</VideoURL>
+    <DatabaseID>136132</DatabaseID>
+    <CommunityRating>4.6303602058319</CommunityRating>
+    <Platform>Nintendo Switch</Platform>
+    <Genres>Action; Platform</Genres>
+    <Developer>Nintendo EPD</Developer>
+    <Publisher>Nintendo</Publisher>
+  </Game>
+  <Game>
+    <Name>Animal Crossing: New Horizons</Name>
+    <ReleaseYear>2020</ReleaseYear>
+    <Overview>Escape to a deserted island.</Overview>
+    <MaxPlayers>8</MaxPlayers>
+    <VideoURL>http://cdn.akamai.steamstatic.com/steam/apps/1/movie_max.webm?t=1</VideoURL>
+    <DatabaseID>80000</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+    <Genres>Life Simulation</Genres>
+    <Developer>Nintendo EPD</Developer>
+    <Publisher>Nintendo</Publisher>
+  </Game>
+  <Game>
+    <Name>Hades II</Name>
+    <ReleaseYear>2025</ReleaseYear>
+    <Overview>Battle beyond the Underworld as the Princess of the Underworld.</Overview>
+    <MaxPlayers>1</MaxPlayers>
+    <DatabaseID>90002</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+    <Genres>Action; Roguelike</Genres>
+    <Developer>Supergiant Games</Developer>
+    <Publisher>Supergiant Games</Publisher>
+  </Game>
+  <Game>
+    <Name>Hades</Name>
+    <ReleaseYear>2020</ReleaseYear>
+    <Overview>Defy the god of the dead.</Overview>
+    <DatabaseID>90001</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+    <Developer>Supergiant Games</Developer>
+  </Game>
+  <Game>
+    <Name>Celeste</Name>
+    <ReleaseYear>2018</ReleaseYear>
+    <Overview>Help Madeline survive her inner demons on her journey to the top of Celeste Mountain.</Overview>
+    <MaxPlayers>1</MaxPlayers>
+    <DatabaseID>90003</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+    <Genres>Platform</Genres>
+    <Developer>Maddy Makes Games</Developer>
+  </Game>
+  <Game>
+    <Name>Super Smash Bros. Ultimate</Name>
+    <ReleaseYear>2018</ReleaseYear>
+    <Overview>Legendary game worlds and fighters collide in the ultimate showdown.</Overview>
+    <MaxPlayers>8</MaxPlayers>
+    <DatabaseID>90004</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+    <Genres>Fighting</Genres>
+    <Developer>Bandai Namco Studios; Sora Ltd.</Developer>
+    <Publisher>Nintendo</Publisher>
+  </Game>
+  <Game>
+    <Name>Super Smash Bros.</Name>
+    <ReleaseYear>1999</ReleaseYear>
+    <DatabaseID>90005</DatabaseID>
+    <Platform>Nintendo 64</Platform>
+  </Game>
+  <Game>
+    <Name>Pokémon X</Name>
+    <ReleaseYear>2013</ReleaseYear>
+    <DatabaseID>500</DatabaseID>
+    <Platform>Nintendo 3DS</Platform>
+    <Genres>Role-Playing</Genres>
+  </Game>
+  <Game>
+    <Name>Halo: Combat Evolved</Name>
+    <DatabaseID>1</DatabaseID>
+    <Platform>Windows</Platform>
+  </Game>
+  <Game>
+    <Name>Some Commodore Game</Name>
+    <DatabaseID>7</DatabaseID>
+    <Platform>Commodore 64</Platform>
+  </Game>
+  <GameAlternateName>
+    <AlternateName>Halo CE</AlternateName>
+    <DatabaseID>1</DatabaseID>
+  </GameAlternateName>
+  <GameAlternateName>
+    <AlternateName>Doubutsu no Mori</AlternateName>
+    <DatabaseID>80000</DatabaseID>
+    <Region>Japan</Region>
+  </GameAlternateName>
+  <GameAlternateName>
+    <AlternateName>Unrelated Alternate</AlternateName>
+    <DatabaseID>7</DatabaseID>
+  </GameAlternateName>
+  <GameImage>
+    <DatabaseID>1</DatabaseID>
+    <FileName>halo-box.jpg</FileName>
+    <Type>Box - Front</Type>
+    <Region>North America</Region>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>136132</DatabaseID>
+    <FileName>smo-box-eu.jpg</FileName>
+    <Type>Box - Front</Type>
+    <Region>Europe</Region>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>136132</DatabaseID>
+    <FileName>smo-box-na.jpg</FileName>
+    <Type>Box - Front</Type>
+    <Region>North America</Region>
+    <CRC32>3487853345</CRC32>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>136132</DatabaseID>
+    <FileName>smo-logo.png</FileName>
+    <Type>Clear Logo</Type>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>136132</DatabaseID>
+    <FileName>smo-fanart.jpg</FileName>
+    <Type>Fanart - Background</Type>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>136132</DatabaseID>
+    <FileName>smo-back.jpg</FileName>
+    <Type>Box - Back</Type>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>80000</DatabaseID>
+    <FileName>acnh-shot.jpg</FileName>
+    <Type>Screenshot - Gameplay</Type>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>7</DatabaseID>
+    <FileName>c64.jpg</FileName>
+    <Type>Box - Front</Type>
+  </GameImage>
+  <GameImage>
+    <DatabaseID>999</DatabaseID>
+    <FileName>late-logo.png</FileName>
+    <Type>Clear Logo</Type>
+  </GameImage>
+  <Platform>
+    <Name>Nintendo Switch</Name>
+    <Developer>Nintendo</Developer>
+  </Platform>
+  <Game>
+    <Name>Late Game</Name>
+    <DatabaseID>999</DatabaseID>
+    <Platform>Nintendo Switch</Platform>
+  </Game>
+</LaunchBox>

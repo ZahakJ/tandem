@@ -1,0 +1,23 @@
+# Monthly, grouped updates: one pull request per ecosystem rather than one per
+# library, so updates arrive as a batch that is built and tried on a device once.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      androidx-and-compose:
+        patterns: ["androidx.*"]
+      kotlin:
+        patterns: ["org.jetbrains.kotlin*", "org.jetbrains.kotlinx*"]
+      other:
+        patterns: ["*"]

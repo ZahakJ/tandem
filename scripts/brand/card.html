@@ -1,0 +1,76 @@
+<!doctype html>
+<!--
+  The source of Tandem's raster brand images. scripts/brand/render.sh opens this
+  page in headless Chromium once per variant and saves a screenshot:
+
+    ?v=social   1280×640  site/assets/brand/social-preview.png (GitHub and link previews)
+    ?v=banner   1280×560  site/assets/brand/banner.png (README header, transparent corners)
+    ?v=feature  1024×500  fastlane/.../featureGraphic.png (F-Droid)
+    ?v=icon&s=N  N×N      PNG icons from logo.svg / favicon.svg
+
+  The handheld drawing is taken from the landing page itself, so the images
+  always match the site.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tandem brand card</title>
+<link rel="stylesheet" href="../../site/assets/site.css">
+<style>
+  html, body { margin: 0; overflow: hidden; background: transparent; }
+  body { width: 100vw; height: 100vh; }
+  .card {
+    position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1.05fr; align-items: center; gap: 4vw;
+    padding: 0 5.5vw; overflow: hidden;
+    background:
+      radial-gradient(60% 90% at 0% 0%, rgb(142 236 200 / 0.16), transparent 70%),
+      radial-gradient(55% 80% at 100% 100%, rgb(184 168 255 / 0.2), transparent 70%),
+      radial-gradient(40% 60% at 70% 10%, rgb(255 180 162 / 0.12), transparent 70%),
+      linear-gradient(180deg, #13121c, #0b0a12);
+  }
+  .banner .card { inset: 0; border-radius: 34px; }
+  .word { display: flex; align-items: center; gap: 1.6vw; margin-bottom: 2.2vw; }
+  .word img { width: 7.6vw; }
+  .word b { font-size: 6.2vw; font-weight: 900; letter-spacing: -0.035em; color: var(--text); line-height: 1; }
+  h1 { font-size: 4.7vw; line-height: 1.04; letter-spacing: -0.035em; margin: 0 0 1.8vw; }
+  h1 span { background: linear-gradient(100deg, var(--mint), var(--sky) 45%, var(--lav) 75%, var(--peach)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  p { font-size: 1.9vw; color: var(--muted); margin: 0 0 2.4vw; max-width: 30ch; line-height: 1.45; }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.8vw; }
+  .pills span { font-size: 1.45vw; font-weight: 900; padding: 0.45vw 1.2vw; border-radius: 99px; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+  .stage { width: min(40vw, 78vh); max-width: none; justify-self: center; margin: 0; }
+  .stage .sparkles { display: none; }
+  .stage .say { display: none; }
+  .icon { position: absolute; inset: 0; display: grid; place-items: center; }
+  .icon img { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  const v = q.get("v") || "social";
+  const root = document.getElementById("root");
+  document.body.classList.add(v);
+  if (v === "icon") {
+    const src = q.get("src") || "logo";
+    root.innerHTML = `<div class="icon"><img src="../../site/assets/brand/${src}.svg" alt=""></div>`;
+  } else {
+    const html = await (await fetch("../../site/index.html")).text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    // The cover-art symbols and the handheld drawing, straight from the landing page.
+    const symbols = doc.querySelector("body > svg").outerHTML;
+    const stage = doc.querySelector(".stage");
+    stage.querySelectorAll("img").forEach((i) => (i.src = "../../site/" + i.getAttribute("src")));
+    root.innerHTML = `${symbols}<div class="card"><div>
+      <div class="word"><img src="../../site/assets/brand/pip.svg" alt=""><b>Tandem</b></div>
+      <h1>Two screens.<br><span>One cozy library.</span></h1>
+      <p>A free, open-source game frontend for dual-screen Android handhelds.</p>
+      <div class="pills"><span style="--c:var(--mint)">GPL-3.0</span><span style="--c:var(--sky)">No tracking</span><span style="--c:var(--peach)">Made for the AYN Thor</span></div>
+    </div>${stage.outerHTML}</div>`;
+    root.querySelector(".stage .pip")?.remove();
+  }
+  await document.fonts.ready;
+  document.body.dataset.ready = "1";
+</script>
+</body>
+</html>

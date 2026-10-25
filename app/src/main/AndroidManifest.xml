@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Read the ROMs folder and its artwork directly; much faster than going through the document picker. -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- Find installed emulators and bring a running one back to the front. -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <!-- Delete game on an Android game opens the system uninstall dialog. -->
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <!-- Only used for scraping (when you start it) and RetroAchievements (when you sign in). See docs/PRIVACY.md. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Only to warn before a big download (the LaunchBox database) on mobile data or a hotspot. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Quick panel: show whether Wi-Fi is on, and change brightness when the user allows it. -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Tandem.Start"
+            android:launchMode="singleInstance"
+            android:resumeWhilePausing="true"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Optional Home-screen mode: Tandem can be picked as the Android Home app. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- The bottom screen while a game plays on the top one (GameCompanion.kt): its own task, out of Recents,
+             never focused (the game keeps the controller). -->
+        <activity
+            android:name=".CompanionActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity="io.github.zahakj.tandem.companion"
+            android:excludeFromRecents="true"
+            android:resumeWhilePausing="true"
+            android:theme="@style/Tandem.Companion"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density" />
+
+        <!-- The bottom screen when nothing else is there (SecondaryHome.kt). Android 10+ takes the secondary-display
+             Home from the default Home app first, so while Tandem is the Home this replaces launcher3's app list down
+             there; with another Home app Android ignores it. It must not be singleTask / singleInstance (Android
+             refuses those as a secondary Home), and its window never takes focus. -->
+        <activity
+            android:name=".SecondaryHomeActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="io.github.zahakj.tandem.bottomhome"
+            android:excludeFromRecents="true"
+            android:resumeWhilePausing="true"
+            android:resizeableActivity="true"
+            android:theme="@style/Tandem.Companion"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SECONDARY_HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- After an update mid-game, brings the bottom-screen companion back under the game (CompanionRestore.kt). -->
+        <receiver
+            android:name=".PackageReplacedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Optional: a controller's Home (guide) button works outside Tandem too (ControllerHomeService.kt). -->
+        <service
+            android:name=".ControllerHomeService"
+            android:exported="true"
+            android:label="@string/controller_home_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/controller_home_service" />
+        </service>
+
+        <!-- Tandem's screensaver, offered in Android's Settings › Display › Screen saver. -->
+        <service
+            android:name=".TandemDream"
+            android:exported="true"
+            android:label="Tandem"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    </application>
+</manifest>

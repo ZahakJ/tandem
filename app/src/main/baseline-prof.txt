@@ -1,0 +1,57 @@
+# Tandem's baseline profile (human-readable ART profile format).
+#
+# AGP compiles this into the APK (assets/dexopt/baseline.prof) for release builds, and androidx.profileinstaller
+# hands it to ART on sideloaded installs, so these classes and methods are compiled ahead of time instead of being
+# interpreted (and JIT-compiled mid-animation) the first times a screen opens. Compose's own libraries ship their
+# profiles too; these rules add Tandem's code and make sure the Compose paths every transition uses are covered.
+#
+# Flags: H = hot (compiled), S = run at startup, P = run after startup. `**` matches any class or method.
+# docs/PERFORMANCE.md explains how to check the profile was applied on the device.
+
+# --- Tandem: every class loaded early, every method compiled ------------------------------------------------
+HSPLio/github/zahakj/tandem/**->**(**)**
+Lio/github/zahakj/tandem/**;
+
+# --- Compose runtime: composition, recomposition, snapshots, effects -------------------------------------------
+HSPLandroidx/compose/runtime/**->**(**)**
+Landroidx/compose/runtime/**;
+
+# --- Compose UI: layout, drawing, graphics layers, focus, key input, text ---------------------------------------
+HSPLandroidx/compose/ui/**->**(**)**
+Landroidx/compose/ui/**;
+
+# --- Compose foundation: lazy lists and grids, scrolling, focusable, basic text -------------------------------
+HSPLandroidx/compose/foundation/**->**(**)**
+Landroidx/compose/foundation/**;
+
+# --- Compose animation: AnimatedContent, AnimatedVisibility, Crossfade, animate*AsState, springs ---------------
+HSPLandroidx/compose/animation/**->**(**)**
+Landroidx/compose/animation/**;
+
+# --- Material 3 (Text, MaterialTheme) -----------------------------------------------------------------------
+HSPLandroidx/compose/material3/**->**(**)**
+Landroidx/compose/material3/**;
+
+# --- Activity, lifecycle, coroutines on the main thread -----------------------------------------------------
+HSPLandroidx/activity/**->**(**)**
+HSPLandroidx/lifecycle/**->**(**)**
+HSPLkotlinx/coroutines/**->**(**)**
+Lkotlinx/coroutines/**;
+
+# --- androidx.core (insets, window compat), used on every start and return -----------------------------------
+HSPLandroidx/core/**->**(**)**
+Landroidx/core/**;
+
+# --- media3: video wallpapers start with the home, so the player and its renderer are on the start path -------
+HSPLandroidx/media3/exoplayer/**->**(**)**
+Landroidx/media3/exoplayer/**;
+HSPLandroidx/media3/common/**->**(**)**
+Landroidx/media3/common/**;
+HSPLandroidx/media3/extractor/mp4/**->**(**)**
+Landroidx/media3/extractor/mp4/**;
+
+# --- Images (Coil) and the serialized data files ------------------------------------------------------------
+HSPLcoil/**->**(**)**
+Lcoil/**;
+HSPLkotlinx/serialization/json/**->**(**)**
+Lkotlinx/serialization/json/**;

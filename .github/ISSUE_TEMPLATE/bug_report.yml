@@ -1,0 +1,63 @@
+name: Bug report
+description: Something crashes, looks wrong, or doesn't do what the docs say.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time! The [troubleshooting page](https://zahakj.github.io/tandem/docs/faq/) answers the most common problems, so a quick look there first may save you the wait.
+
+        Found a security problem? Please don't file it here; see [SECURITY.md](https://github.com/ZahakJ/tandem/blob/main/SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Highlight a 3DS game
+        2. Press A
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Tandem version
+      description: Android's app info screen for Tandem shows it, or the release you installed.
+      placeholder: "0.2.0"
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: "AYN Thor, Android 13"
+    validations:
+      required: true
+  - type: input
+    id: emulator
+    attributes:
+      label: Emulator involved, if any
+      description: Name and version, and whether you use the built-in platforms.json or your own.
+      placeholder: "Azahar 2125, built-in platforms.json"
+  - type: dropdown
+    id: shizuku
+    attributes:
+      label: Is Shizuku set up for Tandem?
+      options:
+        - "Yes"
+        - "No"
+        - "Not sure"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: |
+        A log helps most: connect with adb and run `adb logcat -s Tandem` while the problem happens. Screenshots or a short video are great for anything visual.
+      render: text

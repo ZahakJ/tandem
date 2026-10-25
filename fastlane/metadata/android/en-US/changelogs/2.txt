@@ -1,0 +1,7 @@
+Tandem 0.2, with Pip!
+• A new pastel look, and Pip, a little mascot who says hello
+• Collections: Continue playing, Favorites, Most played, Recently added, Never played and Genres
+• Search with a controller keyboard (X)
+• Game menu (Y): favorite, hide, pick an emulator
+• Play time and play count for every game
+• Imports details from ES-DE and Cocoon
