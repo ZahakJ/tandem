@@ -39,8 +39,8 @@ object CompanionRestore {
 
     /**
      * Whether the companion recorded as [info] should come back: the game it was opened for ([CompanionInfo.pkg])
-     * is the app in front on the main display ([frontPkg]), its play session is still open ([sessionKey]: Tandem
-     * hasn't come back since), it isn't hidden, and there is a bottom screen for it.
+     * is the app in front on the main display ([frontPkg]), no other game's play session is open ([sessionKey]; a
+     * visit to Tandem's home closes the session while the game runs on), it isn't hidden, and there is a bottom screen.
      */
     fun shouldRestore(
         info: CompanionInfo?,
@@ -53,7 +53,7 @@ object CompanionRestore {
     ): Boolean {
         info ?: return false
         val pkg = info.pkg
-        return info.mode != GameCompanion.OFF && !pkg.isNullOrEmpty() && frontPkg == pkg && sessionKey == info.key &&
+        return info.mode != GameCompanion.OFF && !pkg.isNullOrEmpty() && frontPkg == pkg && (sessionKey == null || sessionKey == info.key) &&
             !hidden && !singleScreen && hasSecondDisplay && now - info.start in 0..MAX_AGE_MS
     }
 

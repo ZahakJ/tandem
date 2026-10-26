@@ -359,13 +359,15 @@ private fun ArtFace(
                 )
             }
         }
-        // Two small chips, hidden while dimmed: back to Tandem, and Tandem's companion instead of the art.
+        // Small chips, hidden while dimmed: back to Tandem, a screenshot of the game, and Tandem's companion instead
+        // of the art.
         if (!dim) {
             Row(
                 Modifier.fillMaxWidth().padding(14.dp).graphicsLayer { alpha = stage(intro.value, 0.55f, 1f) },
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 SmallChip("Back to Tandem", Palette.Mint) { GameCompanion.backToTandem(activity) }
+                SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
                 SmallChip("Companion", Palette.Lavender) { activity.switchMode() }
             }
         }
@@ -452,6 +454,8 @@ private fun CompanionFace(
             }
             val (level, charging) = battery
             if (level >= 0) Pill((if (charging) "Charging " else "") + "$level%", if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
+            Spacer(Modifier.width(10.dp))
+            SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
         }
         // Pip, playing along, and the game.
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {

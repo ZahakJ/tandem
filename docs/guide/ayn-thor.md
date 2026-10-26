@@ -52,6 +52,12 @@ Tandem keeps the bottom screen during play, in one of three styles:
 Choose per system (Y on a system › **Bottom screen while playing**) or per game (Y › More › **Bottom screen while
 playing**). Games started on the bottom screen never get it.
 
+Both Tandem styles have a **Screenshot** button (needs [Shizuku](resume.md)): it saves the game's screen to
+`ROMs/screenshots/`, where the Gallery shows it, and copies it to the clipboard to paste into a chat.
+
+With an app open on the bottom screen over the game, **Home** brings the game and its companion back without
+pausing the game; press it again for Tandem. From the game itself, Home goes to Tandem.
+
 ![The Game art style while Pokémon Emerald runs: the game's art and logo, the time played this session and in total, and Back to Tandem and Companion buttons.](../../site/assets/screenshots/ingame-art.webp "Game art, the default while you play")
 
 The bottom screen answers touch only; the controller stays with the game. Tapping a dock app gives that app the

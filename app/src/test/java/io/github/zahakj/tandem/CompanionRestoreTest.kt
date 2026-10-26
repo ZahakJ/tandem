@@ -88,10 +88,10 @@ class CompanionRestoreTest {
         assertFalse(should(info = info.copy(pkg = null), front = null))
     }
 
-    @Test fun neverForHiddenGamesOrClosedSessions() {
+    @Test fun neverForHiddenGamesOrAnotherGamesSession() {
         assertFalse(should(hidden = true))
-        // Tandem came back since (the session closed), or another game's session is open.
-        assertFalse(should(session = null))
+        // Another game's session is open. A closed one (a visit to Tandem's home) is fine while the game is in front.
+        assertTrue(should(session = null))
         assertFalse(should(session = "snes/Other.sfc"))
         assertFalse(should(info = null))
     }

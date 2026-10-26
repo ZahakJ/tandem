@@ -228,7 +228,10 @@ object GameCompanion {
                     main.post {
                         try {
                             // A game started (or Tandem came back) in the meantime: that already took care of it.
-                            if (gen == generation && current?.get() == null) open(appCtx, info, display.displayId)
+                            if (gen == generation && current?.get() == null) {
+                                open(appCtx, info, display.displayId)
+                                settleBars(appCtx, info.pkg)
+                            }
                         } finally {
                             finish()
                         }
@@ -240,6 +243,20 @@ object GameCompanion {
                 if (!opened) finish()
             }
         }, "companion-restore").start()
+    }
+
+    /**
+     * A companion opened over an app's leftovers on the bottom screen (after a restart): it sets the bars there
+     * ([claimBars]) once it is up, then the game is brought to the front again so it keeps the controller.
+     */
+    private fun settleBars(ctx: Context, pkg: String?) {
+        pkg ?: return
+        Thread({
+            Thread.sleep(800)
+            claimBars()
+            Thread.sleep(250)
+            GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg)?.let { GameResume.bringBack(ctx, it) }
+        }, "companion-bars").start()
     }
 
     internal fun attach(a: CompanionActivity) { current = WeakReference(a) }
@@ -265,6 +282,9 @@ object GameCompanion {
         shownAt = android.os.SystemClock.elapsedRealtime()
     }
 
+    /** See [CompanionActivity.claimBars]: lets the companion set the bottom screen's bars after an app had them. */
+    fun claimBars() { main.post { current?.get()?.takeIf { !it.isFinishing }?.claimBars() } }
+
     /** Brings the companion's task to the front of the bottom screen (it never takes the focus). Blocking. */
     fun toFront(ctx: Context): Boolean {
         val name = CompanionActivity::class.java.name
@@ -273,7 +293,10 @@ object GameCompanion {
                 val info = runCatching { it.taskInfo }.getOrNull()
                 info?.baseIntent?.component?.className == name || info?.baseActivity?.className == name
             } ?: return false
-            task.moveToFront()
+            // By its id, like the game (GameResume): AppTask.moveToFront can bring Tandem's library up too, over the
+            // game, and an emulator paused by that (Eden pauses whenever it is covered) stays paused.
+            val id = task.taskInfo.taskId
+            ctx.getSystemService(android.app.ActivityManager::class.java).moveTaskToFront(id, 0)
             true
         }.getOrElse { Log.w("Tandem", "Couldn't bring the companion back", it); false }
     }
@@ -404,6 +427,31 @@ class CompanionActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         SystemBars.hide(window)
+    }
+
+    /** A screenshot of the game's screen, saved and copied to the clipboard (GameShot.kt). */
+    fun screenshot() {
+        val title = info.value?.title ?: return
+        val gameOnTop = (display?.displayId ?: android.view.Display.DEFAULT_DISPLAY) != android.view.Display.DEFAULT_DISPLAY
+        val app = applicationContext
+        Thread({
+            val said = when (val r = GameShot.take(app, title, gameOnTop)) {
+                is GameShot.Result.Saved -> "Screenshot saved and copied: paste it anywhere"
+                is GameShot.Result.Failed -> r.why
+            }
+            runOnUiThread { android.widget.Toast.makeText(app, said, android.widget.Toast.LENGTH_SHORT).show() }
+        }, "tandem-shot").start()
+    }
+
+    /**
+     * Android shows the bottom screen's bars as the last window there with the focus asked (an app opened over this,
+     * say), since this never takes the focus. For a moment it may, so its own "no bars" counts; the game, brought to
+     * the front right after, keeps the controller.
+     */
+    fun claimBars() {
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        SystemBars.hide(window)
+        window.decorView.postDelayed({ window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE) }, 600)
     }
 
     override fun onStop() {

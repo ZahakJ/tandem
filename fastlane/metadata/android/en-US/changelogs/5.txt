@@ -1,0 +1,7 @@
+Tandem 0.3.1
+• Home from an app over the game brings the game and its companion back in one press; press again for Tandem
+• The game keeps running when the companion comes back
+• Screenshot button on the companion: saved to ROMs/screenshots and copied to the clipboard
+• No Android buttons on the bottom screen after an app had it
+• The companion comes back after Tandem restarts mid-game
+• Tandem takes the bottom screen back from Android's app list after a crash

@@ -74,7 +74,12 @@ object HomeBack {
             }
             val target = if (back) GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg) else null
             // The companion first, then the game, which ends up with the focus (the companion never takes it).
-            val ok = target != null && GameCompanion.toFront(app) && GameResume.bringBack(app, target)
+            val ok = target != null && GameCompanion.toFront(app) && run {
+                // Bars hidden by the companion, not shown by the app it covers again; then the game.
+                GameCompanion.claimBars()
+                Thread.sleep(250)
+                GameResume.bringBack(app, target)
+            }
             Log.i("Tandem", "Home with $pkg " + if (ok) "covered: back to the game" else "running: to Tandem")
             if (ok) gameAway = false else { if (!back) lastAt = -SECOND_PRESS_MS; Handler(Looper.getMainLooper()).post(failed) }
         }, "tandem-home-back").start()
