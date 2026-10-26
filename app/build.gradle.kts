@@ -143,7 +143,7 @@ android {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
+    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.foundation:foundation")
@@ -159,14 +159,14 @@ dependencies {
     implementation("dev.rikka.shizuku:provider:13.1.5")
     // Installs the baseline profile (src/main/baseline-prof.txt) on sideloaded installs, so ART compiles the hot
     // paths (Compose, the main screens) ahead of time instead of interpreting them on the first transitions.
-    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
     // Frame timing overlay (Settings › Data & about › Developer): logs janky frames with the current screen.
-    implementation("androidx.metrics:metrics-performance:1.0.0-beta01")
+    implementation("androidx.metrics:metrics-performance:1.0.0")
 
     if (withDiscord) {
         implementation(files(discordAar!!))
         // The SDK's sign-in opens a Custom Tab when the Discord app isn't installed.
-        implementation("androidx.browser:browser:1.8.0")
+        implementation("androidx.browser:browser:1.10.0")
     }
 
     // JVM unit tests (./gradlew testDebugUnitTest). kxml2 is the XML pull parser Android itself uses.
