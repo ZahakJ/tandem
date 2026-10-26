@@ -168,6 +168,11 @@ class MainActivity : ComponentActivity() {
                 screen.takeControls()
                 screen.watchControls()
             }
+            // The bottom-screen home took the focus there from the other app; the top screen gets it back. Some
+            // firmware (AYN) also plays an app's sound at the bottom screen's volume while the focus is down there.
+            if (!ScreenRoles.libraryOnBottom) {
+                runCatching { getSystemService(android.app.ActivityManager::class.java).moveTaskToFront(taskId, 0) }
+            }
             io.github.zahakj.tandem.ui.Nav.focusTick++
         }, 400)
     }

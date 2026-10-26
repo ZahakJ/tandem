@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -133,8 +134,16 @@ fun soundSettings(trackCount: Int): SettingSection {
             toggle("Pip's voice", Glyph.Heart, Palette.Lavender, "Pip babbles a little when it has something to tell you.", look.pipVoice,
                 preview = { PipVoicePreview(look.pipVoice) }) { on -> updateLook { it.copy(pipVoice = on) } },
         ),
+        note = if (bottomScreenMuted(LocalContext.current)) "Your handheld's bottom-screen volume is at zero, and it mutes Tandem too: raise it in Dual screen assistant (Bottom screen › Volume)." else null,
     )
 }
+
+/**
+ * AYN handhelds play every app with a window on the bottom screen at that screen's own volume (a system setting,
+ * readable by any app); Tandem always has one there, so at zero its sounds and music are silent.
+ */
+private fun bottomScreenMuted(ctx: android.content.Context): Boolean =
+    runCatching { android.provider.Settings.System.getInt(ctx.contentResolver, "secondary_screen_volume_level", -1) == 0 }.getOrDefault(false)
 
 /**
  * Keeps sound in step with the app: music follows the settings and theme, popups whoosh, toasts pop with Pip's
