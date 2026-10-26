@@ -113,8 +113,18 @@ object Launcher {
         return Plan(game, spec, intent, uri, bottom)
     }
 
-    /** Opens the emulator for [plan]. Returns a problem if it couldn't. Blocking (asks Shizuku): call off the main thread. */
+    /**
+     * Opens the emulator for [plan]. Returns a problem if it couldn't. Blocking (asks Shizuku): call off the main
+     * thread. A hidden game in private mode may first take the handheld offline (Offline.kt).
+     */
     fun start(ctx: Context, plan: Plan): LaunchProblem? {
+        Offline.beforeLaunch(ctx, plan.game)
+        val problem = try { open(ctx, plan) } catch (e: Exception) { Offline.launchFailed(ctx); throw e }
+        if (problem != null) Offline.launchFailed(ctx)
+        return problem
+    }
+
+    private fun open(ctx: Context, plan: Plan): LaunchProblem? {
         val game = plan.game
         val options = LaunchDisplay.optionsFor(ctx, plan.bottom)
         // The bottom screen's details panel would sit on top of a game started down there.
@@ -150,19 +160,25 @@ object Launcher {
         val playing = !anyApp && snap?.playing(pkg) == true
 
         if (playing && prefs.getString(pkg, null) == key) {
-            val front = ctx.packageManager.getLaunchIntentForPackage(pkg)
-            if (front != null) {
-                // The same flags the Android launcher uses: brings the existing task forward untouched.
-                front.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-                front.setPackage(null)
+            // The game's own task, moved to the front where it is (GameResume.kt); the launcher activity only when no
+            // task is known, since starting it can open a new task and lose the game.
+            val target = GameResume.target(snap?.tasks, pkg)
+            val front = if (target == null) GameResume.launcherIntent(ctx, pkg) else null
+            if (target != null || front != null) {
+                // Where the game is, not where it would start: the companion goes on the other screen.
+                val bottom = target?.let { GameResume.onBottom(it) } ?: (options != null)
+                if (bottom && options == null) (ctx as? MainActivity)?.let { a -> a.runOnUiThread { a.hideBottomScreen() } }
                 try {
                     // Brought back, not started: the companion's "Playing" carries on from this session's time.
                     val earlier = RunningGames.list.firstOrNull { it.pkg == pkg }?.let { RunningGames.sessionSeconds(it) } ?: 0L
-                    GameCompanion.show(ctx, game, pkg, bottom = options != null, earlierMs = earlier * 1000)
-                    CompanionApps.startFor(ctx, game, pkg, bottom = options != null)
-                    ctx.startActivity(front, options ?: io.github.zahakj.tandem.ui.ScreenRoles.gameLaunchOptions(ctx))
+                    GameCompanion.show(ctx, game, pkg, bottom = bottom, earlierMs = earlier * 1000)
+                    CompanionApps.startFor(ctx, game, pkg, bottom = bottom)
+                    if (target == null || !GameResume.bringBack(ctx, target)) {
+                        val intent = front ?: GameResume.launcherIntent(ctx, pkg) ?: throw ActivityNotFoundException(pkg)
+                        ctx.startActivity(intent, options ?: io.github.zahakj.tandem.ui.ScreenRoles.gameLaunchOptions(ctx))
+                    }
                     onMain { Sessions.start(ctx, game, newPlay = false) }
-                    Log.i(TAG, "Resumed $key")
+                    Log.i(TAG, "Resumed $key" + (target?.let { " (task ${it.task} on display ${it.display})" } ?: ""))
                     return null
                 } catch (e: Exception) {
                     Log.w(TAG, "Resume failed for $key, starting fresh", e)
@@ -270,6 +286,9 @@ object Sessions {
         val now = System.currentTimeMillis()
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("key", game.key).putLong("start", now).putBoolean("new", newPlay).apply()
+        Offline.started()
+        DiscordPresence.playing(ctx, game, now)
+        PadLink.gameStarted()
     }
 
     /** Called when Tandem comes back to the front. */
@@ -286,6 +305,8 @@ object Sessions {
     fun take(ctx: Context): (() -> Unit)? {
         val prefs = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val key = prefs.getString("key", null) ?: return null
+        DiscordPresence.stopped()
+        Offline.gameEnded(ctx)
         val start = prefs.getLong("start", 0)
         val newPlay = prefs.getBoolean("new", true)
         val now = System.currentTimeMillis()
@@ -335,6 +356,19 @@ object Shell {
             out
         } catch (t: Throwable) {
             Log.w("Tandem", "Shizuku command failed: ${cmd.joinToString(" ")}", t)
+            null
+        }
+    }
+
+    /** Starts [cmd] through Shizuku and hands back the running process (its stdin, stdout), or null. */
+    fun spawn(cmd: List<String>): Process? {
+        if (!ready()) return null
+        return try {
+            val m = Shizuku::class.java.getDeclaredMethod("newProcess", Array<String>::class.java, Array<String>::class.java, String::class.java)
+            m.isAccessible = true
+            m.invoke(null, cmd.toTypedArray(), null, null) as Process
+        } catch (t: Throwable) {
+            Log.w("Tandem", "Shizuku couldn't start ${cmd.firstOrNull()}", t)
             null
         }
     }

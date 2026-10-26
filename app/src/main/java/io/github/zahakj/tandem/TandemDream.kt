@@ -155,6 +155,13 @@ private class DreamBottom(private val dream: TandemDream, display: Display) : Pr
                 io.github.zahakj.tandem.ui.QuietSemantics.watch(this)
             },
         )
+        // No Android bars under the screensaver either, as on Tandem's own bottom screen.
+        SystemBars.hide(window)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        SystemBars.hide(window)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {

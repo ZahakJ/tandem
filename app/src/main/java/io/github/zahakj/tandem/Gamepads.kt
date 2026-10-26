@@ -17,7 +17,8 @@ import io.github.zahakj.tandem.ui.Prompts
 
 /**
  * Game controllers other than the Thor's own: which ones are connected, their per-controller button swap, and their
- * Home (guide) button. The built-in "Odin Controller" is never touched by anything here.
+ * Home (guide) button. The built-in "Odin Controller" is never touched here (controller passthrough, which plays an
+ * external pad as the built-in one, is PadLink.kt).
  */
 object Gamepads {
     /** Whether a Tandem window has input focus, so its own key handling gets the controller's buttons. */
@@ -70,6 +71,7 @@ object Gamepads {
         if (watching) return
         watching = true
         val im = ctx.applicationContext.getSystemService(InputManager::class.java) ?: return
+        PadLink.init(ctx)
         im.registerInputDeviceListener(object : InputManager.InputDeviceListener {
             override fun onInputDeviceAdded(deviceId: Int) = changed()
             override fun onInputDeviceRemoved(deviceId: Int) = changed()
@@ -80,6 +82,7 @@ object Gamepads {
     private fun changed() {
         synchronized(descriptors) { descriptors.clear() }
         version++
+        PadLink.devicesChanged()
     }
 
     /**
@@ -108,8 +111,8 @@ object Gamepads {
 
     /** Opens Tandem's game switcher, bringing Tandem to the front first. */
     fun openSwitcherFrom(ctx: Context) {
-        val i = Intent(ctx, MainActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+        val i = MainActivity.frontIntent(ctx)
+            .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
             .putExtra(EXTRA_OPEN, "switcher")
         runCatching { ctx.startActivity(i) }
     }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import io.github.zahakj.tandem.DiscordPresence
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.Shell
@@ -85,9 +86,9 @@ private val Owners = mapOf(
     "Layout" to "home", "Icon grid" to "home", "Dock" to "home", "Top bar" to "home", "Widgets" to "home",
     "Bottom screen" to "screens", "Screens" to "screens",
     "Sound & music" to "sound",
-    "Controls" to "controls", HomeButtonGroup to "controls", ControllersGroup to "controls",
+    "Controls" to "controls", HomeButtonGroup to "controls", ControllersGroup to "controls", PadLinkGroup to "controls",
     "Library" to "library", "Systems & launching" to "library",
-    "Artwork & details" to "art", "RetroAchievements" to "art",
+    "Artwork & details" to "art", "RetroAchievements" to "art", "Discord" to "art",
     "Home & play" to "play", "Motion & home" to "look",
     "Your data" to "data", "About" to "data", "From Cocoon" to "library", "Developer" to "data",
 )
@@ -177,7 +178,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val pool = RowPool(
         appearanceSections() + listOf(
             librarySettings(onRescan), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), widgetsSettings(),
-            achievementsSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
+            achievementsSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
         ) + controllerSettings(),
     )
     val look = Store.settings.look
@@ -242,6 +243,7 @@ fun settingsCatalog(): List<SettingsCategory> {
         group("Buttons", pool.take("Controls", "Button prompts", "Swap A and B", "Swap X and Y") + pool.take("Icon grid", "X button")),
         group(HomeButtonGroup, pool.take(HomeButtonGroup, "Controller Home button"), pool.take(HomeButtonGroup, "Hold the Home button")),
         group(ControllersGroup, pool.takeAll(ControllersGroup), note = "On: Nintendo labels"),
+        group(PadLinkGroup, pool.takeAll(PadLinkGroup)),
         group("Shortcuts", pool.take("Home & play", "Game switcher", "Quick settings panel"), pool.take("Layout", "Corner hints")),
     )
 
@@ -256,13 +258,15 @@ fun settingsCatalog(): List<SettingsCategory> {
             pool.take("Artwork & details", "Preferred region", "Preferred language", "Clear downloaded media")),
         group("Sources, in order", pool.take("Artwork & details", *ScrapeConfig.settings.sourceOrder.map { it.label }.toTypedArray())),
         group("RetroAchievements", pool.take("RetroAchievements", "Account", "Show achievements"), pool.take("RetroAchievements", "Look up games again", "Sign out")),
+        group("Discord", pool.take("Discord", "Discord status"), pool.take("Discord", "Disconnect Discord")),
     )
 
     val playPage = listOf(
         group("Playing", pool.take("About", "Resume running games") + pool.take("Home & play", "Close previous game", "Ask before closing a game"),
             pool.take("Systems & launching", "Launch animation")),
         group("Stats", pool.take("Home & play", "Play stats"), pool.take("Home & play", "Export play stats")),
-        group("Privacy & rest", pool.take("Home & play", "Private mode", "Screensaver")),
+        group("Privacy & rest", pool.take("Home & play", "Private mode", "Go offline while a hidden game plays", "Screensaver"),
+            pool.take("Home & play", "Private mode PIN")),
         // Changes with what is hidden and whether it shows, so it is made here rather than picked from the pool.
         hiddenSettings().let { group(it.title, it.rows, it.more) },
     )
@@ -335,10 +339,12 @@ fun settingsCatalog(): List<SettingsCategory> {
         ),
         SettingsCategory(
             "art", "Art & accounts", Glyph.Download, Palette.Butter,
-            "Scraping artwork and details, its sources (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) and their keys, and RetroAchievements.",
+            "Scraping artwork and details, its sources (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) and their keys, " +
+                if (DiscordPresence.available) "RetroAchievements and Discord." else "and RetroAchievements.",
             listOfNotNull(
                 "${io.github.zahakj.tandem.plural(ss.active.size, "source")} on",
                 if (ra.user.isNotBlank() && ra.key.isNotBlank()) "RA ✓" else null,
+                if (DiscordPresence.available && DiscordPresence.linked) "Discord ✓" else null,
             ).joinToString(" · "),
             withLeftovers("art", artPage),
         ),

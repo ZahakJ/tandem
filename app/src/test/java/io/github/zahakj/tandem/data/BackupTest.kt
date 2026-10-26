@@ -67,6 +67,21 @@ class BackupTest {
         assertTrue(BackupFiles.list(root).first().manifest.keys)
     }
 
+    @Test fun discordTokenIsNeverBackedUp() {
+        // DiscordPresence keeps its token in noBackupFilesDir/discord.json; a backup must never pick it up.
+        assertFalse("discord.json" in BackupFiles.allFiles)
+    }
+
+    @Test fun privateModePinAndOfflineStateAreNeverBackedUp() {
+        // Both live in noBackupFilesDir (PrivacyPin.kt, Offline.kt): not even a backup with keys may hold them.
+        val pin = io.github.zahakj.tandem.PinVault.FILE
+        val offline = io.github.zahakj.tandem.Offline.FILE
+        assertFalse(pin in BackupFiles.allFiles || offline in BackupFiles.allFiles)
+        val s = BackupFiles.write(root, sources(texts + (pin to """{"hash":"h"}""") + (offline to """{"airplane":true}""")), all, automatic = false, withKeys = true)
+        assertFalse(File(s.dir, pin).exists() || File(s.dir, offline).exists())
+        assertFalse(pin in BackupFiles.list(root).single().manifest.files)
+    }
+
     @Test fun onlyChosenCategoriesAreWritten() {
         val s = BackupFiles.write(root, sources(), setOf(BackupCategory.Look), automatic = false)
         assertEquals(setOf("settings.json", "extras.json", BackupFiles.MANIFEST), s.dir.list()!!.toSet())

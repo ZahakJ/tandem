@@ -102,7 +102,7 @@ object ScreenRoles {
         val current = activity.display?.displayId ?: Display.DEFAULT_DISPLAY
         if (current == Display.DEFAULT_DISPLAY) return false
         return try {
-            val intent = Intent(activity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val intent = MainActivity.frontIntent(activity)
             val options = android.app.ActivityOptions.makeBasic().setLaunchDisplayId(Display.DEFAULT_DISPLAY).toBundle()
             val app = activity.applicationContext
             activity.finishAndRemoveTask()

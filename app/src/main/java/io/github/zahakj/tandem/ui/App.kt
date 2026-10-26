@@ -537,6 +537,8 @@ private fun Main(resumes: Int) {
         BackupUi.Host()
         ConfirmOverlay()
         TextEntryOverlay()
+        // Over everything that can ask for it, the keyboard too.
+        PinPadOverlay()
         LaunchOverlay()
         FrameTimingOverlay()
     }
@@ -858,9 +860,12 @@ private fun ToastHost() {
     val id = Toasts.id
     LaunchedEffect(id) { if (message != null) { delay(Toasts.shownMs); if (Toasts.id == id) Toasts.message = null } }
     val shown = rememberLatest(message)
-    // A toast with an action (Undo): Select runs it while it shows.
+    // A toast with an action (Undo): Select runs it while it shows. Each new one hooks in again (the newest
+    // handler goes first), so a popup opened while an earlier toast showed (the Start panel) can't keep Select from it.
     val action = Toasts.action?.takeIf { message != null }
-    InterceptButtons(action != null) { b -> if (b == Button.Select) { Toasts.act(); true } else false }
+    androidx.compose.runtime.key(if (action != null) id else -1) {
+        InterceptButtons(action != null) { b -> if (b == Button.Select) { Toasts.act(); true } else false }
+    }
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopEnd) {
         AnimatedVisibility(
             message != null,

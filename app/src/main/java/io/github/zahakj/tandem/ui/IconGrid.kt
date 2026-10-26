@@ -267,6 +267,18 @@ object IconGrid {
     /** Lines (columns of a sideways grid, rows of an up-and-down one) on one screen of the home grid. */
     internal var screenLines = 4
 
+    /** The zoom an L1 / R1 press on the grid asks for, done when that button comes up alone ([shoulderUp]). */
+    private var armedZoom = 0
+
+    fun armZoom(by: Int) { armedZoom = by }
+
+    /** L1 ([r1] false) or R1 came up; [solo]: pressed and released with no other button. */
+    fun shoulderUp(r1: Boolean, solo: Boolean) {
+        val by = armedZoom
+        armedZoom = 0
+        if (solo && by == (if (r1) 1 else -1)) zoom(by)
+    }
+
     /** L1 / R1: bigger or smaller icons, like the 3DS HOME menu's zoom. */
     fun zoom(by: Int) {
         val look = Store.settings.look
@@ -709,7 +721,8 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
                 if (mv == null || isGapKey(key)) IconGrid.openMenu(key, null)
                 true
             }
-            b == Button.L1 || b == Button.R1 -> { IconGrid.zoom(if (b == Button.R1) 1 else -1); true }
+            // Zooms on release, and only when no other button joined in (L1 + R1, L1 + R1 + Select): Chords.
+            b == Button.L1 || b == Button.R1 -> { IconGrid.armZoom(if (b == Button.R1) 1 else -1); true }
             b == Button.L2 -> { HomeExtras.toggleRecent(); true }
             // R2: a page further along the grid, onto a tile (never an empty spot).
             b == Button.R2 -> {
@@ -999,6 +1012,10 @@ private fun TileGrid(
     val lanes = if (vertical) m.cols else m.rows.coerceAtLeast(1)
     val cellH = if (labels) m.cell else m.tile
     val labelRoom = if (labels) m.label else 0.dp
+    // A widget taller than the grid (two rows high with one row of icons) is drawn as tall as the grid, at the size
+    // that fits, instead of running past the row and being cut.
+    fun fitSpan(span: io.github.zahakj.tandem.data.GridSpan) =
+        if (vertical) span.copy(w = span.w.coerceAtMost(lanes)) else span.copy(h = span.h.coerceAtMost(lanes))
     // Widgets whose first cell is composed now. When it scrolls out at the start edge while the widget's second
     // column (or row) still shows, that cell draws the widget instead (GridWidgetStandIn), so it never half vanishes.
     val anchorsOn = remember { androidx.compose.runtime.mutableStateMapOf<String, Boolean>() }
@@ -1022,7 +1039,7 @@ private fun TileGrid(
             if (anchor != null && w != null && anchorsOn[anchor.key] != true) {
                 val span = spans[anchor.key] ?: io.github.zahakj.tandem.data.GridSpan.ONE
                 GridWidgetStandIn(
-                    w, span, m.tile, cellH, m.gap, labelRoom,
+                    w, fitSpan(span), m.tile, cellH, m.gap, labelRoom,
                     dx = if (vertical) 0.dp else m.tile + m.gap, dy = if (vertical) cellH + m.gap else 0.dp,
                 )
             } else CoveredSlot(m.tile, cellH)
@@ -1045,7 +1062,7 @@ private fun TileGrid(
             val span = spans[item.key] ?: io.github.zahakj.tandem.data.GridSpan.ONE
             val lifted by remember(item.key) { androidx.compose.runtime.derivedStateOf { GridDrag.lifted(item.key) } }
             if (w != null) GridWidgetCell(
-                w, span, m.tile, cellH, m.gap, labelRoom,
+                w, fitSpan(span), m.tile, cellH, m.gap, labelRoom,
                 arrive.graphicsLayer { val s = zoom.scale; scaleX = s; scaleY = s }.onPlaced { SwapFx.tiles[item.key] = it }.takesFocus(route, item.key, item.key == target),
                 moving = moving?.key == item.key,
                 onFocus = { focusedIndex = i; onFocus(item) },

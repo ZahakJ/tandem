@@ -195,7 +195,7 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
             SettingRow(
                 "Show hidden games", if (io.github.zahakj.tandem.Privacy.enabled) "Private" else onOff(s.showHidden), Palette.Mint, Glyph.Eye,
                 toggle = if (io.github.zahakj.tandem.Privacy.enabled) null else s.showHidden,
-                help = "Games, folders and systems you hid with Y stay out of sight unless this is on. Private mode always keeps them hidden.",
+                help = "Games, folders and systems you hid with Y stay out of sight unless this is on. In private mode it asks for your PIN.",
                 keywords = "unhide",
             ) { toggleShowHidden() },
             SettingRow(
@@ -566,8 +566,8 @@ private fun SidePanelContent(r: SettingRow) {
         Spacer(Modifier.height(12.dp))
         Column(Modifier.fillMaxWidth().weight(1f).clipToBounds()) {
             if (r.preview != null) {
-                // Help is cut short so the preview keeps its room; the preview shrinks to fit what's left.
-                if (r.help != null) Text(r.help, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                // Help is cut short (five lines) so the preview keeps its room; the preview shrinks to fit what's left.
+                if (r.help != null) Text(r.help, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 5, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(12.dp))
                 FitInside(Modifier.fillMaxWidth().weight(1f)) { r.preview.invoke() }
             } else {

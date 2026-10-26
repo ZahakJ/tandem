@@ -145,11 +145,40 @@ object GameCompanion {
         val gen = generation
         main.postDelayed({
             if (gen != generation) return@postDelayed
+            // Home is bringing the game and this companion back (keepForGame): Tandem resuming meanwhile doesn't close it.
+            if (android.os.SystemClock.elapsedRealtime() < keptUntil) return@postDelayed
             current?.get()?.let { if (!it.isFinishing) it.finishQuietly() }
             current = null
-            // Nothing to bring back after a restart any more.
-            app?.let { CompanionRestore.save(it, null) }
+            app?.let {
+                removeLeftover(it)
+                // Nothing to bring back after a restart any more.
+                CompanionRestore.save(it, null)
+            }
         }, afterMs)
+    }
+
+    /**
+     * Closes a companion this process doesn't know: Tandem's process was restarted (an update, a low-memory kill)
+     * under it, and Android kept its task, showing it again (even relaunching it) with no game behind it. Found
+     * among Tandem's own tasks, so it needs no Shizuku.
+     */
+    private fun removeLeftover(ctx: Context) {
+        val name = CompanionActivity::class.java.name
+        runCatching {
+            for (task in ctx.getSystemService(android.app.ActivityManager::class.java).appTasks) {
+                val info = runCatching { task.taskInfo }.getOrNull() ?: continue
+                if (info.baseIntent.component?.className == name || info.baseActivity?.className == name) {
+                    runCatching { task.finishAndRemoveTask() }
+                }
+            }
+        }.onFailure { Log.w("Tandem", "Couldn't look for a companion left behind", it) }
+    }
+
+    /** [a]'s game is gone (GameExit): it closes by itself, Tandem stays where it is. */
+    internal fun closeFor(a: CompanionActivity) {
+        if (current?.get() === a) current = null
+        a.finishQuietly()
+        app?.let { CompanionRestore.save(it, null) }
     }
 
     private val restoring = java.util.concurrent.atomic.AtomicBoolean(false)
@@ -219,9 +248,40 @@ object GameCompanion {
     fun up(): Boolean = current?.get() != null
     internal fun detach(a: CompanionActivity) { if (current?.get() === a) current = null }
 
+    /** The package of the game the companion is up for, if it is up. */
+    fun gamePackage(): String? = current?.get()?.takeIf { !it.isFinishing }?.gamePackage
+
+    /**
+     * Home is bringing the game back with its companion (HomeBack): dismissals already on their way are dropped, as
+     * when a game starts, and the focus checks leave the bottom screen to it for a moment.
+     */
+    /** Until when (elapsedRealtime) a dismissal leaves the companion be: Home is bringing it back. */
+    @Volatile private var keptUntil = 0L
+    private const val KEEP_MS = 1_500L
+
+    fun keepForGame() {
+        generation++
+        keptUntil = android.os.SystemClock.elapsedRealtime() + KEEP_MS
+        shownAt = android.os.SystemClock.elapsedRealtime()
+    }
+
+    /** Brings the companion's task to the front of the bottom screen (it never takes the focus). Blocking. */
+    fun toFront(ctx: Context): Boolean {
+        val name = CompanionActivity::class.java.name
+        return runCatching {
+            val task = ctx.getSystemService(android.app.ActivityManager::class.java).appTasks.firstOrNull {
+                val info = runCatching { it.taskInfo }.getOrNull()
+                info?.baseIntent?.component?.className == name || info?.baseActivity?.className == name
+            } ?: return false
+            task.moveToFront()
+            true
+        }.getOrElse { Log.w("Tandem", "Couldn't bring the companion back", it); false }
+    }
+
     /** Back to Tandem on the top screen; it closes the companion itself once its own bottom screen is showing. */
     fun backToTandem(ctx: Context) {
-        val intent = Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        keptUntil = 0L
+        val intent = MainActivity.frontIntent(ctx)
         val options = ActivityOptions.makeBasic().setLaunchDisplayId(android.view.Display.DEFAULT_DISPLAY).toBundle()
         runCatching { ctx.startActivity(intent, options) }.onFailure { Log.w("Tandem", "Couldn't bring Tandem back", it) }
     }
@@ -334,8 +394,12 @@ class CompanionActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        HomeBack.coveredAt = 0L
         watchGame()
     }
+
+    /** The game this is up for. */
+    val gamePackage: String? get() = info.value?.pkg?.takeIf { it.isNotEmpty() }
 
     override fun onResume() {
         super.onResume()
@@ -343,6 +407,8 @@ class CompanionActivity : ComponentActivity() {
     }
 
     override fun onStop() {
+        // Covered by another app (not the game's own companion app): Home brings this back first (HomeBack).
+        if (!isFinishing && !CompanionApps.covering) HomeBack.coveredAt = android.os.SystemClock.elapsedRealtime()
         // Covered by the game's companion app (CompanionApps): it keeps watching for the game's end underneath.
         if (!CompanionApps.covering || isFinishing) {
             watch?.stop()

@@ -21,7 +21,7 @@ import kotlin.math.abs
  * Held buttons and button combinations:
  * - Select tap: its usual action. Hold Select, or press Select + Start: the game switcher.
  * - Start tap: its usual action. Hold Start: the quick panel.
- * - L1 + R1 + Select: reveal or re-hide hidden games in private mode.
+ * - L1 + R1 + Select: turn private mode on, or in private mode reveal (with the PIN) or re-hide hidden games.
  *
  * Select and Start fire on release so a hold can mean something else. Fed every key event by MainActivity.
  */
@@ -39,6 +39,8 @@ object Chords {
     /** The current Select / Start press already did something, so its release is not a tap. */
     private var selectUsed = false
     private var startUsed = false
+    /** The shoulder button (L1 or R1) pressed with nothing else held, while nothing else has been pressed since. */
+    private var soloShoulder: Int? = null
 
     private val selectHold = Runnable {
         if (SELECT in held && !selectUsed) { selectUsed = true; Panels.openSwitcher() }
@@ -78,6 +80,8 @@ object Chords {
     }
 
     private fun onDown(code: Int) {
+        // L1 or R1 on its own is a tap (the grid zooms on its release); with any other button it is part of a chord.
+        soloShoulder = if ((code == L1 || code == R1) && held.isEmpty() && swallow.isEmpty()) code else null
         // Any other button pressed while Select or Start is held makes them a modifier, not a tap.
         if (code != SELECT && SELECT in held) { selectUsed = true; handler.removeCallbacks(selectHold) }
         if (code != START && START in held) { startUsed = true; handler.removeCallbacks(startHold) }
@@ -102,6 +106,11 @@ object Chords {
 
     private fun onUp(code: Int) {
         held -= code
+        if (code == L1 || code == R1) {
+            val solo = soloShoulder == code
+            soloShoulder = null
+            io.github.zahakj.tandem.ui.IconGrid.shoulderUp(code == R1, solo)
+        }
         when (code) {
             SELECT -> {
                 handler.removeCallbacks(selectHold)
@@ -122,6 +131,7 @@ object Chords {
         handler.removeCallbacks(startHold)
         held.clear()
         swallow.clear()
+        soloShoulder = null
         selectUsed = true
         startUsed = true
     }
@@ -179,9 +189,9 @@ object Screensaver {
 }
 
 /**
- * Private mode: hidden games, folders and systems stay hidden until L1 + R1 + Select is pressed, whatever the
- * Settings toggle says. Hidden games (and every game in a hidden folder) are never exported, looked up online or
- * sent anywhere, whether private mode is on or not.
+ * Private mode: hidden games, folders and systems stay hidden until L1 + R1 + Select and the PIN bring them out,
+ * whatever the Settings toggle says, and Tandem stays offline (Offline.kt). Hidden games (and every game in a hidden
+ * folder) are never exported, looked up online or sent anywhere, whether private mode is on or not.
  */
 object Privacy {
     var revealed by mutableStateOf(false)
@@ -224,12 +234,16 @@ object Privacy {
 
     private data class View(val shown: Boolean, val rules: HideRules, val peeks: Peeks)
 
+    /**
+     * L1 + R1 + Select. Private mode off: turns it on at once (the panic switch). On: shows hidden games once the PIN
+     * is right (PrivacyPin.kt), or tucks them away again, which never asks.
+     */
     fun combo() {
-        // Says nothing when private mode is off, so the combo gives nothing away.
-        if (!enabled) return
-        revealed = !revealed
-        if (!revealed) HiddenItems.endPeeks()
-        Toasts.show(if (revealed) "Psst… hidden games are showing" else "Hidden games are tucked away")
+        if (!enabled) { PrivateMode.turnOn(); return }
+        if (!revealed) { PrivateMode.reveal(); return }
+        revealed = false
+        HiddenItems.endPeeks()
+        Toasts.show("Hidden games are tucked away")
         Nav.focusTick++
     }
 }

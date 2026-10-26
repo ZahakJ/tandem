@@ -41,11 +41,12 @@ yourself: scraping artwork, and RetroAchievements if you sign in.
 - **Two screens.** Library on top; art, details and play time on the bottom. **X** swaps the screens with a little animation, and everything works on a single screen too.
 - **While you play,** the bottom screen can show the game's art and session time, or a companion with a clock and quick controls, or stay free for emulators that use it.
 - **Resume where you left off.** If a game is still open in its emulator, Tandem brings it back instead of restarting it; a game switcher lists every running game. Needs [Shizuku](https://shizuku.rikka.app/); without it, games start fresh as usual.
-- **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** side panel, **hold Start** for brightness, volume and Wi-Fi, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout. Touch works too.
+- **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** side panel, **hold Start** for brightness, volume and Wi-Fi, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout, and with Shizuku or root a pad connected mid-game can take over the built-in controls in any emulator. Touch works too.
 - **Make it yours.** 24 built-in themes, five home layouts (shelves, an icon grid with 1 to 5 rows, carousel, list, console), theme packs, wallpapers, 15 widgets, original background music (Meadow Tales, Pastel Arcade) and five UI sound packs.
 - **Artwork and details.** Optional scraping from LaunchBox and libretro thumbnails (no account), ScreenScraper, IGDB and SteamGridDB (your keys) and HowLongToBeat. A setup guide tests each source; scrapes run in the background with progress on the bottom screen.
 - **Play tracking.** Play time, sessions and streaks in a stats screen, a journal for notes, CSV export, and RetroAchievements progress.
-- **Organized your way.** Folders, collections, favourites and Up next; hide anything you'd rather not see.
+- **Organized your way.** Folders, smart folders that fill themselves, collections, favourites and Up next; hide anything you'd rather not see, with an optional PIN.
+- **Discord status** (optional, in builds with Discord's Social SDK): shows the game you're playing with its cover; off until you connect.
 - **Home-screen mode,** with an apps drawer, a dock, and a screensaver (also as Android's own).
 - **Your files as they are.** Reads `ROMs/<system>/`, turns subfolders into folders, uses and saves art in `ROMs/downloaded_media/` (the ES-DE layout), and imports `gamelist.xml` and other launchers' backups.
 - **Open data.** Over 100 systems and their emulators live in an editable [`platforms.json`](app/src/main/assets/platforms.json); your library and settings are plain JSON with backup and restore.

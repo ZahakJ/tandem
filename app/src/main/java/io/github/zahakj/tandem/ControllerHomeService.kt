@@ -25,7 +25,19 @@ import io.github.zahakj.tandem.data.ControllerStore
  * and release) is kept, so the app doesn't also go back. A game in front is left alone unless the user allowed it.
  */
 class ControllerHomeService : AccessibilityService() {
-    private val handler = Handler(Looper.getMainLooper())
+    /**
+     * The thread this service's callbacks run on. A service that filters key events holds every key on the device
+     * (volume keys, a game's buttons) until it answers, and Android asks on the service's main looper: Tandem's UI
+     * thread. While that was busy (coming back, a restart, a long frame) every key waited, up to half a second, and
+     * the volume changed late. So the service answers from its own thread ([getMainLooper], which
+     * AccessibilityService binds its callbacks to); the rest of Tandem's main thread no longer stands in the way.
+     */
+    private val keys = android.os.HandlerThread("tandem-keys", android.os.Process.THREAD_PRIORITY_DISPLAY).also { it.start() }
+    private val handler = Handler(keys.looper)
+    private val main = Handler(Looper.getMainLooper())
+
+    override fun getMainLooper(): Looper = keys.looper
+
     /** The current press is ours (its down was kept), so its release must be kept too. */
     private var mine = false
     private var held = false
@@ -34,7 +46,7 @@ class ControllerHomeService : AccessibilityService() {
     private var backHeld = false
 
     private val hold = Runnable {
-        if (mine && !held) { held = true; HomeButton.holdAction(this) }
+        if (mine && !held) { held = true; main.post { HomeButton.holdAction(this) } }
     }
 
     private val backHold = Runnable {
@@ -73,19 +85,25 @@ class ControllerHomeService : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        ControllerStore.init(this)
-        A11yHeal.connected(this)
-        io.github.zahakj.tandem.data.AppPrefs.init(this)
-        instance = this
-        // Android starts this service again in a new process after Tandem was killed (low memory) or updated: if a
-        // game is still playing, its bottom-screen companion went with the old process; bring it back.
-        GameCompanion.restore(this)
+        // On the key thread (see [keys]): the stores and the companion belong to Tandem's main thread.
+        main.post {
+            ControllerStore.init(this)
+            A11yHeal.connected(this)
+            io.github.zahakj.tandem.data.AppPrefs.init(this)
+            instance = this
+            // Android starts this service again in a new process after Tandem was killed (low memory) or updated: if a
+            // game is still playing, its bottom-screen companion went with the old process; bring it back.
+            GameCompanion.restore(this)
+            // Android's own app list may have taken the bottom screen while Tandem was gone.
+            SecondaryHome.replaceStock(this)
+        }
     }
 
     override fun onDestroy() {
         handler.removeCallbacks(hold)
         handler.removeCallbacks(backHold)
-        if (instance === this) instance = null
+        main.post { if (instance === this) instance = null }
+        keys.quitSafely()
         super.onDestroy()
     }
 

@@ -164,7 +164,8 @@ private fun MenuItem(label: String, value: String?, focus: Modifier, color: Colo
 private fun hiddenToast(): String = when {
     Privacy.enabled -> "Hidden away"
     Privacy.showHidden -> "Hidden. It still shows while hidden games are shown"
-    else -> "Hidden. Y › View options › Show hidden games brings it back"
+    // It is gone from view, so the way back is Undo (Select, or a tap) or Start › Hidden, never a button on it.
+    else -> "Hidden. Start › Hidden lists it"
 }
 
 /**
@@ -350,7 +351,7 @@ fun GroupMenu() {
                 Store.updateSettings { it.copy(showTitles = !it.showTitles) }
             })
             add(MenuAction("hidden", "Show hidden games", Glyph.Eye, Palette.Lavender, value = if (Privacy.enabled) "Private" else onOff(Privacy.showHidden),
-                help = if (Privacy.enabled) "Private mode keeps hidden games out of sight." else "Hidden games show, dimmed, while this is on.") {
+                help = if (Privacy.enabled) "Private mode keeps hidden games out of sight until your PIN shows them." else "Hidden games show, dimmed, while this is on.") {
                 toggleShowHidden()
             })
         }
@@ -592,7 +593,7 @@ fun normalize(s: String): String =
 fun formatPlayTime(seconds: Long): String {
     val m = seconds / 60
     return when {
-        m < 1 -> "under a minute"
+        m < 1 -> "under 1m"
         m < 60 -> "${m}m"
         else -> "${m / 60}h ${m % 60}m"
     }

@@ -30,7 +30,7 @@ object Prompts {
             "Y" -> if (look.swapXY) "X" else "Y"
             else -> button
         }
-        val short = when (physical) { "Start" -> "+"; "Select" -> "−"; else -> physical }
+        val short = text(physical, look.prompts)
         return when (look.prompts) {
             "xbox" -> when (physical) {
                 "A" -> PromptGlyph("A", Color(0xFF6CC24A), Color.White)
@@ -50,6 +50,16 @@ object Prompts {
             "nintendo" -> PromptGlyph(short, Palette.Text, Palette.Night)
             else -> PromptGlyph(short, null, null)
         }
+    }
+
+    /**
+     * The text on a prompt for [physical]: its letter, and for Start and Select their names. Only the Nintendo style
+     * draws them as + and −, as printed on its controllers; the Thor and most others label them by name.
+     */
+    fun text(physical: String, style: String): String = when (physical) {
+        "Start" -> if (style == "nintendo") "+" else "Start"
+        "Select" -> if (style == "nintendo") "−" else "Select"
+        else -> physical
     }
 
     /** Applies the A/B and X/Y swaps to a raw key code from the controller. */

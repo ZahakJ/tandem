@@ -1,0 +1,9 @@
+Tandem 0.3.0
+• Play a Bluetooth pad as the built-in controller, even mid-game
+• Home brings a covered game and its companion back first
+• Resume a running game by its own window, even after a restart
+• Private mode PIN, a panic switch and no network use while it's on
+• Discord status with game covers, in builds with Discord's SDK
+• Widgets and text fit every grid size
+• Select and Start named on every prompt
+• Smoother home, lower idle power use

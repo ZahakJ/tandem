@@ -19,10 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
+import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 /*
  * Edges and room, in one place (see docs/UI-RULES.md).
@@ -115,4 +124,59 @@ fun TextStyle.onArt(): TextStyle = copy(shadow = Shadow(Color.Black.copy(alpha =
 @Composable
 fun PopupRoom(content: @Composable BoxWithConstraintsScope.() -> Unit) {
     BoxWithConstraints(Modifier.fillMaxSize().padding(PanelMargin), contentAlignment = Alignment.Center, content = content)
+}
+
+/**
+ * Lays [content] out at its natural size and, when that is bigger than the space it gets, scales it down (keeping
+ * its shape) until it fits whole, placed by [alignment]. It never scales up. For small places that change size, like
+ * widgets on the icon grid, so a line that would not fit shrinks a little instead of being cut. With [wrap], text
+ * may wrap at the width it gets and only the height is scaled to fit; without it every line keeps its whole width.
+ * Weighted children don't work inside it without [wrap] (the width is unbounded).
+ */
+@Composable
+fun ShrinkToFit(modifier: Modifier = Modifier, alignment: Alignment = Alignment.Center, wrap: Boolean = false, content: @Composable () -> Unit) {
+    Layout(content, modifier) { measurables, constraints ->
+        val loose = if (wrap && constraints.hasBoundedWidth) Constraints(maxWidth = constraints.maxWidth) else Constraints()
+        val placeables = measurables.map { it.measure(loose) }
+        val w = placeables.maxOfOrNull { it.width } ?: 0
+        val h = placeables.maxOfOrNull { it.height } ?: 0
+        // As big as the content, within the constraints: a fixed size (fillMaxSize, size) shows it scaled inside.
+        val boxW = if (constraints.hasBoundedWidth) w.coerceIn(constraints.minWidth, constraints.maxWidth) else w.coerceAtLeast(constraints.minWidth)
+        val boxH = if (constraints.hasBoundedHeight) h.coerceIn(constraints.minHeight, constraints.maxHeight) else h.coerceAtLeast(constraints.minHeight)
+        layout(boxW, boxH) {
+            for (p in placeables) {
+                val scale = minOf(1f, if (p.width > 0) boxW.toFloat() / p.width else 1f, if (p.height > 0) boxH.toFloat() / p.height else 1f)
+                val shown = IntSize((p.width * scale).roundToInt(), (p.height * scale).roundToInt())
+                val at = alignment.align(shown, IntSize(boxW, boxH), layoutDirection)
+                p.placeWithLayer(at.x, at.y) { scaleX = scale; scaleY = scale; transformOrigin = TransformOrigin(0f, 0f) }
+            }
+        }
+    }
+}
+
+/**
+ * A one-line summary made of parts joined by " · " ("191 games · 9 systems · 12 GB"): shows as many whole parts
+ * from the start as fit the width, instead of cutting the last one mid-word. Only a first part that doesn't fit on
+ * its own shrinks a little (to 85 %), and only one still too long after that is ellipsized.
+ */
+@Composable
+fun PartsText(text: String, style: TextStyle, modifier: Modifier = Modifier, color: Color = Color.Unspecified) {
+    val measurer = rememberTextMeasurer()
+    BoxWithConstraints(modifier) {
+        val maxW = constraints.maxWidth
+        val shown = remember(text, style, maxW) {
+            if (maxW == Constraints.Infinity) return@remember text to style
+            fun width(s: String) = measurer.measure(s, style, maxLines = 1, softWrap = false).size.width
+            val parts = text.split(" · ")
+            var best = parts.first()
+            for (k in 2..parts.size) {
+                val candidate = parts.take(k).joinToString(" · ")
+                if (width(candidate) <= maxW) best = candidate else break
+            }
+            val w = width(best)
+            val fitted = if (w > maxW && w * 0.85f <= maxW) style.copy(fontSize = style.fontSize * (maxW.toFloat() / w * 0.98f)) else style
+            best to fitted
+        }
+        Text(shown.first, style = shown.second, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
 }

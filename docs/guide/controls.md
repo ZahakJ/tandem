@@ -17,7 +17,9 @@ Every button Tandem uses, on every screen. Tandem is built to be used entirely w
 | <kbd>Select</kbd> (hold), or <kbd>Select</kbd> + <kbd>Start</kbd> | Game switcher: every running game, to resume or close |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next system, collection or genre (on the icon grid: bigger or smaller icons; in Stats: tabs) |
 | <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on the icon grid: L2 shows the Recently played strip, R2 jumps a page along) |
-| <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd> | Private mode only: reveal or re-hide hidden games |
+| <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd> | Private mode off: turn it on at once. Private mode on: show hidden games (after your PIN), or tuck them away again. See [Private mode](privacy.md#private-mode) |
+
+Button hints name Start and Select (<kbd>Start</kbd>, <kbd>Select</kbd>) as they are labelled on the Thor; with **Button prompts** set to Nintendo they show + and −.
 
 Analog triggers that only report how far they are pulled (no button events) count as one L2 / R2 press each time you pull past halfway, so a trigger never fires twice.
 
@@ -52,6 +54,9 @@ Every drop can be undone (Select, or a tap on the message).
 When Tandem is your Android Home app (**Settings › Data & about › Use Tandem as the Home screen**, which asks Android to make it so):
 
 - From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Home & layout › Icon grid › More › Home lands on Resume**).
+- With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
+  top screen over the game), the first **Home** brings the game back with its companion on the bottom screen, and the
+  game keeps the controller. **Home** again within a few seconds goes to Tandem as usual.
 - **Home again** while you're already on the home screen goes back to the start: the Resume page or the first tile.
 - Tandem only ever runs once (one task), so Recents shows it once and Home never stacks a second copy.
 
@@ -59,7 +64,7 @@ Tapping Tandem's launcher icon while it is running does the same as Home.
 
 ## Bluetooth and USB controllers
 
-Any controller Android sees works in Tandem. Two things are worth setting up in **Settings › Controls**.
+Any controller Android sees works in Tandem. A few things are worth setting up in **Settings › Controls**.
 
 ### The controller's Home (guide) button
 
@@ -93,6 +98,44 @@ It applies inside Tandem; the built-in controls and other controllers are unaffe
 **Swap X and Y** still apply to every controller on top. Emulators have their own per-controller mapping (in
 RetroArch, Settings › Input › Port 1 Controls; in standalone emulators, their controller settings), so set the same
 there if you want it in games.
+
+### Play with a controller (passthrough)
+
+Emulators bind player 1 to the built-in controls (Eden by the controller's GUID, RetroArch by its port), so a
+Bluetooth or USB controller you connect is usually ignored until you remap it in each emulator. Tandem can instead
+let the controller play **as** the built-in one: games keep listening to the built-in controls, and Tandem passes the
+controller's buttons, sticks, triggers and D-pad to them. It works at once, mid-game, in every emulator, with nothing
+to change in their settings.
+
+- **During a game**, a controller that connects offers itself on the bottom screen: **Play with Xbox Wireless
+  Controller?** Press its **A** or **Start** (or tap **Play with it**). Without the companion on the bottom screen,
+  Android shows the same question as a short message over the game. It goes away by itself after about 12 seconds.
+- **Start › Quick settings › Controller**, or **Settings › Controls › Play with a controller › Controller in games**,
+  steps through **Built-in** and each connected controller.
+- **Always use a connected pad** takes any controller that connects straight away, without asking.
+- **Disconnecting** the controller (switched off, unplugged, out of range) goes back to the built-in controls by
+  itself.
+- The built-in controls keep working alongside: both drive player 1.
+
+How the buttons line up:
+
+| Controller | Built-in control |
+| --- | --- |
+| A, B, X, Y, bumpers, stick clicks, Start | The same buttons (with **Nintendo button labels** on for that controller, A/B and X/Y swap first, as in Tandem) |
+| View / Back / Select | Select |
+| Guide (Xbox) button | Home |
+| Sticks, D-pad | Sticks, D-pad |
+| Analog triggers | The analog triggers, and L2 / R2 past 30 % of the pull (emulators such as Eden bind ZL / ZR to those buttons) |
+
+Rumble stays on the handheld. While a controller plays as the built-in one, Android doesn't see it as a controller of
+its own, so its guide button is a plain Home (tap only) rather than **Controller Home button** above.
+
+It needs **Shizuku** (or root): a game only reads the built-in controller, and only they can feed it. Without either,
+the setting says so and the Quick settings tile stays hidden. With root and no Shizuku, the root app asks once.
+
+**Two players.** Leave **Always use a connected pad** off and answer **Not now** (or just let the offer go): the
+controller then stays a controller of its own, and the emulator needs it mapped as **Player 2** in its controller
+settings.
 
 ## Y menus
 
@@ -151,7 +194,7 @@ Y › **Select**, holding A on a tile, or Select while moving a tile starts a se
 
 Changes that take something away or move several things can be undone: removing, hiding, moving, deleting a folder, taking out of a folder, Tidy up, sorting the home grid, a Cocoon import, and removing or resizing a widget. After each one a message shows for 6 seconds; Select (or a tap on the message) undoes it. **Undo last change** is under More… in the Y menu, and in the Start panel while there is something to undo. The last 20 changes are kept, also after a restart.
 
-Hiding or unhiding a game, folder or system, favouriting, and taking a game off Up next ask nothing either: their message offers Undo the same way.
+Hiding or unhiding a game, folder or system, favouriting, and taking a game off Up next ask nothing either: their message offers Undo the same way. A hidden game is gone from view, so after the 6 seconds **Start › Hidden** is the way back.
 
 ### Hold to confirm
 
@@ -207,6 +250,8 @@ X opens search from anywhere (except the icon grid, where X swaps screens; Y ›
 ## Text entry
 
 Anywhere Tandem needs you to type something longer, such as a name or an API key, it shows a full on-screen keyboard. **⇧** switches to capitals, **#+=** to symbols, and **Done** confirms. B cancels.
+
+The private mode PIN has its own keypad, laid out like a phone's: the D-pad and A type a digit (or tap it), X deletes, Start or **OK** confirms, Y is **Forgot PIN**, B cancels.
 
 ## Settings
 

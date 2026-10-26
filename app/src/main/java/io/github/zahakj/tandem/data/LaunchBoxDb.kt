@@ -94,6 +94,7 @@ object LaunchBoxDb {
     fun download(platforms: Set<String>, onProgress: (Float) -> Unit = {}) { synchronized(this) {
         // A second caller (Settings and a scrape at once) waits for the first, then finds the work done.
         info?.let { i -> if (System.currentTimeMillis() - i.built < 10 * 60_000L && i.platforms.containsAll(platforms)) { onProgress(1f); return } }
+        io.github.zahakj.tandem.NetGate.check()
         val root = dir ?: throw IOException("not ready")
         val keep = platforms + info?.platforms.orEmpty()
         val tmp = File(root.parentFile, "launchbox.part").apply { deleteRecursively(); mkdirs() }

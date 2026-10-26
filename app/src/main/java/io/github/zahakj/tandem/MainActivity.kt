@@ -22,6 +22,24 @@ class MainActivity : ComponentActivity() {
 
         /** The running library activity, for windows on the other screen that hand it the controller (SecondaryHomeActivity). */
         @Volatile var live: java.lang.ref.WeakReference<MainActivity>? = null
+
+        /** Marks [frontIntent]: Tandem bringing itself forward, not the user pressing Home. */
+        private const val EXTRA_SELF = "io.github.zahakj.tandem.SELF"
+
+        /**
+         * An intent that brings the library forward, for Tandem's own windows (the companion when a game ends, the
+         * bottom-screen home's Back to Tandem, a held Home button). As the default Home it goes through Android's Home
+         * intent, so it lands in the Home task: an explicit start right after Tandem's process was restarted (an
+         * update) found no task and made an ordinary one, and the next Home press then made a second library in the
+         * Home task. Not treated as a Home press ([EXTRA_SELF]): popups stay as they were.
+         */
+        fun frontIntent(ctx: android.content.Context): android.content.Intent {
+            val home = runCatching { io.github.zahakj.tandem.ui.HomeMode.isDefault(ctx) }.getOrDefault(false)
+            val i = if (home) {
+                android.content.Intent(android.content.Intent.ACTION_MAIN).addCategory(android.content.Intent.CATEGORY_HOME).setPackage(ctx.packageName)
+            } else android.content.Intent(ctx, MainActivity::class.java)
+            return i.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(EXTRA_SELF, true)
+        }
     }
 
     private var bottomScreen: io.github.zahakj.tandem.ui.BottomScreen? = null
@@ -37,6 +55,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // Before anything is loaded: the window behind the first frame is the last theme's backdrop (StartLook).
         StartLook.paintSaved(window, this)
+        // One library at a time. Two (Android made a second task for this activity, see frontIntent) share every
+        // focus, popup and button state, and the one in front was left without a highlight: the older one goes.
+        live?.get()?.takeIf { it !== this && !it.isFinishing && !it.isDestroyed }?.let { old ->
+            android.util.Log.w("Tandem", "A second library activity started; closing the older one")
+            old.finishAndRemoveTask()
+        }
         live = java.lang.ref.WeakReference(this)
         io.github.zahakj.tandem.ui.Images.install(this)
         io.github.zahakj.tandem.data.Store.init(this)
@@ -49,6 +73,9 @@ class MainActivity : ComponentActivity() {
         io.github.zahakj.tandem.data.Scraper.init(this)
         io.github.zahakj.tandem.data.DetailsFill.init(this)
         io.github.zahakj.tandem.data.HomeStore.init(this)
+        PinVault.init(this)
+        // Airplane mode left on for a hidden game before a restart goes back off (unless one is still being played).
+        Offline.startup(this)
         io.github.zahakj.tandem.data.WidgetStore.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.IconGridStore.init(this)
@@ -89,9 +116,19 @@ class MainActivity : ComponentActivity() {
         super.onWindowFocusChanged(hasFocus)
         Gamepads.tandemFocused = hasFocus
         if (!hasFocus) HomeButton.reset()
-        if (hasFocus) SystemBars.hide(window)
+        if (hasFocus) {
+            SystemBars.hide(window)
+            // Back with the controller (from a game, a failed resume, the other screen): once the return has settled,
+            // a screen, grid or folder showing with nothing highlighted gets its remembered item (else the first) back.
+            handler.removeCallbacks(focusBack)
+            handler.postDelayed(focusBack, 600)
+        }
         // Focus lost while the library stays in front: another app's window may have taken the controller (FocusGuard).
         else focusMayHaveLeft()
+    }
+
+    private val focusBack = Runnable {
+        if (hasWindowFocus() && isResumedNow()) io.github.zahakj.tandem.ui.FocusCards.rescue(libraryRoot())
     }
 
     /** This window or Tandem's bottom-screen home lost the focus while the library is in front: check who has it. */
@@ -142,6 +179,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Home is bringing the game back instead (HomeBack): Tandem is only passing through, so nothing comes back yet.
+        if (homeBack) return
+        returned()
+    }
+
+    /** Tandem is in front again (see onStart). */
+    private fun returned() {
         io.github.zahakj.tandem.ui.PipMind.startIdle()
         // Tandem is in front: its own bottom screen covers the bottom-screen home (SecondaryHome.kt), which gives
         // back the library it showed while an app had the top screen (LibraryGuest). The controls come back at once;
@@ -260,6 +304,11 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         ActiveHost.token = this
+        if (!homeBack) resumedNow()
+    }
+
+    /** The resume work (see onResume), skipped while Home brings the game back. */
+    private fun resumedNow() {
         // Screens re-check permissions, the Home role and so on when this changes; that is recomposition, so it
         // waits until the first frames are drawn. The first resume (startup) counts at once.
         if (resumeCount.intValue == 0) resumeCount.intValue = 1
@@ -294,6 +343,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onStop() {
+        homeBack = false
         io.github.zahakj.tandem.ui.PipMind.stopIdle()
         // The next cold start opens in this theme's colour (a no-op unless the theme changed).
         StartLook.remember(this, Themes.target)
@@ -404,12 +454,35 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
-        io.github.zahakj.tandem.ui.Host.onNewIntent(intent, returning = stoppedSinceIntent)
+        // Tandem bringing itself forward (frontIntent) isn't a Home press, though it may carry the Home category.
+        val self = intent.getBooleanExtra(EXTRA_SELF, false)
+        val home = intent.hasCategory(android.content.Intent.CATEGORY_HOME)
+        // Home from a game covered by another app: the game and its companion come back first (HomeBack.kt). This
+        // arrives before onStart, so the return below waits; if the game can't be brought back, it happens after all.
+        if (!self && home && stoppedSinceIntent && HomeBack.tryBack(this) { homeBackFailed(intent) }) {
+            homeBack = true
+            return
+        }
+        if (!self) io.github.zahakj.tandem.ui.Host.onNewIntent(intent, returning = stoppedSinceIntent)
         stoppedSinceIntent = false
         openRequested(intent)
-        if (intent.hasCategory(android.content.Intent.CATEGORY_HOME) || intent.hasCategory(android.content.Intent.CATEGORY_LAUNCHER)) {
+        if (!self && (intent.hasCategory(android.content.Intent.CATEGORY_HOME) || intent.hasCategory(android.content.Intent.CATEGORY_LAUNCHER))) {
             ensureLibraryWorks()
         }
+    }
+
+    /** Home is bringing the game back (HomeBack): onStart and onResume leave the return for now. */
+    private var homeBack = false
+
+    /** The game couldn't be brought back after all: Home goes to Tandem, as usual. */
+    private fun homeBackFailed(intent: android.content.Intent) {
+        if (!homeBack) return
+        homeBack = false
+        stoppedSinceIntent = false
+        io.github.zahakj.tandem.ui.Host.onNewIntent(intent, returning = true)
+        if (lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) returned()
+        if (isResumedNow()) resumedNow()
+        ensureLibraryWorks()
     }
 
     /**
@@ -427,8 +500,11 @@ class MainActivity : ComponentActivity() {
         val screen = bottomScreen
         if (!io.github.zahakj.tandem.data.SystemPrefs.data.singleScreen && (screen == null || !screen.isShowing || !ScreenRoles.bottomShowing)) {
             showDetails()
-        } else if (ScreenRoles.libraryOnBottom) {
-            screen?.takeControls()
+        } else {
+            if (ScreenRoles.libraryOnBottom) screen?.takeControls()
+            // Tandem is in front: a companion still on the bottom screen (or left behind by a restart) goes now, not
+            // after more presses.
+            GameCompanion.dismiss()
         }
     }
 
@@ -495,6 +571,9 @@ class MainActivity : ComponentActivity() {
 
     /** Controller A selects and B goes back, the same as on a console. A/B and X/Y can be swapped in Appearance. */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        // Volume goes straight to Android (it reaches the app in front first): nothing of Tandem's sits in its way.
+        if (event.keyCode == KeyEvent.KEYCODE_VOLUME_UP || event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+            event.keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) return super.dispatchKeyEvent(event)
         if (event.action == KeyEvent.ACTION_DOWN) LaunchFrom.key()
         // Tandem's screensaver in Android's slot (TandemDream) is running: the first key ends it, and that press does
         // nothing else (its release arrives here once the library is back).
@@ -540,7 +619,7 @@ class MainActivity : ComponentActivity() {
             return true
         }
         // Nothing highlighted (after touch, say): the first D-pad press brings the highlight back.
-        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && code in DPAD_KEYS) io.github.zahakj.tandem.ui.FocusCards.rescue()
+        if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && code in DPAD_KEYS) io.github.zahakj.tandem.ui.FocusCards.rescue(libraryRoot())
         // A held D-pad: the highlight moves on every repeat, the details follow it more calmly (Selection.follow).
         if (isDpad(code)) Selection.holding(event.action == KeyEvent.ACTION_DOWN && event.repeatCount > 0)
         if (event.action == KeyEvent.ACTION_DOWN) when (code) {
@@ -591,6 +670,13 @@ class MainActivity : ComponentActivity() {
             return false
         }
         return screen.forwardKey(event)
+    }
+
+    /** The window the library is drawn in right now: the bottom-screen home's, the bottom screen's (swapped), or this. */
+    private fun libraryRoot(): android.view.View? = when {
+        !lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED) && LibraryGuest.host != null -> LibraryGuest.host?.window?.decorView
+        ScreenRoles.libraryOnBottom -> bottomScreen?.window?.decorView
+        else -> window.decorView
     }
 
     private fun isDpad(code: Int) = code == KeyEvent.KEYCODE_DPAD_UP || code == KeyEvent.KEYCODE_DPAD_DOWN || code == KeyEvent.KEYCODE_DPAD_LEFT || code == KeyEvent.KEYCODE_DPAD_RIGHT

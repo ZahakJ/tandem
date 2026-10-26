@@ -113,6 +113,22 @@ object SecondaryHome {
         cover(ctx, displayId, "to take the focus back from another app")
     }
 
+    /**
+     * After Tandem's process was killed or crashed, Android puts its own bottom-screen launcher (launcher3's app list)
+     * there until something else covers it. Called when Tandem starts again (the Controller Home button service is
+     * the first part Android brings back): if that list holds the bottom screen, this screen takes it back.
+     */
+    fun replaceStock(ctx: Context) {
+        val app = ctx.applicationContext
+        Thread({
+            if (!Shell.waitReady(5_000)) return@Thread
+            val display = LaunchDisplay.secondary(app)?.displayId ?: return@Thread
+            val owner = FocusGuard.parse(Shell.run("sh", "-c", FocusGuard.COMMAND))?.byDisplay?.get(display)
+            val stock = stockBottom(app)?.packageName ?: return@Thread
+            if (owner == stock) Handler(Looper.getMainLooper()).post { cover(app, display, "Android's app list had the bottom screen") }
+        }, "tandem-bottom-check").start()
+    }
+
     /** Tandem is in front again (its own bottom screen covers this one, and the library goes back up). */
     fun tandemInFront() {
         front = null
@@ -243,6 +259,7 @@ class SecondaryHomeActivity : ComponentActivity() {
         io.github.zahakj.tandem.data.Store.init(this)
         SystemPrefs.init(this)
         io.github.zahakj.tandem.data.HomeStore.init(this)
+        PinVault.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
         if (!Themes.initialized) Themes.init(this)
@@ -254,15 +271,32 @@ class SecondaryHomeActivity : ComponentActivity() {
         SecondaryHome.attach()
         setContent { TandemTheme { SecondaryHomeScreen(this) } }
         io.github.zahakj.tandem.ui.QuietSemantics.watch(window.decorView)
+        // Android often answers a Home press on this screen with a new instance rather than onNewIntent: with a game
+        // running, that press is handled the same way.
+        if (savedInstanceState == null && intent?.hasCategory(Intent.CATEGORY_SECONDARY_HOME) == true && GameCompanion.up()) homeOverGame()
+    }
+
+    /**
+     * Home pressed down here with a game running, so an app had this screen (the companion never takes the focus):
+     * the game and its companion come back, or (pressed again, or when the game can't be found) Tandem. Never this
+     * screen's own panel, which would leave the game half-covered.
+     */
+    private fun homeOverGame() {
+        if (HomeBack.justBack() || !HomeBack.tryBack(this, fromBottom = true) { GameCompanion.backToTandem(this) }) GameCompanion.backToTandem(this)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         // Home pressed while this screen has the focus (an app was open down here): Home means Tandem, not this
-        // panel. With a game running the companion owns the screen, so it stays put.
-        if (intent.hasCategory(Intent.CATEGORY_SECONDARY_HOME) && !GameCompanion.up() && !GameCompanion.recentlyShown()) {
-            GameCompanion.backToTandem(this)
-            return
+        // panel. With a game running, the first Home brings the game and its companion back (HomeBack.kt) and a
+        // second one goes to Tandem.
+        if (intent.hasCategory(Intent.CATEGORY_SECONDARY_HOME)) {
+            if (!GameCompanion.up()) {
+                if (!GameCompanion.recentlyShown()) { GameCompanion.backToTandem(this); return }
+            } else {
+                homeOverGame()
+                return
+            }
         }
         SecondaryHome.lookAtFront(this)
     }

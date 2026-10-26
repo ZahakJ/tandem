@@ -356,9 +356,10 @@ fun FocusCard(
     val tap by rememberUpdatedState(onClick)
     val hold by rememberUpdatedState(onLongPress)
     val holds = entry || onLongPress != null
-    // Counted in FocusCards.focused while it holds the focus, so a lost focus can be noticed and given back.
+    // Counted in FocusCards (per window) while it holds the focus, so a lost focus can be noticed and given back.
     var counted by remember { mutableStateOf(false) }
-    androidx.compose.runtime.DisposableEffect(Unit) { onDispose { if (counted) FocusCards.focused -= 1 } }
+    val view = androidx.compose.ui.platform.LocalView.current
+    androidx.compose.runtime.DisposableEffect(view) { onDispose { if (counted) FocusCards.held(view.rootView, hasFocus, false) } }
     val density = LocalDensity.current
     val growPx = with(density) { MaxFocusGrowth.toPx() }
     val focusScale = theme.focusScale
@@ -396,7 +397,7 @@ fun FocusCard(
             .liftOrigin()
             // A press whose release never arrived (focus moved away mid-press) must not leave the card squished.
             .onFocusChanged {
-                if (it.isFocused != counted) { counted = it.isFocused; FocusCards.focused += if (it.isFocused) 1 else -1 }
+                if (it.isFocused != counted) { counted = it.isFocused; FocusCards.held(view.rootView, hasFocus, it.isFocused) }
                 hasFocus[0] = it.isFocused
                 if (it.isFocused) { onFocus(); Sounds.move() } else pressed = false
             }

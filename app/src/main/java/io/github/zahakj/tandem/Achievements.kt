@@ -86,6 +86,8 @@ object RetroAchievements {
 
     private suspend fun call(endpoint: String, params: Map<String, String>, key: String = HomeStore.ra.key): String? =
         withContext(Dispatchers.IO) {
+            // Private mode: nothing leaves the device (Offline.kt).
+            if (NetGate.closed) return@withContext null
             val query = (params + mapOf("y" to key)).entries.joinToString("&") { (k, v) -> "$k=" + URLEncoder.encode(v, "UTF-8") }
             runCatching {
                 val conn = URL("$API$endpoint?$query").openConnection() as HttpURLConnection

@@ -144,8 +144,21 @@ object Images {
         coil.Coil.setImageLoader {
             coil.ImageLoader.Builder(app)
                 .memoryCache { coil.memory.MemoryCache.Builder(app).maxSizePercent(0.15).build() }
+                // Private mode: pictures from the web come from the disk cache only (Offline.kt).
+                .components { add(OfflineImages) }
                 .build()
         }
+    }
+}
+
+/** In private mode, remote pictures are never fetched: only what is already in the disk cache shows. */
+private object OfflineImages : coil.intercept.Interceptor {
+    override suspend fun intercept(chain: coil.intercept.Interceptor.Chain): coil.request.ImageResult {
+        val r = chain.request
+        // Addresses as text, Uri or HttpUrl all read as "http…".
+        val remote = r.data.let { it !is java.io.File && it.toString().startsWith("http", ignoreCase = true) }
+        if (!remote || !io.github.zahakj.tandem.NetGate.closed) return chain.proceed(r)
+        return chain.proceed(r.newBuilder().networkCachePolicy(coil.request.CachePolicy.DISABLED).build())
     }
 }
 

@@ -416,10 +416,10 @@ fun HomeExplainer() {
     }
 }
 
-/** The "show hidden games" toggles. In private mode they stay put: only the secret combo reveals hidden games. */
+/** The "show hidden games" toggles. In private mode they ask for the PIN first, as L1 + R1 + Select does. */
 fun toggleShowHidden() {
     if (Privacy.enabled) {
-        Toasts.show("Hidden games are private")
+        if (Privacy.revealed) Privacy.tuckAway() else io.github.zahakj.tandem.PrivateMode.reveal()
         return
     }
     // Tucking them away also ends anything shown on its own from Start › Hidden.
@@ -494,15 +494,26 @@ fun homeSettings(): SettingSection {
             },
             SettingRow(
                 "Private mode", onOff(s.privateMode), Palette.Lavender, Glyph.Shield, toggle = s.privateMode,
-                help = "Hidden games, folders and systems stay hidden and the Show hidden games switch is ignored: only L1 + R1 + Select brings them out, and the combo says nothing while private mode is off.",
-                keywords = "privacy hidden secret lock",
+                help = "Hidden games, folders and systems stay hidden until L1 + R1 + Select and your PIN bring them out, and Tandem stays offline. " +
+                    "Turning it off asks for the PIN. While it is off, L1 + R1 + Select turns it on at once.",
+                keywords = "privacy hidden secret lock pin panic offline",
+            ) { if (s.privateMode) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn() },
+            SettingRow(
+                "Go offline while a hidden game plays",
+                if (!s.privateMode) "Private mode only" else if (!shizuku) "Needs Shizuku" else onOff(s.offlineHidden), Palette.Lavender, Glyph.Shield,
+                help = "In private mode, airplane mode goes on while a hidden game plays and back off when it ends, so nothing in the game can go online. " +
+                    "Airplane mode you turned on yourself stays on. Needs Shizuku.",
+                toggle = if (!shizuku) null else s.offlineHidden,
+                keywords = "airplane mode offline network wifi internet hidden private game emulator",
             ) {
-                val on = !s.privateMode
-                HomeStore.updateSettings { it.copy(privateMode = on) }
-                Privacy.revealed = false
-                io.github.zahakj.tandem.HiddenItems.endPeeks()
-                Toasts.show(if (on) "Hidden games now show only with L1 + R1 + Select" else "Private mode off")
+                if (!shizuku) Toasts.show("This needs Shizuku running, with Tandem allowed")
+                else HomeStore.updateSettings { it.copy(offlineHidden = !it.offlineHidden) }
             },
+            SettingRow(
+                "Private mode PIN", if (io.github.zahakj.tandem.PinVault.isSet) "Set" else "Not set", Palette.Lavender, Glyph.Shield,
+                help = "Change the 4 to 6 digit PIN that shows hidden games and turns private mode off. Forgot it? Y on the PIN pad starts a 24-hour wait, then you choose a new one.",
+                keywords = "pin code password change forgot private", action = "Change",
+            ) { io.github.zahakj.tandem.PrivateMode.changePin() },
             SettingRow(
                 "Play stats", "${HomeStore.sessions.size} sessions", Palette.Butter, Glyph.Chart,
                 "Your play time by day, system and game, every session you played, and your achievements.",
@@ -532,12 +543,13 @@ fun hiddenSettings(): SettingSection {
                 SettingRow(
                     "Hidden folders and games", if (Privacy.enabled) "Private" else if (any) "Tucked away" else "None",
                     Palette.Lavender, Glyph.Eye,
-                    help = if (Privacy.enabled) "Listed here, each with Unhide, while L1 + R1 + Select has them showing."
+                    help = if (Privacy.enabled) "Listed here, each with Unhide, once your PIN shows them: Show here, or L1 + R1 + Select."
                     else "Hide a game, a folder or a whole system with Y. Start › Hidden lists them all, and so does this page while hidden games show.",
                     keywords = "hidden folders systems unhide private start",
-                    // With nothing hidden, Show would only switch on Show hidden games for nothing.
-                    action = if (Privacy.enabled || !any) null else "Show",
-                ) { if (any) toggleShowHidden() else Toasts.show("Nothing is hidden. Hide a game, folder or system with Y") },
+                    // With nothing hidden, Show would only switch on Show hidden games for nothing. In private mode it
+                    // asks for the PIN either way, so it says nothing about whether anything is hidden.
+                    action = if (Privacy.enabled || any) "Show" else null,
+                ) { if (Privacy.enabled || any) toggleShowHidden() else Toasts.show("Nothing is hidden. Hide a game, folder or system with Y") },
             ),
         )
     }

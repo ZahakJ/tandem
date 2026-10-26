@@ -56,6 +56,7 @@ private var raVersion by mutableStateOf(0)
 
 /** Asks for the username, then the Web API key, checks them, and turns achievements on. */
 fun raSignIn() {
+    if (io.github.zahakj.tandem.NetGate.closed) { Toasts.show("Private mode keeps Tandem offline. Turn it off to sign in"); return }
     TextEntry.ask("RetroAchievements username", HomeStore.ra.user) { name ->
         val user = name.trim()
         if (user.isEmpty()) return@ask

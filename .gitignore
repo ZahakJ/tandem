@@ -8,3 +8,7 @@ local.properties
 .claude/
 *.jks
 keystore.properties
+
+# The Discord Social SDK is proprietary: builders put it here themselves (docs/guide/building.md). Never commit it.
+/third_party/discord/
+.cxx/

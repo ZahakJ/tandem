@@ -109,6 +109,7 @@ object ScrapeUi {
     fun scrapeOne(game: Game) {
         when {
             Privacy.isHidden(game) -> Toasts.show("Hidden games are never sent anywhere")
+            io.github.zahakj.tandem.NetGate.closed -> Toasts.show(io.github.zahakj.tandem.data.OFFLINE_NOTE)
             Scraper.running -> Toasts.show("Pip is already busy scraping. Try again when that's done")
             else -> {
                 val o = Scraper.optionsFromSettings()
@@ -124,6 +125,7 @@ object ScrapeUi {
      * games' systems yet (it's about 100 MB). [started] runs once the scrape is under way.
      */
     fun start(scope: ScrapeScope, options: ScrapeOptions, started: () -> Unit = {}) {
+        if (io.github.zahakj.tandem.NetGate.closed) { Toasts.show(io.github.zahakj.tandem.data.OFFLINE_NOTE); return }
         fun go(o: ScrapeOptions) {
             Scraper.dismiss()
             if (Scraper.start(scope, o)) started() else Toasts.show("Couldn't start, is a scrape already running?")

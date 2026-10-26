@@ -58,6 +58,11 @@ data class GameMeta(
     val raId: Int? = null,
     /** This game's logo size and place over its art; null is Tandem's own. */
     val logoFit: LogoFit? = null,
+    /**
+     * The public https address [box] was downloaded from, for the Discord status. Only credential-free addresses
+     * ([CoverUrl.safe]); null when unknown or when the box came from the device or ScreenScraper.
+     */
+    val coverUrl: String? = null,
 )
 
 /** HowLongToBeat's averages, in seconds; 0 when nobody has logged that one yet. */

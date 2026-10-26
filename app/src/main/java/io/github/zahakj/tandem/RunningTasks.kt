@@ -10,11 +10,17 @@ package io.github.zahakj.tandem
  * Plain functions over the dump's text, so they are unit-tested without Android (RunningTasksTest).
  */
 object RunningTasks {
-    /** One activity in a task: its full class name, and whether it is on its way out. */
-    data class Activity(val cls: String, val finishing: Boolean)
+    /**
+     * One activity in a task: its full class name, whether it is on its way out, and the task and display it is in
+     * (-1 when the dump didn't say).
+     */
+    data class Activity(val cls: String, val finishing: Boolean, val task: Int = -1, val display: Int = -1)
 
     /** "* Hist #0: ActivityRecord{…}" (every Android since 7) and "Run #0: ActivityRecord{…}" (Android 11 and older). */
     private val entry = Regex("""^\*?\s*(?:Hist|Run)\s+#\d+:\s*ActivityRecord\{\S+ u\d+ ([A-Za-z0-9_.]+)/([A-Za-z0-9_.$]+)""")
+    /** The record's task, "t212" (some builds close the activity's name first: "…Activity} t212}"). */
+    private val taskId = Regex("""\st(\d+)[\s}]""")
+    private val displayLine = Regex("""^Display #(\d+)""")
 
     /**
      * Every activity in a task, by package. Null when [dump] lists none at all: Tandem itself is always there when it
@@ -25,8 +31,11 @@ object RunningTasks {
         val out = HashMap<String, MutableList<Activity>>()
         var seen = false
         var last: Pair<String, Int>? = null
+        var display = -1
         for (raw in dump.lineSequence()) {
             val line = raw.trim()
+            val d = displayLine.find(line)
+            if (d != null) { display = d.groupValues[1].toInt(); last = null; continue }
             val m = entry.find(line)
             if (m != null) {
                 seen = true
@@ -34,8 +43,9 @@ object RunningTasks {
                 val cls = m.groupValues[2].let { if (it.startsWith(".")) pkg + it else it }
                 // ActivityRecord's own text ends "t212 f}" while it finishes.
                 val finishing = " f}" in line
+                val task = taskId.find(line, m.range.last)?.groupValues?.get(1)?.toIntOrNull() ?: -1
                 val list = out.getOrPut(pkg) { ArrayList() }
-                list += Activity(cls, finishing)
+                list += Activity(cls, finishing, task, display)
                 last = pkg to list.lastIndex
                 continue
             }
@@ -82,6 +92,9 @@ object RunningTasks {
         tasks[pkg].orEmpty().any { !it.finishing }
 
     /** True when [pkg] has a game open: a live activity a game plays in (see [isGameActivity]). */
-    fun inGame(tasks: Map<String, List<Activity>>, pkg: String): Boolean =
-        tasks[pkg].orEmpty().any { !it.finishing && isGameActivity(it.cls) }
+    fun inGame(tasks: Map<String, List<Activity>>, pkg: String): Boolean = game(tasks, pkg) != null
+
+    /** The activity [pkg]'s game plays in; the topmost when there are several (tasks are listed top first). */
+    fun game(tasks: Map<String, List<Activity>>, pkg: String): Activity? =
+        tasks[pkg].orEmpty().firstOrNull { !it.finishing && isGameActivity(it.cls) }
 }

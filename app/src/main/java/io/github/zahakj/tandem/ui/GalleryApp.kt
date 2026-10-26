@@ -142,9 +142,9 @@ fun GalleryScreen() {
         ButtonHint("B", "Back", Palette.Lavender)
     }) {
         when {
-            list == null -> PipNote("Looking for screenshots…", "Checking ROMs/screenshots, RetroArch, Pictures and DCIM.", mood = 1, modifier = Modifier.align(Alignment.Center))
+            list == null -> PipNote("Looking for screenshots…", "Checking ROMs/\u2060screenshots, RetroArch, Pictures and DCIM.", mood = 1, modifier = Modifier.align(Alignment.Center))
             list.isEmpty() -> EmptyNote(
-                "No screenshots yet: take one in your emulator, or put pictures in ROMs/screenshots", "Look again",
+                "No screenshots yet: take one in your emulator, or put pictures in ROMs/\u2060screenshots", "Look again",
                 Modifier.takesFocus(route, "empty", true), Modifier.align(Alignment.Center),
             ) { Gallery.version++ }
             else -> Column(Modifier.fillMaxSize()) {

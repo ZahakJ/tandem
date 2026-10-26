@@ -39,6 +39,11 @@ A highlighted `FocusCard` reaches past its bounds: it grows by up to `MaxFocusGr
 - Long help and details ellipsize or scroll; they never push button hints off a panel.
 - Pills hold one line. Text that can wrap goes in a rounded rectangle.
 - Rows of buttons that can grow use `FlowRow`.
+- A place whose size changes (widgets, icon grid cells) picks its layout from the room it really gets
+  (`BoxWithConstraints`), drops secondary lines first, and shows a main value that must not be ellipsized (a time,
+  a percentage, free space) through `ShrinkToFit` (ui/Edges.kt), which scales it down instead of cutting it. Never
+  let a `Column` of lines run past a fixed height: the last line's descenders are the first thing cut.
+- Widgets on the smallest grid cells (about 53 dp at five rows) may go down to a 6 dp inset (`widgetPad`).
 
 ## No dark scrim bands
 

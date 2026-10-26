@@ -188,6 +188,9 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
     val requester = remember { FocusRequester() }
     val focused = remember { booleanArrayOf(false) }
     val layer = LocalLayer.current
+    val view = androidx.compose.ui.platform.LocalView.current
+    // Counted in FocusCards while it holds the focus, so a window left without a highlight is noticed (rescue).
+    DisposableEffect(view) { onDispose { if (focused[0]) FocusCards.held(view.rootView, focused, false) } }
     LaunchedEffect(routeKey, wanted, layer) {
         if (!wanted) return@LaunchedEffect
         // Focus handed back (Nav.focusTick: a resume, Home) asks again. Watched here rather than read while composing,
@@ -205,6 +208,7 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
         }
     }
     return this.focusRequester(requester).onFocusChanged {
+        if (focused[0] != it.isFocused) FocusCards.held(view.rootView, focused, it.isFocused)
         focused[0] = it.isFocused
         if (it.isFocused) FocusMemory.remember(routeKey, itemKey)
     }
@@ -365,17 +369,31 @@ fun <T : Any> rememberLatest(value: T?): T? {
  * or Down from the rows around it) lands on the item last highlighted there instead of whichever is nearest.
  */
 
-/** How many FocusCards hold the focus right now (0 or 1; main thread only). */
+/**
+ * Which focusable things (FocusCards, and every item with [takesFocus], so icon-grid tiles too) hold the focus right
+ * now, per window (main thread only). Per window, because Tandem has several (the top screen, the bottom screen, the
+ * bottom-screen home): a card highlighted in one of them says nothing about the other, and one global count kept the
+ * top screen from ever getting its highlight back.
+ */
 object FocusCards {
-    var focused = 0
+    /** Each holder, with the root view of its window when it took the focus (a detached view's root is itself). */
+    private val holders = java.util.IdentityHashMap<Any, android.view.View>()
+
+    /** [who] in the window whose root view is [root] gained ([has]) or lost the focus. */
+    fun held(root: android.view.View, who: Any, has: Boolean) {
+        if (has) holders[who] = root else holders.remove(who)
+    }
+
+    /** Something in [root]'s window holds the focus. */
+    fun holds(root: android.view.View): Boolean = holders.values.any { it === root }
 
     /**
-     * Called on every D-pad press. When no card holds the focus (touch navigation took it away, or the focused card
-     * went away), the screen's or popup's remembered item takes it again, so the press always shows a highlight.
+     * Called on every D-pad press, and when the library's window gets the focus back. When nothing in [root]'s window
+     * (null: unknown) holds the focus (touch navigation took it away, the focused card went away, Tandem came back
+     * without a highlight), the screen's or popup's remembered item takes it again, so the press always shows one.
      */
-    fun rescue() {
-        if (focused > 0) return
-        focused = 0
+    fun rescue(root: android.view.View?) {
+        if (root != null && holds(root)) return
         Nav.focusTick++
     }
 }

@@ -13,10 +13,12 @@ import io.github.zahakj.tandem.data.ControllerStore
 /** Group titles of these rows, picked into Settings › Controls by [settingsCatalog]. */
 const val HomeButtonGroup = "Controller Home button"
 const val ControllersGroup = "Game controllers"
+const val PadLinkGroup = "Play with a controller"
 
 /**
  * Settings › Controls: the controller Home button (an optional accessibility service, see ControllerHomeService.kt)
- * and the controllers connected now, each with its own Nintendo-labels swap.
+ * the controllers connected now, each with its own Nintendo-labels swap, and which one plays as the built-in
+ * controller in games (PadLink.kt).
  */
 /**
  * [MainActivity.resumeCount] as Settings sees it: it stays composed while hidden (KeptScreen), and a return to Tandem
@@ -103,5 +105,42 @@ fun controllerSettings(): List<SettingSection> {
             ) { Toasts.show("Pair or plug in a controller, it appears here") },
         )
     }
-    return listOf(home, SettingSection(ControllersGroup, rows, Glyph.Gamepad, note = "On: Nintendo labels"))
+
+    // Controller passthrough (PadLink.kt): which controller plays as the built-in one in games.
+    val linkState = io.github.zahakj.tandem.PadLink.state
+    val linkReady = remember(version, resumes, ShizukuWatch.version) { io.github.zahakj.tandem.PadLink.available(ctx) }
+    val linkRows = if (!linkReady) {
+        listOf(
+            SettingRow(
+                "Controller in games", "Unavailable", Palette.Lavender, Glyph.Gamepad,
+                remember(resumes) { io.github.zahakj.tandem.PadLink.whyNot(ctx) },
+                keywords = "passthrough xbox bluetooth controller player 1 shizuku root",
+            ) { Toasts.show(io.github.zahakj.tandem.PadLink.whyNot(ctx)) },
+        )
+    } else {
+        listOf(
+            SettingRow(
+                "Controller in games", io.github.zahakj.tandem.PadLink.linked?.name ?: "Built-in", Palette.Lavender, Glyph.Gamepad,
+                "Which controller plays as the built-in one, in every emulator, mid-game included: games keep " +
+                    "listening to the built-in controls and Tandem passes the chosen controller's buttons and sticks " +
+                    "to them. The built-in controls keep working too. A steps through Built-in and each connected " +
+                    "controller (also in Quick settings). A controller connecting during a game offers itself on the " +
+                    "bottom screen: press its A or Start. Disconnecting it goes back to the built-in controls.",
+                onLeft = { io.github.zahakj.tandem.PadLink.cycle() }, onRight = { io.github.zahakj.tandem.PadLink.cycle() },
+                keywords = "passthrough xbox bluetooth controller player 1 switch use this controller ${pads.joinToString(" ") { it.second }}",
+            ) { io.github.zahakj.tandem.PadLink.cycle() },
+            toggle(
+                "Always use a connected pad", Glyph.Gamepad, Palette.Lavender,
+                "Always use a connected controller: one that connects plays as the built-in controller at once, " +
+                    "without asking. Leave it off to play two players: the controller then stays a controller of its " +
+                    "own, and the emulator needs it mapped as Player 2.",
+                cs.usePads,
+            ) { on ->
+                ControllerStore.update { it.copy(usePads = on) }
+                io.github.zahakj.tandem.PadLink.devicesChanged()
+            }.copy(keywords = "auto passthrough xbox bluetooth controller player 1"),
+        )
+    }
+    val link = SettingSection(PadLinkGroup, linkRows, Glyph.Gamepad, note = if (linkState.linked != null) "In use: ${io.github.zahakj.tandem.PadLink.linked?.name}" else null)
+    return listOf(home, SettingSection(ControllersGroup, rows, Glyph.Gamepad, note = "On: Nintendo labels"), link)
 }

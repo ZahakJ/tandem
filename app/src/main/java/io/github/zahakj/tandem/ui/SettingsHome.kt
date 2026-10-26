@@ -175,7 +175,7 @@ private fun CategoryTile(c: SettingsCategory, modifier: Modifier, onFocus: () ->
             GlyphChip(c.icon, c.color, 32.dp)
             Spacer(Modifier.weight(1f))
             Text(c.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(c.summary, style = MaterialTheme.typography.labelLarge, color = c.color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            PartsText(c.summary, MaterialTheme.typography.labelLarge, color = c.color)
         }
     }
 }
@@ -209,7 +209,7 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Text(c.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(c.summary, style = MaterialTheme.typography.titleSmall, color = c.color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                PartsText(c.summary, MaterialTheme.typography.titleSmall, color = c.color)
             }
         }
         Spacer(Modifier.height(10.dp))

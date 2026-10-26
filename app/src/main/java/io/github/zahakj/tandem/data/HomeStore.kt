@@ -24,6 +24,8 @@ data class HomeSettings(
     val screensaverMinutes: Int = 0,
     /** Hidden games can only be revealed with L1 + R1 + Select, and the Settings toggle is ignored. */
     val privateMode: Boolean = false,
+    /** In private mode, airplane mode goes on while a hidden game plays (Offline.kt). Needs Shizuku. */
+    val offlineHidden: Boolean = false,
 )
 
 /** One stretch of play: game key, start time (ms) and length in seconds. Short names keep the file small. */

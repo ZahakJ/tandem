@@ -265,7 +265,7 @@ private fun Overview() {
                             onClick = { Nav.go(Route.System(platform.id)) },
                         ) {
                             Row(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text(platform.shortName, Modifier.width(70.dp), style = MaterialTheme.typography.titleSmall, maxLines = 1)
+                                Text(platform.shortName, Modifier.width(70.dp), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 Box(Modifier.weight(1f).height(12.dp).clip(RoundedCornerShape(50)).background(Palette.NightDeep)) {
                                     Box(Modifier.fillMaxWidth(seconds / max.toFloat()).fillMaxHeight().clip(RoundedCornerShape(50)).background(Brush.horizontalGradient(listOf(color.copy(alpha = 0.6f), color))))
                                 }

@@ -80,7 +80,8 @@ jobs:
 
       - uses: android-actions/setup-android@v4
         with:
-          packages: "platforms;android-34 build-tools;34.0.0"
+          # The NDK builds the controller passthrough helper (app/src/padlink).
+          packages: "platforms;android-34 build-tools;34.0.0 ndk;27.2.12479018"
 
       # Release builds read the cache but never write it.
       - uses: gradle/actions/setup-gradle@v6

@@ -1,7 +1,6 @@
 package io.github.zahakj.tandem
 
 import android.content.Context
-import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -180,11 +179,14 @@ object RunningGames {
             Launcher.launch(ctx, game)
             return
         }
-        val front = ctx.packageManager.getLaunchIntentForPackage(r.pkg) ?: return
-        front.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-        front.setPackage(null)
         SecondaryHome.beforeLeave(ctx, r.pkg, game = true)
-        runCatching { ctx.startActivity(front) }
+        // Its own task where one is known (GameResume.kt); the launcher activity could open a new one and lose the game.
+        val app = ctx.applicationContext
+        Thread({
+            val target = GameResume.target(Processes.snapshot(maxAgeMs = 1500)?.tasks, r.pkg)
+            if (target != null && GameResume.bringBack(app, target)) return@Thread
+            GameResume.launcherIntent(ctx, r.pkg)?.let { runCatching { ctx.startActivity(it) } }
+        }, "tandem-resume").start()
     }
 
     /** Seconds played since the game was started this time, from the play history; null if unknown. */

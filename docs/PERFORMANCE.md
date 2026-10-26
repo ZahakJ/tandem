@@ -222,6 +222,9 @@ The bottom screen during play (ui/CompanionScreen.kt) never sees the player's in
 - Don't read `Nav.focusTick` or `MainActivity.resumeCount` while composing a whole screen: both change on every
   return. Use `rememberFocusTarget` / `takesFocus`, `settingsResumes()` in Settings, or read them in an effect.
 - Something that moves inside the home grid uses `floating(restsWhenIdle = true)` (or `livelyMs`).
+- The Controller Home button service holds every key on the device until it answers, so it answers on its own
+  thread (`ControllerHomeService.getMainLooper`), never on the UI thread: keep its key handling short and hand UI
+  work to the main thread.
 
 ## Measuring
 

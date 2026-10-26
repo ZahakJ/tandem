@@ -33,6 +33,8 @@ object Net {
         String(bytes(url, headers + ("Content-Type" to contentType), 8 shl 20, body.toByteArray()))
 
     fun bytes(url: String, headers: Map<String, String> = emptyMap(), maxBytes: Int = 16 shl 20, post: ByteArray? = null): ByteArray {
+        // Private mode: nothing leaves the device (Offline.kt).
+        io.github.zahakj.tandem.NetGate.check()
         val c = URL(url).openConnection() as HttpURLConnection
         try {
             c.connectTimeout = 12_000
@@ -380,6 +382,16 @@ class Libretro(private val cacheDir: File) {
 
     /** True when the server lists a picture called [name] (the setup screen's Test button). */
     fun listed(system: String, kind: MediaKind, name: String): Boolean = index(system, kind)?.names?.contains(name) == true
+
+    /**
+     * The address of the best listed picture for [game], never a guess (the Discord status's cover, see Covers.kt).
+     * Null when nothing matches; throws when the server's listing can't be read, so a failed lookup isn't a miss.
+     */
+    fun listedUrl(game: Game, kind: MediaKind, pref: Region): String? {
+        val system = ScrapeSystems.libretro(game) ?: return null
+        if (index(system, kind) == null) throw IOException("libretro listing unavailable")
+        return matches(game, kind, pref).firstOrNull()?.let { url(system, kind, it) }
+    }
 
     fun find(game: Game, kind: MediaKind, pref: Region): String? {
         val system = ScrapeSystems.libretro(game) ?: return null

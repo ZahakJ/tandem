@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -55,11 +56,13 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -256,13 +259,83 @@ private fun rememberGames(vararg keys: Any?, compute: () -> List<Game>): List<Ga
     return remember(meta, libs, hidden, *keys) { compute() }
 }
 
+/**
+ * Widgets are drawn at many sizes: a row cell (136 by 108 dp), a bottom screen card, and icon grid cells from about
+ * 53 dp (five rows) to 165 dp (one row). Each one picks its layout from the room it really gets, drops its
+ * secondary lines first when room is short, and shows its lines through [FitLine] (or [ShrinkToFit]), so a line
+ * that is still too long shrinks a little instead of being cut or losing its main value to an ellipsis.
+ */
+
+/** Padding inside a widget [w] by [h]: 12 dp, down to 6 dp in the smallest grid cells. */
+private fun widgetPad(w: Dp, h: Dp): Dp = (min(w, h) * 0.12f).coerceIn(6.dp, 12.dp)
+
+/** Line heights of the type styles widgets use, at the user's font size. */
+private class LineHeights(scale: Float) {
+    /** labelSmall, labelMedium. */
+    val small = (16 * scale).dp
+    /** labelLarge, titleSmall. */
+    val title = (20 * scale).dp
+    /** titleLarge. */
+    val large = (28 * scale).dp
+    /** headlineSmall. */
+    val head = (32 * scale).dp
+}
+
+@Composable
+private fun lineHeights() = LineHeights(androidx.compose.ui.platform.LocalDensity.current.fontScale)
+
+/**
+ * Which of the lines [heights] (most important first) fit in [room] while leaving [keep] for the rest of the
+ * widget (a ring, Pip, a chart). Returns the indexes kept.
+ */
+private fun fitting(heights: List<Dp>, room: Dp, keep: Dp = 0.dp): Set<Int> {
+    var left = room
+    val out = HashSet<Int>()
+    for ((i, h) in heights.withIndex()) if (left - h >= keep) { left -= h; out += i }
+    return out
+}
+
+/** One line of text that shrinks to the width it gets instead of being cut or ellipsized. */
+@Composable
+private fun FitLine(text: String, style: TextStyle, modifier: Modifier = Modifier, color: Color = Color.Unspecified, alignment: Alignment = Alignment.CenterStart) {
+    ShrinkToFit(modifier, alignment) { Text(text, style = style, color = color, maxLines = 1, softWrap = false) }
+}
+
+/** The first of [texts] (longest first) that fits the width on one line; the last one shrinks if even it doesn't. */
+@Composable
+private fun FirstFit(texts: List<String>, style: TextStyle, modifier: Modifier = Modifier, color: Color = Color.Unspecified, alignment: Alignment = Alignment.CenterStart) {
+    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+    BoxWithConstraints(modifier) {
+        val maxW = constraints.maxWidth
+        val text = remember(texts, style, maxW) {
+            texts.firstOrNull { maxW == androidx.compose.ui.unit.Constraints.Infinity || measurer.measure(it, style, maxLines = 1, softWrap = false).size.width <= maxW } ?: texts.last()
+        }
+        FitLine(text, style, Modifier.fillMaxWidth(), color, alignment)
+    }
+}
+
+/** A ring's stroke for a ring [size] across. */
+private fun ringStroke(size: Dp): Dp = (size * 0.11f).coerceIn(4.dp, 8.dp)
+
+/** What sits inside a [Ring] [size] across: shrunk to fit inside the ring, never over its stroke. */
+@Composable
+private fun RingLabel(size: Dp, content: @Composable () -> Unit) {
+    val inner = size - ringStroke(size) * 2
+    ShrinkToFit(Modifier.size(inner * 0.84f, inner * 0.64f), content = content)
+}
+
 @Composable
 private fun Header(icon: String, title: String, color: Color, modifier: Modifier = Modifier, trailing: String? = null) {
-    Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(icon, style = MaterialTheme.typography.labelLarge, color = color)
-        Spacer(Modifier.width(5.dp))
-        Text(title, Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        if (trailing != null) Text(trailing, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        // Too narrow for the title: the icon (and the count) say what it is.
+        val titled = maxWidth >= 96.dp
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(icon, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1)
+            Spacer(Modifier.width(5.dp))
+            if (titled) Text(title, Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            else Spacer(Modifier.weight(1f))
+            if (trailing != null) Text(trailing, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, softWrap = false)
+        }
     }
 }
 
@@ -300,13 +373,22 @@ private fun Bar(fraction: Float, color: Color, modifier: Modifier) {
 /** A short centered message for empty widgets. */
 @Composable
 private fun EmptyNote(icon: String, title: String, detail: String?, color: Color, compact: Boolean, modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        if (!compact) {
-            Text(icon, style = MaterialTheme.typography.headlineSmall, color = color)
-            Spacer(Modifier.height(2.dp))
+    BoxWithConstraints(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        // Too small for words (they would break mid-word): the icon says it. A short cell keeps the title; the
+        // detail and the icon go first. Words shrink a little rather than break or lose their end.
+        if (maxWidth < 64.dp || maxHeight < 36.dp) {
+            ShrinkToFit(Modifier.fillMaxSize()) { Text(icon, style = MaterialTheme.typography.headlineSmall, color = color, maxLines = 1) }
+            return@BoxWithConstraints
         }
-        Text(title, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
-        if (detail != null) Text(detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        val short = maxHeight < 64.dp
+        Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+            if (!compact && !short) {
+                Text(icon, style = MaterialTheme.typography.headlineSmall, color = color, maxLines = 1)
+                Spacer(Modifier.height(2.dp))
+            }
+            ShrinkText(title, MaterialTheme.typography.titleSmall, maxLines = 2, minScale = 0.7f, textAlign = TextAlign.Center)
+            if (detail != null && !short) ShrinkText(detail, MaterialTheme.typography.labelMedium, maxLines = 2, minScale = 0.8f, color = Palette.Muted, textAlign = TextAlign.Center)
+        }
     }
 }
 
@@ -352,51 +434,67 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
         }
     }
     val extras = s.on("extras") && sizes != null
+    val lh = lineHeights()
     WidgetCard(s, m, onClick = { WidgetUi.rescan++; Toasts.show("Measuring your folders…") }) { _, _ ->
-        BoxWithConstraints(Modifier.fillMaxSize().padding(12.dp)) {
-            val w = maxWidth
-            val h = maxHeight
-            if (vols.isEmpty()) {
-                EmptyNote("◔", "Checking storage…", null, Palette.Mint, compact = true)
-                return@BoxWithConstraints
-            }
-            val showList = listMode != "none" && s.size != Small
-            if (h < 130.dp) {
-                // One row: rings, then the list or the extras if there's room.
-                val ring = min(h - 4.dp, 54.dp)
-                Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    val maxRings = if (w > 230.dp) 2 else 1
-                    for (v in vols.take(maxRings)) VolumeChip(v, ring, ctx)
-                    if (w > 330.dp && showList) StorageList(rows, sizes, Modifier.weight(1f), ctx, h)
-                    else if (w > 230.dp && vols.size < 2 && extras) Extras(sizes!!, ctx, Modifier.weight(1f))
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad)) {
+                val showList = listMode != "none" && s.size != Small
+                // How many lines fit beside a ring: label, free space, "free".
+                val chipLines = when {
+                    h >= lh.small * 2 + lh.title -> 3
+                    h >= lh.small + lh.title -> 2
+                    else -> 1
                 }
-            } else {
-                Column(Modifier.fillMaxSize()) {
-                    Header("◔", "Storage", Palette.Mint, trailing = if (StorageInfo.scanning) "measuring…" else null)
-                    Spacer(Modifier.height(6.dp))
-                    if (w < 200.dp) {
-                        val v = vols.first()
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            VolumeChip(v, 52.dp, ctx)
-                        }
-                        vols.getOrNull(1)?.let { sd ->
-                            Spacer(Modifier.height(4.dp))
-                            Text("${sd.label} · ${bytes(ctx, sd.free)} free", style = MaterialTheme.typography.labelSmall, color = fullnessColor(sd.fraction, Palette.Sky), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        }
-                    } else {
-                        Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                            for (v in vols.take(2)) VolumeChip(v, if (h > 220.dp) 64.dp else 52.dp, ctx)
+                when {
+                    vols.isEmpty() -> EmptyNote("◔", "Checking storage…", null, Palette.Mint, compact = true)
+                    // A narrow cell: the rings one above the other, each with its free space under it when there's room.
+                    w < 120.dp -> {
+                        val n = if (vols.size > 1 && h >= w * 2f + 10.dp) 2 else 1
+                        val slot = (h - 6.dp * (n - 1)) / n
+                        val withText = slot - lh.small >= min(w, 34.dp)
+                        Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically), horizontalAlignment = Alignment.CenterHorizontally) {
+                            for (v in vols.take(n)) {
+                                val ring = min(w, if (withText) slot - lh.small else slot).coerceAtMost(84.dp)
+                                VolumeRing(v, ring)
+                                if (withText) FitLine("${bytes(ctx, v.free)} free", MaterialTheme.typography.labelSmall, Modifier.width(w), Palette.Muted, Alignment.Center)
+                            }
                         }
                     }
-                    Spacer(Modifier.height(8.dp))
-                    if (showList) StorageList(rows, sizes, Modifier.weight(1f).fillMaxWidth(), ctx, null, narrow = w < 200.dp)
-                    else Spacer(Modifier.weight(1f))
-                    if (extras) {
-                        val sz = sizes!!
-                        Text(
-                            "Art ${bytes(ctx, sz.mediaBytes)} · Cache ${bytes(ctx, sz.cacheBytes)}",
-                            style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                        )
+                    h < 106.dp -> {
+                        // One row: rings, then the list or the extras if there's room.
+                        val ring = min(h, 54.dp)
+                        Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            val maxRings = if (w > 230.dp) 2 else 1
+                            for (v in vols.take(maxRings)) VolumeChip(v, ring, ctx, chipLines, Modifier.weight(1f, fill = false))
+                            if (w > 330.dp && showList) StorageList(rows, sizes, Modifier.weight(1f), ctx, h)
+                            else if (w > 230.dp && vols.size < 2 && extras && h >= lh.small * 3) Extras(sizes!!, ctx, Modifier.weight(1f))
+                        }
+                    }
+                    else -> Column(Modifier.fillMaxSize()) {
+                        Header("◔", "Storage", Palette.Mint, trailing = if (StorageInfo.scanning) "measuring…" else null)
+                        Spacer(Modifier.height(6.dp))
+                        if (w < 200.dp) {
+                            val v = vols.first()
+                            VolumeChip(v, 52.dp, ctx, 3)
+                            vols.getOrNull(1)?.let { sd ->
+                                Spacer(Modifier.height(4.dp))
+                                Text("${sd.label} · ${bytes(ctx, sd.free)} free", style = MaterialTheme.typography.labelSmall, color = fullnessColor(sd.fraction, Palette.Sky), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            }
+                        } else {
+                            Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                                for (v in vols.take(2)) VolumeChip(v, if (h > 220.dp) 64.dp else 52.dp, ctx, 3, Modifier.weight(1f, fill = false))
+                            }
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        if (showList) StorageList(rows, sizes, Modifier.weight(1f).fillMaxWidth(), ctx, null, narrow = w < 200.dp)
+                        else Spacer(Modifier.weight(1f))
+                        if (extras) {
+                            val sz = sizes!!
+                            PartsText("Art ${bytes(ctx, sz.mediaBytes)} · Cache ${bytes(ctx, sz.cacheBytes)}", MaterialTheme.typography.labelSmall, color = Palette.Muted)
+                        }
                     }
                 }
             }
@@ -405,17 +503,24 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
 }
 
 @Composable
-private fun VolumeChip(v: VolumeInfo, ring: Dp, ctx: Context) {
+private fun VolumeRing(v: VolumeInfo, ring: Dp) {
     val color = fullnessColor(v.fraction, if (v.removable) Palette.Sky else Palette.Mint)
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Ring(v.fraction, color, Modifier.size(ring), stroke = if (ring > 56.dp) 8.dp else 6.dp) {
-            Text("${(v.fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, maxLines = 1)
-        }
+    Ring(v.fraction, color, Modifier.size(ring), stroke = ringStroke(ring)) {
+        RingLabel(ring) { Text("${(v.fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false) }
+    }
+}
+
+/** A volume's ring with up to three [lines] beside it: its name, the free space and "free". */
+@Composable
+private fun VolumeChip(v: VolumeInfo, ring: Dp, ctx: Context, lines: Int, modifier: Modifier = Modifier) {
+    val color = fullnessColor(v.fraction, if (v.removable) Palette.Sky else Palette.Mint)
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        VolumeRing(v, ring)
         Spacer(Modifier.width(7.dp))
-        Column {
-            Text(v.label, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
-            Text(bytes(ctx, v.free), style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, softWrap = false)
-            Text("free", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+        Column(Modifier.weight(1f, fill = false)) {
+            if (lines >= 2) FitLine(v.label, MaterialTheme.typography.labelMedium, color = Palette.Muted)
+            FitLine(if (lines == 3) bytes(ctx, v.free) else "${bytes(ctx, v.free)} free", MaterialTheme.typography.titleSmall, color = color)
+            if (lines >= 3) FitLine("free", MaterialTheme.typography.labelSmall, color = Palette.Muted)
         }
     }
 }
@@ -499,46 +604,77 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
             b.level <= 15 -> "Running low"
             else -> "On battery"
         }
+        // A short word for narrow cells, where "Fully charged" would have to shrink too far.
+        val shortStatus = when {
+            b.full -> "Charged"
+            b.charging -> "Charging"
+            b.plugged -> "Plugged in"
+            b.level <= 15 -> "Low"
+            else -> "On battery"
+        }
         val estimate = b.minutesLeft?.takeIf { s.on("estimate") }?.let { if (b.charging) "Full in ${hm(it)}" else "About ${hm(it)} left" }
         val temp = b.tempC?.takeIf { s.on("temp") }?.let { "${"%.0f".format(it)}°C" + if (it >= 42f) " · warm" else "" }
+        val lh = lineHeights()
         val ring = @Composable { size: Dp ->
             // Charging pulses on the shared ambient clock, read only in the layer (no recomposition per frame).
             val pulsing = rememberAmbient(b.charging && !Store.settings.reduceMotion)
             Ring(
                 b.level / 100f, color,
                 Modifier.size(size).graphicsLayer { alpha = if (pulsing) 0.55f + 0.45f * Ambient.pingPong(1100) else 1f },
-                stroke = if (size > 60.dp) 8.dp else 6.dp,
+                stroke = ringStroke(size),
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    if (b.charging) Text("⚡", style = MaterialTheme.typography.labelSmall, color = Palette.Butter)
-                    Text("${b.level}%", style = if (size > 60.dp) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleSmall, maxLines = 1)
+                RingLabel(size) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        if (b.charging && size >= 50.dp) Text("⚡", style = MaterialTheme.typography.labelSmall, color = Palette.Butter, maxLines = 1)
+                        Text("${b.level}%", style = if (size > 60.dp) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleSmall, maxLines = 1, softWrap = false)
+                    }
                 }
             }
         }
-        when {
-            s.small -> Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                ring(60.dp)
-                Spacer(Modifier.height(3.dp))
-                Text(temp?.let { "$status · ${it.substringBefore(' ')}" } ?: status, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
-            s.high -> Column(Modifier.fillMaxSize().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Header("⚡", "Battery", Palette.Butter)
-                Spacer(Modifier.weight(1f))
-                ring(84.dp)
-                Spacer(Modifier.height(8.dp))
-                Text(status, style = MaterialTheme.typography.titleSmall, color = color)
-                estimate?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1) }
-                temp?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1) }
-                Spacer(Modifier.weight(1f))
-            }
-            else -> Row(Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                ring(62.dp)
-                Spacer(Modifier.width(12.dp))
-                Column(Modifier.weight(1f)) {
-                    Text("Battery", style = MaterialTheme.typography.labelMedium, color = Palette.Butter)
-                    Text(status, style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1)
-                    estimate?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis) }
-                    temp?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1) }
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            // A small cell keeps the ring big: 8 dp around it, as before.
+            val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(if (maxWidth < 100.dp) 8.dp else 12.dp)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad), contentAlignment = Alignment.Center) {
+                if (w >= h * 1.5f && w >= 140.dp) {
+                    // Wide: the ring beside its lines, the less important lines dropped when they don't fit.
+                    val heights = listOf(lh.title, lh.small, lh.small, lh.small) // status, estimate, temperature, "Battery"
+                    val wanted = listOf(true, estimate != null, temp != null, true)
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, h)
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        ring(min(h, 62.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
+                            if (3 in kept) FitLine("Battery", MaterialTheme.typography.labelMedium, color = Palette.Butter)
+                            FitLine(status, MaterialTheme.typography.titleSmall, color = color)
+                            if (1 in kept) estimate?.let { FitLine(it, MaterialTheme.typography.labelMedium, color = Palette.Muted) }
+                            if (2 in kept) temp?.let { FitLine(it, MaterialTheme.typography.labelMedium, color = Palette.Muted) }
+                        }
+                    }
+                } else {
+                    // Stacked: the ring takes what the lines leave, and keeps at least about half the cell.
+                    val big = s.high && w >= 110.dp
+                    val statusLine = if (big) lh.title else lh.small
+                    val heights = listOf(statusLine + 3.dp, lh.small, lh.small, lh.title + 6.dp) // status, temperature, estimate, header
+                    val wanted = listOf(true, temp != null, estimate != null && big, s.high && w >= 110.dp)
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, h, keep = max(h * 0.45f, 28.dp))
+                    val used = kept.sumOf { heights[it].value.toDouble() }.dp
+                    val ringSize = min(min(w, h - used), if (big) 84.dp else 64.dp)
+                    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        if (3 in kept) {
+                            Header("⚡", "Battery", Palette.Butter)
+                            Spacer(Modifier.height(6.dp))
+                        }
+                        ring(ringSize)
+                        if (0 in kept) {
+                            Spacer(Modifier.height(3.dp))
+                            if (big) FitLine(status, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), color, Alignment.Center)
+                            else FitLine(if (w < 64.dp) shortStatus else status, MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center)
+                        }
+                        if (2 in kept) estimate?.let { FitLine(it, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center) }
+                        if (1 in kept) temp?.let { FitLine(if (big) it else it.substringBefore(' '), if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center) }
+                    }
                 }
             }
         }
@@ -568,28 +704,42 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
         Widgets.setOption(s.widget.id, "style", next.first)
         Toasts.show("Clock style: ${next.second}")
     }) { _, _ ->
-        BoxWithConstraints(Modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.Center) {
-            val w = maxWidth
-            val h = maxHeight
+        val lh = lineHeights()
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+          val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(10.dp)
+          val w = maxWidth - pad * 2
+          val h = maxHeight - pad * 2
+          // Whatever the style, the clock shrinks to fit whole rather than being cut.
+          ShrinkToFit(Modifier.fillMaxSize().padding(pad)) {
             when (style) {
                 "analog" -> {
+                    val timeLine = time + (ampm?.let { " $it" } ?: "")
                     if (s.small || (w < 200.dp && h < 130.dp)) {
                         AnalogFace(now, seconds, Modifier.size(min(w, h)))
                     } else if (h > w * 1.2f || (h > 150.dp && w < 220.dp)) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            AnalogFace(now, seconds, Modifier.size(min(w, h - 44.dp)))
-                            Spacer(Modifier.height(6.dp))
-                            Text(time + (ampm?.let { " $it" } ?: ""), style = MaterialTheme.typography.titleMedium)
-                            if (showDate) Text(date, style = MaterialTheme.typography.labelLarge, color = Palette.Lavender)
+                        // The face over the time and date, each line only when the face keeps most of the room.
+                        val kept = fitting(listOf(lh.title + 10.dp, lh.title), h, keep = min(w, h * 0.55f)).let { k -> if (showDate) k else k - 1 }
+                        val faceH = h - (if (0 in kept) lh.title + 10.dp else 0.dp) - (if (1 in kept) lh.title else 0.dp)
+                        Column(Modifier.width(w), horizontalAlignment = Alignment.CenterHorizontally) {
+                            AnalogFace(now, seconds, Modifier.size(min(w, faceH)))
+                            if (0 in kept) {
+                                Spacer(Modifier.height(6.dp))
+                                FitLine(timeLine, MaterialTheme.typography.titleMedium, Modifier.width(w), alignment = Alignment.Center)
+                            }
+                            if (1 in kept) FitLine(date, MaterialTheme.typography.labelLarge, Modifier.width(w), Palette.Lavender, Alignment.Center)
                         }
                     } else {
+                        val face = min(h, w / 2)
+                        val textW = w - face - 14.dp
+                        // The day, the date and the time beside the face, dropping the date, then the time, when low.
+                        val kept = fitting(listOf(lh.large, lh.title, lh.title), h).let { k -> if (showDate) k else k - 1 }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            AnalogFace(now, seconds, Modifier.size(min(h, w / 2)))
+                            AnalogFace(now, seconds, Modifier.size(face))
                             Spacer(Modifier.width(14.dp))
-                            Column {
-                                Text(now.format(DateTimeFormatter.ofPattern("EEEE")), style = MaterialTheme.typography.titleLarge, maxLines = 1)
-                                if (showDate) Text(now.format(DateTimeFormatter.ofPattern("d MMMM")), style = MaterialTheme.typography.titleSmall, color = Palette.Lavender, maxLines = 1)
-                                Text(time + (ampm?.let { " $it" } ?: ""), style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
+                            Column(Modifier.width(textW)) {
+                                FitLine(now.format(DateTimeFormatter.ofPattern("EEEE")), MaterialTheme.typography.titleLarge, Modifier.width(textW))
+                                if (1 in kept) FitLine(now.format(DateTimeFormatter.ofPattern("d MMMM")), MaterialTheme.typography.titleSmall, Modifier.width(textW), Palette.Lavender)
+                                if (2 in kept) FitLine(timeLine, MaterialTheme.typography.labelLarge, Modifier.width(textW), Palette.Muted)
                             }
                         }
                     }
@@ -600,19 +750,21 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                     if (stacked) {
                         val hours = now.format(DateTimeFormatter.ofPattern(if (is24) "HH" else "h"))
                         val mins = now.format(DateTimeFormatter.ofPattern("mm"))
-                        val big = (min(w * 0.62f, h * 0.34f).value).sp
+                        val pill = showDate && h * 0.32f >= 26.dp
+                        val big = (min(w * 0.62f, h * (if (pill) 0.34f else 0.44f)).value).sp
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(hours, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black))
-                            Text(mins, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black))
-                            if (showDate) Pill(now.format(DateTimeFormatter.ofPattern("EEEE")), Palette.Lavender)
+                            Text(hours, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
+                            Text(mins, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
+                            if (pill) Pill(now.format(DateTimeFormatter.ofPattern(if (w < 90.dp) "EEE" else "EEEE")), Palette.Lavender)
                         }
                     } else {
-                        val big = (min(h * (if (showDate) 0.52f else 0.7f), w / (time.length * 0.62f + 0.5f)).value).sp
+                        val dated = showDate && h >= lh.title + 34.dp
+                        val big = (min((h - if (dated) lh.title else 0.dp) * 0.92f, w / (time.length * 0.62f + 0.5f)).value).sp
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(time, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1)
-                            if (showDate) Text(
+                            Text(time, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
+                            if (dated) FitLine(
                                 now.format(DateTimeFormatter.ofPattern("EEEE")) + (ampm?.let { " · $it" } ?: ""),
-                                style = MaterialTheme.typography.labelLarge, color = Palette.Lavender, maxLines = 1,
+                                MaterialTheme.typography.labelLarge, Modifier.widthIn(max = w), Palette.Lavender, Alignment.Center,
                             )
                         }
                     }
@@ -624,19 +776,23 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                         w > 380.dp -> 48f
                         else -> 40f
                     }
+                    // The date goes first, then the seconds and AM / PM, when the time would otherwise get small.
+                    val dated = showDate && h >= lh.title + 26.dp
+                    val roomy = w >= 96.dp
+                    val tail = if (roomy) listOfNotNull(secs, ampm?.let { " $it" }).joinToString("") else ""
                     // Never wider than the card: Nunito digits are about 0.6 em wide.
-                    val tailEm = (if (secs != null) 1.2f else 0f) + (if (ampm != null) 1.1f else 0f)
-                    val main = minOf(wanted, w.value / (time.length * 0.6f + tailEm + 0.3f)).sp
+                    val tailEm = if (tail.isEmpty()) 0f else (if (secs != null) 1.2f else 0f) + (if (ampm != null) 1.1f else 0f)
+                    val main = minOf(wanted, w.value / (time.length * 0.6f + tailEm + 0.3f), (h - if (dated) lh.title else 0.dp).value * 0.95f).sp
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.Bottom) {
-                            Text(time, style = MaterialTheme.typography.displaySmall.copy(fontSize = main, lineHeight = main), maxLines = 1)
-                            val tail = listOfNotNull(secs, ampm?.let { " $it" }).joinToString("")
-                            if (tail.isNotEmpty()) Text(tail, Modifier.padding(bottom = 4.dp, start = 2.dp), style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1)
+                            Text(time, style = MaterialTheme.typography.displaySmall.copy(fontSize = main, lineHeight = main), maxLines = 1, softWrap = false)
+                            if (tail.isNotEmpty()) Text(tail, Modifier.padding(bottom = 4.dp, start = 2.dp), style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1, softWrap = false)
                         }
-                        if (showDate) Text(date, style = MaterialTheme.typography.labelLarge, color = Palette.Lavender, maxLines = 1)
+                        if (dated) FitLine(date, MaterialTheme.typography.labelLarge, Modifier.widthIn(max = w), Palette.Lavender, Alignment.Center)
                     }
                 }
             }
+          }
         }
     }
 }
@@ -674,63 +830,83 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
     val others = (RunningGames.list.size - 1).coerceAtLeast(0)
     val game = r?.game
     val color = game?.let { Palette.forName(it.platform.id) } ?: Palette.Mint
-    val twoParts = r != null && others > 0 && !s.small
-    WidgetCard(s, m, accent = color, cursorCount = if (twoParts) 2 else 0, onClick = { i ->
-        when {
-            r == null -> Toasts.show(if (RunningGames.canSee) "Start a game and it'll wait here" else "Allow Tandem in Shizuku to see running games")
-            i == 1 && twoParts -> Panels.openSwitcher()
-            else -> RunningGames.resume(Host.activity ?: ctx, r)
+    val lh = lineHeights()
+    BoxWithConstraints(m) {
+        val pad = widgetPad(maxWidth, maxHeight)
+        val w = maxWidth - pad * 2
+        val h = maxHeight - pad * 2
+        // The layout comes from the room: a tile (the art with the name on it), stacked (art over the name) or a row.
+        // The Resume and "+N" chips need room of their own; without them A resumes, and there is no second stop.
+        val tile = s.small || w < 110.dp || h < 40.dp
+        val stacked = !tile && (s.high || h > w * 1.1f)
+        val chips = when {
+            tile -> false
+            stacked -> h >= 170.dp && w >= 100.dp
+            else -> w >= 240.dp
         }
-    }) { focused, cursor ->
-        if (r == null || game == null) {
-            Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                if (!s.small) { Pip(48.dp, mood = 2); Spacer(Modifier.width(8.dp)) }
-                EmptyNote(
-                    "▶", if (RunningGames.canSee) "Nothing running" else "Can't see games",
-                    if (RunningGames.canSee) "Games you leave open wait here" else "Needs Shizuku", Palette.Mint, compact = true,
-                    modifier = Modifier.weight(1f, fill = false),
-                )
+        val twoParts = r != null && others > 0 && chips && (stacked || h >= 60.dp)
+        WidgetCard(s, Modifier.fillMaxSize(), accent = color, cursorCount = if (twoParts) 2 else 0, onClick = { i ->
+            when {
+                r == null -> Toasts.show(if (RunningGames.canSee) "Start a game and it'll wait here" else "Allow Tandem in Shizuku to see running games")
+                i == 1 && twoParts -> Panels.openSwitcher()
+                else -> RunningGames.resume(Host.activity ?: ctx, r)
             }
-            return@WidgetCard
-        }
-        val lib = Libraries.of(game)
-        val hero = lib?.hero(game) ?: lib?.screenshot(game)
-        if (s.small) {
-            // The art fades into the card's own tint where the name sits (a mask, not a dark band), and the name
-            // carries a soft shadow.
-            Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.45f to 1f, 1f to 0.3f)) { GameArt(game) }
-            Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopStart).padding(6.dp).darkChip())
-            Text(game.title, Modifier.align(Alignment.BottomStart).padding(TextInset), style = MaterialTheme.typography.labelLarge.onArt(), maxLines = 2, overflow = TextOverflow.Ellipsis)
-            return@WidgetCard
-        }
-        // The art fades out on the left, where the text sits, into the card's own tint: no dark band over it.
-        if (hero != null) AsyncImage(hero, null, Modifier.fillMaxSize().fadeMaskHorizontal(0f to 0.1f, 0.5f to 0.4f, 1f to 1f), contentScale = ContentScale.Crop)
-        val played = RunningGames.sessionSeconds(r)
-        val detail = if (played != null && played > 60) "${game.platform.shortName} · ${shortPlay(played)} this time" else "${game.platform.shortName} · ${r.appName}"
-        if (s.high) {
-            Column(Modifier.fillMaxSize().padding(12.dp)) {
-                Text("● NOW PLAYING", style = MaterialTheme.typography.labelMedium, color = Palette.Mint)
-                Spacer(Modifier.height(6.dp))
-                Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).clip(RoundedCornerShape(14.dp))) { GameArt(game) }
-                Spacer(Modifier.height(6.dp))
-                Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
-                    Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
-                    if (twoParts) Chip("+$others", Palette.Lavender, focused && cursor == 1)
+        }) { focused, cursor ->
+            if (r == null || game == null) {
+                Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                    if (!s.small && w >= 150.dp && h >= 40.dp) { Pip(min(h, 48.dp), mood = 2); Spacer(Modifier.width(8.dp)) }
+                    EmptyNote(
+                        "▶", if (RunningGames.canSee) "Nothing running" else "Can't see games",
+                        if (RunningGames.canSee) "Games you leave open wait here" else "Needs Shizuku", Palette.Mint, compact = true,
+                        modifier = Modifier.weight(1f, fill = false),
+                    )
                 }
+                return@WidgetCard
             }
-        } else {
-            Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.fillMaxHeight().aspectRatio(1f).clip(RoundedCornerShape(12.dp))) { GameArt(game) }
-                Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                    Text("● PAUSED IN ${r.appName.uppercase()}", style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            val lib = Libraries.of(game)
+            val hero = lib?.hero(game) ?: lib?.screenshot(game)
+            if (tile) {
+                // The art fades into the card's own tint where the name sits (a mask, not a dark band), and the name
+                // carries a soft shadow.
+                Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.45f to 1f, 1f to 0.3f)) { GameArt(game) }
+                if (w >= 96.dp) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopStart).padding(6.dp).darkChip())
+                // The name only where it fits whole words; on the smallest cells the art says it.
+                if (w >= 64.dp && h >= 44.dp) ShrinkText(game.title, MaterialTheme.typography.labelLarge.onArt(), Modifier.align(Alignment.BottomStart).padding(pad), maxLines = 2, minScale = 0.8f)
+                return@WidgetCard
+            }
+            // The art fades out on the left, where the text sits, into the card's own tint: no dark band over it.
+            if (hero != null) AsyncImage(hero, null, Modifier.fillMaxSize().fadeMaskHorizontal(0f to 0.1f, 0.5f to 0.4f, 1f to 1f), contentScale = ContentScale.Crop)
+            val played = RunningGames.sessionSeconds(r)
+            val detail = if (played != null && played > 60) "${game.platform.shortName} · ${shortPlay(played)} this time" else "${game.platform.shortName} · ${r.appName}"
+            if (stacked) {
+                Column(Modifier.fillMaxSize().padding(pad)) {
+                    if (h >= 120.dp) {
+                        FitLine("● NOW PLAYING", MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Mint)
+                        Spacer(Modifier.height(6.dp))
+                    }
+                    Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).clip(RoundedCornerShape(14.dp))) { GameArt(game) }
+                    Spacer(Modifier.height(6.dp))
+                    Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = if (h >= 140.dp) 2 else 1, overflow = TextOverflow.Ellipsis)
+                    if (h >= 140.dp) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    if (chips) Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
+                        Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
+                        if (twoParts) Chip("+$others", Palette.Lavender, focused && cursor == 1)
+                    }
                 }
-                Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
-                    if (twoParts) Chip("+$others more", Palette.Lavender, focused && cursor == 1)
+            } else {
+                // Beside the art: the name first, then where it's paused, then the detail, as the height allows.
+                val kept = fitting(listOf(lh.title, lh.small, lh.small, lh.title), h) // name, label, detail, a second name line
+                Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.fillMaxHeight().aspectRatio(1f).clip(RoundedCornerShape(12.dp))) { GameArt(game) }
+                    Column(Modifier.weight(1f).padding(start = 10.dp)) {
+                        if (1 in kept) Text("● PAUSED IN ${r.appName.uppercase()}", style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
+                        if (2 in kept) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                    if (chips) Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
+                        if (twoParts) Chip("+$others more", Palette.Lavender, focused && cursor == 1)
+                    }
                 }
             }
         }
@@ -761,12 +937,15 @@ private fun GameStrip(
     val accent = s.kind.accent
     val act: (StripItem) -> Unit = onItem ?: { it.game?.let { g -> play(ctx, g) } }
     BoxWithConstraints(m) {
-        val pad = 10.dp
-        val header = 20.dp
-        val gap = 8.dp
+        val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(10.dp)
+        // The header only when it leaves the games room of their own (it names the highlighted game, so it stays
+        // whenever it can).
+        val header = if (maxHeight - pad * 2 >= 20.dp + 40.dp) 20.dp else 0.dp
+        val gap = if (maxHeight < 100.dp) 6.dp else 8.dp
         val innerW = maxWidth - pad * 2
-        val innerH = maxHeight - pad * 2 - header
-        val list = s.size == Tall || (s.high && maxWidth < 220.dp)
+        val innerH = maxHeight - pad * 2 - header - 2.dp
+        // A list (art and name) needs width for the names; a narrow card shows the art alone, one under the other.
+        val list = (s.size == Tall || (s.high && maxWidth < 220.dp)) && innerW >= 150.dp
         val capacity: Int
         val tile: Dp
         val perRow: Int
@@ -775,8 +954,13 @@ private fun GameStrip(
             perRow = 1
             capacity = ((innerH + 6.dp) / (tile + 6.dp)).toInt().coerceAtLeast(1)
         } else {
-            val lines = ((innerH + gap) / (76.dp + gap)).toInt().coerceIn(1, 3)
-            tile = ((innerH - gap * (lines - 1)) / lines).coerceAtMost(120.dp)
+            var lines = ((innerH + gap) / (76.dp + gap)).toInt().coerceIn(1, 3)
+            var t = ((innerH - gap * (lines - 1)) / lines).coerceAtMost(120.dp)
+            if (t > innerW) {
+                t = innerW
+                lines = ((innerH + gap) / (t + gap)).toInt().coerceAtLeast(1)
+            }
+            tile = t
             perRow = ((innerW + gap) / (tile + gap)).toInt().coerceAtLeast(1)
             capacity = perRow * lines
         }
@@ -791,7 +975,7 @@ private fun GameStrip(
                     cursor < shown.size -> shown[cursor].label
                     else -> "Add to Up next"
                 }
-                Header(s.kind.icon, label, accent, Modifier.height(header), trailing = if (items.isNotEmpty() && !focused) "${items.size}" else null)
+                if (header > 0.dp) Header(s.kind.icon, label, accent, Modifier.height(header), trailing = if (items.isNotEmpty() && !focused) "${items.size}" else null)
                 if (shown.isEmpty() && addSlot == null) {
                     EmptyNote(s.kind.icon, emptyTitle, emptyDetail, accent, compact = true)
                     return@Column
@@ -835,7 +1019,7 @@ private fun GameStrip(
                                             if (it.done) Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.lerp(Palette.Mint, Palette.NightDeep, 0.7f).copy(alpha = 0.6f)), contentAlignment = Alignment.Center) {
                                                 Text("✓", style = MaterialTheme.typography.headlineSmall, color = Palette.Mint)
                                             }
-                                            it.badge?.let { b -> Pill(b, Palette.Sky, Modifier.align(Alignment.BottomStart).padding(3.dp).darkChip()) }
+                                            if (tile >= 60.dp) it.badge?.let { b -> Pill(b, Palette.Sky, Modifier.align(Alignment.BottomStart).padding(3.dp).darkChip()) }
                                         }
                                     } else {
                                         Box(
@@ -847,7 +1031,7 @@ private fun GameStrip(
                             }
                         }
                     }
-                    if (shown.isEmpty()) {
+                    if (shown.isEmpty() && innerH - tile >= 24.dp) {
                         Spacer(Modifier.height(4.dp))
                         Text(emptyDetail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
@@ -930,6 +1114,7 @@ private fun SurpriseWidget(s: WidgetScope, m: Modifier) {
     LaunchedEffect(id, kind, libs) { Surprise.ensure(id, kind) }
     val game = Surprise.current(id, kind)
     val spin by animateFloatAsState(Surprise.spins(id) * 360f, spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessLow), label = "dice")
+    val lh = lineHeights()
     WidgetCard(s, m, accent = Palette.Lavender, cursorCount = if (game != null) 2 else 0, onClick = { i ->
         if (game == null) Toasts.show("Nothing to pick from yet")
         else if (i == 1) Surprise.reroll(id, kind) else play(ctx, game)
@@ -938,38 +1123,52 @@ private fun SurpriseWidget(s: WidgetScope, m: Modifier) {
             EmptyNote("🎲", if (kind == "favorites") "No favorites yet" else "No games yet", "Nothing to pick from", Palette.Lavender, compact = s.small)
             return@WidgetCard
         }
-        val dice = @Composable { mod: Modifier ->
+        val dice = @Composable { mod: Modifier, size: Dp ->
             Box(
-                mod.size(30.dp).clip(CircleShape).background(if (focused && cursor == 1) Palette.Lavender else Palette.NightDeep.copy(alpha = 0.8f))
+                mod.size(size).clip(CircleShape).background(if (focused && cursor == 1) Palette.Lavender else Palette.NightDeep.copy(alpha = 0.8f))
                     .widgetTap(s) { Surprise.reroll(id, kind) },
                 contentAlignment = Alignment.Center,
-            ) { Text("🎲", Modifier.graphicsLayer { rotationZ = spin }, fontSize = 15.sp) }
+            ) { Text("🎲", Modifier.graphicsLayer { rotationZ = spin }, fontSize = (size.value * 0.5f).sp, maxLines = 1) }
         }
-        Crossfade(game, label = "pick") { g ->
-            when {
-                s.small -> Box(Modifier.fillMaxSize()) {
-                    Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.45f to 1f, 1f to 0.3f)) { GameArt(g) }
-                    Text(g.title, Modifier.align(Alignment.BottomStart).padding(TextInset).fillMaxWidth(0.8f), style = MaterialTheme.typography.labelLarge.onArt(), maxLines = 2, overflow = TextOverflow.Ellipsis)
-                }
-                s.high -> Column(Modifier.fillMaxSize().padding(10.dp)) {
-                    Header("🎲", "Surprise me", Palette.Lavender)
-                    Spacer(Modifier.height(6.dp))
-                    Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).picked(focused && cursor == 0, Palette.Butter, RoundedCornerShape(14.dp)).clip(RoundedCornerShape(14.dp))) { GameArt(g) }
-                    Spacer(Modifier.height(6.dp))
-                    Text(g.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    Text(g.platform.name, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
-                }
-                else -> Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.fillMaxHeight().aspectRatio(1f).picked(focused && cursor == 0, Palette.Butter, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))) { GameArt(g) }
-                    Column(Modifier.weight(1f).padding(start = 10.dp, end = 30.dp)) {
-                        Text("🎲 How about…", style = MaterialTheme.typography.labelMedium, color = Palette.Lavender, maxLines = 1)
-                        Text(g.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        Text(g.platform.shortName, style = MaterialTheme.typography.labelSmall, color = Palette.forName(g.platform.id), maxLines = 1)
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(10.dp)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            val diceSize = (min(maxWidth, maxHeight) * 0.3f).coerceIn(20.dp, 30.dp)
+            // A tile (the art with the name on it), stacked (art over the name) or a row, from the room there is.
+            // A row needs about 80 dp for the name beside the art and the dice.
+            val tile = s.small || w < 110.dp || h < 40.dp || (!s.high && h <= w * 1.1f && w - h - 10.dp - diceSize < 80.dp)
+            val stacked = !tile && (s.high || h > w * 1.1f)
+            Crossfade(game, label = "pick") { g ->
+                when {
+                    tile -> Box(Modifier.fillMaxSize()) {
+                        Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.45f to 1f, 1f to 0.3f)) { GameArt(g) }
+                        if (w >= 64.dp && h >= 44.dp) ShrinkText(g.title, MaterialTheme.typography.labelLarge.onArt(), Modifier.align(Alignment.BottomStart).padding(pad).fillMaxWidth(0.8f), maxLines = 2, minScale = 0.8f)
+                    }
+                    stacked -> Column(Modifier.fillMaxSize().padding(pad)) {
+                        if (w >= 110.dp && h >= 150.dp) {
+                            Header("🎲", "Surprise me", Palette.Lavender, Modifier.padding(end = diceSize))
+                            Spacer(Modifier.height(6.dp))
+                        }
+                        Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).picked(focused && cursor == 0, Palette.Butter, RoundedCornerShape(14.dp)).clip(RoundedCornerShape(14.dp))) { GameArt(g) }
+                        Spacer(Modifier.height(6.dp))
+                        Text(g.title, style = MaterialTheme.typography.titleSmall, maxLines = if (h >= 140.dp) 2 else 1, overflow = TextOverflow.Ellipsis)
+                        if (h >= 150.dp) Text(g.platform.name, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    }
+                    else -> Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.fillMaxHeight().aspectRatio(1f).picked(focused && cursor == 0, Palette.Butter, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))) { GameArt(g) }
+                        // The name first, then the prompt and the system as the height allows.
+                        val kept = fitting(listOf(lh.title, lh.small, lh.small, lh.title), h) // name, prompt, system, a second name line
+                        Column(Modifier.weight(1f).padding(start = 10.dp, end = diceSize)) {
+                            if (1 in kept) Text("🎲 How about…", style = MaterialTheme.typography.labelMedium, color = Palette.Lavender, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(g.title, style = MaterialTheme.typography.titleSmall, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
+                            if (2 in kept) Text(g.platform.shortName, style = MaterialTheme.typography.labelSmall, color = Palette.forName(g.platform.id), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
                     }
                 }
             }
+            dice(Modifier.align(Alignment.TopEnd).padding(if (tile) 4.dp else 6.dp), diceSize)
         }
-        dice(Modifier.align(Alignment.TopEnd).padding(6.dp))
     }
 }
 
@@ -1009,33 +1208,52 @@ fun rememberMiniStats(): MiniStats {
 private fun StatsWidget(s: WidgetScope, m: Modifier) {
     val st = rememberMiniStats()
     val streak = if (st.streak == 0) "No streak yet" else "🔥 ${plural(st.streak, "day", "days")}"
+    val streakColor = if (st.streak > 0) Palette.Peach else Palette.Muted
+    val week = "${shortPlay(st.week)} this week"
+    val lh = lineHeights()
     WidgetCard(s, m, onClick = { StatsTabs.tab = 0; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
-        Box(Modifier.fillMaxSize().padding(12.dp)) {
-            when {
-                s.small -> Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                    Text("★ Today", style = MaterialTheme.typography.labelLarge, color = Palette.Butter)
-                    Text(shortPlay(st.today), style = MaterialTheme.typography.headlineSmall, maxLines = 1)
-                    Text(streak, style = MaterialTheme.typography.labelMedium, color = if (st.streak > 0) Palette.Peach else Palette.Muted, maxLines = 1)
-                }
-                s.high -> Column(Modifier.fillMaxSize()) {
-                    Header("★", "Play time", Palette.Butter)
-                    Spacer(Modifier.height(6.dp))
-                    Text("Today", style = MaterialTheme.typography.labelMedium, color = Palette.Muted)
-                    Text(shortPlay(st.today), style = MaterialTheme.typography.headlineSmall, maxLines = 1)
-                    Text("${shortPlay(st.week)} this week", style = MaterialTheme.typography.labelLarge, color = Palette.Mint, maxLines = 1)
-                    Text(streak, style = MaterialTheme.typography.labelLarge, color = if (st.streak > 0) Palette.Peach else Palette.Muted, maxLines = 1)
-                    Spacer(Modifier.height(8.dp))
-                    WeekBars(st.days, Modifier.fillMaxWidth().weight(1f), labels = true)
-                }
-                else -> Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.widthIn(min = 84.dp)) {
-                        Text("★ Today", style = MaterialTheme.typography.labelLarge, color = Palette.Butter)
-                        Text(shortPlay(st.today), style = MaterialTheme.typography.titleLarge, maxLines = 1)
-                        Text("${shortPlay(st.week)} this week", style = MaterialTheme.typography.labelMedium, color = Palette.Mint, maxLines = 1)
-                        Text(streak, style = MaterialTheme.typography.labelMedium, color = if (st.streak > 0) Palette.Peach else Palette.Muted, maxLines = 1)
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad)) {
+                if (!s.small && w >= 170.dp && h < w * 0.75f) {
+                    // The numbers beside the week's bars; the lines after today's time go first when it's low.
+                    val kept = fitting(listOf(lh.large, lh.title, lh.small, lh.small), h) // today, label, week, streak
+                    val colW = (w * 0.45f).coerceIn(84.dp, 130.dp)
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.width(colW)) {
+                            if (1 in kept) FitLine("★ Today", MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), Palette.Butter)
+                            FitLine(shortPlay(st.today), MaterialTheme.typography.titleLarge, Modifier.fillMaxWidth())
+                            if (2 in kept) FitLine(week, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Mint)
+                            if (3 in kept) FitLine(streak, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), streakColor)
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        WeekBars(st.days, Modifier.weight(1f).fillMaxHeight(), labels = s.size == Wide && h >= 60.dp)
                     }
-                    Spacer(Modifier.width(12.dp))
-                    WeekBars(st.days, Modifier.weight(1f).fillMaxHeight(), labels = s.size == Wide)
+                } else {
+                    // Stacked: today's time first, then its label, the streak, the week and the header; the bars take
+                    // what's left when that's enough to read them.
+                    val headed = s.high && w >= 110.dp
+                    val heights = listOf(lh.head, lh.title, lh.title, lh.title, lh.title + 6.dp) // today, label, streak, week, header
+                    val wanted = listOf(true, true, true, s.high, headed)
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, h)
+                    val left = h - kept.sumOf { heights[it].value.toDouble() }.dp
+                    val bars = s.high && left >= 44.dp
+                    Column(Modifier.fillMaxSize(), verticalArrangement = if (bars) Arrangement.Top else Arrangement.Center) {
+                        if (4 in kept) {
+                            Header("★", "Play time", Palette.Butter)
+                            Spacer(Modifier.height(6.dp))
+                        }
+                        if (1 in kept) FitLine(if (s.high) "Today" else "★ Today", if (s.high) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), if (s.high) Palette.Muted else Palette.Butter)
+                        FitLine(shortPlay(st.today), MaterialTheme.typography.headlineSmall, Modifier.fillMaxWidth())
+                        if (3 in kept) FitLine(week, MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), Palette.Mint)
+                        if (2 in kept) FitLine(streak, if (s.high) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), streakColor)
+                        if (bars) {
+                            Spacer(Modifier.height(8.dp))
+                            WeekBars(st.days, Modifier.fillMaxWidth().weight(1f), labels = left >= 64.dp)
+                        }
+                    }
                 }
             }
         }
@@ -1104,40 +1322,53 @@ private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
     val owner = LocalLifecycleOwner.current
     LaunchedEffect(owner, RaRecent.version) { owner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) { RaRecent.refresh() } }
     val list = RaRecent.list
+    val lh = lineHeights()
     WidgetCard(s, m, onClick = { StatsTabs.tab = 2; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
-        Column(Modifier.fillMaxSize().padding(12.dp)) {
-            if (list == null || list.isEmpty()) {
-                Header("🏆", "Achievements", Palette.Butter)
-                EmptyNote("🏆", if (list == null) "Checking…" else "No unlocks this month", if (list == null) null else "Your next one shows up here", Palette.Butter, compact = true)
-                return@Column
-            }
-            val first = list.first()
-            if (s.high) {
-                Header("🏆", "Latest unlocks", Palette.Butter)
-                Spacer(Modifier.height(6.dp))
-                BoxWithConstraints(Modifier.weight(1f)) {
-                    val n = ((maxHeight + 6.dp) / 46.dp).toInt().coerceAtLeast(1)
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        for (a in list.take(n)) Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(40.dp)) {
-                            AsyncImage(a.badgeUrl, null, Modifier.size(40.dp).clip(RoundedCornerShape(8.dp)))
-                            Column(Modifier.padding(start = 8.dp)) {
-                                Text(a.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text("${a.game} · ${a.points} pts", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Column(Modifier.fillMaxSize().padding(pad)) {
+                if (list == null || list.isEmpty()) {
+                    if (h >= 80.dp) Header("🏆", "Achievements", Palette.Butter)
+                    EmptyNote("🏆", if (list == null) "Checking…" else "No unlocks this month", if (list == null) null else "Your next one shows up here", Palette.Butter, compact = true)
+                    return@Column
+                }
+                val first = list.first()
+                if (s.high || h > w * 1.1f) {
+                    if (h >= 100.dp) {
+                        Header("🏆", "Latest unlocks", Palette.Butter)
+                        Spacer(Modifier.height(6.dp))
+                    }
+                    // Badges with their names when there's width for them, else the badges alone.
+                    val named = w >= 120.dp
+                    val badge = min(40.dp, w)
+                    BoxWithConstraints(Modifier.weight(1f)) {
+                        val n = ((maxHeight + 6.dp) / (badge + 6.dp)).toInt().coerceAtLeast(1)
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            for (a in list.take(n)) Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(badge)) {
+                                AsyncImage(a.badgeUrl, null, Modifier.size(badge).clip(RoundedCornerShape(8.dp)))
+                                if (named) Column(Modifier.weight(1f).padding(start = 8.dp)) {
+                                    Text(a.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text("${a.game} · ${a.points} pts", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                    AsyncImage(first.badgeUrl, null, Modifier.size(58.dp).clip(RoundedCornerShape(12.dp)))
-                    Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                        Text("🏆 Latest unlock", style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1)
-                        Text(first.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text("${first.game} · ${first.points} pts${if (first.hardcore) " · hardcore" else ""}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                    }
-                    if (s.size == Wide) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            for (a in list.drop(1).take(3)) AsyncImage(a.badgeUrl, null, Modifier.size(38.dp).clip(RoundedCornerShape(8.dp)))
+                } else {
+                    // The newest badge beside its name, then the label and the game as the height allows.
+                    val kept = fitting(listOf(lh.title, lh.small, lh.small, lh.small), h) // title, label, game, game's second line
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        AsyncImage(first.badgeUrl, null, Modifier.size(min(h, 58.dp)).clip(RoundedCornerShape(12.dp)))
+                        Column(Modifier.weight(1f).padding(start = 10.dp)) {
+                            if (1 in kept) Text("🏆 Latest unlock", style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(first.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            if (2 in kept) Text("${first.game} · ${first.points} pts${if (first.hardcore) " · hardcore" else ""}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
+                        }
+                        if (s.size == Wide && w >= 300.dp) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                for (a in list.drop(1).take(3)) AsyncImage(a.badgeUrl, null, Modifier.size(min(h, 38.dp)).clip(RoundedCornerShape(8.dp)))
+                            }
                         }
                     }
                 }
@@ -1177,32 +1408,57 @@ private fun PipWidget(s: WidgetScope, m: Modifier) {
     val text = lines[line % lines.size]
     WidgetCard(s, m, accent = Palette.Peach, onClick = { line++; hops++ }) { _, _ ->
         val pip = @Composable { size: Dp -> Pip(size, Modifier.graphicsLayer { translationY = -hop.value * size.toPx() * 0.18f }, mood = mood) }
-        when {
-            s.small -> Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                pip(if (talk) 52.dp else 72.dp)
-                if (talk) Text(text, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            }
-            s.high -> Column(Modifier.fillMaxSize().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                pip(96.dp)
-                if (talk) {
-                    Spacer(Modifier.height(10.dp))
-                    Bubble(text, Modifier.fillMaxWidth())
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad), contentAlignment = Alignment.Center) {
+                if (w >= h * 1.4f && w >= 150.dp) {
+                    // Pip beside the bubble, when the bubble gets room to say something.
+                    val size = min(h, 72.dp)
+                    val bubble = talk && w - size - 10.dp >= 90.dp
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        pip(size)
+                        Spacer(Modifier.width(10.dp))
+                        if (bubble) Bubble(text, Modifier.weight(1f), small = h < 64.dp)
+                        else FitLine("Pip", MaterialTheme.typography.titleLarge, Modifier.weight(1f), Palette.Peach)
+                    }
+                } else {
+                    // Pip over its words, which go first when they would leave Pip too small.
+                    val big = s.high && w >= 110.dp
+                    val words = if (big) 74.dp else (32 * androidx.compose.ui.platform.LocalDensity.current.fontScale).dp
+                    // Its longest word must fit a line, or the words would break mid-word ("Afterno / on"): Pip alone then.
+                    val measurer = androidx.compose.ui.text.rememberTextMeasurer()
+                    val wordStyle = MaterialTheme.typography.labelSmall
+                    val longest = remember(text, wordStyle) {
+                        text.split(' ').maxOfOrNull { measurer.measure(it, wordStyle, softWrap = false).size.width } ?: 0
+                    }
+                    val fits = with(androidx.compose.ui.platform.LocalDensity.current) { longest <= w.roundToPx() }
+                    val said = talk && fits && h - words - 6.dp >= max(min(w, h) * 0.5f, 40.dp)
+                    val size = min(min(w, h - if (said) words + 6.dp else 0.dp), if (big) 96.dp else if (said) 52.dp else 72.dp)
+                    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        pip(size)
+                        if (said) {
+                            Spacer(Modifier.height(6.dp))
+                            if (big) Bubble(text, Modifier.fillMaxWidth().heightIn(max = words))
+                            else ShrinkToFit(Modifier.fillMaxWidth().heightIn(max = words), wrap = true) {
+                                Text(text, style = MaterialTheme.typography.labelSmall, textAlign = TextAlign.Center, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                            }
+                        }
+                    }
                 }
-            }
-            else -> Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                pip(72.dp)
-                Spacer(Modifier.width(10.dp))
-                if (talk) Bubble(text, Modifier.weight(1f))
-                else Text("Pip", style = MaterialTheme.typography.titleLarge, color = Palette.Peach)
             }
         }
     }
 }
 
+/** Pip's speech bubble: the words wrap, and shrink rather than lose their end when the bubble is short. */
 @Composable
-private fun Bubble(text: String, modifier: Modifier) {
-    Box(modifier.clip(RoundedCornerShape(16.dp)).background(Palette.CardHigh).padding(horizontal = 10.dp, vertical = 7.dp)) {
-        Text(text, style = MaterialTheme.typography.labelLarge, maxLines = 3, overflow = TextOverflow.Ellipsis)
+private fun Bubble(text: String, modifier: Modifier, small: Boolean = false) {
+    Box(modifier.clip(RoundedCornerShape(16.dp)).background(Palette.CardHigh).padding(horizontal = 10.dp, vertical = if (small) 4.dp else 7.dp)) {
+        ShrinkToFit(wrap = true) {
+            Text(text, style = if (small) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, maxLines = 3, overflow = TextOverflow.Ellipsis)
+        }
     }
 }
 
@@ -1234,6 +1490,7 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
     val temp = rememberPolled(10_000) { DeviceInfo.cpuTempC() }
     val now = rememberNow(60_000)
     val uptime = if (s.on("uptime")) now.let { "Up ${hm(SystemClock.elapsedRealtime() / 60_000)}" } else null
+    val lh = lineHeights()
     WidgetCard(s, m, accent = Palette.Sky) { _, _ ->
         if (mem == null) {
             EmptyNote("▤", "System", "Checking…", Palette.Sky, compact = true)
@@ -1241,34 +1498,58 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
         }
         val color = fullnessColor(mem.usedFraction, Palette.Sky)
         val ring = @Composable { size: Dp ->
-            Ring(mem.usedFraction, color, Modifier.size(size), stroke = 6.dp) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("RAM", style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
-                    Text("${(mem.usedFraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge)
+            Ring(mem.usedFraction, color, Modifier.size(size), stroke = ringStroke(size)) {
+                RingLabel(size) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        if (size >= 50.dp) Text("RAM", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+                        Text("${(mem.usedFraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false)
+                    }
                 }
             }
         }
         val tempText = temp?.let { "CPU ${"%.0f".format(it)}°C" }
         val tempColor = temp?.let { if (it >= 70) Palette.Peach else if (it >= 55) Palette.Butter else Palette.Mint } ?: Palette.Muted
-        when {
-            s.small -> Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                ring(56.dp)
-                Spacer(Modifier.height(3.dp))
-                Text("${bytes(ctx, mem.free)} free", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
-                tempText?.let { Text(it, style = MaterialTheme.typography.labelSmall, color = tempColor, maxLines = 1) }
-            }
-            else -> {
-                val content: @Composable ColumnScope.() -> Unit = {
-                    Text("Memory", style = MaterialTheme.typography.labelMedium, color = Palette.Sky)
-                    Text("${bytes(ctx, mem.free)} free", style = MaterialTheme.typography.titleSmall, maxLines = 1)
-                    Text("of ${bytes(ctx, mem.total)}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
-                    tempText?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = tempColor, maxLines = 1) }
-                    uptime?.let { Text(it, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1) }
-                }
-                if (s.high) Column(Modifier.fillMaxSize().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    ring(84.dp); Spacer(Modifier.height(8.dp)); Column(horizontalAlignment = Alignment.CenterHorizontally, content = content)
-                } else Row(Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ring(62.dp); Spacer(Modifier.width(12.dp)); Column(content = content)
+        val free = "${bytes(ctx, mem.free)} free"
+        val total = "of ${bytes(ctx, mem.total)}"
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad), contentAlignment = Alignment.Center) {
+                if (w >= h * 1.5f && w >= 140.dp) {
+                    // The ring beside the lines: the free memory first, then the CPU, the label, the total and the uptime.
+                    val heights = listOf(lh.title, lh.small, lh.small, lh.small, lh.small) // free, CPU, label, total, uptime
+                    val wanted = listOf(true, tempText != null, true, true, uptime != null)
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, h)
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        ring(min(h, 62.dp))
+                        Spacer(Modifier.width(12.dp))
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
+                            if (2 in kept) FitLine("Memory", MaterialTheme.typography.labelMedium, color = Palette.Sky)
+                            FitLine(free, MaterialTheme.typography.titleSmall)
+                            if (3 in kept) FitLine(total, MaterialTheme.typography.labelSmall, color = Palette.Muted)
+                            if (1 in kept) FitLine(tempText!!, MaterialTheme.typography.labelMedium, color = tempColor)
+                            if (4 in kept) FitLine(uptime!!, MaterialTheme.typography.labelMedium, color = Palette.Muted)
+                        }
+                    }
+                } else {
+                    // Stacked: the ring keeps at least about half the cell; the lines that don't fit under it go.
+                    val big = s.high && w >= 110.dp
+                    val heights = listOf(if (big) lh.title else lh.small, lh.small, lh.small, lh.small, lh.small) // free, CPU, label, total, uptime
+                    val wanted = listOf(true, tempText != null, big, big, big && uptime != null)
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, h - 3.dp, keep = max(h * 0.5f, 30.dp))
+                    val used = kept.sumOf { heights[it].value.toDouble() }.dp
+                    val ringSize = min(min(w, h - used - if (kept.isEmpty()) 0.dp else 3.dp), if (big) 84.dp else 56.dp)
+                    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        ring(ringSize)
+                        if (kept.isNotEmpty()) Spacer(Modifier.height(3.dp))
+                        val line = Modifier.fillMaxWidth()
+                        if (2 in kept) FitLine("Memory", MaterialTheme.typography.labelMedium, line, Palette.Sky, Alignment.Center)
+                        if (0 in kept) FitLine(free, if (big) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelSmall, line, if (big) Palette.Text else Palette.Muted, Alignment.Center)
+                        if (3 in kept) FitLine(total, MaterialTheme.typography.labelSmall, line, Palette.Muted, Alignment.Center)
+                        if (1 in kept) FitLine(tempText!!, if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall, line, tempColor, Alignment.Center)
+                        if (4 in kept) FitLine(uptime!!, MaterialTheme.typography.labelMedium, line, Palette.Muted, Alignment.Center)
+                    }
                 }
             }
         }
@@ -1282,11 +1563,20 @@ private fun AppsWidget(s: WidgetScope, m: Modifier) {
     val ctx = LocalContext.current
     val resumes = (Host.activity as? MainActivity)?.resumeCount?.intValue ?: 0
     val apps = remember(HomeStore.settings.dock, resumes) { Dock.pinned(ctx) }
+    val lh = lineHeights()
     BoxWithConstraints(m) {
         val vertical = s.size == Tall
-        val slot = if (vertical) 40.dp else 66.dp
-        val avail = if (vertical) maxHeight - 34.dp else maxWidth - 16.dp
-        val fit = ((avail) / slot).toInt().coerceAtLeast(1)
+        val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(if (vertical) 10.dp else 8.dp)
+        val innerW = maxWidth - pad * 2
+        val innerH = maxHeight - pad * 2
+        // Names beside (in a column) or under (in a row) the icons only when there is room for them.
+        val named = if (vertical) innerW >= 110.dp else innerH >= 40.dp + lh.small + 8.dp
+        val headed = vertical && innerW >= 90.dp && innerH >= 120.dp
+        val rowH = if (vertical) (if (named) 36.dp else min(innerW, 44.dp)) else 0.dp
+        val icon = if (vertical) rowH - 8.dp else (innerH - 8.dp - if (named) lh.small else 0.dp).coerceIn(16.dp, 40.dp)
+        val tileW = if (vertical) innerW else if (named) 58.dp else icon + 8.dp
+        val fit = if (vertical) ((innerH - (if (headed) lh.title + 4.dp else 0.dp) + 4.dp) / (rowH + 4.dp)).toInt().coerceAtLeast(1)
+        else ((innerW + 4.dp) / (tileW + 4.dp)).toInt().coerceAtLeast(1)
         val shown = apps.take(fit - 1)
         val count = shown.size + 1
         WidgetCard(s, Modifier.fillMaxSize(), cursorCount = count, vertical = vertical, onClick = { i ->
@@ -1295,33 +1585,38 @@ private fun AppsWidget(s: WidgetScope, m: Modifier) {
             val tile = @Composable { i: Int, mod: Modifier ->
                 val on = focused && cursor == i
                 val pkg = shown.getOrNull(i)
+                val label = if (pkg != null) RunningGames.appLabel(ctx, pkg) else "All apps"
+                val glyph = @Composable {
+                    if (pkg != null) AppIcon(pkg, Modifier.size(icon))
+                    else Box(Modifier.size(icon).clip(RoundedCornerShape(12.dp)).background(Palette.Sky.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
+                        Text("⊞", color = Palette.Sky, style = MaterialTheme.typography.titleLarge.copy(fontSize = (icon.value * 0.5f).coerceAtMost(18f).sp), maxLines = 1)
+                    }
+                }
                 if (vertical) {
                     Row(
-                        mod.fillMaxWidth().height(36.dp).clip(RoundedCornerShape(10.dp)).background(if (on) Palette.Sky.copy(alpha = 0.22f) else Color.Transparent)
+                        mod.fillMaxWidth().height(rowH).clip(RoundedCornerShape(10.dp)).background(if (on) Palette.Sky.copy(alpha = 0.22f) else Color.Transparent)
                             .widgetTap(s) { if (pkg != null) Dock.open(Host.activity ?: ctx, pkg) else Panels.openApps() },
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = if (named) Arrangement.Start else Arrangement.Center,
                     ) {
-                        if (pkg != null) AppIcon(pkg, Modifier.padding(4.dp).size(28.dp)) else Text("⊞", Modifier.padding(horizontal = 9.dp), color = Palette.Sky, style = MaterialTheme.typography.titleMedium)
-                        Text(if (pkg != null) RunningGames.appLabel(ctx, pkg) else "All apps", style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Box(Modifier.padding(4.dp)) { glyph() }
+                        if (named) Text(label, Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 } else {
                     Column(
-                        mod.width(58.dp).picked(on, Palette.Sky, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))
+                        mod.width(tileW).picked(on, Palette.Sky, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))
                             .widgetTap(s) { if (pkg != null) Dock.open(Host.activity ?: ctx, pkg) else Panels.openApps() }.padding(vertical = 4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        if (pkg != null) AppIcon(pkg, Modifier.size(40.dp))
-                        else Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(Palette.Sky.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
-                            Text("⊞", color = Palette.Sky, style = MaterialTheme.typography.titleLarge)
-                        }
-                        Text(if (pkg != null) RunningGames.appLabel(ctx, pkg) else "All apps", style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+                        glyph()
+                        if (named) Text(label, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
                     }
                 }
             }
-            if (vertical) Column(Modifier.fillMaxSize().padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Header("⊞", "Apps", Palette.Sky)
+            if (vertical) Column(Modifier.fillMaxSize().padding(pad), verticalArrangement = Arrangement.spacedBy(4.dp, if (headed) Alignment.Top else Alignment.CenterVertically)) {
+                if (headed) Header("⊞", "Apps", Palette.Sky)
                 for (i in 0 until count) tile(i, Modifier)
-            } else Row(Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
+            } else Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                 for (i in 0 until count) tile(i, Modifier)
             }
         }
@@ -1340,7 +1635,9 @@ private fun GreetingWidget(s: WidgetScope, m: Modifier) {
     val total = rememberGames { Collections.visibleGames() }.size
     val last = rememberGames { Collections.continuePlaying().take(1) }.firstOrNull()
     val time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(java.util.Date(now))
-    val games = if (total == 0) "No games yet" else "${plural(total, "game", "games")} ready to play"
+    val games = if (total == 0) listOf("No games yet") else listOf("${plural(total, "game", "games")} ready to play", plural(total, "game", "games"))
+    val lh = lineHeights()
+    val fs = androidx.compose.ui.platform.LocalDensity.current.fontScale
     WidgetCard(s, m, accent = Palette.Lavender, onClick = { if (last != null) play(ctx, last) else Toasts.show(hello) }) { _, _ ->
         val lastCard = @Composable { mod: Modifier ->
             if (last != null) Row(
@@ -1348,38 +1645,53 @@ private fun GreetingWidget(s: WidgetScope, m: Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(10.dp))) { GameArt(last) }
-                Column(Modifier.padding(start = 9.dp)) {
-                    Text("Last played", style = MaterialTheme.typography.labelSmall, color = Palette.Mint)
+                Column(Modifier.weight(1f, fill = false).padding(start = 9.dp)) {
+                    Text("Last played", style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1)
                     Text(last.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
-        if (s.high) {
-            BoxWithConstraints(Modifier.fillMaxSize().padding(14.dp)) {
-                val pip = min(maxHeight * 0.38f, 130.dp)
-                val roomy = maxWidth > 200.dp && maxHeight > 260.dp
-                Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                    Pip(pip, mood = if (hour in 0..5) 2 else 1)
-                    Spacer(Modifier.height(10.dp))
-                    Text(time, style = MaterialTheme.typography.displaySmall)
-                    Text(hello, style = MaterialTheme.typography.titleLarge, color = Palette.Peach, textAlign = TextAlign.Center)
-                    Text(games, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center)
-                    if (roomy) {
-                        Spacer(Modifier.height(12.dp))
-                        lastCard(Modifier.widthIn(max = 320.dp))
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val pad = widgetPad(maxWidth, maxHeight).coerceAtMost(if (s.high) 14.dp else 10.dp)
+            val w = maxWidth - pad * 2
+            val h = maxHeight - pad * 2
+            Box(Modifier.fillMaxSize().padding(pad), contentAlignment = Alignment.Center) {
+                if (s.high || h > w * 1.1f) {
+                    // Pip over the time, the hello and the game count; the count, then the hello go first when it's
+                    // low or narrow, and Pip takes what's left.
+                    val roomy = w > 200.dp && h > 260.dp && last != null
+                    val heights = listOf((44 * fs).dp, lh.large, (18 * fs).dp) // time, hello, games
+                    val wanted = listOf(true, w >= 100.dp, w >= 100.dp)
+                    val room = h - 10.dp - if (roomy) 72.dp else 0.dp
+                    val kept = fitting(heights.mapIndexed { i, d -> if (wanted[i]) d else 9999.dp }, room, keep = min(w, h * 0.3f))
+                    val used = kept.sumOf { heights[it].value.toDouble() }.dp
+                    val pip = minOf(h * 0.38f, 130.dp, room - used, w)
+                    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                        Pip(pip, mood = if (hour in 0..5) 2 else 1)
+                        Spacer(Modifier.height(10.dp))
+                        if (0 in kept) FitLine(time, MaterialTheme.typography.displaySmall, Modifier.widthIn(max = w), alignment = Alignment.Center)
+                        if (1 in kept) FitLine(hello, MaterialTheme.typography.titleLarge, Modifier.widthIn(max = w), Palette.Peach, Alignment.Center)
+                        if (2 in kept) FirstFit(games, MaterialTheme.typography.bodyMedium, Modifier.widthIn(max = w), Palette.Muted, Alignment.Center)
+                        if (roomy) {
+                            Spacer(Modifier.height(12.dp))
+                            lastCard(Modifier.widthIn(max = min(w, 320.dp)))
+                        }
+                    }
+                } else {
+                    // Pip beside the time, the hello and the game count, dropping the count, then the hello, when low.
+                    val kept = fitting(listOf(lh.head, lh.title, lh.small), h) // time, hello, games
+                    val card = s.size == Wide && last != null && w >= 330.dp && h >= 60.dp
+                    Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
+                        Pip(min(h, 64.dp), mood = if (hour in 0..5) 2 else 1)
+                        Spacer(Modifier.width(10.dp))
+                        Column(Modifier.weight(1f)) {
+                            FitLine(time, MaterialTheme.typography.headlineSmall, Modifier.fillMaxWidth())
+                            if (1 in kept) FitLine(hello, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), Palette.Peach)
+                            if (2 in kept) FirstFit(games, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Muted)
+                        }
+                        if (card) lastCard(Modifier.widthIn(max = 190.dp))
                     }
                 }
-            }
-        } else {
-            Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                Pip(64.dp, mood = if (hour in 0..5) 2 else 1)
-                Spacer(Modifier.width(10.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(time, style = MaterialTheme.typography.headlineSmall, maxLines = 1)
-                    Text(hello, style = MaterialTheme.typography.titleSmall, color = Palette.Peach, maxLines = 1)
-                    Text(games, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-                if (s.size == Wide) lastCard(Modifier.widthIn(max = 190.dp))
             }
         }
     }

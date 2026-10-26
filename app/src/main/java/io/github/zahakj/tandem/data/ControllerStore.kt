@@ -19,6 +19,8 @@ data class ControllerSettings(
     val names: Map<String, String> = emptyMap(),
     /** Holding a controller's Home (guide) button: "recents" (Android's recent apps) or "switcher" (Tandem's). */
     val holdHome: String = "switcher",
+    /** Controller passthrough (PadLink.kt): a connected controller plays as the built-in one without asking. */
+    val usePads: Boolean = false,
 )
 
 /** `controllers.json` in the app's files folder, written like [ExtrasStore]. Safe to init from the service too. */

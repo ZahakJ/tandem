@@ -11,6 +11,7 @@ import android.os.Environment
 import android.os.StatFs
 import android.provider.Settings
 import android.text.format.Formatter
+import io.github.zahakj.tandem.DiscordPresence
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,7 @@ import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Shell
 import kotlinx.coroutines.Dispatchers
@@ -135,6 +137,8 @@ fun QuickPanel() {
         // Re-read the device state once a second while open (radios take a moment to switch).
         var tick by remember { mutableIntStateOf(0) }
         LaunchedEffect(Unit) { while (true) { delay(1000); tick++ } }
+        // Whether a Discord account is connected (a small file read), for the Discord status tile.
+        LaunchedEffect(Unit) { if (DiscordPresence.available) withContext(Dispatchers.IO) { DiscordPresence.refresh(ctx) } }
         val t = tick
         // While a change is on its way, show where it's going so a held button steps smoothly.
         var brightTarget by remember { mutableIntStateOf(-1) }
@@ -149,6 +153,8 @@ fun QuickPanel() {
         val (battery, charging) = remember(t / 10) { SystemControls.battery(ctx) }
         val (free, total) = remember(t / 10) { SystemControls.storage() }
         val shizuku = remember { Shell.ready() }
+        // Controller passthrough (PadLink.kt): only where it can work.
+        val padLink = remember { io.github.zahakj.tandem.PadLink.available(ctx) }
         val canBright = remember(t / 5) { SystemControls.canSetBrightness(ctx) }
         val key = "quick"
 
@@ -199,13 +205,31 @@ fun QuickPanel() {
                     ToggleTile("Airplane", plane, Palette.Peach, Modifier.weight(1f).remembersFocus(key, "plane", false)) {
                         if (shizuku) io { SystemControls.setAirplane(!plane) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_AIRPLANE_MODE_SETTINGS) }
                     }
+                    // Steps through Built-in and each connected controller: the one that plays as the built-in one.
+                    if (padLink) {
+                        val pad = io.github.zahakj.tandem.PadLink.linked
+                        ToggleTile("Controller", pad != null, Palette.Butter, Modifier.weight(1f).remembersFocus(key, "pad", false), value = pad?.name ?: "Built-in") {
+                            io.github.zahakj.tandem.PadLink.cycle()
+                        }
+                    }
+                    // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
+                    if (DiscordPresence.available && DiscordPresence.linked) {
+                        ToggleTile("Discord status", DiscordPresence.shown, Palette.Mint, Modifier.weight(1f).remembersFocus(key, "discord", false)) {
+                            DiscordPresence.setShown(ctx, !DiscordPresence.shown)
+                        }
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                    ActionTile("▶ Running games", Palette.Mint, Modifier.weight(1f).remembersFocus(key, "switcher", false)) { Panels.openSwitcher() }
-                    ActionTile("★ Play stats", Palette.Butter, Modifier.weight(1f).remembersFocus(key, "stats", false)) {
+                    ActionTile("▶ Running", Palette.Mint, Modifier.weight(1f).remembersFocus(key, "switcher", false)) { Panels.openSwitcher() }
+                    // Private mode on at once, or off with the PIN (PrivateMode); the panel closes so the PIN pad has the screen.
+                    ToggleTile("Private mode", io.github.zahakj.tandem.Privacy.enabled, Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "private", false), height = 48.dp) {
+                        Panels.close()
+                        if (io.github.zahakj.tandem.Privacy.enabled) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
+                    }
+                    ActionTile("★ Stats", Palette.Butter, Modifier.weight(1f).remembersFocus(key, "stats", false)) {
                         Panels.close(); if (Nav.route != Route.Stats) Nav.go(Route.Stats)
                     }
-                    ActionTile("⚙ Android settings", Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "android", false)) {
+                    ActionTile("⚙ Android", Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "android", false)) {
                         Panels.close(); SystemControls.open(ctx, Settings.ACTION_SETTINGS)
                     }
                     if (shizuku) ActionTile("☾ Sleep", Palette.Sky, Modifier.weight(1f).remembersFocus(key, "sleep", false)) {
@@ -273,13 +297,17 @@ private fun StepButton(symbol: String, color: Color, onTap: () -> Unit) {
     ) { Text(symbol, style = MaterialTheme.typography.titleLarge, color = color) }
 }
 
+/** An on / off tile; [height] matches the row it sits in (the action row's tiles are lower). */
 @Composable
-private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modifier, onClick: () -> Unit) {
-    FocusCard(modifier.height(62.dp), glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick) {
+private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modifier, value: String? = null, height: Dp = 62.dp, onClick: () -> Unit) {
+    FocusCard(modifier.height(height), glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick) {
         Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.22f) else Color.Transparent))
         Column(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalArrangement = Arrangement.Center) {
-            Text(label, style = MaterialTheme.typography.titleSmall)
-            Text(if (on) "On" else "Off", style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Muted)
+            Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                value ?: if (on) "On" else "Off", style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Muted,
+                maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }

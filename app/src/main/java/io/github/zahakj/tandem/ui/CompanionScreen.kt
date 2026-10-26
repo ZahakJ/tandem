@@ -183,6 +183,8 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
                 else ArtFace(info, activity, dim, resumed, motion, uncovered, steady)
             }
         }
+        // A controller offering itself, or a note about the one in use (PadLink.kt); above the dim, so it is seen.
+        PadLinkCard(Modifier.align(Alignment.BottomCenter))
     }
 }
 

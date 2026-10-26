@@ -1,3 +1,5 @@
+| (`PadLink`, not saved) | Controls › Play with a controller › Controller in games (Built-in or a connected controller; also Quick settings › Controller) | choice |
+| `ControllerSettings.usePads` | Controls › Play with a controller › Always use a connected pad | toggle |
 # Settings: where everything lives
 
 Settings opens on nine tiles, one per page, each summarising what is set, with a search bar on top and **Quick
@@ -31,9 +33,9 @@ Code: `ui/SettingsCatalog.kt` (pages and groups), `ui/Settings.kt` (row types, t
 | Home & layout | layout, icons across or games view | Layout gallery, Home screen, Icon grid (first when it is your layout, last otherwise), Games, Dock, Widgets, Top bar |
 | Two screens | single, swapped or the bottom style | Screens (Apps open on; More: Hold Back to move apps, Move games too), Bottom screen |
 | Sound & music | sound pack, music on/off | Sounds, Music |
-| Controls | prompt style, A/B swapped | Buttons, Controller Home button, Game controllers, Shortcuts |
+| Controls | prompt style, A/B swapped | Buttons, Controller Home button, Game controllers, Play with a controller, Shortcuts |
 | Library | games and systems count | Games, Systems, Bring your details |
-| Art & accounts | which accounts are set | Artwork, Accounts, RetroAchievements |
+| Art & accounts | which accounts are set | Artwork, Accounts, RetroAchievements, Discord (only in builds with Discord's SDK) |
 | Play & stats | resume state, sessions | Playing, Stats, Privacy & rest |
 | Data & about | Home screen on/off | Home screen, Your data, About, Developer |
 
@@ -125,12 +127,15 @@ Code: `ui/SettingsCatalog.kt` (pages and groups), `ui/Settings.kt` (row types, t
 | Scraping (`ScrapeConfig`) | Art & accounts › Artwork › Scrape library; Set up sources; Artwork to download; More: region, language, clear media | link / choice / action |
 | Scraping sources and their keys (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) | Art & accounts › Sources, in order (each opens its setup card) | link |
 | RetroAchievements (`HomeStore.ra`) | Art & accounts › RetroAchievements; More: Look up games again, Sign out | action / toggle |
+| Discord status (`DiscordPresence`, token in `noBackupFilesDir/discord.json`) | Art & accounts › Discord › Discord status (Connect); More: Disconnect Discord; Quick settings › Discord status tile pauses it (`shown`). Only in builds with Discord's SDK | action |
 | Resume (Shizuku) | Play & stats › Playing › Resume running games | action |
 | `HomeSettings.closePrevious` | Play & stats › Playing › Close previous game | toggle |
 | `HomeSettings.askBeforeClosing` | Play & stats › Playing › Ask before closing a game (also turned off by Y, "Don't ask again", in the question itself) | toggle |
 | `SystemPrefs.launchAnimation` | Play & stats › Playing › More › Launch animation | toggle |
 | Play stats, export | Play & stats › Stats (Export under More) | link / action |
 | `HomeSettings.privateMode` | Play & stats › Privacy & rest › Private mode | toggle |
+| `HomeSettings.offlineHidden` | Play & stats › Privacy & rest › Go offline while a hidden game plays | toggle |
+| `private-pin.json` (`PinVault`) | Play & stats › Privacy & rest › More › Private mode PIN | action |
 | `HomeSettings.screensaverMinutes` | Play & stats › Privacy & rest › Screensaver | choice |
 | `Settings.hiddenFolders`, `HomeFolder.hidden`, hidden games | Play & stats › Hidden (listed with Unhide only while hidden games show); also Start › Hidden | action |
 | Home app role | Data & about › Home screen › Use Tandem as the Home screen | link |

@@ -208,6 +208,7 @@ object Scraper {
     /** Starts a scrape. Returns false when one is already running or there is nothing to do. */
     fun start(scrapeScope: ScrapeScope, options: ScrapeOptions): Boolean {
         if (running) return false
+        if (io.github.zahakj.tandem.NetGate.closed) return false
         val ctx = appContext ?: return false
         val games = gamesIn(scrapeScope)
         if (games.isEmpty()) return false
@@ -494,6 +495,7 @@ object Scraper {
 
             // Pictures and clips: the first source with one that downloads.
             val saved = HashMap<MediaKind, File>()
+            var boxUrl: String? = null
             var offered = false
             for (k in kinds) {
                 for (s in sources.orderFor(k, g)) {
@@ -501,7 +503,7 @@ object Scraper {
                     val urls = h.media(k)
                     if (urls.isNotEmpty()) offered = true
                     p.source = s.label
-                    val file = urls.take(2).firstNotNullOfOrNull { url -> download(g, k, url) }
+                    val file = urls.take(2).firstNotNullOfOrNull { url -> download(g, k, url)?.also { if (k == MediaKind.Box) boxUrl = url } }
                     if (file != null) { saved[k] = file; break }
                 }
             }
@@ -510,8 +512,9 @@ object Scraper {
                 val paths = saved.mapValues { it.value.path }
                 val d = details
                 val types2 = filled.toSet()
+                val cover = boxUrl
                 val prev = p.pending[g.key]
-                p.pending[g.key] = { meta -> apply(prev?.invoke(meta) ?: meta, paths, d, types2, force, o.replaceLocked) }
+                p.pending[g.key] = { meta -> apply(prev?.invoke(meta) ?: meta, paths, d, types2, force, o.replaceLocked, cover) }
             }
             if (saved.isNotEmpty()) {
                 p.withArt.incrementAndGet()
@@ -543,15 +546,20 @@ object Scraper {
     /**
      * Merges scraped results into a game's data. Locked fields are kept, unless [replaceLocked], in which case
      * what gets replaced is unlocked (it's no longer the user's own). Without [force] only empty fields are filled.
+     * [boxUrl] is where a new box picture came from; only a credential-free address is kept ([CoverUrl.safe]).
      */
     fun apply(
         m: GameMeta, media: Map<MediaKind, String>, d: Details?, types: Set<MetaType>,
-        force: Boolean, replaceLocked: Boolean = false,
+        force: Boolean, replaceLocked: Boolean = false, boxUrl: String? = null,
     ): GameMeta {
         val locked = if (replaceLocked) emptySet() else m.lockedFields
         val replaced = HashSet<String>()
         var out = m
-        for ((k, path) in media) if (k.field !in locked) { out = k.set(out, path); replaced += k.field }
+        for ((k, path) in media) if (k.field !in locked) {
+            out = k.set(out, path)
+            if (k == MediaKind.Box) out = out.copy(coverUrl = CoverUrl.safe(boxUrl))
+            replaced += k.field
+        }
         if (d != null) {
             fun <T> pick(field: String, current: T?, new: T?): T? =
                 if (field in locked || new == null || (!force && current != null)) current else new.also { replaced += field }
@@ -579,6 +587,7 @@ object Scraper {
     /** Every candidate picture from every configured source, for the art chooser. Never for hidden games. */
     suspend fun gallery(game: Game): Gallery = withContext(Dispatchers.IO) {
         if (Privacy.isHidden(game)) return@withContext Gallery(emptyMap(), listOf("Hidden games are never sent anywhere"))
+        if (io.github.zahakj.tandem.NetGate.closed) return@withContext Gallery(emptyMap(), listOf(OFFLINE_NOTE))
         val ctx = appContext ?: return@withContext Gallery(emptyMap(), emptyList())
         val cfg = ScrapeConfig.settings
         val notes = mutableListOf<String>()
@@ -646,7 +655,7 @@ object Scraper {
         } catch (e: Exception) { rethrowCancel(e)
             null
         } ?: return@withContext false
-        setArt(game, c.kind, file.path)
+        setArt(game, c.kind, file.path, c.url)
         true
     }
 
@@ -657,12 +666,19 @@ object Scraper {
         true
     }
 
-    private fun setArt(game: Game, kind: MediaKind, path: String) =
-        Store.update(game.key) { kind.set(it, path).copy(lockedFields = it.lockedFields + kind.field) }
+    /** [url] is where the picture came from (null from the device); a new box keeps it as the cover address, if safe. */
+    private fun setArt(game: Game, kind: MediaKind, path: String, url: String? = null) =
+        Store.update(game.key) { m ->
+            kind.set(m, path).copy(lockedFields = m.lockedFields + kind.field)
+                .let { if (kind == MediaKind.Box) it.copy(coverUrl = CoverUrl.safe(url)) else it }
+        }
 
     /** Goes back to whatever art the game had before (the folder art), unlocking it. */
     fun resetArt(game: Game, kind: MediaKind) =
-        Store.update(game.key) { kind.set(it, null).copy(lockedFields = it.lockedFields - kind.field) }
+        Store.update(game.key) { m ->
+            kind.set(m, null).copy(lockedFields = m.lockedFields - kind.field)
+                .let { if (kind == MediaKind.Box) it.copy(coverUrl = null) else it }
+        }
 
     // -----------------------------------------------------------------------------------------------------------
 
@@ -684,4 +700,7 @@ object Scraper {
 }
 
 /** Lets cancellation through when catching everything else. */
+/** What a scrape or artwork search says in private mode. */
+const val OFFLINE_NOTE = "Private mode keeps Tandem offline: no scraping or art lookups"
+
 internal fun rethrowCancel(e: Exception) { if (e is CancellationException) throw e }

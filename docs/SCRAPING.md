@@ -98,6 +98,14 @@ layout, with kinds `icon` (box), `hero`, `logo`, `screenshot_title`, `screenshot
 are scaled down (box 640 px, hero 1280 px, logo 800 px, screenshots 960 px) and saved as JPEG, or PNG when they
 have transparency. Scraping pauses while a game is in front.
 
+**Cover address.** Next to the box art's file, a game's details keep the public https address it was downloaded
+from (`coverUrl`), for the Discord status's picture. Only credential-free addresses are kept: never ScreenScraper's
+(its media addresses carry your login and the developer ID), never one with a key-like parameter, and other query
+strings are dropped (`CoverUrl.safe` in `data/Covers.kt`). A box picked on the device, or reset, clears it. For a
+game without one, the Discord status looks one up the first time it shows the game: LaunchBox box art from the index on the device, then a listed libretro thumbnail,
+then SteamGridDB if you entered a key (only sources that are on). The answer, or a miss, is kept in
+`discord-covers.json` in the cache folder; a miss is tried again after a week.
+
 ## Code
 
 `data/ScrapeConfig.kt` (settings, sources, modes), `data/Scraper.kt` (the run and per-game worker),

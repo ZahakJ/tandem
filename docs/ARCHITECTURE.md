@@ -28,8 +28,16 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   `ui/DeleteGame.kt`).
 - `Running.kt`, `RunningTasks.kt`: one cached Shizuku call (`ps` plus `dumpsys activity activities`) says which emulators have a game open; `RunningGames` maps them to games. A leftover process alone never counts as running.
 - `Chords.kt`: Select/Start holds and combos, `Idle`, `Screensaver`, `Privacy` (private mode).
+- `PrivacyPin.kt`: the private mode PIN (`PinCode` hashing and waits, `PinVault` in the no-backup folder) and
+  `PrivateMode` (on, off and reveal behind it); the keypad is `ui/PinPad.kt`. `Offline.kt`: `NetGate` (nothing goes
+  online in private mode) and airplane mode while a hidden game plays (`OfflinePlan`, through Shizuku).
 - `HiddenFolders.kt`: hidden ROM folders and systems (paths relative to ROMs) and hidden icon-grid folders. Ask
   `Privacy.isHidden` / `canShow`, never `GameMeta.hidden` directly.
+- `DiscordPresence.kt`: the optional Discord status (play session in, Rich Presence out), behind `DiscordSdk`; the
+  backend is `src/discord` (Kotlin plus a small JNI bridge to Discord's C++ Social SDK) when the SDK is in
+  `third_party/discord`, else the no-op `src/nodiscord`. Settings in `ui/DiscordSettings.kt`. Its picture is the game's
+  cover address (`data/Covers.kt`: `GameMeta.coverUrl` from the scrape, else a lazy lookup; `CoverUrl.safe` lets only
+  credential-free addresses out), or the Tandem icon.
 - `Achievements.kt`: RetroAchievements client and ROM hashing (`RaHash`); network only when signed in, never for
   hidden games.
 
@@ -102,7 +110,9 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   `ui/TandemIcons.kt`.
 - Controls: `ui/Controls.kt` (`Prompts`, `Clock`), `Gamepads.kt` (connected pads, per-controller Nintendo layout,
   `HomeButton`), `ControllerHomeService.kt` (optional accessibility service for a controller's Home button; key
-  events only), `ui/ControllerSettings.kt`.
+  events only), `ui/ControllerSettings.kt`. Controller passthrough (an external pad plays as the built-in one):
+  `PadLink.kt` runs the helper `src/padlink/padlink.c` through Shizuku or su, `PadMap.kt` (translation table),
+  `PadPlan.kt` (which pad, state machine), `ui/PadLinkUi.kt` (the offer on the companion).
 - Sound: `audio/` is pure Kotlin (runs on a desktop JVM too): DSP, synth and acoustic voices, drums, a tracker-style
   song DSL, sequencer and mixer, the Meadow Tales and Pastel Arcade soundtracks, UI sound packs and jingles.
   `ui/Sound.kt` (`Sounds`, `Music`), `ui/SoundEngine.kt` (audio thread while music plays), `ui/SoundSettings.kt`.
@@ -127,8 +137,11 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   (`ui/ScreenRoles.kt`) swaps back if it cannot take the controls.
 - `GameCompanion.kt` + `ui/CompanionScreen.kt`: the bottom screen during play. `CompanionActivity` opens on the
   second display before the game (own task, out of Recents, `FLAG_NOT_FOCUSABLE` so the game keeps the
-  controller) and is dismissed once the presentation is back. Modes: `art`, `tandem` and `off` (the default for
-  dual-screen emulators). `CompanionRestore.kt` reopens it if Tandem's process restarts mid-game.
+  controller) and is dismissed once the presentation is back, or closes by itself once its game's task is gone
+  (`GameExit.kt`). Modes: `art`, `tandem` and `off` (the default for dual-screen emulators). `CompanionRestore.kt`
+  reopens it if Tandem's process restarts mid-game; one left behind by a restart goes with the next dismissal.
+  `GameResume.kt` brings a running game back by its own task (never a new one). `HomeBack.kt`: Home with another
+  app over a running game brings the game and its companion back first; a second Home goes to Tandem.
 - `SecondaryHome.kt` + `ui/SecondaryHomeScreen.kt`: Tandem's secondary-display Home, shown when nothing else is
   on the second display and Tandem is the default Home. It is `singleTop` (Android refuses `singleTask` for a
   secondary home), not focusable and out of Recents. It shows the app in front or Pip over a still wallpaper, and

@@ -242,7 +242,7 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         val margin = with(density) { PanelMargin.toPx() }
         val listW = with(density) { 290.dp.toPx() }
         val gap = with(density) { 22.dp.toPx() }
-        val nameH = with(density) { 54.dp.toPx() }
+        val nameH = with(density) { 78.dp.toPx() } // two lines of name and the subtitle
         // The item: where it was, or a sensible spot when it isn't known.
         val src = from?.translate(-self.x, -self.y) ?: run {
             val side = with(density) { 150.dp.toPx() }
@@ -281,17 +281,22 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
                     ambientShadowColor = s.color
                 },
         ) { s.art() }
-        // Its name under it.
-        Column(
-            Modifier.offset { IntOffset((target.center.x - with(density) { 150.dp.toPx() }).roundToInt(), (target.bottom + with(density) { 10.dp.toPx() }).roundToInt()) }
-                .width(300.dp).graphicsLayer { alpha = lift().coerceIn(0f, 1f); translationY = (1f - lift()) * 16f * this.density },
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(s.title, style = MaterialTheme.typography.titleLarge.onArt(), maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-            if (!s.subtitle.isNullOrBlank()) Text(s.subtitle, style = MaterialTheme.typography.labelLarge, color = lerp(s.color, Palette.Text, 0.4f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
         // The actions, floating beside it.
         val listX = if (listRight) target.right + gap else target.left - gap - listW
+        // Its name under it, kept on the item's side of the list and on the screen (an item at the edge would push a
+        // centred name off it); a long name wraps to two lines and shrinks a little before it ellipsizes.
+        val sideL = if (listRight) margin else listX + listW + gap / 2
+        val sideR = if (listRight) listX - gap / 2 else wPx - margin
+        val nameW = minOf(with(density) { 300.dp.toPx() }, (sideR - sideL).coerceAtLeast(tw))
+        val nameX = (target.center.x - nameW / 2).coerceIn(sideL, (sideR - nameW).coerceAtLeast(sideL))
+        Column(
+            Modifier.offset { IntOffset(nameX.roundToInt(), (target.bottom + with(density) { 10.dp.toPx() }).roundToInt()) }
+                .width(with(density) { nameW.toDp() }).graphicsLayer { alpha = lift().coerceIn(0f, 1f); translationY = (1f - lift()) * 16f * this.density },
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            ShrinkText(s.title, MaterialTheme.typography.titleLarge.onArt(), maxLines = 2, textAlign = TextAlign.Center)
+            if (!s.subtitle.isNullOrBlank()) Text(s.subtitle, style = MaterialTheme.typography.labelLarge, color = lerp(s.color, Palette.Text, 0.4f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
         val listMaxH = hPx - margin * 2
         Box(
             Modifier.offset { IntOffset(listX.roundToInt(), 0) }.width(with(density) { listW.toDp() }).fillMaxSize()
@@ -447,7 +452,8 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
         }
         Spacer(Modifier.width(10.dp))
         if (a.sub == null) {
-            Text(a.label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            // A long label (beside a value) takes a second line rather than losing its end.
+            ShrinkText(a.label, MaterialTheme.typography.titleSmall, Modifier.weight(1f), maxLines = 2)
         } else {
             Column(Modifier.weight(1f)) {
                 Text(a.label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
