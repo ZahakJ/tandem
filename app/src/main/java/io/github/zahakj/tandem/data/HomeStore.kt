@@ -24,6 +24,8 @@ data class HomeSettings(
     val screensaverMinutes: Int = 0,
     /** Hidden games can only be revealed with L1 + R1 + Select, and the Settings toggle is ignored. */
     val privateMode: Boolean = false,
+    /** Games still open are frozen a minute after the screen goes off, so the handheld can really sleep (SleepFreeze.kt). */
+    val freezeAsleep: Boolean = true,
     /** In private mode, airplane mode goes on while a hidden game plays (Offline.kt). Needs Shizuku. */
     val offlineHidden: Boolean = false,
 )

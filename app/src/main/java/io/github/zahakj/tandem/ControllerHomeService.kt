@@ -96,10 +96,13 @@ class ControllerHomeService : AccessibilityService() {
             GameCompanion.restore(this)
             // Android's own app list may have taken the bottom screen while Tandem was gone.
             SecondaryHome.replaceStock(this)
+            // Games left open are frozen while the handheld sleeps (SleepFreeze.kt).
+            SleepFreeze.start(this)
         }
     }
 
     override fun onDestroy() {
+        SleepFreeze.stop()
         handler.removeCallbacks(hold)
         handler.removeCallbacks(backHold)
         main.post { if (instance === this) instance = null }

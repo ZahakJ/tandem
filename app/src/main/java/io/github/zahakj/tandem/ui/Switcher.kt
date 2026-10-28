@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.RunningGame
@@ -331,11 +332,14 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
     // The card usually appears a moment after Tandem comes back, above where the list is scrolled; show it.
     val reveal = remember { BringIntoViewRequester() }
     LaunchedEffect(r.pkg) { runCatching { reveal.bringIntoView() } }
+    // Y on the card closes the game (twice), as on the icon grid's Resume card; the ✕ card beside it stays for touch.
+    var resumeFocused by remember { mutableStateOf(false) }
+    InterceptButtons(resumeFocused) { b -> if (b == Button.Y) { resumePageClose(ctx, r); true } else false }
     Column(Modifier.bringIntoViewRequester(reveal).padding(horizontal = 22.dp)) {
         SectionTitle("Now playing", Palette.Mint)
         Row(Modifier.fillMaxWidth().height(112.dp).padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             FocusCard(
-                Modifier.weight(1f).fillMaxHeight().takesFocus(route, "now:resume", target == "now:resume"),
+                Modifier.weight(1f).fillMaxHeight().onFocusChanged { resumeFocused = it.hasFocus }.takesFocus(route, "now:resume", target == "now:resume"),
                 glow = color,
                 onFocus = { Selection.current = Selected.GameItem(game) },
                 onClick = { RunningGames.resume(ctx, r) },
@@ -350,7 +354,10 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
                         Text(game.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(r.detail(), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
                     }
-                    ButtonHint("A", "Resume", Palette.Mint)
+                    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        ButtonHint("A", "Resume", Palette.Mint)
+                        ButtonHint("Y", "Close", Palette.Peach)
+                    }
                     Spacer(Modifier.width(6.dp))
                 }
             }

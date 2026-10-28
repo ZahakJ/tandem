@@ -434,7 +434,8 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
     if (pinHints && description != null) Spacer(Modifier.weight(1f)) else Spacer(Modifier.height(2.dp))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         ButtonHint("A", if (resumable) "Resume" else "Play", Palette.Mint)
-        ButtonHint("Y", "Options", Palette.Butter)
+        // A game still open: Y closes it (twice), as on the icon grid's Resume card.
+        if (resumable) ButtonHint("Y", "Close", Palette.Peach) else ButtonHint("Y", "Options", Palette.Butter)
         ButtonHint("X", "Search", Palette.Sky)
         ListSwitchHint()
     }

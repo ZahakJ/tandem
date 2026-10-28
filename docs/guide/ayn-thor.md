@@ -55,6 +55,10 @@ playing**). Games started on the bottom screen never get it.
 Both Tandem styles have a **Screenshot** button (needs [Shizuku](resume.md)): it saves the game's screen to
 `ROMs/screenshots/`, where the Gallery shows it, and copies it to the clipboard to paste into a chat.
 
+**Pause games in sleep** (Settings › Play & stats › Privacy & rest, on by default, needs Shizuku with root): a
+minute after the screen goes off, games left open are paused, so an emulator's audio can't keep the handheld
+awake; they carry on where they were when you wake it.
+
 With an app open on the bottom screen over the game, **Home** brings the game and its companion back without
 pausing the game; press it again for Tandem. From the game itself, Home goes to Tandem.
 

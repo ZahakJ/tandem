@@ -133,6 +133,7 @@ Code: `ui/SettingsCatalog.kt` (pages and groups), `ui/Settings.kt` (row types, t
 | `HomeSettings.askBeforeClosing` | Play & stats › Playing › Ask before closing a game (also turned off by Y, "Don't ask again", in the question itself) | toggle |
 | `SystemPrefs.launchAnimation` | Play & stats › Playing › More › Launch animation | toggle |
 | Play stats, export | Play & stats › Stats (Export under More) | link / action |
+| `HomeSettings.freezeAsleep` | Play & stats › Privacy & rest › Pause games in sleep | toggle |
 | `HomeSettings.privateMode` | Play & stats › Privacy & rest › Private mode | toggle |
 | `HomeSettings.offlineHidden` | Play & stats › Privacy & rest › Go offline while a hidden game plays | toggle |
 | `private-pin.json` (`PinVault`) | Play & stats › Privacy & rest › More › Private mode PIN | action |

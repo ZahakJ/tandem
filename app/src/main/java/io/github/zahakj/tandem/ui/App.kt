@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.ActiveHost
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
+import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.GroupTarget
@@ -437,7 +438,13 @@ private fun Main(resumes: Int) {
             if (ActiveHost.token !== activityOf(ctx)) return@collect
             if (Nav.overlayOpen) return@collect
             when (b) {
-                Button.Y -> openMenuFor(Selection.current)
+                // Y on a game that is still open closes it (press twice), as on the icon grid's Resume card; the
+                // grid handles its own Y before this.
+                Button.Y -> {
+                    val g = (Selection.current as? Selected.GameItem)?.game
+                    val running = g?.let { RunningGames.list.firstOrNull { r -> r.game?.key == it.key } }
+                    if (running != null && Nav.route == Route.Home) resumePageClose(ctx, running) else openMenuFor(Selection.current)
+                }
                 // On the icon grid (or everywhere, if chosen) X swaps the two screens.
                 // In Settings, X searches the settings.
                 Button.X -> if (isSettingsRoute(Nav.route)) SettingsSearch.show() else if (!ScreenRoles.onX(ctx) && Nav.route != Route.Apps) Nav.search = true

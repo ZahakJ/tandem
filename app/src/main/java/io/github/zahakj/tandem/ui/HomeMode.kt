@@ -493,6 +493,12 @@ fun homeSettings(): SettingSection {
                 ) { step(1) }
             },
             SettingRow(
+                "Pause games in sleep", onOff(s.freezeAsleep), Palette.Lavender, Glyph.Clock, toggle = s.freezeAsleep,
+                help = "A minute after the screen goes off, games left open are paused, so the handheld really sleeps instead " +
+                    "of draining for an emulator's audio. They carry on exactly where they were when you wake it. Needs Shizuku with root.",
+                keywords = "battery drain standby suspend freeze emulator",
+            ) { HomeStore.updateSettings { it.copy(freezeAsleep = !it.freezeAsleep) } },
+            SettingRow(
                 "Private mode", onOff(s.privateMode), Palette.Lavender, Glyph.Shield, toggle = s.privateMode,
                 help = "Hidden games, folders and systems stay hidden until L1 + R1 + Select and your PIN bring them out, and Tandem stays offline. " +
                     "Turning it off asks for the PIN. While it is off, L1 + R1 + Select turns it on at once.",
