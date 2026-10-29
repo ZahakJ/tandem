@@ -73,7 +73,7 @@ object FocusMemory {
      * closed (or exits), focus goes back to the item highlighted before, like the system or folder it was started
      * from, instead of the neighbour (which was always the first tile).
      */
-    private val passing = setOf(HomeExtras.RESUME, "now:resume", "now:close", "now:more")
+    private val passing = setOf(HomeExtras.RESUME, "now:resume", "now:more")
 
     fun remember(route: String, item: String) {
         keys[route] = item

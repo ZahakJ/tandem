@@ -150,17 +150,18 @@ section { padding: clamp(56px, 8vw, 110px) 0; }
 .facts li:nth-child(2) { --c: var(--sky); }
 .facts li:nth-child(3) { --c: var(--peach); }
 
-/* The handheld: two real screenshots in a clamshell. Sized in container units so it scales as one piece. */
+/* The handheld: two real screenshots in a clamshell, in the AYN Thor's proportions (150 × 94 mm halves, a 6" 16:9 screen
+   on top and a 3.92" 31:27 one below). Sized in container units so it scales as one piece. */
 .device { container-type: inline-size; width: 100%; max-width: 600px; margin: 0 auto; position: relative; }
 .shell { border-radius: 4.5cqw; padding: 3.2cqw; background: linear-gradient(160deg, #3a3650, #1c1a27 60%); box-shadow: var(--shadow), inset 0 1px 0 rgb(255 255 255 / 0.12); }
-.shell.lid { position: relative; z-index: 2; }
-.shell.base { width: 92%; margin: -1cqw auto 0; display: grid; grid-template-columns: 1fr 43cqw 1fr; align-items: center; gap: 2cqw; padding: 3cqw 3cqw 4cqw; border-radius: 3cqw 3cqw 6cqw 6cqw; }
+.shell.lid { position: relative; z-index: 2; padding: 6.4cqw 5.7cqw; }
+.shell.base { margin-top: -1cqw; display: grid; grid-template-columns: 1fr 50cqw 1fr; align-items: center; gap: 2cqw; padding: 6cqw 3cqw 11cqw; border-radius: 3cqw 3cqw 6cqw 6cqw; }
 .glass { border-radius: 1.8cqw; overflow: hidden; background: #000; box-shadow: 0 0 0 0.5cqw #09080e; position: relative; }
 .glass img { width: 100%; height: 100%; object-fit: cover; }
 .glass::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, rgb(255 255 255 / 0.08), transparent 35%); }
 .lid .glass { aspect-ratio: 16 / 9; }
 .base .glass { aspect-ratio: 1240 / 1080; }
-.ctl { display: grid; place-items: center; gap: 4cqw; }
+.ctl { display: grid; place-items: center; gap: 6cqw; }
 .stick { width: 10cqw; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #46415f, #17151f 70%); box-shadow: 0 0 0 0.9cqw #0f0e15; }
 .dpad, .abxy { width: 11cqw; aspect-ratio: 1; position: relative; }
 .dpad::before, .dpad::after { content: ""; position: absolute; background: #2c2940; border-radius: 0.8cqw; }

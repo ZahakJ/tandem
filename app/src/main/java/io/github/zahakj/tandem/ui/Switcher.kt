@@ -312,7 +312,6 @@ private fun SwitcherCard(r: RunningGame, modifier: Modifier) {
     }
 }
 
-private val nowConfirm = PressTwice()
 
 /** The card at the top of the home screen while a game runs in the background. */
 @OptIn(ExperimentalFoundationApi::class)
@@ -332,7 +331,7 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
     // The card usually appears a moment after Tandem comes back, above where the list is scrolled; show it.
     val reveal = remember { BringIntoViewRequester() }
     LaunchedEffect(r.pkg) { runCatching { reveal.bringIntoView() } }
-    // Y on the card closes the game (twice), as on the icon grid's Resume card; the ✕ card beside it stays for touch.
+    // Y on the card closes the game (twice), as on the icon grid's Resume card; a long press does the same by touch.
     var resumeFocused by remember { mutableStateOf(false) }
     InterceptButtons(resumeFocused) { b -> if (b == Button.Y) { resumePageClose(ctx, r); true } else false }
     Column(Modifier.bringIntoViewRequester(reveal).padding(horizontal = 22.dp)) {
@@ -342,6 +341,7 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
                 Modifier.weight(1f).fillMaxHeight().onFocusChanged { resumeFocused = it.hasFocus }.takesFocus(route, "now:resume", target == "now:resume"),
                 glow = color,
                 onFocus = { Selection.current = Selected.GameItem(game) },
+                onLongPress = { resumePageClose(ctx, r) },
                 onClick = { RunningGames.resume(ctx, r) },
             ) {
                 val hero = lib?.hero(game) ?: lib?.screenshot(game)
@@ -359,17 +359,6 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
                         ButtonHint("Y", "Close", Palette.Peach)
                     }
                     Spacer(Modifier.width(6.dp))
-                }
-            }
-            FocusCard(
-                Modifier.width(92.dp).fillMaxHeight().takesFocus(route, "now:close", target == "now:close"),
-                glow = Palette.Peach,
-                onFocus = { Selection.current = Selected.GameItem(game) },
-                onClick = { if (nowConfirm.press(r.pkg, "Press again to close ${game.title}")) closeRunning(ctx, r) },
-            ) {
-                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("✕", style = MaterialTheme.typography.headlineSmall, color = Palette.Peach)
-                    Text(if (nowConfirm.armed == r.pkg) "Again" else "Close", style = MaterialTheme.typography.labelLarge)
                 }
             }
             if (others > 0) {

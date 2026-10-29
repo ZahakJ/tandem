@@ -1,0 +1,47 @@
+<!doctype html>
+<!-- Source of banner.png (1280×560) and social-preview.png (1280×640). Render with headless Chromium:
+     chromium --headless=new --hide-scrollbars --window-size=1280,560 --screenshot=banner.png banner.html
+     chromium --headless=new --hide-scrollbars --window-size=1280,640 --screenshot=social-preview.png banner.html
+     The handheld reuses the site's .device styles, so the banner and the landing page keep the same proportions. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tandem banner</title>
+<link rel="stylesheet" href="../../site.css">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body { color-scheme: dark; background: radial-gradient(60% 90% at 0% 0%, #1d2a2a, transparent 60%), radial-gradient(50% 80% at 100% 100%, #2a2238, transparent 60%), #0e0d14; color: #f6f3ff; font-family: Nunito, sans-serif; }
+  .banner { height: 100%; display: grid; grid-template-columns: 640px 1fr; align-items: center; padding: 0 70px; box-sizing: border-box; }
+  .brand { display: flex; align-items: center; gap: 26px; margin-bottom: 30px; }
+  .brand img { width: 96px; }
+  .brand b { font-size: 84px; font-weight: 900; letter-spacing: -2px; line-height: 1; color: #f6f3ff; }
+  h1 { margin: 0; font-size: 62px; line-height: 1.08; font-weight: 900; letter-spacing: -1px; }
+  h1 .g { background: linear-gradient(90deg, #8eecc8, #8fd3ff 40%, #b8a8ff 70%, #ffb4a2); -webkit-background-clip: text; color: transparent; }
+  p { margin: 22px 0 26px; font-size: 24px; line-height: 1.45; color: #aaa5c2; max-width: 460px; }
+  .chips { display: flex; gap: 12px; }
+  .chips span { padding: 9px 16px; border-radius: 999px; font-weight: 800; font-size: 18px; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); }
+  /* About 1.28 times as tall as wide; fit it to the banner's height. */
+  .device { width: min(440px, calc((100vh - 48px) / 1.28)); justify-self: center; }
+  .device .pip { display: none; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <div class="brand"><img src="../pip.svg" alt=""><b>Tandem</b></div>
+    <h1>Two screens.<br><span class="g">One cozy library.</span></h1>
+    <p>A free, open-source game frontend for dual-screen Android handhelds.</p>
+    <div class="chips"><span style="--c:#8eecc8">GPL-3.0</span><span style="--c:#8fd3ff">No tracking</span><span style="--c:#ffb4a2">Made for the AYN Thor</span></div>
+  </div>
+  <div class="device">
+    <div class="shell lid"><div class="glass"><img src="../../screenshots/home-top.webp" alt=""></div></div>
+    <div class="hinge"></div>
+    <div class="shell base">
+      <div class="ctl"><div class="stick"></div><div class="dpad"></div></div>
+      <div class="glass"><img src="../../screenshots/home-bottom-system.webp" alt=""></div>
+      <div class="ctl"><div class="abxy"><i></i><i></i><i></i><i></i></div><div class="stick"></div></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

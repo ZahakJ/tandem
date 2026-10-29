@@ -90,7 +90,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
     val sections = Store.settings.look.homeSections.ifEmpty { listOf("systems") }
 
     val rows = buildList {
-        if (now != null) add(HomeRow("now", listOfNotNull("now:resume", "now:close", "now:more".takeIf { RunningGames.list.size > 1 })))
+        if (now != null) add(HomeRow("now", listOfNotNull("now:resume", "now:more".takeIf { RunningGames.list.size > 1 })))
         if (systems.isEmpty()) add(HomeRow("empty", listOf("empty:rescan")))
         for (s in sections) {
             when (s) {
