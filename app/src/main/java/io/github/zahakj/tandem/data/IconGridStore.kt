@@ -64,6 +64,8 @@ data class IconGridConfig(
     val spans: Map<String, GridSpan> = emptyMap(),
     /** 0: from before folder shortcuts (moved over as it is read, GridTree.migrate); [GridTree.SHORTCUTS] since. */
     val version: Int = 0,
+    /** Systems the user turned back into a plain list (Show as a plain list); every other opens like a folder. */
+    val plainSystems: List<String> = emptyList(),
 )
 
 /** A widget's size on the icon grid: [w] columns by [h] rows. */

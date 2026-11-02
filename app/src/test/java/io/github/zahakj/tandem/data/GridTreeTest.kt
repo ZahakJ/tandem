@@ -289,5 +289,8 @@ class GridTreeTest {
         assertEquals(listOf("game:b"), folder(after, "rpg").items)
         // A system that isn't arranged: nothing changes.
         assertEquals(after, GridTree.unarrangeSystem(after, "n3ds", home(after)))
+        // Remembered as a plain list, until it is arranged again.
+        assertEquals(listOf("n3ds"), after.plainSystems)
+        assertEquals(emptyList<String>(), GridTree.arrangeSystem(after, "sys2", "n3ds", "Nintendo 3DS", 0).plainSystems)
     }
 }

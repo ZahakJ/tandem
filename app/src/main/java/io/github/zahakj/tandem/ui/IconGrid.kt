@@ -2319,8 +2319,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                 val tile = wide.coerceIn(44.dp, (maxHeight - FocusRoom * 2 - 44.dp).coerceAtLeast(44.dp))
                 val lines = if (tile >= 120.dp) 2 else 1
                 val labelH = if (lines == 2) 38.dp else 20.dp
-                // Empty spots fill the panel, and there is always a row of them after the last thing inside.
-                val fit = ((maxHeight - FocusRoom * 2 + gap) / (tile + labelH + gap)).toInt().coerceAtLeast(1)
+                // One row of empty spots after the last thing inside; moving a tile into it brings the next.
                 val present = remember(folder, catalog, IconGridStore.config) { SystemFolders.contents(folder, catalog) }
                 val presentSet = remember(present) { present.toHashSet() }
                 // Sorted, the folder shows its things packed in that order; the manual order stays underneath.
@@ -2329,7 +2328,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                     else GridSlots.shown(folder.items, folder.lanes, cols, present)
                 }
                 val slots = moving?.order?.toList() ?: stored
-                val count = GridSlots.shownCount(slots, cols, minEmpty = 1, atLeast = fit)
+                val count = GridSlots.shownCount(slots, cols, minEmpty = 1)
                 val cells = remember(slots, count, catalog, presentSet) {
                     List(count) { i -> slots.getOrNull(i)?.takeIf { it in presentSet }?.let { catalog.item(it) } }
                 }

@@ -29,9 +29,15 @@ object SystemFolders {
         return if (f.system == null) own else own + rest(f).filter { catalog.item(it) != null }
     }
 
-    /** Opens system [platformId]: its folder when it is arranged as one, else the plain list. */
+    /**
+     * Opens system [platformId] as a folder, arranging it as one the first time (nothing to undo: it looks the same,
+     * with empty spots to place things in). The plain list only when the user chose it (Show as a plain list).
+     */
     fun open(platformId: String) {
         val f = IconGridStore.systemFolder(platformId)
+            ?: Libraries.byId(platformId)?.takeIf { platformId !in IconGridStore.config.plainSystems }?.let { lib ->
+                IconGridStore.folder(IconGridStore.arrangeSystem(platformId, lib.platform.name, IconGridStore.config.folders.size))
+            }
         if (f == null) { openFolder(Route.System(platformId)); return }
         FocusMemory.forget(IconGrid.folderRoute(f.id))
         IconGrid.openFolder = f.id

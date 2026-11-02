@@ -283,7 +283,8 @@ object GridTree {
      * system shows in it on its own). Unchanged when it already is one.
      */
     fun arrangeSystem(c: IconGridConfig, id: String, platformId: String, name: String, color: Int): IconGridConfig =
-        if (systemFolder(c, platformId) != null) c else c.copy(folders = c.folders + HomeFolder(id, name, color = color, system = platformId))
+        if (systemFolder(c, platformId) != null) c
+        else c.copy(folders = c.folders + HomeFolder(id, name, color = color, system = platformId), plainSystems = c.plainSystems - platformId)
 
     /**
      * System [platformId] back to its plain list: its folder goes, and the folders made inside it move to the home grid
@@ -304,7 +305,7 @@ object GridTree {
         val key = folderKey(f.id)
         return c.copy(
             order = if (subs.isEmpty()) c.order else GridSlots.trim(order), lanes = if (subs.isEmpty()) c.lanes else home.lanes,
-            folders = c.folders.filter { it.id != f.id }, styles = c.styles - key,
+            folders = c.folders.filter { it.id != f.id }, styles = c.styles - key, plainSystems = c.plainSystems - platformId + platformId,
         ).pruneStyles()
     }
 
