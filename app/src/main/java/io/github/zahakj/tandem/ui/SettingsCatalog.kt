@@ -111,6 +111,7 @@ private val Synonyms = mapOf(
     "Games view" to "list grid coverflow",
     "Card shape" to "box art portrait square circle",
     "Swap screens" to "bottom touch library details flip",
+    "Swap animation" to "flip scatter push depth fade instant transition",
     "Style" to "bottom screen details art clock",
     "Video snaps" to "preview videos battery",
     "Moving art" to "ken burns pan zoom",
@@ -227,7 +228,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     }
 
     val screensPage = listOf(
-        group("Screens", pool.take("Systems & launching", "Single screen") + pool.take("Screens", "Swap screens") + pool.take("Systems & launching", "Apps open on"),
+        group("Screens", pool.take("Systems & launching", "Single screen") + pool.take("Screens", "Swap screens") + pool.take("Icon grid", "Swap animation") + pool.take("Systems & launching", "Apps open on"),
             pool.take("Systems & launching", "Hold Back to move apps", "Move games too")),
         group("Bottom screen", pool.take("Bottom screen", "Style", "Video snaps", "Moving art") + pool.take("Widgets", "Bottom screen when idle"),
             pool.take("Bottom screen", "Art height", "Logo size", "Art fade")),
