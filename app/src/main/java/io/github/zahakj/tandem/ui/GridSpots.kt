@@ -152,6 +152,9 @@ internal fun CoveredSlot(tile: Dp, cell: Dp) = Spacer(Modifier.size(tile, cell))
 @Composable
 private fun EmptySpotArt() {
     val line = Palette.Text
+    // Solid: the lift draws a shadow under it, which showed through a see-through fill as a grey wash and a stray
+    // dark square beside the +.
+    val fill = Palette.CardHigh
     Box(
         Modifier.fillMaxSize().drawWithCache {
             val stroke = 2.dp.toPx()
@@ -159,6 +162,7 @@ private fun EmptySpotArt() {
             val arm = size.minDimension * 0.11f
             val c = Offset(size.width / 2f, size.height / 2f)
             onDrawBehind {
+                drawRect(fill)
                 drawRoundRect(line, cornerRadius = radius, alpha = 0.08f)
                 drawLine(line.copy(alpha = 0.6f), c - Offset(arm, 0f), c + Offset(arm, 0f), stroke * 1.2f, StrokeCap.Round)
                 drawLine(line.copy(alpha = 0.6f), c - Offset(0f, arm), c + Offset(0f, arm), stroke * 1.2f, StrokeCap.Round)

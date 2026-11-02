@@ -96,6 +96,15 @@ object SystemControls {
         return Shell.run("settings", "put", "system", "screen_brightness_mode", "$v") != null
     }
 
+    fun autoRotate(ctx: Context): Boolean = Settings.System.getInt(ctx.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) != 0
+
+    /** Blocking (Shizuku). Turns auto-rotate off when something turned it on. */
+    fun rotationOff(ctx: Context) {
+        if (!autoRotate(ctx)) return
+        if (Settings.System.canWrite(ctx)) Settings.System.putInt(ctx.contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0)
+        else if (Shell.ready()) Shell.run("settings", "put", "system", "accelerometer_rotation", "0")
+    }
+
     private fun audio(ctx: Context) = ctx.getSystemService(AudioManager::class.java)
     fun volume(ctx: Context): Int = audio(ctx).getStreamVolume(AudioManager.STREAM_MUSIC)
     fun maxVolume(ctx: Context): Int = audio(ctx).getStreamMaxVolume(AudioManager.STREAM_MUSIC)

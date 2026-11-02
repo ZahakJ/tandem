@@ -309,6 +309,10 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         ActiveHost.token = this
+        if (io.github.zahakj.tandem.data.SystemPrefs.data.keepRotationOff) {
+            val app = applicationContext
+            Thread({ runCatching { io.github.zahakj.tandem.ui.SystemControls.rotationOff(app) } }, "tandem-rotation").start()
+        }
         if (!homeBack) resumedNow()
     }
 

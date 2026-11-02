@@ -516,6 +516,11 @@ fun appearanceSections(): List<SettingSection> {
                     "The library moves to the bottom (touch) screen and the details go on top, instantly. X does this on the icon grid. Games still open on the top screen.",
                     look.swapScreens,
                 ) { on -> updateLook { it.copy(swapScreens = on) }; activity?.applyScreenRoles() },
+                toggle(
+                    "Keep auto-rotate off", Glyph.Screens, Palette.Peach,
+                    "The Thor turns auto-rotate back on by itself now and then. Tandem switches it off again whenever you come back. Turn this off to choose yourself.",
+                    io.github.zahakj.tandem.data.SystemPrefs.data.keepRotationOff,
+                ) { on -> io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(keepRotationOff = on) } },
             ),
         ),
         soundSettings(trackCount),

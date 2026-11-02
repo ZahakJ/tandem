@@ -30,6 +30,8 @@ data class SystemsData(
     /** Never use the second screen for games, even when there is one. */
     val singleScreen: Boolean = false,
     val launchAnimation: Boolean = true,
+    /** Turn auto-rotate back off whenever Tandem comes up: the Thor's firmware keeps switching it on. */
+    val keepRotationOff: Boolean = true,
     /** Apps the user added to Android Games, and detected games they took out. */
     val gameApps: Set<String> = emptySet(),
     val notGameApps: Set<String> = emptySet(),
