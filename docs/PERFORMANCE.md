@@ -221,6 +221,9 @@ The bottom screen during play (ui/CompanionScreen.kt) never sees the player's in
   `withFrameNanos` block, so idle they draw on the ambient tick.
 - Don't read `Nav.focusTick` or `MainActivity.resumeCount` while composing a whole screen: both change on every
   return. Use `rememberFocusTarget` / `takesFocus`, `settingsResumes()` in Settings, or read them in an effect.
+  The same goes for `LibraryScan.scanning` (a rescan follows every return): Settings reads `settingsScanning()`.
+- UI sounds go through `Sounds`, which plays them on its own thread: `SoundPool.play` took 4 to 5 ms on the main
+  thread for every D-pad tick, and 60 ms or more after a quiet moment.
 - Something that moves inside the home grid uses `floating(restsWhenIdle = true)` (or `livelyMs`).
 - The Controller Home button service holds every key on the device until it answers, so it answers on its own
   thread (`ControllerHomeService.getMainLooper`), never on the UI thread: keep its key handling short and hand UI

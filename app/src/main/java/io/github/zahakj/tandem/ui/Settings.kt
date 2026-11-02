@@ -176,9 +176,24 @@ object SettingsUi {
 fun rowKey(section: String, label: String) = "$section/$label"
 private fun moreKey(section: String) = "more:$section"
 
+/**
+ * [LibraryScan.scanning] as Settings sees it. Settings stays composed while hidden (KeptScreen), and Tandem rescans
+ * every time you come back to it: read directly, the flag rebuilt every row of the hidden Settings twice per return
+ * (about 10 ms of the main thread each). Here it only follows while Settings is open.
+ */
+@Composable
+private fun settingsScanning(): Boolean {
+    val seen = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        androidx.compose.runtime.snapshotFlow { Nav.inSettings && LibraryScan.scanning }.collect { seen.value = it }
+    }
+    return seen.value
+}
+
 @Composable
 fun librarySettings(onRescan: () -> Unit): SettingSection {
     val s = Store.settings
+    val scanning = settingsScanning()
     // Recomposes only when the number changes, not on every change to a game's details (a scrape makes many).
     val gameCount by remember { androidx.compose.runtime.derivedStateOf { io.github.zahakj.tandem.Collections.visibleGames().size } }
     return SettingSection(
@@ -200,7 +215,7 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
             ) { toggleShowHidden() },
             SettingRow(
                 "Rescan games",
-                if (LibraryScan.scanning) "Looking…" else plural(gameCount, "game"),
+                if (scanning) "Looking…" else plural(gameCount, "game"),
                 Palette.Mint, Glyph.Refresh,
                 help = "Look through the ROMs folder again, for games you just copied over. Tandem also checks by itself whenever you come back to it.",
                 keywords = "refresh scan reload find new games",

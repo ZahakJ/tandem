@@ -7,7 +7,9 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
+import android.os.Process
 import android.os.SystemClock
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.random.Random
@@ -42,11 +45,21 @@ import kotlin.random.Random
  */
 object Sounds {
     private const val VERSION = 4
-    private var pool: SoundPool? = null
+    @Volatile private var pool: SoundPool? = null
     private var dir: File? = null
     private var rate = 48000
     private val worker = Executors.newSingleThreadExecutor { r -> Thread(r, "tandem-sfx").apply { priority = Thread.MIN_PRIORITY } }
     private val main = Handler(Looper.getMainLooper())
+
+    /**
+     * SoundPool starts a sound on the thread that asks for it, and that takes 4 to 5 ms on the Thor (60 ms or more
+     * when its audio track starts again after a quiet moment): long enough to drop a frame on every D-pad tick. So
+     * every play, stop and volume change runs on this thread. A play hands back a ticket at once; [streams] keeps
+     * the stream of each ticket that is stopped or faded later (touched on this thread only).
+     */
+    private val player by lazy { Handler(HandlerThread("tandem-sfx-play", Process.THREAD_PRIORITY_AUDIO).apply { start() }.looper) }
+    private val tickets = AtomicInteger()
+    private val streams = HashMap<Int, Int>()
 
     /** Loaded sample ids by "pack/kind", "jingle/<family>", "launch/<family>" and "pip/<n>". */
     private val ids = ConcurrentHashMap<String, Int>()
@@ -140,15 +153,15 @@ object Sounds {
     /** An Undo (from a toast, Select or a menu) took a step back. */
     fun undo() { play(Sfx.Back) }
 
-    /** The rising tone under a hold-to-confirm ring (HoldConfirm.kt); returns the stream for [stopHold]. */
+    /** The rising tone under a hold-to-confirm ring (HoldConfirm.kt); returns the ticket for [stopHold]. */
     fun holdRise(): Int {
         if (!Store.settings.look.sounds) return 0
         val id = ids["hold"] ?: return 0
-        return playId(id, Sfx.Confirm, 0.7f, 1f)
+        return playId(id, Sfx.Confirm, 0.7f, 1f, keep = true)
     }
 
     /** Stops a [holdRise] tone: let go early, or the hold confirmed and [confirm] takes over. */
-    fun stopHold(stream: Int) { if (stream != 0) pool?.stop(stream) }
+    fun stopHold(ticket: Int) { if (ticket != 0) player.post { streams.remove(ticket)?.let { pool?.stop(it) } } }
     fun achievement() { play(Sfx.Achievement) }
     fun key() { play(Sfx.Key) }
     fun saverIn() { play(Sfx.SaverIn) }
@@ -184,42 +197,51 @@ object Sounds {
         val family = platformId?.let(Family::of)
         if (family != null && look.sounds && look.jingles != "off") {
             val id = ids["launch/${family.name}"]
-            if (id != null) { markTail(playId(id, Sfx.Launch, 0.9f, 1f), 0.9f); return }
+            if (id != null) { markTail(playId(id, Sfx.Launch, 0.9f, 1f, keep = true), 0.9f); return }
             prepareJingles()
         }
-        markTail(play(Sfx.Launch), base(Sfx.Launch))
+        markTail(play(Sfx.Launch, keep = true), base(Sfx.Launch))
     }
 
-    // The launch sound still ringing, so it can be faded rather than cut when Tandem leaves the screen.
-    private var tailStream = 0
+    // The launch sound still ringing (its ticket), so it can be faded rather than cut when Tandem leaves the screen.
+    // All of it lives on the player thread.
+    private var tailTicket = 0
     private var tailUntil = 0L
     private var tailVolume = 0f
     private var tailGain = 0f
     private val tailStep = object : Runnable {
         override fun run() {
             val p = pool ?: return
+            val stream = streams[tailTicket] ?: return
             tailGain -= 0.2f
-            if (tailGain <= 0f) { p.stop(tailStream); tailStream = 0; return }
+            if (tailGain <= 0f) { p.stop(stream); streams.remove(tailTicket); tailTicket = 0; return }
             val v = tailVolume * tailGain * tailGain
-            p.setVolume(tailStream, v, v)
-            main.postDelayed(this, 12)
+            p.setVolume(stream, v, v)
+            player.postDelayed(this, 12)
         }
     }
 
-    private fun markTail(stream: Int, vol: Float) {
-        if (stream == 0) return
-        main.removeCallbacks(tailStep)
-        tailStream = stream
-        tailUntil = SystemClock.uptimeMillis() + 800
-        tailVolume = (vol * Store.settings.look.soundVolume).coerceIn(0f, 1f)
-        tailGain = 1f
+    private fun markTail(ticket: Int, vol: Float) {
+        if (ticket == 0) return
+        val until = SystemClock.uptimeMillis() + 800
+        val v = (vol * Store.settings.look.soundVolume).coerceIn(0f, 1f)
+        player.post {
+            player.removeCallbacks(tailStep)
+            if (tailTicket != ticket) streams.remove(tailTicket)
+            tailTicket = ticket
+            tailUntil = until
+            tailVolume = v
+            tailGain = 1f
+        }
     }
 
     /** Tandem is leaving the screen: a launch sound that is still ringing fades out over 60 ms instead of stopping dead. */
     fun fadeTail() {
-        if (tailStream == 0 || SystemClock.uptimeMillis() > tailUntil) return
-        main.removeCallbacks(tailStep)
-        main.post(tailStep)
+        player.post {
+            if (tailTicket == 0 || SystemClock.uptimeMillis() > tailUntil) return@post
+            player.removeCallbacks(tailStep)
+            tailStep.run()
+        }
     }
 
     /** A system was opened: its little hello jingle, when the user turned those on. */
@@ -292,8 +314,11 @@ object Sounds {
         holding = repeat > 0
     }
 
-    /** Plays [kind] from the chosen pack; returns its stream id (0 when nothing played). Allocates nothing. */
-    fun play(kind: Sfx, volume: Float = 1f): Int {
+    /**
+     * Plays [kind] from the chosen pack (on the player thread); returns its ticket, 0 when nothing plays. [keep]: the
+     * ticket is stopped or faded later.
+     */
+    fun play(kind: Sfx, volume: Float = 1f, keep: Boolean = false): Int {
         val look = Store.settings.look
         if (!look.sounds) return 0
         val now = SystemClock.uptimeMillis()
@@ -326,15 +351,22 @@ object Sounds {
         ensurePack(pack)
         val id = packIds[pack]?.get(kind.ordinal) ?: 0
         if (id == 0) return 0
-        return playId(id, kind, vol, rate)
+        return playId(id, kind, vol, rate, keep = keep)
     }
 
-    private fun playId(id: Int, kind: Sfx, vol: Float, rate: Float, mark: Boolean = true): Int {
+    private fun playId(id: Int, kind: Sfx, vol: Float, rate: Float, mark: Boolean = true, keep: Boolean = false): Int {
+        if (pool == null) return 0
         if (mark) { lastAt = SystemClock.uptimeMillis(); lastKind = kind }
         val v = (vol * Store.settings.look.soundVolume).coerceIn(0f, 1f)
         // When all streams are busy, SoundPool drops the lowest priority first: ticks give way to everything else.
         val priority = when (kind) { Sfx.Move, Sfx.Key -> 0; Sfx.Launch, Sfx.Achievement -> 2; else -> 1 }
-        return pool?.play(id, v, v, priority, 0, rate.coerceIn(0.5f, 2f)) ?: 0
+        val r = rate.coerceIn(0.5f, 2f)
+        val ticket = tickets.incrementAndGet().let { if (it == 0) tickets.incrementAndGet() else it }
+        player.post {
+            val stream = pool?.play(id, v, v, priority, 0, r) ?: 0
+            if (keep && stream != 0) streams[ticket] = stream
+        }
+        return ticket
     }
 
     private fun base(kind: Sfx): Float = when (kind) {

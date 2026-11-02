@@ -492,7 +492,10 @@ private fun Main(resumes: Int) {
                 // or as soon as the Start panel opens (its Settings page leads there), then measured ahead too.
                 KeptScreen(Route.Home, topRoom = if (iconGrid) 0.dp else TopBarHeight) { HomeScreen(libs) }
                 var settingsWarm by remember { mutableStateOf(false) }
-                LaunchedEffect(Unit) {
+                // Not in the copy the bottom-screen home borrows (LibraryGuest): that one is made afresh every time an
+                // app comes up on the top screen, and built all of Settings (about 20 ms) while the app was starting.
+                // Settings there is still composed when opened, or when its Start panel opens.
+                if (!LocalLibraryGuest.current) LaunchedEffect(Unit) {
                     while (true) {
                         delay(1500)
                         if (SystemClock.elapsedRealtime() - io.github.zahakj.tandem.Idle.last > 1500 && !Nav.overlayOpen) break
