@@ -192,7 +192,7 @@ fun SoundCues() {
 
 // --- Previews --------------------------------------------------------------------------------------------------
 
-/** The four packs as chips, each with a little drawing of its character; plays a demo when [play]. */
+/** The packs as chips, each with a little drawing of its character; plays a demo when [play]. */
 @Composable
 private fun SoundPackPreview(pack: SoundPack, play: Boolean) {
     if (play) LaunchedEffect(pack) { delay(260); Sounds.preview(pack) }
@@ -200,7 +200,8 @@ private fun SoundPackPreview(pack: SoundPack, play: Boolean) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         for (p in SoundPack.entries) {
             val on = p == pack
-            val color = when (p) { SoundPack.Modern -> Palette.Sky; SoundPack.Playful -> Palette.Lavender; SoundPack.Chiptune -> Palette.Mint; SoundPack.Bubbly -> Palette.Peach; SoundPack.Minimal -> Palette.Muted }
+            val color = when (p) { SoundPack.Modern -> Palette.Sky; SoundPack.Playful -> Palette.Lavender; SoundPack.Chiptune -> Palette.Mint; SoundPack.Bubbly -> Palette.Peach; SoundPack.Minimal -> Palette.Muted
+                SoundPack.Studio -> Palette.Butter; SoundPack.Glass -> Palette.Sky; SoundPack.Air -> Palette.Mint }
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(if (on) color.copy(alpha = 0.22f) else Palette.Card.copy(alpha = 0.5f))
                     .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -233,6 +234,12 @@ private fun DrawScope.drawPackWave(p: SoundPack, color: Color, phase: Float) {
             SoundPack.Chiptune -> (if (((u * 8 - phase * 2) % 1 + 1) % 1 < 0.5f) 1f else -1f) * (kotlin.math.floor(env * 4) / 4)
             SoundPack.Bubbly -> sin((u * u * 9 - phase * 2) * 2 * PI).toFloat() * env
             SoundPack.Minimal -> if (u < 0.08f) sin(u * 80).toFloat() * (1 - u / 0.08f) else 0f
+            // A low, rounded thump that is gone quickly.
+            SoundPack.Studio -> sin((u * 4 - phase * 2) * 2 * PI).toFloat() * (1 - u).pow(4f)
+            // A fast, bright ring that takes its time to fade.
+            SoundPack.Glass -> sin((u * 16 - phase * 2) * 2 * PI).toFloat() * (1 - u).pow(1.2f) * 0.8f
+            // A soft swell rising and falling.
+            SoundPack.Air -> sin((u * 5 - phase * 2) * 2 * PI).toFloat() * sin(u * PI).toFloat() * 0.7f
         }
         val py = mid - y * h * 0.42f
         if (i == 0) path.moveTo(x, py) else path.lineTo(x, py)

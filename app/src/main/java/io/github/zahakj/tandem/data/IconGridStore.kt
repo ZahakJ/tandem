@@ -34,6 +34,8 @@ data class HomeFolder(
      * follows after them, so new games still show up ([SystemFolders]).
      */
     val system: String? = null,
+    /** Tiles across, chosen with L1 / R1 inside it; 0: as many as fit at the usual size. */
+    val across: Int = 0,
 ) {
     val smart: Boolean get() = rule != null
 }
@@ -353,6 +355,9 @@ object IconGridStore {
 
     /** Where games opened from folder [id] start ([FolderScreens]). */
     fun setOpenOn(id: String, openOn: String?) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(openOn = openOn) else it }) }
+
+    /** How many tiles across folder [id] shows (0: as many as fit). */
+    fun setFolderAcross(id: String, across: Int) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(across = across) else it }) }
 
     fun renameFolder(id: String, name: String) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(name = name) else it }) }
 

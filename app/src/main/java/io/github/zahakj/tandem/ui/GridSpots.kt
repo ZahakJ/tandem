@@ -298,22 +298,6 @@ fun tidyFolder(id: String) {
 }
 
 /**
- * R2 on the grid: [lines] lines further along from the highlighted slot, onto the first tile there (or the last
- * tile), never an empty spot.
- */
-internal fun jumpAlong(route: String, keys: List<String>, lanes: Int, lines: Int) {
-    val from = keys.indexOf(FocusMemory.get(route))
-    if (from < 0) return
-    fun tile(k: String) = !isGapKey(k) && !isCoveredKey(k)
-    val goal = from + lanes.coerceAtLeast(1) * lines
-    val at = (goal until keys.size).firstOrNull { tile(keys[it]) }
-        ?: keys.indices.lastOrNull { tile(keys[it]) }?.takeIf { it > from } ?: return
-    FocusMemory.remember(route, keys[at])
-    Nav.focusTick++
-    Sounds.move()
-}
-
-/**
  * A folder made empty (an empty spot's New folder…) gets the designer's suggested look from the first thing put in
  * it, as a folder made from a tile does. Call before the thing goes in.
  */

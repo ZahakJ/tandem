@@ -188,6 +188,11 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
             listOf("swap-grid" to "Swap on the grid", "swap" to "Swap everywhere", "search" to "Search"), look.xButton,
         ) { v -> updateLook { it.copy(xButton = v) } },
         choice(
+            "Swap animation", Glyph.Swap, Palette.Sky,
+            "How the screens trade places on X. Scatter: the icons fly apart and land on the other screen. Push: each screen's new side slides in from the hinge. Flip: both screens turn over like cards. Depth: the old side sinks back as the new one comes forward.",
+            listOf("scatter" to "Scatter", "push" to "Push", "flip" to "Flip", "depth" to "Depth", "fade" to "Fade", "instant" to "Instant"), look.swapStyle,
+        ) { v -> updateLook { it.copy(swapStyle = v) } },
+        choice(
             "Icon pack", Glyph.Image, Palette.Sky,
             "System and collection icons from a Cocoon smart-folder pack in ROMs/assets/smart_folders. Auto uses your Cocoon theme's own pack. Without one, Tandem draws its own.",
             ThemePacks.iconSources(), look.iconPack,

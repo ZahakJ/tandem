@@ -66,20 +66,22 @@ object Panels {
     var apps by mutableStateOf(false)
     var appMenu by mutableStateOf<String?>(null)
     var homeExplainer by mutableStateOf(false)
+    /** The side panel (R2 on home): Pip, quick settings and notifications (SidePanel.kt). */
+    var side by mutableStateOf(false)
 
     /** The dock or drawer app that is highlighted, for Y. */
     var focusedApp by mutableStateOf<String?>(null)
     /** The highlighted card in the game switcher, for X. */
     var focusedRunning by mutableStateOf<String?>(null)
 
-    val anyOpen: Boolean get() = switcher || quick || apps || appMenu != null || homeExplainer || Screensaver.active || WidgetUi.popupOpen
+    val anyOpen: Boolean get() = switcher || quick || side || apps || appMenu != null || homeExplainer || Screensaver.active || WidgetUi.popupOpen
 
     private fun blocked() = TextEntry.request != null
 
     /** Closes the library's own popups too, without handing focus back to the screen underneath. */
     private fun clearAll() {
         Nav.menuFor = null; Nav.groupMenu = false; Nav.search = false
-        switcher = false; quick = false; apps = false; appMenu = null; homeExplainer = false
+        switcher = false; quick = false; side = false; apps = false; appMenu = null; homeExplainer = false
     }
 
     fun openSwitcher() {
@@ -97,6 +99,14 @@ object Panels {
         // Always opens on the first control (brightness), not on whatever was used last time.
         FocusMemory.forget("quick")
         clearAll(); quick = true
+    }
+
+    fun toggleSide() {
+        if (blocked()) return
+        if (side) { close(); return }
+        FocusMemory.forget("side")
+        clearAll(); side = true
+        Sounds.menuOpen()
     }
 
     fun openApps() { if (!blocked()) { FocusMemory.forget("apps"); clearAll(); apps = true } }
@@ -119,7 +129,7 @@ object Panels {
 
     /** Closes whatever is open and gives focus back to the screen. */
     fun close() {
-        switcher = false; quick = false; apps = false; appMenu = null; homeExplainer = false
+        switcher = false; quick = false; side = false; apps = false; appMenu = null; homeExplainer = false
         Nav.focusTick++
     }
 }

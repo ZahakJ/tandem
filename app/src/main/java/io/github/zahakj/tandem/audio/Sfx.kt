@@ -20,6 +20,9 @@ enum class SoundPack(val id: String, val label: String, val blurb: String) {
     Chiptune("chip", "Chiptune", "Square-wave blips and coin-box fanfares, like an 8-bit console."),
     Bubbly("bubbly", "Bubbly", "Round water-drop bloops and fizzy sparkles."),
     Minimal("minimal", "Minimal", "Quiet, short and subtle. Barely there."),
+    Studio("studio", "Studio", "Felt and wood: low, warm taps with a soft thump, like a well-made keyboard."),
+    Glass("glass", "Glass", "Clean, bright crystal tones that ring a little longer. Crisp and polished."),
+    Air("air", "Air", "Soft breaths and pure, rounded tones. Calm and spacious."),
     ;
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } ?: Modern }
@@ -31,7 +34,7 @@ enum class SoundPack(val id: String, val label: String, val blurb: String) {
  */
 object SfxSynth {
     fun render(pack: SoundPack, kind: Sfx, rate: Int): FloatArray {
-        if (pack == SoundPack.Modern) return ModernSfx.render(kind, rate)
+        ModernSfx.Timbre.of(pack)?.let { return ModernSfx.render(kind, rate, it) }
         val b = Buf(rate, lengthOf(kind))
         val v = PackVoice(pack, b)
         when (kind) {
@@ -203,7 +206,7 @@ object SfxSynth {
                         ph += f / rate
                         (sin(2 * PI * ph) + 0.1 * sin(4 * PI * ph)) * env(t, 0.003, len * 0.35)
                     }
-                    SoundPack.Minimal, SoundPack.Modern -> {
+                    SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air -> {
                         ph += f0 / rate
                         sin(2 * PI * ph) * env(t, 0.002, len * 0.25) * 0.8
                     }
@@ -247,7 +250,7 @@ object SfxSynth {
                 }
                 SoundPack.Chiptune -> note(0.0, 96, 0.03, 0.8)
                 SoundPack.Bubbly -> note(0.0, 86, 0.035, 0.9)
-                SoundPack.Minimal, SoundPack.Modern -> {
+                SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air -> {
                     val bp = Svf().apply { set(2200.0, 2.0, rate) }
                     for (i in 0 until idx(0.02)) {
                         val t = i.toDouble() / rate

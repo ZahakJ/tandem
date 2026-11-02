@@ -66,6 +66,8 @@ data class Look(
     val gridFolders: String = "popup",
     /** What X does: "swap-grid" (swaps screens on the icon grid, searches elsewhere), "swap" (always swaps) or "search". */
     val xButton: String = "swap-grid",
+    /** How the screens trade places on X ([SwapFx]): "scatter", "push", "flip", "depth", "fade" or "instant". */
+    val swapStyle: String = "scatter",
     /**
      * Where system and collection art comes from: "auto" (the theme pack's own art, else the first Cocoon smart-folder
      * pack in ROMs/assets/smart_folders), "none" (drawn by Tandem), a theme pack id ("pack:x", "cocoon:x"), or a

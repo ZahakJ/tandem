@@ -131,125 +131,139 @@ object SystemControls {
 /** Hold Start, or ◐ in the top bar: brightness, volume, radios, battery and storage. */
 @Composable
 fun QuickPanel() {
+    OverlayPanel(Panels.quick, onClose = { Panels.close() }) {
+        PanelSurface(Modifier.width(640.dp)) { QuickControls("quick", narrow = false) }
+    }
+}
+
+/**
+ * The quick settings themselves: a header with battery and storage, brightness and volume, the radios and the
+ * shortcuts. In the quick panel, and [narrow] in the side panel (SidePanel.kt), where the tiles go three to a row.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, narrow: Boolean) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
-    OverlayPanel(Panels.quick, onClose = { Panels.close() }) {
-        // Re-read the device state once a second while open (radios take a moment to switch).
-        var tick by remember { mutableIntStateOf(0) }
-        LaunchedEffect(Unit) { while (true) { delay(1000); tick++ } }
-        // Whether a Discord account is connected (a small file read), for the Discord status tile.
-        LaunchedEffect(Unit) { if (DiscordPresence.available) withContext(Dispatchers.IO) { DiscordPresence.refresh(ctx) } }
-        val t = tick
-        // While a change is on its way, show where it's going so a held button steps smoothly.
-        var brightTarget by remember { mutableIntStateOf(-1) }
-        val readBright = remember(t) { SystemControls.brightnessLevel(ctx) }
-        val bright = if (brightTarget >= 0) brightTarget else readBright
-        val auto = remember(t) { SystemControls.autoBrightness(ctx) }
-        val vol = remember(t) { SystemControls.volume(ctx) }
-        val maxVol = remember { SystemControls.maxVolume(ctx).coerceAtLeast(1) }
-        val wifi = remember(t) { SystemControls.wifiOn(ctx) }
-        val bt = remember(t) { SystemControls.bluetoothOn(ctx) }
-        val plane = remember(t) { SystemControls.airplaneOn(ctx) }
-        val (battery, charging) = remember(t / 10) { SystemControls.battery(ctx) }
-        val (free, total) = remember(t / 10) { SystemControls.storage() }
-        val shizuku = remember { Shell.ready() }
-        // Controller passthrough (PadLink.kt): only where it can work.
-        val padLink = remember { io.github.zahakj.tandem.PadLink.available(ctx) }
-        val canBright = remember(t / 5) { SystemControls.canSetBrightness(ctx) }
-        val key = "quick"
+    // Re-read the device state once a second while open (radios take a moment to switch).
+    var tick by remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) { while (true) { delay(1000); tick++ } }
+    // Whether a Discord account is connected (a small file read), for the Discord status tile.
+    LaunchedEffect(Unit) { if (DiscordPresence.available) withContext(Dispatchers.IO) { DiscordPresence.refresh(ctx) } }
+    val t = tick
+    // While a change is on its way, show where it's going so a held button steps smoothly.
+    var brightTarget by remember { mutableIntStateOf(-1) }
+    val readBright = remember(t) { SystemControls.brightnessLevel(ctx) }
+    val bright = if (brightTarget >= 0) brightTarget else readBright
+    val auto = remember(t) { SystemControls.autoBrightness(ctx) }
+    val vol = remember(t) { SystemControls.volume(ctx) }
+    val maxVol = remember { SystemControls.maxVolume(ctx).coerceAtLeast(1) }
+    val wifi = remember(t) { SystemControls.wifiOn(ctx) }
+    val bt = remember(t) { SystemControls.bluetoothOn(ctx) }
+    val plane = remember(t) { SystemControls.airplaneOn(ctx) }
+    val (battery, charging) = remember(t / 10) { SystemControls.battery(ctx) }
+    val (free, total) = remember(t / 10) { SystemControls.storage() }
+    val shizuku = remember { Shell.ready() }
+    // Controller passthrough (PadLink.kt): only where it can work.
+    val padLink = remember { io.github.zahakj.tandem.PadLink.available(ctx) }
+    val canBright = remember(t / 5) { SystemControls.canSetBrightness(ctx) }
+    fun io(work: () -> Unit) = scope.launch { withContext(Dispatchers.IO) { work() }; tick++ }
 
-        fun io(work: () -> Unit) = scope.launch { withContext(Dispatchers.IO) { work() }; tick++ }
-
-        PanelSurface(Modifier.width(640.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Quick settings", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
-                Pill("${if (charging) "⚡ " else ""}$battery%", if (battery <= 20 && !charging) Palette.Peach else Palette.Mint)
-                Spacer(Modifier.width(8.dp))
-                if (total > 0) Pill("${Formatter.formatShortFileSize(ctx, free)} free", Palette.Sky)
-            }
-            Spacer(Modifier.height(12.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
-                LevelCard(
-                    "☀ Brightness", if (auto) "Auto" else "${bright * 100 / SystemControls.BRIGHT_STEPS}%", bright, SystemControls.BRIGHT_STEPS, Palette.Butter,
-                    Modifier.remembersFocus(key, "bright", true),
-                    onStep = { d ->
-                        if (!canBright) askWriteSettings(ctx)
-                        else {
-                            val next = (bright + d).coerceIn(0, SystemControls.BRIGHT_STEPS)
-                            brightTarget = next
-                            scope.launch {
-                                withContext(Dispatchers.IO) { SystemControls.setBrightnessLevel(ctx, next) }
-                                if (brightTarget == next) brightTarget = -1
-                                tick++
-                            }
-                        }
-                    },
-                    onClick = {
-                        if (!canBright) askWriteSettings(ctx)
-                        else io { SystemControls.setAutoBrightness(ctx, !auto) }
-                    },
-                )
-                LevelCard(
-                    "♪ Volume", if (vol == 0) "Muted" else "${vol * 100 / maxVol}%", vol, maxVol, Palette.Peach,
-                    Modifier.remembersFocus(key, "vol", false),
-                    onStep = { d -> SystemControls.setVolume(ctx, vol + d); tick++ },
-                    onClick = { SystemControls.setVolume(ctx, if (vol == 0) maxVol / 2 else 0); tick++ },
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                    ToggleTile("Wi-Fi", wifi, Palette.Sky, Modifier.weight(1f).remembersFocus(key, "wifi", false)) {
-                        if (shizuku) io { SystemControls.setWifi(!wifi) } else { Panels.close(); SystemControls.open(ctx, Settings.Panel.ACTION_WIFI) }
-                    }
-                    ToggleTile("Bluetooth", bt, Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "bt", false)) {
-                        if (shizuku) io { SystemControls.setBluetooth(!bt) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_BLUETOOTH_SETTINGS) }
-                    }
-                    ToggleTile("Airplane", plane, Palette.Peach, Modifier.weight(1f).remembersFocus(key, "plane", false)) {
-                        if (shizuku) io { SystemControls.setAirplane(!plane) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_AIRPLANE_MODE_SETTINGS) }
-                    }
-                    // Steps through Built-in and each connected controller: the one that plays as the built-in one.
-                    if (padLink) {
-                        val pad = io.github.zahakj.tandem.PadLink.linked
-                        ToggleTile("Controller", pad != null, Palette.Butter, Modifier.weight(1f).remembersFocus(key, "pad", false), value = pad?.name ?: "Built-in") {
-                            io.github.zahakj.tandem.PadLink.cycle()
-                        }
-                    }
-                    // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
-                    if (DiscordPresence.available && DiscordPresence.linked) {
-                        ToggleTile("Discord status", DiscordPresence.shown, Palette.Mint, Modifier.weight(1f).remembersFocus(key, "discord", false)) {
-                            DiscordPresence.setShown(ctx, !DiscordPresence.shown)
-                        }
+    // The side panel shows battery and storage in its own header.
+    if (!narrow) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Quick settings", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
+        Pill("${if (charging) "⚡ " else ""}$battery%", if (battery <= 20 && !charging) Palette.Peach else Palette.Mint)
+        Spacer(Modifier.width(8.dp))
+        if (total > 0) Pill("${Formatter.formatShortFileSize(ctx, free)} free", Palette.Sky)
+        }
+        Spacer(Modifier.height(12.dp))
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(if (narrow) 7.dp else 9.dp)) {
+        LevelCard(
+            "☀ Brightness", if (auto) "Auto" else "${bright * 100 / SystemControls.BRIGHT_STEPS}%", bright, SystemControls.BRIGHT_STEPS, Palette.Butter,
+            Modifier.remembersFocus(key, "bright", true), compact = narrow,
+            onStep = { d ->
+                if (!canBright) askWriteSettings(ctx)
+                else {
+                    val next = (bright + d).coerceIn(0, SystemControls.BRIGHT_STEPS)
+                    brightTarget = next
+                    scope.launch {
+                        withContext(Dispatchers.IO) { SystemControls.setBrightnessLevel(ctx, next) }
+                        if (brightTarget == next) brightTarget = -1
+                        tick++
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                    ActionTile("▶ Running", Palette.Mint, Modifier.weight(1f).remembersFocus(key, "switcher", false)) { Panels.openSwitcher() }
-                    // Private mode on at once, or off with the PIN (PrivateMode); the panel closes so the PIN pad has the screen.
-                    ToggleTile("Private mode", io.github.zahakj.tandem.Privacy.enabled, Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "private", false), height = 48.dp) {
-                        Panels.close()
-                        if (io.github.zahakj.tandem.Privacy.enabled) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
-                    }
-                    ActionTile("★ Stats", Palette.Butter, Modifier.weight(1f).remembersFocus(key, "stats", false)) {
-                        Panels.close(); if (Nav.route != Route.Stats) Nav.go(Route.Stats)
-                    }
-                    ActionTile("⚙ Android", Palette.Lavender, Modifier.weight(1f).remembersFocus(key, "android", false)) {
-                        Panels.close(); SystemControls.open(ctx, Settings.ACTION_SETTINGS)
-                    }
-                    if (shizuku) ActionTile("☾ Sleep", Palette.Sky, Modifier.weight(1f).remembersFocus(key, "sleep", false)) {
-                        Panels.close(); io { Shell.run("input", "keyevent", "223") }
-                    }
+            },
+            onClick = {
+                if (!canBright) askWriteSettings(ctx)
+                else io { SystemControls.setAutoBrightness(ctx, !auto) }
+            },
+        )
+        LevelCard(
+            "♪ Volume", if (vol == 0) "Muted" else "${vol * 100 / maxVol}%", vol, maxVol, Palette.Peach,
+            Modifier.remembersFocus(key, "vol", false), compact = narrow,
+            onStep = { d -> SystemControls.setVolume(ctx, vol + d); tick++ },
+            onClick = { SystemControls.setVolume(ctx, if (vol == 0) maxVol / 2 else 0); tick++ },
+        )
+        val radios: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+            ToggleTile("Wi-Fi", wifi, Palette.Sky, cell().remembersFocus(key, "wifi", false)) {
+                if (shizuku) io { SystemControls.setWifi(!wifi) } else { Panels.close(); SystemControls.open(ctx, Settings.Panel.ACTION_WIFI) }
+            }
+            ToggleTile("Bluetooth", bt, Palette.Lavender, cell().remembersFocus(key, "bt", false)) {
+                if (shizuku) io { SystemControls.setBluetooth(!bt) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_BLUETOOTH_SETTINGS) }
+            }
+            ToggleTile("Airplane", plane, Palette.Peach, cell().remembersFocus(key, "plane", false)) {
+                if (shizuku) io { SystemControls.setAirplane(!plane) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_AIRPLANE_MODE_SETTINGS) }
+            }
+            // Steps through Built-in and each connected controller: the one that plays as the built-in one.
+            if (padLink) {
+                val pad = io.github.zahakj.tandem.PadLink.linked
+                ToggleTile("Controller", pad != null, Palette.Butter, cell().remembersFocus(key, "pad", false), value = pad?.name ?: "Built-in") {
+                    io.github.zahakj.tandem.PadLink.cycle()
                 }
             }
-            Spacer(Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("◀▶", "Adjust", Palette.Butter)
-                ButtonHint("A", "Toggle", Palette.Mint)
-                ButtonHint("B", "Close", Palette.Lavender)
-            }
-            if (!shizuku) {
-                Text(
-                    "With Shizuku, Wi-Fi, Bluetooth and airplane mode switch right here.",
-                    Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
-                )
+            // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
+            if (DiscordPresence.available && DiscordPresence.linked) {
+                ToggleTile("Discord status", DiscordPresence.shown, Palette.Mint, cell().remembersFocus(key, "discord", false), short = "Discord") {
+                    DiscordPresence.setShown(ctx, !DiscordPresence.shown)
+                }
             }
         }
+        val shortcuts: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {
+            ActionTile("▶ Running", Palette.Mint, cell().remembersFocus(key, "switcher", false)) { Panels.openSwitcher() }
+            // Private mode on at once, or off with the PIN (PrivateMode); the panel closes so the PIN pad has the screen.
+            ToggleTile("Private mode", io.github.zahakj.tandem.Privacy.enabled, Palette.Lavender, cell().remembersFocus(key, "private", false), height = 48.dp, short = "Private") {
+                Panels.close()
+                if (io.github.zahakj.tandem.Privacy.enabled) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
+            }
+            ActionTile("★ Stats", Palette.Butter, cell().remembersFocus(key, "stats", false)) {
+                Panels.close(); if (Nav.route != Route.Stats) Nav.go(Route.Stats)
+            }
+            ActionTile("⚙ Android", Palette.Lavender, cell().remembersFocus(key, "android", false)) {
+                Panels.close(); SystemControls.open(ctx, Settings.ACTION_SETTINGS)
+            }
+            if (shizuku) ActionTile("☾ Sleep", Palette.Sky, cell().remembersFocus(key, "sleep", false)) {
+                Panels.close(); io { Shell.run("input", "keyevent", "223") }
+            }
+        }
+        // Narrow, one grid of small tiles; else the radios and the shortcuts each have a row.
+        if (narrow) TileRow(true) { radios(); shortcuts() } else { TileRow(false, radios); TileRow(false, shortcuts) }
+    }
+    // The side panel shows its own hints once, at the bottom.
+    if (!narrow) {
+        Spacer(Modifier.height(10.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            ButtonHint("◀▶", "Adjust", Palette.Butter)
+            ButtonHint("A", "Toggle", Palette.Mint)
+            ButtonHint("B", "Close", Palette.Lavender)
+        }
+    }
+    if (!shizuku) {
+        Text(
+            "With Shizuku, Wi-Fi, Bluetooth and airplane mode switch right here.",
+            Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
+        )
     }
 }
 
@@ -263,9 +277,9 @@ private fun askWriteSettings(ctx: Context) {
 
 /** A level you change with left and right (or the − and + ends by touch); A runs [onClick]. */
 @Composable
-private fun LevelCard(label: String, value: String, level: Int, max: Int, color: Color, modifier: Modifier, onStep: (Int) -> Unit, onClick: () -> Unit) {
+private fun LevelCard(label: String, value: String, level: Int, max: Int, color: Color, modifier: Modifier, compact: Boolean = false, onStep: (Int) -> Unit, onClick: () -> Unit) {
     FocusCard(
-        modifier.fillMaxWidth().height(58.dp).onPreviewKeyEvent { e ->
+        modifier.fillMaxWidth().height(if (compact) 46.dp else 58.dp).onPreviewKeyEvent { e ->
             val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
             if (e.type == KeyEventType.KeyDown) onStep(d)
             true
@@ -273,35 +287,44 @@ private fun LevelCard(label: String, value: String, level: Int, max: Int, color:
         glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick,
     ) {
         Row(Modifier.fillMaxSize().padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            StepButton("−", color) { onStep(-1) }
+            StepButton("−", color, if (compact) 32.dp else 40.dp) { onStep(-1) }
             Column(Modifier.weight(1f).padding(horizontal = 8.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                    Text(label, Modifier.weight(1f), style = if (compact) MaterialTheme.typography.labelLarge else MaterialTheme.typography.titleSmall, maxLines = 1)
                     Text(value, style = MaterialTheme.typography.labelLarge, color = color)
                 }
-                Spacer(Modifier.height(5.dp))
-                Box(Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(50)).background(Palette.NightDeep)) {
+                Spacer(Modifier.height(if (compact) 4.dp else 5.dp))
+                Box(Modifier.fillMaxWidth().height(if (compact) 6.dp else 8.dp).clip(RoundedCornerShape(50)).background(Palette.NightDeep)) {
                     Box(Modifier.fillMaxWidth(level / max.toFloat()).fillMaxHeight().clip(RoundedCornerShape(50)).background(color))
                 }
             }
-            StepButton("+", color) { onStep(1) }
+            StepButton("+", color, if (compact) 32.dp else 40.dp) { onStep(1) }
         }
     }
 }
 
 @Composable
-private fun StepButton(symbol: String, color: Color, onTap: () -> Unit) {
+private fun StepButton(symbol: String, color: Color, size: Dp, onTap: () -> Unit) {
     Box(
-        Modifier.size(40.dp).clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.16f)).swallowTaps(onTap),
+        Modifier.size(size).clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.16f)).swallowTaps(onTap),
         contentAlignment = Alignment.Center,
     ) { Text(symbol, style = MaterialTheme.typography.titleLarge, color = color) }
 }
 
 /** An on / off tile; [height] matches the row it sits in (the action row's tiles are lower). */
 @Composable
-private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modifier, value: String? = null, height: Dp = 62.dp, onClick: () -> Unit) {
-    FocusCard(modifier.height(height), glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick) {
+private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modifier, value: String? = null, height: Dp = 62.dp, short: String? = null, onClick: () -> Unit) {
+    val compact = LocalCompactTiles.current
+    FocusCard(modifier.height(if (compact) 44.dp else height), glow = color, shape = RoundedCornerShape(if (compact) 14.dp else 16.dp), onClick = onClick) {
         Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.22f) else Color.Transparent))
+        // Compact: a short name alone, in the tile's colour while it is on.
+        if (compact) {
+            Text(
+                short ?: label, Modifier.align(Alignment.Center).padding(horizontal = 4.dp), style = MaterialTheme.typography.labelMedium,
+                color = if (on) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
+            return@FocusCard
+        }
         Column(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalArrangement = Arrangement.Center) {
             Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
@@ -314,9 +337,34 @@ private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modif
 
 @Composable
 private fun ActionTile(label: String, color: Color, modifier: Modifier, onClick: () -> Unit) {
-    FocusCard(modifier.height(48.dp), glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick) {
+    val compact = LocalCompactTiles.current
+    FocusCard(modifier.height(if (compact) 44.dp else 48.dp), glow = color, shape = RoundedCornerShape(if (compact) 14.dp else 16.dp), onClick = onClick) {
         Box(Modifier.fillMaxSize().padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
-            Text(label, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(label, style = if (compact) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
+}
+
+/** Quick tiles drawn small, one line each (the side panel). */
+private val LocalCompactTiles = androidx.compose.runtime.compositionLocalOf { false }
+
+/** The width of one small tile, so a row that isn't full keeps its tiles the same size. */
+private val LocalTileWidth = androidx.compose.runtime.compositionLocalOf<Dp?> { null }
+
+/** A tile's share of its row: an equal part of a full-width row, or one small tile's width. */
+@Composable
+private fun androidx.compose.foundation.layout.RowScope.cell(): Modifier = LocalTileWidth.current?.let { Modifier.width(it) } ?: Modifier.weight(1f)
+
+/** A row of quick tiles: one row as wide as the panel, or (in the narrow side panel) small ones, five to a row. */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun TileRow(narrow: Boolean, content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit) {
+    if (narrow) androidx.compose.foundation.layout.BoxWithConstraints {
+        // A hair under a fifth, so rounding never pushes the fifth tile onto the next row.
+        val w = (maxWidth - 7.dp * 4) / 5 - 0.5.dp
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(7.dp), verticalArrangement = Arrangement.spacedBy(7.dp), maxItemsInEachRow = 5,
+            content = { androidx.compose.runtime.CompositionLocalProvider(LocalCompactTiles provides true, LocalTileWidth provides w) { content() } },
+        )
+    } else Row(horizontalArrangement = Arrangement.spacedBy(9.dp), content = content)
 }

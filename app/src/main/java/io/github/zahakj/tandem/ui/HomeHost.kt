@@ -180,6 +180,7 @@ fun HomeHost() {
 
     GameSwitcher()
     QuickPanel()
+    SidePanelHost()
     AppsDrawer()
     AppActionMenu()
     AppIconChooser()

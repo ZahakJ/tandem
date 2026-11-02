@@ -15,8 +15,8 @@ Every button Tandem uses, on every screen. Tandem is built to be used entirely w
 | <kbd>Start</kbd> (hold) | Quick panel: brightness, volume, Wi-Fi, and the like |
 | <kbd>Select</kbd> (tap) | Surprise me: jump to a random game you have never played |
 | <kbd>Select</kbd> (hold), or <kbd>Select</kbd> + <kbd>Start</kbd> | Game switcher: every running game, to resume or close |
-| <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next system, collection or genre (on the icon grid: bigger or smaller icons; in Stats: tabs) |
-| <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on the icon grid: L2 shows the Recently played strip, R2 jumps a page along) |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next system, collection or genre (on the icon grid and inside its folders and systems: bigger or smaller icons; in Stats: tabs) |
+| <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on home, R2 opens the side panel; on the icon grid L2 shows the Recently played strip) |
 | <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd> | Private mode off: turn it on at once. Private mode on: show hidden games (after your PIN), or tuck them away again. See [Private mode](privacy.md#private-mode) |
 
 Button hints name Start and Select (<kbd>Start</kbd>, <kbd>Select</kbd>) as they are labelled on the Thor; with **Button prompts** set to Nintendo they show + and −.
@@ -149,7 +149,9 @@ Y on anything lifts it out of the screen, a little bigger, over a blurred backgr
 
 **On an icon grid tile:** Open, Move, Select, Move to folder…, Also add to folder…, Take out of the folder (Move up to… in a folder inside a folder), Sort and view or Game options, Design folder…, Rename folder, Sort inside…. More: Delete folder…, Hide, App info, Remove from home (Remove from folder inside one), Add to home…, Sort this folder…, Tidy up, Undo last change, Search, Swap screens.
 
-**On an empty spot of the icon grid:** Paste (while carrying a tile), New folder…, Game…, System…, Collection or genre…, App…, Tandem app…, Widget…. More: Tidy up, Undo last change, Search, Swap screens.
+**On an empty spot of the icon grid:** Paste (while carrying a tile), New folder…, Smart folder…, Game…, System…, Collection or genre…, App…, Tandem app…, Widget… (in a folder, the one-spot widgets). More: Tidy up, Undo last change, Search, Swap screens, and in an arranged system Show as a plain list.
+
+**Arranging a system:** Y on a system's tile › **Arrange like a folder**. It then opens as a folder that still holds every one of its games, new ones included, and takes empty spots, folders of its own (a **Smart folder…** made there starts limited to that system, so picking a genre is all it needs) and widgets. Your files never move. Y › **Show as a plain list** turns it back; folders made inside it move to the home grid.
 
 **On a widget on the icon grid:** Widget options…, Move, Resize, the widget's own actions. More: Remove widget, Select, Tidy up, Undo last change, Search, Swap screens.
 
@@ -169,7 +171,7 @@ In **All apps**, X searches. Holding Back for a moment while an app is in front 
 | <kbd>X</kbd> | Swap the screens |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Bigger or smaller icons. With fixed rows (**Rows of icons**), L1 means fewer rows and R1 more, from 1 to 5 (1 to 3 on the bottom screen); L1 on the biggest automatic size steps on to fixed rows. Tiles ease to their new size and the highlighted one stays where it is. |
 | <kbd>L2</kbd> | Show or hide the Recently played strip (or set it to always show) |
-| <kbd>R2</kbd> | A page along the grid, onto the next icon (empty spots are skipped) |
+| <kbd>R2</kbd> | The side panel: Pip, quick settings and your notifications (A opens one, Y clears it, R2 or B closes the panel) |
 | <kbd>B</kbd> | Back to the first icon |
 
 At **1 row** the grid looks like the 3DS HOME menu zoomed all the way in: one row of big icons in the middle of the screen, and the highlighted item's kind, name, count or play time and a strip of its art above it.

@@ -32,7 +32,7 @@ class SfxTest {
     @Test fun everySoundIsShortQuietAndUnclipped() {
         for (pack in SoundPack.entries) for (k in Sfx.entries) {
             val max = when {
-                pack == SoundPack.Modern && (k == Sfx.Move || k == Sfx.Key) -> 0.06
+                ModernSfx.Timbre.of(pack) != null && (k == Sfx.Move || k == Sfx.Key) -> 0.06
                 k == Sfx.Launch -> 0.7
                 else -> 2.0
             }

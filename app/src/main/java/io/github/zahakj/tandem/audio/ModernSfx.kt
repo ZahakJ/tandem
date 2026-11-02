@@ -20,6 +20,9 @@ import kotlin.math.sqrt
  *
  * Tones come from one palette (D major with its 7th), the whole set is low-passed, and each sound is levelled to a
  * loudness target rather than to a peak, so a tap and a chime feel equally present.
+ *
+ * Studio, Glass and Air play the same gestures through another [Timbre]: lower and woodier, brighter and longer, or
+ * breathier, so each is a whole set that hangs together rather than a filter on top.
  */
 internal object ModernSfx {
     // The palette, in Hz.
@@ -28,8 +31,41 @@ internal object ModernSfx {
     private const val Fs6 = 1479.98; private const val A6 = 1760.0; private const val D7 = 2349.32
     private const val A4 = 440.0; private const val Gs4 = 415.30; private const val D4 = 293.66
 
-    fun render(kind: Sfx, rate: Int): FloatArray {
-        val b = Kit(rate, lengthOf(kind))
+    /**
+     * How a pack voices the pieces: [pitch] scales every tone, [tap] the click's colour and [tapGain] its level,
+     * [body] and [bodyGain] the thump, [decay] how long tones ring, [fm] their bite at the start, [air] the breaths,
+     * [cutoff] the top of the sound, [room] the reverb and [level] the overall loudness (dB).
+     */
+    class Timbre(
+        val pitch: Double = 1.0, val tap: Double = 1.0, val tapGain: Double = 1.0, val body: Double = 1.0, val bodyGain: Double = 1.0,
+        val decay: Double = 1.0, val fm: Double = 1.0, val air: Double = 1.0, val cutoff: Double = 6200.0, val room: Double = 1.0,
+        val level: Double = 0.0,
+    ) {
+        companion object {
+            val MODERN = Timbre()
+            // An octave down, darker tap, more thump, short and dry: felt on wood.
+            val STUDIO = Timbre(pitch = 0.5, tap = 0.55, tapGain = 1.1, body = 0.75, bodyGain = 1.5, decay = 1.15, fm = 0.35, air = 0.7, cutoff = 3600.0, room = 0.5, level = 0.5)
+            // A fifth up, a crisp bright tap, pure tones that ring out, more room.
+            val GLASS = Timbre(pitch = 1.5, tap = 1.35, tapGain = 0.8, body = 1.4, bodyGain = 0.35, decay = 1.9, fm = 1.5, air = 0.8, cutoff = 9500.0, room = 2.6, level = -1.0)
+            // Pure sines, a whisper of a tap, breaths doing most of the work, soft room.
+            val AIR = Timbre(pitch = 1.0, tap = 0.7, tapGain = 0.35, body = 0.9, bodyGain = 0.5, decay = 1.4, fm = 0.0, air = 1.9, cutoff = 5000.0, room = 2.0)
+
+            /** The timbre for [pack], or null for the packs made another way. */
+            fun of(pack: SoundPack): Timbre? = when (pack) {
+                SoundPack.Modern -> MODERN
+                SoundPack.Studio -> STUDIO
+                SoundPack.Glass -> GLASS
+                SoundPack.Air -> AIR
+                else -> null
+            }
+        }
+    }
+
+    fun render(kind: Sfx, rate: Int, tm: Timbre = Timbre.MODERN): FloatArray {
+        // Longer-ringing timbres get more room, except where length is a promise: the launch (the game starts) and the
+        // D-pad sounds (held scrolling must never pile up). Nothing runs past two seconds.
+        val fixed = kind == Sfx.Launch || kind == Sfx.Move || kind == Sfx.Key
+        val b = Kit(rate, if (fixed) lengthOf(kind) else minOf(2.0, lengthOf(kind) * maxOf(1.0, tm.decay)), tm)
         when (kind) {
             // Navigation: a tap and a small body, done in under 50 ms so held D-pad scrolling never piles up.
             Sfx.Move -> { b.tap(0.0, 3600.0, 0.5); b.body(0.0, 1250.0, 0.55, 0.006) }
@@ -73,7 +109,7 @@ internal object ModernSfx {
             Sfx.SaverIn -> { b.tone(0.0, A5, 0.35, 0.25); b.tone(0.16, Fs5, 0.33, 0.25); b.tone(0.32, D5, 0.35, 0.4); b.tone(0.32, A4, 0.2, 0.4) }
             Sfx.SaverOut -> { b.tap(0.0, 3200.0, 0.4); b.tone(0.0, D5, 0.35, 0.08); b.tone(0.06, Fs5, 0.38, 0.08); b.tone(0.12, A5, 0.42, 0.18) }
         }
-        return b.finish(levelDb(kind), if (kind == Sfx.Launch) 0.06 else 0.035)
+        return b.finish(levelDb(kind) + tm.level, (if (kind == Sfx.Launch) 0.06 else 0.035) * tm.room)
     }
 
     /**
@@ -123,14 +159,16 @@ internal object ModernSfx {
     private const val PEAK = 0.6f
 
     /** A mono buffer and the four building blocks. */
-    private class Kit(val rate: Int, seconds: Double) {
+    private class Kit(val rate: Int, seconds: Double, val tm: Timbre) {
         val data = FloatArray((seconds * rate).toInt())
         private val noise = Noise(0x7A9D)
 
         private fun idx(t: Double) = (t * rate).toInt()
 
         /** A noise burst through a band-pass at [center]: the click of a button. */
-        fun tap(at: Double, center: Double, vel: Double, tau: Double = 0.0011) {
+        fun tap(at: Double, center0: Double, vel0: Double, tau: Double = 0.0011) {
+            val center = center0 * tm.tap
+            val vel = vel0 * tm.tapGain
             val bp = Svf().apply { set(center, 1.3, rate) }
             val start = idx(at)
             for (i in 0 until idx(tau * 9)) {
@@ -142,7 +180,10 @@ internal object ModernSfx {
         }
 
         /** A sine that starts a little sharp and settles: the soft weight under a tap. */
-        fun body(at: Double, f: Double, vel: Double, tau: Double) {
+        fun body(at: Double, f0: Double, vel0: Double, tau0: Double) {
+            val f = f0 * tm.body
+            val vel = vel0 * tm.bodyGain
+            val tau = tau0 * tm.decay
             val start = idx(at)
             var ph = 0.0
             for (i in 0 until idx(tau * 7)) {
@@ -159,7 +200,9 @@ internal object ModernSfx {
          * [harm] adds a soft 2nd partial (for low notes, so they read on small speakers); [glide] bends the pitch by
          * that fraction over the note.
          */
-        fun tone(at: Double, f: Double, vel: Double, tau: Double, fm: Double = 0.8, harm: Double = 0.0, glide: Double = 0.0) {
+        fun tone(at: Double, f0: Double, vel: Double, tau0: Double, fm: Double = 0.8, harm: Double = 0.0, glide: Double = 0.0) {
+            val f = f0 * tm.pitch
+            val tau = tau0 * tm.decay
             val start = idx(at)
             var pc = 0.0
             var pm = 0.0
@@ -171,14 +214,15 @@ internal object ModernSfx {
                 pc += fr / rate; pm += fr * 2 / rate
                 if (pc >= 1) pc -= 1
                 if (pm >= 1) pm -= 1
-                val index = fm * exp(-t / 0.009)
+                val index = fm * tm.fm * exp(-t / 0.009)
                 val s = sin(2 * PI * pc + index * sin(2 * PI * pm)) + harm * sin(4 * PI * pc) * exp(-t / (tau * 0.6))
                 data[k] += (s * env(t, 0.0025, tau) * vel).toFloat()
             }
         }
 
         /** Noise swept from [from] to [to] Hz through a band-pass, swelling quickly and fading slowly. */
-        fun air(at: Double, len: Double, from: Double, to: Double, vel: Double, q: Double = 0.9) {
+        fun air(at: Double, len: Double, from: Double, to: Double, vel0: Double, q: Double = 0.9) {
+            val vel = vel0 * tm.air
             val bp = Svf()
             val start = idx(at)
             val n = idx(len)
@@ -212,7 +256,7 @@ internal object ModernSfx {
          */
         fun finish(db: Double, room: Double): FloatArray {
             val rv = Reverb(rate).apply { configure(0.25, 0.6) }
-            val lp = Svf().apply { set(6200.0, 0.7, rate) }
+            val lp = Svf().apply { set(tm.cutoff, 0.7, rate) }
             val hp = OnePole().apply { set(60.0, rate) }
             for (i in data.indices) {
                 val x = data[i]

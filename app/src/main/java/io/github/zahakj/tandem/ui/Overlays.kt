@@ -84,13 +84,22 @@ fun OverlayPanel(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = nul
 }
 
 /**
+ * A panel that slides in from the right edge over a dimmed screen, the full height of it; closes on tap outside or
+ * B, like [OverlayPanel]. [content] lays out the panel itself (its width, its rounded inner edge).
+ */
+@Composable
+fun SidePanel(visible: Boolean, onClose: () -> Unit, content: @Composable () -> Unit) = Scrim(visible, onClose, side = true) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.CenterEnd) { content() }
+}
+
+/**
  * Dims the screen and closes on tap or B. While open, the popup is the top focus layer: only its items may take
  * focus, and the D-pad can't leave it. While it animates away it ignores the D-pad and A, so a quick press after
  * closing goes to the screen, not to the fading popup. With a [morph] the popup grows out of a tile (PanelMorph.kt)
  * and its content gets the progress; otherwise it pops in.
  */
 @Composable
-private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = null, content: @Composable (progress: (() -> Float)?) -> Unit) {
+private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = null, side: Boolean = false, content: @Composable (progress: (() -> Float)?) -> Unit) {
     val layer = rememberLayer(visible)
     val open by rememberUpdatedState(visible)
     if (visible) BackHandler(onBack = onClose)
@@ -101,8 +110,8 @@ private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = nu
     val moving = morph != null && Flair.entering
     AnimatedVisibility(
         visible,
-        enter = if (moving) EnterTransition.None else if (morph != null) fadeIn(tween(140)) else popIn,
-        exit = if (moving) ExitTransition.None else if (morph != null) fadeOut(tween(120)) else popOut,
+        enter = when { moving -> EnterTransition.None; side -> sideIn; morph != null -> fadeIn(tween(140)); else -> popIn },
+        exit = when { moving -> ExitTransition.None; side -> sideOut; morph != null -> fadeOut(tween(120)); else -> popOut },
     ) {
         val progress = if (moving) {
             val p = transition.animateFloat({ spring(dampingRatio = 0.86f, stiffness = 420f, visibilityThreshold = 0.002f) }, label = "panel-morph") {

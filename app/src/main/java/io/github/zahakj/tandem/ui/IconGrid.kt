@@ -276,7 +276,38 @@ object IconGrid {
     fun shoulderUp(r1: Boolean, solo: Boolean) {
         val by = armedZoom
         armedZoom = 0
-        if (solo && by == (if (r1) 1 else -1)) zoom(by)
+        if (!solo || by != (if (r1) 1 else -1)) return
+        val folder = openFolder
+        when {
+            folder != null -> zoomFolder(folder, by)
+            FolderPopup.route != null -> zoomGames(by)
+            else -> zoom(by)
+        }
+    }
+
+    /** How many tiles across an open folder fits on its own (its size before any L1 / R1). */
+    internal var folderAutoAcross = 7
+
+    /** L1 / R1 in a folder: bigger tiles, fewer across (L1), or smaller, more across (R1); kept per folder. */
+    fun zoomFolder(id: String, by: Int) {
+        val f = IconGridStore.folder(id) ?: return
+        val now = f.across.takeIf { it > 0 } ?: folderAutoAcross
+        val next = (now + by).coerceIn(3, 12)
+        if (next == now) return
+        IconGridStore.setFolderAcross(id, if (next == folderAutoAcross) 0 else next)
+        Sounds.page()
+        Toasts.show("${f.name}: $next across")
+    }
+
+    /** L1 / R1 in a system or collection opened from the grid: bigger or smaller game cards. */
+    fun zoomGames(by: Int) {
+        val sizes = listOf("small", "medium", "large", "huge")
+        val now = sizes.indexOf(Store.settings.look.gridSize).takeIf { it >= 0 } ?: 1
+        val next = (now - by).coerceIn(0, sizes.size - 1)
+        if (next == now) return
+        Store.updateSettings { it.copy(look = it.look.copy(gridSize = sizes[next])) }
+        Sounds.page()
+        Toasts.show("Games: ${Grid.label(Grid.sizes, sizes[next])}")
     }
 
     /** L1 / R1: bigger or smaller icons, like the 3DS HOME menu's zoom. */
@@ -738,14 +769,8 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
             // Zooms on release, and only when no other button joined in (L1 + R1, L1 + R1 + Select): Chords.
             b == Button.L1 || b == Button.R1 -> { IconGrid.armZoom(if (b == Button.R1) 1 else -1); true }
             b == Button.L2 -> { HomeExtras.toggleRecent(); true }
-            // R2: a page further along the grid, onto a tile (never an empty spot).
-            b == Button.R2 -> {
-                val vertical = look.gridScroll == "vertical"
-                val lanes = IconGrid.home?.lanes ?: 1
-                if (at in view[0]) jumpAlong(route, view[0], lanes, if (vertical) 3 else look.gridAcross)
-                else (ctx as? MainActivity)?.pageJump(if (vertical) android.view.KeyEvent.KEYCODE_DPAD_DOWN else android.view.KeyEvent.KEYCODE_DPAD_RIGHT, if (vertical) 3 else look.gridAcross)
-                true
-            }
+            // R2: the side panel (Pip, quick settings, notifications), as L2 brings the Recently played strip.
+            b == Button.R2 -> { Panels.toggleSide(); true }
             else -> false
         }
     }
@@ -1462,6 +1487,8 @@ fun IconTile(
     onLongClick: (() -> Unit)? = null,
     /** On a grid that takes drags (GridDrag.kt): the home grid ("" ) or that folder's id; null: no dragging. */
     dragGrid: String? = null,
+    /** Lines for the name under it (big tiles in a folder get two). */
+    labelLines: Int = 1,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
@@ -1553,7 +1580,7 @@ fun IconTile(
         if (label) {
             Text(
                 item.title, Modifier.width(tile + 12.dp).padding(top = 4.dp), style = MaterialTheme.typography.labelMedium,
-                color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+                color = Palette.Text, maxLines = labelLines, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
             )
         }
     }
@@ -2258,6 +2285,8 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                 b == Button.Y && IconGrid.menu == null -> at?.takeIf { mv == null || isGapKey(it) }?.let { IconGrid.openMenu(it, fid) }
                 // Select marks (or unmarks) the highlighted tile; a long A does the same.
                 b == Button.Select && GridSelect.on(fid) -> at?.let { GridSelect.toggle(fid, it) }
+                // L1 / R1: bigger or smaller tiles in here, on release (IconGrid.shoulderUp), as on the home grid.
+                b == Button.L1 || b == Button.R1 -> IconGrid.armZoom(if (b == Button.R1) 1 else -1)
             }
             true
         }
@@ -2280,10 +2309,16 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
             }
         }) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                val tile = 84.dp
                 val gap = 22.dp
-                val labelH = 20.dp
-                val cols = ((maxWidth - 40.dp + gap) / (tile + gap)).toInt().coerceAtLeast(1)
+                // As many 84 dp tiles as fit, or the number across chosen with L1 / R1 (bigger or smaller tiles, never
+                // taller than the panel). Big tiles get two lines for their names.
+                val auto = ((maxWidth - 40.dp + gap) / (84.dp + gap)).toInt().coerceAtLeast(1)
+                IconGrid.folderAutoAcross = auto
+                val cols = folder.across.takeIf { it > 0 } ?: auto
+                val wide = if (cols == auto) 84.dp else (maxWidth - 40.dp - gap * (cols - 1)) / cols
+                val tile = wide.coerceIn(44.dp, (maxHeight - FocusRoom * 2 - 44.dp).coerceAtLeast(44.dp))
+                val lines = if (tile >= 120.dp) 2 else 1
+                val labelH = if (lines == 2) 38.dp else 20.dp
                 // Empty spots fill the panel, and there is always a row of them after the last thing inside.
                 val fit = ((maxHeight - FocusRoom * 2 + gap) / (tile + labelH + gap)).toInt().coerceAtLeast(1)
                 val present = remember(folder, catalog, IconGridStore.config) { SystemFolders.contents(folder, catalog) }
@@ -2354,7 +2389,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                                 } else {
                                     val marked by remember(item.key, fid) { androidx.compose.runtime.derivedStateOf { GridSelect.marked(fid, item.key) } }
                                     IconTile(
-                                        item, tile, corner, label = true,
+                                        item, tile, corner, label = true, labelLines = lines,
                                         modifier = Modifier.takesFocus(route, item.key, item.key == target),
                                         moving = moving?.key == item.key,
                                         marked = marked,

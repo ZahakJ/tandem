@@ -453,10 +453,15 @@ private fun Main(resumes: Int) {
                 // Start: the Start panel (StartPanel.kt), or inside Settings back to its first screen and out.
                 Button.Start -> if (Nav.inSettings) Nav.toggleSettings() else StartMenu.show()
                 Button.Select -> surpriseMe()
-                Button.L1, Button.R1 -> cycle(if (b == Button.R1) 1 else -1)
+                // In a system or collection opened from the grid, bigger or smaller cards (on release: IconGrid.shoulderUp).
+                Button.L1, Button.R1 -> if (Nav.route == Route.Home && FolderPopup.route != null) IconGrid.armZoom(if (b == Button.R1) 1 else -1)
+                    else cycle(if (b == Button.R1) 1 else -1)
                 // L2 / R2: in a list of games, the previous or next letter (or year, rating); elsewhere a page up or down.
-                Button.L2, Button.R2 -> if (!QuickJump.jump(if (b == Button.R2) 1 else -1)) {
-                    (ctx as? MainActivity)?.pageJump(if (b == Button.R2) android.view.KeyEvent.KEYCODE_DPAD_DOWN else android.view.KeyEvent.KEYCODE_DPAD_UP, 5)
+                // R2 on home itself (any layout): the side panel (SidePanel.kt).
+                Button.R2 -> if (Nav.route == Route.Home && FolderPopup.route == null && IconGrid.openFolder == null) Panels.toggleSide()
+                    else if (!QuickJump.jump(1)) (ctx as? MainActivity)?.pageJump(android.view.KeyEvent.KEYCODE_DPAD_DOWN, 5)
+                Button.L2 -> if (!QuickJump.jump(-1)) {
+                    (ctx as? MainActivity)?.pageJump(android.view.KeyEvent.KEYCODE_DPAD_UP, 5)
                 }
             }
         }
@@ -973,6 +978,9 @@ private fun SetupStep(done: Boolean, title: String, detail: String, key: String,
 /** Shared enter/exit for overlay panels: a bouncy pop. */
 val popIn = scaleIn(spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium), initialScale = 0.85f) + fadeIn(tween(150))
 val popOut = scaleOut(tween(120), targetScale = 0.92f) + fadeOut(tween(120))
+/** A side panel (SidePanel) gliding in from the right edge and back out. */
+val sideIn = androidx.compose.animation.slideInHorizontally(spring(dampingRatio = 0.9f, stiffness = 520f)) { it } + fadeIn(tween(120))
+val sideOut = androidx.compose.animation.slideOutHorizontally(tween(180)) { it } + fadeOut(tween(160))
 
 /** The MainActivity behind a context (Compose may wrap it). */
 fun activityOf(ctx: android.content.Context): MainActivity? {

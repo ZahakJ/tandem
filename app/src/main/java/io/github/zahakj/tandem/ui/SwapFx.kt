@@ -65,6 +65,8 @@ import kotlin.math.sqrt
  * - The screen gaining the grid: the old Spotlight slides with the flow and fades; the tiles fly in from scattered
  *   places against the flow and settle on a spring, staggered by distance from the highlighted tile; then the dock
  *   rises and the corner bits fade in.
+ * That is the Scatter style (Look.swapStyle); Push, Flip, Depth and Fade move each screen whole instead, and Instant
+ * skips the motion.
  * Swapping back plays the same choreography the other way round. Everything moves in graphics layers that read one
  * clock per screen in the draw phase: nothing recomposes per frame, and tile offsets are worked out once. Reduce
  * motion (or animations Off) swaps at once.
@@ -104,6 +106,10 @@ object SwapFx {
 
     private val custom = BooleanArray(2)
 
+    /** The look of the running swap (Look.swapStyle); the startup arrival always rises in as Scatter does. */
+    var style = "scatter"
+        private set
+
     /** What arrives on [slot] animates its own pieces (grid tiles, Spotlight); otherwise the screen arrives whole. */
     fun custom(slot: ScreenSlot): Boolean = custom[slot.ordinal]
 
@@ -122,7 +128,11 @@ object SwapFx {
     /** Runs [flip] (which swaps the screens) inside the choreography, or straight away with reduce motion. */
     fun swap(flip: () -> Unit) {
         if (busy) return
-        if (!Flair.entering) { flip(); return }
+        val look = Store.settings.look.swapStyle
+        if (!Flair.entering || look == "instant") { flip(); return }
+        style = look
+        // Only Scatter cuts the grid into tiles and lets the Spotlight build itself; the others move whole screens.
+        val scatter = look == "scatter"
         swapping = true
         scope.launch {
             try {
@@ -131,11 +141,11 @@ object SwapFx {
                 val gridShown = IconGrid.enabled && Nav.route == Route.Home && Layers.top == null && !Nav.overlayOpen
                 val libImage = capture(libSlot)
                 val detImage = capture(detSlot)
-                shots[libSlot.ordinal] = libImage?.let { SwapShot(it, if (gridShown) pieces(it.width, it.height) else emptyList()) }
+                shots[libSlot.ordinal] = libImage?.let { SwapShot(it, if (gridShown && scatter) pieces(it.width, it.height) else emptyList()) }
                 shots[detSlot.ordinal] = detImage?.let { SwapShot(it, emptyList()) }
                 // After the flip the library's old screen shows the details and the other one the library.
-                custom[libSlot.ordinal] = Store.settings.bottomMode != "clock" && Spotlight.wanted(Selection.current)
-                custom[detSlot.ordinal] = gridShown
+                custom[libSlot.ordinal] = scatter && Store.settings.bottomMode != "clock" && Spotlight.wanted(Selection.current)
+                custom[detSlot.ordinal] = scatter && gridShown
                 top.floatValue = 0f
                 bottom.floatValue = 0f
                 shotVersion++
@@ -156,6 +166,7 @@ object SwapFx {
                 shots.fill(null)
                 shotVersion++
                 swapping = false
+                style = "scatter"
             }
         }
     }
@@ -258,6 +269,9 @@ fun springAt(ms: Float, damping: Float = 0.62f, hz: Float = 2.2f): Float {
     return 1f - exp(-z * w * t) * (cos(wd * t) + z * w / wd * sin(wd * t))
 }
 
+/** Flip: when the old picture is edge-on and the new one starts turning in, in ms. */
+private const val FLIP_HALF = 260f
+
 private fun easeOutCubic(x: Float): Float { val c = 1f - x.coerceIn(0f, 1f); return 1f - c * c * c }
 
 private fun smooth(x: Float): Float { val c = x.coerceIn(0f, 1f); return c * c * (3f - 2f * c) }
@@ -327,13 +341,35 @@ fun SwapStage(slot: ScreenSlot, content: @Composable () -> Unit) {
             TandemTheme { Wallpaper(slot, selectionTint()) }
             androidx.compose.runtime.CompositionLocalProvider(LocalOnStage provides true) { Box(
                 Modifier.fillMaxSize()
-                    // Content without its own choreography arrives whole: against the flow, on a soft spring.
+                    // Content without its own choreography arrives whole, the way the chosen style moves (Look.swapStyle).
                     .graphicsLayer {
                         val t = SwapFx.clock(slot).floatValue
                         if (t >= SwapFx.IDLE / 2f || SwapFx.custom(slot)) return@graphicsLayer
-                        val p = springAt(t - 60f, 0.8f, 1.9f)
-                        translationY = -SwapFx.flow(slot) * 46f * density * (1f - p)
-                        alpha = ((t - 60f) / 200f).coerceIn(0f, 1f)
+                        val f = SwapFx.flow(slot)
+                        when (SwapFx.style) {
+                            // In from the hinge side, pushing the old picture out the far edge.
+                            "push" -> translationY = f * size.height * (1f - easeOutCubic((t - 20f) / 520f))
+                            // The back of the card: turns in once the old picture has turned edge-on.
+                            "flip" -> {
+                                cameraDistance = 14f * density
+                                rotationX = -f * 90f * (1f - easeOutCubic((t - FLIP_HALF) / 380f))
+                                alpha = if (t < FLIP_HALF) 0f else 1f
+                            }
+                            // From a little in front of the glass, settling back as it fades in.
+                            "depth" -> {
+                                val e = easeOutCubic((t - 90f) / 460f)
+                                val s = 1.08f - 0.08f * e
+                                scaleX = s; scaleY = s
+                                alpha = e
+                            }
+                            "fade" -> alpha = ((t - 60f) / 300f).coerceIn(0f, 1f)
+                            // Scatter: against the flow, on a soft spring.
+                            else -> {
+                                val p = springAt(t - 60f, 0.8f, 1.9f)
+                                translationY = -f * 46f * density * (1f - p)
+                                alpha = ((t - 60f) / 200f).coerceIn(0f, 1f)
+                            }
+                        }
                     }
                     .drawWithContent {
                         layer.record { this@drawWithContent.drawContent() }
@@ -360,6 +396,12 @@ private fun SwapOverlay(slot: ScreenSlot) {
         Modifier.fillMaxSize().graphicsLayer {
             compositingStrategy = CompositingStrategy.Offscreen
             val t = clock.floatValue
+            // Flip: the old picture turns edge-on over the first half.
+            if (!scattered && SwapFx.style == "flip") {
+                cameraDistance = 14f * density
+                val p = (t / FLIP_HALF).coerceIn(0f, 1f)
+                rotationX = flow * 90f * p * p
+            }
             renderEffect = if (scattered && Build.VERSION.SDK_INT >= 31 && t < SwapFx.LENGTH) {
                 val r = smooth(t / 280f) * 7f * d
                 if (r > 0.5f) BlurEffect(r, r, TileMode.Decal) else null
@@ -370,11 +412,29 @@ private fun SwapOverlay(slot: ScreenSlot) {
         if (t >= SwapFx.LENGTH) return@Canvas
         val img = shot.image
         if (!scattered) {
-            // The hero leaving: it slides with the flow, shrinks a touch and fades.
-            val p = easeOutCubic(t / 340f)
-            if (p >= 1f) return@Canvas
-            withTransform({ translate(0f, flow * 44f * d * p); scale(1f - 0.05f * p, 1f - 0.05f * p, center) }) {
-                drawImage(img, alpha = 1f - p)
+            when (SwapFx.style) {
+                // Out the far edge, away from the hinge.
+                "push" -> {
+                    val e = easeOutCubic(t / 520f)
+                    if (e < 1f) translate(0f, -flow * size.height * e) { drawImage(img) }
+                }
+                "flip" -> if (t < FLIP_HALF) drawImage(img)
+                // Sinking back into the screen as it fades.
+                "depth" -> {
+                    val e = easeOutCubic(t / 360f)
+                    if (e < 1f) scale(1f - 0.12f * e, 1f - 0.12f * e, center) { drawImage(img, alpha = 1f - e) }
+                }
+                "fade" -> {
+                    val e = smooth(t / 300f)
+                    if (e < 1f) drawImage(img, alpha = 1f - e)
+                }
+                // Scatter's hero leaving: it slides with the flow, shrinks a touch and fades.
+                else -> {
+                    val p = easeOutCubic(t / 340f)
+                    if (p < 1f) withTransform({ translate(0f, flow * 44f * d * p); scale(1f - 0.05f * p, 1f - 0.05f * p, center) }) {
+                        drawImage(img, alpha = 1f - p)
+                    }
+                }
             }
             return@Canvas
         }
