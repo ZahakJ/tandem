@@ -434,7 +434,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
         val played = games.sumOf { it.meta.playSeconds }
         return GridItem(
             "s:$id", TileKind.System, lib.platform.name, "System", plural(games.size, "game"), color, art, games,
-            Selected.System(lib), default = true, open = { openFolder(Route.System(id)) }, platformId = id,
+            Selected.System(lib), default = true, open = { SystemFolders.open(id) }, platformId = id,
             blurb = if (played >= 60) "${formatPlayLong(played)} played" else "",
             hidden = io.github.zahakj.tandem.HiddenFolders.isHidden(id, null),
         )
@@ -514,6 +514,16 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
 
     private fun folder(f: io.github.zahakj.tandem.data.HomeFolder): GridItem {
         if (f.smart) return SmartFolders.tile(f)
+        // A system arranged like a folder wears the system's own look (in the panel's header).
+        f.system?.let { s ->
+            systems[s]?.let { (lib, games) ->
+                val t = system(lib, games)
+                return GridItem(
+                    "folder:${f.id}", TileKind.Folder, t.title, "System", t.detail, t.color, t.art, games, t.selected, default = false,
+                    open = { SystemFolders.open(s) }, folderId = f.id, platformId = s, blurb = t.blurb, hidden = t.hidden,
+                )
+            }
+        }
         val color = folderColor(f.color)
         val inside = f.items.mapNotNull { item(it) }
         val games = inside.flatMap { it.games }.distinct()
@@ -543,7 +553,8 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
         val present = LinkedHashSet<String>()
         for (k in defaults) if (k !in hidden) present += k
         for (k in c.added) if (item(k) != null) present += k
-        for (f in c.folders) if (Privacy.canShowHomeFolder(f) && "folder:${f.id}" !in nested) present += "folder:${f.id}"
+        // A system arranged like a folder opens from the system's own tile.
+        for (f in c.folders) if (f.system == null && Privacy.canShowHomeFolder(f) && "folder:${f.id}" !in nested) present += "folder:${f.id}"
         return present.toList()
     }
 
@@ -693,7 +704,10 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
     // Y: the tile menu, or Add here on an empty spot (or close the running game on the Resume page); X there switches
     // games; L1 / R1 zoom; L2 the Recently played strip. Y while moving a tile carries it instead.
     InterceptButtons(true) { b ->
-        val free = Nav.route == Route.Home && !Nav.overlayOpen && Layers.top == null && FolderPopup.route == null
+        // A grid folder open on top owns the buttons: what it lets through (Y on an empty spot) must not reach the
+        // Resume page or a tile remembered behind it.
+        val free = Nav.route == Route.Home && !Nav.overlayOpen && Layers.top == null && FolderPopup.route == null &&
+            IconGrid.openFolder == null
         val at = FocusMemory.get(route)
         val mv = IconGrid.moving
         when {
@@ -2025,6 +2039,12 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
         }
         val system = item.platformId?.takeIf { item.kind == TileKind.System }
         if (system != null) {
+            // Arranged like a folder: empty spots, folders and widgets inside, and every game still there (SystemFolders).
+            if (IconGridStore.systemFolder(system) == null) add(MenuAction("arrange", "Arrange like a folder", Glyph.Grid, Palette.Mint, sub = "Folders, genres and widgets inside") {
+                IconGrid.closeMenu(); SystemFolders.arrange(system)
+            }) else add(MenuAction("unarrange", "Show as a plain list", Glyph.Sort, Palette.Sky, more = true) {
+                IconGrid.closeMenu(); SystemFolders.unarrange(system)
+            })
             val listed = HiddenFolders.listed(system, null)
             if (listed) add(hideAction("Unhide this system", true, undo = { HiddenFolders.hide(system, null) }) {
                 IconGrid.closeMenu()
@@ -2218,7 +2238,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
         val sorted = folder.sort != io.github.zahakj.tandem.data.FolderSort.MANUAL
         // The slots' keys (empty spots included), filled in below once the panel knows its columns.
         val view = remember(fid) { arrayOf(emptyList<String>()) }
-        val tiles = remember(folder.items, catalog) { folder.items.count { it.isNotEmpty() && catalog.item(it) != null } }
+        val tiles = remember(folder, catalog) { SystemFolders.contents(folder, catalog).size }
         val selecting = IconGrid.selecting?.takeIf { it.folder == fid } != null
         InterceptButtons(visible) { b ->
             val mv = IconGrid.moving
@@ -2266,7 +2286,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                 val cols = ((maxWidth - 40.dp + gap) / (tile + gap)).toInt().coerceAtLeast(1)
                 // Empty spots fill the panel, and there is always a row of them after the last thing inside.
                 val fit = ((maxHeight - FocusRoom * 2 + gap) / (tile + labelH + gap)).toInt().coerceAtLeast(1)
-                val present = remember(folder.items, catalog) { folder.items.filter { it.isNotEmpty() && catalog.item(it) != null } }
+                val present = remember(folder, catalog, IconGridStore.config) { SystemFolders.contents(folder, catalog) }
                 val presentSet = remember(present) { present.toHashSet() }
                 // Sorted, the folder shows its things packed in that order; the manual order stays underneath.
                 val stored = remember(folder.items, folder.lanes, folder.sort, cols, present, catalog) {
@@ -2321,6 +2341,15 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                                         onFocus = { Selection.follow { IconGrid.spot = EmptySpotItem; Selection.current = EmptySpotItem.selected } },
                                         onClick = { IconGrid.openMenu(key, fid) },
                                         hovered = dropHere,
+                                    )
+                                } else if (item.kind == TileKind.Widget) {
+                                    // A widget in a folder takes one spot (GridWidgets.addInFolder).
+                                    val w = item.widgetId?.let { Widgets.byId(it) }
+                                    if (w != null) GridWidgetCell(
+                                        w, io.github.zahakj.tandem.data.GridSpan.ONE, tile, tile + labelH, gap, labelH,
+                                        Modifier.takesFocus(route, item.key, item.key == target),
+                                        moving = moving?.key == item.key,
+                                        onFocus = { Selection.follow { IconGrid.spot = item; Selection.current = item.selected } },
                                     )
                                 } else {
                                     val marked by remember(item.key, fid) { androidx.compose.runtime.derivedStateOf { GridSelect.marked(fid, item.key) } }

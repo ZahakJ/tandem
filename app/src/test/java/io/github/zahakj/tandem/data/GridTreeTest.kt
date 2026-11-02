@@ -262,4 +262,32 @@ class GridTreeTest {
         assertFalse(GridTree.onHome(removed, "game:a", false))
         assertTrue("folder:g" in removed.order)
     }
+
+    // --- Systems arranged like folders -------------------------------------------------------------------------------
+
+    @Test
+    fun aSystemIsArrangedOnceAndCanHoldFolders() {
+        val c = GridTree.arrangeSystem(cfg(listOf("s:n3ds")), "sys", "n3ds", "Nintendo 3DS", 0)
+        assertEquals("n3ds", folder(c, "sys").system)
+        // Never twice: a second arrange keeps the first folder.
+        assertEquals(c, GridTree.arrangeSystem(c, "other", "n3ds", "Nintendo 3DS", 0))
+        assertTrue(GridTree.canHoldFolder(c, "sys"))
+        // The system tile stays on home as it was.
+        assertEquals(listOf("s:n3ds"), c.order)
+    }
+
+    @Test
+    fun backToAListMovesItsFoldersHome() {
+        val c = cfg(
+            listOf("s:n3ds", "s:gb"),
+            HomeFolder("sys", "Nintendo 3DS", items = listOf("game:a", "folder:rpg", e, "widget:w"), system = "n3ds"),
+            HomeFolder("rpg", "RPGs", items = listOf("game:b")),
+        )
+        val after = GridTree.unarrangeSystem(c, "n3ds", home(c))
+        assertNull(GridTree.systemFolder(after, "n3ds"))
+        assertEquals(listOf("s:n3ds", "s:gb", "folder:rpg"), after.order)
+        assertEquals(listOf("game:b"), folder(after, "rpg").items)
+        // A system that isn't arranged: nothing changes.
+        assertEquals(after, GridTree.unarrangeSystem(after, "n3ds", home(after)))
+    }
 }

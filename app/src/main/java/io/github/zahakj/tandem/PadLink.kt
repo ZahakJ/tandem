@@ -250,6 +250,7 @@ object PadLink {
             runCatching { input.close() }
             val done = runCatching { process.waitFor(800, TimeUnit.MILLISECONDS) }.getOrDefault(false)
             if (!done) process.destroy()
+            Shell.release(process)
         }
 
         private fun read() {

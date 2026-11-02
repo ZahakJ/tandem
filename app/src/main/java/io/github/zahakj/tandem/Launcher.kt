@@ -17,6 +17,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuRemoteProcess
 import java.io.File
 
 /**
@@ -159,7 +160,7 @@ object Launcher {
         val running = if (anyApp) false else snap?.alive(pkg)
         val playing = !anyApp && snap?.playing(pkg) == true
 
-        if (playing && prefs.getString(pkg, null) == key) {
+        if (playing && prefs.getString(pkg, null) == key && RunningGames.stillOurs(ctx, pkg, snap)) {
             // The game's own task, moved to the front where it is (GameResume.kt); the launcher activity only when no
             // task is known, since starting it can open a new task and lose the game.
             val target = GameResume.target(snap?.tasks, pkg)
@@ -241,7 +242,8 @@ object Launcher {
         val pkg = game.platform.playerFor(game)?.packageName ?: return false
         val last = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getString(pkg, null)
         // A few seconds' old answer is fine here, and keeps browsing from asking Shizuku on every game.
-        return last == "$pkg|${game.file.path}" && Processes.playing(pkg) == true
+        return last == "$pkg|${game.file.path}" && Processes.playing(pkg) == true &&
+            RunningGames.stillOurs(ctx, pkg, Processes.snapshot())
     }
 
     /** The file of the game Tandem last started in emulator [pkg], if any. */
@@ -351,9 +353,13 @@ object Shell {
             val m = Shizuku::class.java.getDeclaredMethod("newProcess", Array<String>::class.java, Array<String>::class.java, String::class.java)
             m.isAccessible = true
             val p = m.invoke(null, cmd, null, null) as Process
-            val out = p.inputStream.bufferedReader().readText()
-            p.waitFor()
-            out
+            try {
+                val out = p.inputStream.bufferedReader().readText()
+                p.waitFor()
+                out
+            } finally {
+                release(p)
+            }
         } catch (t: Throwable) {
             Log.w("Tandem", "Shizuku command failed: ${cmd.joinToString(" ")}", t)
             null
@@ -371,6 +377,24 @@ object Shell {
             Log.w("Tandem", "Shizuku couldn't start ${cmd.firstOrNull()}", t)
             null
         }
+    }
+
+    /**
+     * Shizuku keeps every process it starts in a static set until the process's binder dies, which only happens
+     * when Shizuku itself goes away. Each command would otherwise stay referenced for as long as Tandem runs,
+     * along with a binder and a death link (about two a minute while Tandem watches what is open).
+     */
+    private val cache: MutableSet<*>? by lazy {
+        runCatching {
+            ShizukuRemoteProcess::class.java.getDeclaredField("CACHE").apply { isAccessible = true }.get(null) as MutableSet<*>
+        }.getOrNull()
+    }
+
+    /** Lets go of a finished process: closes its output, ends it on Shizuku's side and drops Shizuku's reference. */
+    fun release(p: Process) {
+        runCatching { p.inputStream.close() }
+        runCatching { p.destroy() }
+        runCatching { cache?.remove(p) }
     }
 }
 

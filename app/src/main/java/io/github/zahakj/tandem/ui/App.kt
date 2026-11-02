@@ -443,7 +443,9 @@ private fun Main(resumes: Int) {
                 Button.Y -> {
                     val g = (Selection.current as? Selected.GameItem)?.game
                     val running = g?.let { RunningGames.list.firstOrNull { r -> r.game?.key == it.key } }
-                    if (running != null && Nav.route == Route.Home) resumePageClose(ctx, running) else openMenuFor(Selection.current)
+                    // Home itself only: a system or folder open on top of it (a popup) is somewhere else.
+                    val onHome = Nav.route == Route.Home && FolderPopup.route == null && IconGrid.openFolder == null
+                    if (running != null && onHome) resumePageClose(ctx, running) else openMenuFor(Selection.current)
                 }
                 // On the icon grid (or everywhere, if chosen) X swaps the two screens.
                 // In Settings, X searches the settings.

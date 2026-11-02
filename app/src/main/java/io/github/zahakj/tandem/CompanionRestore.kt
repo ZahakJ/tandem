@@ -41,6 +41,8 @@ object CompanionRestore {
      * Whether the companion recorded as [info] should come back: the game it was opened for ([CompanionInfo.pkg])
      * is the app in front on the main display ([frontPkg]), no other game's play session is open ([sessionKey]; a
      * visit to Tandem's home closes the session while the game runs on), it isn't hidden, and there is a bottom screen.
+     * [processStart]: when the game's app process started, if known; one that came up after the companion was opened is
+     * a later visit to the app, maybe with another game in it.
      */
     fun shouldRestore(
         info: CompanionInfo?,
@@ -50,11 +52,13 @@ object CompanionRestore {
         singleScreen: Boolean,
         hasSecondDisplay: Boolean,
         now: Long,
+        processStart: Long? = null,
     ): Boolean {
         info ?: return false
         val pkg = info.pkg
         return info.mode != GameCompanion.OFF && !pkg.isNullOrEmpty() && frontPkg == pkg && (sessionKey == null || sessionKey == info.key) &&
-            !hidden && !singleScreen && hasSecondDisplay && now - info.start in 0..MAX_AGE_MS
+            !hidden && !singleScreen && hasSecondDisplay && now - info.start in 0..MAX_AGE_MS &&
+            !Processes.restartedSince(processStart, info.start)
     }
 
     private val record = Regex("""ActivityRecord\{\S+ u\d+ ([A-Za-z0-9_.]+)/""")

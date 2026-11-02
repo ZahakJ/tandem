@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="site/assets/brand/banner.png" alt="Tandem: two screens, one cozy library. A free, open-source game frontend for dual-screen Android handhelds." width="820">
+  <img src="site/assets/brand/banner.png" alt="Tandem: games up top, Pip down below. A free, open-source game frontend for dual-screen Android handhelds." width="820">
 </p>
 
 <p align="center">

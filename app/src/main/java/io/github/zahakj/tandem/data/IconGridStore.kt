@@ -28,6 +28,12 @@ data class HomeFolder(
     val rule: SmartRule? = null,
     /** The screen games opened from this folder start on ([FolderScreens]); null: each game's own choice. */
     val openOn: String? = null,
+    /**
+     * Set for a system arranged like a folder (its platform id): it opens from that system's tile instead of the
+     * plain list and is never a tile of its own. [items] hold what was placed by hand; every other game of the system
+     * follows after them, so new games still show up ([SystemFolders]).
+     */
+    val system: String? = null,
 ) {
     val smart: Boolean get() = rule != null
 }
@@ -261,11 +267,11 @@ object IconGridStore {
         return id
     }
 
-    /** A new, empty folder in slot [at] of the home grid, or of folder [into], as shown. Returns its id. */
-    fun createFolderAt(name: String, current: GridShown, at: Int, color: Int, into: String? = null): String {
+    /** A new, empty folder in slot [at] of the home grid, or of folder [into], as shown. With [rule], a smart folder. Returns its id. */
+    fun createFolderAt(name: String, current: GridShown, at: Int, color: Int, into: String? = null, rule: SmartRule? = null): String {
         val id = newFolderId()
         update { c ->
-            val made = HomeFolder(id, name, color = color)
+            val made = HomeFolder(id, name, color = color, rule = rule)
             if (into == null) c.copy(order = GridSlots.putAt(current.slots, "folder:$id", at), lanes = current.lanes, folders = c.folders + made)
             else GridTree.addInto(c.copy(folders = c.folders + made), "folder:$id", into, at, current)
         }
@@ -332,6 +338,18 @@ object IconGridStore {
         update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(rule = null, items = items, lanes = 0) else it }) }
         return items.size
     }
+
+    /** The folder system [platformId] is arranged as, if any. */
+    fun systemFolder(platformId: String): HomeFolder? = GridTree.systemFolder(config, platformId)
+
+    /** Arranges system [platformId] like a folder (GridTree.arrangeSystem). Returns its folder's id. */
+    fun arrangeSystem(platformId: String, name: String, color: Int): String {
+        update { c -> GridTree.arrangeSystem(c, newFolderId(), platformId, name, color) }
+        return systemFolder(platformId)!!.id
+    }
+
+    /** System [platformId] back to its plain list (GridTree.unarrangeSystem). */
+    fun unarrangeSystem(platformId: String, home: GridShown) = update { c -> GridTree.unarrangeSystem(c, platformId, home) }
 
     /** Where games opened from folder [id] start ([FolderScreens]). */
     fun setOpenOn(id: String, openOn: String?) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(openOn = openOn) else it }) }
@@ -433,7 +451,8 @@ object IconGridStore {
         val now = gridWidgets()
         if (now != u.widgets) {
             val saved = u.widgets.associateBy { it.id }
-            val onGrid = u.grid.added.toHashSet()
+            // Widgets sit on the home grid ([IconGridConfig.added]) or in a folder.
+            val onGrid = (u.grid.added + u.grid.folders.flatMap { it.items }).toHashSet()
             WidgetStore.updateWidgets { list ->
                 val kept = list.filter { it.place != WidgetPlace.Grid || "widget:${it.id}" in onGrid }.map { saved[it.id] ?: it }
                 kept + u.widgets.filter { w -> kept.none { it.id == w.id } }

@@ -221,6 +221,7 @@ object GameCompanion {
                     singleScreen = SystemPrefs.data.singleScreen,
                     hasSecondDisplay = display != null,
                     now = System.currentTimeMillis(),
+                    processStart = info.pkg?.let { p -> Processes.snapshot(maxAgeMs = 0)?.started?.get(p) },
                 )
                 Log.i("Tandem", "Companion after a restart: ${if (ok) "bringing it back" else "not needed"} (in front: $front, game: ${info.pkg})")
                 if (ok && display != null) {

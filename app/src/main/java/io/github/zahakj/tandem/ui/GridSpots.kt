@@ -84,8 +84,8 @@ fun homeShown(): GridShown = IconGrid.home ?: IconGridStore.config.let { c ->
 }
 
 /**
- * An empty slot: nothing at all until it is highlighted, then the theme's highlight ring around the empty spot and a
- * small soft "+", fading in together. One cached draw; focus only animates a value read while drawing, so moving
+ * An empty slot: nothing at all until it is highlighted, then the theme's highlight ring around the empty spot, a
+ * faint fill and a "+", fading in together, so a highlighted empty spot reads as clearly as a tile. One cached draw; focus only animates a value read while drawing, so moving
  * through empty spots recomposes nothing. A tap does nothing; a long press opens Add here ([onClick]).
  */
 @Composable
@@ -126,14 +126,15 @@ fun EmptySlot(tile: Dp, corner: Dp, labelRoom: Dp, modifier: Modifier = Modifier
                     val gap = 3.5.dp.toPx() + ringW / 2f
                     val ringSize = Size(size.width + gap * 2, size.height + gap * 2)
                     val ringRadius = CornerRadius(corner.toPx() + gap)
-                    val arm = size.minDimension * 0.09f
-                    val plusW = 1.6.dp.toPx()
+                    val arm = size.minDimension * 0.13f
+                    val plusW = 2.4.dp.toPx()
                     val c = Offset(size.width / 2f, size.height / 2f)
                     onDrawBehind {
                         val f = lit.value
                         if (f > 0.01f) {
-                            drawLine(line.copy(alpha = 0.42f * f), c - Offset(arm, 0f), c + Offset(arm, 0f), plusW, StrokeCap.Round)
-                            drawLine(line.copy(alpha = 0.42f * f), c - Offset(0f, arm), c + Offset(0f, arm), plusW, StrokeCap.Round)
+                            drawRoundRect(ring.copy(alpha = 0.16f * f), cornerRadius = CornerRadius(corner.toPx()))
+                            drawLine(line.copy(alpha = 0.8f * f), c - Offset(arm, 0f), c + Offset(arm, 0f), plusW, StrokeCap.Round)
+                            drawLine(line.copy(alpha = 0.8f * f), c - Offset(0f, arm), c + Offset(0f, arm), plusW, StrokeCap.Round)
                             drawRoundRect(ring, Offset(-gap, -gap), ringSize, ringRadius, alpha = f, style = ringStroke)
                         }
                     }
@@ -218,6 +219,16 @@ internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context):
                 Toasts.show("Made the folder $n here")
             }
         })
+        // A folder that fills itself, made here: inside an arranged system, that system's games of a genre, say.
+        if (GridTree.canHoldFolder(IconGridStore.config, folder)) add(MenuAction("smart", "Smart folder…", Glyph.Sparkle, Palette.Lavender, sub = "Fills itself: a genre, unplayed games…") {
+            IconGrid.closeMenu()
+            val grid = shownFor(folder) ?: return@MenuAction
+            val system = folder?.let { IconGridStore.folder(it)?.system }
+            val rule = io.github.zahakj.tandem.data.SmartRule(systems = listOfNotNull(system))
+            val id = IconGridStore.createFolderAt("Smart folder", grid, at, IconGridStore.config.folders.size, into = folder, rule = rule)
+            FocusMemory.remember(route, "folder:$id")
+            SmartFolderForm.edit(id)
+        })
         add(MenuAction("game", "Game…", Glyph.Cartridge, Palette.Mint, sub = "One or several, by system") {
             IconGrid.menu = null
             IconGrid.choosingFolder = false
@@ -228,29 +239,33 @@ internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context):
         add(MenuAction("collection", "Collection or genre…", Glyph.Star, Palette.Peach) { openAdd(target, "collection") })
         add(MenuAction("app", "App…", Glyph.Grid, Palette.Sky) { openAdd(target, "app") })
         add(MenuAction("tandem", "Tandem app…", Glyph.Sparkle, Palette.Lavender, sub = "Themes, Journal, Gallery…") { openAdd(target, "tandem") })
-        if (folder == null) add(MenuAction("widget", "Widget…", Glyph.Layers, Palette.Butter, sub = "Clock, battery, play stats…") { IconGrid.choosingFolder = true })
+        add(MenuAction("widget", "Widget…", Glyph.Layers, Palette.Butter, sub = "Clock, battery, play stats…") { IconGrid.choosingFolder = true })
         add(MenuAction("tidy", "Tidy up", Glyph.Sparkle, Palette.Mint, more = true) {
             IconGrid.closeMenu()
             if (folder == null) tidyHome() else tidyFolder(folder)
         })
+        folder?.let { IconGridStore.folder(it)?.system }?.let { system ->
+            add(MenuAction("unarrange", "Show as a plain list", Glyph.Sort, Palette.Sky, more = true) { IconGrid.closeMenu(); SystemFolders.unarrange(system) })
+        }
         GridUndoUi.action { IconGrid.closeMenu() }?.let { add(it) }
         add(MenuAction("search", "Search", Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
         add(MenuAction("swap", "Swap screens", Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) {
             IconGrid.closeMenu(); ScreenRoles.toggle(ctx)
         })
     }
-    // Widget…: every kind, added in this spot at its usual size (or the biggest that fits here).
-    val page = if (IconGrid.choosingFolder && folder == null) MenuPage(
+    // Widget…: every kind, added in this spot at its usual size (or the biggest that fits here). In a folder, every spot
+    // is one cell: the kinds that come that small.
+    val page = if (IconGrid.choosingFolder) MenuPage(
         "Add a widget",
         WidgetKinds.all.map { kind ->
-            val ok = kind.available()
+            val ok = kind.available() && (folder == null || GridWidgets.fitsFolder(kind))
             MenuAction(
                 "w:${kind.id}", kind.name, color = kind.accent,
-                value = if (ok) GridWidgets.spanFor(kind.defaultSize).label else null,
-                sub = if (ok) kind.blurb else kind.needs ?: "Not available yet",
+                value = if (!ok) null else if (folder == null) GridWidgets.spanFor(kind.defaultSize).label else "1×1",
+                sub = if (ok) kind.blurb else if (!kind.available()) kind.needs ?: "Not available yet" else "Too big for a folder: home grid only",
                 art = { KindSymbol(kind) },
             ) {
-                val key = GridWidgets.add(kind, homeShown(), at)
+                val key = if (folder == null) GridWidgets.add(kind, homeShown(), at) else GridWidgets.addInFolder(kind, folder, shown, at)
                 IconGrid.closeMenu()
                 if (key != null) FocusMemory.remember(route, key)
             }

@@ -275,6 +275,39 @@ object GridTree {
      * Without, the folder and every folder inside it go (their shortcuts with them; games themselves are untouched).
      * [defaults]: the keys the home grid shows by default.
      */
+    /** The folder system [platformId] is arranged as, if it is one ([HomeFolder.system]). */
+    fun systemFolder(c: IconGridConfig, platformId: String): HomeFolder? = c.folders.firstOrNull { it.system == platformId }
+
+    /**
+     * System [platformId] arranged like a folder: a new folder [id] named [name] for it, empty (every game of the
+     * system shows in it on its own). Unchanged when it already is one.
+     */
+    fun arrangeSystem(c: IconGridConfig, id: String, platformId: String, name: String, color: Int): IconGridConfig =
+        if (systemFolder(c, platformId) != null) c else c.copy(folders = c.folders + HomeFolder(id, name, color = color, system = platformId))
+
+    /**
+     * System [platformId] back to its plain list: its folder goes, and the folders made inside it move to the home grid
+     * (as [home] shows it), in the free slots from the start, with everything in them. What was placed by hand at the
+     * top level goes: those were shortcuts to the system's own games.
+     */
+    fun unarrangeSystem(c: IconGridConfig, platformId: String, home: GridShown): IconGridConfig {
+        val f = systemFolder(c, platformId) ?: return c
+        val subs = f.items.filter { k -> folderId(k)?.let { s -> s != f.id && c.folders.any { it.id == s } } == true }
+        var order = home.slots
+        val here = HashSet(home.present)
+        var at = 0
+        for (k in subs) {
+            at = GridSlots.firstFit(order, home.lanes, home.ext, at, GridSlots.ONE, here, home.page)
+            order = GridSlots.putAt(order, k, at)
+            here.add(k)
+        }
+        val key = folderKey(f.id)
+        return c.copy(
+            order = if (subs.isEmpty()) c.order else GridSlots.trim(order), lanes = if (subs.isEmpty()) c.lanes else home.lanes,
+            folders = c.folders.filter { it.id != f.id }, styles = c.styles - key,
+        ).pruneStyles()
+    }
+
     fun deleteFolder(c: IconGridConfig, id: String, home: GridShown, keep: Boolean, defaults: Set<String> = emptySet()): IconGridConfig {
         val f = folder(c, id) ?: return c
         val key = folderKey(id)

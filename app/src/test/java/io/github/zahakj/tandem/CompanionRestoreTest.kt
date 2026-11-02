@@ -72,7 +72,16 @@ class CompanionRestoreTest {
         singleScreen: Boolean = false,
         second: Boolean = true,
         at: Long = now,
-    ) = CompanionRestore.shouldRestore(info, front, session, hidden, singleScreen, second, at)
+        processStart: Long? = null,
+    ) = CompanionRestore.shouldRestore(info, front, session, hidden, singleScreen, second, at, processStart)
+
+    @Test fun notForAnAppOpenedAgainSince() {
+        // Started before the companion (or with it): still the same visit.
+        assertTrue(should(processStart = info.start - 600_000))
+        assertTrue(should(processStart = info.start + 5_000))
+        // Came up a minute after: reopened outside Tandem, maybe with another game.
+        assertFalse(should(processStart = info.start + 60_000))
+    }
 
     @Test fun restoresWhenTheGameIsStillInFront() {
         assertTrue(should())

@@ -67,6 +67,33 @@ object GridWidgets {
     fun widget(key: String): Widget? = idOf(key)?.let { Widgets.byId(it) }
 
     /**
+     * Adds a [kind] widget in slot [at] of folder [folder] as [shown]. A folder's spots are one cell each, so only
+     * kinds that come in the small size go in. Returns its key, or null when it didn't go in.
+     */
+    fun addInFolder(kind: WidgetKind, folder: String, shown: GridShown, at: Int): String? {
+        if (!kind.available()) {
+            Toasts.show(kind.needs ?: "Not available yet")
+            Sounds.error()
+            return null
+        }
+        if (!fitsFolder(kind)) {
+            Toasts.show("${kind.name} needs more room than one spot. It fits on the home grid")
+            Sounds.error()
+            return null
+        }
+        val id = WidgetStore.newId(kind.id)
+        val key = key(id)
+        WidgetStore.updateWidgets { it + Widget(id, kind.id, WidgetSize.Small, WidgetPlace.Grid) }
+        IconGridStore.addToFolder(key, folder, at, shown)
+        Sounds.confirm()
+        Toasts.show("Added ${kind.name}")
+        return key
+    }
+
+    /** Whether [kind] comes in the one-cell size a folder's spots have. */
+    fun fitsFolder(kind: WidgetKind): Boolean = WidgetSize.Small in kind.sizes
+
+    /**
      * Adds a [kind] widget in slot [at] of the home grid as [shown], at its usual size when there is room there, else
      * the biggest size that fits. With widgets set to show as a row, it joins the row instead. Returns its key on the
      * grid.
