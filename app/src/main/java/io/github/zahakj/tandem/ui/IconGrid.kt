@@ -1173,7 +1173,7 @@ private fun TileGrid(
                 itemsIndexed(cells, key = { i, _ -> keys[i] }, contentType = { i, it -> cellType(keys[i], it) }) { i, item ->
                     // Only the tiles gaining or losing focus recompose for their z order, not every visible tile.
                     val front by remember(i) { androidx.compose.runtime.derivedStateOf { i == focusedIndex } }
-                    Box(Modifier.animateItem(placementSpec = place).zIndex(if (front || keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]), contentAlignment = Alignment.Center) { tileContent(i, item) }
+                    Box((if (isGapKey(keys[i])) Modifier else Modifier.animateItem(placementSpec = place)).zIndex(if (front || keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]), contentAlignment = Alignment.Center) { tileContent(i, item) }
                 }
                 if (Widgets.homeVisible()) item("widgets", span = { GridItemSpan(maxLineSpan) }) { HomeWidgetsRow(inset = 0.dp) }
             }
@@ -1202,7 +1202,7 @@ private fun TileGrid(
                     itemsIndexed(cells, key = { i, _ -> keys[i] }, contentType = { i, it -> cellType(keys[i], it) }) { i, item ->
                         // Only the tiles gaining or losing focus recompose for their z order, not every visible tile.
                         val front by remember(i) { androidx.compose.runtime.derivedStateOf { i == focusedIndex } }
-                        Box(Modifier.animateItem(placementSpec = place).zIndex(if (front || keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]), contentAlignment = Alignment.Center) { tileContent(i, item) }
+                        Box((if (isGapKey(keys[i])) Modifier else Modifier.animateItem(placementSpec = place)).zIndex(if (front || keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]), contentAlignment = Alignment.Center) { tileContent(i, item) }
                     }
                 }
             }
@@ -1217,7 +1217,8 @@ private fun TileGrid(
 
 /**
  * Tiles glide into a new slot on a spring (moving one or many, a widget making room, Tidy up, a sort, Undo),
- * following the animation style.
+ * following the animation style. Empty spots don't: one the grid brings in at its end (Down past the last row) was
+ * placed after the last tile first and glided over to its column, so the highlight slid sideways.
  */
 private fun tilePlacement(): androidx.compose.animation.core.FiniteAnimationSpec<androidx.compose.ui.unit.IntOffset> = when (Motion.style) {
     AnimationStyle.Off -> androidx.compose.animation.core.snap()
@@ -1295,7 +1296,7 @@ private suspend fun LazyGridState.slideToColumn(col: Int, off: Int, rows: Int, i
 
 /** Keeps the target tile on screen when the grid opens or focus is handed back (sideways grids check x, not y). */
 @Composable
-private fun KeepTileInView(state: LazyGridState, index: Int, vertical: Boolean, follow: Boolean = false) {
+private fun KeepTileInView(state: LazyGridState, index: Int, vertical: Boolean, follow: Boolean = false, lanes: Int = 0) {
     val roomPx = with(LocalDensity.current) { KeepRoom.toPx() }
     val latest by androidx.compose.runtime.rememberUpdatedState(index)
     // Only when the grid opens, when focus is handed back (focusTick) or while a tile is being moved ([follow]).
@@ -1311,6 +1312,17 @@ private fun KeepTileInView(state: LazyGridState, index: Int, vertical: Boolean, 
         val size = if (it == null) 0 else if (vertical) it.size.height else it.size.width
         runCatching {
             when {
+                // Off screen, in a grid of even lines ([lanes]): scroll by whole lines from a tile that is laid out, as
+                // the D-pad would. A jump (scrollToItem) made the grid place the tiles it brings in after the last one
+                // it had and glide them over, so the empty spot below the last row slid in sideways.
+                it == null && lanes > 0 && info.visibleItemsInfo.isNotEmpty() -> {
+                    val ref = info.visibleItemsInfo.first()
+                    val refStart = if (vertical) ref.offset.y else ref.offset.x
+                    val refSize = if (vertical) ref.size.height else ref.size.width
+                    val at = refStart + (index / lanes - ref.index / lanes) * (refSize + info.mainAxisItemSpacing)
+                    if (at < info.viewportStartOffset) state.scrollBy((at - info.viewportStartOffset - roomPx).toFloat())
+                    else state.scrollBy((at + refSize - info.viewportEndOffset + roomPx).toFloat())
+                }
                 // Off screen: bring it in, clear of the faded edge.
                 it == null -> { state.scrollToItem(index); if (index > 0) state.scrollBy(-roomPx) }
                 // Partly hidden: move just enough to show it whole, not a page.
@@ -2355,7 +2367,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                     zone.vertical = true; zone.lanes = cols; zone.keys = keys; zone.owners = IntArray(0)
                     zone.tilePx = with(density) { tile.toPx() }; zone.gapPx = with(density) { gap.toPx() }
                 }
-                KeepTileInView(state, keys.indexOf(moving?.takeIf { !it.carried }?.key ?: target), vertical = true, follow = moving != null && !moving.carried)
+                KeepTileInView(state, keys.indexOf(moving?.takeIf { !it.carried }?.key ?: target), vertical = true, follow = moving != null && !moving.carried, lanes = cols)
                 // What's inside rises in one after another as the panel opens (not when scrolled to later).
                 val openedAt = remember(fid) { android.os.SystemClock.uptimeMillis() }
                 val corner = tile * Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)
@@ -2374,7 +2386,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                             val fresh = remember { android.os.SystemClock.uptimeMillis() - openedAt < 450 }
                             Box(
                                 // Tiles glide to new places on the same spring as on the home grid (a bulk move, a sort).
-                                Modifier.animateItem(placementSpec = tilePlacement()).zIndex(if (keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]).then(if (fresh) Modifier.riseIn(fid, 0, 18.dp, 0.82f, delayMs = 70L + minOf(i, 11) * 24L) else Modifier),
+                                (if (isGapKey(keys[i])) Modifier else Modifier.animateItem(placementSpec = tilePlacement())).zIndex(if (keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]).then(if (fresh) Modifier.riseIn(fid, 0, 18.dp, 0.82f, delayMs = 70L + minOf(i, 11) * 24L) else Modifier),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 if (item == null) {
