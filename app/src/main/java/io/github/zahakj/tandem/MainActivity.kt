@@ -57,7 +57,8 @@ class MainActivity : ComponentActivity() {
         StartLook.paintSaved(window, this)
         // One library at a time. Two (Android made a second task for this activity, see frontIntent) share every
         // focus, popup and button state, and the one in front was left without a highlight: the older one goes.
-        live?.get()?.takeIf { it !== this && !it.isFinishing && !it.isDestroyed }?.let { old ->
+        val replacing = live?.get()?.takeIf { it !== this && !it.isFinishing && !it.isDestroyed }
+        replacing?.let { old ->
             android.util.Log.w("Tandem", "A second library activity started; closing the older one")
             old.finishAndRemoveTask()
         }
@@ -98,6 +99,13 @@ class MainActivity : ComponentActivity() {
         io.github.zahakj.tandem.ui.StartFlow.begin(this, cached = io.github.zahakj.tandem.ui.LibraryScan.startEarly(this))
         Dreaming.addEndListener(dreamEnded)
         openRequested(intent)
+        // Home that made Android start this activity afresh in place of the open one (leaving a game, say) is a Home
+        // press like any other: back to the home grid with folders closed, and the controller on this screen. Without
+        // it the folder open before the game stayed up, and B went to the bottom screen's window, which held the focus.
+        if (replacing != null && !intent.getBooleanExtra(EXTRA_SELF, false) && intent.hasCategory(android.content.Intent.CATEGORY_HOME)) {
+            io.github.zahakj.tandem.ui.Host.onNewIntent(intent, returning = true)
+            ensureLibraryWorks()
+        }
     }
 
     /** A controller's Home button held outside Tandem brings it here to open the game switcher (see [HomeButton]). */
