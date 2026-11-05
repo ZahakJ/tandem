@@ -239,6 +239,8 @@ object IconGrid {
     /** The home grid and the open folder as they show now, for edits made from menus (see GridSpots.kt). */
     var home: io.github.zahakj.tandem.data.GridShown? = null
     var folderShown: io.github.zahakj.tandem.data.GridShown? = null
+    /** The home tile the D-pad left the grid from (Down into the dock): Up from the dock goes back to it. */
+    var leftFrom: String? = null
     /** Add to home puts what is picked in this slot (an empty spot's "Add to this spot…"); null: after the last tile. */
     var addAt: SlotTarget? = null
 
@@ -1822,7 +1824,8 @@ internal fun slotKey(e: KeyEvent, nav: SlotFocus, route: String, keys: List<Stri
     val cur = keys.indexOf(FocusMemory.get(route))
     if (cur < 0) return false
     val from = if (nav.item == cur && nav.cell >= 0) nav.cell else cur
-    val c = GridSlots.stepFocus(keys.size, owners, lanes, cur, from, dLine, dLane) ?: return false
+    val c = GridSlots.stepFocus(keys.size, owners, lanes, cur, from, dLine, dLane)
+    if (c == null) { if (route == Route.Home.key) IconGrid.leftFrom = keys[cur]; return false }
     if (c < 0) return true
     val o = owners.getOrElse(c) { -1 }.let { if (it >= 0) it else c }
     val k = keys.getOrNull(o)?.takeIf { !isCoveredKey(it) } ?: return true
@@ -1891,7 +1894,14 @@ private fun PillDock(dock: List<String>, target: String?, modifier: Modifier) {
     Row(
         // A background in the pill shape, not a clip: a highlighted icon grows and glows past the pill.
         modifier.background(Palette.Card.copy(alpha = if (look.dockBackground) 0.86f else 0f), RoundedCornerShape(50))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            // Up goes back to the tile Down left, not to whichever tile sits above this icon (the dock is centred,
+            // so focus search slid the highlight over a column or two).
+            .onPreviewKeyEvent { e ->
+                val back = IconGrid.leftFrom?.takeIf { e.key == Key.DirectionUp } ?: return@onPreviewKeyEvent false
+                if (e.type == KeyEventType.KeyDown) { FocusMemory.remember(route, back); Nav.focusTick++ }
+                true
+            },
         horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically,
     ) {
         DockIcon("app:*", target, route, CircleShape, onFocus = { Panels.focusedApp = null }, onClick = { Panels.openApps() }) {
