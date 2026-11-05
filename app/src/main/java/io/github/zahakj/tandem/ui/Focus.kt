@@ -84,6 +84,21 @@ object FocusMemory {
     /** Forget a popup's last item, so it opens on its first row again. */
     fun forget(route: String) { keys.remove(route) }
 
+    /** The item holding focus on each route, with the [Nav.focusTick] it took it on (see [movedOn]). */
+    private val holders = HashMap<String, Pair<String, Int>>()
+
+    fun hold(route: String, item: String, has: Boolean) {
+        if (has) holders[route] = item to Nav.focusTick
+        else if (holders[route]?.first == item) holders.remove(route)
+    }
+
+    /**
+     * Another item on [route] took focus since focus was last handed back, so the target is stale: [item] scrolling
+     * back into a lazy grid must not take focus from it (the highlight jumped back to the tile the folder opened on).
+     */
+    fun movedOn(route: String, item: String): Boolean =
+        holders[route]?.let { (held, tick) -> held != item && tick == Nav.focusTick } == true
+
     /** See the notes at the top of this file. */
     fun resolve(route: String, items: List<String>): String? {
         val previous = orders[route]
@@ -190,7 +205,9 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
     val layer = LocalLayer.current
     val view = androidx.compose.ui.platform.LocalView.current
     // Counted in FocusCards while it holds the focus, so a window left without a highlight is noticed (rescue).
-    DisposableEffect(view) { onDispose { if (focused[0]) FocusCards.held(view.rootView, focused, false) } }
+    DisposableEffect(view) {
+        onDispose { if (focused[0]) { FocusCards.held(view.rootView, focused, false); FocusMemory.hold(routeKey, itemKey, false) } }
+    }
     LaunchedEffect(routeKey, wanted, layer) {
         if (!wanted) return@LaunchedEffect
         // Focus handed back (Nav.focusTick: a resume, Home) asks again. Watched here rather than read while composing,
@@ -202,7 +219,7 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
             // shows at once instead of 70 ms late.
             repeat(12) { i ->
                 if (i == 0) androidx.compose.runtime.withFrameNanos { } else delay(70)
-                if (focused[0]) return@collectLatest
+                if (focused[0] || FocusMemory.movedOn(routeKey, itemKey)) return@collectLatest
                 runCatching { requester.requestFocus() }
             }
         }
@@ -210,6 +227,7 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
     return this.focusRequester(requester).onFocusChanged {
         if (focused[0] != it.isFocused) FocusCards.held(view.rootView, focused, it.isFocused)
         focused[0] = it.isFocused
+        FocusMemory.hold(routeKey, itemKey, it.isFocused)
         if (it.isFocused) FocusMemory.remember(routeKey, itemKey)
     }
 }
