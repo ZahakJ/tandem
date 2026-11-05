@@ -94,10 +94,39 @@ object CompanionRestore {
  * Tandem was just updated (`adb install -r`, a store update). The update killed Tandem's process, and with it the
  * companion under a game that may still be playing: bring it back ([GameCompanion.restore]).
  */
+/**
+ * Whether the library was in front, kept across processes: an update kills it without onStop, so a "true" left here
+ * means it was on screen when the update came.
+ */
+object UpdateReturn {
+    private const val PREFS = "update-return"
+
+    fun mark(ctx: Context, front: Boolean) = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean("front", front).apply()
+
+    fun wasFront(ctx: Context): Boolean = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("front", false)
+
+    /**
+     * Starts the library again with Android's Home intent, through Shizuku when it is there: the shell may start it
+     * from the background, even with the screen off, and the Home intent lands it in the Home task (an explicit start
+     * would make an ordinary task, and the next Home press a second library). Blocking.
+     */
+    fun bringBack(ctx: Context) {
+        if (Shell.waitReady(CompanionRestore.SHIZUKU_WAIT_MS)) { Shell.run("am", "start", "-a", Intent.ACTION_MAIN, "-c", Intent.CATEGORY_HOME, "-f", "0x10000000"); return }
+        runCatching { ctx.startActivity(MainActivity.frontIntent(ctx)) }
+    }
+}
+
 class PackageReplacedReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
         val pending = goAsync()
-        GameCompanion.restore(context) { runCatching { pending.finish() } }
+        val app = context.applicationContext
+        GameCompanion.restore(context) {
+            // The library was in front when the update killed it, with no game open: it comes back, instead of leaving
+            // whatever app was underneath on the screen.
+            if (UpdateReturn.wasFront(app) && Sessions.openKey(app) == null) {
+                Thread({ UpdateReturn.bringBack(app); runCatching { pending.finish() } }, "tandem-update-return").start()
+            } else runCatching { pending.finish() }
+        }
     }
 }

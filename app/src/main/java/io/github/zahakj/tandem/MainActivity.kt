@@ -317,6 +317,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         ActiveHost.token = this
+        UpdateReturn.mark(this, true)
         if (io.github.zahakj.tandem.data.SystemPrefs.data.keepRotationOff) {
             val app = applicationContext
             Thread({ runCatching { io.github.zahakj.tandem.ui.SystemControls.rotationOff(app) } }, "tandem-rotation").start()
@@ -360,6 +361,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onStop() {
+        // The screen going off, or Tandem's own screensaver, isn't leaving: the library is still what shows on waking.
+        if (getSystemService(android.os.PowerManager::class.java)?.isInteractive != false && !Dreaming.active) UpdateReturn.mark(this, false)
         homeBack = false
         io.github.zahakj.tandem.ui.PipMind.stopIdle()
         // The next cold start opens in this theme's colour (a no-op unless the theme changed).
