@@ -252,6 +252,8 @@ private val greyscale = ColorFilter.colorMatrix(ColorMatrix().apply { setToSatur
 fun AchievementsStrip(game: Game) {
     if (!RetroAchievements.enabled || Privacy.isHidden(game) || RetroAchievements.consoleId(game.platform.id) == null) return
     val progress by produceState(RetroAchievements.cachedProgress(game), game.key) {
+        // The value carries over from the game shown before: start from this one's.
+        value = RetroAchievements.cachedProgress(game)
         if (value == null) delay(700)
         value = runCatching { RetroAchievements.progress(game) }.getOrNull()
     }

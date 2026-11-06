@@ -468,10 +468,13 @@ fun AppTileIcon(pkg: String, size: Dp) {
 @Composable
 private fun DrawnAppTileIcon(pkg: String, px: Int) {
     val ctx = LocalContext.current
-    val icon by produceState(AppTileIcons.cached(pkg, px), pkg, px) {
-        if (value == null) value = withContext(Dispatchers.IO) { AppTileIcons.load(ctx, pkg, px) }
+    // Kept per app: produceState's value outlives a change of [pkg], so a reused tile (a list of notifications) kept
+    // showing the app it showed before.
+    val state = remember(pkg, px) { androidx.compose.runtime.mutableStateOf(AppTileIcons.cached(pkg, px)) }
+    androidx.compose.runtime.LaunchedEffect(pkg, px) {
+        if (state.value == null) state.value = withContext(Dispatchers.IO) { AppTileIcons.load(ctx, pkg, px) }
     }
-    icon?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop) }
+    state.value?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop) }
 }
 
 /** The picture the user chose for an app (Choose icon), cropped to fill; [fallback] when it can't be read. */

@@ -137,9 +137,11 @@ fun SidePanelHost() {
                 }
                 notes.isEmpty() -> Text("Nothing new.", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
                 else -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    for (n in notes) NoteCard(n, private, now, Modifier.remembersFocus(KEY, "n:${n.key}", false).onFocusChanged {
-                        if (it.isFocused) focusedNote = n.key else if (focusedNote == n.key) focusedNote = null
-                    })
+                    for (n in notes) androidx.compose.runtime.key(n.key) {
+                        NoteCard(n, private, now, Modifier.remembersFocus(KEY, "n:${n.key}", false).onFocusChanged {
+                            if (it.isFocused) focusedNote = n.key else if (focusedNote == n.key) focusedNote = null
+                        })
+                    }
                 }
             } }
             Spacer(Modifier.height(8.dp))
