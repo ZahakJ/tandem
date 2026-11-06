@@ -107,6 +107,8 @@ fun SidePanelHost() {
             }
             Spacer(Modifier.height(12.dp))
             QuickControls(KEY, narrow = true)
+            // Room between the controls and the notifications, so Clear all doesn't crowd the buttons above it.
+            Spacer(Modifier.height(14.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Notifications", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                 if (notes.any { it.clearable }) FocusCard(

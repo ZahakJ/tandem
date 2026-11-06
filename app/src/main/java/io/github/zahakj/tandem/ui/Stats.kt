@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,6 +43,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -203,7 +205,7 @@ private fun Overview() {
     }
     // Imported play time with no sessions recorded in Tandem yet: say so, rather than showing contradictory zeros.
     val noHistory = sessions.isEmpty()
-    val keys = listOf("total", "games", "streak", "sessions", "chart") + stats.perSystem.map { "sys:${it.first.id}" } +
+    val keys = listOf("total", "games", "streak", "sessions", "chart") + mosaicKeys(stats.perSystem) +
         stats.top.map { "top:${it.key}" } + listOfNotNull("fact".takeIf { stats.timeOfDay != null })
     val target = rememberFocusTarget(route, keys)
     val list = rememberRouteListState(route)
@@ -252,28 +254,7 @@ private fun Overview() {
         if (stats.perSystem.isNotEmpty()) item("systems") {
             Column {
                 SectionTitle("By system", Palette.Lavender)
-                val max = stats.perSystem.first().second.coerceAtLeast(1)
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    for ((platform, seconds) in stats.perSystem) {
-                        val color = Palette.forName(platform.id)
-                        val key = "sys:${platform.id}"
-                        FocusCard(
-                            Modifier.fillMaxWidth().height(44.dp).takesFocus(route, key, key == target),
-                            glow = color, shape = RoundedCornerShape(14.dp),
-                            onFocus = { Libraries.byId(platform.id)?.let { Selection.current = Selected.System(it) } },
-                            entry = true,
-                            onClick = { Nav.go(Route.System(platform.id)) },
-                        ) {
-                            Row(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Text(platform.shortName, Modifier.width(70.dp), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Box(Modifier.weight(1f).height(12.dp).clip(RoundedCornerShape(50)).background(Palette.NightDeep)) {
-                                    Box(Modifier.fillMaxWidth(seconds / max.toFloat()).fillMaxHeight().clip(RoundedCornerShape(50)).background(Brush.horizontalGradient(listOf(color.copy(alpha = 0.6f), color))))
-                                }
-                                Text(formatPlayTime(seconds), Modifier.padding(start = 12.dp).width(84.dp), style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1)
-                            }
-                        }
-                    }
-                }
+                SystemMosaic(stats.perSystem, route, target)
             }
         }
         if (stats.top.isNotEmpty()) item("top") {
@@ -568,5 +549,76 @@ fun exportStats(ctx: Context) {
         }.isSuccess
     }) {
         Toasts.show(if (ok) "Saved play-stats.csv and play-sessions.csv in ROMs/tandem" else "Couldn't write to ROMs/tandem")
+    }
+}
+
+/** One box of the system mosaic: a system, or the systems too small for a box of their own. */
+private class MosaicBox(val key: String, val label: String, val color: Color, val seconds: Long, val platform: Platform?, val others: List<Platform> = emptyList())
+
+private const val MOSAIC_MAX = 8
+
+private fun mosaicBoxes(per: List<Pair<Platform, Long>>): List<MosaicBox> {
+    // Systems with a sliver of the time share one box, so none ends up a sliver itself.
+    val total = per.sumOf { it.second }.coerceAtLeast(1)
+    val big = per.takeWhile { it.second * 100 / total >= 3 }.take(MOSAIC_MAX - 1)
+    val own = if (per.size - big.size <= 1) per.take(MOSAIC_MAX) else big
+    val rest = per.drop(own.size)
+    return own.map { (p, s) -> MosaicBox("sys:${p.id}", p.shortName, SystemColors.of(p.id), s, p) } +
+        listOfNotNull(rest.takeIf { it.isNotEmpty() }?.let { r -> MosaicBox("sys:other", "${r.size} more", Palette.Lavender, r.sumOf { it.second }, null, r.map { it.first }) })
+}
+
+private fun mosaicKeys(per: List<Pair<Platform, Long>>) = mosaicBoxes(per).map { it.key }
+
+/**
+ * Play time by system as a mosaic: one box per system, its size its share of the time, in the system's colour with
+ * its name, hours and share; the smallest few share one box. All of it in view at once, no list to scroll.
+ */
+@Composable
+private fun SystemMosaic(per: List<Pair<Platform, Long>>, route: String, target: String?) {
+    val boxes = remember(per) { mosaicBoxes(per) }
+    val total = boxes.sumOf { it.seconds }.coerceAtLeast(1)
+    val gap = 6.dp
+    androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxWidth().height(if (boxes.size <= 2) 150.dp else 240.dp)) {
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        val wPx = with(density) { maxWidth.toPx() }
+        val hPx = with(density) { maxHeight.toPx() }
+        // Sizes soften the differences (one system often has most of the time), so the smaller ones stay readable;
+        // each box still says its true share.
+        val rects = remember(boxes, wPx, hPx) { io.github.zahakj.tandem.data.Treemap.layout(boxes.map { Math.pow(it.seconds.toDouble(), 0.55) }, wPx, hPx) }
+        boxes.forEachIndexed { i, b ->
+            val r = rects[i]
+            val w = with(density) { r.w.toDp() } - gap
+            val h = with(density) { r.h.toDp() } - gap
+            if (w < 8.dp || h < 8.dp) return@forEachIndexed
+            FocusCard(
+                Modifier.offset { androidx.compose.ui.unit.IntOffset(r.x.toInt(), r.y.toInt()) }.size(w, h).takesFocus(route, b.key, b.key == target),
+                glow = b.color, shape = RoundedCornerShape(16.dp),
+                onFocus = { FocusMemory.remember(route, b.key); b.platform?.let { p -> Libraries.byId(p.id)?.let { Selection.current = Selected.System(it) } } ?: run { Selection.current = Selected.Home } },
+                onClick = {
+                    val p = b.platform
+                    if (p != null) Nav.go(Route.System(p.id))
+                    else Toasts.show(b.others.joinToString(", ") { it.shortName } + " · " + formatPlayTime(b.seconds))
+                },
+            ) {
+                Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(b.color, androidx.compose.ui.graphics.lerp(b.color, Palette.NightDeep, 0.55f)))))
+                // The system's own icon, large and faint in the corner of the bigger boxes.
+                val icon = b.platform?.let { IconPacks.systemIcon(it.id) }
+                if (icon != null && w > 120.dp && h > 170.dp) {
+                    coil.compose.AsyncImage(
+                        icon, null,
+                        Modifier.align(Alignment.BottomEnd).padding(10.dp).size(minOf(w, h) * 0.36f).clip(RoundedCornerShape(12.dp)).graphicsLayer { alpha = 0.55f },
+                    )
+                }
+                val roomy = h > 80.dp && w > 90.dp
+                Column(Modifier.fillMaxSize().padding(if (roomy) 12.dp else 7.dp)) {
+                    Text(b.label, style = MaterialTheme.typography.titleSmall, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    if (h > 46.dp) Text(
+                        formatPlayTime(b.seconds), style = if (roomy) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.labelLarge,
+                        color = Color.White, maxLines = 1,
+                    )
+                    if (roomy) Text("${(b.seconds * 100 / total).coerceAtLeast(1)}% of your play", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.75f), maxLines = 1)
+                }
+            }
+        }
     }
 }
