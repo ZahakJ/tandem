@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -80,7 +81,9 @@ fun SidePanelHost() {
         // The clock in the header, to the minute.
         var now by remember { mutableStateOf(System.currentTimeMillis()) }
         LaunchedEffect(Unit) { while (true) { delay(15_000); now = System.currentTimeMillis() } }
-        val notes = Notes.list
+        // Notifications to read and clear; the ones that can't be cleared (USB, a running service) are status, shown apart.
+        val notes = Notes.list.filter { it.clearable }
+        val status = Notes.list.filter { !it.clearable }
         val private = Privacy.enabled
         val (battery, charging) = remember(now) { SystemControls.battery(ctx) }
         val (free, total) = remember(now / 600_000) { SystemControls.storage() }
@@ -91,7 +94,7 @@ fun SidePanelHost() {
                 .padding(horizontal = 16.dp, vertical = 14.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Pip(46.dp, mood = if (notes.isEmpty()) 0 else 3)
+                Pip(46.dp, mood = if (notes.isEmpty()) 0 else 1)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Text(pipLine(notes.size, allowed), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -111,15 +114,15 @@ fun SidePanelHost() {
             Spacer(Modifier.height(14.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Notifications", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                if (notes.any { it.clearable }) FocusCard(
+                if (notes.isNotEmpty()) FocusCard(
                     Modifier.height(34.dp).remembersFocus(KEY, "clearall", false), glow = Palette.Peach, shape = RoundedCornerShape(50),
                     onClick = { Notes.clearAll(); Sounds.back() },
                 ) {
                     Text("Clear all", Modifier.align(Alignment.Center).padding(horizontal = 12.dp), style = MaterialTheme.typography.labelLarge, maxLines = 1)
                 }
             }
-            Spacer(Modifier.height(6.dp))
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { when {
+            // Room inside the scrolling list, so a highlighted card (it grows, with a ring) never slips under the header.
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 4.dp, vertical = 10.dp)) { when {
                 !allowed -> FocusCard(
                     Modifier.fillMaxWidth().remembersFocus(KEY, "allow", false), glow = Palette.Lavender, shape = RoundedCornerShape(18.dp),
                     onClick = {
@@ -137,8 +140,8 @@ fun SidePanelHost() {
                         )
                     }
                 }
-                notes.isEmpty() -> Text("Nothing new.", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
-                else -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                notes.isEmpty() -> Text("Nothing new.", Modifier.padding(start = 4.dp), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+                else -> Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     for (n in notes) androidx.compose.runtime.key(n.key) {
                         NoteCard(n, private, now, Modifier.remembersFocus(KEY, "n:${n.key}", false).onFocusChanged {
                             if (it.isFocused) focusedNote = n.key else if (focusedNote == n.key) focusedNote = null
@@ -146,12 +149,42 @@ fun SidePanelHost() {
                     }
                 }
             } }
+            // What Android keeps up while something is on (USB, a running service): small chips, not cards to clear.
+            if (allowed && status.isNotEmpty()) StatusChips(status, private) { n -> focusedNote = n }
             Spacer(Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 ButtonHint("◀▶", "Adjust", Palette.Butter)
                 ButtonHint("A", "Open", Palette.Mint)
                 if (notes.isNotEmpty()) ButtonHint("Y", "Clear", Palette.Butter)
                 ButtonHint("R2", "Close", Palette.Lavender)
+            }
+        }
+    }
+}
+
+/**
+ * Status notifications (USB, a service that keeps running) as one slim row of chips under the list, sliding sideways
+ * when they don't all fit: the app's icon and the notification's title. A opens.
+ */
+@Composable
+private fun StatusChips(status: List<Note>, private: Boolean, onFocus: (String?) -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 6.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("On the device", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+        Spacer(Modifier.width(2.dp))
+        for (n in status) androidx.compose.runtime.key(n.key) {
+            FocusCard(
+                Modifier.height(28.dp).remembersFocus(KEY, "s:${n.key}", false).onFocusChanged { if (it.isFocused) onFocus(null) },
+                glow = Palette.Sky, shape = RoundedCornerShape(50),
+                onClick = { Panels.close(); Notes.open(n) },
+            ) {
+                Row(Modifier.fillMaxHeight().padding(start = 5.dp, end = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(18.dp).clip(RoundedCornerShape(50))) { TileArtView(TileArt.App(n.pkg), 18.dp) }
+                    Spacer(Modifier.width(6.dp))
+                    Text(if (private) "Status" else n.title.ifBlank { n.text }.take(28), style = MaterialTheme.typography.labelMedium, maxLines = 1)
+                }
             }
         }
     }
