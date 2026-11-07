@@ -87,8 +87,8 @@ Nothing is kept to send later. Turning private mode off only makes the next look
 - When the game's session ends, Tandem puts airplane mode and Wi-Fi back as they were: when you come back to Tandem, when the game quits or crashes (Tandem looks every few seconds while its bottom screen shows the game), or when Tandem starts again after being closed with no game left open.
 - Airplane mode that was already on stays on: Tandem only turns off what it turned on.
 - Tandem writes down what it changed as soon as it changes it (`offline.json`, in the same no-backup storage), so it can put it back after a restart too.
-- Without Shizuku, or if Android refuses, the game still starts, online.
-- Coming back to Tandem ends the session, so the handheld is back online while you are in Tandem, even with the game still open behind it. Resuming the game from Tandem takes it offline again.
+- If Tandem can't confirm the handheld is offline (Shizuku isn't running, or Android refuses), the game doesn't start. Pip says "Couldn't go offline, game not started", without naming the game, and offers **Start anyway**.
+- **Stay offline until the game closes** (on by default) keeps airplane mode on when you come back to Tandem with the hidden game still open behind it, where it could still sync. Tandem checks every 20 seconds and puts the radios back once the emulator's app has closed. Tucking hidden games away again (**L1 + R1 + Select**) brings them back at once. With it off, coming back to Tandem ends the session and the handheld goes back online; resuming the game takes it offline again.
 
 What it doesn't cover: whatever an emulator saved while offline and sends once the handheld is back online, and games or apps started outside Tandem. For anything that must never go online, also turn off the emulator's own network features (RetroAchievements, netplay, cloud saves) in its settings.
 

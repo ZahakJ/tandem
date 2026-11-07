@@ -50,7 +50,7 @@ Artwork paths can be relative to the gamelist (`./media/…`), start with `~/`, 
 Tandem never overwrites what it already has:
 
 - **Text and artwork** (titles, descriptions, genres and so on): Tandem's value stays if it has one; the import only fills gaps.
-- **Favorite and hidden**: a game is a favorite if either side says so. The same goes for hidden.
+- **Favorite and hidden**: a game is a favorite if either side says so on the first import; later imports leave favorites as you set them in Tandem. Hidden works the same way on every import: a gamelist can hide a game, but never unhides one.
 - **Play count, play time and last played**: the larger value wins, so history from both places isn't double counted, and isn't lost.
 
 ## Themes from Cocoon

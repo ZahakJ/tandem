@@ -76,7 +76,8 @@ object Importer {
         players = m.players ?: e.players,
         rating = m.rating ?: e.rating,
         favorite = if (firstTime) m.favorite || e.favorite else m.favorite,
-        hidden = if (firstTime) m.hidden || e.hidden else m.hidden,
+        // Hiding is safe to take from any import; unhiding only ever happens in Tandem.
+        hidden = m.hidden || e.hidden,
         playCount = if (firstTime) maxOf(m.playCount, e.playCount) else m.playCount,
         playSeconds = if (firstTime) maxOf(m.playSeconds, e.playSeconds) else m.playSeconds,
         lastPlayed = if (firstTime) maxOf(m.lastPlayed, e.lastPlayed) else m.lastPlayed,

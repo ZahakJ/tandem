@@ -119,7 +119,8 @@ object Launcher {
      * thread. A hidden game in private mode may first take the handheld offline (Offline.kt).
      */
     fun start(ctx: Context, plan: Plan): LaunchProblem? {
-        Offline.beforeLaunch(ctx, plan.game)
+        val pkg = if (plan.game.platform.isApps) AndroidApps.packageOf(plan.game) else plan.spec.packageName
+        if (!Offline.beforeLaunch(ctx, plan.game, pkg)) { Offline.launchFailed(ctx); return LaunchProblem.NotOffline(plan.game, plan) }
         val problem = try { open(ctx, plan) } catch (e: Exception) { Offline.launchFailed(ctx); throw e }
         if (problem != null) Offline.launchFailed(ctx)
         return problem

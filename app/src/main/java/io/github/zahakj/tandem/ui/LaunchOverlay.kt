@@ -253,6 +253,9 @@ private fun ProblemPanel() {
                             close(); Store.update(game.key) { it.copy(hidden = true) }; Toasts.show("Hidden from Android Games")
                         })
                         is LaunchProblem.BadShortcut -> {}
+                        is LaunchProblem.NotOffline -> add("Start anyway" to {
+                            close(); io.github.zahakj.tandem.Offline.allowOnce(game); LaunchFx.play(ctx, p.plan)
+                        })
                     }
                     add("OK" to close)
                 }
@@ -290,5 +293,8 @@ private fun describe(p: LaunchProblem): Pair<String, String> {
         is LaunchProblem.BadShortcut -> "This shortcut needs a game id" to
             "${game.file.name}: ${p.detail}. Vita .dpt files need a line like \"[vita_game_id] PCSA00011\"; Windows .pcgame files hold the GameNative app id."
         is LaunchProblem.AppMissing -> "${game.title} isn't installed anymore" to "Reinstall it from its store, or hide it from Android Games."
+        // Names nothing: this shows while a hidden game is being started.
+        is LaunchProblem.NotOffline -> "Couldn't go offline, game not started" to
+            "Airplane mode didn't go on, so nothing was started. Check that Shizuku is running, or start it anyway."
     }
 }

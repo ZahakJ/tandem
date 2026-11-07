@@ -243,6 +243,7 @@ object Privacy {
         if (!revealed) { PrivateMode.reveal(); return }
         revealed = false
         HiddenItems.endPeeks()
+        Offline.tuckedAway()
         Toasts.show("Hidden games are tucked away")
         Nav.focusTick++
     }

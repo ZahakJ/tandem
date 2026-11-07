@@ -516,6 +516,16 @@ fun homeSettings(): SettingSection {
                 else HomeStore.updateSettings { it.copy(offlineHidden = !it.offlineHidden) }
             },
             SettingRow(
+                "Stay offline until the game closes",
+                if (!s.privateMode || !s.offlineHidden) "Needs the setting above" else onOff(s.offlineUntilClosed), Palette.Lavender, Glyph.Shield,
+                help = "Coming back to Tandem doesn't bring the internet back while the hidden game is still open in the background, " +
+                    "where it could still sync. Airplane mode goes off once its app has closed, or when you tuck hidden games away.",
+                toggle = if (!s.privateMode || !s.offlineHidden) null else s.offlineUntilClosed,
+                keywords = "airplane mode offline background sync close hidden private game emulator",
+            ) {
+                if (s.privateMode && s.offlineHidden) HomeStore.updateSettings { it.copy(offlineUntilClosed = !it.offlineUntilClosed) }
+            },
+            SettingRow(
                 "Private mode PIN", if (io.github.zahakj.tandem.PinVault.isSet) "Set" else "Not set", Palette.Lavender, Glyph.Shield,
                 help = "Change the 4 to 6 digit PIN that shows hidden games and turns private mode off. Forgot it? Y on the PIN pad starts a 24-hour wait, then you choose a new one.",
                 keywords = "pin code password change forgot private", action = "Change",

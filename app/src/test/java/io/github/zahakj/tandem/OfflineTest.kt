@@ -98,9 +98,31 @@ class OfflineTest {
         assertTrue(r.log.isEmpty())
     }
 
+    @Test fun anAppStillRunningKeepsTheHandheldOffline() {
+        val c = OfflineChanges(airplane = true, pkg = "emu")
+        assertTrue(OfflinePlan.hold(c, untilClosed = true, alive = true))
+        assertFalse(OfflinePlan.hold(c, untilClosed = true, alive = false))
+        assertFalse(OfflinePlan.hold(c, untilClosed = false, alive = true))
+    }
+
+    @Test fun notKnowingWhetherItRunsStaysOffline() {
+        assertTrue(OfflinePlan.hold(OfflineChanges(airplane = true, pkg = "emu"), untilClosed = true, alive = null))
+    }
+
+    @Test fun nothingChangedHoldsNothing() {
+        assertFalse(OfflinePlan.hold(OfflineChanges(pkg = "emu"), untilClosed = true, alive = true))
+        assertFalse(OfflinePlan.hold(OfflineChanges(airplane = true), untilClosed = true, alive = true))
+    }
+
+    @Test fun radiosThatWontSwitchAreNotOffline() {
+        val r = Fake(airplane = false, wifi = true, broken = true)
+        OfflinePlan.begin(OfflineChanges(), r)
+        assertFalse(OfflinePlan.isOffline(r))
+    }
+
     @Test fun theChangesSurviveARestartAsJson() {
         val json = kotlinx.serialization.json.Json { encodeDefaults = false }
-        val c = OfflineChanges(airplane = true)
+        val c = OfflineChanges(airplane = true, pkg = "emu")
         assertEquals(c, json.decodeFromString(OfflineChanges.serializer(), json.encodeToString(OfflineChanges.serializer(), c)))
     }
 

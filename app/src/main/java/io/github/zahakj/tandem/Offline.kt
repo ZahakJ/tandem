@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 /*
@@ -20,10 +21,14 @@ import java.util.concurrent.TimeUnit
  *   send later. The Discord status already shows nothing in private mode (DiscordPresence.show).
  * - [Offline]: with Settings › Play & stats › Go offline while a hidden game plays, starting a hidden game (only
  *   possible once the PIN revealed it) turns airplane mode on through Shizuku, and Wi-Fi off when Android keeps it on
- *   in airplane mode. What Tandem changed is written down at once (`offline.json`, in the no-backup folder), and put
- *   back when the game's session ends: Tandem comes back, the exit watch sees the game gone, or Tandem restarts with
- *   no game open. Airplane mode the user had on already is never turned off. Emulators' own network features are
- *   outside Tandem: only airplane mode stops those, and only while it is on.
+ *   in airplane mode. It fails closed: when the handheld can't be confirmed offline (no Shizuku, a radio that won't
+ *   switch) the game doesn't start, and Pip offers to start it anyway. What Tandem changed is written down at once
+ *   (`offline.json`, in the no-backup folder, with the emulator's package), and put back when the game's session
+ *   ends: Tandem comes back, the exit watch sees the game gone, or Tandem restarts with no game open. With Stay
+ *   offline until the game closes (on by default), a session ending while the emulator is still running (left in the
+ *   background, where it could still sync) keeps the handheld offline until its process is gone, checked every
+ *   [RECHECK_S] seconds, or until hidden games are tucked away again. Airplane mode the user had on already is never
+ *   turned off. Emulators' own network features are outside Tandem: only airplane mode stops those.
  *
  * [OfflinePlan] is plain, for tests (OfflineTest).
  */
@@ -39,9 +44,9 @@ object NetGate {
     fun check() { if (closed) throw PrivateOffline() }
 }
 
-/** What Tandem changed to go offline, so it can be put back. */
+/** What Tandem changed to go offline, so it can be put back, and the app the hidden game plays in ([pkg]). */
 @Serializable
-data class OfflineChanges(val airplane: Boolean = false, val wifi: Boolean = false) {
+data class OfflineChanges(val airplane: Boolean = false, val wifi: Boolean = false, val pkg: String? = null) {
     val any: Boolean get() = airplane || wifi
 }
 
@@ -81,6 +86,13 @@ object OfflinePlan {
 
     /** Offline as wanted: airplane mode on and Wi-Fi off. */
     fun isOffline(r: Radios): Boolean = r.airplane() == true && r.wifi() == false
+
+    /**
+     * Whether a session that ended still keeps the handheld offline: [untilClosed] is on and the hidden game's app
+     * ([had].pkg) is still running ([alive]). When Shizuku can't tell (null) it stays offline: never online by guess.
+     */
+    fun hold(had: OfflineChanges, untilClosed: Boolean, alive: Boolean?): Boolean =
+        untilClosed && had.any && had.pkg != null && alive != false
 }
 
 /** The radios through Shizuku's shell (Android 13's `cmd connectivity` and `cmd wifi`). Blocking. */
@@ -117,8 +129,14 @@ object Offline {
     private const val TAG = "Tandem"
 
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
+    /** How often a hidden game's app left running is looked for, while it keeps the handheld offline. */
+    const val RECHECK_S = 20L
+
     /** Every radio change runs here, one at a time and in order. */
-    private val worker = Executors.newSingleThreadExecutor { r -> Thread(r, "tandem-offline") }
+    private val worker = Executors.newSingleThreadScheduledExecutor { r -> Thread(r, "tandem-offline") }
+    @Volatile private var recheck: ScheduledFuture<*>? = null
+    /** The game "Start anyway" was chosen for: its next launch skips the offline check once. */
+    @Volatile private var anyway: String? = null
     @Volatile private var file: File? = null
 
     private fun file(ctx: Context): File =
@@ -139,21 +157,33 @@ object Offline {
      */
     @Volatile private var launching = false
 
+    /** The next launch of [game] goes ahead even if the handheld can't be confirmed offline (Pip's Start anyway). */
+    fun allowOnce(game: Game) { anyway = game.key }
+
     /**
-     * Before [game] starts. Blocking (Shizuku), so a hidden game never starts online: call it from the launch thread.
-     * Waits at most a few seconds for the radios. Any other game puts back what an earlier hidden one changed.
+     * Before [game] starts, in [pkg]. Blocking (Shizuku), so a hidden game never starts online: call it from the
+     * launch thread. Waits at most a few seconds for the radios. Returns false when the game wants the handheld
+     * offline and it couldn't be confirmed, so it mustn't start (unless [allowOnce]). Any other game puts back what an
+     * earlier hidden one changed, unless that one's app is still running ([hold]).
      */
-    fun beforeLaunch(ctx: Context, game: Game) {
+    fun beforeLaunch(ctx: Context, game: Game, pkg: String?): Boolean {
         launching = true
         val f = file(ctx)
-        if (!wanted(game)) { worker.execute { restore(f) }; return }
-        val task = worker.submit {
-            if (!Shell.ready()) { Log.w(TAG, "Can't go offline for a hidden game: Shizuku isn't available"); return@submit }
-            val c = OfflinePlan.begin(load(f), ShellRadios)
+        val skip = anyway == game.key
+        anyway = null
+        if (!wanted(game)) { worker.execute { restore(f) }; return true }
+        val task = worker.submit<Boolean> {
+            cancelRecheck()
+            if (!Shell.ready()) { Log.w(TAG, "Can't go offline for a hidden game: Shizuku isn't available"); return@submit false }
+            val c = OfflinePlan.begin(load(f), ShellRadios).let { if (it.any) it.copy(pkg = pkg) else it }
             save(f, c)
-            Log.i(TAG, "Offline for a hidden game" + if (c.any) "" else " (it already was)")
+            val ok = OfflinePlan.isOffline(ShellRadios)
+            Log.i(TAG, if (!ok) "Couldn't confirm offline for a hidden game" else "Offline for a hidden game" + if (c.any) "" else " (it already was)")
+            ok
         }
-        runCatching { task.get(8, TimeUnit.SECONDS) }
+        val ok = runCatching { task.get(8, TimeUnit.SECONDS) }.getOrDefault(false)
+        if (!ok && skip) Log.w(TAG, "Starting a hidden game without confirming offline, as chosen")
+        return ok || skip
     }
 
     /** The game's session began (Sessions.start). */
@@ -172,17 +202,37 @@ object Offline {
         worker.execute { restore(f) }
     }
 
-    /** On [worker]. */
-    private fun restore(f: File) {
+    /** Hidden games were tucked away again: back online now, even with the hidden game's app still running. */
+    fun tuckedAway() {
+        val f = file ?: return
+        worker.execute { restore(f, force = true) }
+    }
+
+    /** On [worker]. Unless [force], a hidden game's app still running keeps the handheld offline ([OfflinePlan.hold]). */
+    private fun restore(f: File, force: Boolean = false) {
+        cancelRecheck()
         val had = load(f)
-        if (!had.any || !Shell.waitReady(3_000)) return
+        if (!had.any) return
+        val ready = Shell.waitReady(3_000)
+        if (!force) {
+            val alive = if (ready && had.pkg != null) Processes.alive(had.pkg, maxAgeMs = 0) else null
+            if (OfflinePlan.hold(had, HomeStore.settings.offlineUntilClosed, alive)) {
+                Log.i(TAG, "Staying offline: the hidden game's app is still running")
+                recheck = worker.schedule({ restore(f) }, RECHECK_S, TimeUnit.SECONDS)
+                return
+            }
+        }
+        if (!ready) return
         val left = OfflinePlan.end(had, ShellRadios)
         save(f, left)
         Log.i(TAG, if (left.any) "Couldn't put the radios back yet" else "Back online after a hidden game")
     }
 
+    private fun cancelRecheck() { recheck?.cancel(false); recheck = null }
+
     /** At startup: changes left from before a restart are put back unless a game is still being played. */
     fun startup(ctx: Context) {
+        file(ctx)
         if (Sessions.openKey(ctx) == null) gameEnded(ctx)
     }
 }

@@ -28,6 +28,8 @@ sealed interface LaunchProblem {
     data class BadShortcut(override val game: Game, val detail: String) : LaunchProblem
     /** An Android game that was uninstalled. */
     data class AppMissing(override val game: Game) : LaunchProblem
+    /** A hidden game that should play offline, and the handheld couldn't be confirmed offline (Offline.kt). */
+    class NotOffline(override val game: Game, val plan: Launcher.Plan) : LaunchProblem
 }
 
 /** Thrown while building an intent when the game file can't be turned into what the emulator needs. */

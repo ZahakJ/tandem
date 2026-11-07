@@ -28,6 +28,8 @@ data class HomeSettings(
     val freezeAsleep: Boolean = true,
     /** In private mode, airplane mode goes on while a hidden game plays (Offline.kt). Needs Shizuku. */
     val offlineHidden: Boolean = false,
+    /** With [offlineHidden], the handheld stays offline until the hidden game's app has closed, not just left (Offline.kt). */
+    val offlineUntilClosed: Boolean = true,
 )
 
 /** One stretch of play: game key, start time (ms) and length in seconds. Short names keep the file small. */
