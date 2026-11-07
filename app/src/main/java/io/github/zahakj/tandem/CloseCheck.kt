@@ -29,6 +29,13 @@ object CloseCheck {
     }
 
     /**
+     * The game [slot] has open, to name in the question: the one at its [Slot.lastPath] in [byPath] (the library by
+     * file). Null when the emulator was opened outside Tandem (no path), so it is named by its app alone and a game
+     * that isn't running (a hidden one, say) is never named.
+     */
+    fun <G> gameFor(slot: Slot, byPath: Map<String, G>): G? = slot.lastPath?.let(byPath::get)
+
+    /**
      * One game in the question, as it may be shown: [title] null when it isn't a Tandem game (opened in the emulator
      * itself), [hidden] while private mode keeps it out of sight.
      */

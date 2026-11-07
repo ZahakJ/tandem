@@ -51,6 +51,14 @@ class CloseCheckTest {
         assertEquals(listOf(retroarch), close(running, retroarch, celeste, closePrevious = false))
     }
 
+    @Test fun anEmulatorOpenedOutsideTandemIsNotNamedAfterTheLastGameTandemStartedInIt() {
+        // GameNative opened by hand: its slot has no path, so the game Tandem last started there isn't named.
+        val closing = CloseCheck.wouldClose(listOf(Slot(gamenative, null)), gamenative, balatro, anyApp = false, closePrevious = true)
+        val library = mapOf(hades to "a game that isn't open")
+        assertEquals(listOf<String?>(null), closing.map { CloseCheck.gameFor(it, library) })
+        assertEquals("a game that isn't open", CloseCheck.gameFor(Slot(gamenative, hades), library))
+    }
+
     @Test fun closePreviousDecidesWhetherOtherEmulatorsClose() {
         val running = listOf(Slot(eden, zelda), Slot(gamenative, hades))
         assertEquals(listOf(eden, gamenative), close(running, retroarch, celeste, closePrevious = true))

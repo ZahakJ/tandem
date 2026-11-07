@@ -220,7 +220,8 @@ object RunningGames {
         val closing = CloseCheck.wouldClose(slots, pkg, path, anyApp, closePreviousOn())
         if (closing.isEmpty()) return emptyList()
         val byPath = Libraries.games.associateBy { it.file.path }
-        return closing.map { RunningGame(it.pkg, appLabel(ctx, it.pkg), lastGame(ctx, it.pkg, byPath), prefs.getLong(it.pkg, 0)) }
+        // Named from the slot's own path, null for an emulator opened outside Tandem, as in [refresh].
+        return closing.map { RunningGame(it.pkg, appLabel(ctx, it.pkg), CloseCheck.gameFor(it, byPath)?.takeIf { g -> g.file.exists() }, prefs.getLong(it.pkg, 0)) }
     }
 
     /**
