@@ -1152,7 +1152,7 @@ private fun TileGrid(
     // Rows and columns hold under a fast or held D-pad: focus moves slot by slot (SlotFocus).
     val nav = remember { SlotFocus() }
     val moveKeys = Modifier.onPreviewKeyEvent { e -> moving != null && handleMoveKey(e, lanes, vertical, if (paged) m.cols else 0) || slotKey(e, nav, route, keys, owners, lanes, vertical) }
-    val place = tilePlacement()
+    val place = reorderPlacement(keys, lanes)
     val scrolling: @Composable (@Composable () -> Unit) -> Unit = { content ->
         if (paged) NoAutoScrolling(content) else PaddedScrolling(m.margin + m.tile * 0.25f, content)
     }
@@ -1217,13 +1217,26 @@ private fun TileGrid(
 
 /**
  * Tiles glide into a new slot on a spring (moving one or many, a widget making room, Tidy up, a sort, Undo),
- * following the animation style. Empty spots don't: one the grid brings in at its end (Down past the last row) was
- * placed after the last tile first and glided over to its column, so the highlight slid sideways.
+ * following the animation style, but only through [reorderPlacement]. Empty spots never do: one the grid brings in at
+ * its end (Down past the last row) was placed after the last tile first and glided over to its column, so the
+ * highlight slid sideways.
  */
 private fun tilePlacement(): androidx.compose.animation.core.FiniteAnimationSpec<androidx.compose.ui.unit.IntOffset> = when (Motion.style) {
     AnimationStyle.Off -> androidx.compose.animation.core.snap()
     AnimationStyle.Minimal -> tween(160)
     else -> androidx.compose.animation.core.spring(0.8f, androidx.compose.animation.core.Spring.StiffnessMediumLow, androidx.compose.ui.unit.IntOffset(1, 1))
+}
+
+/**
+ * [tilePlacement] for a moment after the tiles' order or the number across changes ([order]), and no glide the rest
+ * of the time. Scrolling a new line in, the grid can lay a tile out beside its slot for a frame before it lands; with
+ * the glide always on, that tile slid sideways into its column (Down past the bottom of a folder).
+ */
+@Composable
+private fun reorderPlacement(vararg order: Any?): androidx.compose.animation.core.FiniteAnimationSpec<androidx.compose.ui.unit.IntOffset>? {
+    val gliding = remember(*order) { mutableStateOf(true) }
+    LaunchedEffect(gliding) { kotlinx.coroutines.delay(800); gliding.value = false }
+    return if (gliding.value) tilePlacement() else null
 }
 
 /**
@@ -2368,6 +2381,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                     zone.tilePx = with(density) { tile.toPx() }; zone.gapPx = with(density) { gap.toPx() }
                 }
                 KeepTileInView(state, keys.indexOf(moving?.takeIf { !it.carried }?.key ?: target), vertical = true, follow = moving != null && !moving.carried, lanes = cols)
+                val place = reorderPlacement(keys, cols)
                 // What's inside rises in one after another as the panel opens (not when scrolled to later).
                 val openedAt = remember(fid) { android.os.SystemClock.uptimeMillis() }
                 val corner = tile * Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)
@@ -2386,7 +2400,7 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                             val fresh = remember { android.os.SystemClock.uptimeMillis() - openedAt < 450 }
                             Box(
                                 // Tiles glide to new places on the same spring as on the home grid (a bulk move, a sort).
-                                (if (isGapKey(keys[i])) Modifier else Modifier.animateItem(placementSpec = tilePlacement())).zIndex(if (keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]).then(if (fresh) Modifier.riseIn(fid, 0, 18.dp, 0.82f, delayMs = 70L + minOf(i, 11) * 24L) else Modifier),
+                                (if (isGapKey(keys[i])) Modifier else Modifier.animateItem(placementSpec = place)).zIndex(if (keys[i] == moving?.key) 1f else 0f).slotFocus(nav, keys[i]).then(if (fresh) Modifier.riseIn(fid, 0, 18.dp, 0.82f, delayMs = 70L + minOf(i, 11) * 24L) else Modifier),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 if (item == null) {
