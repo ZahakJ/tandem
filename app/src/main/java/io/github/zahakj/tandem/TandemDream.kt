@@ -4,6 +4,8 @@ import android.app.Presentation
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.service.dreams.DreamService
 import android.util.Log
@@ -45,6 +47,13 @@ class TandemDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
 
     private var bottom: DreamBottom? = null
     private var waking = false
+    private val handler = Handler(Looper.getMainLooper())
+    // Android keeps a dream running for as long as the device charges; after a while end it so the device can sleep
+    // instead of keeping both screens, the GPU and the fan going for hours.
+    private val sleep = Runnable {
+        Log.i("Tandem", "Screensaver ran ${SLEEP_AFTER_MS / 60_000} minutes; letting the device sleep")
+        finish()
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -116,9 +125,11 @@ class TandemDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
     override fun onDreamingStarted() {
         super.onDreamingStarted()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        handler.postDelayed(sleep, SLEEP_AFTER_MS)
     }
 
     override fun onDreamingStopped() {
+        handler.removeCallbacks(sleep)
         Dreaming.ended(this)
         hideBottom()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -126,6 +137,7 @@ class TandemDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
     }
 
     override fun onDetachedFromWindow() {
+        handler.removeCallbacks(sleep)
         Dreaming.ended(this)
         hideBottom()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -133,9 +145,14 @@ class TandemDream : DreamService(), LifecycleOwner, SavedStateRegistryOwner {
     }
 
     override fun onDestroy() {
+        handler.removeCallbacks(sleep)
         Dreaming.ended(this)
         hideBottom()
         super.onDestroy()
+    }
+
+    private companion object {
+        const val SLEEP_AFTER_MS = 10 * 60_000L
     }
 }
 
