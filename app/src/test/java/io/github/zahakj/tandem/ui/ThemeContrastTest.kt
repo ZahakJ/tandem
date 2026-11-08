@@ -35,7 +35,7 @@ class ThemeContrastTest {
     }
 
     @Test fun everyBuiltInThemeIsReadable() {
-        assertTrue("expected 24 built-in themes, found ${BuiltInThemes.list.size}", BuiltInThemes.list.size == 24)
+        assertTrue("expected 3 built-in themes, found ${BuiltInThemes.list.size}", BuiltInThemes.list.size == 3)
         val bad = BuiltInThemes.list.mapNotNull { t -> failures(t).takeIf { it.isNotEmpty() }?.let { "${t.id}: ${it.joinToString()}" } }
         assertTrue("Contrast below WCAG AA:\n" + bad.joinToString("\n"), bad.isEmpty())
     }

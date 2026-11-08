@@ -619,7 +619,7 @@ private fun themeGalleryRow(key: String): SettingRow? {
     val t = Themes.byId(id) ?: return null
     return SettingRow(
         t.name, if (t.id == look.theme) "In use" else t.source, t.accent, Glyph.Theme,
-        t.tagline + ". " + (if (t.id in BuiltInThemes.gameIds) "Its own animated backdrop and ${t.iconStyle.label.lowercase()} system icons. " else "") + "A uses it.",
+        t.tagline + ". A uses it.",
         preview = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 ThemeMiniature(t, null, Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(16.dp)), moving = true, tile = 56.dp)

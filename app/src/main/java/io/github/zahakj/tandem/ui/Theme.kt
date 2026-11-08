@@ -174,7 +174,10 @@ data class ThemeSpec(
 
 private fun c(hex: Long) = Color(0xFF000000 or hex)
 
-/** The themes that ship with Tandem. The first one is the default and is exactly the original Tandem look. */
+/**
+ * The themes that ship with Tandem: Pastel Night (the default, exactly the original Tandem look), Paper (light) and OLED
+ * Black. Everything else comes from theme packs; these three are also what packs build on.
+ */
 object BuiltInThemes {
     val PastelNight = ThemeSpec(
         id = "pastel-night", name = "Pastel Night", tagline = "Soft night sky, candy colours",
@@ -183,207 +186,40 @@ object BuiltInThemes {
         mint = c(0x8EECC8), peach = c(0xFFB4A2), lavender = c(0xB8A8FF), sky = c(0x8FD3FF), butter = c(0xFFE49A),
     )
 
-    /** Old theme ids that were folded into newer themes. */
-    val renamed = mapOf("sunset-arcade" to "sunset-racer", "ember" to "dungeon")
-
-    /** The game-flavoured themes, each with its own backdrop and icon style. Original art only, no trademarks. */
-    private val games: List<ThemeSpec> = listOf(
-        ThemeSpec(
-            id = "crt", name = "Cartridge", tagline = "8-bit evenings on a humming CRT",
-            background = c(0x1A1C2C), backgroundDeep = c(0x0F1020), card = c(0x29366F), cardHigh = c(0x34458A),
-            text = c(0xF4F4F4), muted = c(0xA8C4D4), onAccent = c(0x1A1C2C),
-            mint = c(0x38B764), peach = c(0xEF7D57), lavender = c(0xF07A94), sky = c(0x41A6F6), butter = c(0xFFCD75),
-            accent = c(0xFFCD75), corner = 2f, focusScale = 1.06f, highlight = HighlightStyle.Outline, highlightThickness = 3f,
-            animation = AnimationStyle.Minimal, backdrop = BackdropStyle.Pixels, overlay = ScreenOverlay.Scanlines,
-            iconStyle = IconStyle.Pixel,
-        ),
-        ThemeSpec(
-            id = "dmg", name = "Handheld Green", tagline = "Four shades of green on a dot-matrix screen",
-            dark = false,
-            background = c(0x9BBC0F), backgroundDeep = c(0x96B70F), card = c(0xA9C81C), cardHigh = c(0xB4D12E),
-            text = c(0x0F380F), muted = c(0x1C481C), onAccent = c(0x9BBC0F),
-            mint = c(0x306230), peach = c(0x0F380F), lavender = c(0x3E6E24), sky = c(0x24502A), butter = c(0x50681A),
-            accent = c(0x0F380F), corner = 3f, focusScale = 1.05f, highlight = HighlightStyle.Outline, highlightThickness = 3f,
-            animation = AnimationStyle.Minimal, backdrop = BackdropStyle.Lcd, overlay = ScreenOverlay.DotMatrix,
-            iconStyle = IconStyle.Lcd,
-        ),
-        ThemeSpec(
-            id = "indigo-cube", name = "Indigo Cube", tagline = "Purple see-through plastic, little cubes",
-            background = c(0x1B1236), backgroundDeep = c(0x0E0820), card = c(0x2C1F56), cardHigh = c(0x3A2A70),
-            text = c(0xF1ECFF), muted = c(0xA99BD6), onAccent = c(0x140B2A),
-            mint = c(0x7CE0C3), peach = c(0xFF9FB2), lavender = c(0x9C7BFF), sky = c(0x8AB4FF), butter = c(0xFFD978),
-            accent = c(0x9C7BFF), corner = 14f, material = SurfaceMaterial.Frosted, backdrop = BackdropStyle.Cubes,
-            iconStyle = IconStyle.Plastic,
-        ),
-        ThemeSpec(
-            id = "neon-arcade", name = "Neon Arcade", tagline = "Marquee lights, tube signs and scanlines",
-            background = c(0x0D0716), backgroundDeep = c(0x05020A), card = c(0x1A0F2B), cardHigh = c(0x26163D),
-            text = c(0xFFF0FB), muted = c(0xB59BC9), onAccent = c(0x0D0716),
-            mint = c(0x39FFC8), peach = c(0xFF6B6B), lavender = c(0xC77DFF), sky = c(0x3DDCFF), butter = c(0xFFE45C),
-            accent = c(0xFF3FA4), corner = 10f, highlightThickness = 3f, material = SurfaceMaterial.Outlined,
-            backdrop = BackdropStyle.Marquee, overlay = ScreenOverlay.Scanlines, iconStyle = IconStyle.Neon,
-        ),
-        ThemeSpec(
-            id = "pocket-atomic", name = "Pocket Atomic", tagline = "A clear purple shell, circuits glowing inside",
-            background = c(0x221436), backgroundDeep = c(0x140A24), card = c(0x34205A), cardHigh = c(0x432A72),
-            text = c(0xF6EEFF), muted = c(0xB6A3D8), onAccent = c(0x1A0C2E),
-            mint = c(0x8CF5C8), peach = c(0xFFA78C), lavender = c(0xC59BFF), sky = c(0x9CC6FF), butter = c(0xFFE08A),
-            accent = c(0xB98CFF), corner = 20f, highlight = HighlightStyle.Pulse, material = SurfaceMaterial.Frosted,
-            backdrop = BackdropStyle.Shell, iconStyle = IconStyle.Plastic,
-        ),
-        ThemeSpec(
-            id = "midnight-disc", name = "Midnight Disc", tagline = "Rainbow sheen on a spinning disc",
-            background = c(0x0B0E1A), backgroundDeep = c(0x05060D), card = c(0x161B2E), cardHigh = c(0x20283F),
-            text = c(0xEEF3FF), muted = c(0x98A4C4), onAccent = c(0x0B0E1A),
-            mint = c(0x8CFFE0), peach = c(0xFFB0D8), lavender = c(0xC3A6FF), sky = c(0x8FE3FF), butter = c(0xFFF1A8),
-            accent = c(0x9FE8FF), corner = 24f, material = SurfaceMaterial.Frosted, animation = AnimationStyle.Smooth,
-            backdrop = BackdropStyle.Disc, iconStyle = IconStyle.Chrome,
-        ),
-        ThemeSpec(
-            id = "blue-boot", name = "Blue Console Boot", tagline = "Dreamy towers of blue cubes in the fog",
-            background = c(0x06102A), backgroundDeep = c(0x020718), card = c(0x0E1E48), cardHigh = c(0x16295E),
-            text = c(0xE8F1FF), muted = c(0x8FA6D4), onAccent = c(0x041030),
-            mint = c(0x7FE8FF), peach = c(0xA9C8FF), lavender = c(0x7F9BFF), sky = c(0x4FA8FF), butter = c(0xD7E6FF),
-            accent = c(0x4FA8FF), corner = 12f, animation = AnimationStyle.Smooth, material = SurfaceMaterial.Frosted,
-            backdrop = BackdropStyle.Towers, iconStyle = IconStyle.Bubble,
-        ),
-        ThemeSpec(
-            id = "crimson-visor", name = "Crimson Visor", tagline = "Red wireframes on pure black",
-            background = c(0x000000), backgroundDeep = c(0x000000), card = c(0x140405), cardHigh = c(0x22080A),
-            text = c(0xFFD9D6), muted = c(0xC8656A), onAccent = c(0x000000),
-            mint = c(0xFF3B3B), peach = c(0xFF6A4D), lavender = c(0xE0284F), sky = c(0xFF8080), butter = c(0xFFB0A0),
-            accent = c(0xFF2A2A), corner = 4f, focusScale = 1.06f, highlight = HighlightStyle.Outline, highlightThickness = 2f,
-            material = SurfaceMaterial.Outlined, animation = AnimationStyle.Minimal, backdrop = BackdropStyle.Visor,
-            iconStyle = IconStyle.Neon,
-        ),
-        ThemeSpec(
-            id = "sunset-racer", name = "Sunset Racer", tagline = "Chrome, palms and a road into the sun",
-            background = c(0x1A0B2E), backgroundDeep = c(0x0A0418), card = c(0x2B1449), cardHigh = c(0x3A1C61),
-            text = c(0xFFF0F7), muted = c(0xC4A2D9), onAccent = c(0x1A0B2E),
-            mint = c(0x4DF2D0), peach = c(0xFF8A5C), lavender = c(0xC66BFF), sky = c(0x3FC6FF), butter = c(0xFFD166),
-            accent = c(0xFF4FA0), corner = 14f, backdrop = BackdropStyle.Road, iconStyle = IconStyle.Chrome,
-        ),
-        ThemeSpec(
-            id = "star-shooter", name = "Starfield Shooter", tagline = "Warp stars, a squadron, pew pew",
-            background = c(0x05070F), backgroundDeep = c(0x000105), card = c(0x0F1424), cardHigh = c(0x182038),
-            text = c(0xEAF2FF), muted = c(0x8B98B8), onAccent = c(0x05070F),
-            mint = c(0x5CFF9D), peach = c(0xFF7A59), lavender = c(0xA48CFF), sky = c(0x5CD2FF), butter = c(0xFFE85C),
-            accent = c(0x5CFF9D), corner = 6f, focusScale = 1.06f, highlight = HighlightStyle.Outline, highlightThickness = 3f,
-            animation = AnimationStyle.Minimal, backdrop = BackdropStyle.Shooter, iconStyle = IconStyle.Pixel,
-        ),
-        ThemeSpec(
-            id = "cozy-farm", name = "Cozy Farm", tagline = "Warm fields, puffy clouds, slow days",
-            dark = false,
-            background = c(0xF7EBD3), backgroundDeep = c(0xEADBB8), card = c(0xFFF8EA), cardHigh = c(0xFFFCF4),
-            text = c(0x4A3424), muted = c(0x765C46), onAccent = c(0xFFFFFF),
-            mint = c(0x3F822F), peach = c(0xD8693C), lavender = c(0x8A68BF), sky = c(0x3D8CC4), butter = c(0xA87A0E),
-            accent = c(0x3F822F), corner = 22f, backdrop = BackdropStyle.Farm, iconStyle = IconStyle.Sticker,
-        ),
-        ThemeSpec(
-            id = "monster-catcher", name = "Monster Catcher", tagline = "Something is rustling in the tall grass",
-            background = c(0x15261A), backgroundDeep = c(0x0B160E), card = c(0x203A27), cardHigh = c(0x2A4A32),
-            text = c(0xF4FFF2), muted = c(0xA6C2A8), onAccent = c(0x0B160E),
-            mint = c(0x7EE07A), peach = c(0xFF6B5B), lavender = c(0xC7A1FF), sky = c(0x6CCBFF), butter = c(0xFFD65C),
-            accent = c(0xFF5B4D), corner = 20f, backdrop = BackdropStyle.Meadow, iconStyle = IconStyle.Bubble,
-        ),
-        ThemeSpec(
-            id = "dungeon", name = "Dungeon", tagline = "Torchlight on old stone",
-            background = c(0x17110E), backgroundDeep = c(0x0B0807), card = c(0x2A201B), cardHigh = c(0x372A23),
-            text = c(0xF5E6CF), muted = c(0xB59C80), onAccent = c(0x1A0F08),
-            mint = c(0x9CCB8A), peach = c(0xFF8A3D), lavender = c(0xB08AD9), sky = c(0x7FB8C9), butter = c(0xF3C969),
-            accent = c(0xF3A23D), corner = 6f, animation = AnimationStyle.Smooth, backdrop = BackdropStyle.Torch,
-            iconStyle = IconStyle.Rune,
-        ),
-        ThemeSpec(
-            id = "kart-rainbow", name = "Kart Rainbow", tagline = "A striped road through the stars",
-            background = c(0x120B2E), backgroundDeep = c(0x070418), card = c(0x221852), cardHigh = c(0x2F2268),
-            text = c(0xFFFFFF), muted = c(0xB8B0E0), onAccent = c(0x120B2E),
-            mint = c(0x6BEA8C), peach = c(0xFF5D73), lavender = c(0xB07CFF), sky = c(0x5CC8FF), butter = c(0xFFE15C),
-            accent = c(0xFFE15C), corner = 24f, focusScale = 1.12f, highlight = HighlightStyle.Pulse,
-            backdrop = BackdropStyle.Rainbow, iconStyle = IconStyle.Bubble,
-        ),
+    /**
+     * Theme ids that were folded into these three, so a saved theme keeps working: the 21 game-flavoured and
+     * everyday themes Tandem used to ship (their backdrops and icon styles are still there as wallpapers and icon
+     * styles), and the ids renamed before that.
+     */
+    val renamed = mapOf(
+        "sunset-arcade" to "pastel-night", "ember" to "pastel-night",
+        "crt" to "pastel-night", "indigo-cube" to "pastel-night", "neon-arcade" to "pastel-night", "pocket-atomic" to "pastel-night",
+        "midnight-disc" to "pastel-night", "blue-boot" to "pastel-night", "sunset-racer" to "pastel-night", "monster-catcher" to "pastel-night",
+        "dungeon" to "pastel-night", "kart-rainbow" to "pastel-night", "sakura" to "pastel-night", "mint-soda" to "pastel-night",
+        "ocean" to "pastel-night", "forest" to "pastel-night", "lavender-dream" to "pastel-night",
+        "crimson-visor" to "oled", "star-shooter" to "oled", "high-contrast" to "oled",
+        "dmg" to "paper", "cozy-farm" to "paper", "cotton-candy" to "paper",
     )
 
-    /** Quieter everyday themes. */
-    private val calm: List<ThemeSpec> = listOf(
-        ThemeSpec(
-            id = "oled", name = "OLED Black", tagline = "True black, saves battery",
-            background = c(0x000000), backgroundDeep = c(0x000000), card = c(0x111114), cardHigh = c(0x1C1C21),
-            text = c(0xF5F5F7), muted = c(0x9A9AA6), onAccent = c(0x000000),
-            mint = c(0x7CF2C4), peach = c(0xFF9F8A), lavender = c(0xA99BFF), sky = c(0x7CCBFF), butter = c(0xFFE07A),
-            corner = 16f, backdrop = BackdropStyle.Plain, highlight = HighlightStyle.Outline, highlightThickness = 3f,
-            iconStyle = IconStyle.Flat,
-        ),
-        ThemeSpec(
-            id = "sakura", name = "Sakura", tagline = "Cherry blossoms at dusk",
-            background = c(0x1F1219), backgroundDeep = c(0x13090F), card = c(0x301C27), cardHigh = c(0x3D2532),
-            text = c(0xFFF0F5), muted = c(0xC9A3B4), onAccent = c(0x1F0B15),
-            mint = c(0xB5EAD7), peach = c(0xFFB7C5), lavender = c(0xE2B6FF), sky = c(0xA8D8FF), butter = c(0xFFE5A8),
-            accent = c(0xFFB7C5), corner = 22f, backdrop = BackdropStyle.Petals, material = SurfaceMaterial.Frosted,
-            iconStyle = IconStyle.Sticker,
-        ),
-        ThemeSpec(
-            id = "mint-soda", name = "Mint Soda", tagline = "Fizzy, fresh and cool",
-            background = c(0x0E1B1B), backgroundDeep = c(0x071212), card = c(0x16292A), cardHigh = c(0x1F3738),
-            text = c(0xEFFFFB), muted = c(0x9CC5BE), onAccent = c(0x062020),
-            mint = c(0x7FFFD4), peach = c(0xFFB09C), lavender = c(0xB3B8FF), sky = c(0x7FE0FF), butter = c(0xF4FF9E),
-            accent = c(0x7FFFD4), corner = 20f, backdrop = BackdropStyle.Bubbles, material = SurfaceMaterial.Frosted,
-        ),
-        ThemeSpec(
-            id = "ocean", name = "Ocean", tagline = "Deep blue, gentle tides",
-            background = c(0x0B1A2B), backgroundDeep = c(0x040D18), card = c(0x12283F), cardHigh = c(0x1A3552),
-            text = c(0xEAF6FF), muted = c(0x93B4CC), onAccent = c(0x041322),
-            mint = c(0x6EE7C8), peach = c(0xFFAB91), lavender = c(0x9FA8FF), sky = c(0x64C8FF), butter = c(0xFFE08A),
-            accent = c(0x64C8FF), corner = 20f, backdrop = BackdropStyle.Waves, material = SurfaceMaterial.Frosted,
-            animation = AnimationStyle.Smooth,
-        ),
-        ThemeSpec(
-            id = "forest", name = "Forest", tagline = "Moss, fireflies and quiet",
-            background = c(0x101A12), backgroundDeep = c(0x08100A), card = c(0x1A2A1D), cardHigh = c(0x243828),
-            text = c(0xF1F8EC), muted = c(0xA3B89C), onAccent = c(0x0A140C),
-            mint = c(0x9BE38F), peach = c(0xF2B48C), lavender = c(0xC3B1E1), sky = c(0x9AD1D4), butter = c(0xE9D97A),
-            accent = c(0x9BE38F), corner = 16f, backdrop = BackdropStyle.Fireflies, animation = AnimationStyle.Smooth,
-            iconStyle = IconStyle.Flat,
-        ),
-        ThemeSpec(
-            id = "lavender-dream", name = "Lavender Dream", tagline = "Dreamy, floaty, extra soft",
-            background = c(0x1B1730), backgroundDeep = c(0x0F0C1F), card = c(0x29234A), cardHigh = c(0x352D5E),
-            text = c(0xF7F3FF), muted = c(0xB5ACD9), onAccent = c(0x150F2B),
-            mint = c(0xA0F0E0), peach = c(0xFFC6D9), lavender = c(0xCDB4FF), sky = c(0xA9C7FF), butter = c(0xFFF0B3),
-            accent = c(0xCDB4FF), corner = 26f, focusScale = 1.12f, material = SurfaceMaterial.Frosted,
-            iconStyle = IconStyle.Plastic,
-        ),
-        ThemeSpec(
-            id = "paper", name = "Paper", tagline = "Bright, calm, daylight friendly",
-            dark = false,
-            background = c(0xF6F1E7), backgroundDeep = c(0xEAE2D1), card = c(0xFFFFFF), cardHigh = c(0xFFFFFF),
-            text = c(0x2A2433), muted = c(0x6A6175), onAccent = c(0xFFFFFF),
-            mint = c(0x1F9E74), peach = c(0xE4684A), lavender = c(0x7559E8), sky = c(0x2387D1), butter = c(0xC08A00),
-            accent = c(0x7559E8), backdrop = BackdropStyle.Blobs, animation = AnimationStyle.Smooth, iconStyle = IconStyle.Flat,
-        ),
-        ThemeSpec(
-            id = "cotton-candy", name = "Cotton Candy", tagline = "Light pastels, sugar rush",
-            dark = false,
-            background = c(0xFFF3FA), backgroundDeep = c(0xF8E3F1), card = c(0xFFFFFF), cardHigh = c(0xFFFFFF),
-            text = c(0x3A2A44), muted = c(0x75607F), onAccent = c(0xFFFFFF),
-            mint = c(0x1F9A7A), peach = c(0xE85566), lavender = c(0x9B7BFF), sky = c(0x2A8BC8), butter = c(0xA87A00),
-            accent = c(0xCC3F55), corner = 24f, focusScale = 1.12f, backdrop = BackdropStyle.Bubbles,
-            iconStyle = IconStyle.Sticker,
-        ),
-        ThemeSpec(
-            id = "high-contrast", name = "High Contrast", tagline = "Maximum clarity",
-            background = c(0x000000), backgroundDeep = c(0x000000), card = c(0x141414), cardHigh = c(0x2A2A2A),
-            text = c(0xFFFFFF), muted = c(0xE6E6E6), onAccent = c(0x000000),
-            mint = c(0x00FF9C), peach = c(0xFF8A4A), lavender = c(0xD9A6FF), sky = c(0x00E5FF), butter = c(0xFFE600),
-            accent = c(0xFFE600), corner = 12f, focusScale = 1.06f, highlight = HighlightStyle.Outline, highlightThickness = 6f,
-            material = SurfaceMaterial.Outlined, animation = AnimationStyle.Minimal, backdrop = BackdropStyle.Plain,
-            iconStyle = IconStyle.Flat,
-        ),
+    val Oled = ThemeSpec(
+        id = "oled", name = "OLED Black", tagline = "True black, saves battery",
+        background = c(0x000000), backgroundDeep = c(0x000000), card = c(0x111114), cardHigh = c(0x1C1C21),
+        text = c(0xF5F5F7), muted = c(0x9A9AA6), onAccent = c(0x000000),
+        mint = c(0x7CF2C4), peach = c(0xFF9F8A), lavender = c(0xA99BFF), sky = c(0x7CCBFF), butter = c(0xFFE07A),
+        corner = 16f, backdrop = BackdropStyle.Plain, highlight = HighlightStyle.Outline, highlightThickness = 3f,
+        iconStyle = IconStyle.Flat,
     )
 
-    val gameIds: Set<String> = games.map { it.id }.toSet()
+    val Paper = ThemeSpec(
+        id = "paper", name = "Paper", tagline = "Bright, calm, daylight friendly",
+        dark = false,
+        background = c(0xF6F1E7), backgroundDeep = c(0xEAE2D1), card = c(0xFFFFFF), cardHigh = c(0xFFFFFF),
+        text = c(0x2A2433), muted = c(0x6A6175), onAccent = c(0xFFFFFF),
+        mint = c(0x1F9E74), peach = c(0xE4684A), lavender = c(0x7559E8), sky = c(0x2387D1), butter = c(0xC08A00),
+        accent = c(0x7559E8), backdrop = BackdropStyle.Blobs, animation = AnimationStyle.Smooth, iconStyle = IconStyle.Flat,
+    )
 
-    val list: List<ThemeSpec> = listOf(PastelNight) + games + calm
+    val list: List<ThemeSpec> = listOf(PastelNight, Paper, Oled)
 }
 
 /** Picks colours for the accent picker. */
@@ -452,10 +288,23 @@ object Themes {
 
     /** Call once at start, after [Store.init], so the first frame is already in the right theme. */
     fun init(ctx: Context) {
+        migrate()
         ThemePacks.reload()
         live = target
         powerManager = ctx.getSystemService(PowerManager::class.java)
         initialized = true
+    }
+
+    /**
+     * Settings saved by older versions: a theme that is no longer built in becomes the one it was folded into
+     * ([BuiltInThemes.renamed]), and the old "theme" choice of recorded sounds becomes "none" (a theme pack's sounds
+     * are its own part now).
+     */
+    private fun migrate() {
+        val look = Store.settings.look
+        val theme = BuiltInThemes.renamed[look.theme]
+        if (theme == null && look.soundFiles != "theme") return
+        Store.updateSettings { s -> s.copy(look = s.look.copy(theme = theme ?: s.look.theme, soundFiles = if (s.look.soundFiles == "theme") "none" else s.look.soundFiles)) }
     }
 
     /** True once [init] ran in this process (the bottom-screen home skips a second, costly theme pack reload). */

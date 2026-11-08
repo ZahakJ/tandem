@@ -476,7 +476,7 @@ object ThemePacks {
 
     /** Tandem's format. Every key is optional. */
     private fun parseTandem(dir: File, o: JSONObject): ThemeSpec {
-        val b = o.optString("base").takeIf { it.isNotBlank() }?.let { id -> BuiltInThemes.list.firstOrNull { it.id == id } }
+        val b = o.optString("base").takeIf { it.isNotBlank() }?.let { id -> BuiltInThemes.byIdOrDefault(id) }
             ?: base(o.optString("mode"))
         val col = o.optJSONObject("colors") ?: JSONObject()
         fun color(key: String, fallback: Color) = col.optString(key).takeIf { it.isNotBlank() }?.let(::parseColor) ?: fallback
