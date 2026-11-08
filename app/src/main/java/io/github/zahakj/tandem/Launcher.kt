@@ -82,7 +82,7 @@ object Launcher {
     /** Starts [p] without asking: the launch sound, then the animation (or straight away with motion off). */
     fun proceed(ctx: Context, p: Plan) {
         if (LaunchFx.busy) return
-        io.github.zahakj.tandem.ui.Sounds.launch(p.game.platform.id)
+        io.github.zahakj.tandem.ui.Sounds.launch()
         if (LaunchFx.canAnimate()) LaunchFx.play(ctx, p)
         // No animation: still keep the Shizuku checks off the main thread.
         else scope.launch { withContext(Dispatchers.IO) { start(ctx, p) }?.let { LaunchFx.problem = it } }

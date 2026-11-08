@@ -124,6 +124,15 @@ internal fun toggle(label: String, icon: Glyph, color: Color, help: String, on: 
 
 internal fun pct(v: Float) = "${Math.round(v * 100)}%"
 
+/** [Look]'s defaults for everything about how Tandem looks, keeping [old]'s buttons, screens, sounds and music. */
+internal fun resetLook(old: Look): Look = Look().copy(
+    prompts = old.prompts, swapAB = old.swapAB, swapXY = old.swapXY, xButton = old.xButton,
+    singleScreen = old.singleScreen, swapScreens = old.swapScreens,
+    sounds = old.sounds, soundVolume = old.soundVolume, soundPack = old.soundPack, soundFiles = old.soundFiles,
+    music = old.music, musicVolume = old.musicVolume, myMusic = old.myMusic, musicShuffle = old.musicShuffle,
+    gameJingles = old.gameJingles, pipVoice = old.pipVoice, packParts = old.packParts,
+)
+
 /** Home row orders on offer: ids in order, and a friendly name. */
 private val HomeRowOrders = listOf(
     listOf("continue", "systems", "collections"),
@@ -527,29 +536,16 @@ fun appearanceSections(): List<SettingSection> {
         SettingSection(
             "Extras",
             listOf(
-                toggle("Startup splash", Glyph.Sparkle, Palette.Mint, "Pip wakes up while Tandem gathers your games. With games already found, the home shows at once.", look.splash) { on ->
-                    updateLook { it.copy(splash = on) }
-                },
                 SettingRow(
-                    "Language", "English", Palette.Mint, Glyph.Text,
-                    "Tandem is in English for now. Translations are very welcome: see the project page on GitHub.",
-                ) { Toasts.show("More languages are on the way") },
-                SettingRow(
-                    "Reload theme packs", "${Themes.packs.size} found", Palette.Mint, Glyph.Refresh,
-                    "Looks for theme packs in ROMs/tandem/themes (Tandem format) and ROMs/themes (Cocoon themes).",
-                ) {
-                    ThemePacks.reload()
-                    Toasts.show(if (Themes.packs.isEmpty()) "No theme packs found" else "Found ${Themes.packs.size} theme packs")
-                },
-                SettingRow(
-                    "Reset appearance", "Pastel Night", Palette.Peach, Glyph.Restore,
-                    "Back to Tandem's original look and sound. Your library, favourites and play time aren't touched.",
-                    keywords = "default factory start over",
+                    "Reset look", "Pastel Night", Palette.Peach, Glyph.Restore,
+                    "Back to Tandem's original look: theme, layout, wallpapers, icons and motion. Your buttons, screens, sounds and music, " +
+                        "library, favourites and play time aren't touched.",
+                    keywords = "default factory start over appearance",
                 ) {
                     // Every look setting at once can't be undone, so it asks first.
-                    Confirm.hold("Reset the whole look?", "Theme, layout, wallpapers, buttons and sounds go back to how Tandem first looked. Games, favourites and play time stay.", "Reset") {
-                        io.github.zahakj.tandem.data.Backups.auto(ctx, "reset appearance")
-                        Store.updateSettings { it.copy(look = Look(), reduceMotion = false, bottomMode = "details") }
+                    Confirm.hold("Reset the whole look?", "Theme, layout, wallpapers, icons and motion go back to how Tandem first looked. Buttons, screens, sound and games stay.", "Reset") {
+                        io.github.zahakj.tandem.data.Backups.auto(ctx, "reset look")
+                        Store.updateSettings { it.copy(look = resetLook(it.look), reduceMotion = false) }
                         activity?.applyScreenRoles()
                         Music.refresh()
                         Toasts.show("Back to Pastel Night")
@@ -557,7 +553,7 @@ fun appearanceSections(): List<SettingSection> {
                 },
             ),
         ),
-    )
+    ) + listOfNotNull(themePackAudioSettings())
 }
 
 /** The galleries at the top of Look & feel: built-in themes, then theme packs (with the pack manager card). */

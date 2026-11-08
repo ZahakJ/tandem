@@ -24,15 +24,17 @@ object SoundFiles {
         "saving_end" to listOf(Sfx.SaverOut),
     )
 
-    /** The folder that plays now, or null for synthesized sounds only. Reads the theme packs already loaded. */
-    fun folder(): File? {
-        val choice = Store.settings.look.soundFiles
-        return when (choice) {
-            "none" -> null
-            "theme" -> ThemePacks.byId(Store.settings.look.theme)?.sounds
-            else -> ThemePacks.soundPacks().firstOrNull { it.first == choice }?.third
-        }
+    /**
+     * The folder that plays now: the theme pack's sounds while that part is on ([themeFolder]), else the sound pack
+     * chosen in Sound & music, or null for synthesized sounds only. Reads the theme packs already loaded.
+     */
+    fun folder(): File? = themeFolder() ?: Store.settings.look.soundFiles.let { choice ->
+        if (choice == "none") null else ThemePacks.soundPacks().firstOrNull { it.first == choice }?.third
     }
+
+    /** The theme pack's own sounds, when it has some and they are on. */
+    fun themeFolder(): File? =
+        ThemePacks.byId(Store.settings.look.theme)?.takeIf { ThemePacks.parts(it.id).sounds }?.sounds
 
     /** Which file plays each sound in [dir], by [Sfx.ordinal] (null where the pack has none). */
     fun map(dir: File): Array<File?> {

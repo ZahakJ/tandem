@@ -16,14 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.zahakj.tandem.Library
-import io.github.zahakj.tandem.audio.Family
-import io.github.zahakj.tandem.audio.Jingles
-import io.github.zahakj.tandem.audio.LAUNCH_JINGLE_SECONDS
 import io.github.zahakj.tandem.audio.Sfx
 import io.github.zahakj.tandem.audio.SfxSynth
 import io.github.zahakj.tandem.audio.SoundPack
 import io.github.zahakj.tandem.audio.Tracks
-import io.github.zahakj.tandem.audio.renderJingle
 import io.github.zahakj.tandem.data.Store
 import java.io.File
 import java.io.FileOutputStream
@@ -128,7 +124,6 @@ object Sounds {
             for (i in 0 until 4) load("pip/$i") { SfxSynth.pipSyllable(i, rate) }
             load("hold") { SfxSynth.holdRise(rate, HOLD_MS / 1000.0) }
         }
-        if (Store.settings.look.jingles != "off") prepareJingles()
     }
 
     /** Makes sure [pack] is loaded and the previous one is unloaded. Cheap when nothing changed. */
@@ -210,24 +205,17 @@ object Sounds {
     }
 
     /**
-     * A game is starting: the system's launch jingle, or the pack's launch sting.
+     * A game is starting: the sound pack's launch sting (or the recorded `launch` sound).
      *
      * The emulator covers Tandem about 0.75-0.85 s after A (the launch animation is 0.6 s, then Android starts the
      * emulator; measured on the Thor for RetroArch, Azahar and Eden), so every launch sound is over within 0.6 s and
      * decays on its own. If a game ever comes up sooner, [fadeTail] eases what's left out instead of cutting it.
      */
-    fun launch(platformId: String? = null) {
-        val look = Store.settings.look
+    fun launch() {
         GameJingles.stopNow()
         // The music fades out (in a quarter of a second) under the launch sound and stays off while the game runs
         // (even on the other screen).
         Music.gameLaunched()
-        val family = platformId?.let(Family::of)
-        if (family != null && look.sounds && look.jingles != "off") {
-            val id = ids["launch/${family.name}"]
-            if (id != null) { markTail(playId(id, Sfx.Launch, 0.9f, 1f, keep = true), 0.9f); return }
-            prepareJingles()
-        }
         markTail(play(Sfx.Launch, keep = true), base(Sfx.Launch))
     }
 
@@ -269,31 +257,6 @@ object Sounds {
             if (tailTicket == 0 || SystemClock.uptimeMillis() > tailUntil) return@post
             player.removeCallbacks(tailStep)
             tailStep.run()
-        }
-    }
-
-    /** A system was opened: its little hello jingle, when the user turned those on. */
-    fun systemOpened(platformId: String) {
-        val look = Store.settings.look
-        if (!look.sounds || look.jingles != "all") return
-        val id = ids["jingle/${Family.of(platformId).name}"] ?: return prepareJingles()
-        playId(id, Sfx.Confirm, 0.7f, 1f)
-    }
-
-    /** Plays [f]'s launch jingle on its own (settings preview). */
-    fun previewJingle(f: Family) {
-        val id = ids["launch/${f.name}"] ?: return prepareJingles()
-        playId(id, Sfx.Launch, 0.9f, 1f, mark = false)
-    }
-
-    /** Renders every family's jingles in the background (once; cached on disk afterwards). */
-    fun prepareJingles() {
-        if (pool == null) return
-        worker.execute {
-            for (f in Family.entries) load("launch/${f.name}") { renderJingle(Jingles.launch(f), rate, 0.6f, LAUNCH_JINGLE_SECONDS) }
-            if (Store.settings.look.jingles == "all") {
-                for (f in Family.entries) load("jingle/${f.name}") { renderJingle(Jingles.details(f), rate, 0.6f, 1.6) }
-            }
         }
     }
 
@@ -444,7 +407,6 @@ object Music {
     private var gameUp = false
     private var hasFocus = false
     private var focusRequest: AudioFocusRequest? = null
-    private var shuffleTrack: String? = null
     /** Another app was playing when we came back: leave it alone until next time. */
     private var yielded = false
 
@@ -507,52 +469,38 @@ object Music {
         } else {
             stopFile()
             val ctx = app ?: return
-            val id = trackId()
-            val song = Tracks.byId(id) ?: Tracks.all.first()
+            val song = Tracks.byId(trackId()) ?: Tracks.all.first()
             SynthEngine.volume = synthVolume()
-            SynthEngine.onLooped = if (look.musicTrack == "shuffle") ({ main.post { shuffleNext() } }) else null
+            // The built-in soundtrack plays through its pieces: the next one each time a song comes round.
+            SynthEngine.onLooped = { main.post { nextPiece() } }
             SynthEngine.play(ctx, song)
             now = NowPlaying(song.id, song.title, song.mood, own = false)
         }
     }
 
-    /** The soundtrack id the settings ask for right now. */
-    fun trackId(): String {
-        val look = Store.settings.look
-        // "Next song" picked something else; it holds until the soundtrack or theme setting changes.
-        skipped?.let { (forKey, id) -> if (forKey == skipKey()) return id else skipped = null }
-        val pack = Tracks.names(look.musicPack).map { it.first }
-        return when (look.musicTrack) {
-            "theme" -> Tracks.forTheme(look.theme, look.musicPack)
-            "shuffle" -> shuffleTrack?.takeIf { it in pack } ?: pack.random().also { shuffleTrack = it }
-            else -> look.musicTrack
-        }
-    }
+    /** The built-in piece playing now, or the one to start with (a random one, once per run). */
+    fun trackId(): String = builtInTrack ?: Tracks.all.random().id.also { builtInTrack = it }
 
-    private fun skipKey(): String = Store.settings.look.let { it.musicTrack + "|" + it.theme + "|" + it.musicPack }
+    private var builtInTrack: String? = null
 
-    private fun shuffleNext() {
-        val cur = shuffleTrack
-        shuffleTrack = Tracks.names(Store.settings.look.musicPack).map { it.first }.filter { it != cur }.random()
+    private fun nextPiece() {
+        val ids = Tracks.all.map { it.id }
+        builtInTrack = ids[(ids.indexOf(builtInTrack) + 1) % ids.size]
         refresh()
     }
 
-    /** Next song: another file from the music folder, or another soundtrack piece when shuffling. */
+    /** Next song: another file (the theme pack's or the music folder's), or the soundtrack's next piece. */
     fun skip() {
-        val look = Store.settings.look
-        when {
-            files().isNotEmpty() -> { stopFile(); next() }
-            look.musicTrack == "shuffle" -> shuffleNext()
-            else -> {
-                val ids = Tracks.names(look.musicPack).map { it.first }
-                val next = ids[(ids.indexOf(trackId()) + 1) % ids.size]
-                skipped = skipKey() to next
-                refresh()
-            }
-        }
+        if (files().isNotEmpty()) { stopFile(); next() } else nextPiece()
     }
 
-    private var skipped: Pair<String, String>? = null
+    /** Files play (the theme pack's or the music folder's) rather than the built-in soundtrack. */
+    val playsFiles: Boolean get() = files().isNotEmpty()
+
+    /** Where the music comes from right now, in a few words (now-playing card, Sound & music). */
+    val source: String
+        get() = themePack()?.let { "From ${it.name}, the theme pack" }
+            ?: if (files().isNotEmpty()) "From your music folder" else "Built-in soundtrack"
 
     /** A game is starting: fade out now, and stay quiet until Tandem is back in front or the game has closed. */
     fun gameLaunched() { gameUp = true; stopAll(fast = true) }

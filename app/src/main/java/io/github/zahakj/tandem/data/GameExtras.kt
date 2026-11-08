@@ -78,7 +78,7 @@ object LogoPlace {
 /**
  * Which hover jingle a game has. In order: none when the game is set to none; the file picked for it in Edit
  * details; `ROMs/downloaded_media/<system>/jingles/<game file name>.(ogg|mp3|wav)` for each of the system's art
- * folders; else the system's own jingles ([Source.System]: nothing on hover, the system jingle when it starts).
+ * folders; else none ([Source.System]: nothing plays on hover).
  */
 object JingleLookup {
     val EXTENSIONS = listOf("ogg", "mp3", "wav")

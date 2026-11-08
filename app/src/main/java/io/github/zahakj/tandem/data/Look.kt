@@ -44,8 +44,6 @@ data class Look(
     val gameView: String = "grid",
     /** Open folders and collections as a popup over the current screen instead of a new page. */
     val folderPopup: Boolean = false,
-    /** Columns of tiles in the grid home layout. */
-    val homeColumns: Int = 5,
     /** Share of the screen for the hero banner above the grid home layout; 0 = no split (the default). */
     val gridHeroSplit: Float = 0f,
     /** Icon grid home: how many icons fit across the screen (5 = large icons, 9 = small ones). */
@@ -74,8 +72,6 @@ data class Look(
      * smart-folder pack's folder name. See ThemePacks.artSource.
      */
     val iconPack: String = "auto",
-    /** In the grid home layout the hero banner folds away once you move down to this row (1-based); 0 = never. */
-    val noSplitFromRow: Int = 2,
     /** Show the "Now playing" card on the home screen while a game runs in the background. */
     val nowPlaying: Boolean = true,
     /** How long to rest on a game before its video snap starts, in ms. */
@@ -128,22 +124,20 @@ data class Look(
     /** UI sound pack: "modern", "playful" (the original marimba set; "soft" before), "chip", "bubbly", "minimal". */
     val soundPack: String = "modern",
     /**
-     * Recorded UI sounds over [soundPack]'s: "theme" (the theme pack's own or linked sounds, when it has any), "none",
-     * or the folder name of a Cocoon sound pack in ROMs/assets/sounds. Sounds a pack lacks come from [soundPack].
+     * Recorded UI sounds over [soundPack]'s when the theme pack brings none (or its sounds are off, [PackParts.sounds]):
+     * "none", or the folder name of a Cocoon sound pack in ROMs/assets/sounds. Sounds a pack lacks come from [soundPack].
+     * The old "theme" value reads as "none": the theme pack's sounds are its own part now.
      */
-    val soundFiles: String = "theme",
+    val soundFiles: String = "none",
     val music: Boolean = true,
     val musicVolume: Float = 0.4f,
-    /** Tandem's own soundtrack pack: "meadow" (Meadow Tales, acoustic) or "classic" (Pastel Arcade, synth and chiptune). */
-    val musicPack: String = "meadow",
-    /** Tandem's own soundtrack: "theme" (the pack's track that suits the theme), "shuffle" (within the pack), or a track id. */
-    val musicTrack: String = "theme",
-    /** Play the files in ROMs/tandem/music instead of the soundtrack, when there are any. */
+    /**
+     * The music when the theme pack brings none (or its music is off, [PackParts.music]): the files in
+     * ROMs/tandem/music when there are any (true), else Tandem's built-in soundtrack.
+     */
     val myMusic: Boolean = true,
     /** Shuffle the files in ROMs/tandem/music. */
     val musicShuffle: Boolean = true,
-    /** Little system jingles: "off" (the sound pack's launch sting), "launch" (when a game starts) or "all" (also when a system opens). */
-    val jingles: String = "off",
     /** A game's own jingle (downloaded_media/<system>/jingles) plays when you rest on it. */
     val gameJingles: Boolean = true,
     /** Pip babbles when it shows a message. */
@@ -168,6 +162,8 @@ data class PackParts(
     val heroes: Boolean = true,
     /** Frames over game covers (a pack's icon overlays). Off until turned on: not every pack's frames suit every cover. */
     val frames: Boolean = false,
-    /** The pack's own music (its music/ folder), played while it is the theme in place of the background music. */
+    /** The pack's own music, played while it is the theme in place of the music below it in Sound & music. */
     val music: Boolean = true,
+    /** The pack's own UI sounds (a recorded sound pack), played while it is the theme. */
+    val sounds: Boolean = true,
 )

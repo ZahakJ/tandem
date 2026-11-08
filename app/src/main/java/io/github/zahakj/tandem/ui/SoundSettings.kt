@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Screensaver
-import io.github.zahakj.tandem.audio.Family
 import io.github.zahakj.tandem.audio.SoundPack
 import io.github.zahakj.tandem.audio.Tracks
 import io.github.zahakj.tandem.data.Store
@@ -58,88 +57,111 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
-/** The "Sound & music" section of Appearance. */
+/**
+ * The theme pack's own music and sounds, when the theme is a pack that has some: one switch each (the same parts as in
+ * Theme packs, [PackParts]). Null when the theme brings no audio, so the group doesn't show.
+ */
+@Composable
+fun themePackAudioSettings(): SettingSection? {
+    val look = Store.settings.look
+    val pack = ThemePacks.byId(look.theme) ?: return null
+    if (pack.music.isEmpty() && pack.sounds == null) return null
+    val parts = ThemePacks.parts(pack.id)
+    val rows = buildList {
+        if (pack.music.isNotEmpty()) add(
+            toggle(
+                "Theme pack music", Glyph.Music, Palette.Peach,
+                "${pack.name} has ${io.github.zahakj.tandem.plural(pack.music.size, "song")} of its own. On, they play while it is your theme, " +
+                    "instead of the music chosen below.",
+                parts.music, preview = { NowPlayingCard(Modifier.fillMaxWidth()) },
+            ) { on -> setPackPart(pack.id) { it.copy(music = on) }; Music.refresh() },
+        )
+        if (pack.sounds != null) add(
+            toggle(
+                "Theme pack sounds", Glyph.Bell, Palette.Butter,
+                "${pack.name} has recorded UI sounds of its own. On, they play while it is your theme, instead of the sound pack chosen below " +
+                    "(sounds it doesn't have still come from that pack).",
+                parts.sounds,
+            ) { on -> setPackPart(pack.id) { it.copy(sounds = on) }; Sounds.refreshFiles(); Sounds.select() },
+        )
+    }
+    return SettingSection("Theme pack", rows, note = pack.name)
+}
+
+/** Changes which parts of the theme pack [id] are used. */
+internal fun setPackPart(id: String, change: (io.github.zahakj.tandem.data.PackParts) -> io.github.zahakj.tandem.data.PackParts) = updateLook { l ->
+    val now = change(l.packParts[id] ?: io.github.zahakj.tandem.data.PackParts())
+    l.copy(packParts = if (now == io.github.zahakj.tandem.data.PackParts()) l.packParts - id else l.packParts + (id to now))
+}
+
+/** The "Sound & music" rows. The theme pack's own music and sounds come first when it has them ([themePackAudioSettings]). */
 @Composable
 fun soundSettings(trackCount: Int): SettingSection {
     val look = Store.settings.look
     val pack = SoundPack.of(look.soundPack)
-    val packTracks = Tracks.names(look.musicPack)
-    val themeTrack = packTracks.first { it.first == Tracks.forTheme(look.theme, look.musicPack) }.second
+    val recorded = remember { ThemePacks.soundPacks() }
+    val recordedNow = recorded.firstOrNull { it.first == look.soundFiles }
+    val themeHasAudio = ThemePacks.byId(look.theme)?.let { it.music.isNotEmpty() || it.sounds != null } == true
+    val fallback = if (themeHasAudio) " Used when the theme pack's own is switched off above." else ""
     val nowCard: @Composable () -> Unit = { NowPlayingCard(Modifier.fillMaxWidth()) }
     return SettingSection(
         "Sound & music",
         listOf(
-            toggle("UI sounds", Glyph.Bell, Palette.Butter, "Soft clicks and chimes as you move around. Made by Tandem itself, no sound files.", look.sounds,
+            toggle("UI sounds", Glyph.Bell, Palette.Butter, "Clicks, chimes and the launch sound as you move around, whichever pack they come from.", look.sounds,
                 preview = { SoundPackPreview(pack, play = false) }) { on -> updateLook { it.copy(sounds = on) }; if (on) Sounds.select() },
             choice(
-                "Sound pack", Glyph.Sparkle, Palette.Butter, pack.blurb,
-                SoundPack.entries.map { it.id to it.label }, pack.id,
-                preview = { SoundPackPreview(pack, play = true) },
-            ) { v -> updateLook { it.copy(soundPack = v) }; Sounds.ensurePack(SoundPack.of(v)) },
-            choice(
-                "Recorded sounds", Glyph.Sparkle, Palette.Butter,
-                "Sound packs made of recordings, like the ones Cocoon downloads to ROMs/assets/sounds, or a theme pack's own sounds. " +
-                    "Sounds a recorded pack doesn't have come from the sound pack above.",
-                listOf("theme" to "From the theme", "none" to "Off") + remember { ThemePacks.soundPacks().map { it.first to it.second } },
-                look.soundFiles,
-            ) { v -> updateLook { it.copy(soundFiles = v) }; Sounds.refreshFiles(); Sounds.select() },
+                "Sound pack", Glyph.Sparkle, Palette.Butter,
+                (recordedNow?.let { "${it.second}: recorded sounds, like the packs Cocoon keeps in ROMs/assets/sounds. Sounds it doesn't have come from ${pack.label}." }
+                    ?: pack.blurb) + fallback,
+                SoundPack.entries.map { it.id to it.label } + recorded.map { "rec:" + it.first to it.second + " · recorded" },
+                recordedNow?.let { "rec:" + it.first } ?: pack.id,
+                preview = { SoundPackPreview(pack, play = recordedNow == null) },
+            ) { v ->
+                // A recorded pack plays over the Tandem pack already chosen, which fills in what it lacks.
+                if (v.startsWith("rec:")) updateLook { it.copy(soundFiles = v.removePrefix("rec:")) }
+                else { updateLook { it.copy(soundPack = v, soundFiles = "none") }; Sounds.ensurePack(SoundPack.of(v)) }
+                Sounds.refreshFiles(); Sounds.select()
+            },
             number(
                 "Sound volume", Glyph.Volume, Palette.Butter, "How loud the UI sounds are, compared with the system volume.",
                 look.soundVolume, 0.1f, 1f, 0.1f, ::pct,
             ) { v -> updateLook { it.copy(soundVolume = v ?: 0.5f) }; Sounds.select() },
             toggle(
-                "Background music", Glyph.Music, Palette.Peach,
-                "Tandem's own soundtrack while you browse. It fades out and stops completely while a game runs, and stays quiet when another app is playing.",
-                look.music, preview = nowCard,
-            ) { on -> updateLook { it.copy(music = on) } },
-            choice(
-                "Soundtrack pack", Glyph.Music, Palette.Peach,
-                "Meadow Tales: storybook pieces for piano, strings, woodwinds, accordion and harp. " +
-                    "Pastel Arcade: the original lo-fi, synth and chiptune tracks.",
-                Tracks.packs, look.musicPack,
-                preview = nowCard,
-            ) { v ->
-                // A piece picked from the other pack makes way for the new pack's match.
-                updateLook { it.copy(musicPack = v, music = true, musicTrack = if (Tracks.names(v).any { t -> t.first == it.musicTrack }) it.musicTrack else if (it.musicTrack == "shuffle") "shuffle" else "theme") }
-            },
-            choice(
-                "Soundtrack", Glyph.Music, Palette.Peach,
-                "Match theme picks the piece that suits your theme. Shuffle plays a different one each time a song comes round.",
-                listOf("theme" to "Match theme · $themeTrack") + packTracks + ("shuffle" to "Shuffle"), look.musicTrack,
-                preview = nowCard,
-            ) { v -> updateLook { it.copy(musicTrack = v, music = true) } },
-            number(
-                "Music volume", Glyph.Volume, Palette.Peach, "How loud the background music plays.",
-                look.musicVolume, 0.1f, 1f, 0.1f, ::pct, preview = nowCard,
-            ) { v -> updateLook { it.copy(musicVolume = v ?: 0.4f) } },
-            toggle(
-                "My music folder", Glyph.Folder, Palette.Peach,
-                "Play your own songs from ROMs/tandem/music instead (MP3, OGG, Opus, FLAC, M4A, WAV). " +
-                    if (trackCount == 0) "The folder is empty right now." else "$trackCount songs found.",
-                look.myMusic, preview = nowCard,
-            ) { on -> updateLook { it.copy(myMusic = on) }; if (on && trackCount == 0) Toasts.show("Add songs to ROMs/tandem/music first") },
-            toggle("Shuffle my music", Glyph.Refresh, Palette.Peach, "Play the music folder in a random order.", look.musicShuffle) { on ->
-                updateLook { it.copy(musicShuffle = on) }
-            },
-            SettingRow(
-                "Next song", Music.now?.title ?: "Nothing yet", Palette.Peach, Glyph.Music,
-                "Skip to another song: the next file in your folder, or another piece of the soundtrack.", preview = nowCard,
-            ) {
-                if (!look.music) Toasts.show("Turn on background music first") else Music.skip()
-            },
-            choice(
-                "System jingles", Glyph.Gamepad, Palette.Lavender,
-                "A tiny original jingle per family of systems instead of the pack's launch sound: square waves for handhelds, FM for Sega, shimmer for PlayStation and more.",
-                listOf("off" to "Off", "launch" to "When a game starts", "all" to "Systems and games"), look.jingles,
-                preview = { JinglePreview(look.jingles) },
-            ) { v -> updateLook { it.copy(jingles = v) }; if (v != "off") Sounds.prepareJingles() },
-            toggle(
-                "Play jingles", Glyph.Music, Palette.Lavender,
-                "A game's own jingle plays when you rest on it for a moment: a file in downloaded_media/<system>/jingles, or one picked in the game's Edit details. It follows the sound volume and UI sounds.",
+                "Game jingles on hover", Glyph.Music, Palette.Lavender,
+                "A game's own jingle plays when you rest on it for a moment: a file in downloaded_media/<system>/jingles, or one picked in the game's Edit details.",
                 look.gameJingles,
             ) { on -> updateLook { it.copy(gameJingles = on) }; if (!on) GameJingles.fadeOut() },
             toggle("Pip's voice", Glyph.Heart, Palette.Lavender, "Pip babbles a little when it has something to tell you.", look.pipVoice,
                 preview = { PipVoicePreview(look.pipVoice) }) { on -> updateLook { it.copy(pipVoice = on) } },
+            toggle(
+                "Music", Glyph.Music, Palette.Peach,
+                "Music while you browse, whichever source it comes from. It fades out and stops completely while a game runs, and stays quiet when another app is playing.",
+                look.music, preview = nowCard,
+            ) { on -> updateLook { it.copy(music = on) } },
+            choice(
+                "Music from", Glyph.Folder, Palette.Peach,
+                "My music folder plays your own songs from ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV); " +
+                    (if (trackCount == 0) "it's empty right now, so the built-in soundtrack plays. " else "${io.github.zahakj.tandem.plural(trackCount, "song")} found. ") +
+                    "Built-in is Meadow Tales, Tandem's own soundtrack." + fallback,
+                listOf("folder" to "My music folder", "builtin" to "Built-in: Meadow Tales"), if (look.myMusic) "folder" else "builtin",
+                preview = nowCard,
+            ) { v ->
+                updateLook { it.copy(myMusic = v == "folder", music = true) }
+                if (v == "folder" && trackCount == 0) Toasts.show("Add songs to ROMs/tandem/music first")
+            },
+            toggle("Shuffle my music", Glyph.Refresh, Palette.Peach, "Play the music folder in a random order.", look.musicShuffle) { on ->
+                updateLook { it.copy(musicShuffle = on) }
+            },
+            number(
+                "Music volume", Glyph.Volume, Palette.Peach, "How loud the music plays.",
+                look.musicVolume, 0.1f, 1f, 0.1f, ::pct, preview = nowCard,
+            ) { v -> updateLook { it.copy(musicVolume = v ?: 0.4f) } },
+            SettingRow(
+                "Next song", Music.now?.title ?: "Nothing yet", Palette.Peach, Glyph.Music,
+                "Skip to another song. ${Music.source}.", preview = nowCard,
+            ) {
+                if (!look.music) Toasts.show("Turn on music first") else Music.skip()
+            },
         ),
         note = if (bottomScreenMuted(LocalContext.current)) "Your handheld's bottom-screen volume is at zero, and it mutes Tandem too: raise it in Dual screen assistant (Bottom screen › Volume)." else null,
     )
@@ -159,9 +181,9 @@ private fun bottomScreenMuted(ctx: android.content.Context): Boolean =
 @Composable
 fun SoundCues() {
     val look = Store.settings.look
-    LaunchedEffect(look.music, look.musicVolume, look.musicTrack, look.musicPack, look.myMusic, look.theme) { Music.refresh() }
+    LaunchedEffect(look.music, look.musicVolume, look.myMusic, look.theme, look.packParts) { Music.refresh() }
     LaunchedEffect(look.soundPack) { Sounds.ensurePack(SoundPack.of(look.soundPack)) }
-    LaunchedEffect(look.soundFiles, look.theme) { Sounds.refreshFiles() }
+    LaunchedEffect(look.soundFiles, look.theme, look.packParts) { Sounds.refreshFiles() }
 
     // A launch counts as a popup for focus, but it has its own sound.
     val open = Nav.overlayOpen && !LaunchFx.busy
@@ -256,28 +278,6 @@ private fun DrawScope.drawPackWave(p: SoundPack, color: Color, phase: Float) {
 }
 
 @Composable
-private fun JinglePreview(mode: String) {
-    var i by remember { mutableIntStateOf(0) }
-    val fam = Family.entries[i % Family.entries.size]
-    LaunchedEffect(mode) {
-        if (mode == "off") return@LaunchedEffect
-        Sounds.prepareJingles()
-        delay(400)
-        // Play a few families, one after another.
-        repeat(3) { k ->
-            i = (System.currentTimeMillis() / 1000).toInt() + k
-            Sounds.previewJingle(Family.entries[i % Family.entries.size])
-            delay(2600)
-        }
-    }
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Pip(72.dp, mood = if (mode == "off") 2 else 1)
-        Spacer(Modifier.height(8.dp))
-        Text(if (mode == "off") "Jingles are off" else fam.label, style = MaterialTheme.typography.titleSmall, color = Palette.Lavender)
-    }
-}
-
-@Composable
 private fun PipVoicePreview(on: Boolean) {
     LaunchedEffect(on) { if (on) { delay(300); Sounds.pipSays("Hi! I'm Pip, nice to meet you!") } }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -291,12 +291,12 @@ private fun PipVoicePreview(on: Boolean) {
 
 // --- Now playing ---------------------------------------------------------------------------------------------------
 
-/** A mini now-playing card: mood art, the track's name and mood, and visualizer bars. */
+/** A mini now-playing card: mood art, the track's name and where it comes from, and visualizer bars. */
 @Composable
 fun NowPlayingCard(modifier: Modifier = Modifier) {
     val look = Store.settings.look
     val np = Music.now
-    val ownFiles = look.myMusic && remember(look.myMusic) { Music.tracks().isNotEmpty() }
+    val ownFiles = remember(look.myMusic, look.theme, look.packParts) { Music.playsFiles }
     val id = when {
         ownFiles -> "file"
         look.music && np != null && !np.own && Music.playing -> np.id
@@ -304,7 +304,7 @@ fun NowPlayingCard(modifier: Modifier = Modifier) {
     }
     val song = Tracks.byId(id)
     val title = if (ownFiles) np?.takeIf { it.own }?.title ?: "Your music" else song?.title ?: "Hillside Breeze"
-    val mood = if (ownFiles) "From ROMs/tandem/music" else song?.mood.orEmpty()
+    val mood = if (ownFiles) Music.source else song?.mood.orEmpty()
     Column(modifier) {
         Box(Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(18.dp))) {
             MoodArt(id, Modifier.fillMaxSize())

@@ -269,19 +269,3 @@ class Player(val song: Song, val rate: Int, seed: Int = 1) {
         const val MAX_DRUMS = 10
     }
 }
-
-/** Renders a whole one-shot song (jingles) into a mono buffer. */
-fun renderOneShot(song: Song, rate: Int, tailSeconds: Double = 0.8): FloatArray {
-    val p = Player(song, rate)
-    val frames = ((song.seconds + tailSeconds) * rate).toInt()
-    val st = FloatArray(frames * 2)
-    p.render(st, frames)
-    val mono = FloatArray(frames) { (st[it * 2] + st[it * 2 + 1]) * 0.5f }
-    // Drop the silent tail, then fade the last 20 ms so nothing clicks.
-    var end = frames
-    while (end > rate / 4 && kotlin.math.abs(mono[end - 1]) < 0.0005f) end--
-    val out = mono.copyOf(end)
-    val fade = minOf(end, rate / 50)
-    for (i in 0 until fade) out[end - 1 - i] *= i.toFloat() / fade
-    return out
-}

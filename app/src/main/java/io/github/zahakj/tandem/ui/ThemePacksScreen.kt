@@ -257,7 +257,8 @@ private fun PackMenu(pack: ThemePack?, onClose: () -> Unit) {
         val keys = listOfNotNull(
             "use", "icons".takeIf { hasArt && !inUse }, "colors", "wallpaper".takeIf { p.hasWallpaper },
             "icon".takeIf { p.art.iconCount > 0 || p.art.collectionCount > 0 }, "heroes".takeIf { p.art.heroCount > 0 },
-            "frames".takeIf { p.art.overlayCount > 0 }, "music".takeIf { p.music.isNotEmpty() }, "remove".takeIf { p.removable },
+            "frames".takeIf { p.art.overlayCount > 0 }, "music".takeIf { p.music.isNotEmpty() }, "sounds".takeIf { p.sounds != null },
+            "remove".takeIf { p.removable },
         )
         val target = rememberFocusTarget(routeKey, keys)
         val scroll = rememberScrollState()
@@ -295,6 +296,9 @@ private fun PackMenu(pack: ThemePack?, onClose: () -> Unit) {
                 if ("frames" in keys) MenuRow("Cover frames", onOff(parts.frames), "frames", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(frames = !it.frames) } }
                 if ("music" in keys) MenuRow("Music (${p.music.size})", onOff(parts.music), "music", routeKey, target, Palette.Lavender) {
                     setPart(p.id) { it.copy(music = !it.music) }; Music.refresh()
+                }
+                if ("sounds" in keys) MenuRow("Sounds", onOff(parts.sounds), "sounds", routeKey, target, Palette.Lavender) {
+                    setPart(p.id) { it.copy(sounds = !it.sounds) }; Sounds.refreshFiles(); Sounds.select()
                 }
                 if ("remove" in keys) MenuRow("Remove pack", null, "remove", routeKey, target, Palette.Peach) {
                     onClose()

@@ -180,7 +180,7 @@ private fun JingleRow(g: Game, routeKey: String, focus: (String) -> Unit) {
     val value = when (src) {
         null -> "Looking…"
         JingleLookup.Source.Off -> "None for this game"
-        JingleLookup.Source.System -> "None · the system's jingles play"
+        JingleLookup.Source.System -> "None in the jingles folder"
         is JingleLookup.Source.Own -> src.file.name + if (src.picked) "" else " · from the jingles folder"
     }
     ExtraRow("Hover jingle", value, src is JingleLookup.Source.Own) {

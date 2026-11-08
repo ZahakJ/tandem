@@ -133,7 +133,7 @@ object Presets {
         look {
             it.copy(
                 homeLayout = "list", gameView = "list", motion = AnimationStyle.Minimal.id, highlight = HighlightStyle.Outline.id,
-                music = false, jingles = "off", gameJingles = false, splash = false, cornerHints = false, dockStyle = "minimal", dockAutoHide = true,
+                music = false, gameJingles = false, splash = false, cornerHints = false, dockStyle = "minimal", dockAutoHide = true,
             )
         }
         WidgetStore.update { it.copy(homeEnabled = false) }

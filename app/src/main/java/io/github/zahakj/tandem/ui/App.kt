@@ -161,7 +161,6 @@ object Nav {
         lastGo = now
         stack.addLast(route)
         setRoute(r, 0)
-        if (r is Route.System && r.folder == null) Sounds.systemOpened(r.platformId)
     }
 
     fun back(): Boolean {

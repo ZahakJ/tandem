@@ -38,7 +38,6 @@ class SfxTest {
             }
             check("${pack.id}-${k.name}", SfxSynth.render(pack, k, rate), max)
         }
-        for (f in Family.entries) check("jingle-launch-${f.name}", renderJingle(Jingles.launch(f), rate, 0.6f, LAUNCH_JINGLE_SECONDS), 0.7)
         out?.let { File(it, "levels.txt").writeText(report.toString()) }
         println(report)
     }

@@ -22,16 +22,6 @@ object Meadow {
         "forest-spirits" to "Forest Spirits Waltz", "summer-rain" to "Summer Rain Window", "flying-home" to "Flying Home",
     )
 
-    /** The piece that suits each built-in theme. */
-    fun forTheme(themeId: String): String = when (themeId) {
-        "crt", "dmg", "mint-soda", "cotton-candy", "kart-rainbow", "indigo-cube", "pocket-atomic" -> "lantern-town"
-        "ocean", "blue-boot", "midnight-disc", "neon-arcade" -> "seaside-train"
-        "sakura", "forest", "monster-catcher", "dungeon" -> "forest-spirits"
-        "paper", "ember", "oled", "high-contrast", "crimson-visor" -> "summer-rain"
-        "sunset-arcade", "sunset-racer", "star-shooter" -> "flying-home"
-        else -> "hillside-breeze"
-    }
-
     // --- The orchestra --------------------------------------------------------------------------------------------
 
     private fun piano(gain: Float = 0.26f, pan: Float = 0f, reverb: Float = 0.32f, pedal: Boolean = true) =
