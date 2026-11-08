@@ -6,7 +6,7 @@ Tandem has no analytics, no telemetry, no ads and no account of its own. It does
 
 Only when you ask it to look something up online:
 
-- **Scraping** (Settings › Art & accounts › Scrape library, "Scrape these games" in a system's Y menu, or
+- **Scraping** (Settings › Library & art › Scrape library, "Scrape these games" in a system's Y menu, or
   "Scrape this game" in a game's Y menu).
 - **Choose artwork** in a game's Y menu, which asks every configured source for pictures of that one game.
 - **Test** on a source's setup card, which looks up one well-known game ("Super Mario Odyssey"), never yours.
@@ -34,7 +34,7 @@ for these features; `ACCESS_NETWORK_STATE` only lets Tandem warn you before a bi
 
 ## What is sent, and to whom
 
-Each source can be turned off in Settings › Art & accounts; a source that is off is never contacted.
+Each source can be turned off in Settings › Library & art; a source that is off is never contacted.
 
 | Service | When | What it receives |
 | --- | --- | --- |
@@ -45,8 +45,8 @@ Each source can be turned off in Settings › Art & accounts; a source that is o
 | SteamGridDB (steamgriddb.com) | Only if you entered an API key | Your API key and the game's title (also for the Discord status's cover lookup, when connected). |
 | HowLongToBeat (howlongtobeat.com) | Off until you turn it on, no account | The game's title. |
 | Steam's video servers | Only for video snaps from LaunchBox | The trailer's address. |
-| RetroAchievements (retroachievements.org, media.retroachievements.org) | Only after you sign in (Settings › Art & accounts › RetroAchievements) | Your username and web API key; the console's public game list with hashes (cached for a week); the ID of a matched game, for your progress in it; badge pictures. Games are matched by a hash computed on the device, the file is never sent. **Find match** in Edit details uses the same cached game list and sends nothing about the game; an ID you type or "No achievements" stays on the device. |
-| Discord (discord.com, through Discord's Social SDK) | Only after you connect your account (Settings › Art & accounts › Discord), in builds that include the SDK | Account linking through Discord's OAuth2 (PKCE, public client; Tandem never sees a password). While a game plays: its title, when the session started and the public address of its cover picture (thumbnails.libretro.com, cdn2.steamgriddb.com and similar, images.launchbox-app.com or images.igdb.com, which Discord's servers then fetch), or of the Tandem icon on the project site when no cover address is known. An address with a login or key in it is never sent: ScreenScraper's never, other addresses only without their query. Never for hidden games or while private mode is on. The connection opens when a game starts and closes a minute after it stops. |
+| RetroAchievements (retroachievements.org, media.retroachievements.org) | Only after you sign in (Settings › Library & art › RetroAchievements) | Your username and web API key; the console's public game list with hashes (cached for a week); the ID of a matched game, for your progress in it; badge pictures. Games are matched by a hash computed on the device, the file is never sent. **Find match** in Edit details uses the same cached game list and sends nothing about the game; an ID you type or "No achievements" stays on the device. |
+| Discord (discord.com, through Discord's Social SDK) | Only after you connect your account (Settings › Library & art › Discord), in builds that include the SDK | Account linking through Discord's OAuth2 (PKCE, public client; Tandem never sees a password). While a game plays: its title, when the session started and the public address of its cover picture (thumbnails.libretro.com, cdn2.steamgriddb.com and similar, images.launchbox-app.com or images.igdb.com, which Discord's servers then fetch), or of the Tandem icon on the project site when no cover address is known. An address with a login or key in it is never sent: ScreenScraper's never, other addresses only without their query. Never for hidden games or while private mode is on. The connection opens when a game starts and closes a minute after it stops. |
 
 **Hidden games are never sent anywhere**, and neither is any game in a hidden folder or hidden system (or inside a
 hidden icon-grid folder). They are left out of every scrape, Tandem checks again right before

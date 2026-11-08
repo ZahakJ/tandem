@@ -36,7 +36,7 @@ The built-in list is [`app/src/main/assets/platforms.json`](../../app/src/main/a
 
 1. Copy that file to `ROMs/tandem/platforms.json` on your device.
 2. Edit it: add a system, add an emulator, change a folder name.
-3. In Tandem, **Settings › Library › Rescan games**.
+3. In Tandem, **Settings › Library & art › Rescan games**.
 
 When `ROMs/tandem/platforms.json` exists, Tandem uses it instead of the built-in list, entirely. Start from a copy of the built-in file, so you keep the systems you didn't mean to change.
 

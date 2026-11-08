@@ -1,7 +1,7 @@
 # Scraping artwork and game details
 
-Start a scrape from **Settings › Art & accounts › Scrape library**, from Y on a system (**Scrape these games**), or
-from Y › More › **Scrape this game**. **Settings › Art & accounts › Set up sources** (also a step in the first-run
+Start a scrape from **Settings › Library & art › Scrape library**, from Y on a system (**Scrape these games**), or
+from Y › More › **Scrape this game**. **Settings › Library & art › Set up sources** (also a step in the first-run
 welcome) explains every source, takes its keys, and has a **Test** button that does one real lookup ("Super Mario
 Odyssey") and shows ✓ or ✗ with the reason.
 

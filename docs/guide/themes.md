@@ -4,16 +4,13 @@ How to change Tandem's look: themes, home layouts, the icon grid, theme packs, w
 
 ## Built-in themes
 
-Tandem has 24 themes. Pastel Night is the default.
+Tandem has three themes of its own: **Pastel Night** (the default), **Paper** (light) and **OLED Black**. Everything else comes from [theme packs](#theme-packs). Tandem's animated backdrops (pixels, an LCD, cubes, a marquee, a road into the sun, a farm, torchlight and more) are all there as wallpapers, and its drawn system icon styles (pixel, neon, LCD, chrome, plastic, sticker, rune...) under **Icon style**, so any theme can wear them.
 
-- **Calm:** Pastel Night, OLED Black, Sakura, Mint Soda, Ocean, Forest, Lavender Dream, Paper (light), Cotton Candy and High Contrast.
-- **Game-flavoured,** each with its own animated backdrop, card style and system icon style: Cartridge, Handheld Green, Indigo Cube, Neon Arcade, Pocket Atomic, Midnight Disc, Blue Console Boot, Crimson Visor, Sunset Racer, Starfield Shooter, Cozy Farm, Monster Catcher, Dungeon and Kart Rainbow. All their art is original and drawn by Tandem.
-
-Anything a theme sets can be changed on top of it in **Settings › Look & feel**: accent and highlight colour, highlight style (glow, outline, lift or pulse) and thickness, focus zoom, card corners, surface (solid, frosted or outlined), wallpaper for each screen, system icon style, and animation style. **Reduce motion** calms everything down, and **Reset appearance** goes back to the theme as it came.
+Anything a theme sets can be changed on top of it in **Settings › Look & feel**: the accent colour (which the highlight glows in too), the highlight style (glow, outline, lift or pulse), the surface (solid, frosted or outlined), the wallpaper for each screen, the system icon style, and the animation style. **Reduce motion** calms everything down, and **Reset look** goes back to the theme as it came, keeping your buttons, screens, sounds and music.
 
 ## Home layouts
 
-**Settings › Home & layout › Home layout** picks one of five: **Shelves**, **Icon grid**, **Carousel**, **List** and **Console**. The icon grid holds systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom; the others show Continue playing, your systems and collections in their own way. Try them: switching back is one press.
+The layout gallery at the top of **Settings › Home & layout** picks one of five: **Shelves**, **Icon grid**, **Carousel**, **List** and **Console**. The icon grid holds systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom; the others show Continue playing, your systems and collections in their own way. Try them: switching back is one press.
 
 Inside a system, games show as a grid, a list or a carousel (**Games view**), with a choice of grid size, card shape (rounded, square, circle, tall box art or wide) and whether titles show.
 
@@ -65,9 +62,9 @@ A theme pack is a folder with a `theme.json` and, if it likes, wallpapers and ar
 
 **Manage packs** in the Themes app lists every pack with a preview and its author. On a pack you can:
 
-- **Use this theme:** its colours, wallpapers, icons, heroes and logos.
+- **Use this theme:** its colours, wallpapers, icons, heroes and logos, and its music and sounds if it has any.
 - **Use its icons with my theme:** keep your theme and borrow the pack's art.
-- Switch its **colours**, **wallpaper**, **system icons**, **heroes and logos** and **cover frames** on or off one by one.
+- Switch its **colours**, **wallpaper**, **system icons**, **heroes and logos**, **cover frames**, **music** and **sounds** on or off one by one.
 - **Import a folder** or **Import a .zip** to add a pack; it is copied into `ROMs/tandem/themes/<name>/`.
 
 Tandem never downloads packs. Packs belong to their authors: keep their names and credits, and share them the way the author asks.
@@ -80,8 +77,8 @@ Copy pictures or videos to `ROMs/tandem/wallpapers/` and they appear in **Look &
 
 ## Sounds and music
 
-**Settings › Sound & music:**
+**Settings › Sound & music** starts with the theme pack, then the rest:
 
-- **Recorded sounds:** sound packs made of recordings, like the ones Cocoon downloads into `ROMs/assets/sounds`, or a theme pack's own. Pick one in **Recorded sounds**, or leave it on **From the theme**. Sounds a pack doesn't have come from the UI sound pack.
-- **UI sounds:** five packs (Modern, Playful, Chiptune, Bubbly and Minimal), made by Tandem as it starts, so there are no sound files. **System jingles** play a tiny original tune per family of systems when a game starts (or when you open a system too). **Play jingles** plays a game's own jingle when you rest on it ([Editing a game](library.md#editing-a-game)). With **Pip's voice** on, Pip babbles a little when it has something to tell you.
-- **Background music:** two soundtracks of original music, **Meadow Tales** and **Pastel Arcade**, six pieces each. Or put your own files (MP3, OGG, Opus, FLAC, M4A, WAV) in `ROMs/tandem/music/`. A theme pack with music of its own (a `music/` folder in the pack) plays it while it's your theme; turn that off with **Music** on the pack in **Manage packs**. Music fades out when a game starts and back in when you return.
+- **Theme pack:** when your theme pack brings music or recorded sounds of its own (Cocoon themes link theirs from `ROMs/assets/music` and `ROMs/assets/sounds`), **Theme pack music** and **Theme pack sounds** switch them on or off. The same switches are on the pack in **Manage packs**. While they're on, they play instead of the choices below.
+- **Sounds:** **Sound pack** picks one of Tandem's eight packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass and Air, made by Tandem as it starts, so there are no sound files), or a recorded pack like the ones Cocoon downloads to `ROMs/assets/sounds`; sounds a recorded pack doesn't have come from Tandem's pack. **Game jingles on hover** plays a game's own jingle when you rest on it ([Editing a game](library.md#editing-a-game)). With **Pip's voice** on, Pip babbles a little when it has something to tell you.
+- **Music:** **Music from** plays your own files (MP3, OGG, Opus, FLAC, M4A, WAV) from `ROMs/tandem/music/`, or **Meadow Tales**, Tandem's own soundtrack of six original pieces, which plays through them in turn. Music fades out when a game starts and back in when you return.

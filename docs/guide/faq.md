@@ -18,7 +18,7 @@ Yes. Tandem is free software under the GNU GPL, version 3 or later. There are no
 
 ### Can I use it as my home screen?
 
-Yes. **Settings › Data & about › Use Tandem as the Home screen** asks Android to make Tandem your Home app. Then the Home button brings you back to Tandem (to the Resume card if a game is still running), and your Android apps are in the apps drawer and the dock. See [Controls](controls.md#the-home-button).
+Yes. **Settings › Play & system › Use Tandem as the Home screen** asks Android to make Tandem your Home app. Then the Home button brings you back to Tandem (to the Resume card if a game is still running), and your Android apps are in the apps drawer and the dock. See [Controls](controls.md#the-home-button).
 
 ### Can I keep using ES-DE or Cocoon?
 
@@ -45,9 +45,9 @@ Both setup steps must be done:
 
 - Check the folder name: it must match one of the system's `folders` in [Systems and emulators](platforms.md#what-comes-built-in), for example `ROMs/n3ds` and not `ROMs/Nintendo 3DS`.
 - Check the file extension against the system's list.
-- Is the game hidden? Turn on **Settings › Library › Show hidden games**.
+- Is the game hidden? Turn on **Settings › Library & art › Show hidden games**.
 - Are the games on an SD card? Tandem only reads `ROMs` in internal storage for now.
-- Did you add the files while Tandem was open? **Settings › Library › Rescan games**.
+- Did you add the files while Tandem was open? **Settings › Library & art › Rescan games**.
 - More than three folders deep? Tandem stops at three levels below the system folder.
 
 ### Pressing A does nothing, or says the emulator isn't installed
@@ -67,7 +67,7 @@ That is the normal behaviour without [Shizuku](resume.md). If Shizuku is set up,
 
 ### No artwork shows
 
-- No artwork yet? Let Tandem fetch it: **Settings › Art & accounts › Scrape library** (LaunchBox and libretro need no account).
+- No artwork yet? Let Tandem fetch it: **Settings › Library & art › Scrape library** (LaunchBox and libretro need no account).
 - Artwork must be in `ROMs/downloaded_media/<system>/<kind>/`, named like the game file. [Your library](library.md#artwork) lists the folder names.
 - If artwork came from an import, the paths in the gamelist must point to files that exist on this device.
 

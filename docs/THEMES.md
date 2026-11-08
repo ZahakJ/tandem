@@ -1,6 +1,6 @@
 # Themes
 
-Tandem ships with 24 themes and reads theme packs from your ROMs folder: its own, and packs in the Cocoon theme format. Pick one in **Settings › Look & feel**; it applies instantly with a short cross-fade. Everything a theme sets (accent, corners, highlight, surface, motion, wallpapers, icon style) can be overridden there too.
+Tandem ships with three themes (Pastel Night, Paper and OLED Black) and reads theme packs from your ROMs folder: its own, and packs in the Cocoon theme format. Pick one in **Settings › Look & feel**; it applies instantly with a short cross-fade. Everything a theme sets (accent, corners, highlight, surface, motion, wallpapers, icon style) can be overridden there too.
 
 ## Built-in themes
 
@@ -161,7 +161,7 @@ Videos play muted, looping and hardware decoded. The player is released whenever
 
 ## Sounds and music
 
-UI sounds and the built-in soundtracks are synthesized by Tandem, so there are no sound files. Your own music goes in
+UI sounds and the built-in soundtrack (Meadow Tales) are synthesized by Tandem, so there are no sound files. Your own music goes in
 `ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV).
 
 A theme pack can bring its own music: a `music/` folder in the pack (`bgm/` also works), a `music` list in

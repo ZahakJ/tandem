@@ -28,7 +28,7 @@ A game counts as running only while its emulator has a window open (in front or 
    start, not to keep running).
 3. Allow Tandem: on Tandem's setup screen (**Resume games** step) if Shizuku is already running, or later in
    Shizuku's list of authorized apps.
-4. **Settings › Play & stats › Playing › Resume running games** shows **Ready** once it works.
+4. **Settings › Play & system › Playing › Resume running games** shows **Ready** once it works.
 
 Shizuku doesn't survive a reboot on most devices; start it again after restarting.
 
@@ -52,7 +52,7 @@ When you press A on a game, Tandem:
 
 ### Close previous game
 
-**Settings › Play & stats › Playing › Close previous game** (on by default) closes other emulators when you start a
+**Settings › Play & system › Playing › Close previous game** (on by default) closes other emulators when you start a
 game, so a game left in the background doesn't use memory and battery. Turn it off to keep games in different
 emulators open; the [game switcher](controls.md) (hold Select) lists them.
 
@@ -73,7 +73,7 @@ and widgets. In private mode a hidden game is shown only as **A hidden game is s
 
 A game whose file was deleted is never named; the question names its emulator instead.
 
-**Settings › Play & stats › Playing › Ask before closing a game** brings the question back or turns it off.
+**Settings › Play & system › Playing › Ask before closing a game** brings the question back or turns it off.
 
 ## Troubleshooting
 

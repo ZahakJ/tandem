@@ -5,7 +5,7 @@ Switching to Tandem shouldn't cost you the titles, descriptions, favorites and p
 ## When it happens
 
 - **Automatically, once,** the first time Tandem scans your games.
-- **Whenever you ask,** with **Settings › Library › Import details**. Run it again after scraping more games in ES-DE, or after making a new Cocoon backup.
+- **Whenever you ask,** with **Settings › Library & art › Import details**. Run it again after scraping more games in ES-DE, or after making a new Cocoon backup.
 
 Importing never touches the files it reads, and your old frontend keeps working.
 
@@ -57,8 +57,8 @@ Tandem never overwrites what it already has:
 
 Theme packs you downloaded in Cocoon (in `ROMs/themes`) show up in **Settings › Look & feel › Theme packs** by themselves, with their wallpapers, system icons, heroes and logos. You can also import a pack from a folder or a `.zip`. See [Themes](themes.md) for what Tandem reads from a pack, and the [example of the format](../example-cocoon-theme.json).
 
-**Import my Cocoon setup** (**Settings › Library › Bring your details**) goes further: from your newest Cocoon backup it brings over the home grid arrangement, folders, the theme pack and appearance values. **Undo Cocoon import** puts everything back as it was.
+**Import my Cocoon setup** (**Settings › Library & art › Bring your details**) goes further: from your newest Cocoon backup it brings over the home grid arrangement, folders, the theme pack and appearance values. **Undo Cocoon import** puts everything back as it was.
 
 ## Going the other way
 
-Tandem's own data is plain JSON. **Settings › Data & about › Back up** writes it to a dated folder in `ROMs/tandem/backup/`, and any tool can read it. See [Back up and restore](library.md#back-up-and-restore).
+Tandem's own data is plain JSON. **Settings › Play & system › Back up** writes it to a dated folder in `ROMs/tandem/backup/`, and any tool can read it. See [Back up and restore](library.md#back-up-and-restore).

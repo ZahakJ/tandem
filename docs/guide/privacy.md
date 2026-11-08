@@ -8,7 +8,7 @@ Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements 
 
 It goes online only when you ask it to:
 
-- **Scraping**: **Settings › Art & accounts › Scrape library**, **Scrape these games** in a system's Y menu, or **Scrape this game** in a game's Y menu. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
+- **Scraping**: **Settings › Library & art › Scrape library**, **Scrape these games** in a system's Y menu, or **Scrape this game** in a game's Y menu. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
 - **Choose artwork** in a game's Y menu, which asks your sources for pictures of that one game.
 - **Test** on a source's card, which looks up one well-known game, never one of yours.
 - **The LaunchBox database**, downloaded only after you agree to it. A scrape you start refreshes a month-old copy, on Wi-Fi only.
@@ -21,7 +21,7 @@ In [private mode](#private-mode) none of this happens: Tandem stays offline.
 
 ## What is sent, and to whom
 
-Each source can be switched off in **Settings › Art & accounts**; a source that is off is never contacted.
+Each source can be switched off in **Settings › Library & art**; a source that is off is never contacted.
 
 | Service | When | What it receives |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ Each service has its own privacy policy, which applies to what you send it. [doc
 
 ## Discord status
 
-Tandem can show what you play as your Discord status: "Playing" and the game's title, its cover, and how long you've been playing. It clears when you stop. It is off until you connect your account in **Settings › Art & accounts › Discord › Discord status**: Discord (or your browser, without the Discord app) asks you to authorize Tandem, once. Tandem never asks for your Discord password and never sees it.
+Tandem can show what you play as your Discord status: "Playing" and the game's title, its cover, and how long you've been playing. It clears when you stop. It is off until you connect your account in **Settings › Library & art › Discord › Discord status**: Discord (or your browser, without the Discord app) asks you to authorize Tandem, once. Tandem never asks for your Discord password and never sees it.
 
 - Hidden games, and games in hidden folders or systems, never show, and nothing is sent while private mode is on (not even a cover lookup).
 - The **Discord status** tile in **Quick settings** (hold Start) pauses it and turns it back on, staying connected; turning it off clears your status at once.
@@ -49,7 +49,7 @@ Tandem can show what you play as your Discord status: "Playing" and the game's t
 
 ## Hidden games, folders and systems
 
-**Start › Hidden** lists everything hidden: games, folders, systems and home folders. **A** unhides one; **Y** shows just that one until hidden games are next tucked away; the top row shows or tucks away all of them. **Settings › Play & stats › Hidden** lists the same things.
+**Start › Hidden** lists everything hidden: games, folders, systems and home folders. **A** unhides one; **Y** shows just that one until hidden games are next tucked away; the top row shows or tucks away all of them. **Settings › Play & system › Hidden** lists the same things.
 
 The Start row appears only when something is hidden. In private mode it appears only while your PIN has hidden games showing, so nothing on the Start menu suggests that anything is hidden. Showing something does not change what is sent: it is still left out of scraping and achievements.
 
@@ -57,10 +57,10 @@ Hiding asks nothing: the message says it is hidden, and **Select** (or a tap on 
 
 ## Private mode
 
-Without private mode, anyone holding your handheld can switch on **Show hidden games**. Private mode puts hidden games behind a PIN and keeps Tandem offline. Switch it on in **Settings › Play & stats › Privacy & rest › Private mode**, or press **L1 + R1 + Select** anywhere in Tandem.
+Without private mode, anyone holding your handheld can switch on **Show hidden games**. Private mode puts hidden games behind a PIN and keeps Tandem offline. Switch it on in **Settings › Play & system › Privacy › Private mode**, or press **L1 + R1 + Select** anywhere in Tandem.
 
 - **The PIN.** The first time, Tandem asks you to choose a PIN of 4 to 6 digits, twice. Type it with the D-pad and **A** on the keypad, or tap the keys; **X** deletes, **Start** is OK, **B** cancels. **Private mode PIN** (under More options) changes it, after asking for the current one.
-- **Showing hidden games** needs the PIN: **L1 + R1 + Select**, **Show hidden games** in Settings or a View menu, or **Show** on **Settings › Play & stats › Hidden**. Tucking them away never asks: **L1 + R1 + Select** again, **Tuck away**, or the screensaver, which tucks them away by itself.
+- **Showing hidden games** needs the PIN: **L1 + R1 + Select**, **Show hidden games** in Settings or a View menu, or **Show** on **Settings › Play & system › Hidden**. Tucking them away never asks: **L1 + R1 + Select** again, **Tuck away**, or the screensaver, which tucks them away by itself.
 - **Turning private mode off** needs the PIN too.
 - **The quick switch.** While private mode is off, **L1 + R1 + Select** turns it on at once (asking you to choose a PIN first only if there is none yet), and whatever hidden games were showing go out of sight.
 - **Wrong tries.** After three wrong PINs in a row, each further try has to wait: 30 seconds, then 1 minute, 2, 4 and so on, up to 30 minutes. The count survives a restart.
@@ -82,7 +82,7 @@ While private mode is on, Tandem itself sends nothing online:
 
 Nothing is kept to send later. Turning private mode off only makes the next lookup you start possible again.
 
-**Go offline while a hidden game plays** (**Settings › Play & stats › Privacy & rest**, off by default, needs [Shizuku](resume.md)) goes further. When a hidden game starts in private mode (so after your PIN brought it out), Tandem turns on Android's airplane mode first, and switches Wi-Fi off too if Android keeps it on in airplane mode. That keeps the emulator itself, and every other app, offline while the game runs: its own achievements, netplay, update checks or rich presence.
+**Go offline while a hidden game plays** (**Settings › Play & system › Privacy**, off by default, needs [Shizuku](resume.md)) goes further. When a hidden game starts in private mode (so after your PIN brought it out), Tandem turns on Android's airplane mode first, and switches Wi-Fi off too if Android keeps it on in airplane mode. That keeps the emulator itself, and every other app, offline while the game runs: its own achievements, netplay, update checks or rich presence.
 
 - When the game's session ends, Tandem puts airplane mode and Wi-Fi back as they were: when you come back to Tandem, when the game quits or crashes (Tandem looks every few seconds while its bottom screen shows the game), or when Tandem starts again after being closed with no game left open.
 - Airplane mode that was already on stays on: Tandem only turns off what it turned on.
@@ -110,7 +110,7 @@ All of it is on your device:
 | The `ROMs` folder you picked | Android app preferences | To share game files with emulators |
 | The last game started in each emulator, and when the current session began | Android app preferences | Resume and play time |
 
-The JSON files are plain text. **Settings › Data & about › Back up** copies them to a dated folder in `ROMs/tandem/backup/`, where you can read them; keys and logins only go too if you switch on **Account keys and logins**. Tandem also makes automatic backups there before a restore, a Cocoon import, a Quick look or a reset of the look, and keeps the last five. A backup holds hidden games and hidden folders as they are in Tandem, and other apps with storage access can read that folder. Uninstalling Tandem deletes its private storage, but not those backups or your downloaded artwork. See [Back up and restore](library.md#back-up-and-restore).
+The JSON files are plain text. **Settings › Play & system › Back up** copies them to a dated folder in `ROMs/tandem/backup/`, where you can read them; keys and logins only go too if you switch on **Account keys and logins**. Tandem also makes automatic backups there before a restore, a Cocoon import, a Quick look or a reset of the look, and keeps the last five. A backup holds hidden games and hidden folders as they are in Tandem, and other apps with storage access can read that folder. Uninstalling Tandem deletes its private storage, but not those backups or your downloaded artwork. See [Back up and restore](library.md#back-up-and-restore).
 
 Android's own backup may include Tandem's private storage if you have it switched on, the same as for any app, except the files holding keys and logins and the LaunchBox database. That backup goes wherever your device's backup settings send it.
 

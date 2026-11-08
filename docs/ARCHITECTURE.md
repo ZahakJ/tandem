@@ -114,7 +114,7 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   `PadLink.kt` runs the helper `src/padlink/padlink.c` through Shizuku or su, `PadMap.kt` (translation table),
   `PadPlan.kt` (which pad, state machine), `ui/PadLinkUi.kt` (the offer on the companion).
 - Sound: `audio/` is pure Kotlin (runs on a desktop JVM too): DSP, synth and acoustic voices, drums, a tracker-style
-  song DSL, sequencer and mixer, the Meadow Tales and Pastel Arcade soundtracks, UI sound packs and jingles.
+  song DSL, sequencer and mixer, the Meadow Tales soundtrack and the UI sound packs.
   `ui/Sound.kt` (`Sounds`, `Music`), `ui/SoundEngine.kt` (audio thread while music plays), `ui/SoundSettings.kt`.
 - Motion: `ui/Flair.kt` (`floating`, `riseIn`, `drift`, `PipMind`; graphics-layer only, still with Reduce motion),
   `ui/SwapFx.kt` (the X screen swap).

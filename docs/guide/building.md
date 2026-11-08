@@ -64,7 +64,7 @@ and build:
 | `./gradlew assembleDebug` | `app/build/outputs/apk/debug/app-debug.apk` |
 | `./gradlew assembleRelease` | `app/build/outputs/apk/release/app-release.apk` (R8 and baseline profile; signed with the debug key unless a `keystore.properties` is present) |
 
-A debug build is signed with your computer's debug key; official releases are signed with the project's release key. Both use the same app id, so Android won't install one over the other: switching between them means uninstalling first. Uninstalling deletes Tandem's data, so back up first (**Settings › Data & about › Back up**).
+A debug build is signed with your computer's debug key; official releases are signed with the project's release key. Both use the same app id, so Android won't install one over the other: switching between them means uninstalling first. Uninstalling deletes Tandem's data, so back up first (**Settings › Play & system › Back up**).
 
 ## Installing on a device
 

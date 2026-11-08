@@ -280,7 +280,7 @@ Add `framestats` for per-frame timings of the last 120 frames.
 
 ### Frame timing overlay
 
-**Settings › Data & about › Developer › Frame timing overlay** turns on JankStats for the top screen: a corner
+**Settings › Play & system › Developer › Frame timing overlay** turns on JankStats for the top screen: a corner
 readout of frames, slow frames and the worst frame. Every frame longer than twice the display's frame time is
 logged with the route, open popup and swap state, with a summary every 10 seconds:
 

@@ -4,7 +4,7 @@ How Tandem finds games, where it gets artwork, what the collections are made of,
 
 ## How games are found
 
-On launch, and whenever you choose **Settings › Library › Rescan games**, Tandem looks through `ROMs/` in internal storage. For each system in [`platforms.json`](platforms.md) it checks that system's folders (for example `ROMs/n3ds` and `ROMs/3ds` for the 3DS) and picks up every file with one of the system's extensions.
+On launch, and whenever you choose **Settings › Library & art › Rescan games**, Tandem looks through `ROMs/` in internal storage. For each system in [`platforms.json`](platforms.md) it checks that system's folders (for example `ROMs/n3ds` and `ROMs/3ds` for the 3DS) and picks up every file with one of the system's extensions.
 
 - **Subfolders become folders.** `ROMs/n3ds/RPG/Some Game.3ds` appears inside an **RPG** folder on the 3DS screen. Tandem goes up to three folders deep.
 - **Emulator data is skipped.** Some emulators keep their own folders next to the games, like Azahar's `nand` and `sdmc`. Each system can list folders to ignore (`skipDirs`).
@@ -34,9 +34,9 @@ A picture belongs to a game when its name is the game's file name without the ex
 
 The `<system>` folder names come from each system's `art` list in `platforms.json`; for the 3DS that is `n3ds` and `3ds`. Artwork paths brought in by an [import](importing.md) take priority over these folders.
 
-Tandem never changes or deletes artwork you put there. It can also download artwork for you: **Settings › Art & accounts › Scrape library**, or **Scrape this game** in a game's Y menu. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
+Tandem never changes or deletes artwork you put there. It can also download artwork for you: **Settings › Library & art › Scrape library**, or **Scrape this game** in a game's Y menu. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
 
-Once the LaunchBox database is downloaded (**Settings › Art & accounts › LaunchBox**), Tandem fills in missing descriptions, genres, year, developer and players after each library scan, from the copy on the device. It never goes online for this and never changes a field you edited or locked.
+Once the LaunchBox database is downloaded (**Settings › Library & art › LaunchBox**), Tandem fills in missing descriptions, genres, year, developer and players after each library scan, from the copy on the device. It never goes online for this and never changes a field you edited or locked.
 
 ## Collections
 
@@ -90,7 +90,7 @@ Smart folders can be designed, renamed, hidden and deleted like any folder. Noth
 
 ## Sorting and display
 
-Press Y on a system or collection screen while a folder is highlighted for the **View** menu (also in **Settings › Library › Games** and **Settings › Home & layout › Games**).
+Press Y on a system or collection screen while a folder is highlighted for the **View** menu (also in **Settings › Library & art › Games** and **Settings › Home & layout › Games**).
 
 - **Sort by**: Name, Recently played, Most played, Release year, Rating or Recently added. Continue playing, Most played and Recently added keep their own order.
 - **Game titles**: show the name under each tile, or only the art.
@@ -107,7 +107,7 @@ Y › **Edit details** on a game. A on a field types a new value and locks it, s
 | Achievements | The RetroAchievements game this one is matched to. **Find match** lists the closest games from RetroAchievements when you are signed in, **Type ID** takes the number from the game's page address, and **No achievements** turns them off for this game. **Automatic** goes back to Tandem's own match by file and title. |
 | Logo | The logo's size (50–150 %) and place (Auto, Left, Centre, Right, Top or Bottom, then nudged with the arrows) over the game's art. The other screen shows each change as you make it. |
 
-Jingles follow the sound settings: they play only with UI sounds on, at the sound volume, and with **Settings › Sound & music › Play jingles** on. They never play during a game, the launch or the screensaver, and the music dips while one plays. A companion app starts only with two screens, when the game starts on the top screen and its system doesn't leave the bottom screen to the emulator.
+Jingles follow the sound settings: they play only with UI sounds on, at the sound volume, and with **Settings › Sound & music › Game jingles on hover** on. They never play during a game, the launch or the screensaver, and the music dips while one plays. A companion app starts only with two screens, when the game starts on the top screen and its system doesn't leave the bottom screen to the emulator.
 
 All of this is kept in the game's details, so it moves with the game between subfolders and is part of every backup. The bottom screen shows a small badge for a game with its own jingle or a companion app.
 
@@ -167,7 +167,7 @@ Uninstalling Tandem deletes these files. Back up first to keep them.
 
 ## Back up and restore
 
-**Settings › Data & about › Back up** saves a new backup in `ROMs/tandem/backup/<date_time>/`. Older backups stay. Each backup is a folder of the files above plus a `manifest.json` listing what is inside, the counts (games, tiles, folders, widgets, sessions) and Tandem's version.
+**Settings › Play & system › Back up** saves a new backup in `ROMs/tandem/backup/<date_time>/`. Older backups stay. Each backup is a folder of the files above plus a `manifest.json` listing what is inside, the counts (games, tiles, folders, widgets, sessions) and Tandem's version.
 
 You choose what goes in, in four parts:
 
@@ -182,6 +182,6 @@ Scraping keys and logins and your RetroAchievements key are left out unless you 
 
 **Restore** lists the backups, newest first, with a summary such as "1,204 games · 38 tiles · 6 folders · 2 days ago", and whether each was made by hand or automatically. Pick one, choose the parts to put back, and confirm. Each part is restored on its own: if one can't be read, the others still go back, and the message says which. Screens update straight away. Restoring never switches private mode off, and keys already on the device stay when the backup has none. X deletes the highlighted backup.
 
-Tandem also saves an automatic backup before a restore, before **Import my Cocoon setup**, before a Quick look is applied, and before **Reset appearance**. It keeps the last five automatic backups; backups you make yourself stay until you delete them.
+Tandem also saves an automatic backup before a restore, before **Import my Cocoon setup**, before a Quick look is applied, and before **Reset look**. It keeps the last five automatic backups; backups you make yourself stay until you delete them.
 
 A backup made by an older Tandem (`library.json` and `settings.json` directly in `ROMs/tandem/backup/`) shows at the end of the list as **Older backup**.

@@ -51,7 +51,7 @@ Every drop can be undone (Select, or a tap on the message).
 
 ## The Home button
 
-When Tandem is your Android Home app (**Settings › Data & about › Use Tandem as the Home screen**, which asks Android to make it so):
+When Tandem is your Android Home app (**Settings › Play & system › Use Tandem as the Home screen**, which asks Android to make it so):
 
 - From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Home & layout › Icon grid › More › Home lands on Resume**).
 - With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
@@ -257,7 +257,7 @@ The private mode PIN has its own keypad, laid out like a phone's: the D-pad and 
 
 ## Settings
 
-Settings opens on nine tiles, one per page, each showing what is set now; **Quick looks** below them apply a whole setup in one press (press A again to undo). On a page:
+Settings opens on seven tiles, one per page, each showing what is set now; **Quick looks** below them apply a whole setup in one press (press A again to undo). On a page:
 
 | Button | What it does |
 | --- | --- |

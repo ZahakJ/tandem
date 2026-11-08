@@ -55,7 +55,7 @@ playing**). Games started on the bottom screen never get it.
 Both Tandem styles have a **Screenshot** button (needs [Shizuku](resume.md)): it saves the game's screen to
 `ROMs/screenshots/`, where the Gallery shows it, and copies it to the clipboard to paste into a chat.
 
-**Pause games in sleep** (Settings › Play & stats › Privacy & rest, on by default, needs Shizuku with root): a
+**Pause games in sleep** (Settings › Play & system › Playing › More, on by default, needs Shizuku running as root): a
 minute after the screen goes off, games left open are paused, so an emulator's audio can't keep the handheld
 awake; they carry on where they were when you wake it.
 
@@ -95,7 +95,7 @@ in the Thor's display settings, then leave Tandem with Home and open it again.
 1. Install [Shizuku](https://shizuku.rikka.app/) and start it with **wireless debugging** (needs Wi-Fi to start,
    not to keep running).
 2. Allow Tandem, on its setup screen or later in Shizuku's list of authorized apps.
-3. **Settings › Play & stats › Playing › Resume running games** shows **Ready** when it works.
+3. **Settings › Play & system › Playing › Resume running games** shows **Ready** when it works.
 
 Shizuku stops when the Thor restarts; start it again after a reboot. Until then, games simply start fresh.
 
@@ -110,7 +110,7 @@ the device's controller layout option.
 
 ## Tips
 
-- **Keep Tandem's data with your games.** **Settings › Data & about › Back up** saves favorites, play time,
+- **Keep Tandem's data with your games.** **Settings › Play & system › Back up** saves favorites, play time,
   the look, the home layout and emulator choices to `ROMs/tandem/backup/`; **Restore** puts them back on a new device.
 - **Hide what you don't play:** Y on a game › **Hide this game**.
 - **Already scraped with ES-DE?** Leave `ROMs/downloaded_media` where it is; Tandem uses the same artwork.

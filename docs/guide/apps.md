@@ -52,4 +52,4 @@ Moving needs Shizuku (see [Resume and Shizuku](resume.md)), and holding Back nee
 
 ## Where it is kept
 
-Per-app choices are kept in `app-prefs.json` next to Tandem's other data. **Settings › Data & about › Back up** saves them with **Systems & emulators**.
+Per-app choices are kept in `app-prefs.json` next to Tandem's other data. **Settings › Play & system › Back up** saves them with **Systems & emulators**.
