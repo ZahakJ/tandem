@@ -257,7 +257,7 @@ The private mode PIN has its own keypad, laid out like a phone's: the D-pad and 
 
 ## Settings
 
-Settings opens on seven tiles, one per page, each showing what is set now; **Quick looks** below them apply a whole setup in one press (press A again to undo). On a page:
+Settings opens on seven tiles, one per page, each showing what is set now. On a page:
 
 | Button | What it does |
 | --- | --- |

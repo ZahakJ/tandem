@@ -392,6 +392,18 @@ object ThemePacks {
     private fun findSounds(dir: File, o: JSONObject): File? =
         File(dir, "sounds").takeIf { it.isDirectory }?.let(::soundDir) ?: refs(o, "sounds").firstNotNullOfOrNull(::soundDir)
 
+    /**
+     * Every recorded sound pack on the device, for Sound & music › Custom sounds: (id, display name, sound folder). The
+     * Cocoon sound packs in ROMs/assets/sounds (by folder name), then theme packs with sounds of their own ("theme:<id>"),
+     * each folder once.
+     */
+    fun customSounds(): List<Triple<String, String, File>> {
+        val cocoon = soundPacks()
+        val seen = cocoon.map { it.third.canonicalPath }.toMutableSet()
+        val themes = packs.mapNotNull { p -> p.sounds?.takeIf { seen.add(it.canonicalPath) }?.let { Triple("theme:" + p.id, p.name + " (theme)", it) } }
+        return cocoon + themes
+    }
+
     /** Cocoon sound asset packs (ROMs/assets/sounds), for Sound & music: (folder name, display name, sound folder). */
     fun soundPacks(): List<Triple<String, String, File>> =
         File(cocoonAssetsDir, "sounds").listFiles().orEmpty().filter { it.isDirectory }.sortedBy { it.name.lowercase() }

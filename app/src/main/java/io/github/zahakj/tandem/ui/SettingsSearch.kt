@@ -144,11 +144,6 @@ internal fun settingsHits(): List<Hit> {
                 }
             }
         }
-        for (p in Presets.all) {
-            add(Hit("preset:${p.id}", p.title, "Settings › Quick looks", "", p.color, p.icon, p.blurb, p.title, "preset quick look " + p.changes.joinToString(" "), p.blurb) {
-                jump(Route.Settings, "preset:${p.id}")
-            })
-        }
         for (t in BuiltInThemes.list) {
             add(Hit("theme:${t.id}", t.name, "Look & feel › Themes", "Theme", t.accent, Glyph.Theme, t.tagline, t.name, "theme colours", t.tagline) {
                 jump(Route.Appearance, "theme:${t.id}")

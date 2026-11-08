@@ -74,7 +74,7 @@ object BuiltInApps {
         BuiltInApp("upnext", "Up next", "Games you mean to play soon", TIcon.UpNext, Color(0xFF4F8CF2)) { Nav.go(Route.Tool("upnext")) },
         BuiltInApp("files", "Files", "Browse and tidy your ROMs folder", TIcon.Files, Color(0xFF7C8AA8)) { Nav.go(Route.Tool("files")) },
         BuiltInApp("pad", "Controller test", "Every button and stick, live", TIcon.Controller, Color(0xFF4FBF6A)) { Nav.go(Route.Tool("pad")) },
-        BuiltInApp("settings", "Settings", "Everything Tandem can do, and Quick looks", TIcon.Gear, Color(0xFF8A94B8), onHome = false) { Nav.go(Route.Settings) },
+        BuiltInApp("settings", "Settings", "Everything Tandem can do", TIcon.Gear, Color(0xFF8A94B8), onHome = false) { Nav.go(Route.Settings) },
     )
 
     fun byId(id: String): BuiltInApp? = all.firstOrNull { it.id == id }

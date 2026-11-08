@@ -132,7 +132,7 @@ object SettingsPlan {
             Group("Moving apps", p("Systems & launching", "Hold Back to move apps", "Move games too")),
         ),
         "sound" to listOf(
-            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Sound volume", "Game jingles on hover", "Pip's voice")),
+            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Custom sounds", "Sound volume", "Game jingles on hover", "Pip's voice")),
             Group("Music", p("Sound & music", "Music", "Music from", "Music volume", "Next song"), p("Sound & music", "Shuffle my music")),
         ),
         "controls" to listOf(

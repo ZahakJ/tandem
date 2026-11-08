@@ -42,7 +42,7 @@ object Presets {
         private set
     private var before: Snapshot? = null
 
-    val all: List<LookPreset> get() = listOf(Cozy, Cocoon, Minimal, Battery)
+    val all: List<LookPreset> get() = listOf(Cozy, Cocoon, Minimal)
 
     fun byId(id: String) = all.firstOrNull { it.id == id }
 
@@ -137,15 +137,5 @@ object Presets {
             )
         }
         WidgetStore.update { it.copy(homeEnabled = false) }
-    }
-
-    private val Battery = LookPreset(
-        "battery", "Battery saver", Palette.Mint, Glyph.Battery, "",
-        "Keeps the screens still and the speakers quiet so the battery lasts longer. Your layout and theme stay as they are.",
-        listOf("Reduce motion on (still wallpapers)", "No video snaps", "No panning art", "Music off", "Quick, minimal animations"),
-        matches = { l, s -> s.reduceMotion && !l.videoSnaps && !l.music },
-    ) {
-        look { it.copy(videoSnaps = false, kenBurns = false, music = false, motion = AnimationStyle.Minimal.id) }
-        Store.updateSettings { it.copy(reduceMotion = true) }
     }
 }

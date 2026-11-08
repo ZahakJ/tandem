@@ -367,6 +367,14 @@ fun SettingsLayout(
     val target = rememberFocusTarget(routeKey, headerKeys.flatten() + lineKeys)
     val state = rememberRouteListState(routeKey)
     val revealScope = androidx.compose.runtime.rememberCoroutineScope()
+    // After the focus scroll that brings the row in: two scrolls at once cancel each other.
+    val revealAfterFocus: (Int) -> Unit = { above ->
+        revealScope.launch {
+            kotlinx.coroutines.delay(40)
+            androidx.compose.runtime.snapshotFlow { state.isScrollInProgress }.first { !it }
+            runCatching { state.reveal(above) }
+        }
+    }
     run {
         var index = headerKeys.indexOfFirst { target != null && target in it }
         if (index < 0) lines.indexOfFirst { it.key == target }.takeIf { it >= 0 }?.let { index = headerKeys.size + it }
@@ -384,6 +392,9 @@ fun SettingsLayout(
             // A gallery above the rows is explained on the details screen like a row (or, without a row of its own, by
             // the page's summary: see SettingsIdle).
             header?.invoke(this, target) { key ->
+                // A gallery brings its title (the item above it, with no keys of its own) along, and the first one the top.
+                val h = headerKeys.indexOfFirst { key in it }
+                if (h > 0 && headerKeys[h - 1].isEmpty()) revealAfterFocus(if (headerKeys.subList(0, h - 1).all { it.isEmpty() }) 0 else h - 1)
                 FocusMemory.remember(routeKey, key); focusedKey = key
                 Selection.current = headerRow(key)?.let { Selected.Setting(it.label, it.shownValue, it.help, it.color, it.aLabel) } ?: Selected.Home
             }
@@ -397,13 +408,9 @@ fun SettingsLayout(
                             // The first row under a heading brings the heading (and, at the top, the page's top) with it.
                             val i = lines.indexOf(line)
                             if (i > 0 && lines[i - 1] is SettingsLine.Heading) {
-                                val above = if (lines.subList(0, i).all { it is SettingsLine.Heading }) 0 else headerKeys.size + i - 1
-                                // After the focus scroll that brings the row in: two scrolls at once cancel each other.
-                                revealScope.launch {
-                                    kotlinx.coroutines.delay(40)
-                                    androidx.compose.runtime.snapshotFlow { state.isScrollInProgress }.first { !it }
-                                    runCatching { state.reveal(above) }
-                                }
+                                // The page's top only when nothing (no gallery) sits above the first heading.
+                                val above = if (headerKeys.isEmpty() && lines.subList(0, i).all { it is SettingsLine.Heading }) 0 else headerKeys.size + i - 1
+                                revealAfterFocus(above)
                             }
                             FocusMemory.remember(routeKey, line.key)
                             focusedKey = line.key

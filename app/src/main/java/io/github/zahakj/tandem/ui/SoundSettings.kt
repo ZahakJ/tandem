@@ -99,7 +99,12 @@ internal fun setPackPart(id: String, change: (io.github.zahakj.tandem.data.PackP
 fun soundSettings(trackCount: Int): SettingSection {
     val look = Store.settings.look
     val pack = SoundPack.of(look.soundPack)
-    val recorded = remember { ThemePacks.soundPacks() }
+    val recorded = remember(ThemePacks.packs) { ThemePacks.customSounds() }
+    // Game jingles only mean something once a game has one: files from ES-DE or Cocoon media, or one picked by hand.
+    val anyJingles = remember {
+        java.io.File(io.github.zahakj.tandem.Library.romsDir, "downloaded_media").listFiles().orEmpty().any { java.io.File(it, "jingles").isDirectory } ||
+            io.github.zahakj.tandem.data.Store.meta.values.any { it.jingle != null }
+    }
     val recordedNow = recorded.firstOrNull { it.first == look.soundFiles }
     val themeHasAudio = ThemePacks.byId(look.theme)?.let { it.music.isNotEmpty() || it.sounds != null } == true
     val fallback = if (themeHasAudio) " Used when the theme pack's own is switched off above." else ""
@@ -111,26 +116,33 @@ fun soundSettings(trackCount: Int): SettingSection {
                 preview = { SoundPackPreview(pack, play = false) }) { on -> updateLook { it.copy(sounds = on) }; if (on) Sounds.select() },
             choice(
                 "Sound pack", Glyph.Sparkle, Palette.Butter,
-                (recordedNow?.let { "${it.second}: recorded sounds, like the packs Cocoon keeps in ROMs/assets/sounds. Sounds it doesn't have come from ${pack.label}." }
-                    ?: pack.blurb) + fallback,
-                SoundPack.entries.map { it.id to it.label } + recorded.map { "rec:" + it.first to it.second + " · recorded" },
-                recordedNow?.let { "rec:" + it.first } ?: pack.id,
+                (if (recordedNow != null) "Custom: recorded sounds you have, from Cocoon's sound packs or a theme pack. Pick them below." else pack.blurb) + fallback,
+                SoundPack.entries.map { it.id to it.label } + (if (recorded.isNotEmpty()) listOf("custom" to "Custom") else emptyList()),
+                if (recordedNow != null) "custom" else pack.id,
                 preview = { SoundPackPreview(pack, play = recordedNow == null) },
             ) { v ->
-                // A recorded pack plays over the Tandem pack already chosen, which fills in what it lacks.
-                if (v.startsWith("rec:")) updateLook { it.copy(soundFiles = v.removePrefix("rec:")) }
+                if (v == "custom") updateLook { it.copy(soundFiles = recordedNow?.first ?: recorded.first().first) }
                 else { updateLook { it.copy(soundPack = v, soundFiles = "none") }; Sounds.ensurePack(SoundPack.of(v)) }
                 Sounds.refreshFiles(); Sounds.select()
             },
+        ) + (if (recordedNow == null) emptyList() else listOf(
+            choice(
+                "Custom sounds", Glyph.Sparkle, Palette.Butter,
+                "${recordedNow.second}. Sounds it doesn't have come from ${pack.label}." + fallback,
+                recorded.map { it.first to it.second }, recordedNow.first,
+            ) { v -> updateLook { it.copy(soundFiles = v) }; Sounds.refreshFiles(); Sounds.select() },
+        )) + listOf(
             number(
                 "Sound volume", Glyph.Volume, Palette.Butter, "How loud the UI sounds are, compared with the system volume.",
                 look.soundVolume, 0.1f, 1f, 0.1f, ::pct,
             ) { v -> updateLook { it.copy(soundVolume = v ?: 0.5f) }; Sounds.select() },
+        ) + (if (!anyJingles) emptyList() else listOf(
             toggle(
                 "Game jingles on hover", Glyph.Music, Palette.Lavender,
                 "A game's own jingle plays when you rest on it for a moment: a file in downloaded_media/<system>/jingles, or one picked in the game's Edit details.",
                 look.gameJingles,
             ) { on -> updateLook { it.copy(gameJingles = on) }; if (!on) GameJingles.fadeOut() },
+        )) + listOf(
             toggle("Pip's voice", Glyph.Heart, Palette.Lavender, "Pip babbles a little when it has something to tell you.", look.pipVoice,
                 preview = { PipVoicePreview(look.pipVoice) }) { on -> updateLook { it.copy(pipVoice = on) } },
             toggle(

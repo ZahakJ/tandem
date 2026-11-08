@@ -6,7 +6,7 @@ options**. X searches every row, including folded ones, by label, synonyms ("nin
 help text; picking a result opens its page, unfolds the group and pulses the row. L1 and R1 flip pages.
 
 Code: `ui/SettingsCatalog.kt` (pages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane layout, side
-panel), `ui/SettingsHome.kt` (tiles, Quick looks), `ui/SettingsSearch.kt`, `ui/Presets.kt`.
+panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`, `ui/Presets.kt`.
 
 ## How to add a setting
 
@@ -136,14 +136,9 @@ and `notGameApps` are migrated into `AppPref.game` the first time `app-prefs.jso
 stored but not used yet. A saved theme that is no longer built in, and the old "From the theme" value of
 `Look.soundFiles`, are migrated on start (`Themes.migrate`).
 
-## Quick looks
+## Quick switches
 
-| Quick look | What it changes |
-|---|---|
-| Cozy shelves | Shelves home, grid of games, details below, floating dock, library on top |
-| Icon grid look | Icon grid 7 across scrolling sideways, Spotlight, X swaps on the grid, folders as popups, pill dock; puts on an installed Cocoon theme pack (the most recently installed) when a built-in theme is on. With a Cocoon backup it runs Import my Cocoon setup instead (preset id `cocoon`) |
-| Minimal | List home and games, outline highlight, minimal motion, music, game jingles and splash off, icons-only auto-hiding dock, no widgets row |
-| Battery saver | Reduce motion, no video snaps, no panning art, music off, minimal animation; layout and theme unchanged |
-
-A applies a Quick look. A again undoes it, restoring settings, Home settings and widget settings to how they were
-before the first Quick look in a row.
+**Start** (the panel that folds open from the left) has **Theme ▸** and **Sounds & music ▸** for switching quickly: every
+theme and theme pack, Music on or off, and every sound pack, Tandem's own and recorded ones. **Quick settings** (hold
+Start) has the device toggles, and **Battery saver**: still screens and no music until you turn it off again, which puts
+back exactly what it changed.

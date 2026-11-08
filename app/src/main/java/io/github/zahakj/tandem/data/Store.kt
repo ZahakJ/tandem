@@ -101,6 +101,18 @@ data class Settings(
     val look: Look = Look(),
     /** Folders and whole systems hidden like hidden games (see HiddenFolders.kt). */
     val hiddenFolders: List<HiddenFolder> = emptyList(),
+    /** Battery saver is on: what it changed, to put back when it goes off (BatterySaver in QuickPanel.kt). */
+    val batterySaver: BatteryBefore? = null,
+)
+
+/** The settings Battery saver changes, as they were before it went on. */
+@Serializable
+data class BatteryBefore(
+    val reduceMotion: Boolean,
+    val videoSnaps: Boolean,
+    val kenBurns: Boolean,
+    val music: Boolean,
+    val motion: String?,
 )
 
 /**

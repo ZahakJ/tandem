@@ -77,7 +77,7 @@ import java.util.Date
 object StartMenu {
     var open by mutableStateOf(false)
         private set
-    /** The page inside the panel: null for the main one, "new", "sort", "settings" or "hidden". */
+    /** The page inside the panel: null for the main one, "new", "sort", "theme", "sounds", "settings" or "hidden". */
     var page by mutableStateOf<String?>(null)
 
     /** The highlighted row on the Hidden page, for Y and the hints. */
@@ -209,7 +209,7 @@ fun StartPanelHost() {
     }
 }
 
-private val StartPages = listOf(null, "settings", "new", "sort", "hidden")
+private val StartPages = listOf(null, "settings", "theme", "sounds", "new", "sort", "hidden")
 
 /**
  * One page of the panel. Shown, it slides in from the side it was opened towards and its rows unfold; hidden, it
@@ -376,6 +376,27 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
                 Toasts.show("Games sorted: ${o.label}")
             }
         }
+        // Quick switches for what you change often; everything else is in Settings.
+        "theme" -> listOf(back) + (BuiltInThemes.list.map { it.id to it.name } + ThemePacks.packs.map { it.id to it.name }).map { (id, name) ->
+            MenuAction("theme:$id", name, Glyph.Theme, Palette.Lavender, value = if (Store.settings.look.theme == id) "✓" else null) {
+                applyTheme(id); Toasts.show(name)
+            }
+        }
+        "sounds" -> listOf(back) + listOf(
+            MenuAction("music", "Music", Glyph.Music, Palette.Peach, value = if (Store.settings.look.music) "On" else "Off") {
+                updateLook { it.copy(music = !it.music) }; Music.refresh()
+            },
+        ) + io.github.zahakj.tandem.audio.SoundPack.entries.map { sp ->
+            val now = Store.settings.look.let { it.soundPack == sp.id && it.soundFiles == "none" }
+            MenuAction("sfx:${sp.id}", sp.label, Glyph.Bell, Palette.Butter, value = if (now) "✓" else null) {
+                updateLook { it.copy(soundPack = sp.id, soundFiles = "none") }
+                Sounds.ensurePack(sp); Sounds.refreshFiles(); Sounds.select()
+            }
+        } + ThemePacks.customSounds().map { (id, name, _) ->
+            MenuAction("rec:$id", name, Glyph.Sparkle, Palette.Butter, value = if (Store.settings.look.soundFiles == id) "✓" else null) {
+                updateLook { it.copy(soundFiles = id) }; Sounds.refreshFiles(); Sounds.select()
+            }
+        }
         "settings" -> listOf(
             back,
             MenuAction("all", "All settings", null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } },
@@ -410,6 +431,8 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             if (HiddenItems.offered()) add(
                 MenuAction("hidden", "Hidden", Glyph.Eye, Palette.Lavender, value = "${HiddenItems.count()}") { StartMenu.openHidden() },
             )
+            add(MenuAction("theme", "Theme", Glyph.Theme, Palette.Lavender, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":theme"); StartMenu.page = "theme" })
+            add(MenuAction("sounds", "Sounds & music", Glyph.Music, Palette.Peach, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sounds"); StartMenu.page = "sounds" })
             add(MenuAction("quick", "Quick settings", Glyph.Volume, Palette.Peach) { StartMenu.go { Panels.toggleQuick() } })
             add(MenuAction("settings", "Settings", null, Palette.Accent, value = "▸", icon = TIcon.Gear) {
                 FocusMemory.forget(StartMenu.ROUTE + ":settings"); StartMenu.page = "settings"

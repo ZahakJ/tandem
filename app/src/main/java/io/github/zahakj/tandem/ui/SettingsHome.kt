@@ -44,8 +44,8 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.Store
 
 /*
- * The first Settings screen: nine big tiles, one per page, each saying what is set right now; a search bar on top
- * (X works anywhere in Settings); and Quick looks underneath, whole setups in one press. The side panel shows
+ * The first Settings screen: seven big tiles, one per page, each saying what is set right now, and a search bar on
+ * top (X works anywhere in Settings). The side panel shows
  * what's inside the highlighted page, with the values of its main settings, so a glance often answers the question
  * without opening anything.
  */
@@ -57,20 +57,19 @@ fun SettingsScreen() {
     val ctx = LocalContext.current
     val cats = settingsCatalog()
     val routeKey = Route.Settings.key
-    val presets = Presets.all
-    val keys = listOf(SEARCH_KEY) + cats.map { "cat:${it.id}" } + presets.map { "preset:${it.id}" }
+    val keys = listOf(SEARCH_KEY) + cats.map { "cat:${it.id}" }
     // The first visit opens on the first page's tile, not the search bar.
     remember { if (FocusMemory.get(routeKey) == null) FocusMemory.remember(routeKey, "cat:look") }
     val target = rememberFocusTarget(routeKey, keys)
     var focused by remember { mutableStateOf(FocusMemory.get(routeKey) ?: "cat:look") }
     val state = rememberRouteListState(routeKey)
-    val rows = cats.chunked(3)
+    // Seven pages: four tiles, then three wider ones, so the grid is always full (no empty slots).
+    val rows = if (cats.size == 7) listOf(cats.take(4), cats.drop(4)) else cats.chunked(3)
     KeepInView(
         state,
         when {
             target == SEARCH_KEY -> 0
-            target?.startsWith("cat:") == true -> 1 + cats.indexOfFirst { "cat:${it.id}" == target }.coerceAtLeast(0) / 3
-            target?.startsWith("preset:") == true -> 2 + rows.size
+            target?.startsWith("cat:") == true -> 1 + rows.indexOfFirst { r -> r.any { "cat:${it.id}" == target } }.coerceAtLeast(0)
             else -> -1
         },
     )
@@ -107,23 +106,10 @@ fun SettingsScreen() {
                         row.forEach { c ->
                             val key = "cat:${c.id}"
                             CategoryTile(
-                                c, Modifier.weight(1f).height(98.dp).takesFocus(routeKey, key, key == target),
+                                c, Modifier.weight(1f).height(128.dp).takesFocus(routeKey, key, key == target),
                                 onFocus = { onFocus(key, c.title, c.summary, c.blurb, c.color, "Open") },
                             ) { Nav.go(c.route) }
                         }
-                        repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
-                    }
-                }
-            }
-            item(key = "presets-title") { SettingsHeader("Quick looks", "One press · press again to undo") }
-            item(key = "presets") {
-                Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    presets.forEach { p ->
-                        val key = "preset:${p.id}"
-                        PresetCard(
-                            p, Modifier.weight(1f).height(104.dp).takesFocus(routeKey, key, key == target),
-                            onFocus = { onFocus(key, p.title, if (Presets.undoable == p.id) "Applied" else "", p.blurb, p.color, if (Presets.undoable == p.id) "Undo" else "Use") },
-                        ) { Presets.press(ctx, p) }
                     }
                 }
             }
@@ -136,7 +122,6 @@ fun SettingsScreen() {
             AnimatedContent(focused, transitionSpec = { fadeIn(tween(160, delayMillis = 70)) togetherWith fadeOut(tween(70)) }, label = "settings-side") { key ->
                 when {
                     key.startsWith("cat:") -> cats.firstOrNull { "cat:${it.id}" == key }?.let { CategoryPanel(it) }
-                    key.startsWith("preset:") -> Presets.byId(key.removePrefix("preset:"))?.let { PresetPanel(it) }
                     else -> SearchPanel()
                 }
             }
@@ -174,27 +159,9 @@ private fun CategoryTile(c: SettingsCategory, modifier: Modifier, onFocus: () ->
         Column(Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 12.dp)) {
             GlyphChip(c.icon, c.color, 32.dp)
             Spacer(Modifier.weight(1f))
-            Text(c.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            // Narrow tiles (four in the top row) wrap a long name rather than cut it.
+            Text(c.title, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.1f)
             PartsText(c.summary, MaterialTheme.typography.labelLarge, color = c.color)
-        }
-    }
-}
-
-/** A Quick look card: a live sketch of the layout it gives, its name, and whether it's in use or can be undone. */
-@Composable
-private fun PresetCard(p: LookPreset, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    val look = Store.settings.look
-    val inUse = p.matches(look, Store.settings)
-    FocusCard(modifier, glow = p.color, shape = RoundedCornerShape(18.dp), onFocus = onFocus, onClick = onClick) {
-        Column(Modifier.fillMaxSize()) {
-            LayoutPreview(p.layout.ifEmpty { look.homeLayout }, Modifier.fillMaxWidth().weight(1f), rounded = false)
-            Row(Modifier.fillMaxWidth().background(Palette.Card).padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(p.title, Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                when {
-                    Presets.undoable == p.id -> Text("↶", style = MaterialTheme.typography.labelLarge, color = p.color)
-                    inUse -> Box(Modifier.size(8.dp).clip(CircleShape).background(p.color))
-                }
-            }
         }
     }
 }
@@ -236,45 +203,6 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
                 ButtonHint("R1", "Pages", Palette.Lavender)
                 ButtonHint("X", "Search", Palette.Sky)
             }
-        }
-    }
-}
-
-/** A Quick look explained: a live sketch, what it changes, and A to use (or undo) it. */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun PresetPanel(p: LookPreset) {
-    val look = Store.settings.look
-    val undo = Presets.undoable == p.id
-    Column(Modifier.fillMaxSize()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(p.icon, p.color, 40.dp)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(p.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    when { undo -> "Applied · A undoes it"; p.matches(look, Store.settings) -> "Looks like this now"; else -> "Quick look" },
-                    style = MaterialTheme.typography.titleSmall, color = p.color, maxLines = 1,
-                )
-            }
-        }
-        Spacer(Modifier.height(10.dp))
-        FitInside(Modifier.fillMaxWidth().weight(1f)) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                LayoutPreview(p.layout.ifEmpty { look.homeLayout }, Modifier.fillMaxWidth().aspectRatio(1.9f))
-                p.changes.forEach { line ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.size(6.dp).clip(CircleShape).background(p.color))
-                        Spacer(Modifier.width(8.dp))
-                        Text(line, style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    }
-                }
-            }
-        }
-        Spacer(Modifier.height(10.dp))
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ButtonHint("A", if (undo) "Undo" else "Use", p.color)
-            ButtonHint("B", "Back", Palette.Muted)
         }
     }
 }

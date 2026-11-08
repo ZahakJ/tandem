@@ -29,7 +29,7 @@ object SoundFiles {
      * chosen in Sound & music, or null for synthesized sounds only. Reads the theme packs already loaded.
      */
     fun folder(): File? = themeFolder() ?: Store.settings.look.soundFiles.let { choice ->
-        if (choice == "none") null else ThemePacks.soundPacks().firstOrNull { it.first == choice }?.third
+        if (choice == "none") null else ThemePacks.customSounds().firstOrNull { it.first == choice }?.third
     }
 
     /** The theme pack's own sounds, when it has some and they are on. */

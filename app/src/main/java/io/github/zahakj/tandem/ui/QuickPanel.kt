@@ -48,7 +48,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.Shell
+import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -232,6 +234,9 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
                     io.github.zahakj.tandem.PadLink.cycle()
                 }
             }
+            ToggleTile("Battery saver", BatterySaver.on, Palette.Mint, cell().remembersFocus(key, "battery", false), short = "Saver") {
+                BatterySaver.toggle(ctx)
+            }
             // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
             if (DiscordPresence.available && DiscordPresence.linked) {
                 ToggleTile("Discord status", DiscordPresence.shown, Palette.Mint, cell().remembersFocus(key, "discord", false), short = "Discord") {
@@ -376,4 +381,39 @@ private fun TileRow(narrow: Boolean, content: @Composable androidx.compose.found
             content = { androidx.compose.runtime.CompositionLocalProvider(LocalCompactTiles provides true, LocalTileWidth provides w) { content() } },
         )
     } else Row(horizontalArrangement = Arrangement.spacedBy(9.dp), content = content)
+}
+
+/**
+ * Battery saver: still screens and quiet speakers until it is turned off again. On, it notes the few settings it
+ * changes (reduce motion, video snaps, panning art, music, animation style) and sets them; off, it puts back exactly
+ * those, so anything changed meanwhile elsewhere stays. Your layout and theme are never touched.
+ */
+object BatterySaver {
+    val on: Boolean get() = Store.settings.batterySaver != null
+
+    fun toggle(ctx: android.content.Context) {
+        val s = Store.settings
+        val b = s.batterySaver
+        if (b == null) {
+            val l = s.look
+            Store.updateSettings {
+                it.copy(
+                    batterySaver = io.github.zahakj.tandem.data.BatteryBefore(it.reduceMotion, l.videoSnaps, l.kenBurns, l.music, l.motion),
+                    reduceMotion = true,
+                    look = it.look.copy(videoSnaps = false, kenBurns = false, music = false, motion = AnimationStyle.Minimal.id),
+                )
+            }
+            Toasts.show("Battery saver on: still screens, no music")
+        } else {
+            Store.updateSettings {
+                it.copy(
+                    batterySaver = null, reduceMotion = b.reduceMotion,
+                    look = it.look.copy(videoSnaps = b.videoSnaps, kenBurns = b.kenBurns, music = b.music, motion = b.motion),
+                )
+            }
+            Toasts.show("Battery saver off")
+        }
+        (ctx as? MainActivity)?.applyScreenRoles()
+        Music.refresh()
+    }
 }
