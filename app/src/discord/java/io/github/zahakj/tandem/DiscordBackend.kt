@@ -135,8 +135,7 @@ private class SdkBackend(private val host: DiscordSdk.Host) : DiscordSdk, Discor
         fun fit(s: String) = s.trim().take(128).takeIf { it.length >= 2 }
         sentImage = a.image.takeUnless { it in refused }
         DiscordNative.update(
-            fit(a.title)?.toByteArray(), fit(a.system)?.toByteArray(), a.startSec, sentImage?.toByteArray(),
-            fit(listOf(a.title, a.system).filter { it.isNotBlank() }.joinToString(" · "))?.toByteArray(),
+            fit(a.title)?.toByteArray(), null, a.startSec, sentImage?.toByteArray(), fit(a.title)?.toByteArray(),
         )
     }
 

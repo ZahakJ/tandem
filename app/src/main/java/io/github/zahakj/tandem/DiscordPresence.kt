@@ -14,8 +14,8 @@ import io.github.zahakj.tandem.ui.Toasts
 import org.json.JSONObject
 import java.io.File
 
-/** What Discord shows while a game plays: "Playing [title]", the [system] under it, the time since [startSec]. */
-data class DiscordActivity(val title: String, val system: String, val startSec: Long, val image: String)
+/** What Discord shows while a game plays: "Playing [title]", its cover ([image]) and the time since [startSec]. */
+data class DiscordActivity(val title: String, val startSec: Long, val image: String)
 
 /**
  * The Discord Social SDK side, one per build: src/discord/java with the SDK, src/nodiscord/java without it (see
@@ -134,7 +134,7 @@ object DiscordPresence : DiscordSdk.Host {
         if (!shown || Privacy.enabled || Privacy.isHidden(game)) { hide(); return }
         showing = true
         val cover = Covers.known(game)
-        sdk.show(DiscordActivity(game.title, game.platform.name, currentStartMs / 1000, cover ?: ART))
+        sdk.show(DiscordActivity(game.title, currentStartMs / 1000, cover ?: ART))
         // No cover yet: the icon shows meanwhile, and the cover replaces it once found (show checks privacy again).
         if (cover == null) app?.let { ctx -> Covers.resolve(ctx, game) { main.post { if (current === game && showing) show() } } }
     }

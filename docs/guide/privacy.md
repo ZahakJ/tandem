@@ -32,7 +32,7 @@ Each source can be switched off in **Settings › Art & accounts**; a source tha
 | SteamGridDB | Only with your own API key | Your API key and the game's title. |
 | HowLongToBeat | Off until you switch it on | The game's title. |
 | RetroAchievements | Only when signed in | Your username and web API key, the system's public game list (cached for a week), and the ID of a matched game to get your progress. Games are matched by a hash computed on the device; the file itself is never sent. |
-| Discord | Only after you connect your account, in builds that include it | While a game plays: its title, its system and when you started. The connection to Discord stays open only while you play and for a minute after. |
+| Discord | Only after you connect your account, in builds that include it | While a game plays: its title, its cover and when you started. The connection to Discord stays open only while you play and for a minute after. |
 
 **Hidden games are never sent anywhere**, and neither is any game in a hidden folder or system. They are left out of every scrape and achievement lookup, **Choose artwork** won't run for them, and they never show as your Discord status.
 
@@ -40,7 +40,7 @@ Each service has its own privacy policy, which applies to what you send it. [doc
 
 ## Discord status
 
-Tandem can show what you play as your Discord status: "Playing" and the game's title, its system under it, and how long you've been playing. It clears when you stop. It is off until you connect your account in **Settings › Art & accounts › Discord › Discord status**: Discord (or your browser, without the Discord app) asks you to authorize Tandem, once. Tandem never asks for your Discord password and never sees it.
+Tandem can show what you play as your Discord status: "Playing" and the game's title, its cover, and how long you've been playing. It clears when you stop. It is off until you connect your account in **Settings › Art & accounts › Discord › Discord status**: Discord (or your browser, without the Discord app) asks you to authorize Tandem, once. Tandem never asks for your Discord password and never sees it.
 
 - Hidden games, and games in hidden folders or systems, never show, and nothing is sent while private mode is on (not even a cover lookup).
 - The **Discord status** tile in **Quick settings** (hold Start) pauses it and turns it back on, staying connected; turning it off clears your status at once.
