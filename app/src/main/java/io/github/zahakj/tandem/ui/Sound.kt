@@ -68,6 +68,33 @@ object Sounds {
     private val loading = ConcurrentHashMap.newKeySet<String>()
     private var loadedPack: SoundPack? = null
 
+    /** Recorded sounds from [SoundFiles.folder], by [Sfx.ordinal] (0 = none: the synthesized one plays). */
+    @Volatile private var fileIds = IntArray(Sfx.entries.size)
+    @Volatile private var filesFrom: File? = null
+    @Volatile private var filesKey: String? = null
+
+    /** Loads the recorded sounds that play now ([SoundFiles]), unloading the last set. Cheap when nothing changed. */
+    fun refreshFiles() {
+        val dir = SoundFiles.folder()
+        val key = dir?.let { it.path + "@" + it.lastModified() }
+        if (key == filesKey) return
+        filesKey = key
+        worker.execute {
+            val p = pool ?: return@execute
+            val old = fileIds
+            val next = IntArray(Sfx.entries.size)
+            if (dir != null) {
+                val loaded = HashMap<File, Int>()
+                SoundFiles.map(dir).forEachIndexed { i, f ->
+                    if (f != null) next[i] = loaded.getOrPut(f) { runCatching { p.load(f.path, 1) }.getOrDefault(0) }
+                }
+            }
+            fileIds = next
+            filesFrom = dir
+            old.filter { it != 0 }.distinct().forEach { p.unload(it) }
+        }
+    }
+
     private var lastAt = 0L
     private var lastKind: Sfx? = null
     private var lastMoveAt = 0L
@@ -96,6 +123,7 @@ object Sounds {
         // Old cache files from earlier versions.
         dir?.listFiles()?.filter { !it.name.startsWith("v$VERSION-") }?.forEach { it.delete() }
         ensurePack(SoundPack.of(Store.settings.look.soundPack))
+        refreshFiles()
         worker.execute {
             for (i in 0 until 4) load("pip/$i") { SfxSynth.pipSyllable(i, rate) }
             load("hold") { SfxSynth.holdRise(rate, HOLD_MS / 1000.0) }
@@ -349,6 +377,8 @@ object Sounds {
             else -> {}
         }
         ensurePack(pack)
+        // A recorded sound plays as it was made: no pitch nudges.
+        fileIds[kind.ordinal].takeIf { it != 0 }?.let { return playId(it, kind, vol, 1f, keep = keep) }
         val id = packIds[pack]?.get(kind.ordinal) ?: 0
         if (id == 0) return 0
         return playId(id, kind, vol, rate, keep = keep)

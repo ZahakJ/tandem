@@ -36,8 +36,13 @@ data class ThemePack(
     /** Asset packs this theme uses ("Example - Smart Folders by Someone"). */
     val credits: List<String>,
     val removable: Boolean,
-    /** The pack's music: audio files in its music/ folder (or named by theme.json's "music"), in order. */
+    /**
+     * The pack's music, in order: audio files named by theme.json's "music", in its music/ folder, or in the Cocoon
+     * music asset packs its asset_refs name.
+     */
     val music: List<File> = emptyList(),
+    /** The folder of the pack's UI sounds (its own sounds/, or a Cocoon sound asset pack it names), if any. */
+    val sounds: File? = null,
 ) {
     val hasWallpaper: Boolean get() = spec.wallpaperTop != null || spec.wallpaperBottom != null
 
@@ -367,9 +372,30 @@ object ThemePacks {
             name = spec.name, author = o.optString("author").trim(),
             description = o.optString("description").trim(), version = o.optString("version").trim(),
             spec = spec.copy(hasArt = !art.isEmpty), art = art, preview = preview, credits = credits, removable = removable,
-            music = findMusic(dir, o),
+            music = findMusic(dir, o), sounds = findSounds(dir, o),
         )
     }
+
+    /** Cocoon asset packs of [category] ("music", "sounds") that theme.json's asset_refs name, in order. */
+    private fun refs(o: JSONObject, category: String): List<File> {
+        val refs = o.optJSONArray("asset_refs") ?: return emptyList()
+        return (0 until refs.length()).mapNotNull { i ->
+            refs.optJSONObject(i)?.takeIf { it.optString("category") == category }
+                ?.let { findAssetPack(category, it.optString("id"), it.optString("name")) }
+        }
+    }
+
+    /** A UI sound folder: [dir]/sounds when it holds sounds, else [dir] itself. */
+    private fun soundDir(dir: File): File? = listOf(File(dir, "sounds"), dir)
+        .firstOrNull { d -> d.listFiles().orEmpty().any { it.isFile && it.extension.lowercase() in audioExtensions } }
+
+    private fun findSounds(dir: File, o: JSONObject): File? =
+        File(dir, "sounds").takeIf { it.isDirectory }?.let(::soundDir) ?: refs(o, "sounds").firstNotNullOfOrNull(::soundDir)
+
+    /** Cocoon sound asset packs (ROMs/assets/sounds), for Sound & music: (folder name, display name, sound folder). */
+    fun soundPacks(): List<Triple<String, String, File>> =
+        File(cocoonAssetsDir, "sounds").listFiles().orEmpty().filter { it.isDirectory }.sortedBy { it.name.lowercase() }
+            .mapNotNull { d -> soundDir(d)?.let { s -> Triple(d.name, assetMeta(d)?.optString("name")?.ifBlank { null } ?: d.name, s) } }
 
     /**
      * A pack's music: the files theme.json's "music" names (a list of paths inside the pack), else every audio file in
@@ -381,8 +407,9 @@ object ThemePacks {
             val named = (0 until a.length()).mapNotNull { i -> a.optString(i).takeIf { it.isNotBlank() && ".." !in it }?.let { File(dir, it) } }.filter(::ok)
             if (named.isNotEmpty()) return named
         }
-        return listOf("music", "Music", "bgm", "sounds/music").map { File(dir, it) }.firstOrNull { it.isDirectory }
-            ?.walkTopDown()?.maxDepth(2)?.filter(::ok)?.sortedBy { it.path.lowercase() }?.toList().orEmpty()
+        fun inside(d: File) = d.walkTopDown().maxDepth(3).filter(::ok).sortedBy { it.path.lowercase() }.toList()
+        val own = listOf("music", "Music", "bgm", "sounds/music").map { File(dir, it) }.firstOrNull { it.isDirectory }?.let(::inside).orEmpty()
+        return own.ifEmpty { refs(o, "music").flatMap(::inside) }
     }
 
     /** Finds a pack's art: inside its own folder, and for Cocoon packs in the asset packs `asset_refs` names. */

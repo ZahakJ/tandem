@@ -76,6 +76,13 @@ fun soundSettings(trackCount: Int): SettingSection {
                 SoundPack.entries.map { it.id to it.label }, pack.id,
                 preview = { SoundPackPreview(pack, play = true) },
             ) { v -> updateLook { it.copy(soundPack = v) }; Sounds.ensurePack(SoundPack.of(v)) },
+            choice(
+                "Recorded sounds", Glyph.Sparkle, Palette.Butter,
+                "Sound packs made of recordings, like the ones Cocoon downloads to ROMs/assets/sounds, or a theme pack's own sounds. " +
+                    "Sounds a recorded pack doesn't have come from the sound pack above.",
+                listOf("theme" to "From the theme", "none" to "Off") + remember { ThemePacks.soundPacks().map { it.first to it.second } },
+                look.soundFiles,
+            ) { v -> updateLook { it.copy(soundFiles = v) }; Sounds.refreshFiles(); Sounds.select() },
             number(
                 "Sound volume", Glyph.Volume, Palette.Butter, "How loud the UI sounds are, compared with the system volume.",
                 look.soundVolume, 0.1f, 1f, 0.1f, ::pct,
@@ -154,6 +161,7 @@ fun SoundCues() {
     val look = Store.settings.look
     LaunchedEffect(look.music, look.musicVolume, look.musicTrack, look.musicPack, look.myMusic, look.theme) { Music.refresh() }
     LaunchedEffect(look.soundPack) { Sounds.ensurePack(SoundPack.of(look.soundPack)) }
+    LaunchedEffect(look.soundFiles, look.theme) { Sounds.refreshFiles() }
 
     // A launch counts as a popup for focus, but it has its own sound.
     val open = Nav.overlayOpen && !LaunchFx.busy

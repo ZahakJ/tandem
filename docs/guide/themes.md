@@ -82,5 +82,6 @@ Copy pictures or videos to `ROMs/tandem/wallpapers/` and they appear in **Look &
 
 **Settings › Sound & music:**
 
+- **Recorded sounds:** sound packs made of recordings, like the ones Cocoon downloads into `ROMs/assets/sounds`, or a theme pack's own. Pick one in **Recorded sounds**, or leave it on **From the theme**. Sounds a pack doesn't have come from the UI sound pack.
 - **UI sounds:** five packs (Modern, Playful, Chiptune, Bubbly and Minimal), made by Tandem as it starts, so there are no sound files. **System jingles** play a tiny original tune per family of systems when a game starts (or when you open a system too). **Play jingles** plays a game's own jingle when you rest on it ([Editing a game](library.md#editing-a-game)). With **Pip's voice** on, Pip babbles a little when it has something to tell you.
 - **Background music:** two soundtracks of original music, **Meadow Tales** and **Pastel Arcade**, six pieces each. Or put your own files (MP3, OGG, Opus, FLAC, M4A, WAV) in `ROMs/tandem/music/`. A theme pack with music of its own (a `music/` folder in the pack) plays it while it's your theme; turn that off with **Music** on the pack in **Manage packs**. Music fades out when a game starts and back in when you return.

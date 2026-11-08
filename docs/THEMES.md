@@ -164,7 +164,13 @@ Videos play muted, looping and hardware decoded. The player is released whenever
 UI sounds and the built-in soundtracks are synthesized by Tandem, so there are no sound files. Your own music goes in
 `ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV).
 
-A theme pack can bring its own music: a `music/` folder in the pack (Cocoon packs too, `bgm/` also works), or a
-`music` list in `theme.json`. While that pack is the theme its music plays instead of the background music, in order,
+A theme pack can bring its own music: a `music/` folder in the pack (`bgm/` also works), a `music` list in
+`theme.json`, or, for Cocoon packs, the music asset packs its `asset_refs` name (in `ROMs/assets/music/`). While that pack is the theme its music plays instead of the background music, in order,
 and switching to another theme goes back. Each pack's music can be turned off in **Theme packs** (**Music**).
 Importing a pack copies its music with everything else.
+
+Recorded UI sounds work the same way: a `sounds/` folder in the pack, or the Cocoon sound asset pack its `asset_refs`
+name (in `ROMs/assets/sounds/`). Files are named for what they play: `navigate`, `select`, `back`, `launch`,
+`notification`, `folder_open`, `grid_zoom_in`, `grid_zoom_out`, `favorite`, `error`. **Sound & music › Recorded
+sounds** plays the theme's ("From the theme"), any Cocoon sound pack on its own, or none; sounds a pack doesn't have
+come from Tandem's own sound pack.

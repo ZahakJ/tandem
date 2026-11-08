@@ -127,6 +127,11 @@ data class Look(
     val soundVolume: Float = 0.5f,
     /** UI sound pack: "modern", "playful" (the original marimba set; "soft" before), "chip", "bubbly", "minimal". */
     val soundPack: String = "modern",
+    /**
+     * Recorded UI sounds over [soundPack]'s: "theme" (the theme pack's own or linked sounds, when it has any), "none",
+     * or the folder name of a Cocoon sound pack in ROMs/assets/sounds. Sounds a pack lacks come from [soundPack].
+     */
+    val soundFiles: String = "theme",
     val music: Boolean = true,
     val musicVolume: Float = 0.4f,
     /** Tandem's own soundtrack pack: "meadow" (Meadow Tales, acoustic) or "classic" (Pastel Arcade, synth and chiptune). */

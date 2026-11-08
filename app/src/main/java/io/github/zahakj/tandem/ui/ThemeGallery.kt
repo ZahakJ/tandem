@@ -71,8 +71,9 @@ fun applyTheme(id: String) {
         }
         s.copy(look = l)
     }
-    // A pack with music of its own plays it from now; switching away goes back to the background music.
+    // A pack with music or sounds of its own plays them from now; switching away goes back.
     Music.refresh()
+    Sounds.refreshFiles()
 }
 
 /** The built-in themes, game-flavoured first. */
