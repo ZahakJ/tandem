@@ -264,7 +264,13 @@ object GridSlots {
             }
         }.let { if (stored <= 0) it.filter { k -> k.isEmpty() || k in here } else it }
         val out = relayout(base, stored, lanes, ext).toMutableList()
-        for (k in present) if (k !in seen) { out.add(k); seen.add(k) }
+        // New tiles take the place of keys that no longer show (a game renamed, deleted or hidden), first one first,
+        // so a leftover never shows as a gap with the new tile after it; past those, they go at the end.
+        val stale = out.indices.filter { i -> out[i].isNotEmpty() && out[i] !in here && (ext[out[i]] == null) }.iterator()
+        for (k in present) if (k !in seen) {
+            if (stale.hasNext()) out[stale.next()] = k else out.add(k)
+            seen.add(k)
+        }
         return settle(out, lanes, ext, page)
     }
 

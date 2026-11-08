@@ -59,6 +59,11 @@ class CloseCheckTest {
         assertEquals("a game that isn't open", CloseCheck.gameFor(Slot(gamenative, hades), library))
     }
 
+    @Test fun anEmulatorWithNoGameOfTandemsIsClosedWithoutAsking() {
+        val closing = CloseCheck.wouldClose(listOf(Slot(gamenative, null), Slot(eden, zelda)), retroarch, celeste, anyApp = false, closePrevious = true)
+        assertEquals(listOf(eden), CloseCheck.worthAsking(closing).map { it.pkg })
+    }
+
     @Test fun closePreviousDecidesWhetherOtherEmulatorsClose() {
         val running = listOf(Slot(eden, zelda), Slot(gamenative, hades))
         assertEquals(listOf(eden, gamenative), close(running, retroarch, celeste, closePrevious = true))

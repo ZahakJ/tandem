@@ -217,7 +217,8 @@ object RunningGames {
         val slots = (emulatorPackages() + pkg).filter { snap.playing(it) }
             .sortedByDescending { prefs.getLong(it, 0) }
             .map { CloseCheck.Slot(it, if (stillOurs(ctx, it, snap)) Launcher.lastGamePath(ctx, it) else null) }
-        val closing = CloseCheck.wouldClose(slots, pkg, path, anyApp, closePreviousOn())
+        // Only a game Tandem started can have progress to lose; an emulator open on its own is closed without asking.
+        val closing = CloseCheck.worthAsking(CloseCheck.wouldClose(slots, pkg, path, anyApp, closePreviousOn()))
         if (closing.isEmpty()) return emptyList()
         val byPath = Libraries.games.associateBy { it.file.path }
         // Named from the slot's own path, null for an emulator opened outside Tandem, as in [refresh].

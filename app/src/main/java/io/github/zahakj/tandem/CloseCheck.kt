@@ -29,6 +29,12 @@ object CloseCheck {
     }
 
     /**
+     * Of [closing], the ones worth asking about: those with a game Tandem started in them, which may have progress
+     * to save. An emulator opened by hand with no game Tandem knows of (its menu, a settings screen) is just closed.
+     */
+    fun worthAsking(closing: List<Slot>): List<Slot> = closing.filter { it.lastPath != null }
+
+    /**
      * The game [slot] has open, to name in the question: the one at its [Slot.lastPath] in [byPath] (the library by
      * file). Null when the emulator was opened outside Tandem (no path), so it is named by its app alone and a game
      * that isn't running (a hidden one, say) is never named.

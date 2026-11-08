@@ -117,6 +117,14 @@ class GridSlotsTest {
     }
 
     @Test
+    fun aNewTileTakesTheSlotOfOneThatNoLongerShows() {
+        // A game renamed outside Tandem leaves its old key behind: the new one goes there, not after a gap.
+        val stored = listOf("a", "b", "old")
+        assertEquals(listOf("a", "b", "new", "c"), GridSlots.shown(stored, 0, 3, listOf("a", "b", "new", "c")).filter { it.isNotEmpty() })
+        assertEquals("new", GridSlots.shown(stored, 1, 3, listOf("a", "b", "new"))[2])
+    }
+
+    @Test
     fun alwaysAnEmptyColumnAfterTheLastTile() {
         // 5 tiles in 2 rows use 3 columns; one more empty column makes 8 slots.
         assertEquals(8, GridSlots.shownCount(listOf("a", "b", "c", "d", "e"), 2))
