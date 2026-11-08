@@ -124,25 +124,25 @@ object SfxSynth {
 
     /** Pip's voice: four little syllables ("pi", "pa", "po", "pu"), played quickly at different pitches. */
     fun pipSyllable(index: Int, rate: Int): FloatArray {
-        val b = Buf(rate, 0.12)
-        val formants = arrayOf(doubleArrayOf(2600.0, 400.0), doubleArrayOf(1300.0, 850.0), doubleArrayOf(900.0, 550.0), doubleArrayOf(700.0, 350.0))[index and 3]
-        val f1 = Svf().apply { set(formants[0], 4.0, rate) }
-        val f2 = Svf().apply { set(formants[1], 3.0, rate) }
-        val dur = 0.075 + index * 0.004
+        // A soft round "boop": nearly a pure sine (a whisper of the octave for warmth), easing in and out, with a
+        // gentle glide and a little room around it. Calm and small rather than chattering.
+        val b = Buf(rate, 0.32)
+        val base = doubleArrayOf(784.0, 880.0, 988.0, 698.0)[index and 3]
+        val glide = doubleArrayOf(0.03, 0.06, -0.03, 0.04)[index and 3]
+        val dur = 0.11 + (index and 1) * 0.02
         var ph = 0.0
         val n = (dur * rate).toInt()
         for (i in 0 until n) {
             val t = i.toDouble() / rate
             val p = t / dur
-            // A little up-down contour, like a question and an answer.
-            val f = 620.0 * (1 + 0.18 * sin(PI * p) + if (index == 1) 0.08 * p else -0.05 * p)
+            val f = base * (1 + glide * p)
             ph += f / rate; if (ph >= 1) ph -= 1
-            val src = Wave.pulse(ph, f / rate, 0.3).toFloat()
-            val env = (if (t < 0.006) t / 0.006 else 1.0) * (if (p > 0.7) (1 - p) / 0.3 else 1.0)
-            val s = f1.bp(src) * 0.9f + f2.bp(src) * 1.1f + src * 0.12f
-            b.data[i] += (s * env).toFloat()
+            val src = sin(2 * PI * ph) + 0.12 * sin(4 * PI * ph)
+            // Soft attack (12 ms), then a smooth bell-like fall.
+            val env = (if (t < 0.012) sin(PI / 2 * t / 0.012) else 1.0) * (1 - p) * (1 - p)
+            b.data[i] += (src * env).toFloat()
         }
-        return b.finish(0.0, 0.5f)
+        return b.finish(0.18, 0.38f)
     }
 
     /** A short buffer with helpers; [finish] adds a reverb tail, removes DC and sets the level. */

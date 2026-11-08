@@ -40,7 +40,7 @@ import kotlin.random.Random
  * Only the chosen pack is kept loaded. Pip's voice is made in the background on first use.
  */
 object Sounds {
-    private const val VERSION = 4
+    private const val VERSION = 5
     @Volatile private var pool: SoundPool? = null
     private var dir: File? = null
     private var rate = 48000
@@ -264,17 +264,18 @@ object Sounds {
         val look = Store.settings.look
         if (!look.sounds || !look.pipVoice) return
         val words = text.split(' ').count { it.any(Char::isLetter) }
-        val n = (words + 1).coerceIn(2, 7)
+        // Two to four soft notes, unhurried, never more than a few steps apart: a hum, not chatter.
+        val n = (words / 2 + 2).coerceIn(2, 4)
         val rnd = Random(text.hashCode())
-        val scale = floatArrayOf(0f, 2f, 4f, 7f, 9f, 12f)
+        val scale = floatArrayOf(0f, 2f, 4f, 7f)
         var t = 90L
         for (i in 0 until n) {
             val syl = rnd.nextInt(4)
-            // Questions go up at the end; everything else settles down.
-            val semis = if (i == n - 1) (if (text.trimEnd().endsWith("?")) 12f else 0f) else scale[rnd.nextInt(scale.size)]
-            val r = 2f.pow(semis / 12f) * (0.95f + rnd.nextFloat() * 0.1f)
-            main.postDelayed({ ids["pip/$syl"]?.let { playId(it, Sfx.Toast, 0.55f, r, mark = false) } }, t)
-            t += 62L + rnd.nextInt(30)
+            // Questions lift a little at the end; everything else settles down.
+            val semis = if (i == n - 1) (if (text.trimEnd().endsWith("?")) 5f else -2f) else scale[rnd.nextInt(scale.size)]
+            val r = 2f.pow(semis / 12f)
+            main.postDelayed({ ids["pip/$syl"]?.let { playId(it, Sfx.Toast, 0.42f, r, mark = false) } }, t)
+            t += 120L + rnd.nextInt(30)
         }
     }
 
