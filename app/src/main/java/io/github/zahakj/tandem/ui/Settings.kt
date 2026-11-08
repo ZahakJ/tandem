@@ -3,6 +3,7 @@ package io.github.zahakj.tandem.ui
 import io.github.zahakj.tandem.FileChecks
 import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.animation.AnimatedContent
@@ -397,7 +398,12 @@ fun SettingsLayout(
                             val i = lines.indexOf(line)
                             if (i > 0 && lines[i - 1] is SettingsLine.Heading) {
                                 val above = if (lines.subList(0, i).all { it is SettingsLine.Heading }) 0 else headerKeys.size + i - 1
-                                revealScope.launch { runCatching { state.reveal(above) } }
+                                // After the focus scroll that brings the row in: two scrolls at once cancel each other.
+                                revealScope.launch {
+                                    kotlinx.coroutines.delay(40)
+                                    androidx.compose.runtime.snapshotFlow { state.isScrollInProgress }.first { !it }
+                                    runCatching { state.reveal(above) }
+                                }
                             }
                             FocusMemory.remember(routeKey, line.key)
                             focusedKey = line.key
