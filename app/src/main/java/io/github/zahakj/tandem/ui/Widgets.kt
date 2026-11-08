@@ -790,10 +790,6 @@ fun widgetsSettings(): SettingSection {
             ) {
                 WidgetUi.editorTab = 1; Nav.go(Route.Widgets)
             },
-            SettingRow(
-                "Add to Up next", if (upNext == 0) "Empty" else plural(upNext, "entry", "entries"), Palette.Butter, Glyph.Sort,
-                "A little to-play list for the Up next widget. Type a game you want to get to.", keywords = "backlog todo list",
-            ) { UpNext.ask() },
         ),
     )
 }

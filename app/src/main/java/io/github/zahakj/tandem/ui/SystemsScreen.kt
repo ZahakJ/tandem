@@ -348,11 +348,20 @@ fun systemsSettings(): SettingSection {
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
+                // It only works with both, so the row says which one is missing instead of claiming On.
+                val needs = when {
+                    !io.github.zahakj.tandem.Shell.ready() -> "Needs Shizuku"
+                    io.github.zahakj.tandem.ControllerHomeService.instance == null -> "Needs the Home button service"
+                    else -> null
+                }
                 SettingRow(
-                    "Hold Back to move apps", onOff(apps.holdBackMoves), Palette.Lavender, Glyph.Swap,
+                    "Hold Back to move apps", needs ?: onOff(apps.holdBackMoves), Palette.Lavender, Glyph.Swap,
                     "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. Needs Shizuku and the Controller Home button service (Controls).",
-                    toggle = apps.holdBackMoves, keywords = "move app other screen swap display back button hold shizuku",
-                ) { io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = !it.holdBackMoves) } }
+                    toggle = if (needs != null) null else apps.holdBackMoves, keywords = "move app other screen swap display back button hold shizuku",
+                ) {
+                    if (needs != null) Toasts.show(needs.replaceFirst("Needs", "This needs"))
+                    else io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = !it.holdBackMoves) }
+                }
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
@@ -368,16 +377,6 @@ fun systemsSettings(): SettingSection {
                 toggle = prefs.launchAnimation, keywords = "start transition zoom",
             ) {
                 SystemPrefs.update { it.copy(launchAnimation = !it.launchAnimation) }
-            },
-            SettingRow(
-                "Cocoon platform files", if (cocoonFiles > 0) "$cocoonFiles found" else "None", Palette.Lavender, Glyph.Folder,
-                "Cocoon and Daijisho platform files in ROMs/platforms add their emulators to Systems, so a setup you already made keeps working.",
-                keywords = "daijisho platforms json am start import",
-            ) {
-                Toasts.show(
-                    if (cocoonFiles > 0) "Their emulators are in Systems, marked ${CocoonPlatforms.ORIGIN}"
-                    else "Put Cocoon or Daijisho platform files in ROMs/platforms",
-                )
             },
         ),
     )

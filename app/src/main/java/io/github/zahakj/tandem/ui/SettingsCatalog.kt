@@ -20,10 +20,10 @@ import io.github.zahakj.tandem.data.SystemPrefs
  * How Settings is organised.
  *
  * Every feature still writes its own rows in its own file (appearanceSections, soundSettings, systemsSettings...).
- * This file sorts them into nine calm pages: each page is a few short groups, common rows first, the rest folded
- * under "More options". Rows are picked by their group title and label. Nothing can get lost: a row that no page
- * picks (a feature added a new one) still shows, in the "More options" of the page its group belongs to
- * (see [Owners]). docs/SETTINGS.md maps every setting to its place.
+ * [SettingsPlan] sorts them into seven calm pages: each page is a few short groups, common rows first, the rest folded
+ * under "More options". Rows are picked by their group title and label. Every row a feature builds is either placed
+ * or dropped on purpose; SettingsPlanTest fails when one isn't, and a debug build shows a stray row under
+ * "Not placed" on its page. docs/SETTINGS.md maps every setting to its place.
  */
 
 /** Galleries above a page's groups (themes on Look & feel, layouts on Home & layout). See [SettingsLayout]. */
@@ -53,7 +53,7 @@ class SettingsCategory(
 
 object SettingsCategories {
     /** Page ids in the order the tiles show (and L1/R1 step through them). */
-    val ids = listOf("look", "home", "screens", "sound", "controls", "library", "art", "play", "data")
+    val ids = listOf("look", "home", "screens", "sound", "controls", "library", "play")
 
     /** Look & feel keeps the old Appearance route, so everything that opened Appearance lands on it. */
     fun route(id: String): Route = if (id == "look") Route.Appearance else Route.SettingsPage(id)
@@ -70,42 +70,129 @@ object SettingsCategories {
         "screens" -> "Two screens"
         "sound" -> "Sound & music"
         "controls" -> "Controls"
-        "library" -> "Library"
-        "art" -> "Art & accounts"
-        "play" -> "Play & stats"
-        else -> "Data & about"
+        "library" -> "Library & art"
+        else -> "Play & system"
     }
 
     /** The page L1 (-1) or R1 (+1) moves to. */
     fun step(id: String, by: Int): String = ids[(ids.indexOf(id).coerceAtLeast(0) + by + ids.size) % ids.size]
 }
 
-/** Which page a feature's group belongs to, for rows no page picked by name. */
-private val Owners = mapOf(
-    "Colour & highlight" to "look", "System icons" to "look", "Motion" to "look", "Wallpaper" to "look", "Extras" to "look",
-    "Layout" to "home", "Icon grid" to "home", "Dock" to "home", "Top bar" to "home", "Widgets" to "home",
-    "Bottom screen" to "screens", "Screens" to "screens",
-    "Sound & music" to "sound",
-    "Controls" to "controls", HomeButtonGroup to "controls", ControllersGroup to "controls", PadLinkGroup to "controls",
-    "Library" to "library", "Systems & launching" to "library",
-    "Artwork & details" to "art", "RetroAchievements" to "art", "Discord" to "art",
-    "Home & play" to "play", "Motion & home" to "look",
-    "Your data" to "data", "About" to "data", "From Cocoon" to "library", "Developer" to "data",
-)
+/**
+ * Where every row goes: plain data, so a test can check it. A [Pick] is a feature's group title and a row label;
+ * [Pick.layout] shows it only with the icon grid ("grid") or only with the other layouts ("other").
+ */
+object SettingsPlan {
+    data class Pick(val section: String, val label: String, val layout: String? = null)
+    data class Group(val title: String, val main: List<Pick>, val more: List<Pick> = emptyList(), val note: String? = null)
+
+    private fun p(section: String, vararg labels: String) = labels.map { Pick(section, it) }
+    private fun grid(section: String, vararg labels: String) = labels.map { Pick(section, it, "grid") }
+    private fun other(section: String, vararg labels: String) = labels.map { Pick(section, it, "other") }
+
+    /** The group of scraping sources: their rows are named after the sources, in the order the user chose. */
+    const val SOURCES = "Sources, in order"
+
+    /** Every row of a group whose rows change (connected controllers, PadLink). */
+    val whole: Set<String> = setOf(ControllersGroup, PadLinkGroup)
+
+    val pages: Map<String, List<Group>> = mapOf(
+        "look" to listOf(
+            Group("Colour", p("Colour & highlight", "Accent colour", "Highlight style"), p("Colour & highlight", "Surface")),
+            Group("Wallpaper", p("Wallpaper", "Top screen", "Bottom screen"), p("Wallpaper", "Picture dimming")),
+            Group("Icons", p("System icons", "Icons from", "Icon style")),
+            Group("Motion", p("Motion", "Animation style", "Reduce motion"), p("Motion & home", "Floating titles", "Motion intensity")),
+            Group("Start over", p("Extras", "Reset look")),
+        ),
+        "home" to listOf(
+            Group(
+                "Home screen",
+                grid("Icon grid", "Icon size", "Scrolling") + grid("Motion & home", "Icon names", "Recently played strip") +
+                    other("Layout", "Home rows") + grid("Icon grid", "Folders open") + other("Layout", "Open folders"),
+                grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split") + other("Layout", "System tiles"),
+            ),
+            Group("Games", p("Layout", "Games view", "Grid size", "Card shape", "Game titles")),
+            Group("While a game runs", p("Layout", "Now playing") + p("Extras", "Home lands on Resume")),
+            Group("Dock", p("Dock", "Apps dock") + p("Home & play", "Choose dock apps") + p("Dock", "Dock style"), p("Dock", "Dock on top", "Auto-hide dock")),
+            Group("Widgets", p("Widgets", "Customize widgets", "Widgets on the home screen"), p("Widgets", "Widgets on the grid")),
+            Group("Top bar", p("Top bar", "Clock", "Battery")),
+            Group("Rest", p("Home & play", "Screensaver")),
+        ),
+        "screens" to listOf(
+            Group(
+                "Screens", p("Systems & launching", "Single screen") + p("Screens", "Swap screens") + p("Systems & launching", "Apps open on"),
+                p("Icon grid", "Swap animation") + p("Screens", "Keep auto-rotate off"),
+            ),
+            Group(
+                "Other screen",
+                grid("Icon grid", "Other screen") + other("Bottom screen", "Style") + p("Bottom screen", "Video snaps", "Moving art") +
+                    p("Widgets", "Bottom screen when idle"),
+                p("Bottom screen", "Art height", "Logo size", "Art fade"),
+            ),
+            Group("Moving apps", p("Systems & launching", "Hold Back to move apps", "Move games too")),
+        ),
+        "sound" to listOf(
+            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Sound volume", "Game jingles on hover", "Pip's voice")),
+            Group("Music", p("Sound & music", "Music", "Music from", "Music volume", "Next song"), p("Sound & music", "Shuffle my music")),
+        ),
+        "controls" to listOf(
+            Group(
+                "Buttons", p("Controls", "Button prompts", "Swap A and B") + p("Icon grid", "X button"),
+                p("Controls", "Swap X and Y") + p("Layout", "Corner hints"),
+                note = "Hold Select: game switcher · Hold Start: quick settings",
+            ),
+            Group(HomeButtonGroup, p(HomeButtonGroup, "Controller Home button"), p(HomeButtonGroup, "Hold the Home button")),
+            Group(ControllersGroup, emptyList(), note = "On: Nintendo labels"),
+            Group(PadLinkGroup, emptyList()),
+        ),
+        "library" to listOf(
+            Group("Games", p("Library", "Sort games by", "Show hidden games", "Rescan games")),
+            Group("Systems", p("Systems & launching", "Systems and emulators", "Android apps")),
+            Group(
+                "Artwork", p("Artwork & details", "Scrape library", "Set up sources", "Artwork to download"),
+                p("Artwork & details", "Preferred region", "Preferred language", "Clear downloaded media"),
+            ),
+            Group(SOURCES, emptyList()),
+            Group("RetroAchievements", p("RetroAchievements", "Account", "Show achievements"), p("RetroAchievements", "Look up games again", "Sign out")),
+            Group("Discord", p("Discord", "Discord status"), p("Discord", "Disconnect Discord")),
+            Group("Bring your details", p("From Cocoon", "Import my Cocoon setup") + p("Your data", "Import details"), p("From Cocoon", "Undo Cocoon import")),
+        ),
+        "play" to listOf(
+            Group(
+                "Playing", p("About", "Resume running games") + p("Home & play", "Close previous game", "Ask before closing a game"),
+                p("Home & play", "Pause games in sleep") + p("Systems & launching", "Launch animation"),
+            ),
+            Group(
+                "Privacy", p("Home & play", "Private mode", "Go offline while a hidden game plays", "Stay offline until the game closes"),
+                p("Home & play", "Private mode PIN"),
+            ),
+            Group("Stats", p("Home & play", "Play stats"), p("Home & play", "Export play stats")),
+            Group("Your data", p("Home & play", "Use Tandem as the Home screen") + p("Your data", "Back up", "Restore")),
+            Group("About", p("About", "About Tandem"), p("Developer", "Frame timing overlay", "Tour every theme")),
+        ),
+    )
+
+    /** Rows shown twice in the old screens, or standing for a gallery: built, but never placed. */
+    val dropped: List<Pick> =
+        p("Library", "Show game titles") + // Home & layout › Games › Game titles
+            p("Screens", "Single screen") + // Two screens › Single screen (the one that knows when there is one screen)
+            p("Home & play", "Apps dock on the home screen") + // Home & layout › Dock › Apps dock
+            p("Icon grid", "Icon pack") + // Look & feel › Icons › Icons from
+            p("Icon grid", "Names under icons") + // Home & layout › Icon names (always, highlighted only, off)
+            p("Motion & home", "Use Tandem as the Home screen") + // Play & system › Your data
+            p("Layout", "Home layout") // the layout gallery at the top of Home & layout
+}
 
 /** Words people search for that a row's label doesn't contain (rows can also list their own `keywords`). */
 private val Synonyms = mapOf(
-    "Accent colour" to "color tint hue",
-    "Highlight style" to "focus selection glow outline cursor",
-    "Highlight colour" to "focus color",
-    "Focus zoom" to "grow scale bigger",
-    "Surface" to "glass frosted material cards",
-    "Top screen" to "wallpaper background",
+    "Accent colour" to "color tint hue highlight colour",
+    "Highlight style" to "focus selection glow outline cursor thickness zoom",
+    "Surface" to "glass frosted material cards corners",
+    "Top screen" to "wallpaper background folder",
     "Bottom screen" to "wallpaper background",
     "Icon style" to "system icons consoles drawn",
     "Animation style" to "bouncy smooth speed",
     "Reduce motion" to "animations still battery",
-    "Home layout" to "icon grid shelves carousel list console",
     "Icon size" to "bigger smaller zoom columns across",
     "Grid size" to "bigger smaller cards columns",
     "Games view" to "list grid coverflow",
@@ -117,14 +204,16 @@ private val Synonyms = mapOf(
     "Video snaps" to "preview videos battery",
     "Moving art" to "ken burns pan zoom",
     "UI sounds" to "clicks beeps sfx effects mute",
-    "Background music" to "soundtrack bgm mute quiet",
-    "Soundtrack" to "song tracks",
+    "Sound pack" to "recorded cocoon sounds sfx",
+    "Music" to "soundtrack bgm mute quiet background",
+    "Music from" to "soundtrack folder songs built-in meadow",
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",
     "X button" to "swap search screens",
     "Clock" to "time 24 hour",
     "Battery" to "percentage",
+    "Corner hints" to "game switcher quick settings hold select start",
 )
 
 /** The rows of every feature, taken out one by one as pages pick them. */
@@ -138,8 +227,7 @@ private class RowPool(sections: List<SettingSection>) {
         }
     }
 
-    /** Takes the rows of group [section] with these labels, in this order; missing ones are skipped. */
-    fun take(section: String, vararg labels: String): List<SettingRow> = labels.mapNotNull { rows.remove(rowKey(section, it))?.second }
+    fun take(pick: SettingsPlan.Pick): SettingRow? = rows.remove(rowKey(pick.section, pick.label))?.second
 
     /** Every row of group [section], in order (for groups whose rows change, like connected controllers). */
     fun takeAll(section: String): List<SettingRow> {
@@ -148,11 +236,8 @@ private class RowPool(sections: List<SettingSection>) {
         return keys.mapNotNull { rows.remove(it)?.second }
     }
 
-    /** Duplicates of a row shown elsewhere: removed without showing. */
-    fun drop(section: String, vararg labels: String) { labels.forEach { rows.remove(rowKey(section, it)) } }
-
-    /** Rows nobody picked, by the page their group belongs to. */
-    fun leftovers(): Map<String, List<SettingRow>> = rows.values.groupBy({ Owners[it.first] ?: "data" }, { it.second })
+    /** Rows nobody picked: a feature added one and the plan doesn't know it yet. */
+    fun leftovers(): List<SettingRow> = rows.values.map { it.second }
 }
 
 /** ExtrasSettings.resumeLanding had no row anywhere; it belongs with the icon grid's Resume page. */
@@ -164,10 +249,6 @@ private fun resumeLandingRow(): SettingRow {
         toggle = on, keywords = "resume page home button running game",
     ) { io.github.zahakj.tandem.data.ExtrasStore.update { it.copy(resumeLanding = !it.resumeLanding) } }
 }
-
-/** A group: [main] rows always show, [more] fold away. Empty groups are left out by the layout. */
-private fun group(title: String, main: List<SettingRow>, more: List<SettingRow> = emptyList(), icon: Glyph? = null, note: String? = null) =
-    SettingSection(title, main, icon, more, note)
 
 /**
  * Every Settings page, with live values. Composes every feature's rows (they are cheap: values and lambdas), so
@@ -181,111 +262,40 @@ fun settingsCatalog(): List<SettingsCategory> {
         appearanceSections() + listOf(
             librarySettings(onRescan), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), widgetsSettings(),
             achievementsSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
+            SettingSection("Extras", listOf(resumeLandingRow())),
         ) + controllerSettings(),
     )
     val look = Store.settings.look
     val settings = Store.settings
     val iconGrid = look.homeLayout == "grid"
+    SettingsPlan.dropped.forEach { pool.take(it) }
 
-    // Shown twice in the old screens; each now lives in one place.
-    pool.drop("Library", "Show game titles") // Home & layout › Games › Game titles
-    pool.drop("Screens", "Single screen") // Two screens › Single screen (the one that knows when there is one screen)
-    pool.drop("Home & play", "Apps dock on the home screen") // Home & layout › Dock › Apps dock
-    pool.drop("Icon grid", "Icon pack") // Look & feel › Icons › Icons from
-    pool.drop("Icon grid", "Names under icons") // Icon grid › Icon names (always, highlighted only, off)
-    pool.drop("Motion & home", "Use Tandem as the Home screen") // Data & about › Home screen
-
-    val lookPage = listOf(
-        group("Colour", pool.take("Colour & highlight", "Accent colour", "Highlight style"),
-            pool.take("Colour & highlight", "Highlight colour", "Highlight thickness", "Focus zoom", "Card corners", "Surface")),
-        group("Wallpaper", pool.take("Wallpaper", "Top screen", "Bottom screen"), pool.take("Wallpaper", "Picture dimming", "Wallpaper folder")),
-        group("Icons", pool.take("System icons", "Icons from", "Icon style")),
-        group("Motion", pool.take("Motion", "Animation style") + pool.take("Motion & home", "Floating titles") + pool.take("Motion", "Reduce motion"),
-            pool.take("Motion & home", "Motion intensity") + pool.take("Extras", "Startup splash")),
-        group("Start over", pool.take("Extras", "Reset appearance"), pool.take("Extras", "Reload theme packs")),
-    )
-
-    val gridGroup = group(
-        "Icon grid",
-        pool.take("Icon grid", "Icon size", "Rows of icons", "Scrolling") + pool.take("Motion & home", "Icon names", "Recently played strip"),
-        pool.take("Icon grid", "Icon roundness", "Space between icons", "Hero split", "Other screen", "Folders open") + resumeLandingRow(),
-        note = if (iconGrid) "Your layout" else "For the Icon grid layout",
-    )
-    val homeGroup = group(
-        "Home screen",
-        if (iconGrid) pool.take("Layout", "Home layout", "Now playing") else pool.take("Layout", "Home layout", "Home rows", "Now playing"),
-        if (iconGrid) pool.take("Layout", "Home rows", "System tiles", "Open folders") else pool.take("Layout", "System tiles", "Open folders"),
-    )
-    val homePage = buildList {
-        add(homeGroup)
-        // The layout in use comes first; the icon grid's own options sink to the bottom while another layout is on.
-        if (iconGrid) add(gridGroup)
-        add(group("Games", pool.take("Layout", "Games view", "Grid size", "Card shape", "Game titles")))
-        add(group("Dock", pool.take("Dock", "Apps dock") + pool.take("Home & play", "Choose dock apps") + pool.take("Dock", "Dock style"),
-            pool.take("Dock", "Dock on top", "Auto-hide dock", "Dock background", "Icons on dock", "Dock icon shape")))
-        add(group("Widgets", pool.take("Widgets", "Customize widgets", "Widgets on the home screen"), pool.take("Widgets", "Add to Up next")))
-        add(group("Top bar", pool.take("Top bar", "Clock", "Battery")))
-        if (!iconGrid) add(gridGroup)
+    fun page(id: String): List<SettingSection> = SettingsPlan.pages.getValue(id).map { g ->
+        fun pick(list: List<SettingsPlan.Pick>) = list.mapNotNull { pk ->
+            val shown = when (pk.layout) { "grid" -> iconGrid; "other" -> !iconGrid; else -> true }
+            // A row for the other layout is taken out unshown, so it never counts as forgotten.
+            pool.take(pk)?.takeIf { shown }
+        }
+        val main = when (g.title) {
+            in SettingsPlan.whole -> pick(g.main) + pool.takeAll(g.title)
+            // The scraping sources, in the order the user put them.
+            SettingsPlan.SOURCES -> pick(ScrapeConfig.settings.sourceOrder.map { SettingsPlan.Pick("Artwork & details", it.label) })
+            else -> pick(g.main)
+        }
+        SettingSection(g.title, main, more = pick(g.more), note = g.note)
     }
-
-    val screensPage = listOf(
-        group("Screens", pool.take("Systems & launching", "Single screen") + pool.take("Screens", "Swap screens") + pool.take("Icon grid", "Swap animation") + pool.take("Systems & launching", "Apps open on") + pool.take("Screens", "Keep auto-rotate off"),
-            pool.take("Systems & launching", "Hold Back to move apps", "Move games too")),
-        group("Bottom screen", pool.take("Bottom screen", "Style", "Video snaps", "Moving art") + pool.take("Widgets", "Bottom screen when idle"),
-            pool.take("Bottom screen", "Art height", "Logo size", "Art fade")),
-    )
-
-    val soundPage = listOf(
-        group("Sounds", pool.take("Sound & music", "UI sounds", "Sound pack", "Sound volume"), pool.take("Sound & music", "System jingles", "Play jingles", "Pip's voice")),
-        group("Music", pool.take("Sound & music", "Background music", "Soundtrack", "Music volume", "Next song"),
-            pool.take("Sound & music", "My music folder", "Shuffle my music")),
-    )
-
-    val controlsPage = listOf(
-        group("Buttons", pool.take("Controls", "Button prompts", "Swap A and B", "Swap X and Y") + pool.take("Icon grid", "X button")),
-        group(HomeButtonGroup, pool.take(HomeButtonGroup, "Controller Home button"), pool.take(HomeButtonGroup, "Hold the Home button")),
-        group(ControllersGroup, pool.takeAll(ControllersGroup), note = "On: Nintendo labels"),
-        group(PadLinkGroup, pool.takeAll(PadLinkGroup)),
-        group("Shortcuts", pool.take("Home & play", "Game switcher", "Quick settings panel"), pool.take("Layout", "Corner hints")),
-    )
-
-    val libraryPage = listOf(
-        group("Games", pool.take("Library", "Sort games by", "Show hidden games", "Rescan games")),
-        group("Systems", pool.take("Systems & launching", "Systems and emulators", "Android apps"), pool.take("Systems & launching", "Cocoon platform files")),
-        group("Bring your details", pool.take("From Cocoon", "Import my Cocoon setup") + pool.take("Your data", "Import details"), pool.take("From Cocoon", "Undo Cocoon import")),
-    )
-
-    val artPage = listOf(
-        group("Artwork", pool.take("Artwork & details", "Scrape library", "Set up sources", "Artwork to download"),
-            pool.take("Artwork & details", "Preferred region", "Preferred language", "Clear downloaded media")),
-        group("Sources, in order", pool.take("Artwork & details", *ScrapeConfig.settings.sourceOrder.map { it.label }.toTypedArray())),
-        group("RetroAchievements", pool.take("RetroAchievements", "Account", "Show achievements"), pool.take("RetroAchievements", "Look up games again", "Sign out")),
-        group("Discord", pool.take("Discord", "Discord status"), pool.take("Discord", "Disconnect Discord")),
-    )
-
-    val playPage = listOf(
-        group("Playing", pool.take("About", "Resume running games") + pool.take("Home & play", "Close previous game", "Ask before closing a game"),
-            pool.take("Systems & launching", "Launch animation")),
-        group("Stats", pool.take("Home & play", "Play stats"), pool.take("Home & play", "Export play stats")),
-        group("Privacy & rest", pool.take("Home & play", "Private mode", "Go offline while a hidden game plays", "Screensaver"),
-            pool.take("Home & play", "Private mode PIN")),
-        // Changes with what is hidden and whether it shows, so it is made here rather than picked from the pool.
-        hiddenSettings().let { group(it.title, it.rows, it.more) },
-    )
-
-    val dataPage = listOf(
-        group("Home screen", pool.take("Home & play", "Use Tandem as the Home screen")),
-        group("Your data", pool.take("Your data", "Back up", "Restore")),
-        group("About", pool.take("About", "About Tandem") + pool.take("Extras", "Language")),
-        group("Developer", pool.take("Developer", "Frame timing overlay")),
-    )
-
-    // Whatever no page picked goes under its page's last "More options", so every setting stays reachable.
+    // The theme pack's own music and sounds lead the Sound page, when the theme has any.
+    val soundPage = listOf(SettingSection("Theme pack", pool.takeAll("Theme pack"), note = ThemePacks.byId(look.theme)?.name)) + page("sound")
+    val pages = SettingsCategories.ids.associateWith { if (it == "sound") soundPage else page(it) }.toMutableMap()
+    // Changes with what is hidden and whether it shows, so it is made here rather than picked from the pool.
+    pages["play"] = pages.getValue("play").let { p -> p.take(2) + hiddenSettings().let { SettingSection(it.title, it.rows, more = it.more) } + p.drop(2) }
+    // A row the plan doesn't know yet still shows, so nothing is ever out of reach; a debug build says so.
     val left = pool.leftovers()
-    fun withLeftovers(id: String, page: List<SettingSection>): List<SettingSection> {
-        val extra = left[id].orEmpty()
-        if (extra.isEmpty()) return page
-        return page + group("Other", emptyList(), extra)
+    if (left.isNotEmpty()) {
+        android.util.Log.w("Tandem", "Settings rows not placed: " + left.joinToString { it.label })
+        pages["play"] = pages.getValue("play") + SettingSection(
+            if (io.github.zahakj.tandem.BuildConfig.DEBUG) "Not placed" else "Other", emptyList(), more = left,
+        )
     }
 
     val ra = HomeStore.ra
@@ -296,71 +306,63 @@ fun settingsCatalog(): List<SettingsCategory> {
     // derivedStateOf: details changing (a scrape, a favourite) only recomposes Settings when the count changes.
     val games by remember { androidx.compose.runtime.derivedStateOf { io.github.zahakj.tandem.Collections.visibleGames().size } }
     val systems = Libraries.all.orEmpty().count { it.games.isNotEmpty() }
+    val pack = ThemePacks.byId(look.theme)
 
     return listOf(
         SettingsCategory(
             "look", "Look & feel", Glyph.Theme, Palette.Accent,
             "Themes and theme packs, colours, wallpapers, system icons and animation.",
             theme.name + (if (look.accent != null) " · own accent" else "") + (if (settings.reduceMotion) " · still" else ""),
-            withLeftovers("look", lookPage),
+            pages.getValue("look"),
         ),
         SettingsCategory(
             "home", "Home & layout", Glyph.Home, Palette.Butter,
-            "Your home layout, how games are shown, the apps dock, widgets and the top bar.",
+            "Your home layout, how games are shown, the apps dock, widgets, the top bar and the screensaver.",
             (HomeLayouts.firstOrNull { it.first == look.homeLayout }?.second?.substringBefore(" (") ?: "Shelves") +
                 if (iconGrid) " · ${look.gridAcross} across" else " · ${GameViews.firstOrNull { it.first == look.gameView }?.second ?: "Grid"} of games",
-            withLeftovers("home", homePage),
+            pages.getValue("home"),
         ),
         SettingsCategory(
             "screens", "Two screens", Glyph.Screens, Palette.Sky,
-            "What each screen shows: one screen or two, swapping them, and the bottom screen's art and videos.",
+            "What each screen shows: one screen or two, swapping them, the other screen's art and videos, and moving apps between them.",
             when {
                 SystemPrefs.data.singleScreen -> "Top screen only"
                 look.swapScreens -> "Library on the bottom"
                 else -> "Details below · " + (BottomModes.firstOrNull { it.first == settings.bottomMode }?.second ?: "Details")
             },
-            withLeftovers("screens", screensPage),
+            pages.getValue("screens"),
         ),
         SettingsCategory(
             "sound", "Sound & music", Glyph.Music, Palette.Peach,
-            "UI sounds, the soundtrack or your own music, jingles and Pip's voice.",
-            (if (look.sounds) SoundPack.of(look.soundPack).label + " sounds" else "Sounds off") + " · " + (if (look.music) "music on" else "music off"),
-            withLeftovers("sound", soundPage),
+            "The theme pack's own music and sounds, UI sounds, game jingles, Pip's voice, and your music or the built-in soundtrack.",
+            when {
+                pack != null && (pack.music.isNotEmpty() || pack.sounds != null) -> "Using ${pack.name}'s audio"
+                else -> (if (look.sounds) SoundPack.of(look.soundPack).label + " sounds" else "Sounds off") + " · " + (if (look.music) "music on" else "music off")
+            },
+            soundPage,
         ),
         SettingsCategory(
             "controls", "Controls", Glyph.Gamepad, Palette.Lavender,
-            "Button prompts, swapping A/B and X/Y, what X does, the hold-button shortcuts, your controllers and their Home button.",
+            "Button prompts, swapping A/B and X/Y, what X does, your controllers and their Home button.",
             Prompts.label(look.prompts) + " prompts" + (if (look.swapAB) " · A/B swapped" else ""),
-            withLeftovers("controls", controlsPage),
+            pages.getValue("controls"),
         ),
         SettingsCategory(
-            "library", "Library", Glyph.Cartridge, Palette.Mint,
-            "Sorting, hidden games, rescanning, systems and emulators, Android apps, and importing details.",
-            if (games == 0) "No games yet" else "${io.github.zahakj.tandem.plural(games, "game")} · ${io.github.zahakj.tandem.plural(systems, "system")}",
-            withLeftovers("library", libraryPage),
-        ),
-        SettingsCategory(
-            "art", "Art & accounts", Glyph.Download, Palette.Butter,
-            "Scraping artwork and details, its sources (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) and their keys, " +
-                if (DiscordPresence.available) "RetroAchievements and Discord." else "and RetroAchievements.",
+            "library", "Library & art", Glyph.Cartridge, Palette.Mint,
+            "Sorting, hidden games, rescanning, systems and emulators, artwork and its sources, " +
+                (if (DiscordPresence.available) "RetroAchievements, Discord" else "RetroAchievements") + " and importing details.",
             listOfNotNull(
+                if (games == 0) "No games yet" else "${io.github.zahakj.tandem.plural(games, "game")} · ${io.github.zahakj.tandem.plural(systems, "system")}",
                 "${io.github.zahakj.tandem.plural(ss.active.size, "source")} on",
                 if (ra.user.isNotBlank() && ra.key.isNotBlank()) "RA ✓" else null,
-                if (DiscordPresence.available && DiscordPresence.linked) "Discord ✓" else null,
             ).joinToString(" · "),
-            withLeftovers("art", artPage),
+            pages.getValue("library"),
         ),
         SettingsCategory(
-            "play", "Play & stats", Glyph.Chart, Palette.Mint,
-            "Resuming games, closing the last one, the launch animation, play stats, private mode, hidden folders and games, and the screensaver.",
-            (if (shizuku) "Resume ready" else "Resume needs Shizuku") + " · ${io.github.zahakj.tandem.plural(HomeStore.sessions.size, "session")}",
-            withLeftovers("play", playPage),
-        ),
-        SettingsCategory(
-            "data", "Data & about", Glyph.Info, Palette.Lavender,
-            "Tandem as your Home screen, backing up and restoring, and about Tandem.",
-            if (isHome) "Home screen · on" else "Not the Home screen yet",
-            withLeftovers("data", dataPage),
+            "play", "Play & system", Glyph.Chart, Palette.Mint,
+            "Resuming and closing games, private mode, hidden folders and games, play stats, Tandem as your Home screen, backups, and about Tandem.",
+            (if (shizuku) "Resume ready" else "Resume needs Shizuku") + (if (isHome) " · Home screen" else " · not the Home screen"),
+            pages.getValue("play"),
         ),
     )
 }

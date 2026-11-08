@@ -333,6 +333,9 @@ object Shell {
         false
     }
 
+    /** Shizuku is [ready] and runs as root (some things, like pausing other apps' processes, need that). */
+    fun root(): Boolean = ready() && runCatching { Shizuku.getUid() == 0 }.getOrDefault(false)
+
     /**
      * Waits up to [timeoutMs] for Shizuku in a process that has only just started (its binder arrives a moment
      * after). Blocking: call off the main thread.

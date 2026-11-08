@@ -271,33 +271,11 @@ fun appearanceSections(): List<SettingSection> {
                     }
                 }),
                 choice(
-                    "Highlight colour", Glyph.Highlight, Palette.Accent,
-                    "Each system and collection glows in its own colour, or everything glows in your accent.",
-                    listOf("item" to "Item colour", "accent" to "Accent"), look.highlightColor,
-                    preview = { LookPreview() },
-                ) { v -> updateLook { it.copy(highlightColor = v) } },
-                choice(
                     "Highlight style", Glyph.Highlight, Palette.Lavender,
                     "How the highlighted card is marked: a soft glow, a crisp outline, a lift with a big shadow, or a gently pulsing ring.",
                     listOf("" to "Theme · ${base.highlight.label}") + HighlightStyle.entries.map { it.id to it.label }, look.highlight ?: "",
                     preview = { LookPreview() },
                 ) { v -> updateLook { it.copy(highlight = v.ifEmpty { null }) } },
-                number(
-                    "Highlight thickness", Glyph.Corners, Palette.Lavender, "The width of the ring around the highlighted card.",
-                    look.highlightThickness, 0f, 8f, 1f, { "${it.toInt()} dp" }, themeValue = base.highlightThickness,
-                    preview = { LookPreview() },
-                ) { v -> updateLook { it.copy(highlightThickness = v) } },
-                number(
-                    "Focus zoom", Glyph.Grid, Palette.Lavender,
-                    "How much the highlighted card grows. Big rows and wide tiles always grow a little less, so nothing spills off the screen.",
-                    look.focusScale, 1f, 1.2f, 0.02f, { "${Math.round((it - 1) * 100)}%" }, themeValue = base.focusScale,
-                    preview = { LookPreview() },
-                ) { v -> updateLook { it.copy(focusScale = v) } },
-                number(
-                    "Card corners", Glyph.Corners, Palette.Sky, "How round the corners of cards and tiles are.",
-                    look.corner, 0f, 32f, 2f, { "${it.toInt()} dp" }, themeValue = base.corner,
-                    preview = { LookPreview() },
-                ) { v -> updateLook { it.copy(corner = v) } },
                 choice(
                     "Surface", Glyph.Layers, Palette.Sky,
                     "What cards are made of: solid, frosted glass that lets the wallpaper glow through, or light outlines.",
@@ -344,7 +322,7 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Top screen", Glyph.Image, Palette.Peach,
-                    "An animated backdrop, the highlighted game's art, or your own picture or video. Put files in ROMs/tandem/wallpapers.",
+                    "An animated backdrop, the highlighted game's art, or your own picture or video: copy pictures (PNG, JPG, WebP) or videos (MP4, WebM) into ROMs/tandem/wallpapers and they show up here.",
                     wallOptions, look.wallTop.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme",
                     preview = { WallpaperPreview(look.wallTop, ScreenSlot.Top) },
                 ) { v -> updateLook { it.copy(wallTop = v) } },
@@ -358,14 +336,6 @@ fun appearanceSections(): List<SettingSection> {
                     "Picture dimming", Glyph.Image, Palette.Peach, "Darkens picture and video wallpapers so text on top stays easy to read.",
                     look.wallDim, 0f, 0.8f, 0.05f, ::pct,
                 ) { v -> updateLook { it.copy(wallDim = v ?: 0.35f) } },
-                SettingRow(
-                    "Wallpaper folder", if (wallFiles.isEmpty()) "Empty" else "${wallFiles.size} files", Palette.Peach, Glyph.Folder,
-                    "Copy pictures (PNG, JPG, WebP) or videos (MP4, WebM) into ROMs/tandem/wallpapers and they show up in the lists above.",
-                ) {
-                    File(wallpaperDir.path).mkdirs()
-                    Facts.refresh(ctx)
-                    Toasts.show(if (wallFiles.isEmpty()) "Add pictures or videos to ROMs/tandem/wallpapers" else "${wallFiles.size} wallpapers ready")
-                },
             ),
         ),
         SettingSection(
@@ -439,18 +409,6 @@ fun appearanceSections(): List<SettingSection> {
                 toggle(
                     "Auto-hide dock", Glyph.Eye, Palette.Lavender, "The dock stays small and faded until you move into it.", look.dockAutoHide,
                 ) { on -> updateLook { it.copy(dockAutoHide = on) } },
-                toggle(
-                    "Dock background", Glyph.Layers, Palette.Lavender, "A soft panel behind the dock. Turn it off for icons floating over the wallpaper.",
-                    look.dockBackground,
-                ) { on -> updateLook { it.copy(dockBackground = on) } },
-                number(
-                    "Icons on dock", Glyph.Grid, Palette.Lavender, "The most apps the dock shows (All apps is always there too). Eight fill the top screen; more would run off its edge.",
-                    look.dockCount.toFloat().coerceAtMost(8f), 3f, 8f, 1f, { "${it.toInt()}" },
-                ) { v -> updateLook { it.copy(dockCount = (v ?: 8f).toInt()) } },
-                choice(
-                    "Dock icon shape", Glyph.Corners, Palette.Lavender, "Rounded squares, circles or squares for app icons.",
-                    listOf("rounded" to "Rounded", "circle" to "Circle", "square" to "Square"), look.dockIconShape,
-                ) { v -> updateLook { it.copy(dockIconShape = v) } },
             ),
         ),
         SettingSection(

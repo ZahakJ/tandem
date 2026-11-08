@@ -421,7 +421,7 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
 
 private val CategoryGlyphs = mapOf(
     "look" to Glyph.Theme, "home" to Glyph.Home, "screens" to Glyph.Screens, "sound" to Glyph.Music, "controls" to Glyph.Gamepad,
-    "library" to Glyph.Cartridge, "art" to Glyph.Download, "play" to Glyph.Chart, "data" to Glyph.Info,
+    "library" to Glyph.Cartridge, "play" to Glyph.Chart,
 )
 
 /** Edit grid: the highlighted tile (or the first) starts moving, like Y › Move. */

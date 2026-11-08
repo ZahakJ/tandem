@@ -269,7 +269,7 @@ fun aboutSettings(): SettingSection {
                 keywords = "shizuku continue suspend",
             ) { askShizuku() },
             SettingRow(
-                "About Tandem", "GPL-3.0", Palette.Lavender, icon = Glyph.Heart,
+                "About Tandem", "Version ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME} · GPL-3.0", Palette.Lavender, icon = Glyph.Heart,
                 help = "Free and open source. No ads, no accounts, no tracking. Your data stays on your device.",
                 keywords = "version license open source credits",
             ) { Toasts.show("Made with love, free forever. Hi from Pip!") },

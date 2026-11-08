@@ -437,6 +437,7 @@ fun homeSettings(): SettingSection {
     val resumes = settingsResumes()
     val isHome = Facts.run { ensure(ctx); Facts.isHome }
     val shizuku = remember(resumes, ShizukuWatch.version) { Shell.ready() }
+    val rootShizuku = remember(resumes, ShizukuWatch.version) { Shell.root() }
     return SettingSection(
         "Home & play",
         listOf(
@@ -465,11 +466,6 @@ fun homeSettings(): SettingSection {
                 else HomeStore.updateSettings { it.copy(askBeforeClosing = !it.askBeforeClosing) }
             },
             SettingRow(
-                "Game switcher", "Hold Select", Palette.Mint, Glyph.Swap,
-                "Hold Select anywhere to see the games still running, jump back into one or close them. A opens it now.",
-                keywords = "running games multitask recent close", action = "Open now",
-            ) { Panels.openSwitcher() },
-            SettingRow(
                 "Apps dock on the home screen", onOff(s.showDock), Palette.Sky, Glyph.Grid, toggle = s.showDock,
                 help = "Your favourite Android apps on the home screen.",
             ) { HomeStore.updateSettings { it.copy(showDock = !it.showDock) } },
@@ -477,11 +473,6 @@ fun homeSettings(): SettingSection {
                 "Choose dock apps", "${Dock.pinned(ctx).size} apps", Palette.Sky, Glyph.Grid,
                 "Pick which apps sit on the dock and in what order.", opens = true, keywords = "pin apps favourite",
             ) { Panels.openApps() },
-            SettingRow(
-                "Quick settings panel", "Hold Start", Palette.Sky, Glyph.Layers,
-                "Hold Start anywhere for brightness, volume, Wi-Fi, Bluetooth and battery at a glance. A opens it now.",
-                keywords = "brightness volume wifi bluetooth airplane", action = "Open now",
-            ) { Panels.toggleQuick() },
             run {
                 fun step(d: Int) = HomeStore.updateSettings {
                     it.copy(screensaverMinutes = SCREENSAVER_STEPS[(SCREENSAVER_STEPS.indexOf(s.screensaverMinutes).coerceAtLeast(0) + d + SCREENSAVER_STEPS.size) % SCREENSAVER_STEPS.size])
@@ -493,11 +484,15 @@ fun homeSettings(): SettingSection {
                 ) { step(1) }
             },
             SettingRow(
-                "Pause games in sleep", onOff(s.freezeAsleep), Palette.Lavender, Glyph.Clock, toggle = s.freezeAsleep,
+                "Pause games in sleep", if (!rootShizuku) "Needs root Shizuku" else onOff(s.freezeAsleep), Palette.Lavender, Glyph.Clock,
+                toggle = if (!rootShizuku) null else s.freezeAsleep,
                 help = "A minute after the screen goes off, games left open are paused, so the handheld really sleeps instead " +
-                    "of draining for an emulator's audio. They carry on exactly where they were when you wake it. Needs Shizuku with root.",
+                    "of draining for an emulator's audio. They carry on exactly where they were when you wake it. Needs Shizuku running as root.",
                 keywords = "battery drain standby suspend freeze emulator",
-            ) { HomeStore.updateSettings { it.copy(freezeAsleep = !it.freezeAsleep) } },
+            ) {
+                if (!rootShizuku) Toasts.show("This needs Shizuku running as root")
+                else HomeStore.updateSettings { it.copy(freezeAsleep = !it.freezeAsleep) }
+            },
             SettingRow(
                 "Private mode", onOff(s.privateMode), Palette.Lavender, Glyph.Shield, toggle = s.privateMode,
                 help = "Hidden games, folders and systems stay hidden until L1 + R1 + Select and your PIN bring them out, and Tandem stays offline. " +
