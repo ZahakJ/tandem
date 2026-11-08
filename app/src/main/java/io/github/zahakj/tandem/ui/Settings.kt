@@ -365,6 +365,7 @@ fun SettingsLayout(
     val lineKeys = lines.filter { it !is SettingsLine.Heading }.map { it.key }
     val target = rememberFocusTarget(routeKey, headerKeys.flatten() + lineKeys)
     val state = rememberRouteListState(routeKey)
+    val revealScope = androidx.compose.runtime.rememberCoroutineScope()
     run {
         var index = headerKeys.indexOfFirst { target != null && target in it }
         if (index < 0) lines.indexOfFirst { it.key == target }.takeIf { it >= 0 }?.let { index = headerKeys.size + it }
@@ -392,6 +393,12 @@ fun SettingsLayout(
                     is SettingsLine.Item -> {
                         val row = line.row
                         SettingRowCard(row, Modifier.takesFocus(routeKey, line.key, line.key == target), flashKey = line.key) {
+                            // The first row under a heading brings the heading (and, at the top, the page's top) with it.
+                            val i = lines.indexOf(line)
+                            if (i > 0 && lines[i - 1] is SettingsLine.Heading) {
+                                val above = if (lines.subList(0, i).all { it is SettingsLine.Heading }) 0 else headerKeys.size + i - 1
+                                revealScope.launch { runCatching { state.reveal(above) } }
+                            }
                             FocusMemory.remember(routeKey, line.key)
                             focusedKey = line.key
                             // The bottom screen explains the setting too.

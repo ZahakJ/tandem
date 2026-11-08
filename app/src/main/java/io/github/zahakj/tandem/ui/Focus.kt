@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.gestures.BringIntoViewSpec
 import androidx.compose.foundation.gestures.LocalBringIntoViewSpec
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -304,6 +305,22 @@ fun KeepInView(state: LazyGridState, index: Int, room: Dp = KeepRoom) {
             state.scrollToItem(index)
             if (index > 0 && roomPx > 0f) state.scrollBy(-roomPx)
         }
+    }
+}
+
+/**
+ * A row just took focus, and the non-focusable item at [above] (its section heading, or the page's first item) should
+ * show with it: scrolls up just enough to show that item whole, or to the very top for the first item, so scrolling
+ * back up never leaves a heading tucked under the top edge.
+ */
+suspend fun LazyListState.reveal(above: Int) {
+    if (above < 0) return
+    if (above == 0) { if (firstVisibleItemIndex != 0 || firstVisibleItemScrollOffset != 0) animateScrollToItem(0); return }
+    val info = layoutInfo
+    val item = info.visibleItemsInfo.firstOrNull { it.index == above }
+    when {
+        item == null -> if (above < firstVisibleItemIndex) animateScrollToItem(above)
+        item.offset < info.viewportStartOffset -> animateScrollBy((item.offset - info.viewportStartOffset).toFloat())
     }
 }
 

@@ -474,10 +474,13 @@ object Music {
     fun resume() {
         visible = true
         dim = 1f
+        // Back from a game: whatever is still playing is that game, left open behind Tandem (an emulator keeps its audio
+        // stream), not someone's music, so it doesn't count. Yielding to it silenced the music after every game.
+        val fromGame = gameUp
         gameUp = false
         val am = audio()
         // Someone is already listening to their own music: don't talk over it.
-        yielded = am != null && am.isMusicActive && player == null && !SynthEngine.running
+        yielded = !fromGame && am != null && am.isMusicActive && player == null && !SynthEngine.running
         refresh()
     }
 
@@ -598,7 +601,8 @@ object Music {
             AudioManager.AUDIOFOCUS_GAIN -> { duck = 1f; applyVolume(); if (visible) refresh() }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> { duck = 0.25f; applyVolume() }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> { SynthEngine.stop(); fadeTo(0f) { player?.takeIf { it.isPlaying }?.pause() } }
-            AudioManager.AUDIOFOCUS_LOSS -> { hasFocus = false; yielded = true; stopAll() }
+            // Lost to another app for good, unless it's the game Tandem just started: that one's back is a fresh start.
+            AudioManager.AUDIOFOCUS_LOSS -> { hasFocus = false; if (!gameUp) yielded = true; stopAll() }
         }
     }
 
