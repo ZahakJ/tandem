@@ -232,6 +232,9 @@ object Platforms {
                 )
             } ?: emptyMap(),
             store = l.optString("store").takeIf { it.isNotEmpty() },
+            // "extensions": the kinds of file this player opens (others go to the system's other players).
+            accept = l.optJSONArray("extensions").strings().takeIf { it.isNotEmpty() }
+                ?.let { exts -> Regex(".*\\.(" + exts.joinToString("|") { Regex.escape(it.lowercase()) } + ")", RegexOption.IGNORE_CASE) },
         )
     }
 

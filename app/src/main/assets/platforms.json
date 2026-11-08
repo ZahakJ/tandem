@@ -1268,6 +1268,21 @@
      }
     },
     {
+     "name": "DroidDeck",
+     "component": "com.droiddeck.launcher/com.droiddeck.launcher.FrontEndActivity",
+     "action": "com.droiddeck.launcher.LAUNCH_GAME",
+     "game": "none",
+     "store": "https://github.com/Droid-Deck/DroidDeck/releases",
+     "note": "Steam games in the real Steam client (DroidDeck 0.7+)",
+     "extensions": ["steam", "steamappid"],
+     "extras": {
+       "app_id": {
+         "string": "{file.id}"
+       },
+       "game_source": "STEAM"
+     }
+    },
+    {
      "name": "Winlator",
      "component": "com.winlator/com.winlator.XServerDisplayActivity",
      "action": "android.intent.action.MAIN",
