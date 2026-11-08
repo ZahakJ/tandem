@@ -90,7 +90,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `PackParts.music`, `PackParts.sounds` | Sound & music › Theme pack › Theme pack music / Theme pack sounds | toggle |
 | `Look.sounds`, `soundVolume` | Sound & music › Sounds › UI sounds / Sound volume | toggle / slider |
 | `Look.soundPack`, `soundFiles` | Sound & music › Sounds › Sound pack (Tandem's 8 packs, then the recorded packs in `ROMs/assets/sounds`) | choice |
-| `Look.gameJingles`, `pipVoice` | Sound & music › Sounds › Game jingles on hover / Pip's voice | toggle |
+| `Look.pipVoice` | Sound & music › Sounds › Pip's voice | toggle |
 | `Look.music`, `musicVolume` | Sound & music › Music › Music / Music volume | toggle / slider |
 | `Look.myMusic` | Sound & music › Music › Music from (My music folder, Built-in: Meadow Tales) | choice |
 | (next song) | Sound & music › Music › Next song | action |

@@ -138,8 +138,6 @@ data class Look(
     val myMusic: Boolean = true,
     /** Shuffle the files in ROMs/tandem/music. */
     val musicShuffle: Boolean = true,
-    /** A game's own jingle (downloaded_media/<system>/jingles) plays when you rest on it. */
-    val gameJingles: Boolean = true,
     /** Pip babbles when it shows a message. */
     val pipVoice: Boolean = true,
 

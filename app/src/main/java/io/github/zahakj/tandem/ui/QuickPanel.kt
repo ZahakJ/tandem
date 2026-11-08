@@ -234,12 +234,9 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
                     io.github.zahakj.tandem.PadLink.cycle()
                 }
             }
-            ToggleTile("Battery saver", BatterySaver.on, Palette.Mint, cell().remembersFocus(key, "battery", false), short = "Saver") {
-                BatterySaver.toggle(ctx)
-            }
             // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
             if (DiscordPresence.available && DiscordPresence.linked) {
-                ToggleTile("Discord status", DiscordPresence.shown, Palette.Mint, cell().remembersFocus(key, "discord", false), short = "Discord") {
+                ToggleTile("Discord", DiscordPresence.shown, Palette.Mint, cell().remembersFocus(key, "discord", false)) {
                     DiscordPresence.setShown(ctx, !DiscordPresence.shown)
                 }
             }
@@ -251,27 +248,18 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
                 Panels.close()
                 if (io.github.zahakj.tandem.Privacy.enabled) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
             }
+            ToggleTile("Battery saver", BatterySaver.on, Palette.Mint, cell().remembersFocus(key, "battery", false), height = 48.dp, short = "Saver") {
+                BatterySaver.toggle(ctx)
+            }
             ActionTile("★ Stats", Palette.Butter, cell().remembersFocus(key, "stats", false)) {
                 Panels.close(); if (Nav.route != Route.Stats) Nav.go(Route.Stats)
             }
             ActionTile("⚙ Android", Palette.Lavender, cell().remembersFocus(key, "android", false)) {
                 Panels.close(); SystemControls.open(ctx, Settings.ACTION_SETTINGS)
             }
-            if (shizuku) ActionTile("☾ Sleep", Palette.Sky, cell().remembersFocus(key, "sleep", false)) {
-                Panels.close(); io { Shell.run("input", "keyevent", "223") }
-            }
         }
         // Narrow, one grid of small tiles; else the radios and the shortcuts each have a row.
         if (narrow) TileRow(true) { radios(); shortcuts() } else { TileRow(false, radios); TileRow(false, shortcuts) }
-    }
-    // The side panel shows its own hints once, at the bottom.
-    if (!narrow) {
-        Spacer(Modifier.height(10.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            ButtonHint("◀▶", "Adjust", Palette.Butter)
-            ButtonHint("A", "Toggle", Palette.Mint)
-            ButtonHint("B", "Close", Palette.Lavender)
-        }
     }
     if (!shizuku) {
         Text(
@@ -330,7 +318,8 @@ private fun StepButton(symbol: String, color: Color, size: Dp, onTap: () -> Unit
 private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modifier, value: String? = null, height: Dp = 62.dp, short: String? = null, onClick: () -> Unit) {
     val compact = LocalCompactTiles.current
     FocusCard(modifier.height(if (compact) 44.dp else height), glow = color, shape = RoundedCornerShape(if (compact) 14.dp else 16.dp), onClick = onClick) {
-        Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.22f) else Color.Transparent))
+        // Off tiles get a faint wash of the text colour: on a light theme the bare card matches the panel behind it.
+        Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.22f) else Palette.Text.copy(alpha = 0.06f)))
         // Compact: a short name alone, in the tile's colour while it is on.
         if (compact) {
             Text(
@@ -353,7 +342,7 @@ private fun ToggleTile(label: String, on: Boolean, color: Color, modifier: Modif
 private fun ActionTile(label: String, color: Color, modifier: Modifier, onClick: () -> Unit) {
     val compact = LocalCompactTiles.current
     FocusCard(modifier.height(if (compact) 44.dp else 48.dp), glow = color, shape = RoundedCornerShape(if (compact) 14.dp else 16.dp), onClick = onClick) {
-        Box(Modifier.fillMaxSize().padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxSize().background(Palette.Text.copy(alpha = 0.06f)).padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
             Text(label, style = if (compact) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }

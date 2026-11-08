@@ -233,8 +233,9 @@ object ThemePacks {
 
     /**
      * Where system and collection art comes from now, as (switches key, art), following Look.iconPack: "none" draws
-     * everything; "auto" uses the theme pack's own art, or with a built-in theme the first smart-folder pack
-     * installed; otherwise the chosen theme pack or smart-folder pack.
+     * everything; "auto" uses the theme pack's own art, and with a built-in theme Tandem's own drawn art (a pack's
+     * art only when chosen in Icons from: a built-in theme borrowing some pack's game art looked like a mistake);
+     * otherwise the chosen theme pack or smart-folder pack.
      */
     val artSource: Pair<String, PackArt>?
         get() {
@@ -246,7 +247,7 @@ object ThemePacks {
                 "auto", "" -> {
                     val own = byId(look.theme)
                     when {
-                        own == null -> assetPacks.firstOrNull()?.let(::asset)
+                        own == null -> null
                         own.art.isEmpty -> null
                         else -> theme(own)
                     }

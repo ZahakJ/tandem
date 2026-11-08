@@ -44,7 +44,6 @@ import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.RetroAchievements
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.data.HomeStore
-import io.github.zahakj.tandem.data.JingleLookup
 import io.github.zahakj.tandem.data.LogoFit
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +51,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /*
- * The per-game extras in Edit details (GameEditor.kt): a hover jingle, a companion app for the other screen, the
+ * The per-game extras in Edit details (GameEditor.kt): a companion app for the other screen, the
  * RetroAchievements match and the logo's size and place. All of it lives in the game's GameMeta, so backups carry it.
  */
 
@@ -60,49 +59,6 @@ import java.io.File
 enum class EditPage { Main, Apps, Achievements }
 
 object GameExtras {
-    private const val MAX_JINGLE_BYTES = 20L shl 20
-
-    /** Bumped after a jingle file is copied, so rows showing it look again. */
-    var jingleVersion by mutableIntStateOf(0)
-
-    /**
-     * Copies [src] into the game's jingles folder as `<game file name>.<ext>` (unless it is already there) and returns
-     * the copy. Null when it is too big or can't be copied. Blocking.
-     */
-    fun saveJingle(g: Game, src: File): File? = runCatching {
-        if (!src.isFile || src.length() > MAX_JINGLE_BYTES || !JingleLookup.isAudio(src)) return null
-        val dir = JingleLookup.folder(Library.romsDir, g.platform.artIds.firstOrNull() ?: g.platform.id).apply { mkdirs() }
-        val dest = File(dir, "${g.stem}.${src.extension.lowercase()}")
-        if (src.canonicalPath != dest.canonicalPath) src.copyTo(dest, overwrite = true)
-        dest
-    }.getOrNull()
-
-    /** Opens Tandem's Files to choose a jingle for [g]; Edit details opens again afterwards. */
-    fun chooseJingle(g: Game) {
-        GameEditor.close()
-        ImagePick.start(
-            "files",
-            ImagePick.Request(
-                "Choose a jingle for ${g.title}",
-                onPick = { f ->
-                    var saved: File? = null
-                    inBackground({ saved = saveJingle(g, f) }) {
-                        val s = saved
-                        if (s == null) Toasts.show("Couldn't use that file (OGG, MP3 or WAV up to 20 MB)")
-                        else {
-                            Store.update(g.key) { it.copy(jingle = s.path, jingleOff = false) }
-                            jingleVersion++
-                            Toasts.show("Jingle saved for ${g.title}")
-                        }
-                        GameEditor.edit(g)
-                    }
-                },
-                accept = JingleLookup::isAudio,
-                what = "jingle",
-            ),
-        )
-    }
-
     fun setFit(g: Game, change: (LogoFit) -> LogoFit) {
         Store.update(g.key) { m -> m.copy(logoFit = change(m.logoFit ?: LogoFit()).tidy().takeUnless { it.isDefault }) }
     }
@@ -113,21 +69,9 @@ object GameExtras {
     }
 }
 
-/** The jingle [game] would play, worked out off the main thread; null while reading. */
-@Composable
-private fun rememberJingle(game: Game): JingleLookup.Source? {
-    val meta = game.meta
-    val src by produceState<JingleLookup.Source?>(null, game.key, meta.jingle, meta.jingleOff, GameExtras.jingleVersion) {
-        value = withContext(Dispatchers.IO) { JingleLookup.find(game.meta, Library.romsDir, game.platform.artIds, game.stem) }
-    }
-    return src
-}
-
-/** Small badges for the details screen: the game has its own jingle, or a companion app. */
+/** Small badges for the details screen: the game has a companion app. */
 @Composable
 fun GameExtrasBadges(game: Game, chip: Modifier = Modifier) {
-    val src = rememberJingle(game)
-    if (src is JingleLookup.Source.Own) Pill("♪ Jingle", Palette.Lavender, chip)
     if (game.meta.companionApp != null) Pill("▣ Companion app", Palette.Sky, chip)
 }
 
@@ -136,7 +80,6 @@ fun LazyListScope.gameExtrasItems(g: Game, routeKey: String, focus: (String) -> 
     item("extras-title") {
         Text("Extras", Modifier.padding(top = 8.dp, start = 4.dp), style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
     }
-    item("jingle") { JingleRow(g, routeKey, focus) }
     item("companion") { CompanionRow(g, routeKey, focus, open) }
     item("ra") { AchievementsRow(g, routeKey, focus, open) }
     item("logo") { LogoRow(g, routeKey, focus) }
@@ -168,38 +111,6 @@ private fun ExtraButton(text: String, color: Color, routeKey: String, id: String
     ) {
         Box(Modifier.fillMaxHeight().background(color.copy(alpha = 0.2f)).padding(horizontal = 13.dp), contentAlignment = Alignment.Center) {
             Text(text, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
-}
-
-// --- Jingle --------------------------------------------------------------------------------------------------------
-
-@Composable
-private fun JingleRow(g: Game, routeKey: String, focus: (String) -> Unit) {
-    val src = rememberJingle(g)
-    val value = when (src) {
-        null -> "Looking…"
-        JingleLookup.Source.Off -> "None for this game"
-        JingleLookup.Source.System -> "None in the jingles folder"
-        is JingleLookup.Source.Own -> src.file.name + if (src.picked) "" else " · from the jingles folder"
-    }
-    ExtraRow("Hover jingle", value, src is JingleLookup.Source.Own) {
-        ExtraButton("Choose file", Palette.Mint, routeKey, "jingle:pick", focus) { GameExtras.chooseJingle(g) }
-        // The buttons stay put whatever is chosen, so the highlight never loses its place.
-        ExtraButton("▶ Play", Palette.Sky, routeKey, "jingle:play", focus) {
-            when {
-                src !is JingleLookup.Source.Own -> Toasts.show("No jingle for this game yet")
-                !Store.settings.look.sounds -> Toasts.show("Turn on UI sounds to hear jingles")
-                else -> GameJingles.play(g.key, src.file, preview = true)
-            }
-        }
-        ExtraButton("None", Palette.Peach, routeKey, "jingle:off", focus) {
-            GameJingles.fadeOut()
-            Store.update(g.key) { it.copy(jingleOff = true) }
-        }
-        ExtraButton("Automatic", Palette.Lavender, routeKey, "jingle:auto", focus) {
-            Store.update(g.key) { it.copy(jingle = null, jingleOff = false) }
-            Toasts.show("Plays the file in the jingles folder, if there is one")
         }
     }
 }

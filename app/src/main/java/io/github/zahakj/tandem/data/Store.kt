@@ -46,10 +46,6 @@ data class GameMeta(
     val playSeconds: Long = 0,
     val lastPlayed: Long = 0,
     val firstSeen: Long = 0,
-    /** A jingle picked for this game (absolute path, normally in downloaded_media/<system>/jingles); see [JingleLookup]. */
-    val jingle: String? = null,
-    /** No hover jingle for this game, even when its jingles folder has one. */
-    val jingleOff: Boolean = false,
     /** An Android app started on the other screen with this game (a guide, a map, a music player); see CompanionApps. */
     val companionApp: String? = null,
     /** Close [companionApp] when Tandem is back from the game (true), or leave it running. */

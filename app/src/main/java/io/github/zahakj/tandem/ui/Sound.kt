@@ -37,7 +37,7 @@ import kotlin.random.Random
  * at the device's own sample rate, and played through a [SoundPool], which mixes them on Android's fast audio path
  * (well under 20 ms) without allocating per sound.
  *
- * Only the chosen pack is kept loaded. Jingles and Pip's voice are made in the background on first use.
+ * Only the chosen pack is kept loaded. Pip's voice is made in the background on first use.
  */
 object Sounds {
     private const val VERSION = 4
@@ -57,7 +57,7 @@ object Sounds {
     private val tickets = AtomicInteger()
     private val streams = HashMap<Int, Int>()
 
-    /** Loaded sample ids by "pack/kind", "jingle/<family>", "launch/<family>" and "pip/<n>". */
+    /** Loaded sample ids by "pack/kind" and "pip/<n>". */
     private val ids = ConcurrentHashMap<String, Int>()
     /** The same for each pack's sounds, by [Sfx.ordinal] (0 = not loaded yet), so playing one builds no key string. */
     private val packIds = ConcurrentHashMap<SoundPack, IntArray>()
@@ -212,7 +212,6 @@ object Sounds {
      * decays on its own. If a game ever comes up sooner, [fadeTail] eases what's left out instead of cutting it.
      */
     fun launch() {
-        GameJingles.stopNow()
         // The music fades out (in a quarter of a second) under the launch sound and stays off while the game runs
         // (even on the other screen).
         Music.gameLaunched()
@@ -516,20 +515,11 @@ object Music {
 
     val playing: Boolean get() = SynthEngine.running || player?.isPlaying == true
 
-    // Dips while a game's hover jingle plays (GameJingles).
-    private var jingle = 1f
-
-    /** A game's hover jingle started or stopped: the music dips under it. */
-    fun underJingle(on: Boolean) {
-        val j = if (on) 0.35f else 1f
-        if (j != jingle) { jingle = j; applyVolume() }
-    }
-
-    private fun synthVolume() = Store.settings.look.musicVolume * duck * dim * jingle
+    private fun synthVolume() = Store.settings.look.musicVolume * duck * dim
 
     private fun applyVolume() {
         SynthEngine.volume = synthVolume()
-        val v = fade * Store.settings.look.musicVolume * duck * dim * jingle
+        val v = fade * Store.settings.look.musicVolume * duck * dim
         player?.runCatching { setVolume(v, v) }
     }
 

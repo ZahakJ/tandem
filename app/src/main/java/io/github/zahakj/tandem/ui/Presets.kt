@@ -127,13 +127,13 @@ object Presets {
     private val Minimal = LookPreset(
         "minimal", "Minimal", Palette.Lavender, Glyph.Sort, "list",
         "Calm and quick: a compact list, crisp outlines instead of glows, short animations, no music and fewer extras.",
-        listOf("List home and list of games", "Outline highlight, minimal motion", "Music and jingles off", "Icons-only dock that hides", "No widgets row, no splash"),
+        listOf("List home and list of games", "Outline highlight, minimal motion", "Music off", "Icons-only dock that hides", "No widgets row, no splash"),
         matches = { l, _ -> l.homeLayout == "list" && l.motion == AnimationStyle.Minimal.id },
     ) {
         look {
             it.copy(
                 homeLayout = "list", gameView = "list", motion = AnimationStyle.Minimal.id, highlight = HighlightStyle.Outline.id,
-                music = false, gameJingles = false, splash = false, cornerHints = false, dockStyle = "minimal", dockAutoHide = true,
+                music = false, splash = false, cornerHints = false, dockStyle = "minimal", dockAutoHide = true,
             )
         }
         WidgetStore.update { it.copy(homeEnabled = false) }

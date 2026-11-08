@@ -102,14 +102,13 @@ Y › **Edit details** on a game. A on a field types a new value and locks it, s
 
 | Extra | What it does |
 | --- | --- |
-| Hover jingle | Plays when you rest on the game for 0.6 seconds, and fades out when you move on. Tandem looks for `ROMs/downloaded_media/<system>/jingles/<game file name>.ogg` (or `.mp3`, `.wav`). **Choose file** picks one in Tandem's Files and copies it there; **None** silences this game; **Automatic** goes back to the folder. Games without one keep the system jingles. |
 | Companion app | An Android app (a guide, a map, a music player) started on the bottom screen with the game, in place of Tandem's companion. **Close after** closes it when you are back in Tandem (this needs Shizuku), or leaves it running. |
 | Achievements | The RetroAchievements game this one is matched to. **Find match** lists the closest games from RetroAchievements when you are signed in, **Type ID** takes the number from the game's page address, and **No achievements** turns them off for this game. **Automatic** goes back to Tandem's own match by file and title. |
 | Logo | The logo's size (50–150 %) and place (Auto, Left, Centre, Right, Top or Bottom, then nudged with the arrows) over the game's art. The other screen shows each change as you make it. |
 
-Jingles follow the sound settings: they play only with UI sounds on, at the sound volume, and with **Settings › Sound & music › Game jingles on hover** on. They never play during a game, the launch or the screensaver, and the music dips while one plays. A companion app starts only with two screens, when the game starts on the top screen and its system doesn't leave the bottom screen to the emulator.
+A companion app starts only with two screens, when the game starts on the top screen and its system doesn't leave the bottom screen to the emulator.
 
-All of this is kept in the game's details, so it moves with the game between subfolders and is part of every backup. The bottom screen shows a small badge for a game with its own jingle or a companion app.
+All of this is kept in the game's details, so it moves with the game between subfolders and is part of every backup. The bottom screen shows a small badge for a game with a companion app.
 
 ## Play time
 

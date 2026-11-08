@@ -12,7 +12,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
 
-/** Per-game extras: GameMeta's new fields on disk, the jingle lookup order and the logo placement maths. */
+/** Per-game extras: GameMeta's new fields on disk and the logo placement maths. */
 class GameExtrasTest {
     @get:Rule val tmp = TemporaryFolder()
 
@@ -24,8 +24,6 @@ class GameExtrasTest {
         val old = """{"snes/Mario.sfc":{"title":"Mario","favorite":true,"playSeconds":60}}"""
         val m = json.decodeFromString<Map<String, GameMeta>>(old).getValue("snes/Mario.sfc")
         assertEquals("Mario", m.title)
-        assertEquals(null, m.jingle)
-        assertFalse(m.jingleOff)
         assertEquals(null, m.companionApp)
         assertTrue(m.companionAppClose)
         assertEquals(null, m.raId)
@@ -39,7 +37,6 @@ class GameExtrasTest {
 
     @Test fun extrasRoundTrip() {
         val m = GameMeta(
-            jingle = "/sdcard/ROMs/downloaded_media/snes/jingles/Mario.ogg", jingleOff = false,
             companionApp = "com.example.guide", companionAppClose = false, raId = 0,
             logoFit = LogoFit(scale = 130, anchor = "left", dx = -2, dy = 3),
         )
@@ -57,44 +54,6 @@ class GameExtrasTest {
         val f = json.decodeFromString<LogoFit>("""{"scale":400,"anchor":"diagonal","dx":99,"dy":-99}""").tidy()
         assertEquals(LogoFit(LogoFit.MAX, LogoFit.AUTO, LogoFit.NUDGE_MAX, -LogoFit.NUDGE_MAX), f)
         assertEquals(LogoFit.MIN, LogoFit(scale = 10).tidy().scale)
-    }
-
-    // --- Jingle lookup ---------------------------------------------------------------------------------------------
-
-    private fun file(root: File, path: String): File = File(root, path).apply { parentFile?.mkdirs(); writeText("x") }
-
-    @Test fun jingleLookupOrder() {
-        val roms = tmp.newFolder("ROMs")
-        val ids = listOf("n3ds", "3ds")
-        val meta = GameMeta()
-        assertEquals(JingleLookup.Source.System, JingleLookup.find(meta, roms, ids, "Game"))
-
-        // The second art folder, then the first one wins over it; ogg before mp3 before wav.
-        val wav3ds = file(roms, "downloaded_media/3ds/jingles/Game.wav")
-        assertEquals(JingleLookup.Source.Own(wav3ds, picked = false), JingleLookup.find(meta, roms, ids, "Game"))
-        val wav = file(roms, "downloaded_media/n3ds/jingles/Game.wav")
-        assertEquals(JingleLookup.Source.Own(wav, picked = false), JingleLookup.find(meta, roms, ids, "Game"))
-        val mp3 = file(roms, "downloaded_media/n3ds/jingles/Game.mp3")
-        assertEquals(JingleLookup.Source.Own(mp3, picked = false), JingleLookup.find(meta, roms, ids, "Game"))
-        val ogg = file(roms, "downloaded_media/n3ds/jingles/Game.ogg")
-        assertEquals(JingleLookup.Source.Own(ogg, picked = false), JingleLookup.find(meta, roms, ids, "Game"))
-
-        // A picked file comes first, while it exists.
-        val picked = file(roms, "music/theme.mp3")
-        assertEquals(JingleLookup.Source.Own(picked, picked = true), JingleLookup.find(meta.copy(jingle = picked.path), roms, ids, "Game"))
-        picked.delete()
-        assertEquals(JingleLookup.Source.Own(ogg, picked = false), JingleLookup.find(meta.copy(jingle = picked.path), roms, ids, "Game"))
-
-        // None beats everything.
-        assertEquals(JingleLookup.Source.Off, JingleLookup.find(meta.copy(jingle = ogg.path, jingleOff = true), roms, ids, "Game"))
-        // Other games' files never match.
-        assertEquals(JingleLookup.Source.System, JingleLookup.find(meta, roms, ids, "Other"))
-    }
-
-    @Test fun onlyAudioFilesArePicked() {
-        assertTrue(JingleLookup.isAudio(File("a.OGG")))
-        assertTrue(JingleLookup.isAudio(File("a.mp3")))
-        assertFalse(JingleLookup.isAudio(File("a.png")))
     }
 
     // --- Logo placement --------------------------------------------------------------------------------------------

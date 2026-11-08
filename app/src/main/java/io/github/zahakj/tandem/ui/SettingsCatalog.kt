@@ -132,7 +132,7 @@ object SettingsPlan {
             Group("Moving apps", p("Systems & launching", "Hold Back to move apps", "Move games too")),
         ),
         "sound" to listOf(
-            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Custom sounds", "Sound volume", "Game jingles on hover", "Pip's voice")),
+            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Custom sounds", "Sound volume", "Pip's voice")),
             Group("Music", p("Sound & music", "Music", "Music from", "Music volume", "Next song"), p("Sound & music", "Shuffle my music")),
         ),
         "controls" to listOf(
@@ -334,7 +334,7 @@ fun settingsCatalog(): List<SettingsCategory> {
         ),
         SettingsCategory(
             "sound", "Sound & music", Glyph.Music, Palette.Peach,
-            "The theme pack's own music and sounds, UI sounds, game jingles, Pip's voice, and your music or the built-in soundtrack.",
+            "The theme pack's own music and sounds, UI sounds, Pip's voice, and your music or the built-in soundtrack.",
             when {
                 pack != null && (pack.music.isNotEmpty() || pack.sounds != null) -> "Using ${pack.name}'s audio"
                 else -> (if (look.sounds) SoundPack.of(look.soundPack).label + " sounds" else "Sounds off") + " · " + (if (look.music) "music on" else "music off")

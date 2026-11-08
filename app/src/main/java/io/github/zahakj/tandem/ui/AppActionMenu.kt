@@ -77,7 +77,7 @@ object ImagePick {
     /** Opens [tool] ("files" or "gallery") to pick a picture; [onPick] gets it, and Tandem comes back here. */
     fun start(tool: String, title: String, onPick: (File) -> Unit) = start(tool, Request(title, onPick))
 
-    /** Opens [tool] to pick a file of another kind (a game's jingle, say). */
+    /** Opens [tool] to pick a file of another kind (a picture, say). */
     fun start(tool: String, r: Request) {
         request = r
         FocusMemory.forget(Route.Tool(tool).key)

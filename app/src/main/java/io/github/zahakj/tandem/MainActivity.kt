@@ -374,7 +374,6 @@ class MainActivity : ComponentActivity() {
         // isn't needed any more.
         cancelPending()
         Sounds.fadeTail()
-        io.github.zahakj.tandem.ui.GameJingles.stopNow()
         Music.pause()
         val screen = bottomScreen
         if (WakeGate.keepBottomScreen(Dreaming.active, screen?.isShowing == true, io.github.zahakj.tandem.data.SystemPrefs.data.singleScreen)) {

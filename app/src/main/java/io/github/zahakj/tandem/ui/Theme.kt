@@ -269,7 +269,7 @@ object Themes {
 
     fun resolve(look: Look): ThemeSpec {
         val base = withParts(byId(look.theme) ?: BuiltInThemes.PastelNight, look)
-        val accent = look.accent?.let(::parseColor)
+        val accent = look.accent?.let(::parseColor)?.let { readableOn(it, base) }
         return base.copy(
             iconStyle = IconStyle.of(look.iconStyle) ?: base.iconStyle,
             accent = accent ?: base.accent,
@@ -284,6 +284,20 @@ object Themes {
                 else -> AnimationStyle.of(look.motion) ?: base.animation
             },
         )
+    }
+
+    /**
+     * [accent], shifted towards the theme's text colour until it stands out from the background (a contrast of 3:1),
+     * so an accent picked on a dark theme (Snow, say) still shows on Paper, and a dark one on a black theme.
+     */
+    internal fun readableOn(accent: Color, theme: ThemeSpec): Color {
+        fun lum(c: Color) = 0.2126f * c.red + 0.7152f * c.green + 0.0722f * c.blue
+        fun contrast(a: Color, b: Color) = (maxOf(lum(a), lum(b)) + 0.05f) / (minOf(lum(a), lum(b)) + 0.05f)
+        val bg = theme.background
+        var out = accent
+        var t = 0f
+        while (contrast(out, bg) < 3f && t < 1f) { t += 0.1f; out = lerp(accent, theme.text, t) }
+        return out
     }
 
     /** Call once at start, after [Store.init], so the first frame is already in the right theme. */

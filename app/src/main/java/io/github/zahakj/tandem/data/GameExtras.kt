@@ -75,35 +75,3 @@ object LogoPlace {
     }
 }
 
-/**
- * Which hover jingle a game has. In order: none when the game is set to none; the file picked for it in Edit
- * details; `ROMs/downloaded_media/<system>/jingles/<game file name>.(ogg|mp3|wav)` for each of the system's art
- * folders; else none ([Source.System]: nothing plays on hover).
- */
-object JingleLookup {
-    val EXTENSIONS = listOf("ogg", "mp3", "wav")
-
-    sealed interface Source {
-        data class Own(val file: File, val picked: Boolean) : Source
-        data object Off : Source
-        data object System : Source
-    }
-
-    fun folder(romsDir: File, artId: String): File = File(romsDir, "downloaded_media/$artId/jingles")
-
-    fun isAudio(f: File): Boolean = f.extension.lowercase() in EXTENSIONS
-
-    /** Blocking (checks files): call off the main thread. */
-    fun find(meta: GameMeta, romsDir: File, artIds: List<String>, stem: String, exists: (File) -> Boolean = { it.isFile }): Source {
-        if (meta.jingleOff) return Source.Off
-        meta.jingle?.let { File(it) }?.takeIf(exists)?.let { return Source.Own(it, picked = true) }
-        for (id in artIds) {
-            val dir = folder(romsDir, id)
-            for (ext in EXTENSIONS) {
-                val f = File(dir, "$stem.$ext")
-                if (exists(f)) return Source.Own(f, picked = false)
-            }
-        }
-        return Source.System
-    }
-}

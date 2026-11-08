@@ -130,7 +130,7 @@ internal fun resetLook(old: Look): Look = Look().copy(
     singleScreen = old.singleScreen, swapScreens = old.swapScreens,
     sounds = old.sounds, soundVolume = old.soundVolume, soundPack = old.soundPack, soundFiles = old.soundFiles,
     music = old.music, musicVolume = old.musicVolume, myMusic = old.myMusic, musicShuffle = old.musicShuffle,
-    gameJingles = old.gameJingles, pipVoice = old.pipVoice, packParts = old.packParts,
+    pipVoice = old.pipVoice, packParts = old.packParts,
 )
 
 /** Home row orders on offer: ids in order, and a friendly name. */

@@ -100,11 +100,6 @@ fun soundSettings(trackCount: Int): SettingSection {
     val look = Store.settings.look
     val pack = SoundPack.of(look.soundPack)
     val recorded = remember(ThemePacks.packs) { ThemePacks.customSounds() }
-    // Game jingles only mean something once a game has one: files from ES-DE or Cocoon media, or one picked by hand.
-    val anyJingles = remember {
-        java.io.File(io.github.zahakj.tandem.Library.romsDir, "downloaded_media").listFiles().orEmpty().any { java.io.File(it, "jingles").isDirectory } ||
-            io.github.zahakj.tandem.data.Store.meta.values.any { it.jingle != null }
-    }
     val recordedNow = recorded.firstOrNull { it.first == look.soundFiles }
     val themeHasAudio = ThemePacks.byId(look.theme)?.let { it.music.isNotEmpty() || it.sounds != null } == true
     val fallback = if (themeHasAudio) " Used when the theme pack's own is switched off above." else ""
@@ -136,13 +131,7 @@ fun soundSettings(trackCount: Int): SettingSection {
                 "Sound volume", Glyph.Volume, Palette.Butter, "How loud the UI sounds are, compared with the system volume.",
                 look.soundVolume, 0.1f, 1f, 0.1f, ::pct,
             ) { v -> updateLook { it.copy(soundVolume = v ?: 0.5f) }; Sounds.select() },
-        ) + (if (!anyJingles) emptyList() else listOf(
-            toggle(
-                "Game jingles on hover", Glyph.Music, Palette.Lavender,
-                "A game's own jingle plays when you rest on it for a moment: a file in downloaded_media/<system>/jingles, or one picked in the game's Edit details.",
-                look.gameJingles,
-            ) { on -> updateLook { it.copy(gameJingles = on) }; if (!on) GameJingles.fadeOut() },
-        )) + listOf(
+        ) + listOf(
             toggle("Pip's voice", Glyph.Heart, Palette.Lavender, "Pip babbles a little when it has something to tell you.", look.pipVoice,
                 preview = { PipVoicePreview(look.pipVoice) }) { on -> updateLook { it.copy(pipVoice = on) } },
             toggle(
@@ -222,7 +211,6 @@ fun SoundCues() {
         if (saver != wasSaver) { if (saver) Sounds.saverIn() else Sounds.saverOut(); wasSaver = saver }
         Music.dim(saver)
     }
-    GameJingleWatcher()
 
     val problem = LaunchFx.problem
     LaunchedEffect(problem) { if (problem != null) { Sounds.error(); Sounds.pipSays("Oh no, that one won't start"); Music.gameClosed() } }
