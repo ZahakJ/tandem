@@ -88,6 +88,7 @@ my-pack/
   systems/<id>/logo.png    wide transparent logo drawn over the hero
   collections/<kind>/icon.png   favorites, most_played, newly_added, recent
   overlays/<id>/overlay.png     a frame drawn over that system's game covers
+  music/*.mp3                   the theme's music (MP3, OGG, Opus, FLAC, M4A, WAV), played in name order
 ```
 
 `smart_folders/.../by_platform/<id>/` and `icon_overlays/<id>/` (Cocoon's names) work in place of `systems/` and `overlays/`. `<id>` is Tandem's system id (`n3ds`, `gba`, `psx`... see `assets/platforms.json`) or any alias. PNG, WebP and JPG are read.
@@ -148,6 +149,7 @@ my-pack/
 | `overlay` | `none`, `scanlines` or `dot_matrix` |
 | `icon_style` | `bubble`, `neon`, `pixel`, `flat`, `plastic`, `chrome`, `lcd`, `sticker` or `rune` (carved) |
 | `wallpaper.top` / `wallpaper.bottom` | A picture (PNG, JPG, WebP) or video (MP4, WebM, MKV) in the pack folder |
+| `music` | Optional list of audio files in the pack, in play order. Without it, every file in `music/` plays, by name |
 
 To publish a pack, zip the folder. Use only art you made or may share, and put your name in `author`.
 
@@ -161,3 +163,8 @@ Videos play muted, looping and hardware decoded. The player is released whenever
 
 UI sounds and the built-in soundtracks are synthesized by Tandem, so there are no sound files. Your own music goes in
 `ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV).
+
+A theme pack can bring its own music: a `music/` folder in the pack (Cocoon packs too, `bgm/` also works), or a
+`music` list in `theme.json`. While that pack is the theme its music plays instead of the background music, in order,
+and switching to another theme goes back. Each pack's music can be turned off in **Theme packs** (**Music**).
+Importing a pack copies its music with everything else.

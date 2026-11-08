@@ -36,6 +36,8 @@ data class ThemePack(
     /** Asset packs this theme uses ("Example - Smart Folders by Someone"). */
     val credits: List<String>,
     val removable: Boolean,
+    /** The pack's music: audio files in its music/ folder (or named by theme.json's "music"), in order. */
+    val music: List<File> = emptyList(),
 ) {
     val hasWallpaper: Boolean get() = spec.wallpaperTop != null || spec.wallpaperBottom != null
 
@@ -49,6 +51,7 @@ data class ThemePack(
             if (art.overlayCount > 0) add(plural(art.overlayCount, "cover frame"))
             if (spec.wallpaperTop != null && spec.wallpaperBottom != null) add("2 wallpapers")
             else if (hasWallpaper) add("wallpaper")
+            if (music.isNotEmpty()) add(plural(music.size, "song"))
         }.joinToString(" · ")
 
     private fun plural(n: Int, one: String, many: String = one + "s") = "$n ${if (n == 1) one else many}"
@@ -145,6 +148,7 @@ object ThemePacks {
 
     val videoExtensions = setOf("mp4", "webm", "mkv", "3gp")
     val imageExtensions = setOf("png", "jpg", "jpeg", "webp", "gif", "bmp")
+    val audioExtensions = setOf("mp3", "ogg", "oga", "opus", "flac", "m4a", "aac", "wav")
 
     /** Every installed pack, Tandem's folder first. */
     var packs by mutableStateOf<List<ThemePack>>(emptyList())
@@ -363,7 +367,22 @@ object ThemePacks {
             name = spec.name, author = o.optString("author").trim(),
             description = o.optString("description").trim(), version = o.optString("version").trim(),
             spec = spec.copy(hasArt = !art.isEmpty), art = art, preview = preview, credits = credits, removable = removable,
+            music = findMusic(dir, o),
         )
+    }
+
+    /**
+     * A pack's music: the files theme.json's "music" names (a list of paths inside the pack), else every audio file in
+     * its music/ (or bgm/, sounds/music/) folder, sorted by name. Never anything outside the pack's folder.
+     */
+    private fun findMusic(dir: File, o: JSONObject): List<File> {
+        fun ok(f: File) = f.isFile && f.extension.lowercase() in audioExtensions
+        o.optJSONArray("music")?.let { a ->
+            val named = (0 until a.length()).mapNotNull { i -> a.optString(i).takeIf { it.isNotBlank() && ".." !in it }?.let { File(dir, it) } }.filter(::ok)
+            if (named.isNotEmpty()) return named
+        }
+        return listOf("music", "Music", "bgm", "sounds/music").map { File(dir, it) }.firstOrNull { it.isDirectory }
+            ?.walkTopDown()?.maxDepth(2)?.filter(::ok)?.sortedBy { it.path.lowercase() }?.toList().orEmpty()
     }
 
     /** Finds a pack's art: inside its own folder, and for Cocoon packs in the asset packs `asset_refs` names. */

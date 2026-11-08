@@ -393,7 +393,8 @@ object Sounds {
 data class NowPlaying(val id: String, val title: String, val mood: String, val own: Boolean)
 
 /**
- * Background music: Tandem's own synthesized soundtrack ([Tracks]), or the user's files from `ROMs/tandem/music/`.
+ * Background music: the theme pack's own music while it is the theme ([themeTracks]), else the user's files from
+ * `ROMs/tandem/music/`, else Tandem's own synthesized soundtrack ([Tracks]).
  *
  * It plays only while Tandem is on screen: it fades out and fully stops (no audio thread, no CPU) when a game starts
  * or the screen turns off, and fades back in when you return. It asks Android for audio focus, pauses for calls and
@@ -422,6 +423,21 @@ object Music {
 
     fun tracks(): List<File> = dir.listFiles().orEmpty().filter { it.isFile && it.extension.lowercase() in extensions }.sortedBy { it.name.lowercase() }
 
+    /** The theme pack in use, when it has music and its music is on; null otherwise. */
+    private fun themePack(): ThemePack? {
+        val look = Store.settings.look
+        return ThemePacks.byId(look.theme)?.takeIf { it.music.isNotEmpty() && ThemePacks.parts(it.id).music }
+    }
+
+    /** The theme pack's music, when it plays ([themePack]). */
+    fun themeTracks(): List<File> = themePack()?.music.orEmpty()
+
+    /** The files that play now: the theme's, else the music folder's (with My music on). Empty: the soundtrack plays. */
+    private fun files(): List<File> = themeTracks().ifEmpty { if (Store.settings.look.myMusic) tracks() else emptyList() }
+
+    /** Which list [queue] was taken from, so switching theme starts the new list instead of finishing the old. */
+    private var queueFrom: List<File> = emptyList()
+
     fun init(ctx: Context) { app = ctx.applicationContext }
 
     /** Tandem is on screen. */
@@ -446,9 +462,10 @@ object Music {
         val look = Store.settings.look
         if (!look.music || !visible || yielded || gameUp) { stopAll(); return }
         if (!requestFocus()) { stopAll(); return }
-        val own = look.myMusic && tracks().isNotEmpty()
-        if (own) {
+        val files = files()
+        if (files.isNotEmpty()) {
             SynthEngine.stop()
+            if (files != queueFrom) { stopFile(); queue.clear(); queueFrom = files }
             val p = player
             if (p == null) next() else {
                 if (!p.isPlaying) runCatching { p.start() }
@@ -491,7 +508,7 @@ object Music {
     fun skip() {
         val look = Store.settings.look
         when {
-            look.myMusic && tracks().isNotEmpty() -> { stopFile(); next() }
+            files().isNotEmpty() -> { stopFile(); next() }
             look.musicTrack == "shuffle" -> shuffleNext()
             else -> {
                 val ids = Tracks.names(look.musicPack).map { it.first }
@@ -580,9 +597,11 @@ object Music {
     private fun next() {
         val look = Store.settings.look
         if (queue.isEmpty()) {
-            val all = tracks()
+            val all = files()
             if (all.isEmpty()) return
-            queue = ArrayDeque(if (look.musicShuffle) all.shuffled() else all)
+            queueFrom = all
+            // A pack's music keeps its order, as the pack's author arranged it; the music folder follows Shuffle.
+            queue = ArrayDeque(if (look.musicShuffle && themeTracks().isEmpty()) all.shuffled() else all)
         }
         val file = queue.removeFirst()
         runCatching {
@@ -596,7 +615,7 @@ object Music {
                 start()
             }
             fade = 0f
-            now = NowPlaying("file", file.nameWithoutExtension, "From your music folder", own = true)
+            now = NowPlaying("file", file.nameWithoutExtension, themePack()?.let { "From ${it.name}" } ?: "From your music folder", own = true)
             fadeTo(1f)
         }.onFailure { Log.w("Tandem", "Couldn't play ${file.name}", it); stopFile() }
     }

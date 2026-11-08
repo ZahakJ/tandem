@@ -163,4 +163,6 @@ data class PackParts(
     val heroes: Boolean = true,
     /** Frames over game covers (a pack's icon overlays). Off until turned on: not every pack's frames suit every cover. */
     val frames: Boolean = false,
+    /** The pack's own music (its music/ folder), played while it is the theme in place of the background music. */
+    val music: Boolean = true,
 )
