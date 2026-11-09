@@ -200,7 +200,7 @@ fun GameMenu() {
     ActionMenuHost(game != null, onClose = { Nav.closeMenus() }) spec@{
         val g = shown ?: return@spec null
         val meta = g.meta
-        val players = g.platform.players.let { all -> all.filter { it.accepts(g.file.name) }.ifEmpty { all } }
+        val players = g.platform.playersFor(g.file.name)
         val current = g.platform.playerFor(g)
         val routeKey = "menu:${g.key}"
         val running = io.github.zahakj.tandem.RunningGames.list.any { it.game?.key == g.key }

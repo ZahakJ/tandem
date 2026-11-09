@@ -96,7 +96,8 @@ object Launcher {
             if (!AndroidApps.isLaunchable(ctx, pkg)) return LaunchProblem.AppMissing(game)
             return Plan(game, game.platform.allPlayers.first(), null, null, bottom)
         }
-        val chosen = game.platform.playerFor(game) ?: return LaunchProblem.NoEmulator(game, game.platform.allPlayers.firstOrNull())
+        val chosen = game.platform.playerFor(game)
+            ?: return LaunchProblem.NoEmulator(game, game.platform.playersFor(game.file.name, game.platform.allPlayers).firstOrNull())
         if (!game.file.exists()) return LaunchProblem.FileMissing(game)
         val spec = chosen.forFile(game.file)
         val uri = documentUri(ctx, game.file) ?: Uri.fromFile(game.file)

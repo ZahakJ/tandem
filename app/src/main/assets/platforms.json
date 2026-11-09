@@ -1205,7 +1205,8 @@
     "steamappid",
     "epicgame",
     "desktop",
-    "lnk"
+    "lnk",
+    "moonlight"
    ],
    "aliases": [
     "steam",
@@ -1280,6 +1281,19 @@
          "string": "{file.id}"
        },
        "game_source": "STEAM"
+     }
+    },
+    {
+     "name": "Moonlight",
+     "component": "com.limelight/com.limelight.ShortcutTrampoline",
+     "action": "android.intent.action.VIEW",
+     "game": "none",
+     "note": "PC games streamed from a host: .moonlight files with '[uuid] <host uuid>' and '[appid] <app id>' lines",
+     "extensions": ["moonlight"],
+     "own": true,
+     "extras": {
+      "UUID": "{tags.uuid}",
+      "AppId": "{tags.appid}"
      }
     },
     {

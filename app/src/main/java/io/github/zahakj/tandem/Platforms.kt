@@ -59,9 +59,19 @@ data class Platform(
 
     /** The emulator for [game]: its own choice if that is installed (and takes this file), else the system default. */
     fun playerFor(game: Game): LaunchSpec? {
-        val all = players
-        val ps = all.filter { it.accepts(game.file.name) }.ifEmpty { all }
+        val ps = playersFor(game.file.name, players)
         return ps.firstOrNull { it.name == game.meta.emulator } ?: ps.firstOrNull()
+    }
+
+    /**
+     * The players that open [fileName], out of [all]. A file a player [LaunchSpec.owns] (a streamed game's .moonlight)
+     * goes to that player only, even while it isn't installed: the list is then empty and the player is asked for,
+     * since no emulator of the system can read the file. The other players take every other file of the system.
+     */
+    fun playersFor(fileName: String, all: List<LaunchSpec> = players): List<LaunchSpec> {
+        if (allPlayers.any { it.owns && it.accepts(fileName) }) return all.filter { it.owns && it.accepts(fileName) }
+        val rest = all.filter { !it.owns }
+        return rest.filter { it.accepts(fileName) }.ifEmpty { rest }
     }
 }
 
@@ -96,6 +106,8 @@ data class LaunchSpec(
     val accept: Regex? = null,
     /** Where this player came from when it isn't built in, e.g. "Cocoon". */
     val origin: String? = null,
+    /** Its [accept]ed files are its alone: no other player of the system is offered for them ("own": true). */
+    val owns: Boolean = false,
 ) {
     val packageName: String get() = component.substringBefore('/')
 
@@ -235,6 +247,7 @@ object Platforms {
             // "extensions": the kinds of file this player opens (others go to the system's other players).
             accept = l.optJSONArray("extensions").strings().takeIf { it.isNotEmpty() }
                 ?.let { exts -> Regex(".*\\.(" + exts.joinToString("|") { Regex.escape(it.lowercase()) } + ")", RegexOption.IGNORE_CASE) },
+            owns = l.optBoolean("own"),
         )
     }
 
