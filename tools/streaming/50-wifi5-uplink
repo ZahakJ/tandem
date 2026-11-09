@@ -1,0 +1,15 @@
+#!/bin/sh
+# NetworkManager dispatcher hook: join Wi-Fi as Wi-Fi 5 (no HE) on a PC that streams games.
+#
+# Some gateways (seen on an Xfinity XB7) tell Wi-Fi 6 clients not to send on their own (an MU EDCA parameter set
+# with AIFSN 0) and to wait for the gateway's uplink schedule. A streaming host is almost all uplink, so every
+# video packet waits: ~9 ms typical with stalls of 30-700 ms, against ~3 ms as Wi-Fi 5 on the same link.
+# See docs/guide/streaming.md. Install as root in /etc/NetworkManager/dispatcher.d/ (mode 755) and set IFACE.
+IFACE=wlan0
+[ "$1" = "$IFACE" ] && [ "$2" = up ] || exit 0
+id=$(wpa_cli -i "$IFACE" list_networks | awk '/CURRENT/ {print $1}')
+[ -n "$id" ] || exit 0
+[ "$(wpa_cli -i "$IFACE" get_network "$id" disable_he)" = 1 ] && exit 0
+wpa_cli -i "$IFACE" set_network "$id" disable_he 1 >/dev/null
+wpa_cli -i "$IFACE" reassociate >/dev/null
+logger -t wifi5-uplink "joined $CONNECTION_ID without Wi-Fi 6 (HE)"

@@ -1,0 +1,165 @@
+#!/bin/bash
+# Console-style streaming sessions for Sunshine on a Hyprland PC: while a game streams, the PC is only compute and
+# network (real monitor off, a headless 1080p screen captured instead), and it puts itself back when the game or
+# the stream ends. See docs/guide/streaming.md.
+#
+#   stream-session start            prep: swap the real monitor for a headless 1080p screen
+#   stream-session game APPID PROC  run a Steam game and wait until it exits (Sunshine's cmd)
+#   stream-session stop             undo: close the game and Steam, bring the real monitor back
+#   stream-session restore          bring the real monitor back only (login, panic key)
+#   stream-session watch            watchdog: recovers when Sunshine dies or the client walks away
+set -u
+
+# Defaults; put your own in ~/.config/stream-session.conf (the same NAME=value lines).
+MON=DP-1                            # the real monitor's name, from `hyprctl monitors`
+MON_MODE="2560x1440@144,0x0,1"      # its usual mode, position and scale
+HEADLESS=STREAM                     # the name of the screen that is streamed
+STREAM_MODE="1920x1080@60,auto,1"
+# Seconds without a client before the watchdog ends the session. With Moonlight's picture-in-picture on, Home
+# keeps the stream connected, so a disconnect means Moonlight was closed.
+IDLE_QUIT=90
+SUNSHINE=sunshine.service           # the systemd user unit; the AUR's sunshine-bin is app-dev.lizardbyte.app.Sunshine.service
+WEB_USER=sunshine                   # Sunshine web page login; the password is read from WEB_PASSWORD_FILE
+WEB_PASSWORD_FILE=$HOME/.config/sunshine/webui-password
+# 1: a stream unlocks a locked session (hyprlock) and locks it again afterwards. Anyone holding a paired device
+# then gets in without the password. 0: the lock screen shows in the stream; type the password from Moonlight.
+UNLOCK=0
+STATE=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/stream-session
+LOG=$HOME/.local/state/stream-session.log
+# shellcheck source=/dev/null
+[ -f "$HOME/.config/stream-session.conf" ] && . "$HOME/.config/stream-session.conf"
+
+mkdir -p "$STATE" "$(dirname "$LOG")"
+log() { echo "$(date '+%F %T') $*" >> "$LOG"; }
+
+if [ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+	HYPRLAND_INSTANCE_SIGNATURE=$(ls -t "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr" 2>/dev/null | head -1)
+	export HYPRLAND_INSTANCE_SIGNATURE
+fi
+
+headless_up() { hyprctl -j monitors all 2>/dev/null | grep -q "\"name\": \"$HEADLESS"; }
+
+screen_stream() {
+	headless_up || hyprctl output create headless "$HEADLESS" >/dev/null
+	hyprctl keyword monitor "$HEADLESS,$STREAM_MODE" >/dev/null
+	hyprctl keyword monitor "$MON,disable" >/dev/null
+}
+
+screen_normal() {
+	hyprctl keyword monitor "$MON,$MON_MODE" >/dev/null
+	headless_up && hyprctl output remove "$HEADLESS" >/dev/null
+	hyprctl dispatch dpms on >/dev/null
+}
+
+steam_up() { pgrep -x steam >/dev/null || pgrep -f 'ubuntu12_32/steam( |$)' >/dev/null; }
+
+close_game() {
+	[ -f "$STATE/proc" ] || return 0
+	p=$(cat "$STATE/proc")
+	pkill -f "$p" && log "closing $p"
+	for _ in $(seq 20); do pgrep -f "$p" >/dev/null || break; sleep 0.5; done
+	pkill -9 -f "$p" 2>/dev/null
+	rm -f "$STATE/proc"
+}
+
+close_steam() {
+	steam_up || return 0
+	log "shutting Steam down"
+	steam -shutdown >/dev/null 2>&1 &
+	for _ in $(seq 40); do steam_up || return 0; sleep 0.5; done
+	pkill -f 'ubuntu12_32/steam' ; pkill -f steamwebhelper
+}
+
+# With the monitor off, the lock screen is all a stream of a locked PC shows. With UNLOCK=1 the session unlocks
+# for the stream and locks again when it ends; otherwise the password is typed from Moonlight's keyboard.
+unlock() {
+	[ "$UNLOCK" = 1 ] || return 0
+	pgrep -x hyprlock >/dev/null || return 0
+	touch "$STATE/locked"
+	pkill -USR1 -x hyprlock && log "unlocked for the stream"
+}
+
+relock() {
+	[ -f "$STATE/locked" ] || return 0
+	rm -f "$STATE/locked"
+	loginctl lock-session && log "locked again"
+}
+
+# No idle lock, dimming or screen-off while a session is up (hypridle respects this).
+stay_awake() {
+	setsid systemd-inhibit --what=idle --who=stream-session --why="streaming a game" sleep infinity >/dev/null 2>&1 &
+	echo $! > "$STATE/inhibit"
+}
+
+may_sleep() {
+	[ -f "$STATE/inhibit" ] || return 0
+	pkill -P "$(cat "$STATE/inhibit")" 2>/dev/null; kill "$(cat "$STATE/inhibit")" 2>/dev/null
+	rm -f "$STATE/inhibit"
+}
+
+case "${1:-}" in
+start)
+	log "start"
+	date +%s > "$STATE/active"
+	may_sleep; stay_awake
+	unlock
+	screen_stream
+	;;
+game)
+	appid=$2 proc="$3\\.exe"   # \.exe so pgrep never matches this script's own argv
+	echo "$proc" > "$STATE/proc"
+	log "game $appid ($proc)"
+	# No real screen while streaming: Steam's browser crash-loops on the GPU, so it draws in software.
+	steam_up || { setsid steam -silent -cef-disable-gpu -cef-disable-gpu-compositing >/dev/null 2>&1 & }
+	# Steam drops steam:// requests while it is still starting, so keep asking until the game shows up.
+	for i in $(seq 36); do
+		pgrep -f "$proc" >/dev/null && break
+		[ $((i % 2)) -eq 1 ] && setsid steam "steam://rungameid/$appid" >/dev/null 2>&1 &
+		sleep 5
+	done
+	pgrep -f "$proc" >/dev/null || { log "game never started"; exit 1; }
+	log "game running"
+	while pgrep -f "$proc" >/dev/null; do sleep 2; done
+	log "game exited"
+	;;
+stop)
+	log "stop"
+	close_game
+	close_steam
+	screen_normal
+	may_sleep
+	relock
+	rm -f "$STATE/active"
+	;;
+restore)
+	screen_normal
+	;;
+watch)
+	gone=""
+	while sleep 10; do
+		[ -f "$STATE/active" ] || { gone=""; continue; }
+		if ! systemctl --user -q is-active "$SUNSHINE"; then
+			log "watchdog: Sunshine is down, restoring"
+			"$0" stop
+			systemctl --user start "$SUNSHINE"
+			continue
+		fi
+		last=$(journalctl --user -u "$SUNSHINE" -g 'CLIENT (DIS)?CONNECTED' -n 1 -o cat --no-pager 2>/dev/null)
+		case "$last" in
+		*DISCONNECTED*) gone=${gone:-$(date +%s)} ;;
+		*) gone="" ;;
+		esac
+		if [ -n "$gone" ] && [ $(( $(date +%s) - gone )) -ge $IDLE_QUIT ]; then
+			log "watchdog: no client for $IDLE_QUIT s, ending the session"
+			pass=$(cat "$WEB_PASSWORD_FILE" 2>/dev/null)
+			curl -sk -u "$WEB_USER:$pass" -X POST https://localhost:47990/api/apps/close >/dev/null
+			sleep 20
+			[ -f "$STATE/active" ] && "$0" stop
+			gone=""
+		fi
+	done
+	;;
+*)
+	sed -n '2,11p' "$0"; exit 2
+	;;
+esac

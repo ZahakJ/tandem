@@ -1,0 +1,7 @@
+[Unit]
+Description=Streaming session watchdog (restores the desktop if a stream dies or is abandoned)
+
+[Service]
+ExecStart=%h/.local/bin/stream-session watch
+Restart=always
+RestartSec=5
