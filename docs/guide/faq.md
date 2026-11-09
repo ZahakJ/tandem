@@ -26,7 +26,7 @@ Yes. Tandem doesn't change their files, and it reads the same folders and artwor
 
 ### Does Tandem support Android apps and PC games?
 
-Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, Winlator) are in [`platforms.json`](platforms.md) like any other system.
+Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, DroidDeck, Winlator) are in [`platforms.json`](platforms.md) like any other system. To play games streamed from your own PC, see [Streaming from a home PC](streaming.md).
 
 ### Is Tandem affiliated with AYN?
 

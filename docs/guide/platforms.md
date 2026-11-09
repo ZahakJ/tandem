@@ -23,7 +23,7 @@ Tandem knows 104 systems. The common ones:
 | Genesis, Master System, Game Gear | `genesis`, `megadrive`, `mastersystem`, `gamegear` | `.md` `.gen` `.sms` `.gg` `.zip` | RetroArch (Genesis Plus GX, PicoDrive) |
 | Saturn, Dreamcast | `saturn`, `dreamcast` | `.chd` `.cue` `.gdi` `.cdi` | Yaba Sanshiro, Flycast, Redream, RetroArch |
 | Arcade, Neo Geo | `arcade`, `mame`, `fbneo`, `neogeo` | `.zip` `.7z` `.chd` | RetroArch (FinalBurn Neo, MAME), MAME4droid |
-| Windows | `windows`, `pc`, `steam` | `.pcgame` `.steam` `.desktop` and other shortcuts | GameNative, Winlator |
+| Windows | `windows`, `pc`, `steam` | `.pcgame` `.steam` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
 | DOS, ScummVM | `dos`, `scummvm` | `.zip` `.dosz` `.exe` `.scummvm` | DOSBox Pure, ScummVM |
 
 The built-in [`platforms.json`](../../app/src/main/assets/platforms.json) lists every system, folder name and file
@@ -98,6 +98,8 @@ Each entry in `players` describes how to start one emulator.
 | `component` | Yes | The emulator's activity, as `package/full.activity.Name`. |
 | `action` | No | The intent action. Defaults to `android.intent.action.VIEW`. |
 | `game` | No | How the game is handed over; see below. Defaults to `data`. |
+| `extensions` | No | The file extensions this player opens. Other files of the system go to its other players, and the game menu offers it only for these. DroidDeck lists `steam` and `steamappid`. |
+| `own` | No | `true`: the files in `extensions` are this player's alone. No other player of the system is used or offered for them, whichever is the system's default. Moonlight owns `moonlight`. |
 | `extras` | No | Extra string values to send with the intent, as `"KEY": "value"`. |
 
 The `game` field takes one of three forms:

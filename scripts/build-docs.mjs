@@ -51,6 +51,7 @@ export const SECTIONS = [
     pages: [
       ["controls", "docs/guide/controls.md", "Controller reference"],
       ["resume", "docs/guide/resume.md", "Resume and Shizuku"],
+      ["streaming", "docs/guide/streaming.md", "Streaming from a home PC"],
     ],
   },
   {

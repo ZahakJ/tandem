@@ -100,6 +100,7 @@ built from the Markdown in [`docs/`](docs/):
 | [Systems and emulators](docs/guide/platforms.md) | The `platforms.json` reference |
 | [Importing](docs/guide/importing.md) | From ES-DE gamelists and launcher backups |
 | [Resume and Shizuku](docs/guide/resume.md) | How resume works, and what it needs |
+| [Streaming from a home PC](docs/guide/streaming.md) | Sunshine on the PC, Moonlight on the handheld, a tile per game |
 | [Themes](docs/guide/themes.md) · [Widgets](docs/guide/widgets.md) | Looks, layouts, packs, sounds; widgets |
 | [Android apps](docs/guide/apps.md) | The app menu, the drawer, choosing and moving screens |
 | [Privacy and scraping](docs/guide/privacy.md) | What is stored, and what each service receives |

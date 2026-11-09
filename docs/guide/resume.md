@@ -83,5 +83,9 @@ isn't allowed in it.
 **The game restarted anyway.** Android may have closed the emulator in the background to free memory, or the
 emulator quits when you leave it; check its settings for a "pause in background" option.
 
+**A game left in a small window.** An app that shrinks to a picture-in-picture window when you press Home
+(Moonlight, with that setting on, keeps a [streamed game](streaming.md) connected this way) is still running.
+Pressing A on its game opens the window back up to the full screen; nothing restarts.
+
 **It resumed the wrong thing.** Tandem only knows the last game it started in that emulator. If you opened another
 game from inside the emulator, close the emulator and pick the game again.
