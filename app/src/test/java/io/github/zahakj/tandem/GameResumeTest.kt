@@ -62,6 +62,23 @@ class GameResumeTest {
         assertNull(GameResume.target(null, eden))
     }
 
+    @Test fun aPictureInPictureWindowIsOpenedBackUp() {
+        // From the Thor: Moonlight's stream left in a small window (Home), Tandem's companion in front.
+        val pip = """
+            Display #0 (activities from top to bottom):
+              * Task{48d4a62 #3538 type=standard A=10123:com.limelight U=0 visible=true visibleRequested=true mode=pinned translucent=false sz=1}
+                * Hist  #0: ActivityRecord{84ff52d u0 com.limelight/.Game} t3538}
+              * Task{c41e09 #3536 type=standard A=10147:io.github.zahakj.tandem U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+                * Hist  #0: ActivityRecord{53cea8c u0 io.github.zahakj.tandem/.CompanionActivity} t3536}
+        """.trimIndent()
+        assertEquals(GameResume.Target(task = 3538, display = 0, pinned = "com.limelight"), GameResume.target(RunningTasks.parse(pip), "com.limelight"))
+        // Full screen again: by its task, as any game.
+        val full = pip.replace("mode=pinned", "mode=fullscreen")
+        assertEquals(GameResume.Target(task = 3538, display = 0), GameResume.target(RunningTasks.parse(full), "com.limelight"))
+        // The window's mode is its own task's, not the next one's.
+        assertNull(GameResume.target(RunningTasks.parse(pip), "io.github.zahakj.tandem")?.pinned)
+    }
+
     @Test fun aRecordWithoutItsTaskIsNotUsed() {
         val noTask = "* Hist #0: ActivityRecord{1 u0 com.retroarch/.browser.retroactivity.RetroActivityFuture}"
         assertNull(GameResume.target(RunningTasks.parse(noTask), "com.retroarch"))

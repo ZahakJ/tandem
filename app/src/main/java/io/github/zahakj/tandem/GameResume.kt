@@ -16,16 +16,20 @@ import android.view.Display
  * ([RunningTasks]); it stays on the screen it is on. The launcher activity is only started when no such task is
  * found (no Shizuku, or the dump didn't list one).
  *
+ * A game left in a picture-in-picture window (Moonlight keeps its stream connected that way) stays small when its
+ * task is moved to the front. Android grows it back when the app is started again, as tapping its icon does: the
+ * start is handed to the window that is already there, so for these the launcher activity is the safe way.
+ *
  * [target] is plain, for tests (GameResumeTest).
  */
 object GameResume {
-    /** The task a game plays in, and the display it is on. */
-    data class Target(val task: Int, val display: Int)
+    /** The task a game plays in, the display it is on, and the app's package when it is a picture-in-picture window. */
+    data class Target(val task: Int, val display: Int, val pinned: String? = null)
 
     /** The task [pkg]'s game plays in, or null when there is none (or the dump didn't give its id). */
     fun target(tasks: Map<String, List<RunningTasks.Activity>>?, pkg: String): Target? {
         val a = tasks?.let { RunningTasks.game(it, pkg) }?.takeIf { it.task >= 0 } ?: return null
-        return Target(a.task, a.display.takeIf { it >= 0 } ?: Display.DEFAULT_DISPLAY)
+        return Target(a.task, a.display.takeIf { it >= 0 } ?: Display.DEFAULT_DISPLAY, pkg.takeIf { a.pinned })
     }
 
     /** True when [target] is on the second screen (not the main display). */
@@ -33,10 +37,12 @@ object GameResume {
 
     /**
      * Moves [target]'s task to the front of its display, as it is (REORDER_TASKS, a normal permission; Tandem is in
-     * front when it asks). False when Android refused. Blocking (a binder call).
+     * front when it asks); a picture-in-picture window is opened back up instead. False when Android refused.
+     * Blocking (a binder call).
      */
     fun bringBack(ctx: Context, target: Target): Boolean = try {
-        ctx.getSystemService(ActivityManager::class.java).moveTaskToFront(target.task, 0)
+        val pip = target.pinned?.let { launcherIntent(ctx, it) }
+        if (pip != null) ctx.startActivity(pip) else ctx.getSystemService(ActivityManager::class.java).moveTaskToFront(target.task, 0)
         true
     } catch (e: RuntimeException) {
         Log.w("Tandem", "Couldn't bring task ${target.task} to the front", e)

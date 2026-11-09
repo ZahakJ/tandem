@@ -11,16 +11,18 @@ package io.github.zahakj.tandem
  */
 object RunningTasks {
     /**
-     * One activity in a task: its full class name, whether it is on its way out, and the task and display it is in
-     * (-1 when the dump didn't say).
+     * One activity in a task: its full class name, whether it is on its way out, the task and display it is in
+     * (-1 when the dump didn't say), and whether that task is a picture-in-picture window.
      */
-    data class Activity(val cls: String, val finishing: Boolean, val task: Int = -1, val display: Int = -1)
+    data class Activity(val cls: String, val finishing: Boolean, val task: Int = -1, val display: Int = -1, val pinned: Boolean = false)
 
     /** "* Hist #0: ActivityRecord{…}" (every Android since 7) and "Run #0: ActivityRecord{…}" (Android 11 and older). */
     private val entry = Regex("""^\*?\s*(?:Hist|Run)\s+#\d+:\s*ActivityRecord\{\S+ u\d+ ([A-Za-z0-9_.]+)/([A-Za-z0-9_.$]+)""")
     /** The record's task, "t212" (some builds close the activity's name first: "…Activity} t212}"). */
     private val taskId = Regex("""\st(\d+)[\s}]""")
     private val displayLine = Regex("""^Display #(\d+)""")
+    /** A task's own line, before its activities: "* Task{48d4a62 #3538 type=standard … mode=pinned …}". */
+    private val taskLine = Regex("""^\*?\s*Task\{\S+ #\d+ """)
 
     /**
      * Every activity in a task, by package. Null when [dump] lists none at all: Tandem itself is always there when it
@@ -32,10 +34,12 @@ object RunningTasks {
         var seen = false
         var last: Pair<String, Int>? = null
         var display = -1
+        var pinned = false
         for (raw in dump.lineSequence()) {
             val line = raw.trim()
             val d = displayLine.find(line)
-            if (d != null) { display = d.groupValues[1].toInt(); last = null; continue }
+            if (d != null) { display = d.groupValues[1].toInt(); last = null; pinned = false; continue }
+            if (taskLine.containsMatchIn(line)) pinned = "mode=pinned" in line
             val m = entry.find(line)
             if (m != null) {
                 seen = true
@@ -45,7 +49,7 @@ object RunningTasks {
                 val finishing = " f}" in line
                 val task = taskId.find(line, m.range.last)?.groupValues?.get(1)?.toIntOrNull() ?: -1
                 val list = out.getOrPut(pkg) { ArrayList() }
-                list += Activity(cls, finishing, task, display)
+                list += Activity(cls, finishing, task, display, pinned)
                 last = pkg to list.lastIndex
                 continue
             }
