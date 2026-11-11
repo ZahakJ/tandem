@@ -130,9 +130,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     // Native libraries are unpacked on install, so the passthrough helper can be run as a program.
     packaging { jniLibs { useLegacyPackaging = true } }
     buildFeatures {
@@ -140,6 +137,10 @@ android {
         buildConfig = true
         prefab = withDiscord
     }
+}
+
+kotlin {
+    compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 
 dependencies {
