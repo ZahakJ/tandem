@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <!-- Bring a game that is still running back by its own task (GameResume.kt). -->
     <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <!-- Immersion mode: Do Not Disturb while a game plays (Immersion.kt). Granted by the user, or by Tandem through Shizuku. -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <!-- Delete game on an Android game opens the system uninstall dialog. -->
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <!-- Only used for scraping (when you start it) and RetroAchievements (when you sign in). See docs/PRIVACY.md. -->

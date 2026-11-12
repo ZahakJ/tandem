@@ -59,6 +59,14 @@ Both Tandem styles have a **Screenshot** button (needs [Shizuku](resume.md)): it
 minute after the screen goes off, games left open are paused, so an emulator's audio can't keep the handheld
 awake; they carry on where they were when you wake it.
 
+**Immersion mode** (Settings › Play & system › Playing, on by default): while a game plays, Do Not Disturb is on
+with Tandem's own rules, so nothing from Android cuts in: no notification pop-ups, sounds, lights or vibrations,
+only alarms and the game's own sound. Notifications still land in the shade for later. Coming back to Tandem puts
+Do Not Disturb back as it was, and one you turned on yourself is never touched. It needs Tandem allowed under
+Android's Do Not Disturb access: letting Pip show your notifications already counts, and otherwise, with Shizuku,
+Tandem allows itself the first time a game starts (or when you press A on the setting); without either, the setting
+opens Android's list for you.
+
 With an app open on the bottom screen over the game, **Home** brings the game and its companion back without
 pausing the game; press it again for Tandem. From the game itself, Home goes to Tandem.
 

@@ -159,7 +159,7 @@ object SettingsPlan {
         ),
         "play" to listOf(
             Group(
-                "Playing", p("About", "Resume running games") + p("Home & play", "Close previous game", "Ask before closing a game"),
+                "Playing", p("About", "Resume running games") + p("Home & play", "Close previous game", "Ask before closing a game", "Immersion mode"),
                 p("Home & play", "Pause games in sleep") + p("Systems & launching", "Launch animation"),
             ),
             Group(

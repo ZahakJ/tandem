@@ -58,6 +58,7 @@ import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Immersion
 import io.github.zahakj.tandem.Shell
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.IconGridStore
@@ -438,6 +439,7 @@ fun homeSettings(): SettingSection {
     val isHome = Facts.run { ensure(ctx); Facts.isHome }
     val shizuku = remember(resumes, ShizukuWatch.version) { Shell.ready() }
     val rootShizuku = remember(resumes, ShizukuWatch.version) { Shell.root() }
+    val quietAllowed = remember(resumes, ShizukuWatch.version, Immersion.changed) { Immersion.granted(ctx) }
     return SettingSection(
         "Home & play",
         listOf(
@@ -464,6 +466,22 @@ fun homeSettings(): SettingSection {
             ) {
                 if (!shizuku) Toasts.show("This needs Shizuku running, with Tandem allowed")
                 else HomeStore.updateSettings { it.copy(askBeforeClosing = !it.askBeforeClosing) }
+            },
+            SettingRow(
+                "Immersion mode", if (!quietAllowed) "Needs Do Not Disturb access" else onOff(s.immersion), Palette.Mint, Glyph.Bell,
+                "While a game plays, Do Not Disturb is on: no notification pop-ups, sounds or vibrations, only alarms. " +
+                    "It goes back to how it was when you come back to Tandem. Needs Tandem allowed under Do Not Disturb access; with Shizuku, Tandem allows itself.",
+                toggle = if (!quietAllowed) null else s.immersion, action = if (!quietAllowed) "Allow" else null,
+                keywords = "immersion do not disturb dnd quiet silence notifications heads up pop up sound vibration focus game mode",
+            ) {
+                if (quietAllowed) HomeStore.updateSettings { it.copy(immersion = !it.immersion) }
+                else Thread({
+                    val ok = Immersion.allow(ctx)
+                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                        if (ok) Toasts.show("Immersion mode is on")
+                        else { Toasts.show("Allow Tandem, then come back"); runCatching { ctx.startActivity(Immersion.settingsIntent()) } }
+                    }
+                }, "tandem-immersion-allow").start()
             },
             SettingRow(
                 "Apps dock on the home screen", onOff(s.showDock), Palette.Sky, Glyph.Grid, toggle = s.showDock,

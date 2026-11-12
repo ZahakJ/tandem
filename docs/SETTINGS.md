@@ -113,6 +113,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | (import my Cocoon setup, import gamelists) | Library & art › Bring your details; More: Undo Cocoon import | action |
 | Resume (Shizuku) | Play & system › Playing › Resume running games | action |
 | `HomeSettings.closePrevious`, `askBeforeClosing` | Play & system › Playing › Close previous game / Ask before closing a game | toggle |
+| `HomeSettings.immersion` | Play & system › Playing › Immersion mode (shows "Needs Do Not Disturb access" until Tandem is allowed; A allows it through Shizuku, or opens Android's list) | toggle |
 | `HomeSettings.freezeAsleep` | Play & system › Playing › More › Pause games in sleep (shows "Needs root Shizuku" without it) | toggle |
 | `SystemPrefs.launchAnimation` | Play & system › Playing › More › Launch animation | toggle |
 | `HomeSettings.privateMode`, `offlineHidden`, `offlineUntilClosed` | Play & system › Privacy › Private mode / Go offline while a hidden game plays / Stay offline until the game closes | toggle |

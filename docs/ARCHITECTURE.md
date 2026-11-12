@@ -33,6 +33,10 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
 - `PrivacyPin.kt`: the private mode PIN (`PinCode` hashing and waits, `PinVault` in the no-backup folder) and
   `PrivateMode` (on, off and reveal behind it); the keypad is `ui/PinPad.kt`. `Offline.kt`: `NetGate` (nothing goes
   online in private mode) and airplane mode while a hidden game plays (`OfflinePlan`, through Shizuku).
+- `Immersion.kt`: immersion mode, Do Not Disturb with Tandem's own policy (alarms and media only, every visual effect
+  suppressed) from `Sessions.start` to `Sessions.take`; `ImmersionPlan` (pure, tested) decides what to change and put
+  back, and leaves a Do Not Disturb the user set alone. Access comes from the user or from `cmd notification
+  allow_dnd` through Shizuku; what was changed sits in the `immersion` preferences so a restart puts it back.
 - `HiddenFolders.kt`: hidden ROM folders and systems (paths relative to ROMs) and hidden icon-grid folders. Ask
   `Privacy.isHidden` / `canShow`, never `GameMeta.hidden` directly.
 - `DiscordPresence.kt`: the optional Discord status (play session in, Rich Presence out), behind `DiscordSdk`; the

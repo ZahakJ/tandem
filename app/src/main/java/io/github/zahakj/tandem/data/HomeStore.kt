@@ -26,6 +26,8 @@ data class HomeSettings(
     val privateMode: Boolean = false,
     /** Games still open are frozen a minute after the screen goes off, so the handheld can really sleep (SleepFreeze.kt). */
     val freezeAsleep: Boolean = true,
+    /** Do Not Disturb while a game plays (Immersion.kt). Needs Do Not Disturb access, which Shizuku can grant. */
+    val immersion: Boolean = true,
     /** In private mode, airplane mode goes on while a hidden game plays (Offline.kt). Needs Shizuku. */
     val offlineHidden: Boolean = false,
     /** With [offlineHidden], the handheld stays offline until the hidden game's app has closed, not just left (Offline.kt). */

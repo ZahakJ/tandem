@@ -291,6 +291,7 @@ object Sessions {
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("key", game.key).putLong("start", now).putBoolean("new", newPlay).apply()
         Offline.started()
+        Immersion.started(ctx)
         DiscordPresence.playing(ctx, game, now)
         PadLink.gameStarted()
     }
@@ -311,6 +312,7 @@ object Sessions {
         val key = prefs.getString("key", null) ?: return null
         DiscordPresence.stopped()
         Offline.gameEnded(ctx)
+        Immersion.gameEnded(ctx)
         val start = prefs.getLong("start", 0)
         val newPlay = prefs.getBoolean("new", true)
         val now = System.currentTimeMillis()

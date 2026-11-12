@@ -77,6 +77,8 @@ class MainActivity : ComponentActivity() {
         PinVault.init(this)
         // Airplane mode left on for a hidden game before a restart goes back off (unless one is still being played).
         Offline.startup(this)
+        // Do Not Disturb left on for a game before a restart goes back off, the same way.
+        Immersion.startup(this)
         io.github.zahakj.tandem.data.WidgetStore.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.IconGridStore.init(this)
