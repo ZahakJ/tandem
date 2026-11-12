@@ -596,7 +596,8 @@ private fun SystemMosaic(per: List<Pair<Platform, Long>>, route: String, target:
                 onFocus = { FocusMemory.remember(route, b.key); b.platform?.let { p -> Libraries.byId(p.id)?.let { Selection.current = Selected.System(it) } } ?: run { Selection.current = Selected.Home } },
                 onClick = {
                     val p = b.platform
-                    if (p != null) Nav.go(Route.System(p.id))
+                    // The games played on that system, most played first: not the whole folder, which is mostly noise here.
+                    if (p != null) openFolder(Route.Collection(Collections.PLAYED + p.id))
                     else Toasts.show(b.others.joinToString(", ") { it.shortName } + " · " + formatPlayTime(b.seconds))
                 },
             ) {

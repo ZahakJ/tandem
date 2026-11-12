@@ -118,6 +118,9 @@ For each game you get the total time played, the number of times you started it,
 
 ### Editing sessions
 
+**Stats › Overview** shows your play time by system as a mosaic, a box per system sized by its share. A on a
+system lists the games you have played on it, most played first.
+
 **Stats › Sessions** lists every session, newest first and grouped by day, with the game's cover, title, start time and length. Y on a game › **More…** › **Play sessions…** opens the same list with only that game's sessions; **Show all** goes back to all of them.
 
 Press Y on a session (or hold it on the touch screen) for its menu:

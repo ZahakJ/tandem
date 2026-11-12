@@ -334,19 +334,23 @@ fun CollectionScreen(route: Route.Collection) {
     val c = remember(route.id, libs, meta, showHidden) { Collections.byId(route.id) }
     // Play-based collections and smart folders keep their own order; the rest follow the chosen sort.
     val smart = route.id.startsWith(Collections.SMART)
-    val ordered = route.id in ORDERED_COLLECTIONS || smart
+    val ordered = route.id in ORDERED_COLLECTIONS || smart || route.id.startsWith(Collections.PLAYED)
     val games = remember(c, sort) { c?.games.orEmpty().let { if (ordered) it else Library.sorted(it, sort) } }
     val empty = if (smart) Empty("No games match", "Nothing in your library fits this folder's rules.", "Edit rules") {
         FolderPopup.close(); SmartFolderForm.edit(route.id.removePrefix(Collections.SMART))
     } else when (route.id) {
         "fav" -> Empty("No favorites yet", "Press Y on a game and pick Add to favorites.")
         "most", "continue" -> Empty("Nothing played yet", "Games you play show up here.")
+        in PlayedOnSystem -> Empty("Nothing played yet", "Games you play on this system show up here, most played first.")
         "unplayed" -> Empty("You've played them all!", "Every game has had a go. Impressive.")
         "added" -> Empty("No games yet", "New games show up here after a rescan.", "Rescan") { LibraryScan.rescan(it) }
         else -> Empty("Nothing in this genre", "Its games were hidden or removed.")
     }
     GameGrid(route.key, emptyList(), games, empty)
 }
+
+/** Matches the "played:<system>" collection ids in a `when`. */
+private object PlayedOnSystem { operator fun contains(id: String) = id.startsWith(Collections.PLAYED) }
 
 /** Collections that keep their own order instead of following "Sort by". */
 val ORDERED_COLLECTIONS = setOf("continue", "most", "added")
