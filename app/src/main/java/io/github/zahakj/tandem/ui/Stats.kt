@@ -271,7 +271,7 @@ private fun Overview() {
                                 onClick = { Launcher.launch(ctx, g) },
                             )
                             Spacer(Modifier.height(4.dp))
-                            Text(formatPlayTime(g.meta.playSeconds), style = MaterialTheme.typography.labelMedium, color = Palette.Peach, maxLines = 1)
+                            CoverCaption(formatPlayTime(g.meta.playSeconds), Palette.Peach)
                         }
                     }
                 }
@@ -292,6 +292,17 @@ private fun Overview() {
                 }
             }
         }
+    }
+}
+
+/**
+ * A caption under a cover, on a chip of the card colour: the words sit on the wallpaper, where a light patch would
+ * swallow coloured text, and the colour itself is kept readable on the theme.
+ */
+@Composable
+private fun CoverCaption(text: String, color: Color) {
+    Box(Modifier.clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.82f)).padding(horizontal = 8.dp, vertical = 2.dp)) {
+        Text(text, style = MaterialTheme.typography.labelMedium, color = Palette.readable(color), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -611,13 +622,14 @@ private fun SystemMosaic(per: List<Pair<Platform, Long>>, route: String, target:
                     )
                 }
                 val roomy = h > 80.dp && w > 90.dp
+                val ink = readableOn(b.color)
                 Column(Modifier.fillMaxSize().padding(if (roomy) 12.dp else 7.dp)) {
-                    Text(b.label, style = MaterialTheme.typography.titleSmall, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(b.label, style = MaterialTheme.typography.titleSmall, color = ink, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (h > 46.dp) Text(
                         formatPlayTime(b.seconds), style = if (roomy) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.labelLarge,
-                        color = Color.White, maxLines = 1,
+                        color = ink, maxLines = 1,
                     )
-                    if (roomy) Text("${(b.seconds * 100 / total).coerceAtLeast(1)}% of your play", style = MaterialTheme.typography.labelMedium, color = Color.White.copy(alpha = 0.75f), maxLines = 1)
+                    if (roomy) Text("${(b.seconds * 100 / total).coerceAtLeast(1)}% of your play", style = MaterialTheme.typography.labelMedium, color = ink.copy(alpha = 0.75f), maxLines = 1)
                 }
             }
         }

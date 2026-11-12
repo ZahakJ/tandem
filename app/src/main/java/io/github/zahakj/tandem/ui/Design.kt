@@ -117,6 +117,9 @@ object Palette {
     fun forName(name: String): Color = accents[(name.hashCode() and 0x7fffffff) % accents.size]
 
     /** The highlight colour for an item whose own colour is [own]: its own, or the accent if the user prefers that. */
+    /** [color] as it is, or shifted towards the text colour until it reads on the theme's background (light themes). */
+    fun readable(color: Color): Color = Themes.readableOn(color, Themes.live)
+
     fun highlightFor(own: Color): Color = if (Store.settings.look.highlightColor == "accent") Accent else own
 }
 
