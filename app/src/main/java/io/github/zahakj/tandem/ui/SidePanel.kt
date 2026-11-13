@@ -75,7 +75,8 @@ fun SidePanelHost() {
                         val shown = Notes.list.filter { it.clearable }.let(::byApp)
                         val i = shown.indexOfFirst { it.key == n.key }
                         val next = shown.getOrNull(i + 1) ?: shown.getOrNull(i - 1)
-                        FocusMemory.remember(KEY, next?.let { "n:${it.key}" } ?: "clearall")
+                        // The last one gone takes Clear all with it, so the highlight goes up to the quick controls.
+                        FocusMemory.remember(KEY, next?.let { "n:${it.key}" } ?: "bright")
                         Notes.dismiss(n); Sounds.back(); Nav.focusTick++
                     } else { Toasts.show("This one can't be cleared"); Sounds.error() }
                 }
@@ -133,7 +134,7 @@ fun SidePanelHost() {
                             Text("Notifications", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
                             if (notes.isNotEmpty()) FocusCard(
                                 Modifier.height(34.dp).remembersFocus(KEY, "clearall", false), glow = Palette.Peach, shape = RoundedCornerShape(50),
-                                onClick = { Notes.clearAll(); Sounds.back() },
+                                onClick = { FocusMemory.remember(KEY, "bright"); Notes.clearAll(); Sounds.back(); Nav.focusTick++ },
                             ) {
                                 Text("Clear all", Modifier.align(Alignment.Center).padding(horizontal = 14.dp), style = MaterialTheme.typography.labelLarge, maxLines = 1)
                             }
