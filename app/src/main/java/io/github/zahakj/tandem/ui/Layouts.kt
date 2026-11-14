@@ -81,6 +81,7 @@ val HomeLayouts = listOf(
     "list" to "List",
     "console" to "Console",
     "orbit" to "Orbit",
+    "spotlight" to "Spotlight",
 )
 
 /** How games show inside a system or collection. */
@@ -273,9 +274,10 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
 /** Every home layout except Shelves (which lives in Screens.kt). */
 @Composable
 fun HomeLayout(libs: List<PlatformLibrary>) {
-    // The icon grid lives in IconGrid.kt, Orbit in Orbit.kt.
+    // The icon grid lives in IconGrid.kt, Orbit in Orbit.kt, Spotlight in SpotlightHome.kt.
     if (Store.settings.look.homeLayout == "grid") return IconGridHome(libs)
     if (Store.settings.look.homeLayout == "orbit") return OrbitHome(libs)
+    if (Store.settings.look.homeLayout == "spotlight") return SpotlightHome(libs)
     val entries = homeEntries(libs)
     when (Store.settings.look.homeLayout) {
         "carousel" -> HomeCarousel(entries)

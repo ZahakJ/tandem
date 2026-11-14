@@ -349,7 +349,7 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Home layout", Glyph.Home, Palette.Butter,
-                    "Shelves of rows, an icon grid, a coverflow carousel, a compact list, a console-style dashboard, or Orbit.",
+                    "Shelves of rows, an icon grid, a coverflow carousel, a compact list, a console-style dashboard, Orbit, or Spotlight.",
                     HomeLayouts, look.homeLayout, preview = { LayoutPreview(look.homeLayout, Modifier.fillMaxWidth().aspectRatio(1.6f)) },
                 ) { v -> updateLook { it.copy(homeLayout = v) } },
                 choice(
@@ -840,6 +840,8 @@ private val LayoutBlurbs = mapOf(
     "console" to "A console-style dashboard: the highlighted item's art fills the screen with one row of big tiles along the bottom.",
     "orbit" to "Tandem's own: your systems, collections and apps ride an orbit of round icons, the highlighted one big at the front. " +
         "Above it its latest games fan out like cards in a hand, under a Continue ribbon. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.",
+    "spotlight" to "Game first: the highlighted game's art fills the screen, a rail of covers runs down one side and its logo, story and play time sit on the other. " +
+        "Up and Down move the rail, L1 and R1 change system or collection, X reads the whole story.",
 )
 
 /** Every home layout as a live sketch in the current theme. A switches to it. */
@@ -1011,6 +1013,35 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 bar(w * 0.32f + 10 * u, 8 * u, w * 0.18f, t.text, 3f)
                 for (i in 0 until 4) drawCircle(accents[(i + 2) % accents.size], 2.6f * u, Offset(w / 2 + (i - 1.5f) * 8 * u, h - 5.5f * u))
             }
+            "spotlight" -> {
+                // The art across the screen fading towards the rail, the rail of covers with the middle one ringed,
+                // and the panel's logo, chips, lines of story and buttons on the other side.
+                val left = look.spotlightRail != "right"
+                fun x(at: Float, bw: Float) = if (left) at else w - at - bw
+                drawRect(Brush.linearGradient(listOf(t.sky, t.lavender, t.peach), Offset(w, 0f), Offset(0f, h)))
+                drawRect(
+                    Brush.horizontalGradient(
+                        if (left) listOf(t.background, t.background.copy(alpha = 0.2f), t.background.copy(alpha = 0.55f))
+                        else listOf(t.background.copy(alpha = 0.55f), t.background.copy(alpha = 0.2f), t.background),
+                    ),
+                )
+                val rw = w * 0.22f
+                val tw = rw * 0.5f
+                bar(x(rw * 0.2f, rw * 0.6f), 5 * u, rw * 0.6f, t.text, 3f)
+                for (i in -2..2) {
+                    val s = if (i == 0) 1.25f else 1f
+                    val th = tw * 1.3f * s
+                    val cy = h * 0.55f + i * 25 * u
+                    tile(x((rw - tw * s) / 2, tw * s), cy - th / 2, tw * s, th, i + 3, focused = i == 0)
+                }
+                val px = w * 0.52f
+                val pw = w * 0.42f
+                bar(x(px, pw * 0.7f), 26 * u, pw * 0.7f, t.text, 8f)
+                for (i in 0 until 3) drawRoundRect(accents[(i + 1) % accents.size], Offset(x(px + i * 13 * u, 11 * u), 40 * u), Size(11 * u, 4 * u), CornerRadius(2 * u))
+                for (i in 0 until 4) bar(x(px, pw * (if (i == 3) 0.6f else 1f)), (50 + i * 6) * u, pw * (if (i == 3) 0.6f else 1f), t.muted, 2.5f)
+                for (i in 0 until 3) bar(x(px + i * 16 * u, 12 * u), 78 * u, 12 * u, t.text, 3f)
+                for (i in 0 until 4) drawCircle(accents[i % accents.size], 2.4f * u, Offset(x(px + 2.4f * u + i * 12 * u, 0f), 89 * u))
+            }
             "view-carousel" -> {
                 val cw = 44 * u
                 for (d in listOf(-2, -1, 1, 2)) {
@@ -1045,7 +1076,7 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
 fun CornerHints() {
     val look = Store.settings.look
     val show = look.cornerHints && !isSettingsRoute(Nav.route) &&
-        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled) && Nav.route == Route.Home)
+        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled || SpotlightMode.enabled) && Nav.route == Route.Home)
     val alpha by animateFloatAsState(if (show) 1f else 0f, Motion.fade(250), label = "hints")
     if (alpha == 0f) return
     val game = Selection.current is Selected.GameItem

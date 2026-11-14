@@ -15,7 +15,7 @@ class SettingsPlanTest {
     private val features = listOf(
         "Appearance", "AchievementsUi", "CocoonSetup", "ControllerSettings", "DeckPanel", "DiscordSettings", "Flair", "GameFoldersScreen", "HomeMode",
         "Perf", "PerformanceSettings", "ScrapeScreen", "ScreenOffSettings", "Settings", "SoundSettings", "SteamUi", "SystemsScreen", "Widgets",
-        "SettingsCatalog", "Orbit",
+        "SettingsCatalog", "Orbit", "SpotlightHome",
     )
 
     /** Rows that aren't picked by label: galleries, and groups taken whole ([SettingsPlan.whole], the theme pack's audio, hidden). */

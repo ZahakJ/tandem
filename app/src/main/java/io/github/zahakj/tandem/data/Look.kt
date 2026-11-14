@@ -40,8 +40,14 @@ data class Look(
     /** How much a picture or video wallpaper is darkened, so text stays readable. */
     val wallDim: Float = 0.35f,
 
-    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list", "console" or "orbit". */
+    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list", "console", "orbit" or "spotlight". */
     val homeLayout: String = "shelves",
+    /** The Spotlight home's rail of covers: "left" or "right" (the whole layout mirrored). */
+    val spotlightRail: String = "left",
+    /** What fills the Spotlight home behind the rail and the panel: "art" (key art), "blur" (the cover, blurred) or "dim" (the theme's colour). */
+    val spotlightBackdrop: String = "art",
+    /** The Spotlight home's art zooms in very slowly. */
+    val spotlightMotion: Boolean = true,
     /** What the Orbit home's orbs are: "all" (systems, collections, apps), "games" (systems and collections) or "systems". */
     val orbitGroups: String = "all",
     /** The Orbit home's Continue ribbon (the last game played) above the spotlight. */

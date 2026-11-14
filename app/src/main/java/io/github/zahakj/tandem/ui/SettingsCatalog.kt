@@ -83,8 +83,9 @@ object SettingsCategories {
 
 /**
  * Where every row goes: plain data, so a test can check it. A [Pick] is a feature's group title and a row label;
- * [Pick.layout] shows it only with the icon grid ("grid"), only with Orbit ("orbit"), with every layout but the icon
- * grid ("other"), or only with the row layouts, neither the grid nor Orbit ("rows").
+ * [Pick.layout] shows it only with the icon grid ("grid"), only with Orbit ("orbit"), only with Spotlight
+ * ("spotlight"), with every layout but the icon grid and Spotlight ("other"), or only with the row layouts, none of
+ * those three ("rows").
  */
 object SettingsPlan {
     data class Pick(val section: String, val label: String, val layout: String? = null)
@@ -93,6 +94,7 @@ object SettingsPlan {
     private fun p(section: String, vararg labels: String) = labels.map { Pick(section, it) }
     private fun grid(section: String, vararg labels: String) = labels.map { Pick(section, it, "grid") }
     private fun orbit(section: String, vararg labels: String) = labels.map { Pick(section, it, "orbit") }
+    private fun spotlight(section: String, vararg labels: String) = labels.map { Pick(section, it, "spotlight") }
     private fun other(section: String, vararg labels: String) = labels.map { Pick(section, it, "other") }
     private fun rows(section: String, vararg labels: String) = labels.map { Pick(section, it, "rows") }
 
@@ -115,6 +117,7 @@ object SettingsPlan {
                 "Home screen",
                 grid("Icon grid", "Icon size", "Scrolling") + grid("Motion & home", "Icon names", "Recently played strip") +
                     orbit("Orbit", "Orbit holds", "Continue ribbon") +
+                    spotlight("Spotlight", "Spotlight rail", "Spotlight backdrop", "Spotlight motion") +
                     rows("Layout", "Home rows") + grid("Icon grid", "Folders open") + other("Layout", "Open folders"),
                 grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split") + rows("Layout", "System tiles"),
             ),
@@ -284,7 +287,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val onRescan = remember(ctx) { { LibraryScan.rescan(ctx) } }
     val pool = RowPool(
         appearanceSections() + listOf(
-            librarySettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), widgetsSettings(),
+            librarySettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), widgetsSettings(),
             achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
             performanceSettings(), screenOffSettings(), deckSettings(), SettingSection("Extras", listOf(resumeLandingRow())),
         ) + controllerSettings(),
@@ -294,11 +297,14 @@ fun settingsCatalog(): List<SettingsCategory> {
     val bindings = ControllerStore.live
     val iconGrid = look.homeLayout == "grid"
     val orbit = look.homeLayout == "orbit"
+    val spotlight = look.homeLayout == "spotlight"
     SettingsPlan.dropped.forEach { pool.take(it) }
 
     fun page(id: String): List<SettingSection> = SettingsPlan.pages.getValue(id).map { g ->
         fun pick(list: List<SettingsPlan.Pick>) = list.mapNotNull { pk ->
-            val shown = when (pk.layout) { "grid" -> iconGrid; "orbit" -> orbit; "other" -> !iconGrid; "rows" -> !iconGrid && !orbit; else -> true }
+            val shown = when (pk.layout) {
+                "grid" -> iconGrid; "orbit" -> orbit; "spotlight" -> spotlight; "other" -> !iconGrid && !spotlight; "rows" -> !iconGrid && !orbit && !spotlight; else -> true
+            }
             // A row for the other layout is taken out unshown, so it never counts as forgotten.
             pool.take(pk)?.takeIf { shown }
         }
