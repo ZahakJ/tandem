@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.produceState
@@ -45,6 +46,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -348,6 +353,7 @@ private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill
         // The icon grid's big-icon details (Spotlight.kt).
         SpotlightView(selected, onPill)
     } else {
+        SpotlightGround(SpotlightMode.enabled && mode != "art" && mode != "both" && selected is Selected.GameItem)
         AnimatedContent(selected, transitionSpec = { fadeIn(Motion.fade(260)) togetherWith fadeOut(Motion.fade(200)) }, label = "bottom") { s ->
             when (s) {
                 is Selected.GameItem -> GameDetails(s.game, mode)
@@ -366,6 +372,18 @@ private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill
     }
 }
 
+/**
+ * The theme's background over the wallpaper while [on] (a game on Spotlight's other screen), outside the details'
+ * cross-fade, so moving between games never lets the wallpaper show through between two pictures.
+ */
+@Composable
+private fun SpotlightGround(on: Boolean) {
+    WallpaperCover.Cover(LocalScreenSlot.current, on)
+    val a = androidx.compose.animation.core.animateFloatAsState(if (on) 1f else 0f, Motion.fade(260), label = "spotlight-ground")
+    val ground = Palette.Night
+    Spacer(Modifier.fillMaxSize().drawBehind { val v = a.value; if (v > 0.001f) drawRect(ground, alpha = v) })
+}
+
 @Composable
 private fun GameDetails(game: Game, mode: String) {
     // From the list of running games Tandem already keeps, so moving between games never asks Shizuku.
@@ -376,7 +394,7 @@ private fun GameDetails(game: Game, mode: String) {
             AnimatedLogo(game, maxWidth = 320.dp, maxHeight = 76.dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 4.dp), textAlign = TextAlign.Center)
             GameInfo(game, resumable, descriptionLines = 3, pinHints = false)
         }
-        else -> {
+        else -> if (SpotlightMode.enabled) SpotlightDetails(game, resumable) else {
             val split = Store.settings.look.heroSplit.coerceIn(0.25f, 0.7f)
             Column(Modifier.fillMaxSize()) {
                 Box(Modifier.fillMaxWidth().weight(split)) {
@@ -393,40 +411,94 @@ private fun GameDetails(game: Game, mode: String) {
     }
 }
 
+/**
+ * Spotlight's other screen: the game alone, as the top screen shows it, never half game and half wallpaper. Its art
+ * fills the screen (the same picture as up top) and fades, down to where its words begin, into the theme's
+ * background (which [Details] lays behind it), so the logo rests on the art and the info under it reads over any
+ * picture.
+ */
+@Composable
+private fun SpotlightDetails(game: Game, resumable: Boolean) {
+    val look = Store.settings.look
+    // Where the info starts (px from the top), so the fade ends just there whatever the info's height.
+    var infoTop by remember(game.key) { mutableFloatStateOf(-1f) }
+    var artTop by remember { mutableFloatStateOf(0f) }
+    Box(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize().onPlaced { artTop = it.positionInRoot().y }.spotlightDetailsFade { infoTop - artTop }) {
+            SpotlightArt(game, if (look.spotlightBackdrop == "art") "art" else "blur", look.spotlightMotion)
+        }
+        if (resumable) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopEnd).padding(16.dp).darkChip())
+        Column(
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 26.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            AnimatedLogo(game, maxWidth = 340.dp, maxHeight = 96.dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 6.dp), textAlign = TextAlign.Center)
+            Column(
+                Modifier.fillMaxWidth().onPlaced { infoTop = it.positionInRoot().y },
+                verticalArrangement = Arrangement.spacedBy(7.dp),
+            ) { GameInfo(game, resumable, descriptionLines = 3, pinHints = false, onArt = true) }
+        }
+    }
+}
+
+/**
+ * The art above the info: whole down to a little over the logo, then fading so that from where the info begins
+ * ([infoTop], px; until it is known, 55 % down) only about a tenth of it is left over the theme's background.
+ */
+private fun Modifier.spotlightDetailsFade(infoTop: () -> Float): Modifier =
+    graphicsLayer { compositingStrategy = androidx.compose.ui.graphics.CompositingStrategy.Offscreen }.drawWithCache {
+        val f = (infoTop().takeIf { it > 0f } ?: (size.height * 0.55f)) / size.height
+        val at = f.coerceIn(0.3f, 0.9f)
+        val mask = Brush.verticalGradient(
+            0f to Color.Black, (at - 0.3f) to Color.Black, (at - 0.12f) to Color.Black.copy(alpha = 0.45f),
+            at to Color.Black.copy(alpha = 0.14f), 1f to Color.Black.copy(alpha = 0.1f),
+        )
+        onDrawWithContent {
+            drawContent()
+            drawRect(mask, blendMode = androidx.compose.ui.graphics.BlendMode.DstIn)
+        }
+    }
+
 /** Pills, play time, description (or, without one, the box and a few facts) and button hints for a game. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLines: Int, pinHints: Boolean = true) {
+private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLines: Int, pinHints: Boolean = true, onArt: Boolean = false) {
     val meta = game.meta
     val color = Palette.forName(game.platform.id)
+    // Over art (Spotlight), the chips get a dark ground and the words a shadow, as on the top screen.
+    @Composable
+    fun chip(text: String, c: Color) = if (onArt) Pill(text, Palette.readable(c), Modifier.darkChip()) else Pill(text, c)
+    @Composable
+    fun androidx.compose.ui.text.TextStyle.art() = if (onArt) overArt() else this
     // Wraps onto a second line instead of running off the edge.
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        meta.playStatus?.let { Pill(it.chip, it.color) }
-        Pill(game.platform.shortName, color)
-        meta.year?.let { Pill("$it", Palette.Butter) }
-        meta.genres.map(Collections::tidyGenre).distinctBy { it.lowercase() }.take(3).forEach { Pill(it, Palette.Lavender) }
-        meta.rating?.let { Pill("★ ${"%.1f".format(it * 5)}", Palette.Peach) }
+        meta.playStatus?.let { chip(it.chip, it.color) }
+        chip(game.platform.shortName, color)
+        meta.year?.let { chip("$it", Palette.Butter) }
+        meta.genres.map(Collections::tidyGenre).distinctBy { it.lowercase() }.take(3).forEach { chip(it, Palette.Lavender) }
+        meta.rating?.let { chip("★ ${"%.1f".format(it * 5)}", Palette.Peach) }
         // HowLongToBeat: the main story and 100%, when known.
         meta.timeToBeat?.takeIf { it.any }?.let { t ->
             val h = io.github.zahakj.tandem.data.TimeToBeat
             val main = listOf(t.main, t.extra).firstOrNull { it > 0 }
-            Pill(
+            chip(
                 "⏱ " + listOfNotNull(main?.let { h.hours(it) }, t.complete.takeIf { it > 0 }?.let { "${h.hours(it)} for 100%" }).joinToString(" · "),
                 Palette.Sky,
             )
         }
-        if (meta.favorite) Pill("♥ Favorite", Palette.Peach)
+        if (meta.favorite) chip("♥ Favorite", Palette.Peach)
         GameExtrasBadges(game)
     }
     creditsLine(meta)?.let {
-        Text(it, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(it, style = MaterialTheme.typography.labelLarge.art(), color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
-    Text(playLine(meta), style = MaterialTheme.typography.titleSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    Text(playLine(meta), style = MaterialTheme.typography.titleSmall.art(), color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
     AchievementsStrip(game)
     val description = meta.description?.trim()?.takeIf { it.isNotEmpty() }
     if (description != null) {
         Text(
-            description, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
+            description, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.bodyMedium.art(),
+            color = if (onArt) Palette.Text else Palette.Muted,
             maxLines = descriptionLines, overflow = TextOverflow.Ellipsis,
         )
     } else if (pinHints) {
