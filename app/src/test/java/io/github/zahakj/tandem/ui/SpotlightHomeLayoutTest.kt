@@ -51,6 +51,66 @@ class SpotlightHomeLayoutTest {
         assertEquals(0f, rail.alpha(-4f), 0.001f)
     }
 
+    @Test fun tilesAreGoneBeforeTheyTouchTheEdges() {
+        val r = SpotlightRail(viewH = 600f, pitch = 140f, gap = 17f, tileH = 126f)
+        // The distance (in tiles) at which a tile's near edge (half its height) meets the top or the bottom.
+        fun touching(top: Boolean): Float {
+            var lo = 0f; var hi = 6f
+            repeat(60) {
+                val mid = (lo + hi) / 2f
+                val y = r.y(if (top) -mid else mid)
+                val half = r.tileH / 2f * r.scale(mid)
+                val inside = if (top) y - half > 0f else y + half < r.viewH
+                if (inside) lo = mid else hi = mid
+            }
+            return hi
+        }
+        val top = touching(true)
+        val bottom = touching(false)
+        assertEquals(0f, r.alpha(-top), 0.001f)
+        assertEquals(0f, r.alpha(-top - 0.3f), 0.001f)
+        assertEquals(0f, r.alpha(bottom), 0.001f)
+        assertEquals(0f, r.alpha(bottom + 0.3f), 0.001f)
+        assertEquals(1f, r.alpha(0f), 0.001f)
+        assertTrue("still showing a little way in", r.alpha(bottom - 0.4f) > 0f)
+        // The furthest tile composed starts invisible, so nothing pops in.
+        assertEquals(0f, r.alpha(r.reach - 0.5f), 0.001f)
+        assertEquals(0f, r.alpha(-(r.reach - 0.5f)), 0.001f)
+    }
+
+    @Test fun storyWaitsScrollsHoldsAndComesBack() {
+        val over = 90f
+        val speed = 30f // three seconds of scrolling
+        assertEquals(0f, StoryDrift.position(0, over, speed), 0f)
+        assertEquals(0f, StoryDrift.position(StoryDrift.WAIT_MS - 1, over, speed), 0f)
+        assertEquals(45f, StoryDrift.position(StoryDrift.WAIT_MS + 1500, over, speed), 0.01f)
+        val end = StoryDrift.WAIT_MS + 3000
+        assertEquals(over, StoryDrift.position(end, over, speed), 0.01f)
+        assertEquals(over, StoryDrift.position(end + StoryDrift.HOLD_MS - 1, over, speed), 0.01f)
+        val back = end + StoryDrift.HOLD_MS
+        val mid = StoryDrift.position(back + StoryDrift.RETURN_MS / 2, over, speed)
+        assertTrue(mid > 0f && mid < over)
+        // Then the top again, and a new wait.
+        assertEquals(StoryDrift.cycleMs(over, speed), back + StoryDrift.RETURN_MS)
+        assertEquals(0f, StoryDrift.position(back + StoryDrift.RETURN_MS + 10, over, speed), 0f)
+        assertEquals(0f, StoryDrift.position(5000, 0f, speed), 0f)
+    }
+
+    @Test fun storyScrollIsLinear() {
+        val a = StoryDrift.position(StoryDrift.WAIT_MS + 500, 300f, 20f)
+        val b = StoryDrift.position(StoryDrift.WAIT_MS + 1000, 300f, 20f)
+        assertEquals(10f, a, 0.01f)
+        assertEquals(20f, b, 0.01f)
+    }
+
+    @Test fun storyRestsWithoutFramesWhileItWaits() {
+        assertEquals(StoryDrift.WAIT_MS, StoryDrift.stillFor(0, 90f, 30f))
+        assertEquals(0L, StoryDrift.stillFor(StoryDrift.WAIT_MS + 10, 90f, 30f))
+        assertEquals(StoryDrift.HOLD_MS - 100, StoryDrift.stillFor(StoryDrift.WAIT_MS + 3100, 90f, 30f))
+        assertEquals(0L, StoryDrift.stillFor(StoryDrift.WAIT_MS + 3000 + StoryDrift.HOLD_MS + 10, 90f, 30f))
+        assertEquals(Long.MAX_VALUE, StoryDrift.stillFor(0, 0f, 30f))
+    }
+
     @Test fun visibleIsAWindowAroundTheOffset() {
         assertEquals(0..4, rail.visible(0f, 100))
         assertEquals(46..54, rail.visible(50.3f, 100))

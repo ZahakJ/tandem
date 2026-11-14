@@ -35,9 +35,10 @@ class SpotlightFrame(val width: Float, val height: Float, val railLeft: Boolean,
 
 /**
  * The rail's column: tiles [pitch] apart, the highlighted one at the centre of a viewport [viewH] tall, with [gap]
- * extra room on each side of it because it is drawn [FOCUS] times bigger.
+ * extra room on each side of it because it is drawn [FOCUS] times bigger. A resting tile (cover and title) is [tileH]
+ * tall.
  */
-class SpotlightRail(val viewH: Float, val pitch: Float, val gap: Float) {
+class SpotlightRail(val viewH: Float, val pitch: Float, val gap: Float, val tileH: Float = pitch * 0.8f) {
     val centre: Float = viewH / 2f
 
     /** The centre of the tile [d] tiles from the highlight (negative: above it). */
@@ -49,10 +50,16 @@ class SpotlightRail(val viewH: Float, val pitch: Float, val gap: Float) {
         return 1f + (FOCUS - 1f) * (1f - t * t * (3f - 2f * t))
     }
 
-    /** Full at the highlight, quieter further out, gone past the viewport's edges. */
+    /**
+     * Full at the highlight, quieter further out, and gone before any of the tile reaches the viewport's edges: it
+     * fades over the last [EDGE_FADE] of a pitch between its near edge and the viewport's, so the clip never shows a
+     * cut tile.
+     */
     fun alpha(d: Float): Float {
         val y = y(d)
-        val edge = (minOf(y, viewH - y) / (pitch * 0.6f) + 0.35f).coerceIn(0f, 1f)
+        val half = tileH / 2f * scale(d)
+        val room = minOf(y - half, viewH - (y + half))
+        val edge = (room / (pitch * EDGE_FADE)).coerceIn(0f, 1f)
         val quiet = (1f - 0.22f * abs(d)).coerceIn(0.45f, 1f)
         return edge * quiet
     }
@@ -83,6 +90,9 @@ class SpotlightRail(val viewH: Float, val pitch: Float, val gap: Float) {
     companion object {
         /** The highlighted tile's size against the rest. */
         const val FOCUS = 1.22f
+
+        /** How much of a pitch a tile takes to fade out against the viewport's edge. */
+        const val EDGE_FADE = 0.35f
 
         /** The tile at the highlight for [offset]. */
         fun index(offset: Float, count: Int): Int = if (count <= 0) 0 else offset.roundToInt().coerceIn(0, count - 1)
@@ -152,5 +162,52 @@ object SpotlightSteps {
     fun coverSize(aspect: Float?, boxW: Float, boxH: Float): Pair<Float, Float> {
         val a = (aspect ?: 0.66f).coerceIn(0.56f, 1.5f)
         return if (boxW / boxH > a) (boxH * a) to boxH else boxW to (boxW / a)
+    }
+}
+
+/**
+ * The clamped story's slow scroll, as a function of the time since the highlight came to rest: it waits [WAIT_MS],
+ * scrolls the [overflow] (what the clamp hides) at [speed] per second, linearly, holds the end [HOLD_MS], eases back
+ * to the top over [RETURN_MS], and goes round again. Positions are in the units of [overflow] and [speed] (pixels).
+ */
+object StoryDrift {
+    const val WAIT_MS = 2500L
+    const val HOLD_MS = 3000L
+    const val RETURN_MS = 900L
+
+    /** The scroll speed, in dp a second: slow enough to read along. */
+    const val SPEED_DP = 18f
+
+    private fun scrollMs(overflow: Float, speed: Float): Long = (overflow / speed * 1000f).toLong().coerceAtLeast(1L)
+
+    /** One round: the wait, the scroll, the hold and the way back. */
+    fun cycleMs(overflow: Float, speed: Float): Long = WAIT_MS + scrollMs(overflow, speed) + HOLD_MS + RETURN_MS
+
+    /** How far down the story is [elapsed] ms after the highlight rested. Nothing to scroll: always the top. */
+    fun position(elapsed: Long, overflow: Float, speed: Float): Float {
+        if (overflow <= 0f || speed <= 0f || elapsed <= 0L) return 0f
+        val scroll = scrollMs(overflow, speed)
+        var t = elapsed % cycleMs(overflow, speed)
+        if (t < WAIT_MS) return 0f
+        t -= WAIT_MS
+        if (t < scroll) return overflow * t / scroll
+        t -= scroll
+        if (t < HOLD_MS) return overflow
+        t -= HOLD_MS
+        val p = t.toFloat() / RETURN_MS
+        return overflow * (1f - p * p * (3f - 2f * p))
+    }
+
+    /** How long the story stays where it is from [elapsed] on: the rest of a wait or a hold, else 0 (it is moving). */
+    fun stillFor(elapsed: Long, overflow: Float, speed: Float): Long {
+        if (overflow <= 0f || speed <= 0f) return Long.MAX_VALUE
+        val scroll = scrollMs(overflow, speed)
+        val t = elapsed.coerceAtLeast(0L) % cycleMs(overflow, speed)
+        return when {
+            t < WAIT_MS -> WAIT_MS - t
+            t < WAIT_MS + scroll -> 0L
+            t < WAIT_MS + scroll + HOLD_MS -> WAIT_MS + scroll + HOLD_MS - t
+            else -> 0L
+        }
     }
 }

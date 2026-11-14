@@ -51,9 +51,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.CacheDrawScope
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -68,6 +70,9 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -109,6 +114,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import kotlin.math.ceil
 
 /*
  * Spotlight, a game-first home layout ("spotlight"; not the icon grid's other screen in Spotlight.kt). The
@@ -120,7 +126,9 @@ import kotlin.math.abs
  * The geometry lives in SpotlightHomeLayout.kt. The rail's scroll is one Animatable (the offset, in tiles) read
  * only in graphics layers, and only the tiles near it are composed, so a library of thousands costs a dozen tiles.
  * The art waits for the highlight to rest (Selection.follow, then a short settle), is decoded at the screen's size,
- * and fades into the theme's background under one mask, so a crossfade draws two pictures at most.
+ * and fades into the theme's background under one mask, so a crossfade draws two pictures at most. The mask takes
+ * most of the art away where the panel's words sit, so they read over any picture. A story longer than its clamp
+ * scrolls itself slowly once the highlight rests (StoryDrift), moved in a layer, never recomposed per frame.
  */
 
 object SpotlightMode {
@@ -202,6 +210,8 @@ private class RailState(group: Int, index: Int, private val scope: CoroutineScop
     /** The whole story, scrolling, instead of its first lines. */
     var expanded by mutableStateOf(false)
     val story = ScrollState(0)
+    /** Counts the buttons that move anything: each one stops the story's own scroll and starts its wait again. */
+    var nudges by mutableIntStateOf(0)
     /** The rail's entry: 0 to 1 each time the group changes. */
     val railIn = Animatable(1f)
     // Set on every composition, read by the key, touch and button handlers.
@@ -222,8 +232,12 @@ private class RailState(group: Int, index: Int, private val scope: CoroutineScop
         Selection.current = e.selected
     }
 
+    /** A button moved something: the story's own scroll goes back to the top and waits for the highlight to rest. */
+    fun nudge() { nudges++ }
+
     /** The highlight reached [current]: remember it, and once it rests the panel, the art and the other screen follow. */
     private fun arrived() {
+        nudge()
         val g = currentGroup ?: return
         val e = current ?: return
         SpotlightMode.rememberSpot(g.key, e.key)
@@ -275,6 +289,7 @@ private class RailState(group: Int, index: Int, private val scope: CoroutineScop
     fun toggleStory() {
         val e = spotEntry ?: return
         if (!expanded && e.game?.meta?.description.isNullOrBlank()) return
+        nudge()
         expanded = !expanded
         if (!expanded) scope.launch { story.scrollTo(0) }
         Sounds.move()
@@ -358,6 +373,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
     // B, one thing at a time: out of clean mode, the story closed, the rail's top, then the home group. Home never
     // leaves Tandem, as on the other layouts.
     BackHandler(enabled = Nav.route == Route.Home && !Nav.overlayOpen && FolderPopup.route == null && groups.isNotEmpty() && !noGames) {
+        st.nudge()
         when (SpotlightSteps.back(st.clean, st.expanded, st.index, st.group, home)) {
             SpotlightBack.Clean -> st.clean = false
             SpotlightBack.Description -> st.toggleStory()
@@ -401,7 +417,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
         val tileH = boxH + 6.dp + labelH
         val pitch = tileH + 14.dp
         val rail = with(density) {
-            remember(viewH, pitch, tileH) { SpotlightRail(viewH.toPx(), pitch.toPx(), (tileH * (SpotlightRail.FOCUS - 1f) / 2f + 4.dp).toPx()) }
+            remember(viewH, pitch, tileH) { SpotlightRail(viewH.toPx(), pitch.toPx(), (tileH * (SpotlightRail.FOCUS - 1f) / 2f + 4.dp).toPx(), tileH.toPx()) }
         }
         st.rail = rail
         val ring = animateFloatAsState(if (st.focused && !st.clean) 1f else 0f, Motion.soft(), label = "spotlight-ring")
@@ -653,26 +669,10 @@ private fun SpotBackdrop(st: RailState, frame: SpotlightFrame, chrome: State<Flo
 /** One picture behind everything, decoded no bigger than the screen. */
 @Composable
 private fun BackdropArt(e: RailEntry, mode: String, motion: Boolean) {
-    BoxWithConstraints(Modifier.fillMaxSize()) {
-        val px = maxOf(constraints.maxWidth, constraints.maxHeight)
+    Box(Modifier.fillMaxSize()) {
         val game = e.game
         if (game != null) {
-            val lib = Libraries.of(game)
-            val art = if (mode == "art") remember(game.key, game.meta.hero, game.meta.screenshot) { lib?.hero(game) ?: lib?.screenshot(game) } else null
-            if (art != null) {
-                KenBurns(rememberSizedRequest(art, px), Modifier.fillMaxSize(), moving = motion)
-            } else {
-                val box = remember(game.key, game.meta.box) { lib?.box(game) }
-                val c = SystemColors.of(game.platform.id)
-                Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(c.copy(alpha = 0.5f), c.copy(alpha = 0.12f)))))
-                // A small decode, blurred: the cover's colours without its detail. Before Android 12 the blur is
-                // left out and the small picture stretched soft does the work alone.
-                if (box != null) AsyncImage(
-                    rememberSizedRequest(box, 160), null,
-                    Modifier.fillMaxSize().blur(36.dp, BlurredEdgeTreatment.Rectangle).graphicsLayer { alpha = 0.75f },
-                    contentScale = ContentScale.Crop,
-                )
-            }
+            SpotlightArt(game, mode, motion)
         } else e.item?.let { item ->
             Box(Modifier.fillMaxSize().background(lerp(item.color, Palette.Night, 0.55f)))
             Box(Modifier.fillMaxSize().blur(48.dp, BlurredEdgeTreatment.Rectangle).graphicsLayer { alpha = 0.6f }) {
@@ -682,10 +682,42 @@ private fun BackdropArt(e: RailEntry, mode: String, motion: Boolean) {
     }
 }
 
+/** How much of the art the panel's words take away where they sit: the background shows through 80 to 90 %. */
+private const val WORDS_FADE = 0.8f
+
 /**
- * The art's fade into the background: towards the rail (most), under the panel (enough for its words) and the
- * bottom, all in one offscreen layer. In clean mode ([chrome] 0) the fade lifts and the art shows whole. The masks
- * are drawn as their inverse (DstOut) at the chrome's alpha, so nothing is built while it animates.
+ * A game's picture filling its space, decoded no bigger than that: its key art, else a screenshot ([mode] "art"),
+ * else (or with [mode] "blur") its cover blurred over the system's colour. Shared with the other screen.
+ */
+@Composable
+internal fun SpotlightArt(game: Game, mode: String, motion: Boolean) {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val px = maxOf(constraints.maxWidth, constraints.maxHeight)
+        val lib = Libraries.of(game)
+        val art = if (mode == "art") remember(game.key, game.meta.hero, game.meta.screenshot) { lib?.hero(game) ?: lib?.screenshot(game) } else null
+        if (art != null) {
+            KenBurns(rememberSizedRequest(art, px), Modifier.fillMaxSize(), moving = motion)
+        } else {
+            val box = remember(game.key, game.meta.box) { lib?.box(game) }
+            val c = SystemColors.of(game.platform.id)
+            Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(c.copy(alpha = 0.5f), c.copy(alpha = 0.12f)))))
+            // A small decode, blurred: the cover's colours without its detail. Before Android 12 the blur is
+            // left out and the small picture stretched soft does the work alone.
+            if (box != null) AsyncImage(
+                rememberSizedRequest(box, 160), null,
+                Modifier.fillMaxSize().blur(36.dp, BlurredEdgeTreatment.Rectangle).graphicsLayer { alpha = 0.75f },
+                contentScale = ContentScale.Crop,
+            )
+        }
+    }
+}
+
+/**
+ * The art's fade into the background: towards the rail (most), the bottom, and, much more, the block where the
+ * panel's words sit (from just above the chips down to the bottom, the panel's width and a short ease towards the
+ * centre), so the story reads over any art while the art keeps its colour everywhere else. All in one offscreen
+ * layer. In clean mode ([chrome] 0) the fade lifts and the art shows whole. The masks are drawn as their inverse
+ * (DstOut) at the chrome's alpha, so nothing is built while it animates.
  */
 private fun Modifier.spotlightFade(frame: SpotlightFrame, chrome: State<Float>): Modifier =
     graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }.drawWithCache {
@@ -699,19 +731,47 @@ private fun Modifier.spotlightFade(frame: SpotlightFrame, chrome: State<Float>):
             .map { (x, a) -> x to Color.Black.copy(alpha = 1f - a) }.toTypedArray()
         val horizontal = Brush.horizontalGradient(*across)
         val vertical = Brush.verticalGradient(0f to Color.Black.copy(alpha = 0.25f), 0.14f to Color.Transparent, 0.62f to Color.Transparent, 1f to Color.Black.copy(alpha = 0.6f))
+        val words = wordsMask(frame)
         onDrawWithContent {
             drawContent()
             val c = chrome.value
             if (c > 0.001f) {
                 drawRect(horizontal, alpha = c, blendMode = BlendMode.DstOut)
                 drawRect(vertical, alpha = c, blendMode = BlendMode.DstOut)
+                drawRect(words, alpha = c * WORDS_FADE, blendMode = BlendMode.DstOut)
             }
         }
     }
 
-/** Text over the art: a soft shadow on dark themes; light themes' dark text reads on the lightened art as it is. */
+/**
+ * The block under the panel's words as one mask: across, nothing until a little before the panel's near edge and
+ * all of it from there to the screen's edge; down, nothing over the top of the logo and all of it from where the
+ * chips start. The two ramps are multiplied (DST_IN), so the block's corners ease out both ways.
+ */
+private fun CacheDrawScope.wordsMask(frame: SpotlightFrame): Brush {
+    val k = size.width / frame.width
+    // The art reaches up under the top bar: the frame's top is this far down the layer.
+    val top = size.height - frame.height * k
+    val near = (if (frame.railLeft) frame.panelX else frame.panelX + frame.panelW) * k
+    val ease = frame.width * 0.07f * k * if (frame.railLeft) -1f else 1f
+    val across = LinearGradientShader(
+        Offset(near + ease, 0f), Offset(near, 0f),
+        listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f), Color.Black), listOf(0f, 0.6f, 1f),
+    )
+    val down = LinearGradientShader(
+        Offset(0f, top + frame.height * 0.2f * k), Offset(0f, top + frame.height * 0.36f * k),
+        listOf(Color.Transparent, Color.Black),
+    )
+    return ShaderBrush(android.graphics.ComposeShader(across, down, android.graphics.PorterDuff.Mode.DST_IN))
+}
+
+/**
+ * Text over the art: a soft dark shadow under light words on dark themes, a soft halo of the background around dark
+ * words on light ones, so either reads where a bright or busy patch of art comes through the fade.
+ */
 @Composable
-private fun TextStyle.overArt(): TextStyle = if (Themes.live.dark) onArt() else this
+internal fun TextStyle.overArt(): TextStyle =
+    if (Themes.live.dark) onArt() else copy(shadow = Shadow(Palette.Night.copy(alpha = 0.9f), Offset.Zero, 10f))
 
 /** The panel: the game's or app's own, cross-fading when the highlight rests on another. */
 @Composable
@@ -766,12 +826,7 @@ private fun GamePanel(st: RailState, game: Game, maxH: Dp) {
                             Text(story, style = body, color = Palette.Text)
                         }
                     } else {
-                        var cut by remember(story, lines) { mutableStateOf(false) }
-                        Text(
-                            story, Modifier.fillMaxWidth().then(if (cut) Modifier.fadeMask(0f to 1f, 0.7f to 1f, 1f to 0f) else Modifier),
-                            style = body, color = Palette.Text, maxLines = lines, overflow = TextOverflow.Clip,
-                            onTextLayout = { cut = it.hasVisualOverflow },
-                        )
+                        ClampedStory(st, story, body, lines)
                     }
                 }
             }
@@ -784,6 +839,73 @@ private fun GamePanel(st: RailState, game: Game, maxH: Dp) {
         }
     }
 }
+
+/**
+ * The clamped story's measures and scroll: where its [lines]-th line ends (written while the text is laid out, read
+ * by the box's own layout, never observed), what that hides ([overflow], px) and how far it has scrolled ([drift], px).
+ */
+private class StoryClamp {
+    var height = 0
+    var hidden = 0f
+    var overflow by mutableFloatStateOf(0f)
+    var drift by mutableFloatStateOf(0f)
+}
+
+/**
+ * The story's first [lines] lines, and the rest under a fade. When the highlight rests on it and there is more, it
+ * scrolls itself slowly through to the end and back ([StoryDrift]), until a button moves something ([RailState.nudge]).
+ * The whole text is laid out once and moved in its own layer, so a frame of the scroll redraws only this box.
+ */
+@Composable
+private fun ClampedStory(st: RailState, story: String, style: TextStyle, lines: Int) {
+    val clamp = remember(story, lines) { StoryClamp() }
+    val speed = with(LocalDensity.current) { StoryDrift.SPEED_DP.dp.toPx() }
+    val overflow = clamp.overflow
+    LaunchedEffect(clamp, overflow, st.nudges, st.clean, Themes.still) {
+        clamp.drift = 0f
+        if (overflow < 1f || st.clean || Themes.still) return@LaunchedEffect
+        val start = withFrameMillis { it }
+        while (true) {
+            val now = withFrameMillis { it } - start
+            clamp.drift = StoryDrift.position(now, overflow, speed)
+            val rest = StoryDrift.stillFor(now, overflow, speed)
+            if (rest > 0L) delay(rest)
+        }
+    }
+    Box(
+        Modifier.fillMaxWidth().storyFade(clamp).clipToBounds().layout { m, c ->
+            val p = m.measure(c.copy(minHeight = 0, maxHeight = Constraints.Infinity))
+            val h = clamp.height.takeIf { it > 0 }?.coerceAtMost(p.height) ?: p.height
+            val hidden = (p.height - h).toFloat()
+            if (clamp.hidden != hidden) { clamp.hidden = hidden; clamp.overflow = hidden }
+            layout(p.width, h) { p.place(0, 0) }
+        },
+    ) {
+        Text(
+            story, Modifier.fillMaxWidth().graphicsLayer { translationY = -clamp.drift },
+            style = style, color = Palette.Text,
+            onTextLayout = { t -> clamp.height = if (t.lineCount > lines) ceil(t.getLineBottom(lines - 1)).toInt() else t.size.height },
+        )
+    }
+}
+
+/** The story box's edges fade where there is more of it above or below: the top once it has scrolled, the bottom until its end. */
+private fun Modifier.storyFade(clamp: StoryClamp): Modifier =
+    graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }.drawWithCache {
+        val top = Brush.verticalGradient(0f to Color.Black, 0.18f to Color.Transparent)
+        val bottom = Brush.verticalGradient(0.7f to Color.Transparent, 1f to Color.Black)
+        val reach = size.height * 0.18f
+        onDrawWithContent {
+            drawContent()
+            val over = clamp.overflow
+            if (over < 1f) return@onDrawWithContent
+            val d = clamp.drift
+            val a = (d / reach).coerceIn(0f, 1f)
+            val b = ((over - d) / reach).coerceIn(0f, 1f)
+            if (a > 0.001f) drawRect(top, alpha = a, blendMode = BlendMode.DstOut)
+            if (b > 0.001f) drawRect(bottom, alpha = b, blendMode = BlendMode.DstOut)
+        }
+    }
 
 /** System, year, developer, genres, players: whatever is known, each on a small chip. */
 @OptIn(ExperimentalLayoutApi::class)
@@ -832,7 +954,7 @@ private fun PlayStats(game: Game) {
         stats.forEach { (value, label) ->
             Column {
                 Text(value, style = MaterialTheme.typography.titleMedium.overArt(), color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(label, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+                Text(label, style = MaterialTheme.typography.labelSmall.overArt(), color = Palette.Muted, maxLines = 1)
             }
         }
     }
