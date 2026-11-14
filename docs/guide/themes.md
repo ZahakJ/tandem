@@ -67,8 +67,13 @@ screenshot, else its cover blurred. A narrow **rail** of covers runs down one si
 middle, a little bigger and ringed, and the name of the group over it (a system, a collection, or Apps). The other
 side is the game's: its logo (or its name), a line of chips (system, year, developer, genres, players), the first
 lines of its story, and what you've played of it: time played, when you last played, how many sessions, its status
-and achievements, whichever there are. The art fades into the theme's background towards the rail and the bottom, so
-the words read on dark and light themes.
+and achievements, whichever there are. The art fades into the theme's background towards the rail and the bottom, and
+most of the way where the words sit, so they read over any picture on dark and light themes.
+
+A story longer than its few lines scrolls by itself: rest on the game a couple of seconds and it slides slowly to its
+end, waits, and comes back to the top. Any button stops it; with **Reduce motion** it stays put (X still opens it all).
+The bottom screen's details belong to the game too: its art fills the whole screen, fading into the theme's background
+where its logo, chips, play time and description sit.
 
 L1 and R1 go through the groups: each system with games, then the collections (Recently played, with the last game
 you played at the top, Favourites, Most played and your own), then Apps, Tandem's and your dock's. A game that is
