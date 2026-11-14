@@ -10,7 +10,7 @@ Anything a theme sets can be changed on top of it in **Settings › Look & feel*
 
 ## Home layouts
 
-The layout gallery at the top of **Settings › Home & layout** picks one of six: **Shelves**, **Icon grid**, **Carousel**, **List**, **Console** and **Orbit**. The icon grid holds systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom; Orbit is Tandem's own (see [Orbit](#orbit) below); the others show Continue playing, your systems and collections in their own way. Try them: switching back is one press.
+The layout gallery at the top of **Settings › Home & layout** picks one of seven: **Shelves**, **Icon grid**, **Carousel**, **List**, **Console**, **Orbit** and **Spotlight**. The icon grid holds systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom; Orbit is Tandem's own (see [Orbit](#orbit) below); Spotlight puts one game's art across the whole screen (see [Spotlight](#spotlight)); the others show Continue playing, your systems and collections in their own way. Try them: switching back is one press.
 
 Inside a system, games show as a grid, a list or a carousel (**Games view**), with a choice of grid size, card shape (rounded, square, circle, tall box art or wide) and whether titles show.
 
@@ -59,6 +59,39 @@ Two rows in **Settings › Home & layout › Home screen** shape it while Orbit 
 collections and apps; systems and collections; or systems only) and **Continue ribbon**. Hidden games and systems
 stay out of the orbit and the fan unless hidden games are showing, and with **Reduce motion** the orbit moves straight
 to each orb without spinning.
+
+### Spotlight
+
+Spotlight is the quiet, game-first home. The highlighted game's art fills the screen: its key art, else a
+screenshot, else its cover blurred. A narrow **rail** of covers runs down one side with the highlighted game in the
+middle, a little bigger and ringed, and the name of the group over it (a system, a collection, or Apps). The other
+side is the game's: its logo (or its name), a line of chips (system, year, developer, genres, players), the first
+lines of its story, and what you've played of it: time played, when you last played, how many sessions, its status
+and achievements, whichever there are. The art fades into the theme's background towards the rail and the bottom, so
+the words read on dark and light themes.
+
+L1 and R1 go through the groups: each system with games, then the collections (Recently played, with the last game
+you played at the top, Favourites, Most played and your own), then Apps, Tandem's and your dock's. A game that is
+still open has a mint dot on its cover and says Resume.
+
+| Press | Does |
+| --- | --- |
+| Up / Down | Move along the rail; hold to skim (it speeds up the longer you hold). With the story open, scroll it |
+| A | Play the game (or Resume it), open the app |
+| Y | The game menu, or the app's options |
+| X | The whole story, scrolling; X again (or B) closes it |
+| Right (Left with the rail on the right) | Only the art: the rail and the panel fade away; any button brings them back |
+| L1 / R1 | The group before or after, from its top |
+| B | Back to the top of the rail; from the top, back to Recently played |
+
+By touch, tap a cover to highlight it and tap it again to play; drag the rail to scroll it (a flick carries it
+further); a long press is Y. Tap the game's name or story to open or close the story, and tap the art to see only the
+art. If you set **Settings › Controls › X button** to swap everywhere or to search, X does that here too and the story
+opens by touch.
+
+Three rows in **Settings › Home & layout › Home screen** shape it while Spotlight is in use: **Spotlight rail** (left or
+right; the whole layout mirrors), **Spotlight backdrop** (the art, the cover blurred, or just the theme's colour) and
+**Spotlight motion** (the art drifts and zooms in very slowly; never with **Reduce motion**).
 
 ### Folder design
 

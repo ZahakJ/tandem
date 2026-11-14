@@ -33,7 +33,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | Tile | Summary shows | Groups (common rows · More options) |
 |---|---|---|
 | Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery, Colour, Wallpaper, Icons, Motion, Start over |
-| Home & layout | layout, icons across or games view | Layout gallery (six layouts, Orbit included), Home screen (the rows for the layout in use), Games, While a game runs, Dock, Widgets, Top bar, Rest |
+| Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included), Home screen (the rows for the layout in use), Games, While a game runs, Dock, Widgets, Top bar, Rest |
 | Two screens | single, swapped or the bottom style | Screens, Other screen, Moving apps, While playing |
 | Sound & music | the theme pack's audio, or sound pack and music | Theme pack (only when the theme pack has music or sounds), Sounds, Music |
 | Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons, Controller Home button, Game controllers, Play with a controller |
@@ -70,6 +70,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.folderPopup`, `fullscreenFolders` | Home & layout › Home screen › Open folders (other layouts) | choice |
 | `Look.systemTiles` | Home & layout › Home screen › More › System tiles (shelves, carousel, list, console) | choice |
 | `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue ribbon (Orbit) | choice / toggle |
+| `Look.spotlightRail`, `spotlightBackdrop`, `spotlightMotion` | Home & layout › Home screen › Spotlight rail (left, right) / Spotlight backdrop (art, blurred cover, dim) / Spotlight motion (Spotlight) | choice / choice / toggle |
 | `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › Games (Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
 | `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › While a game runs › Now playing / Home lands on Resume | toggle |
 | `HomeSettings.showDock`, `dock`, `Look.dockStyle` | Home & layout › Dock › Apps dock / Choose dock apps / Dock style | toggle / link / choice |
@@ -101,7 +102,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.myMusic` | Sound & music › Music › Music from (My music folder, Built-in: Meadow Tales) | choice |
 | (next song) | Sound & music › Music › Next song | action |
 | `Look.musicShuffle` | Sound & music › Music › More › Shuffle my music | toggle |
-| `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search) | choice |
+| `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |
 | `ControllerSettings.bindings` (Swap A and B) | Controls › Buttons › Swap A and B (Open on B, Back on A) | toggle |
 | `ControllerSettings.bindings` | Controls › Buttons › Rebind buttons (a page: every command with its button, chord or hold; A listens for 5 s, X resets one, Y clears one, Reset all) | link |
 | `ControllerSettings.bindings` (Swap X and Y), `Look.cornerHints` | Controls › Buttons › More › Swap X and Y / Corner hints | toggle |

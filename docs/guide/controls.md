@@ -327,7 +327,7 @@ By touch: tap the left or right third of the page to turn, the middle to zoom, a
 
 ## Search
 
-X opens search from anywhere (except the icon grid and Orbit homes, where X swaps screens; Start › Search, or Y › Search on the grid). The left side is a keyboard laid out for the D-pad: letters, numbers, **Space**, **⌫** to delete and **Clear**. Results appear on the right as you type; move right into them and press A to play. X deletes a letter, Y on a result opens its game menu. Search ignores case, accents and punctuation. B goes back to the keys, then closes.
+X opens search from anywhere (except the icon grid and Orbit homes, where X swaps screens, and Spotlight, where it opens the highlighted game's story; Start › Search, or Y › Search on the grid). The left side is a keyboard laid out for the D-pad: letters, numbers, **Space**, **⌫** to delete and **Clear**. Results appear on the right as you type; move right into them and press A to play. X deletes a letter, Y on a result opens its game menu. Search ignores case, accents and punctuation. B goes back to the keys, then closes.
 
 ![Search with the letters zeld typed on the on-screen keyboard, and thirteen matching Zelda games on the right.](../../site/assets/screenshots/search.webp "Search: the keyboard on the left, results on the right")
 

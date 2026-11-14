@@ -168,6 +168,11 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   hit tests, flick settling, L1/R1 group jumps, the spotlight's fan; tested in `OrbitLayoutTest`) and `ui/Orbit.kt`
   (`OrbitHome`: the orbit as one focusable stage whose orbs are drawn in graphics layers from one `Animatable`, the
   spotlight fan of `FocusCard`s, the Continue ribbon, the round dock, `orbitSettings()`). Orbs are `GridCatalog` tiles.
+- Spotlight, the game-first home: `ui/SpotlightHomeLayout.kt` (pure: the rail/panel split and its mirror, the rail's
+  tile places for a scroll offset, windowing, hit tests, hold speed-up, flick settling, group cycling, B's order, the
+  art's settle delay; tested in `SpotlightHomeLayoutTest`) and `ui/SpotlightHome.kt` (`SpotlightHome`: the rail as one
+  focusable stage composing only the tiles near its `Animatable` offset, the art behind under one fade mask, the
+  panel, `spotlightHomeSettings()`). Groups are `GridCatalog` tiles. Not `ui/Spotlight.kt`, the icon grid's other screen.
 - Icon grid: `ui/IconGrid.kt` (`GridCatalog`, `IconGridHome`, move mode, tile menu, user folders, `FolderSheet`),
   `ui/IconArt.kt` (`TileArt`), `ui/IconPacks.kt` (pack art and smart-folder art), `ui/PanelMorph.kt` (folder popups
   grow from their tile), `ui/Spotlight.kt` (the other screen in this mode). Smart folders: `data/SmartRule.kt` (the
