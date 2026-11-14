@@ -254,11 +254,15 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         val grow = minOf(1.22f, maxW / src.width, maxH / src.height).coerceAtLeast(0.45f)
         val tw = src.width * grow
         val th = src.height * grow
-        // The list goes on whichever side has more room; the item slides over just enough to make space.
+        // The list goes on whichever side has more room; the item slides over just enough to make space for
+        // itself and for its name, which may be wider than it (up to [nameWant]) and stays centred under it.
         val listRight = src.center.x < wPx / 2
+        val edge = with(density) { 10.dp.toPx() } // the name may run closer to the screen's edge than the item does
+        val nameWant = minOf(with(density) { 300.dp.toPx() }, (wPx - listW - gap - edge * 2).coerceAtLeast(tw))
+        val wide = maxOf(tw, nameWant)
         var cx = src.center.x
-        val minCx = margin + if (listRight) tw / 2 else listW + gap + tw / 2
-        val maxCx = wPx - margin - if (listRight) tw / 2 + gap + listW else tw / 2
+        val minCx = if (listRight) maxOf(margin + tw / 2, edge + wide / 2) else maxOf(margin + listW + gap + tw / 2, listW + gap + wide / 2)
+        val maxCx = if (listRight) minOf(wPx - margin - tw / 2 - gap - listW, wPx - wide / 2 - gap - listW) else minOf(wPx - margin - tw / 2, wPx - edge - wide / 2)
         cx = cx.coerceIn(minCx, maxCx.coerceAtLeast(minCx))
         val cy = src.center.y.coerceIn(margin + th / 2, (hPx - margin - nameH - th / 2).coerceAtLeast(margin + th / 2))
         val target = Rect(Offset(cx - tw / 2, cy - th / 2), Size(tw, th))
@@ -282,12 +286,14 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
                 },
         ) { s.art() }
         // The actions, floating beside it.
-        val listX = if (listRight) target.right + gap else target.left - gap - listW
+        val listX = if (listRight) maxOf(target.right, cx + wide / 2) + gap else minOf(target.left, cx - wide / 2) - gap - listW
         // Its name under it, kept on the item's side of the list and on the screen (an item at the edge would push a
         // centred name off it); a long name wraps to two lines and shrinks a little before it ellipsizes.
-        val sideL = if (listRight) margin else listX + listW + gap / 2
-        val sideR = if (listRight) listX - gap / 2 else wPx - margin
-        val nameW = minOf(with(density) { 300.dp.toPx() }, (sideR - sideL).coerceAtLeast(tw))
+        val sideL = if (listRight) edge else listX + listW + gap / 2
+        val sideR = if (listRight) listX - gap / 2 else wPx - edge
+        // No wider than can stay centred under the item on its side of the list (never narrower than the item).
+        val centred = 2f * minOf(target.center.x - sideL, sideR - target.center.x)
+        val nameW = minOf(nameWant, centred).coerceAtLeast(tw)
         val nameX = (target.center.x - nameW / 2).coerceIn(sideL, (sideR - nameW).coerceAtLeast(sideL))
         Column(
             Modifier.offset { IntOffset(nameX.roundToInt(), (target.bottom + with(density) { 10.dp.toPx() }).roundToInt()) }

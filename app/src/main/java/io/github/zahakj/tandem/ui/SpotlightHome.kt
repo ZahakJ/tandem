@@ -85,6 +85,8 @@ import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -513,6 +515,9 @@ private fun RailView(st: RailState, rail: SpotlightRail, boxW: Dp, boxH: Dp, til
     val group = st.group
     val entries = st.entries
     val range by remember(rail, entries) { derivedStateOf { rail.visible(st.offset.value, entries.size) } }
+    // Each cover's place on screen, so a Y menu lifts the highlighted cover from where it is, in its own shape.
+    val covers = remember(entries) { HashMap<Int, Pair<LayoutCoordinates, Float>>() }
+    LaunchedEffect(st.index, st.focused, entries) { covers[st.index]?.let { (c, round) -> ActionMenu.focusAt(c, round) } }
     // Every cover's shape ahead of the scroll, so a tile is never composed in the wrong box.
     LaunchedEffect(entries) { CoverShapes.warm(ctx, entries.mapNotNull { it.game }) }
     val g = st.currentGroup
@@ -551,7 +556,7 @@ private fun RailView(st: RailState, rail: SpotlightRail, boxW: Dp, boxH: Dp, til
     ) {
         for (i in range) {
             val e = entries.getOrNull(i) ?: continue
-            key(e.key) { RailTile(e, i, st, rail, boxW, boxH, tileH, ring, ringColor) }
+            key(e.key) { RailTile(e, i, st, rail, boxW, boxH, tileH, ring, ringColor, covers) }
         }
     }
 }
@@ -576,6 +581,7 @@ private fun tapRail(st: RailState, y: Float, ctx: android.content.Context, scope
 @Composable
 private fun RailTile(
     e: RailEntry, i: Int, st: RailState, rail: SpotlightRail, boxW: Dp, boxH: Dp, tileH: Dp, ring: State<Float>, ringColor: Color,
+    covers: HashMap<Int, Pair<LayoutCoordinates, Float>>,
 ) {
     val ctx = LocalContext.current
     val density = LocalDensity.current
@@ -609,6 +615,10 @@ private fun RailTile(
         ) {
             Box(
                 Modifier.size(cw.dp, ch.dp)
+                    .onGloballyPositioned { c ->
+                        covers[i] = c to corner.value / minOf(cw, ch)
+                        if (i == st.index && st.focused) ActionMenu.focusAt(c, corner.value / minOf(cw, ch))
+                    }
                     .drawWithCache {
                         val o = ringW * 1.6f
                         val topLeft = Offset(-o, -o)
