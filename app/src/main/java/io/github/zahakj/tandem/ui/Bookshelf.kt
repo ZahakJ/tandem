@@ -1,6 +1,7 @@
 package io.github.zahakj.tandem.ui
 
 import android.content.Context
+import java.io.File
 import android.graphics.BitmapFactory
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
@@ -115,26 +116,87 @@ object CoverColors {
 /**
  * The shape of each game's cover, width over height, read from the picture's header once in the background (never
  * the whole picture). A case takes it, so the cover shows whole and as it really is: tall for a Switch or PS2 box,
- * nearly square for a DS or PS1 one, wide for a Game Boy or SNES one.
+ * nearly square for a DS or PS1 one, wide for a Game Boy or SNES one. The shapes are kept in `cover-shapes.tsv`
+ * (key, ratio, the picture's size) across launches, so a cover is never drawn in the wrong box on the first pass
+ * of a session; a cover whose picture changed size is measured again. [warm] measures a whole list ahead of time.
  */
 object CoverShapes {
     private val shapes = HashMap<String, androidx.compose.runtime.MutableState<Float?>>()
+    private val sizes = HashMap<String, Long>()
+    private var loaded = false
+    private var saveDue = false
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
 
     fun of(ctx: Context, g: Game): Float? {
+        load(ctx)
         val known = shapes[g.key]
         if (known != null) return known.value
         val state = androidx.compose.runtime.mutableStateOf<Float?>(null)
         shapes[g.key] = state
-        val path = Libraries.of(g)?.box(g)?.path ?: return null
+        val file = Libraries.of(g)?.box(g) ?: return null
+        inBackground({ measure(ctx, g.key, file)?.let { r -> main.post { state.value = r } } })
+        return null
+    }
+
+    /** Measures every unknown cover in [games] in one background pass, so the rail or shelf never meets a stranger. */
+    fun warm(ctx: Context, games: List<Game>) {
+        load(ctx)
+        val todo = games.filter { shapes[it.key] == null }
+        if (todo.isEmpty()) return
+        val states = todo.associate { it.key to androidx.compose.runtime.mutableStateOf<Float?>(null) }
+        shapes.putAll(states)
         inBackground({
-            val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeFile(path, o)
-            if (o.outWidth > 0 && o.outHeight > 0) {
-                val ratio = o.outWidth.toFloat() / o.outHeight
-                android.os.Handler(android.os.Looper.getMainLooper()).post { state.value = ratio }
+            for (g in todo) {
+                val file = Libraries.of(g)?.box(g) ?: continue
+                measure(ctx, g.key, file)?.let { r -> main.post { states.getValue(g.key).value = r } }
             }
         })
-        return null
+    }
+
+    /** The picture's width over height from its header, remembered with its size; null when it can't be read. */
+    private fun measure(ctx: Context, key: String, file: File): Float? {
+        val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(file.path, o)
+        if (o.outWidth <= 0 || o.outHeight <= 0) return null
+        val ratio = o.outWidth.toFloat() / o.outHeight
+        synchronized(sizes) { sizes[key] = file.length() }
+        main.post { saveLater(ctx) }
+        return ratio
+    }
+
+    private fun cache(ctx: Context) = File(ctx.filesDir, "cover-shapes.tsv")
+
+    /** Reads the remembered shapes once; a shape whose picture is now another size is dropped so it is measured again. */
+    private fun load(ctx: Context) {
+        if (loaded) return
+        loaded = true
+        val f = cache(ctx)
+        if (!f.isFile) return
+        runCatching {
+            for (line in f.readLines()) {
+                val parts = line.split('\t')
+                if (parts.size != 3) continue
+                val key = parts[0]
+                val ratio = parts[1].toFloatOrNull() ?: continue
+                val size = parts[2].toLongOrNull() ?: continue
+                val game = Libraries.byKey(key) ?: continue
+                val file = Libraries.of(game)?.box(game) ?: continue
+                if (file.length() != size) continue
+                shapes[key] = androidx.compose.runtime.mutableStateOf(ratio)
+                sizes[key] = size
+            }
+        }
+    }
+
+    /** Writes the known shapes a moment after the last one arrived, off the main thread. */
+    private fun saveLater(ctx: Context) {
+        if (saveDue) return
+        saveDue = true
+        main.postDelayed({
+            saveDue = false
+            val lines = shapes.mapNotNull { (k, s) -> s.value?.let { r -> sizes[k]?.let { n -> "$k\t$r\t$n" } } }
+            inBackground({ runCatching { cache(ctx).writeText(lines.joinToString("\n")) } })
+        }, 1500)
     }
 
     /** Covers as wide as a cover gets to be on a shelf: the widest real boxes are about 1.5 : 1, the tallest 0.56 : 1. */

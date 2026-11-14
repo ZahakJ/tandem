@@ -277,10 +277,10 @@ fun SymbolTile(glyph: Glyph, color: Color, size: Dp) {
 
 /** Box art for a game, or its name on its system's colour. */
 @Composable
-fun GameBoxArt(game: Game, size: Dp) {
+fun GameBoxArt(game: Game, size: Dp, scale: ContentScale = ContentScale.Crop) {
     val box = remember(game.key, game.meta.box) { Libraries.of(game)?.box(game) }
     if (box != null) {
-        AsyncImage(rememberSizedRequest(box, tilePx(size)), game.title, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        AsyncImage(rememberSizedRequest(box, tilePx(size)), game.title, Modifier.fillMaxSize(), contentScale = scale)
     } else {
         Box(Modifier.fillMaxSize().tileGradient(SystemColors.of(game.platform.id)), contentAlignment = Alignment.Center) {
             Text(

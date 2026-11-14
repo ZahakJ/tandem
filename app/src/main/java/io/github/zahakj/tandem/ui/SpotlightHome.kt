@@ -74,6 +74,7 @@ import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -513,6 +514,8 @@ private fun RailView(st: RailState, rail: SpotlightRail, boxW: Dp, boxH: Dp, til
     val group = st.group
     val entries = st.entries
     val range by remember(rail, entries) { derivedStateOf { rail.visible(st.offset.value, entries.size) } }
+    // Every cover's shape ahead of the scroll, so a tile is never composed in the wrong box.
+    LaunchedEffect(entries) { CoverShapes.warm(ctx, entries.mapNotNull { it.game }) }
     val g = st.currentGroup
     val glow = Palette.highlightFor(g?.color ?: Palette.Mint)
     val theme = Themes.live
@@ -579,7 +582,8 @@ private fun RailTile(
     val density = LocalDensity.current
     val tileHpx = with(density) { tileH.toPx() }
     val game = e.game
-    val (cw, ch) = if (game != null) SpotlightSteps.coverSize(CoverShapes.of(ctx, game), boxW.value, boxH.value) else min(boxW, boxH).value.let { it to it }
+    val aspect = game?.let { CoverShapes.of(ctx, it) }
+    val (cw, ch) = if (game != null) SpotlightSteps.coverSize(aspect, boxW.value, boxH.value) else min(boxW, boxH).value.let { it to it }
     val corner = if (game != null) 8.dp else (ch * 0.22f).dp
     val ringW = with(density) { Themes.live.highlightThickness.coerceIn(2f, 5f).dp.toPx() }
     val running = game != null && RunningGames.list.any { it.game?.key == game.key }
@@ -588,6 +592,9 @@ private fun RailTile(
             val d = i - st.offset.value
             translationY = rail.y(d) - tileHpx / 2f
             alpha = rail.alpha(d)
+            // Applied to each draw, not through an offscreen buffer: a buffer is the tile's own size and would cut
+            // the cover where it has grown past the tile, which showed as a flat top while the highlight moved.
+            compositingStrategy = CompositingStrategy.ModulateAlpha
         },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -619,7 +626,9 @@ private fun RailTile(
             ) {
                 // Decoded for the highlighted size, so the tile stays sharp when it grows.
                 val decode = (maxOf(cw, ch) * SpotlightRail.FOCUS).dp
-                if (game != null) GameBoxArt(game, decode) else e.item?.let { TileArtView(it.art, decode) }
+                // Until the cover's shape is known it is fitted, never cropped, so no cartridge loses its top for a frame.
+                if (game != null) GameBoxArt(game, decode, if (aspect == null) ContentScale.Fit else ContentScale.Crop)
+                else e.item?.let { TileArtView(it.art, decode) }
                 if (running) Box(Modifier.align(Alignment.TopEnd).padding(5.dp).size(9.dp).clip(CircleShape).background(Palette.Mint))
             }
         }
