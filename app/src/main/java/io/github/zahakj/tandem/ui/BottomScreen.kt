@@ -438,7 +438,8 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
         ButtonHint("A", if (resumable) "Resume" else "Play", Palette.Mint)
         // A game still open: Y closes it (twice), as on the icon grid's Resume card.
         if (resumable) ButtonHint("Y", "Close", Palette.Peach) else ButtonHint("Y", "Options", Palette.Butter)
-        ButtonHint("X", "Search", Palette.Sky)
+        // On Spotlight X opens the whole story, unless the X button setting gave it away.
+        if (SpotlightMode.enabled && SpotlightMode.ownsX) ButtonHint("X", "More", Palette.Sky) else ButtonHint("X", "Search", Palette.Sky)
         ListSwitchHint()
     }
 }
@@ -449,7 +450,7 @@ private fun ListSwitchHint() {
     val label = when (val r = Nav.route) {
         is Route.System -> if (r.folder == null) "Systems" else null
         is Route.Collection -> if (r.id.startsWith("genre:")) "Genres" else "Lists"
-        Route.Home -> "Rows"
+        Route.Home -> if (SpotlightMode.enabled || Store.settings.look.homeLayout == "orbit") "Groups" else "Rows"
         else -> null
     } ?: return
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {

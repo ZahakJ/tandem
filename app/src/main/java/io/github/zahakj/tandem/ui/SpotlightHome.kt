@@ -69,6 +69,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.key.Key
@@ -476,10 +477,11 @@ private fun RailHeader(st: RailState, modifier: Modifier) {
         Box(Modifier.size(10.dp).clip(CircleShape).background(g.color))
         Spacer(Modifier.width(8.dp))
         Text(
-            g.title, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium.overArt(),
+            g.title, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall.overArt(),
             color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis,
         )
-        Text("${st.index + 1}/${st.count}", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+        Spacer(Modifier.width(6.dp))
+        Text("${st.index + 1}/${st.count}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
     }
 }
 
@@ -569,14 +571,20 @@ private fun RailTile(
         Modifier.fillMaxWidth().height(tileH).graphicsLayer {
             val d = i - st.offset.value
             translationY = rail.y(d) - tileHpx / 2f
-            val s = rail.scale(d)
-            scaleX = s
-            scaleY = s
             alpha = rail.alpha(d)
         },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.fillMaxWidth().height(boxH), contentAlignment = Alignment.BottomCenter) {
+        // Only the cover grows at the highlight, up from its bottom edge; the title keeps the rail's width.
+        Box(
+            Modifier.fillMaxWidth().height(boxH).graphicsLayer {
+                val s = rail.scale(i - st.offset.value)
+                scaleX = s
+                scaleY = s
+                transformOrigin = TransformOrigin(0.5f, 1f)
+            },
+            contentAlignment = Alignment.BottomCenter,
+        ) {
             Box(
                 Modifier.size(cw.dp, ch.dp)
                     .drawWithCache {
