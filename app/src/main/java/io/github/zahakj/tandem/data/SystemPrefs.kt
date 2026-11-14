@@ -30,6 +30,8 @@ data class SystemsData(
     /** Never use the second screen for games, even when there is one. */
     val singleScreen: Boolean = false,
     val launchAnimation: Boolean = true,
+    /** Clips from the companion take your voice from the microphone too (GameClip.kt). */
+    val clipVoice: Boolean = true,
     /** Turn auto-rotate back off whenever Tandem comes up: the Thor's firmware keeps switching it on. */
     val keepRotationOff: Boolean = true,
     /** Apps the user added to Android Games, and detected games they took out. */
@@ -37,6 +39,11 @@ data class SystemsData(
     val notGameApps: Set<String> = emptySet(),
     /** Folder path -> document tree link the user granted, so games there can be shared with emulators. */
     val trees: Map<String, String> = emptyMap(),
+    /**
+     * More game folders, as absolute paths, each laid out like the ROMs folder (a folder per system) and scanned
+     * with it (LibraryRoots). Their document links sit in [trees].
+     */
+    val roots: List<String> = emptyList(),
 )
 
 /** Systems, emulators and launch choices, kept in systems.json next to Tandem's other data. */

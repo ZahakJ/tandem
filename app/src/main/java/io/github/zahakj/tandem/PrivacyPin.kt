@@ -190,7 +190,7 @@ object PrivateMode {
         // Nothing more goes online (Offline.kt): a scrape under way stops here.
         io.github.zahakj.tandem.data.Scraper.cancel()
         io.github.zahakj.tandem.ui.Sounds.toggle(true)
-        io.github.zahakj.tandem.ui.Toasts.show("Private mode on. L1 + R1 + Select and your PIN show hidden games")
+        io.github.zahakj.tandem.ui.Toasts.show("Private mode on. ${io.github.zahakj.tandem.ui.Prompts.words(Command.Hidden)} and your PIN show hidden games")
         io.github.zahakj.tandem.ui.Nav.focusTick++
     }
 

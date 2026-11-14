@@ -35,6 +35,10 @@ data class JournalNotes(
     val games: Map<String, String> = emptyMap(),
 )
 
+/** When each of Tandem's trophies was first earned (TrophyList ids, epoch ms). */
+@Serializable
+data class TrophyRecord(val unlocked: Map<String, Long> = emptyMap())
+
 /** `extras.json` (settings) and `journal.json` (notes) in the app's files folder, written like [HomeStore]. */
 object ExtrasStore {
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
@@ -45,6 +49,8 @@ object ExtrasStore {
         private set
     var notes by mutableStateOf(JournalNotes())
         private set
+    var trophies by mutableStateOf(TrophyRecord())
+        private set
 
     fun init(ctx: Context) {
         if (dir != null) return
@@ -53,12 +59,13 @@ object ExtrasStore {
         reload()
     }
 
-    /** Reads extras.json and journal.json again (after a restore). Blocking. */
+    /** Reads extras.json, journal.json and trophies.json again (after a restore). Blocking. */
     fun reload() {
         val d = dir ?: return
         val s = runCatching { json.decodeFromString<ExtrasSettings>(File(d, "extras.json").readText()) }.getOrDefault(ExtrasSettings())
         val n = runCatching { json.decodeFromString<JournalNotes>(File(d, "journal.json").readText()) }.getOrDefault(JournalNotes())
-        synchronized(this) { settings = s; notes = n }
+        val t = runCatching { json.decodeFromString<TrophyRecord>(File(d, "trophies.json").readText()) }.getOrDefault(TrophyRecord())
+        synchronized(this) { settings = s; notes = n; trophies = t }
     }
 
     fun update(change: (ExtrasSettings) -> ExtrasSettings) {
@@ -69,6 +76,11 @@ object ExtrasStore {
     fun updateNotes(change: (JournalNotes) -> JournalNotes) {
         val snapshot = synchronized(this) { change(notes).also { notes = it } }
         write("journal.json", json.encodeToString(snapshot))
+    }
+
+    fun updateTrophies(change: (TrophyRecord) -> TrophyRecord) {
+        val snapshot = synchronized(this) { change(trophies).also { trophies = it } }
+        write("trophies.json", json.encodeToString(snapshot))
     }
 
     private fun write(name: String, text: String) {

@@ -22,7 +22,7 @@ object CompanionRestore {
             edit.putString("key", info.key).putString("title", info.title).putString("system", info.system)
                 .putString("systemId", info.systemId).putString("hero", info.hero).putString("box", info.box)
                 .putString("logo", info.logo).putString("mode", info.mode).putString("pkg", info.pkg)
-                .putLong("start", info.start).putLong("earlier", info.earlier)
+                .putLong("start", info.start).putLong("earlier", info.earlier).putString("manual", info.manual)
         }
         edit.apply()
     }
@@ -34,6 +34,7 @@ object CompanionRestore {
             key, p.getString("title", null).orEmpty(), p.getString("system", null).orEmpty(), p.getString("systemId", null).orEmpty(),
             p.getString("hero", null), p.getString("box", null), p.getString("logo", null),
             p.getString("mode", null) ?: GameCompanion.ART, p.getString("pkg", null), p.getLong("start", 0L), p.getLong("earlier", 0L),
+            p.getString("manual", null),
         )
     }
 

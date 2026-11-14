@@ -166,13 +166,14 @@ private fun StepTitle(title: String, detail: String, mood: Int = 1) {
     Spacer(Modifier.height(14.dp))
 }
 
-/** Step 1: three homes side by side, drawn live in the current theme. */
+/** Step 1: four homes side by side, drawn live in the current theme. */
 @Composable
 private fun HomeStep(cocoonFound: Boolean, pick: (LookPreset) -> Unit) {
     val route = "welcome:home"
     val options = listOfNotNull(
         Presets.byId("cocoon").takeIf { cocoonFound },
         Presets.byId("cozy"),
+        Presets.byId("orbit"),
         Presets.byId("cocoon").takeIf { !cocoonFound },
         Presets.byId("minimal"),
     )
@@ -330,8 +331,9 @@ private fun DoneStep(done: () -> Unit) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         // A legend, not controls: tapping these does nothing.
         ButtonHint("Y", "Options for anything", Palette.Butter, tappable = false)
-        val gridX = Store.settings.look.homeLayout == "grid" && Store.settings.look.xButton != "search"
-        ButtonHint("X", if (gridX) "Swap screens on the grid, search elsewhere" else "Search", Palette.Sky, tappable = false)
+        val layout = Store.settings.look.homeLayout
+        val homeX = (layout == "grid" || layout == "orbit") && Store.settings.look.xButton != "search"
+        ButtonHint("X", if (homeX) "Swap screens on the home, search elsewhere" else "Search", Palette.Sky, tappable = false)
         ButtonHint("Start", "Start panel, Settings inside (hold: quick panel)", Palette.Lavender, tappable = false)
         ButtonHint("Select", "Surprise me (hold: switcher)", Palette.Peach, tappable = false)
     }

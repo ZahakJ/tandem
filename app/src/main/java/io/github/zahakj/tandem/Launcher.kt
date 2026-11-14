@@ -292,6 +292,7 @@ object Sessions {
             .putString("key", game.key).putLong("start", now).putBoolean("new", newPlay).apply()
         Offline.started()
         Immersion.started(ctx)
+        Performance.started(ctx, game)
         DiscordPresence.playing(ctx, game, now)
         PadLink.gameStarted()
     }
@@ -313,6 +314,7 @@ object Sessions {
         DiscordPresence.stopped()
         Offline.gameEnded(ctx)
         Immersion.gameEnded(ctx)
+        Performance.gameEnded(ctx)
         val start = prefs.getLong("start", 0)
         val newPlay = prefs.getBoolean("new", true)
         val now = System.currentTimeMillis()
@@ -320,11 +322,16 @@ object Sessions {
         prefs.edit().clear().apply()
         // Under 10 seconds is a failed start or an accidental tap, not play: no play time, count or "last played".
         if (elapsed < 10_000) return null
+        // A Steam game may have unlocked something: looked up in the background, announced when it has.
+        SteamAchievements.afterSession(key)
         return {
             io.github.zahakj.tandem.data.Store.update(key) {
-                it.copy(playSeconds = it.playSeconds + elapsed / 1000, lastPlayed = now, playCount = it.playCount + if (newPlay) 1 else 0)
+                val played = it.copy(playSeconds = it.playSeconds + elapsed / 1000, lastPlayed = now, playCount = it.playCount + if (newPlay) 1 else 0)
+                // A real session moves a game out of the backlog (or out of having no status) into Playing.
+                io.github.zahakj.tandem.data.GameStatus.afterSession(played, elapsed / 1000, now)
             }
             io.github.zahakj.tandem.data.HomeStore.addSession(key, start, elapsed / 1000)
+            io.github.zahakj.tandem.ui.Trophies.check()
         }
     }
 }

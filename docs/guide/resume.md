@@ -58,8 +58,8 @@ emulators open; the [game switcher](controls.md) (hold Select) lists them.
 
 ### Tandem asks first
 
-Before closing anything, Tandem asks. If a game is still running and starting the one you picked would close it,
-a question names the running game (or each of them, with cover and session time):
+Before closing a game it started, Tandem asks. If a game Tandem started is still running and starting the one you
+picked would close it, a question names the running game (or each of them, with cover and session time):
 
 | Button | What it does |
 | --- | --- |
@@ -71,7 +71,10 @@ a question names the running game (or each of them, with cover and session time)
 This applies wherever you start a game: grids, search, collections, Up next, the Start panel, the game switcher
 and widgets. In private mode a hidden game is shown only as **A hidden game is still running**.
 
-A game whose file was deleted is never named; the question names its emulator instead.
+Tandem only asks about games it started itself, since only those can have progress to lose. An emulator you
+opened on its own, or restarted since Tandem started a game in it, is closed quietly without a question: its
+menu or settings have nothing to save. When the game's file has been deleted since, the question names the
+emulator instead, so it never names a game that isn't really there.
 
 **Settings › Play & system › Playing › Ask before closing a game** brings the question back or turns it off.
 

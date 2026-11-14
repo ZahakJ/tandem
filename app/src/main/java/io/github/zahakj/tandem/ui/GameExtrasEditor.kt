@@ -2,6 +2,8 @@
 
 package io.github.zahakj.tandem.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +31,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.AndroidApps
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.Manuals
 import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.RetroAchievements
 import io.github.zahakj.tandem.RunningGames
@@ -47,6 +53,7 @@ import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.LogoFit
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -82,6 +89,7 @@ fun LazyListScope.gameExtrasItems(g: Game, routeKey: String, focus: (String) -> 
     }
     item("companion") { CompanionRow(g, routeKey, focus, open) }
     item("ra") { AchievementsRow(g, routeKey, focus, open) }
+    item("manual") { ManualRow(g, routeKey, focus) }
     item("logo") { LogoRow(g, routeKey, focus) }
 }
 
@@ -290,6 +298,53 @@ fun AchievementsPage(g: Game, routeKey: String, modifier: Modifier, done: () -> 
 private fun ActionRow(text: String, color: Color, key: String, id: String, first: Boolean, onClick: () -> Unit) {
     FocusCard(Modifier.fillMaxWidth().takesFocus(key, id, first), glow = color, shape = RoundedCornerShape(14.dp), onClick = onClick) {
         Text(text, Modifier.padding(horizontal = 12.dp, vertical = 9.dp), style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
+}
+
+// --- Manual --------------------------------------------------------------------------------------------------------
+
+/**
+ * The game's manual or guide (Manuals.kt): the one found by name in ROMs/manuals, or a file picked here, which is
+ * copied in next to the others and remembered in the game's details. Picking goes through Android's document
+ * picker, like a picture for the artwork (GameEditor.kt), since that is the one way to reach a file from any app.
+ */
+@Composable
+private fun ManualRow(g: Game, routeKey: String, focus: (String) -> Unit) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val meta = g.meta
+    val chosen = io.github.zahakj.tandem.FileChecks.file(meta.manual)
+    val found = remember(g.key, Manuals.version) { Manuals.foundFor(g) }
+    var copying by remember(g.key) { mutableStateOf(false) }
+    val value = when {
+        copying -> "Copying it over…"
+        chosen != null -> "Your pick · ${Manuals.describe(chosen)}"
+        meta.manual != null -> "Your pick is gone" + (found?.let { " · using ${it.name}" } ?: "")
+        found != null -> "Found · ${Manuals.describe(found)}"
+        else -> "None · put one in ${Manuals.shortPath(Manuals.folderFor(g.platform))}"
+    }
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        copying = true
+        scope.launch {
+            val file = withContext(Dispatchers.IO) { Manuals.adopt(ctx, g, uri) }
+            copying = false
+            Toasts.show(if (file != null) "${file.name} is ${g.title}'s manual now" else "Couldn't use that file as a manual")
+        }
+    }
+    ExtraRow("Manual", value, chosen != null || found != null) {
+        ExtraButton(if (chosen != null) "Change file" else "Choose file", Palette.Mint, routeKey, "manual:pick", focus) {
+            if (!copying) runCatching { pick.launch(Manuals.pickerTypes) }.onFailure { Toasts.show("No file picker on this device") }
+        }
+        if (chosen != null || found != null) ExtraButton("Read", Palette.Sky, routeKey, "manual:read", focus) {
+            GameEditor.close()
+            ManualUi.open(g)
+        }
+        if (meta.manual != null) ExtraButton(if (found != null) "Use the found one" else "Forget my pick", Palette.Peach, routeKey, "manual:auto", focus) {
+            // The file itself stays in ROMs/manuals: it is the user's, and a rescan may well match it by name.
+            Store.update(g.key) { it.copy(manual = null) }
+            Toasts.show(if (found != null) "Reading ${found.name} again" else "Pick forgotten. The file is still in ROMs/manuals")
+        }
     }
 }
 

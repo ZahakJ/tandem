@@ -1,6 +1,6 @@
 # Controller reference
 
-Every button Tandem uses, on every screen. Tandem is built to be used entirely with a controller; touch works everywhere too (see [Touch](#touch)). A/B and X/Y can be swapped in **Settings › Controls › Buttons**; this page uses the default (Xbox-style positions, A confirms).
+Every button Tandem uses, on every screen. Tandem is built to be used entirely with a controller; touch works everywhere too (see [Touch](#touch)). A/B and X/Y can be swapped, and any of Tandem's commands moved to another button, in **Settings › Controls › Buttons** (see [Rebinding buttons](#rebinding-buttons)); this page uses the defaults (Xbox-style positions, A confirms).
 
 ## Everywhere
 
@@ -11,8 +11,8 @@ Every button Tandem uses, on every screen. Tandem is built to be used entirely w
 | <kbd>B</kbd> | Go back, or close a menu. On the home screen B never leaves Tandem: it goes back to the first tile. |
 | <kbd>X</kbd> | Search all games (on the icon grid: swap the two screens) |
 | <kbd>Y</kbd> | Options for the highlighted thing (see [Y menus](#y-menus)) |
-| <kbd>Start</kbd> (tap) | Open Settings, or close it |
-| <kbd>Start</kbd> (hold) | Quick panel: brightness, volume, Wi-Fi, and the like |
+| <kbd>Start</kbd> (tap) | The Start panel (see [The Start panel](#the-start-panel)); in Settings, close Settings |
+| <kbd>Start</kbd> (hold) | Quick settings: brightness, volume, Wi-Fi, Battery saver and the like |
 | <kbd>Select</kbd> (tap) | Surprise me: jump to a random game you have never played |
 | <kbd>Select</kbd> (hold), or <kbd>Select</kbd> + <kbd>Start</kbd> | Game switcher: every running game, to resume or close |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next system, collection or genre (on the icon grid and inside its folders and systems: bigger or smaller icons; in Stats: tabs) |
@@ -21,9 +21,39 @@ Every button Tandem uses, on every screen. Tandem is built to be used entirely w
 
 Button hints name Start and Select (<kbd>Start</kbd>, <kbd>Select</kbd>) as they are labelled on the Thor; with **Button prompts** set to Nintendo they show + and −.
 
-Analog triggers that only report how far they are pulled (no button events) count as one L2 / R2 press each time you pull past halfway, so a trigger never fires twice.
+Analog triggers that only report how far they are pulled (no button events) press L2 / R2 when you pull past halfway and let go of it when you release, so a trigger never fires twice.
 
 Every screen remembers what you had highlighted. Going back, or returning from a game, puts the highlight where you left it.
+
+## Rebinding buttons
+
+**Settings › Controls › Buttons › Rebind buttons** lists every command Tandem has on a button, with what it is on
+now: Open / Select, Back, Game options, Swap screens / Search, Start menu, Quick settings, Running games (held, and
+pressed together), Surprise me, Hidden games, Previous and Next tab or page, Page up and Page down, Side panel,
+Favourite, Screenshot, Clip and Controller Home. Favourite, Screenshot and Clip have no button until you give them
+one; Screenshot and Clip capture the game on the other screen, as the companion's chips do, while Tandem is in front.
+
+| Button | What it does |
+| --- | --- |
+| <kbd>A</kbd> on a command | Listen for its new button: press one button, several together for a chord, or hold one for a hold. You have 5 seconds (the popup counts down, and waits while buttons are still down); <kbd>B</kbd> cancels |
+| <kbd>X</kbd> on a command | Put it back on its default |
+| <kbd>Y</kbd> on a command | Take its button away (not for Open and Back, which always keep one) |
+| <kbd>A</kbd> on **Reset all** | Every command back on its default, with Undo |
+
+When the new binding already belongs to another command, Tandem offers to swap the two: the other command takes the
+old binding (or none). Some bindings can't work and are refused with the reason: Open and Back take a single button
+that no chord or hold uses (they need its own press and release: A held on a tile, B to go back), a chord can't sit
+inside another chord, and a swap that would leave Open or Back without a button, or give it a chord, is refused too.
+
+Every hint follows: a hint for a command shows the button it is on (in your **Button prompts** style, + and − for
+Start and Select in the Nintendo style), or the chord or hold in words. **Swap A and B** and **Swap X and Y** are the
+same thing: they swap Open with Back and Game options with Swap screens / Search (an older setup's swaps become
+bindings on first start).
+
+A button that a hold or chord uses waits for its release before it does its tap: with the defaults that is Select,
+Start (holds), L1 and R1 (part of L1 + R1 + Select), so L1 and R1 turn pages as you let go. The controller's own
+**Nintendo button labels** switch is applied first; bindings name buttons as printed on the controller. Bindings work while Tandem is in front; outside it, the
+**Controller Home button** service keeps using the guide button whatever Controller Home is bound to.
 
 ## Touch
 
@@ -49,11 +79,48 @@ A long press gives a short buzz. On an empty spot of the icon grid the first tap
 
 Every drop can be undone (Select, or a tap on the message).
 
+## The Start panel
+
+A tap on <kbd>Start</kbd> folds a panel open from the left. B goes back a page, then closes it; Start closes it too.
+
+| Row | What it does |
+| --- | --- |
+| All apps | The apps drawer |
+| New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
+| Sort ▸ | On the icon grid: the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
+| Search | Search all games |
+| Stats & trophies | The Stats screen, with how many games you're playing and the trophies earned so far |
+| Edit grid, Tidy up, Undo last change | On the icon grid (Undo only while there is something to undo); other layouts get Edit widgets |
+| Switch games | Only while a game runs: the game switcher |
+| Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
+| Theme ▸ | Every theme and theme pack, applied at once |
+| Sounds & music ▸ | Music on or off, and every sound pack: Tandem's eight and any recorded ones |
+| Quick settings | The same panel as holding Start |
+| Settings ▸ | All settings, or straight to one of the seven pages (and Import my Cocoon setup, when a Cocoon backup is there) |
+| Screensaver | Starts the screensaver now |
+
+## The side panel
+
+<kbd>R2</kbd> on the home screen slides a panel in from the right: Pip with the date and time, battery and free
+space, the quick settings (the same tiles as holding Start), and your Android notifications. It all scrolls as one list.
+
+- Notifications are grouped by app, newest app first, with the app's icon and name once above its cards.
+- <kbd>A</kbd> opens a notification. <kbd>Y</kbd> clears the highlighted one (its card says **Y Clear**); it slides
+  away and the highlight moves to the next. **Clear all** clears every one that can be cleared.
+- Notices Android keeps up while something is on (USB file transfer, USB debugging, a running service) can't be
+  cleared, so they sit apart as small chips under **On the device**; A still opens one. Pip only counts the ones
+  you can clear.
+- The first time, a card asks to **Let Pip show your notifications**: A allows Tandem straight away with Shizuku,
+  or opens Android's **Notification access** page. Notifications stay on the device and are never stored or sent.
+- In private mode each card shows only the app and the time, never what the notification says.
+
+<kbd>R2</kbd> or <kbd>B</kbd> closes it.
+
 ## The Home button
 
 When Tandem is your Android Home app (**Settings › Play & system › Use Tandem as the Home screen**, which asks Android to make it so):
 
-- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Home & layout › Icon grid › More › Home lands on Resume**).
+- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › While a game runs › Home lands on Resume**).
 - With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
   top screen over the game), the first **Home** brings the game back with its companion on the bottom screen, and the
   game keeps the controller. **Home** again within a few seconds goes to Tandem as usual.
@@ -94,8 +161,8 @@ game switcher.
 **Settings › Controls › Game controllers** lists the controllers connected right now by name. Each has a switch for
 **Nintendo button labels (swap A/B, X/Y)**: for Switch-style controllers in X-input mode, whose button printed A
 sends B. Switched on, A and B (and X and Y) are swapped for that controller only, so the button printed A confirms.
-It applies inside Tandem; the built-in controls and other controllers are unaffected, and **Swap A and B** /
-**Swap X and Y** still apply to every controller on top. Emulators have their own per-controller mapping (in
+It applies inside Tandem; the built-in controls and other controllers are unaffected, and your bindings (**Swap A and B**,
+**Swap X and Y**, **Rebind buttons**) apply to every controller on top, by the buttons as printed. Emulators have their own per-controller mapping (in
 RetroArch, Settings › Input › Port 1 Controls; in standalone emulators, their controller settings), so set the same
 there if you want it in games.
 
@@ -143,11 +210,11 @@ Y on anything lifts it out of the screen, a little bigger, over a blurred backgr
 
 ![The Y menu on Super Mario 3D Land: the game's cover lifted over a blurred grid, beside Play, Favorite, Add to Up next, Pin to home, Edit details and More.](../../site/assets/screenshots/game-menu.webp "The Y menu on a game")
 
-**On a game:** Play (or Resume), Favorite, Add to Up next, Pin to home (icon grid), Edit details. More: Emulator (A cycles through the installed ones), Start on top or bottom screen, Choose artwork, Scrape this game, Hide, Reset play history, View options.
+**On a game:** Play (or Resume), Favorite, Status (Backlog, Playing, Finished, Completed, Shelved, Endless or none; see [Game status](library.md#game-status)), Add to Up next, Pin to home (icon grid), Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Edit details. More: Emulator (A cycles through the installed ones that take this file), Start on (top or bottom screen), Bottom screen while playing, Choose artwork, Scrape this game, Hide this game, Play sessions…, Reset play history, Delete game…, View options.
 
 **On a system, collection or genre:** Open, Rescan games, Scrape these games, Sort by, Game titles, Show hidden games.
 
-**On an icon grid tile:** Open, Move, Select, Move to folder…, Also add to folder…, Take out of the folder (Move up to… in a folder inside a folder), Sort and view or Game options, Design folder…, Rename folder, Sort inside…. More: Delete folder…, Hide, App info, Remove from home (Remove from folder inside one), Add to home…, Sort this folder…, Tidy up, Undo last change, Search, Swap screens.
+**On an icon grid tile:** Open, Move, Select, Move to folder…, Also add to folder…, Take out of the folder (Move up to… in a folder inside a folder), Sort and view or Game options, Design folder…, Rename folder, Sort inside…, View as…. More: Delete folder…, Hide, App info, Remove from home (Remove from folder inside one), Add to home…, Sort this folder…, Tidy up, Undo last change, Search, Swap screens.
 
 **On an empty spot of the icon grid:** Paste (while carrying a tile), New folder…, Smart folder…, Game…, System…, Collection or genre…, App…, Tandem app…, Widget… (in a folder, the one-spot widgets). More: Tidy up, Undo last change, Search, Swap screens, and in an arranged system Show as a plain list.
 
@@ -168,10 +235,10 @@ In **All apps**, X searches. Holding Back for a moment while an app is in front 
 | D-pad | Move between icons and empty spots, one spot at a time; Left and Right keep their row, Up and Down their column, over gaps and widgets. Left from the first column reaches the Resume page when a game is running |
 | <kbd>A</kbd> | Open the icon (a folder pops up over the grid). On an empty spot: the Add here menu. Hold A to select the icon |
 | <kbd>Y</kbd> | The tile menu: move, folders, remove, add. On an empty spot: the Add here menu |
-| <kbd>X</kbd> | Swap the screens |
+| <kbd>X</kbd> | Swap the screens. Inside a folder: the next view (Grid, Shelf, Case, Carousel; see [Home folders](library.md#home-folders)) |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Bigger or smaller icons. With fixed rows (**Rows of icons**), L1 means fewer rows and R1 more, from 1 to 5 (1 to 3 on the bottom screen); L1 on the biggest automatic size steps on to fixed rows. Tiles ease to their new size and the highlighted one stays where it is. |
 | <kbd>L2</kbd> | Show or hide the Recently played strip (or set it to always show) |
-| <kbd>R2</kbd> | The side panel: Pip, quick settings and your notifications (A opens one, Y clears it, R2 or B closes the panel) |
+| <kbd>R2</kbd> | The side panel (see [The side panel](#the-side-panel)) |
 | <kbd>B</kbd> | Back to the first icon |
 
 At **1 row** the grid looks like the 3DS HOME menu zoomed all the way in: one row of big icons in the middle of the screen, and the highlighted item's kind, name, count or play time and a strip of its art above it.
@@ -216,7 +283,7 @@ A or Y on an empty spot opens **Add here**:
 
 On a touch screen, the first tap on an empty spot highlights it and a second tap opens Add here.
 
-Removing, hiding or moving an icon leaves its spot empty; nothing else shifts. **Tidy up** (Start, or More… in the Y menu) packs every icon to the front, keeping their order and fitting widgets in whole. When the number of rows changes (L1 / R1, or swapped screens), icons keep their row and column if they still fit; otherwise they flow in order, gaps included. A grid without gaps flows as before.
+Removing, hiding or moving an icon leaves its spot empty; nothing else shifts. When a tile's game is renamed or deleted outside Tandem, its spot goes dead; new tiles (a game or system that just appeared) fill the first dead spots before going to the end, so they never land after a blank. **Tidy up** (Start, or More… in the Y menu) packs every icon to the front, keeping their order and fitting widgets in whole. When the number of rows changes (L1 / R1, or swapped screens), icons keep their row and column if they still fit; otherwise they flow in order, gaps included. A grid without gaps flows as before.
 
 ### Widgets on the grid
 
@@ -230,10 +297,25 @@ Tandem's own apps sit on the icon grid like any other tile (Y › Remove from ho
 | --- | --- |
 | Gallery | A views a screenshot full screen (Left / Right step through), Y deletes it after a confirm |
 | Journal | A writes a note for a session, Y a note for the game; the chips switch between Timeline, Games and With notes |
+| Notes | A opens a notebook, a note or the highlighted part of a note, X adds, Y has the options, Select searches; drawing has its own buttons (see [Notes](notes.md)) |
 | Up next | A plays (or edits a note), X adds a game or note, Y removes, Select clears played games |
 | Files | A opens a folder, Y deletes the file or folder after a confirm, B goes up a folder |
 | Controller test | Every button and stick lights up as you press it; hold B to leave |
-| Themes, Stats, Achievements | Open their screens |
+| Themes, Stats, Trophies | Open their screens (Trophies opens Stats on its Trophies tab; L1 and R1 switch tabs there) |
+
+## Reading a manual
+
+Y › **Manual** on a game opens its manual or guide (see [Manuals and guides](library.md#manuals-and-guides)):
+
+| Button | What it does |
+| --- | --- |
+| <kbd>◀</kbd> / <kbd>▶</kbd>, <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next page (chapter, in a text guide) |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | Scroll a page that is taller than the screen (zoomed, or text) |
+| <kbd>A</kbd> | Fit the whole page, or its width (zoomed, scrolling); in a text guide, larger or smaller type |
+| <kbd>Start</kbd> | Go to a page by number |
+| <kbd>B</kbd> | Back |
+
+By touch: tap the left or right third of the page to turn, the middle to zoom, and drag or tap the slim bar under the page to jump.
 
 ## On a system screen
 
@@ -245,7 +327,7 @@ Tandem's own apps sit on the icon grid like any other tile (Y › Remove from ho
 
 ## Search
 
-X opens search from anywhere (except the icon grid, where X swaps screens; Y › Search there). The left side is a keyboard laid out for the D-pad: letters, numbers, **Space**, **⌫** to delete and **Clear**. Results appear on the right as you type; move right into them and press A to play. X deletes a letter, Y on a result opens its game menu. Search ignores case, accents and punctuation. B goes back to the keys, then closes.
+X opens search from anywhere (except the icon grid and Orbit homes, where X swaps screens; Start › Search, or Y › Search on the grid). The left side is a keyboard laid out for the D-pad: letters, numbers, **Space**, **⌫** to delete and **Clear**. Results appear on the right as you type; move right into them and press A to play. X deletes a letter, Y on a result opens its game menu. Search ignores case, accents and punctuation. B goes back to the keys, then closes.
 
 ![Search with the letters zeld typed on the on-screen keyboard, and thirteen matching Zelda games on the right.](../../site/assets/screenshots/search.webp "Search: the keyboard on the left, results on the right")
 

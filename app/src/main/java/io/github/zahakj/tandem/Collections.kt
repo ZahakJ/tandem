@@ -7,6 +7,8 @@ import io.github.zahakj.tandem.data.IconGridStore
 import io.github.zahakj.tandem.data.SmartGame
 import io.github.zahakj.tandem.data.SmartRule
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.data.GameStatus
+import io.github.zahakj.tandem.data.playStatus
 import io.github.zahakj.tandem.data.styleOf
 import io.github.zahakj.tandem.ui.Palette
 import io.github.zahakj.tandem.ui.folderColor
@@ -38,6 +40,18 @@ object Collections {
         val neverPlayed by lazy { byTitle(all.filter { !it.meta.everPlayed }) }
         val recentlyAdded by lazy { all.sortedByDescending { it.meta.firstSeen }.take(30) }
         val genres: Map<String, List<Game>> by lazy { computeGenres(all) }
+        // Being played: the most recently played first. Backlog: the oldest additions first, so nothing sinks. Beaten:
+        // the latest finish first.
+        val playing by lazy { all.filter { it.meta.playStatus == GameStatus.Playing }.sortedByDescending { maxOf(it.meta.lastPlayed, it.meta.statusAt) } }
+        val backlog by lazy { all.filter { it.meta.playStatus == GameStatus.Backlog }.sortedBy { it.meta.statusAt } }
+        val beaten by lazy { all.filter { it.meta.playStatus?.beaten == true }.sortedByDescending { it.meta.finishedAt } }
+        val statusOnes: List<GameCollection> by lazy {
+            listOf(
+                GameCollection(PLAYING, "Playing", playing, Palette.Mint),
+                GameCollection(BACKLOG, "Backlog", backlog, Palette.Sky),
+                GameCollection(BEATEN, "Finished", beaten, Palette.Butter),
+            )
+        }
         val everyOne: List<GameCollection> by lazy {
             listOf(
                 GameCollection("fav", "Favorites", favorites, Palette.Peach),
@@ -125,7 +139,7 @@ object Collections {
                 g.key, g.title, g.platform.id, genresOf(g, tidied), m.year, m.favorite, m.everPlayed,
                 // Only looked up when the rule asks: it reads the installed emulators.
                 if (rule.emulator != null) emulatorOf(g, players) else null,
-                m.lastPlayed, m.playSeconds, m.firstSeen,
+                m.lastPlayed, m.playSeconds, m.firstSeen, m.status,
             )
         }
     }
@@ -154,7 +168,14 @@ object Collections {
     fun tidyGenre(s: String) = s.trim().replace(Spaces, " ").replaceFirstChar { it.uppercase() }
 
     /** Every collection, empty or not. */
-    private fun everyOne(): List<GameCollection> = memo().everyOne
+    private fun everyOne(): List<GameCollection> = memo().everyOne + memo().statusOnes
+
+    /** The status collections (Playing, Backlog, Finished), empty or not: on the home grid only when added there. */
+    fun byStatus(): List<GameCollection> = memo().statusOnes
+
+    const val PLAYING = "playing"
+    const val BACKLOG = "backlog"
+    const val BEATEN = "beaten"
 
     /** The collections shown on the home screen, in order. Empty ones are left out. */
     fun home(): List<GameCollection> = memo().home

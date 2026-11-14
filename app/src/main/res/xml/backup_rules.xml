@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 11 and older: keep account keys, the LaunchBox index and its lookup cache out of cloud and device backups. -->
+<!-- Android 11 and older: keep account keys (RetroAchievements, Steam, scraping sources), the Steam achievements cache, the LaunchBox index and its lookup cache out of cloud and device backups. -->
 <full-backup-content>
     <exclude domain="file" path="achievements.json" />
+    <exclude domain="file" path="steam.json" />
+    <exclude domain="file" path="steam/" />
     <exclude domain="file" path="scraping.json" />
     <exclude domain="file" path="launchbox/" />
     <exclude domain="file" path="details-tried.tsv" />

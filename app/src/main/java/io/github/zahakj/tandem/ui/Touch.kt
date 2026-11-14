@@ -41,7 +41,7 @@ sealed interface HintPress {
     /** X, Y, Start, Select and the shoulders: handed to [Buttons.press], as the activity does for the real button. */
     data class Pad(val button: Button) : HintPress
 
-    /** A or B: the key code the button sends once every swap is applied (A selects, B goes back). */
+    /** A or B: Open or Back, as the key the activity acts on (A selects, B goes back), whatever they are bound to. */
     data class Key(val code: Int) : HintPress
 
     /** A D-pad hint (◀▶ or ▲▼): the arm nearest the tap. */

@@ -36,6 +36,12 @@ data class HomeFolder(
     val system: String? = null,
     /** Tiles across, chosen with L1 / R1 inside it; 0: as many as fit at the usual size. */
     val across: Int = 0,
+    /** A system's folder that got its folders for the subfolders on disk (GridTree.groupSystem): never again. */
+    val grouped: Boolean = false,
+    /** Its folders from the disk got their looks (a genre's glyph, colour and cover wall): never again. */
+    val looked: Boolean = false,
+    /** How it shows what is inside ([FolderViews]): the grid of tiles, a bookshelf of spines, or a case of cartridges. */
+    val view: String = FolderViews.GRID,
 ) {
     val smart: Boolean get() = rule != null
 }
@@ -352,6 +358,12 @@ object IconGridStore {
         return systemFolder(platformId)!!.id
     }
 
+    /** Folders inside system [platformId]'s folder for its subfolders on disk (GridTree.groupSystem). Saved only when changed. */
+    fun groupSystem(platformId: String, groups: List<Pair<String, List<String>>>, look: (String) -> FolderStyle?) {
+        val ids = groups.map { newFolderId() }
+        if (GridTree.groupSystem(config, platformId, groups, ids, look) != config) update { c -> GridTree.groupSystem(c, platformId, groups, ids, look) }
+    }
+
     /** System [platformId] back to its plain list (GridTree.unarrangeSystem). */
     fun unarrangeSystem(platformId: String, home: GridShown) = update { c -> GridTree.unarrangeSystem(c, platformId, home) }
 
@@ -369,6 +381,8 @@ object IconGridStore {
 
     /** How folder [id] orders what it holds ([FolderSort]); its manual order is kept underneath. */
     fun setFolderSort(id: String, sort: String) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(sort = sort) else it }) }
+
+    fun setFolderView(id: String, view: String) = update { c -> c.copy(folders = c.folders.map { if (it.id == id) it.copy(view = view) else it }) }
 
     /** [keys] on grid [folder] (null: home) moved to slot [at] of [shown] and the free slots after it. */
     fun moveMany(keys: List<String>, folder: String?, shown: GridShown, at: Int) = update { c ->
@@ -521,4 +535,18 @@ object IconGridStore {
 
     /** Tests: waits for the files to be written. */
     internal fun flush() { writer.submit {}.get() }
+}
+
+/** The ways a folder can show what is inside. */
+object FolderViews {
+    const val GRID = "grid"
+    const val SHELF = "shelf"
+    const val CASE = "case"
+    const val CAROUSEL = "carousel"
+    val ALL = listOf(GRID to "Grid", SHELF to "Shelf", CASE to "Case", CAROUSEL to "Carousel")
+
+    fun label(v: String) = ALL.firstOrNull { it.first == v }?.second ?: "Grid"
+
+    /** The view after [v], for X inside a folder. */
+    fun next(v: String) = ALL[(ALL.indexOfFirst { it.first == v } + 1).mod(ALL.size)].first
 }

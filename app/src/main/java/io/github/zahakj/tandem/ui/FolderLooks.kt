@@ -71,6 +71,8 @@ data class CoverArt(val src: String, override val color: Color, val frame: Strin
 data class MosaicArt(val srcs: List<String>, override val color: Color, val inset: Float = 0f) : ArtSpec
 /** Up to three covers fanned out like a hand of cards. */
 data class FanArt(val srcs: List<String>, override val color: Color, val inset: Float = 0f) : ArtSpec
+/** A glyph badge over a fan of up to three covers, on the colour: a genre's folder. */
+data class GenreArt(val icon: TIcon, override val color: Color, val second: Color, val srcs: List<String>, val inset: Float = 0f) : ArtSpec
 /** A picture the user chose: edge to edge when it is square, otherwise whole on the colour. */
 data class PictureArt(val src: String, override val color: Color, val inset: Float = 0f) : ArtSpec
 
@@ -160,6 +162,7 @@ object FolderLooks {
             FolderStyle.ICON_MOSAIC -> sources(plain, 4).takeIf { it.isNotEmpty() }?.let { TileArt.Rendered(MosaicArt(it, color, inset)) } ?: auto()
             FolderStyle.ICON_FAN -> sources(plain, 3).takeIf { it.isNotEmpty() }?.let { TileArt.Rendered(FanArt(it, color, inset)) } ?: auto()
             FolderStyle.ICON_GLYPH -> glyph(style.glyph)?.let { TileArt.Rendered(GlyphArt(it, color, deep, inset)) } ?: auto()
+            FolderStyle.ICON_GENRE -> TileArt.Rendered(GenreArt(glyph(style.glyph) ?: genreIcon(plain.title), color, deep, sources(plain, 3), inset))
             FolderStyle.ICON_EMOJI -> style.emoji?.takeIf { it.isNotBlank() }?.let { TileArt.Rendered(EmojiArt(it, color, inset)) } ?: auto()
             FolderStyle.ICON_FILE -> style.iconFile?.let { TileArt.Rendered(PictureArt(it, color, inset)) } ?: auto()
             else -> auto()
@@ -210,6 +213,7 @@ object FolderLooks {
             is CoverArt -> s.src
             is MosaicArt -> s.srcs.firstOrNull()
             is FanArt -> s.srcs.firstOrNull()
+            is GenreArt -> s.srcs.firstOrNull()
             is PictureArt -> s.src
             else -> null
         }
@@ -236,7 +240,7 @@ object FolderLooks {
     fun hero(item: GridItem): File? {
         val style = item.style ?: FolderStyle.DEFAULT
         return when (style.hero) {
-            FolderStyle.HERO_SWEEP -> null
+            FolderStyle.HERO_SWEEP, FolderStyle.HERO_WALL -> null
             FolderStyle.HERO_FILE -> style.heroFile?.let(::File)?.takeIf { it.isFile }
             FolderStyle.HERO_GAME -> gameOf(item, style.heroRef)?.let(::gameHero)
             else -> packHero(item) ?: if (item.kind == TileKind.Folder && builtIn(item.plain ?: item) == null) {
@@ -259,7 +263,7 @@ object FolderLooks {
     /** The glyph drawn big in a colour sweep when there is no hero: a built-in folder's, or a chosen glyph. */
     fun sweepGlyph(item: GridItem): TIcon? {
         val style = item.style
-        if (style?.icon == FolderStyle.ICON_GLYPH) glyph(style.glyph)?.let { return it }
+        if (style?.icon == FolderStyle.ICON_GLYPH || style?.icon == FolderStyle.ICON_GENRE) (glyph(style.glyph) ?: genreIcon(item.title)).let { return it }
         if (item.art.bare is TileArt.Picture) return null
         return builtIn(item.plain ?: item)?.icon
     }
@@ -410,6 +414,29 @@ object FolderArtCache {
                     val top = (w - h) / 2f + kotlin.math.abs(pos) * w * 0.03f
                     rotate(pos * 11f, Offset(cx, top + h)) { picture(b.asImageBitmap(), Rect(cx - cw / 2f, top, cx + cw / 2f, top + h), w * 0.04f, crop = true) }
                 }
+            }
+            is GenreArt -> {
+                base(spec.color, spec.second)
+                // The glyph big and faint behind, the covers fanned from the bottom, the glyph on a badge above them.
+                val e = w * 0.95f
+                translate(w * 0.4f, -w * 0.12f) { rotate(14f, Offset(e / 2f, e / 2f)) { drawTIcon(spec.icon, e, Color.White.copy(alpha = 0.1f), Color.Transparent) } }
+                val n = spec.srcs.size.coerceAtMost(3)
+                val h = w * (0.5f - spec.inset * 0.4f)
+                val top = w * (0.4f + spec.inset * 0.1f)
+                spec.srcs.take(3).forEachIndexed { i, src ->
+                    val b = load(ctx, src, h.toInt()) ?: return@forEachIndexed
+                    val pos = i - (n - 1) / 2f
+                    val cw = (h * b.width / b.height.coerceAtLeast(1)).coerceAtMost(h)
+                    val cx = w / 2f + pos * w * 0.2f
+                    rotate(pos * 12f, Offset(cx, top + h * 1.4f)) { picture(b.asImageBitmap(), Rect(cx - cw / 2f, top + kotlin.math.abs(pos) * w * 0.04f, cx + cw / 2f, top + h + kotlin.math.abs(pos) * w * 0.04f), w * 0.035f, crop = true) }
+                }
+                val mid = lerp(spec.color, spec.second, 0.5f)
+                val r = w * (0.17f - spec.inset * 0.1f)
+                val c = Offset(w / 2f, w * (0.25f + spec.inset * 0.12f))
+                drawCircle(Color.Black.copy(alpha = 0.22f), r, c + Offset(0f, w * 0.015f))
+                drawCircle(Color.White, r, c)
+                val s = r * 1.25f
+                translate(c.x - s / 2f, c.y - s / 2f) { drawTIcon(spec.icon, s, lerp(mid, Color.Black, 0.25f), Color.White) }
             }
             is PictureArt -> {
                 val b = load(ctx, spec.src, px) ?: run { base(spec.color, lerp(spec.color, Color.Black, 0.3f)); return }

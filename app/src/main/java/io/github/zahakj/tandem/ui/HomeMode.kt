@@ -513,8 +513,8 @@ fun homeSettings(): SettingSection {
             },
             SettingRow(
                 "Private mode", onOff(s.privateMode), Palette.Lavender, Glyph.Shield, toggle = s.privateMode,
-                help = "Hidden games, folders and systems stay hidden until L1 + R1 + Select and your PIN bring them out, and Tandem stays offline. " +
-                    "Turning it off asks for the PIN. While it is off, L1 + R1 + Select turns it on at once.",
+                help = "Hidden games, folders and systems stay hidden until ${Prompts.words(io.github.zahakj.tandem.Command.Hidden)} and your PIN bring them out, and Tandem stays offline. " +
+                    "Turning it off asks for the PIN. While it is off, ${Prompts.words(io.github.zahakj.tandem.Command.Hidden)} turns it on at once.",
                 keywords = "privacy hidden secret lock pin panic offline",
             ) { if (s.privateMode) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn() },
             SettingRow(
@@ -572,7 +572,7 @@ fun hiddenSettings(): SettingSection {
                 SettingRow(
                     "Hidden folders and games", if (Privacy.enabled) "Private" else if (any) "Tucked away" else "None",
                     Palette.Lavender, Glyph.Eye,
-                    help = if (Privacy.enabled) "Listed here, each with Unhide, once your PIN shows them: Show here, or L1 + R1 + Select."
+                    help = if (Privacy.enabled) "Listed here, each with Unhide, once your PIN shows them: Show here, or ${Prompts.words(io.github.zahakj.tandem.Command.Hidden)}."
                     else "Hide a game, a folder or a whole system with Y. Start › Hidden lists them all, and so does this page while hidden games show.",
                     keywords = "hidden folders systems unhide private start",
                     // With nothing hidden, Show would only switch on Show hidden games for nothing. In private mode it

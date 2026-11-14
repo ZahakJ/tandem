@@ -134,6 +134,8 @@ class WidgetKind(
     val needs: String? = null,
     val actions: (Widget) -> List<WidgetAction> = { emptyList() },
     val content: @Composable (WidgetScope, Modifier) -> Unit,
+    /** What one of these is called on screen: the kind's name, unless the widget has a name of its own (an Android widget's provider). */
+    val label: (Widget) -> String = { name },
 )
 
 /** What a widget needs to draw itself. */
@@ -196,7 +198,7 @@ object WidgetUi {
     var rescan by mutableIntStateOf(0)
     var rescanHandled = 0
 
-    val popupOpen: Boolean get() = menuFor != null || gallery != null
+    val popupOpen: Boolean get() = menuFor != null || gallery != null || AppWidgetUi.open
 
     private fun blocked() = TextEntry.request != null
 
@@ -327,9 +329,9 @@ object Widgets {
         return out
     }
 
-    fun add(kind: WidgetKind, area: WidgetArea): Widget {
+    fun add(kind: WidgetKind, area: WidgetArea, size: WidgetSize = kind.defaultSize, options: Map<String, String> = emptyMap()): Widget {
         val place = if (area == WidgetArea.Top) WidgetPlace.Home else WidgetPlace.Bottom
-        val w = Widget(WidgetStore.newId(kind.id), kind.id, kind.defaultSize, place)
+        val w = Widget(WidgetStore.newId(kind.id), kind.id, size, place, options)
         WidgetStore.updateWidgets { it + w }
         return w
     }
@@ -748,6 +750,7 @@ fun WidgetHost() {
 
     WidgetMenu()
     WidgetGallery()
+    AppWidgetFlow()
 }
 
 /** Settings: the widget editor and the quick switches. */

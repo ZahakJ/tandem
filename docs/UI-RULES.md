@@ -82,10 +82,12 @@ Touch does what the controller does, through the same code (helpers in `ui/Touch
   opens the game's options (its Y closes the game, which a long press must never start), a Y menu row shows its
   `MenuAction.help` as a toast when it has one, a hold control confirms, and nothing else reacts.
 - **Button hints are buttons.** A tapped `ButtonHint` presses its button: A and B through
-  `MainActivity.tapKey` (after the A/B and X/Y swaps), the other buttons through `Buttons.press`, a ◀▶ or ▲▼ hint
-  the arm on the side that was tapped. A hint inside a `FocusCard` leaves the tap to the card; a legend that only
-  explains buttons passes `tappable = false`; `onClick` overrides the press. Hits reach Android's 48 dp minimum
-  touch target on their own; keep 10 dp or more between hints so the targets don't overlap.
+  `MainActivity.tapKey` (as Open and Back, whatever buttons they are bound to), the other buttons through
+  `Buttons.press`, a ◀▶ or ▲▼ hint the arm on the side that was tapped. A hint names a command, not a button
+  (`ButtonHint("Y", …)` is Game options): `Prompts.of` draws whatever that command is bound to. A hint
+  inside a `FocusCard` leaves the tap to the card; a legend that only explains buttons passes `tappable = false`;
+  `onClick` overrides the press. Hits reach Android's 48 dp minimum touch target on their own; keep 10 dp or more
+  between hints so the targets don't overlap.
 - **Lists scroll by finger.** A drag scrolls and never taps or highlights. A scroll doesn't move the highlight; if
   the highlighted entry scrolls away, the next D-pad press brings it back (`FocusCards.rescue`).
 

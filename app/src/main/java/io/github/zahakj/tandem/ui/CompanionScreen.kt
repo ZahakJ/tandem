@@ -82,9 +82,16 @@ import io.github.zahakj.tandem.Backdrop
 import io.github.zahakj.tandem.CompanionActivity
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.CompanionInfo
+import io.github.zahakj.tandem.DeckGames
+import io.github.zahakj.tandem.GameClip
+import io.github.zahakj.tandem.GameScreens
+import io.github.zahakj.tandem.Performance
+import io.github.zahakj.tandem.PerformancePlan
 import io.github.zahakj.tandem.GameCompanion
 import io.github.zahakj.tandem.RunningGames
+import io.github.zahakj.tandem.ScreenOff
 import io.github.zahakj.tandem.Shell
+import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -112,9 +119,11 @@ import kotlin.math.sqrt
  * recomposes one Text once a second. After a minute without a touch the screen dims and the motion eases into its
  * rest pose over the fade, then stops: only the minute timer and a burn-in drift of a pixel or two every 40 seconds remain (well
  * under 1 fps). A touch wakes it all again (easing back in); while dimmed, the first touch only wakes.
+ *
+ * Dark (ScreenOff.kt: the Screen off mode, or the Off after timer running out) goes further: the faces fade out and
+ * leave the composition, and what remains is one black box that never redraws. The panel is an OLED, so black pixels
+ * are off pixels. A touch, or Home bringing the game back, lights it again; that first touch only wakes.
  */
-
-private const val DIM_AFTER_MS = 60_000L
 
 /** How long the dim fades, and the motion eases to rest. */
 private const val DIM_FADE_MS = 1_800
@@ -126,15 +135,37 @@ private const val COVERED_MAX_MS = 3_000L
 fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
     val resumed = rememberResumed()
     val motion = !Themes.still && !Store.settings.reduceMotion
-    var wakeAt by remember { mutableLongStateOf(SystemClock.uptimeMillis()) }
-    var dim by remember { mutableStateOf(false) }
-    LaunchedEffect(wakeAt, resumed) {
-        dim = false
-        if (!resumed) return@LaunchedEffect
-        delay(DIM_AFTER_MS)
-        dim = true
+    // Notes (CompanionNotes.kt) never dim: reading one, or typing on the keyboard, isn't a touch here. Another game
+    // starts on its own face, not on the last game's notes.
+    LaunchedEffect(info.key) { CompanionNotes.follow(info.key); CompanionManual.follow(info.key) }
+    // A manual being read (ManualReader.kt) doesn't dim either: a page is read for minutes without a touch.
+    val notes = CompanionNotes.open
+    // Bright, dimmed or dark (ScreenOff.kt), from the mode, the Off after setting and when the panel was last touched
+    // (the activity keeps that, since Home bringing the game back counts too). The next change is one delay away; a
+    // dark panel has none coming, so nothing runs until it is touched. Starts in the right state: a Screen off panel
+    // is black from its first frame, never the art fading out.
+    val manual = CompanionManual.open
+    // Nor does the Deck (DeckPanel.kt): a dimmed keyboard would swallow its first key to wake up.
+    val deck = activity.face.value == GameCompanion.DECK
+    val reading = notes || manual || deck
+    val darkMode = info.mode == GameCompanion.DARK
+    val offAfterMs = HomeStore.settings.companionOffAfter * 60_000L
+    val touched = activity.touchedAt.value
+    var show by remember(info.key) { mutableStateOf(ScreenOff.show(darkMode, offAfterMs, null, 0L, reading)) }
+    LaunchedEffect(info.key, touched, resumed, reading, darkMode, offAfterMs) {
+        while (true) {
+            val now = SystemClock.uptimeMillis()
+            val sinceTouch = touched?.let { now - it }
+            val sinceShown = now - activity.shownAt
+            show = ScreenOff.show(darkMode, offAfterMs, sinceTouch, sinceShown, reading)
+            // Stopped (the handheld asleep, an app over it): no timer; coming back counts as a touch (onStart).
+            if (!resumed) return@LaunchedEffect
+            delay(ScreenOff.nextChangeMs(darkMode, offAfterMs, sinceTouch, sinceShown, reading) ?: return@LaunchedEffect)
+        }
     }
-    val wake = { wakeAt = SystemClock.uptimeMillis() }
+    val dim = show == ScreenOff.Show.Dim
+    val dark = show == ScreenOff.Show.Dark
+    val wake = { activity.wake() }
     // The companion opens underneath Tandem's own bottom-screen window (GameCompanion.tandemBelow): its entrance
     // waits until that window goes, so it plays where it can be seen instead of finishing unseen and popping in.
     var uncovered by remember(info.key) { mutableStateOf(!GameCompanion.tandemBelow) }
@@ -145,23 +176,28 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
     // A soft fade in for Tandem's companion, again for each new game; the art has its own, staged entrance.
     val enter = remember(info.key) { Animatable(if (motion) 0f else 1f) }
     LaunchedEffect(info.key, uncovered) { if (uncovered) enter.animateTo(1f, tween(1100)) }
-    val dimLevel = animateFloatAsState(if (dim) 0.3f else 1f, tween(if (dim) DIM_FADE_MS else 300), label = "companion-dim")
+    val dimLevel = animateFloatAsState(
+        when (show) { ScreenOff.Show.Bright -> 1f; ScreenOff.Show.Dim -> 0.3f; ScreenOff.Show.Dark -> 0f },
+        tween(if (show == ScreenOff.Show.Bright) 300 else DIM_FADE_MS), label = "companion-dim",
+    )
+    // Once the fade to black is over, the faces leave the composition: no clocks, no pictures, nothing drawn.
+    val black = dark && dimLevel.value <= 0.002f
+    val face = activity.face.value
     // The motion clock: steady while bright, whatever the input; it eases to rest with the dim and stops at once in
     // the background or when motion is off (reduce motion, animations Off, battery saver).
-    val steady = rememberSteadyClock(on = resumed && !dim && motion, ease = resumed && motion, easeOutMs = DIM_FADE_MS)
+    val steady = rememberSteadyClock(on = resumed && show == ScreenOff.Show.Bright && motion && !reading, ease = resumed && motion, easeOutMs = DIM_FADE_MS)
     val shift = rememberBurnInShift(dim && resumed)
     val tint = Palette.forName(info.systemId)
     Box(
         Modifier.fillMaxSize()
-            .background(Palette.Night)
-            .background(Brush.radialGradient(listOf(tint.copy(alpha = 0.22f), Color.Transparent), radius = 900f))
+            .background(Color.Black)
             .pointerInput(Unit) {
                 awaitEachGesture {
                     val down = awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
-                    val wasDim = dim
+                    val onlyWakes = ScreenOff.touchOnlyWakes(show)
                     wake()
-                    if (wasDim) {
-                        // Dimmed: this touch only wakes the screen; it never presses a button by accident.
+                    if (onlyWakes) {
+                        // Dimmed or dark: this touch only wakes the screen; it never presses a button by accident.
                         down.consume()
                         do {
                             val e = awaitPointerEvent(PointerEventPass.Initial)
@@ -171,16 +207,32 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
                 }
             },
     ) {
-        Box(
-            Modifier.fillMaxSize().graphicsLayer {
-                alpha = (if (info.mode == GameCompanion.TANDEM) enter.value else 1f) * dimLevel.value
-                translationX = shift.value.x
-                translationY = shift.value.y
-            },
-        ) {
-            Crossfade(info.mode == GameCompanion.TANDEM, animationSpec = tween(400), label = "companion-mode") { tandem ->
-                if (tandem) CompanionFace(info, activity, dim, resumed, motion, steady, wake)
-                else ArtFace(info, activity, dim, resumed, motion, uncovered, steady)
+        if (!black) {
+            Box(
+                Modifier.fillMaxSize().graphicsLayer {
+                    alpha = (if (face != GameCompanion.ART) enter.value else 1f) * dimLevel.value
+                    translationX = shift.value.x
+                    translationY = shift.value.y
+                }
+                    .background(Palette.Night)
+                    .background(Brush.radialGradient(listOf(tint.copy(alpha = 0.22f), Color.Transparent), radius = 900f)),
+            ) {
+                val which = when {
+                    notes -> 2
+                    manual -> 3
+                    deck -> 4
+                    face == GameCompanion.TANDEM -> 1
+                    else -> 0
+                }
+                Crossfade(which, animationSpec = tween(400), label = "companion-mode") { w ->
+                    when (w) {
+                        4 -> DeckPanel(info, activity)
+                        3 -> CompanionManualPanel(info)
+                        2 -> CompanionNotesPanel(info, activity)
+                        1 -> CompanionFace(info, activity, dim, resumed, motion, steady, wake)
+                        else -> ArtFace(info, activity, dim, resumed, motion, uncovered, steady)
+                    }
+                }
             }
         }
         // A controller offering itself, or a note about the one in use (PadLink.kt); above the dim, so it is seen.
@@ -357,6 +409,10 @@ private fun ArtFace(
                     if (total >= 60) "${formatPlayLong(total)} in total" else "First time playing",
                     style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White.copy(alpha = 0.78f), maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
+                // The AYN modes this game plays with (Performance.kt), when a profile set any.
+                PerformancePlan.label(Performance.active)?.let {
+                    Text(it, style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White.copy(alpha = 0.78f), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
             }
         }
         // Small chips, hidden while dimmed: back to Tandem, a screenshot of the game, and Tandem's companion instead
@@ -368,10 +424,25 @@ private fun ArtFace(
             ) {
                 SmallChip("Back to Tandem", Palette.Mint) { GameCompanion.backToTandem(activity) }
                 SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
+                ClipChip(activity)
+                SmallChip("Notes", Palette.Sky) { CompanionNotes.show(info.key) }
                 SmallChip("Companion", Palette.Lavender) { activity.switchMode() }
+            }
+            // The Deck, the game's own second screen and its manual, bottom right, clear of the logo and pills on the left.
+            Column(Modifier.align(Alignment.BottomEnd).padding(14.dp), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                DeckChip(info, activity)
+                GameScreenChip(activity)
+                ManualChip(info)
             }
         }
     }
+}
+
+/** The Deck (DeckPanel.kt), for PC games and streams: a keyboard and trackpad for the game. */
+@Composable
+private fun DeckChip(info: CompanionInfo, activity: CompanionActivity) {
+    if (!DeckGames.suits(info.systemId, info.pkg)) return
+    SmallChip("Deck", Palette.Sky) { activity.setMode(GameCompanion.DECK) }
 }
 
 /** The art fading into the deepened colour behind it towards the lower left (wide screens) or the bottom. */
@@ -397,6 +468,36 @@ private fun SmallChip(text: String, color: Color, onTap: () -> Unit) {
     Box(Modifier.darkChip().clickable(onClick = onTap).padding(horizontal = 14.dp, vertical = 8.dp)) {
         Text(text, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1)
     }
+}
+
+/** Records a clip of the game; while one records, it counts down and a tap stops it. */
+@Composable
+private fun GameScreenChip(activity: CompanionActivity, modifier: Modifier = Modifier) {
+    // The game's own second screen (GameScreens.kt): offered while it is ready and not already up.
+    if (!GameScreens.available || GameScreens.shown) return
+    Box(modifier) { SmallChip("Game screen", Palette.Mint) { GameScreens.show(activity) } }
+}
+
+/** The game's manual (Manuals.kt), read here on the bottom screen; offered only when the game has one. */
+@Composable
+private fun ManualChip(info: CompanionInfo, modifier: Modifier = Modifier) {
+    val has = remember(info.key, info.manual) { info.manual != null || io.github.zahakj.tandem.Manuals.forKey(info.key) != null }
+    if (!has) return
+    Box(modifier) { SmallChip("Manual", Palette.Butter) { CompanionManual.show(info.key) } }
+}
+
+@Composable
+private fun ClipChip(activity: CompanionActivity) {
+    val ends = GameClip.endsAt
+    val left by produceState(0L, ends) {
+        while (ends != 0L) {
+            value = ((ends - android.os.SystemClock.elapsedRealtime() + 999) / 1000).coerceAtLeast(0)
+            delay(250)
+        }
+        value = 0
+    }
+    if (ends == 0L) SmallChip("Clip", Palette.Peach) { activity.clip() }
+    else SmallChip("Stop clip · ${left}s", Palette.Peach) { activity.clip() }
 }
 
 // ---- Tandem companion ----
@@ -456,6 +557,10 @@ private fun CompanionFace(
             if (level >= 0) Pill((if (charging) "Charging " else "") + "$level%", if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
             Spacer(Modifier.width(10.dp))
             SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
+            Spacer(Modifier.width(8.dp))
+            ClipChip(activity)
+            Spacer(Modifier.width(8.dp))
+            SmallChip("Notes", Palette.Sky) { CompanionNotes.show(info.key) }
         }
         // Pip, playing along, and the game.
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -468,9 +573,18 @@ private fun CompanionFace(
                 )
                 val total = totalSeconds(info, now)
                 if (total >= 60) Text("${formatPlayLong(total)} in total", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                PerformancePlan.label(Performance.active)?.let {
+                    Text(it, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
                 milestoneLine(minutes)?.let {
                     Text(it, style = MaterialTheme.typography.labelLarge, color = Palette.Butter, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
+            }
+            // Beside the game, where they add no height: the rows below keep their place.
+            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                DeckChip(info, activity)
+                GameScreenChip(activity)
+                ManualChip(info)
             }
         }
         Spacer(Modifier.weight(1f))

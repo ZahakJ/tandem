@@ -70,7 +70,7 @@ object GridWidgets {
      * Adds a [kind] widget in slot [at] of folder [folder] as [shown]. A folder's spots are one cell each, so only
      * kinds that come in the small size go in. Returns its key, or null when it didn't go in.
      */
-    fun addInFolder(kind: WidgetKind, folder: String, shown: GridShown, at: Int): String? {
+    fun addInFolder(kind: WidgetKind, folder: String, shown: GridShown, at: Int, options: Map<String, String> = emptyMap()): String? {
         if (!kind.available()) {
             Toasts.show(kind.needs ?: "Not available yet")
             Sounds.error()
@@ -83,10 +83,11 @@ object GridWidgets {
         }
         val id = WidgetStore.newId(kind.id)
         val key = key(id)
-        WidgetStore.updateWidgets { it + Widget(id, kind.id, WidgetSize.Small, WidgetPlace.Grid) }
+        val w = Widget(id, kind.id, WidgetSize.Small, WidgetPlace.Grid, options)
+        WidgetStore.updateWidgets { it + w }
         IconGridStore.addToFolder(key, folder, at, shown)
         Sounds.confirm()
-        Toasts.show("Added ${kind.name}")
+        Toasts.show("Added ${kind.label(w)}")
         return key
     }
 
@@ -94,33 +95,34 @@ object GridWidgets {
     fun fitsFolder(kind: WidgetKind): Boolean = WidgetSize.Small in kind.sizes
 
     /**
-     * Adds a [kind] widget in slot [at] of the home grid as [shown], at its usual size when there is room there, else
-     * the biggest size that fits. With widgets set to show as a row, it joins the row instead. Returns its key on the
-     * grid.
+     * Adds a [kind] widget in slot [at] of the home grid as [shown], at its [usual] size (the kind's default) when
+     * there is room there, else the biggest size that fits. With widgets set to show as a row, it joins the row
+     * instead. [options] are the widget's own settings to start with. Returns its key on the grid.
      */
-    fun add(kind: WidgetKind, shown: GridShown, at: Int): String? {
+    fun add(kind: WidgetKind, shown: GridShown, at: Int, usual: GridSpan = spanFor(kind.defaultSize), options: Map<String, String> = emptyMap()): String? {
         if (!kind.available()) {
             Toasts.show(kind.needs ?: "Not available yet")
             Sounds.error()
             return null
         }
         if (!inCells) {
-            Widgets.add(kind, WidgetArea.Top)
+            val w = Widgets.add(kind, WidgetArea.Top, options = options)
             Sounds.confirm()
-            Toasts.show("Added ${kind.name} to the widget row")
+            Toasts.show("Added ${kind.label(w)} to the widget row")
             return null
         }
         val id = WidgetStore.newId(kind.id)
         val key = key(id)
-        val usual = spanFor(kind.defaultSize)
-        val options = listOf(usual) + spans(kind).filter { it != usual }.sortedByDescending { it.w * it.h }
-        val span = options.firstOrNull { s ->
+        val choices = listOf(usual) + spans(kind).filter { it != usual }.sortedByDescending { it.w * it.h }
+        val span = choices.firstOrNull { s ->
             GridSlots.fits(shown.slots, shown.lanes, shown.ext + (key to ext(s)), key, at, shown.present, shown.page)
         } ?: GridSpan.ONE
-        WidgetStore.updateWidgets { it + Widget(id, kind.id, sizeFor(span), WidgetPlace.Grid) }
+        val w = Widget(id, kind.id, sizeFor(span), WidgetPlace.Grid, options)
+        WidgetStore.updateWidgets { it + w }
         IconGridStore.addWidgetAt(key, span, ext(span), shown, at)
         Sounds.confirm()
-        Toasts.show(if (span == usual) "Added ${kind.name}" else "Added ${kind.name} at ${span.label}: Y › Resize when there's room")
+        val name = kind.label(w)
+        Toasts.show(if (span == usual) "Added $name" else "Added $name at ${span.label}: Y › Resize when there's room")
         return key
     }
 
@@ -180,7 +182,7 @@ object GridWidgets {
 
     /** Takes the widget off the grid and forgets it. */
     fun remove(key: String) {
-        val name = widget(key)?.let { Widgets.kind(it)?.name } ?: "widget"
+        val name = widget(key)?.let { w -> Widgets.kind(w)?.label?.invoke(w) } ?: "widget"
         // Undo brings it back with its size and options (IconGridStore keeps the grid's widgets with each step).
         GridUndoUi.run("Removed $name") {
             IconGridStore.remove(key, default = false)
@@ -222,7 +224,7 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
             IconGrid.closeMenu(); ScreenRoles.toggle(ctx)
         })
     }
-    return MenuSpec(IconGrid.MENU_ROUTE + ":" + key, kind.name, "Widget · ${span.label}", kind.accent, actions, aspect = span.w.toFloat() / span.h) {
+    return MenuSpec(IconGrid.MENU_ROUTE + ":" + key, kind.label(w), "Widget · ${span.label}", kind.accent, actions, aspect = span.w.toFloat() / span.h) {
         WidgetView(w, GridWidgets.sizeFor(span), Modifier.fillMaxSize(), WidgetArea.Top, interactive = false, grid = true)
     }
 }

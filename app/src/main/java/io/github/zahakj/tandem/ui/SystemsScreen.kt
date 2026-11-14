@@ -236,8 +236,9 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
             item("companion") {
                 // What the bottom screen shows while one of these games plays on the top one (GameCompanion.kt).
                 val mode = io.github.zahakj.tandem.GameCompanion.systemMode(p)
+                val deck = io.github.zahakj.tandem.DeckGames.suits(p.id, players.firstOrNull()?.packageName)
                 MenuRow("Bottom screen while playing", io.github.zahakj.tandem.GameCompanion.label(mode), "companion", false, routeKey, Palette.Lavender) {
-                    SystemPrefs.updateSystem(p.id) { it.copy(companion = io.github.zahakj.tandem.GameCompanion.next(mode)) }
+                    SystemPrefs.updateSystem(p.id) { it.copy(companion = io.github.zahakj.tandem.GameCompanion.next(mode, deck)) }
                 }
             }
             if (!p.isApps) {
@@ -290,14 +291,9 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
 /** "/storage/emulated/0/ROMs/gba" -> "ROMs/gba". */
 private fun shortPath(dir: File): String = dir.path.removePrefix(Environment.getExternalStorageDirectory().path + "/")
 
-/** A folder picked in the system picker, as a file path (internal storage or an SD card). */
-private fun treePath(uri: Uri): String? {
-    val id = runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull() ?: return null
-    val volume = id.substringBefore(':')
-    val rel = id.substringAfter(':', "").trim('/')
-    val base = if (volume.equals("primary", ignoreCase = true)) Environment.getExternalStorageDirectory().path else "/storage/$volume"
-    return if (rel.isEmpty()) base else "$base/$rel"
-}
+/** A folder picked in the system picker, as a file path (internal storage or an SD card), or null off local storage. */
+fun treePath(uri: Uri): String? =
+    io.github.zahakj.tandem.LibraryRoots.pathOf(uri.authority, runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull(), Environment.getExternalStorageDirectory().path)
 
 /** Settings: systems, apps, and how games start. */
 @Composable
@@ -370,6 +366,13 @@ fun systemsSettings(): SettingSection {
                     "Holding Back moves a game to the other screen as well. Off, a game in front always stays where it is.",
                     toggle = apps.moveGames, keywords = "move game other screen hold back",
                 ) { io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(moveGames = !it.moveGames) } }
+            },
+            SettingRow(
+                "Voice in clips", onOff(prefs.clipVoice), Palette.Lavender, Glyph.Volume,
+                "A clip from the game's companion (Clip, on the bottom screen) takes your voice from the microphone along with the game's sound. Off records the game alone. Nothing is heard outside a clip.",
+                toggle = prefs.clipVoice, keywords = "clip record video microphone mic voice sound audio",
+            ) {
+                SystemPrefs.update { it.copy(clipVoice = !it.clipVoice) }
             },
             SettingRow(
                 "Launch animation", onOff(prefs.launchAnimation), Palette.Lavender, Glyph.Sparkle,

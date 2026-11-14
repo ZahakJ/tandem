@@ -186,6 +186,7 @@ fun HomeHost() {
     AppIconChooser()
     HomeExplainer()
     WidgetHost()
+    SteamAchievementsPopup()
     ScreensaverOverlay()
 }
 

@@ -228,6 +228,8 @@ object WidgetKinds {
             listOf(Medium, Wide, Tall), Wide,
             content = { s, m -> GreetingWidget(s, m) },
         ),
+        // Widgets from other apps, hosted (AppWidgets.kt).
+        AppWidgetKind,
     )
 
     private val byId = all.associateBy { it.id }
@@ -1211,7 +1213,7 @@ private fun StatsWidget(s: WidgetScope, m: Modifier) {
     val streakColor = if (st.streak > 0) Palette.Peach else Palette.Muted
     val week = "${shortPlay(st.week)} this week"
     val lh = lineHeights()
-    WidgetCard(s, m, onClick = { StatsTabs.tab = 0; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
+    WidgetCard(s, m, onClick = { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val pad = widgetPad(maxWidth, maxHeight)
             val w = maxWidth - pad * 2
@@ -1302,7 +1304,10 @@ private fun WeekBars(days: LongArray, modifier: Modifier, labels: Boolean) {
 
 // ---------------------------------------------------------------- achievements
 
-/** Recent RetroAchievements unlocks, fetched at most every 10 minutes and only while a widget shows them. */
+/**
+ * Recent RetroAchievements unlocks, fetched at most every 10 minutes and only while a widget shows them. The widget
+ * adds Steam's from what SteamAchievements already has, so it never asks Steam itself.
+ */
 object RaRecent {
     var list by mutableStateOf<List<RetroAchievements.Earned>?>(null)
         private set
@@ -1321,9 +1326,15 @@ object RaRecent {
 private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
     val owner = LocalLifecycleOwner.current
     LaunchedEffect(owner, RaRecent.version) { owner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) { RaRecent.refresh() } }
-    val list = RaRecent.list
+    // RetroAchievements' unlocks and Steam's cached ones, newest first, in one list (Steam's with a Steam pill on the tab).
+    val ra = RetroAchievements.enabled
+    val raList = if (ra) RaRecent.list else emptyList()
+    val steamRecords = io.github.zahakj.tandem.SteamAchievements.games.values.toList()
+    val list: List<RecentUnlock>? = remember(raList, steamRecords, Libraries.all, Privacy.view) {
+        raList?.let { r -> (r.map { it.recent() } + steamRecentUnlocks(steamGameEntries())).sortedByDescending { it.at } }
+    }
     val lh = lineHeights()
-    WidgetCard(s, m, onClick = { StatsTabs.tab = 2; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
+    WidgetCard(s, m, onClick = { StatsTabs.tab = StatsTabs.ACHIEVEMENTS; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val pad = widgetPad(maxWidth, maxHeight)
             val w = maxWidth - pad * 2
@@ -1347,10 +1358,10 @@ private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
                         val n = ((maxHeight + 6.dp) / (badge + 6.dp)).toInt().coerceAtLeast(1)
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             for (a in list.take(n)) Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(badge)) {
-                                AsyncImage(a.badgeUrl, null, Modifier.size(badge).clip(RoundedCornerShape(8.dp)))
+                                AsyncImage(a.badge, null, Modifier.size(badge).clip(RoundedCornerShape(8.dp)))
                                 if (named) Column(Modifier.weight(1f).padding(start = 8.dp)) {
                                     Text(a.title, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                    Text("${a.game} · ${a.points} pts", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                    Text("${a.game} · ${a.line}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                 }
                             }
                         }
@@ -1359,15 +1370,15 @@ private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
                     // The newest badge beside its name, then the label and the game as the height allows.
                     val kept = fitting(listOf(lh.title, lh.small, lh.small, lh.small), h) // title, label, game, game's second line
                     Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(first.badgeUrl, null, Modifier.size(min(h, 58.dp)).clip(RoundedCornerShape(12.dp)))
+                        AsyncImage(first.badge, null, Modifier.size(min(h, 58.dp)).clip(RoundedCornerShape(12.dp)))
                         Column(Modifier.weight(1f).padding(start = 10.dp)) {
                             if (1 in kept) Text("🏆 Latest unlock", style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(first.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            if (2 in kept) Text("${first.game} · ${first.points} pts${if (first.hardcore) " · hardcore" else ""}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
+                            if (2 in kept) Text("${first.game} · ${first.line}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
                         }
                         if (s.size == Wide && w >= 300.dp) {
                             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                for (a in list.drop(1).take(3)) AsyncImage(a.badgeUrl, null, Modifier.size(min(h, 38.dp)).clip(RoundedCornerShape(8.dp)))
+                                for (a in list.drop(1).take(3)) AsyncImage(a.badge, null, Modifier.size(min(h, 38.dp)).clip(RoundedCornerShape(8.dp)))
                             }
                         }
                     }
@@ -1476,8 +1487,8 @@ private fun pipLines(hour: Int, st: MiniStats, unplayed: Int): List<String> = bu
         else -> add("I missed you. Shall we play?")
     }
     if (unplayed > 0) add("${plural(unplayed, "game", "games")} you haven't tried yet 👀")
-    add("Psst… Select picks a game for you.")
-    add("Hold Select to see what's running.")
+    add("Psst… ${Prompts.words(io.github.zahakj.tandem.Command.Surprise)} picks a game for you.")
+    add("${Prompts.words(io.github.zahakj.tandem.Command.Switcher)} to see what's running.")
     add("I like it when you're here.")
 }
 

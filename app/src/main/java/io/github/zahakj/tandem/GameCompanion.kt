@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
+import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.SystemPrefs
 import io.github.zahakj.tandem.ui.CompanionScreen
 import io.github.zahakj.tandem.ui.TandemTheme
@@ -32,20 +33,34 @@ import java.lang.ref.WeakReference
  * already there. Coming back to Tandem shows the presentation again first and only then finishes the companion, so
  * the stock launcher never flashes.
  *
- * What it shows is chosen per system with a per-game override: the game's art, Tandem's companion (Pip, clock, quick
- * bar, toggles), or nothing (the emulator uses both screens itself: 3DS, DS).
+ * What it shows is chosen for every game at once (Settings › Play & system › Playing), per system and per game, the
+ * most particular choice winning: the game's art, Tandem's companion (Pip, clock, quick bar, toggles), a dark screen
+ * (Screen off, ScreenOff.kt: black and still until a tap, the biggest battery saving there is on the OLED panel), or
+ * nothing (the emulator uses both screens itself: 3DS, DS).
  */
 object GameCompanion {
     const val ART = "art"
     const val TANDEM = "tandem"
+    /** Screen off: the companion is up, black and still, so the panel's pixels are off (ScreenOff.kt). */
+    const val DARK = "dark"
+    /** Leave to emulator: no companion at all. */
     const val OFF = "off"
+    /** A keyboard and trackpad for the game (ui/DeckPanel.kt): offered for PC games and streams ([DeckGames]). */
+    const val DECK = "deck"
 
-    val choices = listOf(ART to "Game art", TANDEM to "Tandem companion", OFF to "Leave to emulator")
+    val choices = listOf(ART to "Game art", TANDEM to "Tandem companion", DARK to "Screen off", OFF to "Leave to emulator")
+    private val deckChoice = DECK to "Deck: keyboard & trackpad"
 
-    fun label(mode: String): String = choices.firstOrNull { it.first == mode }?.second ?: "Game art"
+    /** The choices for a game or system; the Deck only where a keyboard and mouse make sense ([deck]). */
+    fun choices(deck: Boolean): List<Pair<String, String>> = if (deck) choices.take(2) + deckChoice + choices.drop(2) else choices
 
-    /** The next choice after [mode], for rows that cycle. */
-    fun next(mode: String): String = choices[(choices.indexOfFirst { it.first == mode } + 1) % choices.size].first
+    fun label(mode: String): String = (choices + deckChoice).firstOrNull { it.first == mode }?.second ?: "Game art"
+
+    /** The next choice after [mode], for rows that cycle; [deck] says whether the Deck is among them. */
+    fun next(mode: String, deck: Boolean = false): String {
+        val list = choices(deck)
+        return list[(list.indexOfFirst { it.first == mode } + 1) % list.size].first
+    }
 
     /**
      * Systems whose default emulators draw on both screens (Azahar/Citra, melonDS/DraStic). Not Wii U: Cemu for
@@ -59,17 +74,17 @@ object GameCompanion {
     fun usesBothScreens(platformId: String, pkg: String?): Boolean =
         platformId in dualSystems || pkg?.lowercase()?.let { p -> dualApps.any { it in p } } == true
 
-    /** What a system's games get by default: the user's choice, else game art (or nothing for dual-screen emulators). */
-    fun systemMode(platform: Platform): String =
-        SystemPrefs.config(platform.id).companion
-            ?: if (usesBothScreens(platform.id, platform.players.firstOrNull()?.packageName)) OFF else ART
+    /** The choice for every system and game without one of their own (Settings › Play & system › Playing): game art unless changed. */
+    fun defaultMode(): String = HomeStore.settings.companion ?: ART
 
-    /** What [game] gets: its own choice, else its system's. */
+    /** What a system's games get by default: the user's choice for it, else [defaultMode] (or nothing for dual-screen emulators). */
+    fun systemMode(platform: Platform): String =
+        CompanionMode.resolve(null, SystemPrefs.config(platform.id).companion, usesBothScreens(platform.id, platform.players.firstOrNull()?.packageName), defaultMode())
+
+    /** What [game] gets: its own choice, else its system's, else the setting for everyone. */
     fun modeFor(game: Game, pkg: String? = null): String {
-        game.meta.companion?.let { return it }
-        SystemPrefs.config(game.platform.id).companion?.let { return it }
         val emu = pkg ?: if (game.platform.isApps) null else game.platform.playerFor(game)?.packageName
-        return if (usesBothScreens(game.platform.id, emu)) OFF else ART
+        return CompanionMode.resolve(game.meta.companion, SystemPrefs.config(game.platform.id).companion, usesBothScreens(game.platform.id, emu), defaultMode())
     }
 
     /** True once this process has opened a companion (so the theme and stores are already loaded). */
@@ -116,6 +131,7 @@ object GameCompanion {
             pkg = pkg,
             start = System.currentTimeMillis(),
             earlier = earlierMs,
+            manual = Manuals.forGame(game)?.path,
         )
         generation++
         shownAt = android.os.SystemClock.elapsedRealtime()
@@ -211,9 +227,19 @@ object GameCompanion {
                 SystemPrefs.init(appCtx)
                 io.github.zahakj.tandem.data.Store.init(appCtx)
                 val display = LaunchDisplay.secondary(appCtx)
-                val front = if (Shell.waitReady(CompanionRestore.SHIZUKU_WAIT_MS)) {
+                var front = if (Shell.waitReady(CompanionRestore.SHIZUKU_WAIT_MS)) {
                     Shell.run("dumpsys", "activity", "activities")?.let { CompanionRestore.frontPackage(it) }
                 } else null
+                // Updating Tandem, the default Home, puts its home in front of the game. The game's session is still
+                // open (nobody went home), so the game goes back in front first, as it was.
+                val pkg = info.pkg
+                if (front == appCtx.packageName && pkg != null && Sessions.openKey(appCtx) == info.key) {
+                    GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg)?.let { t ->
+                        GameResume.bringBack(appCtx, t)
+                        Thread.sleep(500)
+                        front = Shell.run("dumpsys", "activity", "activities")?.let { CompanionRestore.frontPackage(it) }
+                    }
+                }
                 val ok = CompanionRestore.shouldRestore(
                     info, front,
                     sessionKey = Sessions.openKey(appCtx),
@@ -262,6 +288,9 @@ object GameCompanion {
 
     internal fun attach(a: CompanionActivity) { current = WeakReference(a) }
 
+    /** The companion on screen, if one is up and not on its way out. */
+    internal fun current(): CompanionActivity? = current?.get()?.takeIf { !it.isFinishing }
+
     /** True while the companion is up, which means a game Tandem started is running. */
     fun up(): Boolean = current?.get() != null
     internal fun detach(a: CompanionActivity) { if (current?.get() === a) current = null }
@@ -285,6 +314,9 @@ object GameCompanion {
 
     /** See [CompanionActivity.claimBars]: lets the companion set the bottom screen's bars after an app had them. */
     fun claimBars() { main.post { current?.get()?.takeIf { !it.isFinishing }?.claimBars() } }
+
+    /** Lights a dimmed or dark panel (ScreenOff.kt): Home brought the game and its companion back. Safe from any thread. */
+    fun wake() { main.post { current?.get()?.takeIf { !it.isFinishing }?.wake() } }
 
     /** Brings the companion's task to the front of the bottom screen (it never takes the focus). Blocking. */
     fun toFront(ctx: Context): Boolean {
@@ -321,6 +353,16 @@ object GameCompanion {
     internal const val X_PKG = "pkg"
     internal const val X_START = "start"
     internal const val X_EARLIER = "earlier"
+    internal const val X_MANUAL = "manual"
+}
+
+/** Which of [GameCompanion]'s modes a game gets. Apart from [GameCompanion], which has a main-thread handler, so tests can ask it. */
+object CompanionMode {
+    /**
+     * The mode that wins: the game's own choice, else its system's, else nothing for an emulator that draws on both
+     * screens ([dual]; the setting for everyone can't take its screen away), else the setting for everyone ([default]).
+     */
+    fun resolve(game: String?, system: String?, dual: Boolean, default: String): String = game ?: system ?: if (dual) GameCompanion.OFF else default
 }
 
 /** The game on the top screen, as the companion shows it. Built from the launch intent, so it needs no library. */
@@ -337,6 +379,8 @@ data class CompanionInfo(
     val start: Long,
     /** Time already played this session before [start] (a game brought back from Tandem), in ms. */
     val earlier: Long = 0L,
+    /** The game's manual (Manuals.kt), a file or folder path, so the companion can offer it without the library. */
+    val manual: String? = null,
 ) {
     /** Puts this into the companion's launch intent (read back with [from]). */
     fun putInto(i: Intent): Intent = i
@@ -351,6 +395,7 @@ data class CompanionInfo(
         .putExtra(GameCompanion.X_PKG, pkg)
         .putExtra(GameCompanion.X_START, start)
         .putExtra(GameCompanion.X_EARLIER, earlier)
+        .putExtra(GameCompanion.X_MANUAL, manual)
 
     companion object {
         fun from(i: Intent?): CompanionInfo? {
@@ -363,6 +408,7 @@ data class CompanionInfo(
                 i.getStringExtra(GameCompanion.X_MODE) ?: GameCompanion.ART, i.getStringExtra(GameCompanion.X_PKG),
                 i.getLongExtra(GameCompanion.X_START, System.currentTimeMillis()),
                 i.getLongExtra(GameCompanion.X_EARLIER, 0L),
+                i.getStringExtra(GameCompanion.X_MANUAL),
             )
         }
     }
@@ -374,6 +420,35 @@ data class CompanionInfo(
  */
 class CompanionActivity : ComponentActivity() {
     private val info = mutableStateOf<CompanionInfo?>(null)
+
+    /** The face shown while the panel is lit: Tandem's companion, the Deck, or the game's art (a Screen off panel lights to the art). */
+    val face = mutableStateOf(GameCompanion.ART)
+
+    /**
+     * When the panel was last touched, or lit by Home bringing the game back (uptimeMillis); null since it came up for
+     * this game. With [shownAt], what ScreenOff needs to say whether the panel is bright, dimmed or dark.
+     */
+    val touchedAt = mutableStateOf<Long?>(null)
+    var shownAt: Long = android.os.SystemClock.uptimeMillis()
+        private set
+    private var starts = 0
+
+    private fun faceOf(mode: String): String = when (mode) {
+        GameCompanion.TANDEM, GameCompanion.DECK -> mode
+        else -> GameCompanion.ART
+    }
+
+    /** A touch, or Home bringing the game back: the panel lights up (or stays lit) from now. */
+    fun wake() { touchedAt.value = android.os.SystemClock.uptimeMillis() }
+
+    /** Another game, or the same one brought back: the panel starts over, dark again when its mode is Screen off. */
+    private fun freshPanel(i: CompanionInfo) {
+        face.value = faceOf(i.mode)
+        touchedAt.value = null
+        shownAt = android.os.SystemClock.uptimeMillis()
+        // Which display-off paths this Android has, for the log; once, and only when a panel is meant to be dark.
+        if (i.mode == GameCompanion.DARK) ScreenOff.logFacts(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -387,12 +462,18 @@ class CompanionActivity : ComponentActivity() {
         io.github.zahakj.tandem.data.HomeStore.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
-        if (!GameCompanion.launchedHere) Themes.init(this)
+        if (!GameCompanion.launchedHere) {
+            Themes.init(this)
+            // The profile line on this screen comes from what Tandem wrote down when the game started.
+            Performance.startup(this)
+        }
         window.setBackgroundDrawable(ColorDrawable(Themes.live.background.toArgb()))
         WindowCompat.setDecorFitsSystemWindows(window, false)
         SystemBars.hide(window)
-        info.value = CompanionInfo.from(intent)
-        if (info.value == null) { finishQuietly(); return }
+        val first = CompanionInfo.from(intent)
+        info.value = first
+        if (first == null) { finishQuietly(); return }
+        freshPanel(first)
         GameCompanion.attach(this)
         // A companion app covers this at once and it may never be started: watch for the game's end from here.
         if (CompanionApps.covering) watchGame()
@@ -402,7 +483,7 @@ class CompanionActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        CompanionInfo.from(intent)?.let { info.value = it }
+        CompanionInfo.from(intent)?.let { info.value = it; freshPanel(it) }
         GameCompanion.attach(this)
         // Another game (or the same one brought back): watch that one.
         if (lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)) watchGame()
@@ -414,11 +495,15 @@ class CompanionActivity : ComponentActivity() {
     private fun watchGame() {
         watch?.stop()
         watch = info.value?.pkg?.takeIf { it.isNotEmpty() }?.let { GameExit.Watch(this, it).also { w -> w.start() } }
+        if (GameScreens.isFor(info.value?.pkg)) GameScreens.watch(this) else GameScreens.stop(this)
     }
 
     override fun onStart() {
         super.onStart()
         HomeBack.coveredAt = 0L
+        // Back on show after an app covered it or the handheld slept: that is as good as a touch, so a dimmed or dark
+        // panel lights up for a while. The first show leaves a Screen off panel dark.
+        if (starts++ > 0) wake()
         watchGame()
     }
 
@@ -433,7 +518,7 @@ class CompanionActivity : ComponentActivity() {
     /** A screenshot of the game's screen, saved and copied to the clipboard (GameShot.kt). */
     fun screenshot() {
         val title = info.value?.title ?: return
-        val gameOnTop = (display?.displayId ?: android.view.Display.DEFAULT_DISPLAY) != android.view.Display.DEFAULT_DISPLAY
+        val gameOnTop = gameOnTop
         val app = applicationContext
         Thread({
             val said = when (val r = GameShot.take(app, title, gameOnTop)) {
@@ -442,6 +527,83 @@ class CompanionActivity : ComponentActivity() {
             }
             runOnUiThread { android.widget.Toast.makeText(app, said, android.widget.Toast.LENGTH_SHORT).show() }
         }, "tandem-shot").start()
+    }
+
+    /** Starts a clip of the game's screen (GameClip.kt), or stops the one being recorded. */
+    fun clip() {
+        if (GameClip.endsAt != 0L) {
+            Thread({ GameClip.stop() }, "tandem-clip-stop").start()
+            return
+        }
+        val title = info.value?.title ?: return
+        val voice = io.github.zahakj.tandem.data.SystemPrefs.data.clipVoice
+        val app = applicationContext
+        // The game's sound needs the screen-capture grant: given through Shizuku, Android's ask returns at once.
+        Thread({
+            val sound = GameClip.grant(app, voice)
+            runOnUiThread {
+                if (sound && runCatching { askCapture.launch(captureAsk(title, gameOnTop, voice)) }.isSuccess) return@runOnUiThread
+                clipFor = null
+                recordSilent(title, gameOnTop, voice)
+            }
+        }, "tandem-clip-grant").start()
+    }
+
+    /** The clip waiting for the screen-capture grant. */
+    private var clipFor: Triple<String, Boolean, Boolean>? = null
+
+    private fun captureAsk(title: String, gameOnTop: Boolean, voice: Boolean): Intent {
+        clipFor = Triple(title, gameOnTop, voice)
+        return getSystemService(android.media.projection.MediaProjectionManager::class.java).createScreenCaptureIntent()
+    }
+
+    private val askCapture = registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { r ->
+        val (title, gameOnTop, voice) = clipFor ?: return@registerForActivityResult
+        clipFor = null
+        val grant = r.data
+        val code = r.resultCode
+        val screen = display?.displayId ?: android.view.Display.DEFAULT_DISPLAY
+        val app = applicationContext
+        val pkg = gamePackage
+        // Android's ask took the focus for a moment, and the game's screen shows its bars without it: the game gets
+        // the focus back, and a moment to hide them again, before the clip starts.
+        Thread({
+            pkg?.let { p -> GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, p)?.let { GameResume.bringBack(app, it) } }
+            Thread.sleep(700)
+            runOnUiThread {
+                if (code == RESULT_OK && grant != null) ClipService.start(this, code, grant, title, gameOnTop, voice, screen)
+                else recordSilent(title, gameOnTop, voice)
+            }
+        }, "tandem-clip-focus").start()
+    }
+
+    /** A clip without the game's sound (no Shizuku grant, or capture refused): the picture, and your voice if on. */
+    private fun recordSilent(title: String, gameOnTop: Boolean, voice: Boolean) {
+        val app = applicationContext
+        val screen = display?.displayId ?: android.view.Display.DEFAULT_DISPLAY
+        Thread({ ClipService.say(app, ClipService.said(GameClip.record(app, title, gameOnTop, null, voice)), screen) }, "tandem-clip").start()
+    }
+
+    /** True when the game has the top screen (this is on the other one). */
+    val gameOnTop: Boolean get() = (display?.displayId ?: android.view.Display.DEFAULT_DISPLAY) != android.view.Display.DEFAULT_DISPLAY
+
+    /**
+     * Typing a note (CompanionNotes): Android's keyboard needs a window with the focus, so for that long this one
+     * takes it, and with it the controller. Afterwards it lets go again and the game is brought back to the front by
+     * its task (with Shizuku), so the controller is the game's again; without Shizuku a touch on the game does that.
+     */
+    fun typing(on: Boolean) {
+        val app = applicationContext
+        if (on) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            SystemBars.hide(window)
+            Thread({ GameCompanion.toFront(app) }, "companion-typing").start()
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            SystemBars.hide(window)
+            val pkg = gamePackage ?: return
+            Thread({ GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg)?.let { GameResume.bringBack(app, it) } }, "companion-typed").start()
+        }
     }
 
     /**
@@ -471,10 +633,14 @@ class CompanionActivity : ComponentActivity() {
 
     override fun dispatchGenericMotionEvent(ev: android.view.MotionEvent): Boolean = Dreaming.onMotion(ev) || super.dispatchGenericMotionEvent(ev)
 
-    /** Switches between game art and the companion for this play session. */
+    /** Switches between game art and the companion for this play session; a Screen off panel still goes dark again. */
     fun switchMode() {
-        val i = info.value ?: return
-        info.value = i.copy(mode = if (i.mode == GameCompanion.TANDEM) GameCompanion.ART else GameCompanion.TANDEM)
+        face.value = if (face.value == GameCompanion.TANDEM) GameCompanion.ART else GameCompanion.TANDEM
+    }
+
+    /** Shows [mode] (art, companion or the Deck) for this play session; a Screen off panel still goes dark again. */
+    fun setMode(mode: String) {
+        face.value = faceOf(mode)
     }
 
     fun finishQuietly() {
@@ -485,7 +651,29 @@ class CompanionActivity : ComponentActivity() {
     override fun onDestroy() {
         watch?.stop()
         watch = null
+        GameScreens.stop(this)
         GameCompanion.detach(this)
         super.onDestroy()
+    }
+}
+
+/**
+ * The Screenshot and Clip commands (Bindings.kt) pressed inside Tandem: the same as the companion's own Screenshot and
+ * Clip chips, for the game it is up for. With no companion up there is no game on the other screen to capture.
+ */
+object Capture {
+    private fun companion(): CompanionActivity? = GameCompanion.current()
+
+    fun screenshot() {
+        companion()?.screenshot() ?: nothing()
+    }
+
+    fun clip() {
+        companion()?.clip() ?: nothing()
+    }
+
+    private fun nothing() {
+        io.github.zahakj.tandem.ui.Sounds.error()
+        io.github.zahakj.tandem.ui.Toasts.show("Start a game first: this captures the game on the other screen")
     }
 }

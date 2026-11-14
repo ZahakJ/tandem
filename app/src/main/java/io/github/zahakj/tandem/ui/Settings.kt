@@ -222,6 +222,17 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
                 keywords = "refresh scan reload find new games",
                 onClick = onRescan,
             ),
+            SettingRow(
+                "Manuals",
+                when (val n = io.github.zahakj.tandem.Manuals.count) { 0 -> "None found"; else -> plural(n, "manual") } + " · ROMs/manuals",
+                Palette.Mint, Glyph.Text,
+                help = "Manuals and guides for your games, read from a game's Y menu and on the bottom screen while it plays. " +
+                    "Put them in ROMs/manuals/<system>/ named like the game, Pokemon Red.pdf for Pokemon Red.gb: a PDF, a zip or folder of " +
+                    "pictures, or a text or Markdown file. Or pick one per game under Y › Edit details › Manual. Rescanning picks new ones up.",
+                keywords = "manual guide pdf cbz walkthrough instructions booklet faq book read",
+                action = "Rescan",
+                onClick = onRescan,
+            ),
         ),
     )
 }

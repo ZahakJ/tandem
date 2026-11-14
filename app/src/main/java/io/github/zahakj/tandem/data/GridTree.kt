@@ -287,6 +287,38 @@ object GridTree {
         else c.copy(folders = c.folders + HomeFolder(id, name, color = color, system = platformId), plainSystems = c.plainSystems - platformId)
 
     /**
+     * System [platformId]'s folder gets a folder inside for each of its subfolders on disk ([groups]: name and game
+     * keys, ids from [ids]), the way the plain list shows them, each in its [look]: once, while nothing was placed in it yet. After that,
+     * a game not placed anywhere in it joins the folder inside named like its subfolder, so new games follow the disk.
+     */
+    fun groupSystem(
+        c: IconGridConfig, platformId: String, groups: List<Pair<String, List<String>>>, ids: List<String>, look: (String) -> FolderStyle? = { null },
+    ): IconGridConfig {
+        val f = systemFolder(c, platformId) ?: return c
+        if (groups.isEmpty()) return c
+        if (!f.grouped) {
+            if (f.items.isNotEmpty()) return c
+            val made = groups.mapIndexed { i, (name, keys) -> HomeFolder(ids[i], name, keys, f.color) }
+            val looks = made.mapNotNull { m -> look(m.name)?.let { folderKey(m.id) to it } }
+            return c.copy(
+                folders = c.folders.map { if (it.id == f.id) it.copy(items = made.map { m -> folderKey(m.id) }, grouped = true, looked = true) else it } + made,
+                styles = c.styles + looks,
+            )
+        }
+        val inside = subfolders(c, f.id).mapNotNull { folder(c, it) }.filter { !it.smart }.associateBy { it.name }
+        // Grouped before folders from the disk had looks: theirs, once, where the user hasn't styled one.
+        if (!f.looked) {
+            val names = groups.map { it.first }.toSet()
+            val looks = inside.values.filter { it.name in names && folderKey(it.id) !in c.styles }.mapNotNull { d -> look(d.name)?.let { folderKey(d.id) to it } }
+            return groupSystem(c.copy(folders = c.folders.map { if (it.id == f.id) it.copy(looked = true) else it }, styles = c.styles + looks), platformId, groups, ids, look)
+        }
+        val placed = HashSet(f.items).apply { for (d in descendants(c, f.id)) folder(c, d)?.let { addAll(it.items) } }
+        val joining = groups.mapNotNull { (name, keys) -> inside[name]?.let { it.id to keys.filter { k -> k !in placed } } }.filter { it.second.isNotEmpty() }.toMap()
+        if (joining.isEmpty()) return c
+        return c.copy(folders = c.folders.map { d -> joining[d.id]?.let { d.copy(items = GridSlots.trim(d.items) + it) } ?: d })
+    }
+
+    /**
      * System [platformId] back to its plain list: its folder goes, and the folders made inside it move to the home grid
      * (as [home] shows it), in the free slots from the start, with everything in them. What was placed by hand at the
      * top level goes: those were shortcuts to the system's own games.

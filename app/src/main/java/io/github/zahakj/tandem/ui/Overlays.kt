@@ -206,17 +206,30 @@ fun GameMenu() {
         val running = io.github.zahakj.tandem.RunningGames.list.any { it.game?.key == g.key }
         val actions = buildList {
             add(MenuAction("play", if (running) "Resume" else "Play", Glyph.Play, Palette.Mint) { Nav.closeOverlays(); Launcher.launch(ctx, g) })
-            add(MenuAction("fav", if (meta.favorite) "Unfavorite" else "Favorite", Glyph.Heart, Palette.Peach, value = if (meta.favorite) "♥" else null) {
-                val was = meta.favorite
-                Store.update(g.key) { it.copy(favorite = !was) }
-                if (was) Sounds.toggle(false) else Sounds.favorite()
-                Undo.offer(if (was) "Removed from favorites" else "Added to favorites ♥") { Store.update(g.key) { it.copy(favorite = was) } }
-            })
+            add(MenuAction("fav", if (meta.favorite) "Unfavorite" else "Favorite", Glyph.Heart, Palette.Peach, value = if (meta.favorite) "♥" else null) { toggleFavorite(g) })
             val queued = UpNext.contains(g)
+            add(StatusUi.action(g) { StatusUi.focusPage(routeKey, g); StatusUi.pageFor = g.key })
             add(MenuAction("upnext", if (queued) "Take off Up next" else "Add to Up next", icon = TIcon.UpNext, color = Palette.Sky, value = if (queued) "✓" else null) { UpNext.toggle(g) })
             if (IconGrid.enabled) {
                 val pinned = isPinnedToHome(g)
                 add(MenuAction("home", if (pinned) "Unpin from home" else "Pin to home", Glyph.Star, Palette.Butter, value = if (pinned) "★" else null) { togglePinToHome(g) })
+            }
+            add(MenuAction("notes", "Notes", icon = TIcon.Notes, color = Palette.Mint, help = "This game's notes, in ROMs/notes.") {
+                Nav.closeOverlays(); NotesUi.openFor(g)
+            })
+            // Only when the game has one (ROMs/manuals, or chosen in Edit details): a row that opens nothing helps nobody.
+            val manual = remember(g.key, io.github.zahakj.tandem.Manuals.version, meta.manual) { io.github.zahakj.tandem.Manuals.forGame(g) }
+            if (manual != null) add(MenuAction("manual", "Manual", icon = TIcon.Book, color = Palette.Butter, value = io.github.zahakj.tandem.Manuals.kindOf(manual)?.label ?: "Pictures",
+                help = "The game's manual or guide, page by page: " + io.github.zahakj.tandem.Manuals.shortPath(manual)) {
+                Nav.closeOverlays(); ManualUi.open(g)
+            })
+            // A Steam game's achievements, once the Steam account is set (SteamUi.kt).
+            if (SteamUi.applies(g)) {
+                val steam = io.github.zahakj.tandem.SteamAchievements.cached(g)
+                add(MenuAction("steam", "Achievements", Glyph.Trophy, Palette.Sky, value = steam?.takeIf { it.total > 0 }?.let { "${it.unlocked} / ${it.total}" },
+                    help = "Every Steam achievement of this game, with how rare each one is.") {
+                    Nav.closeOverlays(); SteamUi.openFor(g)
+                })
             }
             add(MenuAction("edit", "Edit details", Glyph.Pencil, Palette.Butter, value = if (meta.lockedFields.isNotEmpty()) "${meta.lockedFields.size} locked" else null,
                 help = "Locked details stay as you set them: scraping and gamelist imports leave them alone.") {
@@ -243,13 +256,17 @@ fun GameMenu() {
                 })
                 // What the bottom screen shows while it plays on the top one (GameCompanion.kt).
                 val companion = io.github.zahakj.tandem.GameCompanion.modeFor(g)
+                // PC games and streams also get the Deck, a keyboard and trackpad for the game.
+                val deck = io.github.zahakj.tandem.DeckGames.suits(g.platform.id, current?.packageName)
                 add(MenuAction("companion", "Bottom screen while playing", Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
-                    help = "What the bottom screen shows while this game plays on the top one.") {
-                    val next = io.github.zahakj.tandem.GameCompanion.next(companion)
+                    help = "What the bottom screen shows while this game plays on the top one." + if (deck) " The Deck is a keyboard and trackpad for the game." else "") {
+                    val next = io.github.zahakj.tandem.GameCompanion.next(companion, deck)
                     val inherited = io.github.zahakj.tandem.GameCompanion.systemMode(g.platform)
                     Store.update(g.key) { it.copy(companion = if (next == inherited) null else next) }
                 })
             }
+            // The game's own performance, fan and refresh-rate modes, on an AYN device (Performance.kt).
+            addAll(performanceActions(ctx, g))
             add(MenuAction("art", "Choose artwork", Glyph.Image, Palette.Butter, more = true) { GameEditor.chooseArt(g); Nav.closeOverlays() })
             add(MenuAction("scrape", "Scrape this game", Glyph.Download, Palette.Butter, more = true) { Nav.closeOverlays(); ScrapeUi.scrapeOne(g) })
             // A game in a hidden folder stays hidden with it, whatever its own switch says.
@@ -286,7 +303,8 @@ fun GameMenu() {
                 Nav.openGroupMenu(routeTarget())
             })
         }
-        MenuSpec(routeKey, g.title, listOfNotNull(g.platform.name, meta.year?.toString()).joinToString(" · "), SystemColors.of(g.platform.id), actions) { GameArt(g) }
+        val page = if (StatusUi.pageFor == g.key) StatusUi.page(g, onBack = { StatusUi.pageFor = null }) { StatusUi.pageFor = null; Nav.closeMenus() } else null
+        MenuSpec(routeKey, g.title, listOfNotNull(g.platform.name, meta.year?.toString()).joinToString(" · "), SystemColors.of(g.platform.id), actions, page) { GameArt(g) }
     }
 }
 
@@ -391,6 +409,14 @@ data class ConfirmRequest(
     /** Something that can't be undone: [yes] acts only when held (HoldConfirm.kt). */
     val hold: Boolean = false,
 )
+
+/** Favourites [g], or takes it out again, with its sound and an Undo: the Y menu's row and the Favourite button. */
+internal fun toggleFavorite(g: Game) {
+    val was = Store.get(g.key).favorite
+    Store.update(g.key) { it.copy(favorite = !was) }
+    if (was) Sounds.toggle(false) else Sounds.favorite()
+    Undo.offer(if (was) "Removed from favorites" else "Added to favorites ♥") { Store.update(g.key) { it.copy(favorite = was) } }
+}
 
 /** A small "are you sure?" popup for anything that can't be undone. Opens on Cancel, so a stray A is harmless. */
 object Confirm {

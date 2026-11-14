@@ -80,6 +80,7 @@ val HomeLayouts = listOf(
     "carousel" to "Carousel",
     "list" to "List",
     "console" to "Console",
+    "orbit" to "Orbit",
 )
 
 /** How games show inside a system or collection. */
@@ -272,8 +273,9 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
 /** Every home layout except Shelves (which lives in Screens.kt). */
 @Composable
 fun HomeLayout(libs: List<PlatformLibrary>) {
-    // The icon grid lives in IconGrid.kt.
+    // The icon grid lives in IconGrid.kt, Orbit in Orbit.kt.
     if (Store.settings.look.homeLayout == "grid") return IconGridHome(libs)
+    if (Store.settings.look.homeLayout == "orbit") return OrbitHome(libs)
     val entries = homeEntries(libs)
     when (Store.settings.look.homeLayout) {
         "carousel" -> HomeCarousel(entries)
@@ -366,7 +368,7 @@ fun Coverflow(routeKey: String, items: List<FlowItem>, cardWidth: Dp, cardHeight
 
 /** The name and details of the centred card, under a coverflow. */
 @Composable
-private fun FlowCaption(title: String, subtitle: String, color: Color) {
+internal fun FlowCaption(title: String, subtitle: String, color: Color) {
     AnimatedContent(title to subtitle, transitionSpec = { fadeIn(Motion.fade(200)) togetherWith fadeOut(Motion.fade(120)) }, label = "caption") { (t, s) ->
         Column(Modifier.fillMaxWidth().riseIn(t, 0, 12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(t, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)

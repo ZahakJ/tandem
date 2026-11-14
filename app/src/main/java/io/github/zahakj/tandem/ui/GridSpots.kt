@@ -263,12 +263,19 @@ internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context):
         "Add a widget",
         WidgetKinds.all.map { kind ->
             val ok = kind.available() && (folder == null || GridWidgets.fitsFolder(kind))
+            val android = kind === AppWidgetKind
             MenuAction(
                 "w:${kind.id}", kind.name, color = kind.accent,
-                value = if (!ok) null else if (folder == null) GridWidgets.spanFor(kind.defaultSize).label else "1×1",
+                value = if (!ok) null else if (android) "▸" else if (folder == null) GridWidgets.spanFor(kind.defaultSize).label else "1×1",
                 sub = if (ok) kind.blurb else if (!kind.available()) kind.needs ?: "Not available yet" else "Too big for a folder: home grid only",
                 art = { KindSymbol(kind) },
             ) {
+                // An Android widget is picked from the installed apps first (AppWidgets.kt); it lands here once Android has set it up.
+                if (android) {
+                    IconGrid.closeMenu()
+                    AppWidgetUi.pick(if (folder == null) AppWidgetTarget.GridAt(route, at) else AppWidgetTarget.FolderAt(route, folder, shown, at))
+                    return@MenuAction
+                }
                 val key = if (folder == null) GridWidgets.add(kind, homeShown(), at) else GridWidgets.addInFolder(kind, folder, shown, at)
                 IconGrid.closeMenu()
                 if (key != null) FocusMemory.remember(route, key)

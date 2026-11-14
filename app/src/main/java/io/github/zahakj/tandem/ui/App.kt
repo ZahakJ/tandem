@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,6 +67,8 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.ActiveHost
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
+import io.github.zahakj.tandem.Capture
+import io.github.zahakj.tandem.Command
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
@@ -109,13 +112,19 @@ sealed interface Route {
     data object Apps : Route { override val key = "apps"; override val depth = 1 }
     data object Appearance : Route { override val key = "appearance"; override val depth = 2 }
     data object ThemePacks : Route { override val key = "themepacks"; override val depth = 3 }
+    /** Settings › Library & art › More game folders (GameFoldersScreen.kt). */
+    data object GameFolders : Route { override val key = "gamefolders"; override val depth = 3 }
     data object Scrape : Route { override val key = "scrape"; override val depth = 2 }
     data object Stats : Route { override val key = "stats"; override val depth = 1 }
     data object Widgets : Route { override val key = "widgets"; override val depth = 1 }
     /** A page of Settings (see SettingsCatalog.kt); Look & feel is [Appearance]. */
     data class SettingsPage(val id: String) : Route { override val key = "settings:$id"; override val depth = 2 }
+    /** Settings › Controls › Buttons › Rebind buttons (RebindScreen.kt). */
+    data object Rebind : Route { override val key = "rebind"; override val depth = 3 }
     /** One of the built-in apps (BuiltInApps.kt). */
     data class Tool(val id: String) : Route { override val key = "tool:$id"; override val depth = 1 }
+    /** A game's manual or guide, read page by page (ManualReader.kt). */
+    data class Manual(val gameKey: String) : Route { override val key = "manual:$gameKey"; override val depth = 2 }
 }
 
 object Nav {
@@ -188,6 +197,7 @@ object Nav {
     fun openMenu(game: Game) {
         // Always open on Play, never on whatever was used last (Reset, Hide...).
         FocusMemory.forget("menu:${game.key}")
+        StatusUi.pageFor = null
         menuFor = game
     }
 
@@ -218,11 +228,16 @@ object Toasts {
     /** What Select (or a tap on the toast) does while it shows, like Undo; null for most toasts. */
     var action by mutableStateOf<Action?>(null)
         private set
+    /** A picture shown beside Pip (an achievement's icon); null for most toasts. */
+    var icon by mutableStateOf<String?>(null)
+        private set
 
     class Action(val label: String, val run: () -> Unit)
 
     /** [ms]: longer for a prompt that must stay up exactly as long as what it asks for (see PressTwice). */
-    fun show(text: String, ms: Long = DEFAULT_MS, action: Action? = null) { message = text; shownMs = ms; this.action = action; serial++ }
+    fun show(text: String, ms: Long = DEFAULT_MS, action: Action? = null, icon: String? = null) {
+        message = text; shownMs = ms; this.action = action; this.icon = icon; serial++
+    }
 
     /** Runs the toast's action once, and puts the toast away. */
     fun act() {
@@ -375,6 +390,7 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
         // No folder changed since the cached library went up: it is the same library, so the home isn't rebuilt.
         io.github.zahakj.tandem.FileChecks.clear()
         io.github.zahakj.tandem.data.DetailsFill.request()
+        io.github.zahakj.tandem.data.SteamArt.request()
         if (announce) Toasts.show("Found ${plural(Collections.visible(shown.flatMap { it.games }).size, "game")}")
         return
     }
@@ -389,6 +405,7 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
     Libraries.all = libs
     // New games (and ones a scrape never reached) get their description from the LaunchBox database on the device.
     io.github.zahakj.tandem.data.DetailsFill.request()
+    io.github.zahakj.tandem.data.SteamArt.request()
     if (announce) Toasts.show("Found ${plural(Collections.visible(libs.flatMap { it.games }).size, "game")}")
 }
 
@@ -417,6 +434,8 @@ private fun Main(resumes: Int) {
         androidx.compose.runtime.snapshotFlow { Triple(Libraries.all, Store.meta, io.github.zahakj.tandem.Privacy.view) }
             .collectLatest { withContext(Dispatchers.Default) { Collections.warm() } }
     }
+    // Games copied in while Tandem is on screen show up by themselves (FolderWatch.kt); the guest copy watches nothing.
+    if (!guest) io.github.zahakj.tandem.FolderWatchHost()
     // The first start that finds a Cocoon backup brings that backup's setup over by itself (undo in Settings).
     val libraryReady = Libraries.all != null
     LaunchedEffect(libraryReady) { if (libraryReady) CocoonSetup.autoImport(ctx) }
@@ -436,14 +455,14 @@ private fun Main(resumes: Int) {
             // Only the Tandem on screen acts (another copy may linger in a second task).
             if (ActiveHost.token !== activityOf(ctx)) return@collect
             if (Nav.overlayOpen) return@collect
+            // Home itself only: a system or folder open on top of it (a popup) is somewhere else.
+            val onHome = Nav.route == Route.Home && FolderPopup.route == null && IconGrid.openFolder == null
             when (b) {
                 // Y on a game that is still open closes it (press twice), as on the icon grid's Resume card; the
                 // grid handles its own Y before this.
                 Button.Y -> {
                     val g = (Selection.current as? Selected.GameItem)?.game
                     val running = g?.let { RunningGames.list.firstOrNull { r -> r.game?.key == it.key } }
-                    // Home itself only: a system or folder open on top of it (a popup) is somewhere else.
-                    val onHome = Nav.route == Route.Home && FolderPopup.route == null && IconGrid.openFolder == null
                     if (running != null && onHome) resumePageClose(ctx, running) else openMenuFor(Selection.current)
                 }
                 // On the icon grid (or everywhere, if chosen) X swaps the two screens.
@@ -452,16 +471,22 @@ private fun Main(resumes: Int) {
                 // Start: the Start panel (StartPanel.kt), or inside Settings back to its first screen and out.
                 Button.Start -> if (Nav.inSettings) Nav.toggleSettings() else StartMenu.show()
                 Button.Select -> surpriseMe()
-                // In a system or collection opened from the grid, bigger or smaller cards (on release: IconGrid.shoulderUp).
-                Button.L1, Button.R1 -> if (Nav.route == Route.Home && FolderPopup.route != null) IconGrid.armZoom(if (b == Button.R1) 1 else -1)
+                // In a system or collection opened from the grid, bigger or smaller cards.
+                Button.L1, Button.R1 -> if (Nav.route == Route.Home && FolderPopup.route != null) IconGrid.zoomTap(if (b == Button.R1) 1 else -1)
                     else cycle(if (b == Button.R1) 1 else -1)
                 // L2 / R2: in a list of games, the previous or next letter (or year, rating); elsewhere a page up or down.
-                // R2 on home itself (any layout): the side panel (SidePanel.kt).
-                Button.R2 -> if (Nav.route == Route.Home && FolderPopup.route == null && IconGrid.openFolder == null) Panels.toggleSide()
-                    else if (!QuickJump.jump(1)) (ctx as? MainActivity)?.pageJump(android.view.KeyEvent.KEYCODE_DPAD_DOWN, 5)
+                // On home itself (any layout) the Side panel command opens the side panel (SidePanel.kt); it shares R2
+                // with Page down unless rebound, so the press says which it means (Buttons.has).
+                Button.R2, Button.SidePanel -> if (onHome) { if (Buttons.has(Command.SidePanel)) Panels.toggleSide() }
+                    else if (Buttons.has(Command.PageDown) && !QuickJump.jump(1)) (ctx as? MainActivity)?.pageJump(android.view.KeyEvent.KEYCODE_DPAD_DOWN, 5)
                 Button.L2 -> if (!QuickJump.jump(-1)) {
                     (ctx as? MainActivity)?.pageJump(android.view.KeyEvent.KEYCODE_DPAD_UP, 5)
                 }
+                // Commands with no button until the user binds one (Rebind buttons).
+                Button.Favourite -> (Selection.current as? Selected.GameItem)?.game?.let { toggleFavorite(it) }
+                    ?: run { Sounds.error(); Toasts.show("Highlight a game to favourite it") }
+                Button.Screenshot -> Capture.screenshot()
+                Button.Clip -> Capture.clip()
             }
         }
     }
@@ -724,10 +749,13 @@ private fun RouteContent(route: Route, libs: List<io.github.zahakj.tandem.Platfo
         Route.Apps -> AppsScreen()
         Route.Appearance -> AppearanceScreen()
         Route.ThemePacks -> ThemePacksScreen()
+        Route.GameFolders -> GameFoldersScreen()
         Route.Scrape -> ScrapeScreen()
         Route.Stats -> StatsScreen()
         Route.Widgets -> WidgetsScreen()
+        Route.Rebind -> RebindScreen()
         is Route.Tool -> ToolScreen(route)
+        is Route.Manual -> ManualScreen(route)
     }
 }
 
@@ -817,10 +845,13 @@ private fun TopBar() {
         Route.Appearance -> "Settings  ›  Look & feel"
         is Route.SettingsPage -> "Settings  ›  ${SettingsCategories.title(r.id)}"
         Route.ThemePacks -> "Look & feel  ›  Theme packs"
+        Route.GameFolders -> "Library & art  ›  Game folders"
         Route.Scrape -> "Artwork & details"
         Route.Stats -> "Play stats"
         Route.Widgets -> "Widgets"
+        Route.Rebind -> "Controls  ›  Rebind buttons"
         is Route.Tool -> BuiltInApps.byId(r.id)?.title
+        is Route.Manual -> Libraries.byKey(r.gameKey)?.title?.let { "$it  ›  Manual" } ?: "Manual"
     }
     Row(Modifier.fillMaxWidth().height(TopBarHeight).topBarFocus().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
         Pip(26.dp, bounce = false)
@@ -898,6 +929,12 @@ private fun ToastHost() {
             ) {
                 Pip(26.dp, mood = 1)
                 Spacer(Modifier.width(10.dp))
+                // An unlocked achievement brings its icon along.
+                val icon = Toasts.icon
+                if (icon != null && message != null) {
+                    coil.compose.AsyncImage(icon, null, Modifier.size(34.dp).clip(RoundedCornerShape(8.dp)).background(Palette.Card))
+                    Spacer(Modifier.width(10.dp))
+                }
                 Text(shown.orEmpty(), Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 if (action != null) {
                     Spacer(Modifier.width(12.dp))

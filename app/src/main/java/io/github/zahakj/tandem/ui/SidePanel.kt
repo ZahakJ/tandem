@@ -67,7 +67,8 @@ fun SidePanelHost() {
     var focusedNote by remember { mutableStateOf<String?>(null) }
     InterceptButtons(Panels.side && TextEntry.request == null) { b ->
         when (b) {
-            Button.R2 -> { Panels.close(); Sounds.menuClose(); true }
+            // The button that opened it closes it (R2, or whatever Side panel is bound to).
+            Button.R2, Button.SidePanel -> { Panels.close(); Sounds.menuClose(); true }
             Button.Y -> {
                 Notes.list.firstOrNull { it.key == focusedNote }?.let { n ->
                     if (n.clearable) {

@@ -9,7 +9,7 @@ import org.junit.Test
 /** What a tapped button hint presses (Touch.kt): the same button the controller would. */
 class HintPressTest {
     @Test fun aAndBAreTheirKeysAfterTheSwaps() {
-        // The hint names the logical button, so a swap is already applied: A always selects, B always goes back.
+        // The hint names the command, not the physical button: A always selects, B always goes back.
         assertEquals(HintPress.Key(KeyEvent.KEYCODE_BUTTON_A), HintPress.of("A"))
         assertEquals(HintPress.Key(KeyEvent.KEYCODE_BUTTON_B), HintPress.of("B"))
     }

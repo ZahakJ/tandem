@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Only the copy of the latest screenshot (GameShot.kt) is shared, for pasting into another app. -->
+<!-- Only copies are shared: the latest screenshot for the clipboard (GameShot.kt) and the picture or clip last
+     shared from the Gallery (GalleryApp.kt). -->
 <paths>
     <cache-path name="shots" path="shots/" />
+    <cache-path name="share" path="share/" />
 </paths>

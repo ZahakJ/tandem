@@ -44,7 +44,7 @@ import io.github.zahakj.tandem.plural
 /*
  * Tandem's built-in apps: each is a tile on the icon grid (key "tandem:<id>") that
  * can be moved, put in folders and removed like any app, with its own drawn icon (TandemIcons.kt) and a full screen
- * (Route.Tool). Gallery, Journal, Files and Controller test live in their own files.
+ * (Route.Tool). Gallery, Journal, Notes, Files and Controller test live in their own files.
  */
 
 class BuiltInApp(
@@ -66,10 +66,13 @@ object BuiltInApps {
     val all: List<BuiltInApp> = listOf(
         BuiltInApp("gallery", "Gallery", "Your screenshots, sorted by game", TIcon.Gallery, Color(0xFFF07F62)) { Nav.go(Route.Tool("gallery")) },
         BuiltInApp("journal", "Journal", "Every play session, with your own notes", TIcon.Journal, Color(0xFFD9A03C)) { Nav.go(Route.Tool("journal")) },
+        BuiltInApp("notes", "Notes", "Notes for each game: text, checklists, sketches and screenshots", TIcon.Notes, Color(0xFF5FB58C)) {
+            NotesUi.reset(); Nav.go(Route.Tool("notes"))
+        },
         BuiltInApp("themes", "Themes", "Themes, icon packs, layouts and looks", TIcon.Themes, Color(0xFF9A6CF0)) { Nav.go(Route.Appearance) },
-        BuiltInApp("stats", "Stats", "Play time, streaks and favourites", TIcon.Stats, Color(0xFF2EB5A6)) { StatsTabs.tab = 0; Nav.go(Route.Stats) },
-        BuiltInApp("achievements", "Achievements", "RetroAchievements you've earned and the next ones", TIcon.Trophy, Color(0xFFE6B92E)) {
-            StatsTabs.tab = 2; Nav.go(Route.Stats)
+        BuiltInApp("stats", "Stats", "Play time, your library by status, streaks", TIcon.Stats, Color(0xFF2EB5A6)) { StatsTabs.tab = StatsTabs.OVERVIEW; Nav.go(Route.Stats) },
+        BuiltInApp("achievements", "Trophies", "Your trophies, finished games and RetroAchievements", TIcon.Trophy, Color(0xFFE6B92E)) {
+            StatsTabs.tab = StatsTabs.TROPHIES; Nav.go(Route.Stats)
         },
         BuiltInApp("upnext", "Up next", "Games you mean to play soon", TIcon.UpNext, Color(0xFF4F8CF2)) { Nav.go(Route.Tool("upnext")) },
         BuiltInApp("files", "Files", "Browse and tidy your ROMs folder", TIcon.Files, Color(0xFF7C8AA8)) { Nav.go(Route.Tool("files")) },
@@ -86,6 +89,7 @@ fun ToolScreen(route: Route.Tool) {
     when (route.id) {
         "gallery" -> GalleryScreen()
         "journal" -> JournalScreen()
+        "notes" -> NotesScreen()
         "upnext" -> UpNextScreen()
         "files" -> FilesScreen()
         "pad" -> ControllerTestScreen()

@@ -110,7 +110,7 @@ object BackupFiles {
 
     val parts: Map<BackupCategory, List<Part>> = mapOf(
         BackupCategory.Games to listOf(
-            Part("library.json"), Part("sessions.json"), Part("journal.json"), Part("achievements.json"), Part("settings.json", gameFields),
+            Part("library.json"), Part("sessions.json"), Part("journal.json"), Part("achievements.json"), Part("steam.json"), Part("settings.json", gameFields),
         ),
         BackupCategory.Look to listOf(Part("settings.json", lookFields), Part("extras.json")),
         BackupCategory.Layout to listOf(Part("icon-grid.json"), Part("home.json"), Part("widgets.json")),
@@ -124,6 +124,7 @@ object BackupFiles {
     val secrets: Map<String, Set<String>> = mapOf(
         "scraping.json" to setOf("ssUser", "ssPassword", "ssDevId", "ssDevPassword", "sgdbKey", "igdbClientId", "igdbSecret", "ssVerifiedUser"),
         "achievements.json" to setOf("key"),
+        "steam.json" to setOf("key"),
     )
 
     /** The categories that use [file]. */
@@ -359,6 +360,7 @@ object Backups {
         val home = HomeStore.settings
         val sessions = HomeStore.sessions
         val ra = HomeStore.ra
+        val steam = SteamStore.account
         val widgets = WidgetStore.config
         val grid = IconGridStore.config
         val systems = SystemPrefs.data
@@ -373,6 +375,7 @@ object Backups {
             "home.json" to { json.encodeToString(home) },
             "sessions.json" to { json.encodeToString(sessions) },
             "achievements.json" to { json.encodeToString(ra) },
+            "steam.json" to { json.encodeToString(steam) },
             "widgets.json" to { json.encodeToString(widgets) },
             "icon-grid.json" to { json.encodeToString(grid) },
             "systems.json" to { json.encodeToString(systems) },
@@ -386,7 +389,7 @@ object Backups {
 
     private fun initAll(ctx: Context) {
         Store.init(ctx); HomeStore.init(ctx); WidgetStore.init(ctx); IconGridStore.init(ctx); SystemPrefs.init(ctx)
-        ControllerStore.init(ctx); ExtrasStore.init(ctx); ScrapeConfig.init(ctx); AppPrefs.init(ctx)
+        ControllerStore.init(ctx); ExtrasStore.init(ctx); ScrapeConfig.init(ctx); AppPrefs.init(ctx); SteamStore.init(ctx)
     }
 
     fun appVersion(ctx: Context): String =
@@ -417,7 +420,7 @@ object Backups {
         initAll(ctx)
         return BackupFiles.restore(s, ctx.applicationContext.filesDir, categories, ::check) { cat ->
             when (cat) {
-                BackupCategory.Games -> { Store.reload(); HomeStore.reload(); ExtrasStore.reload() }
+                BackupCategory.Games -> { Store.reload(); HomeStore.reload(); ExtrasStore.reload(); SteamStore.reload() }
                 BackupCategory.Look -> { Store.reload(); ExtrasStore.reload() }
                 BackupCategory.Layout -> { IconGridStore.reload(); HomeStore.reload(); WidgetStore.reload() }
                 BackupCategory.Systems -> { SystemPrefs.reload(); AppPrefs.reload(); ControllerStore.reload(); ScrapeConfig.reload() }
@@ -433,6 +436,7 @@ object Backups {
             "home.json" -> json.decodeFromString<HomeSettings>(text)
             "sessions.json" -> json.decodeFromString<List<PlaySession>>(text)
             "achievements.json" -> json.decodeFromString<RaAccount>(text)
+            "steam.json" -> json.decodeFromString<SteamAccount>(text)
             "widgets.json" -> json.decodeFromString<WidgetConfig>(text)
             "icon-grid.json" -> GridJson.decode(text)
             "systems.json" -> json.decodeFromString<SystemsData>(text)

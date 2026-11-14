@@ -286,6 +286,11 @@ private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
         "played" to chooser("Played", SmartRule.PLAYS, r.played, Palette.Sky, Glyph.Play, "Played: games with any play history. Unplayed: games never started.", SmartRule::playedLabel) { v ->
             set { it.copy(played = v) }
         },
+        "status" to chooser(
+            "Status", StatusChoices, r.statuses, Palette.Mint, Glyph.Trophy,
+            "Only games with this status: in the backlog, being played, finished (completed ones too)… None: games without a status.",
+            ::statusChoiceLabel,
+        ) { v -> set { it.copy(statuses = v) } },
         "random" to chooser(
             "How many", SmartRule.RANDOMS, r.random, Palette.Butter, Glyph.Sparkle,
             "Random keeps that many of the matches, picked afresh each time Tandem starts.", { if (it == 0) "All" else "Random $it" },
@@ -426,4 +431,17 @@ fun SmartPreview() {
             }
         }
     }
+}
+
+/** The status choices for a rule, as the [SmartRule.statuses] each stands for. Finished takes completed games too. */
+private val StatusChoices: List<List<String>> = listOf(emptyList<String>()) +
+    io.github.zahakj.tandem.data.GameStatus.entries.filter { it != io.github.zahakj.tandem.data.GameStatus.Completed }.map { s ->
+        if (s == io.github.zahakj.tandem.data.GameStatus.Finished) listOf(s.id, io.github.zahakj.tandem.data.GameStatus.Completed.id) else listOf(s.id)
+    } + listOf(io.github.zahakj.tandem.data.GameStatus.Completed.id).let { listOf(it) } + listOf(listOf(SmartRule.STATUS_NONE))
+
+private fun statusChoiceLabel(v: List<String>): String = when {
+    v.isEmpty() -> "Any"
+    v == listOf(SmartRule.STATUS_NONE) -> "None"
+    v.size > 1 -> "Finished"
+    else -> io.github.zahakj.tandem.data.GameStatus.of(v[0])?.label ?: "Any"
 }

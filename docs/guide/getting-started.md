@@ -38,8 +38,10 @@ ROMs/
 
 If you already use ES-DE or Cocoon, your folders are probably laid out like this already. Folders inside a system folder (for example `ROMs/n3ds/RPG/`) show up in Tandem as folders, up to three levels deep. The full list of folder names and file types per system is in [Systems and emulators](platforms.md#what-comes-built-in).
 
-> [!NOTE]
-> Tandem only looks in internal storage for now. If your games are on an SD card, move them, or [let us know](https://github.com/ZahakJ/tandem/issues) that you need it.
+> [!TIP]
+> Games on an SD card, or in a second folder? Once Tandem is set up, add the folder in **Settings › Library & art ›
+> Games › More game folders**. It is read the same way, a folder per system inside it, and its games join the same
+> systems. See [Where games live](library.md#where-games-live).
 
 Artwork is optional. If you have scraped art before with another frontend, it is most likely in `ROMs/downloaded_media/`, and Tandem uses it as it is. [Your library](library.md#artwork) explains which folders it reads.
 
@@ -65,7 +67,7 @@ The top screen is your library. The home screen has up to three rows:
 ![The top screen: Tandem's home screen as an icon grid of systems, with the Nintendo 3DS highlighted and a dock of Tandem's apps along the bottom.](../../site/assets/screenshots/home-top.webp "Top screen: the home screen, here in the icon grid layout")
 ![The bottom screen at the same moment: a big Nintendo 3DS icon with its game count and play time.](../../site/assets/screenshots/home-bottom-system.webp "Bottom screen: details for what is highlighted")
 
-The bottom screen shows details for whatever is highlighted. Move with the D-pad or left stick, press <kbd>A</kbd> to open or play, <kbd>B</kbd> to go back. <kbd>Y</kbd> on a game opens its menu, <kbd>X</kbd> searches, and <kbd>Start</kbd> opens Settings. The [controller reference](controls.md) lists every button.
+The bottom screen shows details for whatever is highlighted. Move with the D-pad or left stick, press <kbd>A</kbd> to open or play, <kbd>B</kbd> to go back. <kbd>Y</kbd> on a game opens its menu, <kbd>X</kbd> searches, and <kbd>Start</kbd> opens the Start panel, where Settings is. The [controller reference](controls.md) lists every button.
 
 To play, highlight a game and press A. Tandem starts it in the system's emulator. When you come back to Tandem (with Home, or by quitting the emulator), your place in the library is just as you left it.
 

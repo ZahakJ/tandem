@@ -20,6 +20,16 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS"
         xmlns:tools="http://schemas.android.com/tools"
         tools:ignore="ProtectedPermissions" />
+    <!-- A clip's sound (GameClip.kt): what the game plays, caught while the clip records, and your voice if you leave
+         it on. Nothing is recorded outside a clip. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- The Deck's haptic tick per key, through the Vibrator so it works with touch vibration off (ui/DeckPanel.kt). -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <!-- Show and hide a Switch game's own second screen in Eden Duo (GameScreens.kt). -->
+    <uses-permission android:name="io.github.zahakj.edenduo.permission.CONTROL_COMPANION" />
 
     <application
         android:label="@string/app_name"
@@ -126,6 +136,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
+
+        <!-- Records a clip with its sound (GameClip.kt): runs only while one records. -->
+        <service
+            android:name=".ClipService"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection|microphone" />
 
         <!-- The latest game screenshot, for the clipboard (GameShot.kt). -->
         <provider

@@ -1,19 +1,21 @@
 # Privacy and scraping
 
-Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements if you sign in, and the Discord status if you connect it.
+Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, and the Discord status if you connect it. The one exception is art for Steam shortcuts, below.
 
 ## When Tandem uses the network
 
-Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements and the Discord status only; there are no crash reports or update checks. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code.
+Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements, Steam achievements and the Discord status only; there are no crash reports or update checks. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code.
 
-It goes online only when you ask it to:
+It goes online only when you ask it to, with one exception:
 
 - **Scraping**: **Settings › Library & art › Scrape library**, **Scrape these games** in a system's Y menu, or **Scrape this game** in a game's Y menu. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
 - **Choose artwork** in a game's Y menu, which asks your sources for pictures of that one game.
 - **Test** on a source's card, which looks up one well-known game, never one of yours.
 - **The LaunchBox database**, downloaded only after you agree to it. A scrape you start refreshes a month-old copy, on Wi-Fi only.
 - **RetroAchievements**, only after you sign in with your username and web API key, and for **Find match** in a game's Edit details when you open it (never for a hidden game).
+- **Steam achievements**, only after you enter your own Steam Web API key and account: when you sign in, when you choose **Look up achievements**, when a Steam game is highlighted (at most every ten minutes), and once when you come back from playing one (never for a hidden game).
 - **Discord status**, only after you connect your Discord account, and only while a game plays (see [Discord status](#discord-status)).
+- **Steam shortcuts' art**, the exception: after a library scan, a Windows game that is a `.steam` shortcut and has no box art, hero or logo yet gets them from Steam's public store pictures, by its app id. No account, no key, nothing else sent, never for a hidden game, and never in private mode. To avoid it, put the pictures in place yourself ([Windows and Steam art](library.md#windows-and-steam-games)).
 
 Tandem never scrapes on its own or on a schedule. `ACCESS_NETWORK_STATE` only lets it warn you before a big download on mobile data.
 
@@ -32,6 +34,8 @@ Each source can be switched off in **Settings › Library & art**; a source that
 | SteamGridDB | Only with your own API key | Your API key and the game's title. |
 | HowLongToBeat | Off until you switch it on | The game's title. |
 | RetroAchievements | Only when signed in | Your username and web API key, the system's public game list (cached for a week), and the ID of a matched game to get your progress. Games are matched by a hash computed on the device; the file itself is never sent. |
+| Steam store pictures | After a scan, for `.steam` shortcuts missing art | The app id in the shortcut, as part of the picture's address. |
+| Steam Web API | Only with your own key and account | Your key and your SteamID64 (or the profile name you typed, once, to find it), and the app id of each Steam game in your library, to read its achievements and their names and icons. The share of players who have each one is asked for with the app id alone. |
 | Discord | Only after you connect your account, in builds that include it | While a game plays: its title, its cover and when you started. The connection to Discord stays open only while you play and for a minute after. |
 
 **Hidden games are never sent anywhere**, and neither is any game in a hidden folder or system. They are left out of every scrape and achievement lookup, **Choose artwork** won't run for them, and they never show as your Discord status.
@@ -77,6 +81,7 @@ While private mode is on, Tandem itself sends nothing online:
 
 - No scraping, **Choose artwork**, source tests or LaunchBox database download; they say private mode keeps Tandem offline. A scrape under way stops when private mode turns on.
 - No RetroAchievements: no progress, profile, game lists or sign-in.
+- No Steam achievements: no lookups, no sign-in; what was fetched before still shows.
 - No Discord status, and no cover lookups for it.
 - No pictures from the web: only those already in Tandem's picture cache show.
 
@@ -102,15 +107,18 @@ All of it is on your device:
 | Play history: play count, total play time, last played, first seen | `library.json` | Continue playing, Most played, sorting |
 | Settings | `settings.json` in Tandem's private storage | To remember your choices |
 | Journal notes and play sessions | Tandem's private storage | The journal and the stats screen |
-| Scraping keys and logins (ScreenScraper, IGDB, SteamGridDB) and your RetroAchievements key | `scraping.json` and `achievements.json` in Tandem's private storage | To talk to the services you set up. Left out of Tandem's backups unless you include them, and never in Android's cloud backup |
+| Notes, with their screenshots and drawings | `ROMs/notes/<notebook>/` as plain Markdown files, pictures in `<note>.assets/` | So they are yours: readable in any app, kept after uninstalling. Never sent anywhere; any app with storage access can read them. A hidden game's notebook stays out of Tandem's lists while hidden games are hidden. See [Notes](notes.md) |
+| Scraping keys and logins (ScreenScraper, IGDB, SteamGridDB), your RetroAchievements key, and your Steam Web API key and account | `scraping.json`, `achievements.json` and `steam.json` in Tandem's private storage | To talk to the services you set up. Left out of Tandem's backups unless you include them, and never in Android's cloud backup |
+| Your Steam games' achievements, as last fetched | `steam/<app id>.json` in Tandem's private storage | To show them at once, and to tell what is new after a session. Not in any backup; fetched again on the device. **Sign out** of Steam deletes them |
 | Your Discord token, if you connected Discord | `discord.json` in Tandem's private no-backup storage | To show your status. Never in Tandem's backups or Android's backups; **Disconnect Discord** deletes it |
 | A salted hash of your private mode PIN, and the count of wrong tries | `private-pin.json` in Tandem's private no-backup storage | To check the PIN. Never in Tandem's backups or Android's backups |
 | What Tandem turned off to go offline for a hidden game | `offline.json` in Tandem's private no-backup storage, only while it is offline | To put airplane mode and Wi-Fi back, even after a restart |
 | Downloaded artwork, logos and video snaps | `ROMs/downloaded_media/<system>/…` | So they are yours to keep, in the layout other frontends read. **Clear downloaded media** removes only what Tandem downloaded |
+| Game manuals and guides, and the page each was left at | `ROMs/manuals/<system>/` (your files, and copies of the ones you pick in Edit details); `manual-pages.json` in Tandem's private storage | Read on either screen. Never sent anywhere, never deleted by Tandem. See [Manuals and guides](library.md#manuals-and-guides) |
 | The `ROMs` folder you picked | Android app preferences | To share game files with emulators |
 | The last game started in each emulator, and when the current session began | Android app preferences | Resume and play time |
 
-The JSON files are plain text. **Settings › Play & system › Back up** copies them to a dated folder in `ROMs/tandem/backup/`, where you can read them; keys and logins only go too if you switch on **Account keys and logins**. Tandem also makes automatic backups there before a restore, a Cocoon import, a Quick look or a reset of the look, and keeps the last five. A backup holds hidden games and hidden folders as they are in Tandem, and other apps with storage access can read that folder. Uninstalling Tandem deletes its private storage, but not those backups or your downloaded artwork. See [Back up and restore](library.md#back-up-and-restore).
+The JSON files are plain text. **Settings › Play & system › Back up** copies them to a dated folder in `ROMs/tandem/backup/`, where you can read them; keys and logins only go too if you switch on **Account keys and logins**. Tandem also makes automatic backups there before a restore, a Cocoon import or a reset of the look, and keeps the last five. A backup holds hidden games and hidden folders as they are in Tandem, and other apps with storage access can read that folder. Uninstalling Tandem deletes its private storage, but not those backups or your downloaded artwork. See [Back up and restore](library.md#back-up-and-restore).
 
 Android's own backup may include Tandem's private storage if you have it switched on, the same as for any app, except the files holding keys and logins and the LaunchBox database. That backup goes wherever your device's backup settings send it.
 
@@ -118,12 +126,14 @@ Android's own backup may include Tandem's private storage if you have it switche
 
 | Permission | Used for |
 | --- | --- |
-| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs) and `ROMs/downloaded_media/` (artwork you scrape). |
-| Internet | Scraping, RetroAchievements and the Discord status, only when you start or connect them (see above). |
+| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
+| Internet | Scraping, RetroAchievements, Steam achievements and the Discord status, only when you start or connect them (see above). |
 | Network state | Warning you before a big download on mobile data. |
 | Wi-Fi state, and Modify system settings (optional) | The quick panel (hold Start): showing whether Wi-Fi is on, and changing brightness once you allow it. |
 | Access to the `ROMs` folder you pick | Handing individual game files to emulators that only accept shared files. |
 | See installed apps | Finding your emulators and bringing a running one back to the front. |
+| Notification access (optional, off until you allow it) | Showing your notifications in the side panel (R2 on home), where A opens one and Y clears it. They are kept in memory only, never stored or sent; in private mode only the app and time show. With Shizuku, Tandem can switch this on for itself when you ask. |
+| Microphone and screen capture (optional) | The companion's 15-second clips: the game's screen and sound, and your voice unless **Voice in clips** is off. With Shizuku, Tandem grants these to itself so a clip starts without asking. |
 | Shizuku (optional) | Checking whether an emulator is still running, and closing it before switching games. See [Resume and Shizuku](resume.md). In private mode, also turning airplane mode on while a hidden game plays. |
 | Accessibility: "Tandem: Controller Home button" (optional, off until you switch it on) | Making a Bluetooth or USB controller's Home (guide) button work in other apps. It filters key events only: it keeps that one button from external controllers and lets everything else through. It cannot read the screen, records nothing and sends nothing. See [Controls](controls.md#bluetooth-and-usb-controllers). |
 

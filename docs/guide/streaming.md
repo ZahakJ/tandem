@@ -173,10 +173,19 @@ app list in between:
 
   With an image, Sunshine adds the image's SHA-256 to what it hashes; leaving the image out keeps the id simple, and
   the art comes from Tandem anyway. A wrong id lands on Moonlight's app list for the PC instead of in the game.
+- **`[steam]`** (optional) is the game's Steam app id, the number in its store address
+  (`store.steampowered.com/app/620/…` is `620`). Sunshine's `[appid]` can't stand in for it, since it is a hash of
+  the name, so only this line brings the game's [Steam achievements](library.md#steam-achievements) to its tile.
+  Moonlight ignores it.
 
 Moonlight always opens these files: GameNative, DroidDeck and Winlator are never offered for them, whichever is the
 system's emulator. Art works as for any game: scrape it, or copy pictures named like the file into
-`ROMs/downloaded_media/windows/icon/`, `hero/` and `logo/`.
+`ROMs/downloaded_media/windows/` (see [Windows and Steam games](library.md#windows-and-steam-games)).
+
+**Typing into the stream.** While a streamed game plays, the bottom screen's **Deck** chip gives you a keyboard and
+trackpad for it (with Shizuku): type a password or a chat line, or move the PC's pointer, without Moonlight's own
+on-screen keyboard. See [the Deck](ayn-thor.md#while-you-play). If Moonlight is set to capture the mouse, its
+pointer may ignore the Deck's; the plain mouse mode works.
 
 **Leaving and coming back.** Turn on **Picture-in-picture** in Moonlight's settings. Home then shrinks the stream to
 a small window, still connected, in place of dropping it, and pressing A on the game in Tandem

@@ -145,7 +145,7 @@ object Images {
             coil.ImageLoader.Builder(app)
                 .memoryCache { coil.memory.MemoryCache.Builder(app).maxSizePercent(0.15).build() }
                 // Private mode: pictures from the web come from the disk cache only (Offline.kt).
-                .components { add(OfflineImages) }
+                .components { add(OfflineImages); add(coil.decode.VideoFrameDecoder.Factory()) }
                 .build()
         }
     }

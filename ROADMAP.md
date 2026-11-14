@@ -10,6 +10,7 @@ A complete handheld frontend with nothing hidden: no telemetry, open formats, an
 - [x] Search with a controller-friendly keyboard (games, apps and settings)
 - [x] Sorting: name, recently played, most played, year, rating, recently added
 - [x] Settings screen (controller-navigable, with search)
+- [x] Games on the SD card and in more folders than `ROMs`, found by themselves when copied over (folder watching)
 
 ## Milestone 2: smarter collections and play tracking
 - [x] Play time and play count per game, with a stats screen (sessions, streaks, CSV export) and a play journal
@@ -27,8 +28,9 @@ A complete handheld frontend with nothing hidden: no telemetry, open formats, an
 - [x] Per-game emulator and core override
 
 ## Milestone 4: make it yours
-- [x] Themes: 24 built-in themes, five home layouts (icon grid with 1 to 5 rows, shelves, carousel, list, console), card styles, theme packs (see docs/THEMES.md)
+- [x] Themes: 24 built-in themes, six home layouts (icon grid with 1 to 5 rows, shelves, carousel, list, console, and Tandem's own Orbit), card styles, theme packs (see docs/THEMES.md)
 - [x] Bottom-screen modes: details, art, animated art, clock, video snaps, widgets, and an in-game art or companion screen
+- [x] Game manuals and guides (PDF, pictures, text) read page by page, on the bottom screen while playing too
 - [x] Single-screen mode and swappable screens (X, animated)
 - [x] Background music and UI sounds (two soundtracks, five sound packs)
 - [x] Screensaver, also as Android's screensaver

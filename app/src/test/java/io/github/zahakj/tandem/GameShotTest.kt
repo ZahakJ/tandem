@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
 
-/** The game screenshot's display lookup and file name (GameShot.kt). */
+/** The game screenshot's display lookup and file name (GameShot.kt), and a clip's (GameClip.kt). */
 class GameShotTest {
     @Test fun displaysComePrimaryFirst() {
         val dump = """
@@ -19,5 +19,11 @@ class GameShotTest {
         val at = LocalDateTime.of(2026, 10, 25, 21, 5, 9)
         assertEquals("Mario Odyssey 2026-10-25 21.05.09.png", GameShot.fileName("Mario: Odyssey", at))
         assertEquals("Screenshot 2026-10-25 21.05.09.png", GameShot.fileName(" /?* ", at))
+    }
+
+    @Test fun clipsAreVideos() {
+        val at = LocalDateTime.of(2026, 11, 2, 20, 5, 9)
+        assertEquals("Mario Odyssey 2026-11-02 20.05.09.mp4", GameClip.fileName("Mario: Odyssey", at))
+        assertEquals("Clip 2026-11-02 20.05.09.mp4", GameClip.fileName("", at))
     }
 }

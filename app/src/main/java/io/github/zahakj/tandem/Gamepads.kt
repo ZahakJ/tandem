@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.ui.Host
 import io.github.zahakj.tandem.ui.Panels
-import io.github.zahakj.tandem.ui.Prompts
 
 /**
  * Game controllers other than the Thor's own: which ones are connected, their per-controller button swap, and their
@@ -86,8 +85,9 @@ object Gamepads {
     }
 
     /**
-     * The key code Tandem acts on: the controller's own swap first (Nintendo labels: the button printed A sends
-     * BUTTON_B in X-input mode, so it is turned back into A), then the Swap A and B / Swap X and Y settings.
+     * The button as printed on the controller: the controller's own swap (Nintendo labels: the button printed A sends
+     * BUTTON_B in X-input mode, so it is turned back into A). What that button does is the bindings' business
+     * (Bindings.kt), Swap A and B included.
      */
     fun remap(event: KeyEvent): Int {
         var code = event.keyCode
@@ -101,7 +101,7 @@ object Gamepads {
                 else -> KeyEvent.KEYCODE_BUTTON_X
             }
         }
-        return Prompts.remap(code)
+        return code
     }
 
     private val SwapCodes = setOf(KeyEvent.KEYCODE_BUTTON_A, KeyEvent.KEYCODE_BUTTON_B, KeyEvent.KEYCODE_BUTTON_X, KeyEvent.KEYCODE_BUTTON_Y)
@@ -119,39 +119,35 @@ object Gamepads {
 }
 
 /**
- * A controller's Home (guide) button inside Tandem. Many X-input pads send it as
- * KEYCODE_BUTTON_MODE, which Android ignores; here a tap does exactly what Home does and a hold does what
- * "Hold the Home button" says. Outside Tandem the optional [ControllerHomeService] does the same.
+ * A controller's Home (guide) button inside Tandem. Many X-input pads send it as KEYCODE_BUTTON_MODE, which Android
+ * ignores; here a tap does exactly what Home does and a hold does what "Hold the Home button" says. Which button
+ * counts is the Controller Home command's binding (Bindings.kt; Chords hands its presses here). Outside Tandem the
+ * optional [ControllerHomeService] does the same for the guide button itself.
  */
 object HomeButton {
     const val HOLD_MS = 550L
     private val handler = Handler(Looper.getMainLooper())
-    private var down = false
+    private var pressed = false
     private var held = false
 
     private val hold = Runnable {
-        if (down && !held) { held = true; holdAction(null) }
+        if (pressed && !held) { held = true; holdAction(null) }
     }
 
-    /** True when the event was the Home button of an external controller (and is used up here). */
-    fun onKey(e: KeyEvent): Boolean {
-        if (e.keyCode != KeyEvent.KEYCODE_BUTTON_MODE || !Gamepads.isExternalId(e.deviceId)) return false
-        when (e.action) {
-            KeyEvent.ACTION_DOWN -> if (e.repeatCount == 0) {
-                down = true; held = false
-                handler.postDelayed(hold, HOLD_MS)
-            }
-            KeyEvent.ACTION_UP -> {
-                handler.removeCallbacks(hold)
-                if (down && !held) home()
-                down = false
-            }
+    /** The Controller Home button went [down], or came up. */
+    fun press(down: Boolean) {
+        handler.removeCallbacks(hold)
+        if (down) {
+            pressed = true; held = false
+            handler.postDelayed(hold, HOLD_MS)
+        } else {
+            if (pressed && !held) home()
+            pressed = false
         }
-        return true
     }
 
     /** Tandem lost focus mid-press: the release may never come. */
-    fun reset() { handler.removeCallbacks(hold); down = false; held = true }
+    fun reset() { handler.removeCallbacks(hold); pressed = false; held = true }
 
     /** The same as Android's Home while Tandem is in front (see Host.onNewIntent). */
     fun home() {

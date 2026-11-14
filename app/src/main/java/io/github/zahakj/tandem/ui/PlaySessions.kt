@@ -79,7 +79,7 @@ object PlaySessions {
     fun openFor(g: Game) {
         Nav.closeOverlays()
         only = g.key
-        StatsTabs.tab = 1
+        StatsTabs.tab = StatsTabs.SESSIONS
         FocusMemory.forget(ROUTE)
         if (Nav.route != Route.Stats) Nav.go(Route.Stats) else Nav.focusTick++
     }

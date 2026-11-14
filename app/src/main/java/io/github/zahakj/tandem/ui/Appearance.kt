@@ -47,15 +47,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import io.github.zahakj.tandem.Bindings
+import io.github.zahakj.tandem.Command
 import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.Look
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
@@ -193,8 +197,8 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
         ) { v -> updateLook { it.copy(gridFolders = v) } },
         choice(
             "X button", Glyph.Swap, Palette.Sky,
-            "Swap the two screens with X on the icon grid (search is in the Y menu), everywhere, or keep X for search.",
-            listOf("swap-grid" to "Swap on the grid", "swap" to "Swap everywhere", "search" to "Search"), look.xButton,
+            "Swap the two screens with X on the icon grid and Orbit homes (search is in the Start panel and the grid's Y menu), everywhere, or keep X for search.",
+            listOf("swap-grid" to "Swap on grid and Orbit","swap" to "Swap everywhere", "search" to "Search"), look.xButton,
         ) { v -> updateLook { it.copy(xButton = v) } },
         choice(
             "Swap animation", Glyph.Swap, Palette.Sky,
@@ -236,6 +240,8 @@ fun appearanceSections(): List<SettingSection> {
     val activity = ctx as? MainActivity
     val look = Store.settings.look
     val settings = Store.settings
+    val bindings = ControllerStore.live
+    val rebound = Bindings.changed(bindings)
     val base = Themes.byId(look.theme) ?: BuiltInThemes.PastelNight
     // Read in the background (Facts), never while composing: Settings opens without touching the disk.
     Facts.ensure(ctx)
@@ -343,7 +349,7 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Home layout", Glyph.Home, Palette.Butter,
-                    "Shelves of rows, an icon grid, a coverflow carousel, a compact list, or a console-style dashboard.",
+                    "Shelves of rows, an icon grid, a coverflow carousel, a compact list, a console-style dashboard, or Orbit.",
                     HomeLayouts, look.homeLayout, preview = { LayoutPreview(look.homeLayout, Modifier.fillMaxWidth().aspectRatio(1.6f)) },
                 ) { v -> updateLook { it.copy(homeLayout = v) } },
                 choice(
@@ -360,6 +366,11 @@ fun appearanceSections(): List<SettingSection> {
                     "Rounded, square, circle, tall box-art cards, or wide cards for screenshots and banners.",
                     Grid.shapes, look.cardShape, preview = { GridPreview() },
                 ) { v -> updateLook { it.copy(cardShape = v) } },
+                choice(
+                    "Shelf look", Glyph.Layers, Palette.Butter,
+                    "The bookcase behind the Shelf view of a folder: warm wood, matte boards in the theme's colours, or open, with the cases on your wallpaper and only a thin shelf line.",
+                    ShelfLooks.choices, ShelfLooks.current(),
+                ) { v -> updateLook { it.copy(shelfLook = v) } },
                 choice(
                     "System tiles", Glyph.Highlight, Palette.Butter, "The look of the system tiles on the home screen.",
                     Grid.tileStyles, look.systemTiles,
@@ -461,14 +472,22 @@ fun appearanceSections(): List<SettingSection> {
                     "Button prompts", Glyph.Gamepad, Palette.Lavender, "How buttons are drawn in hints: Tandem's pastels, or Xbox, PlayStation or Nintendo style.",
                     Prompts.styles, look.prompts, preview = { PromptPreview() },
                 ) { v -> updateLook { it.copy(prompts = v) } },
+                // The swaps are bindings (Bindings.swap): Open on B and Back on A, Options on X and Action on Y.
                 toggle(
                     "Swap A and B", Glyph.Swap, Palette.Lavender, "Confirm with B and go back with A, like on a Nintendo console. Hints follow along.",
-                    look.swapAB, preview = { PromptPreview() },
-                ) { on -> updateLook { it.copy(swapAB = on) } },
+                    Bindings.swapped(bindings, Command.Open, Command.Back), preview = { PromptPreview() },
+                ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Open, Command.Back, on)) },
                 toggle(
-                    "Swap X and Y", Glyph.Swap, Palette.Lavender, "Search with Y and open options with X.", look.swapXY,
-                    preview = { PromptPreview() },
-                ) { on -> updateLook { it.copy(swapXY = on) } },
+                    "Swap X and Y", Glyph.Swap, Palette.Lavender, "Search with Y and open options with X.",
+                    Bindings.swapped(bindings, Command.Options, Command.Action), preview = { PromptPreview() },
+                ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Options, Command.Action, on)) },
+                SettingRow(
+                    "Rebind buttons", if (rebound == 0) "Defaults" else io.github.zahakj.tandem.plural(rebound, "change"), Palette.Lavender, Glyph.Gamepad,
+                    "Give any of Tandem's commands another button, a chord of buttons pressed together, or a held button: " +
+                        "open, back, the options menu, Start, the quick settings, the game switcher, the side panel, paging, " +
+                        "hidden games, and a button for Favourite, Screenshot and Clip. Hints everywhere follow.",
+                    opens = true, keywords = "remap mapping custom controls chord hold shortcut keys buttons favourite screenshot clip side panel",
+                ) { Nav.go(Route.Rebind) },
             ),
         ),
         SettingSection(
@@ -819,6 +838,8 @@ private val LayoutBlurbs = mapOf(
     "carousel" to "A coverflow: the highlighted card sits big in the middle and the others turn away to the sides.",
     "list" to "Compact rows with a big preview beside them. Fast to scan, great for huge libraries.",
     "console" to "A console-style dashboard: the highlighted item's art fills the screen with one row of big tiles along the bottom.",
+    "orbit" to "Tandem's own: your systems, collections and apps ride an orbit of round icons, the highlighted one big at the front. " +
+        "Above it its latest games fan out like cards in a hand, under a Continue ribbon. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.",
 )
 
 /** Every home layout as a live sketch in the current theme. A switches to it. */
@@ -953,6 +974,43 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 for (i in 0 until 7) tile(8 * u + i * (tw + 4 * u), 64 * u, tw, tw, i, focused = i == 0)
                 dock(h - 11 * u)
             }
+            "orbit" -> {
+                // Drawn with Orbit's own geometry (OrbitLayout): orbs on an arc that bows downward, the front one big
+                // and ringed, its fan of covers above, the Continue ribbon on top and the round dock below.
+                val orbit = OrbitLayout(w, 64 * u, 30 * u, 17 * u, side = 4)
+                val track = androidx.compose.ui.graphics.Path()
+                var d = -4.6f
+                while (d <= 4.6f) {
+                    val p = orbit.place(d)
+                    if (d == -4.6f) track.moveTo(p.x, p.y) else track.lineTo(p.x, p.y)
+                    d += 0.2f
+                }
+                drawPath(track, t.muted.copy(alpha = 0.45f), style = Stroke(0.6f * u))
+                for (i in listOf(-4, 4, -3, 3, -2, 2, -1, 1, 0)) {
+                    val p = orbit.place(i.toFloat())
+                    val rr = 8.5f * u * p.scale
+                    val c = accents[(i + 8) % accents.size]
+                    drawCircle(c.copy(alpha = 0.25f * p.alpha), rr * 1.45f, Offset(p.x, p.y))
+                    drawCircle(Brush.linearGradient(listOf(c, androidx.compose.ui.graphics.lerp(c, t.background, 0.35f)), Offset(p.x - rr, p.y - rr), Offset(p.x + rr, p.y + rr)), rr, Offset(p.x, p.y), alpha = p.alpha)
+                    if (i == 0) drawCircle(t.text, rr + 1.6f * u, Offset(p.x, p.y), style = Stroke(1.1f * u))
+                }
+                bar(w / 2 - w * 0.11f, 77 * u, w * 0.22f, t.text, 4.5f)
+                bar(w / 2 - w * 0.07f, 83.5f * u, w * 0.14f, t.muted, 2.5f)
+                val cw = 13 * u
+                for (rank in listOf(4, 3, 2, 1, 0)) {
+                    val f = Fan.place(rank, 5, cw)
+                    val s = f.scale
+                    val cx = w / 2 + f.x
+                    val top = 19 * u + f.y
+                    rotate(f.rotation, Offset(cx, top + cw * 0.7f)) {
+                        tile(cx - cw * s / 2, top, cw * s, cw * 1.38f * s, rank + 1)
+                    }
+                }
+                drawRoundRect(t.card.copy(alpha = 0.9f), Offset(w * 0.32f, 5 * u), Size(w * 0.36f, 9 * u), CornerRadius(4.5f * u))
+                drawCircle(t.mint, 3 * u, Offset(w * 0.32f + 5 * u, 9.5f * u))
+                bar(w * 0.32f + 10 * u, 8 * u, w * 0.18f, t.text, 3f)
+                for (i in 0 until 4) drawCircle(accents[(i + 2) % accents.size], 2.6f * u, Offset(w / 2 + (i - 1.5f) * 8 * u, h - 5.5f * u))
+            }
             "view-carousel" -> {
                 val cw = 44 * u
                 for (d in listOf(-2, -1, 1, 2)) {
@@ -987,7 +1045,7 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
 fun CornerHints() {
     val look = Store.settings.look
     val show = look.cornerHints && !isSettingsRoute(Nav.route) &&
-        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !(IconGrid.enabled && Nav.route == Route.Home)
+        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled) && Nav.route == Route.Home)
     val alpha by animateFloatAsState(if (show) 1f else 0f, Motion.fade(250), label = "hints")
     if (alpha == 0f) return
     val game = Selection.current is Selected.GameItem

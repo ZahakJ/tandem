@@ -42,7 +42,7 @@ object Presets {
         private set
     private var before: Snapshot? = null
 
-    val all: List<LookPreset> get() = listOf(Cozy, Cocoon, Minimal)
+    val all: List<LookPreset> get() = listOf(Cozy, Cocoon, OrbitLook, Minimal)
 
     fun byId(id: String) = all.firstOrNull { it.id == id }
 
@@ -122,6 +122,25 @@ object Presets {
             val pack = ThemePacks.newestCocoonPack()
             if (pack != null) applyTheme(pack.id)
         }
+    }
+
+    private val OrbitLook = LookPreset(
+        "orbit", "Orbit", Palette.Lavender, Glyph.Sparkle, "orbit",
+        "Tandem's own home: your systems, collections and apps on an orbit of round icons, the highlighted one's games fanned out above it.",
+        listOf(
+            "Orbit home with systems, collections and apps", "Continue ribbon over the spotlight", "Round dock under the orbit",
+            "Details on the bottom screen", "X swaps the screens on Orbit",
+        ),
+        matches = { l, _ -> l.homeLayout == "orbit" },
+    ) {
+        look {
+            it.copy(
+                homeLayout = "orbit", orbitGroups = "all", orbitContinue = true, gameView = "grid", folderPopup = false,
+                fullscreenFolders = false, xButton = if (it.xButton == "search") "swap-grid" else it.xButton,
+            )
+        }
+        Store.updateSettings { it.copy(bottomMode = "details") }
+        HomeStore.updateSettings { it.copy(showDock = true) }
     }
 
     private val Minimal = LookPreset(

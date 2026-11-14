@@ -293,4 +293,30 @@ class GridTreeTest {
         assertEquals(listOf("n3ds"), after.plainSystems)
         assertEquals(emptyList<String>(), GridTree.arrangeSystem(after, "sys2", "n3ds", "Nintendo 3DS", 0).plainSystems)
     }
+
+    @Test
+    fun systemFoldersGetTheirSubfolders() {
+        val genres = listOf("RPG" to listOf("game:a", "game:b"), "Puzzle" to listOf("game:c"))
+        val c = GridTree.groupSystem(GridTree.arrangeSystem(cfg(listOf("s:n3ds")), "sys", "n3ds", "Nintendo 3DS", 0), "n3ds", genres, listOf("g1", "g2"))
+        assertEquals(listOf("folder:g1", "folder:g2"), folder(c, "sys").items)
+        assertEquals(listOf("game:a", "game:b"), folder(c, "g1").items)
+        assertEquals("Puzzle", folder(c, "g2").name)
+        // Once: no second set of folders; a new game on disk joins its folder, one placed elsewhere stays there.
+        val moved = GridTree.addInto(c.copy(folders = c.folders.map { if (it.id == "g1") it.copy(items = listOf("game:a")) else it }), "game:b", "g2")
+        val later = GridTree.groupSystem(moved, "n3ds", genres + ("Puzzle" to listOf("game:c", "game:d")), listOf("x", "y", "z"))
+        assertEquals(listOf("folder:g1", "folder:g2"), folder(later, "sys").items)
+        assertEquals(listOf("game:a"), folder(later, "g1").items)
+        assertEquals(listOf("game:c", "game:b", "game:d"), folder(later, "g2").items)
+        // Looks: given as they are made, and once to folders made before looks were.
+        val look = { n: String -> FolderStyle(glyph = n) }
+        val styled = GridTree.groupSystem(GridTree.arrangeSystem(cfg(), "sys", "n3ds", "Nintendo 3DS", 0), "n3ds", genres, listOf("g1", "g2"), look)
+        assertEquals("RPG", styled.styleOf("folder:g1").glyph)
+        val old = c.copy(folders = c.folders.map { if (it.id == "sys") it.copy(looked = false) else it })
+        val caught = GridTree.groupSystem(old, "n3ds", genres, listOf("x", "y"), look)
+        assertEquals("Puzzle", caught.styleOf("folder:g2").glyph)
+        assertNull(GridTree.groupSystem(caught.resetStyle("folder:g2"), "n3ds", genres, listOf("x", "y"), look).styles["folder:g2"])
+        // A system folder something was placed in by hand is left alone.
+        val placed = GridTree.addInto(GridTree.arrangeSystem(cfg(), "sys", "n3ds", "Nintendo 3DS", 0), "game:a", "sys")
+        assertEquals(placed, GridTree.groupSystem(placed, "n3ds", genres, listOf("g1", "g2")))
+    }
 }

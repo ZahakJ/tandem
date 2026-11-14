@@ -6,11 +6,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import io.github.zahakj.tandem.Bindings
+import io.github.zahakj.tandem.Command
 import io.github.zahakj.tandem.DiscordPresence
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.Shell
 import io.github.zahakj.tandem.audio.SoundPack
+import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.ScrapeConfig
 import io.github.zahakj.tandem.data.Store
@@ -80,7 +83,8 @@ object SettingsCategories {
 
 /**
  * Where every row goes: plain data, so a test can check it. A [Pick] is a feature's group title and a row label;
- * [Pick.layout] shows it only with the icon grid ("grid") or only with the other layouts ("other").
+ * [Pick.layout] shows it only with the icon grid ("grid"), only with Orbit ("orbit"), with every layout but the icon
+ * grid ("other"), or only with the row layouts, neither the grid nor Orbit ("rows").
  */
 object SettingsPlan {
     data class Pick(val section: String, val label: String, val layout: String? = null)
@@ -88,7 +92,9 @@ object SettingsPlan {
 
     private fun p(section: String, vararg labels: String) = labels.map { Pick(section, it) }
     private fun grid(section: String, vararg labels: String) = labels.map { Pick(section, it, "grid") }
+    private fun orbit(section: String, vararg labels: String) = labels.map { Pick(section, it, "orbit") }
     private fun other(section: String, vararg labels: String) = labels.map { Pick(section, it, "other") }
+    private fun rows(section: String, vararg labels: String) = labels.map { Pick(section, it, "rows") }
 
     /** The group of scraping sources: their rows are named after the sources, in the order the user chose. */
     const val SOURCES = "Sources, in order"
@@ -108,10 +114,11 @@ object SettingsPlan {
             Group(
                 "Home screen",
                 grid("Icon grid", "Icon size", "Scrolling") + grid("Motion & home", "Icon names", "Recently played strip") +
-                    other("Layout", "Home rows") + grid("Icon grid", "Folders open") + other("Layout", "Open folders"),
-                grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split") + other("Layout", "System tiles"),
+                    orbit("Orbit", "Orbit holds", "Continue ribbon") +
+                    rows("Layout", "Home rows") + grid("Icon grid", "Folders open") + other("Layout", "Open folders"),
+                grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split") + rows("Layout", "System tiles"),
             ),
-            Group("Games", p("Layout", "Games view", "Grid size", "Card shape", "Game titles")),
+            Group("Games", p("Layout", "Games view", "Grid size", "Card shape", "Shelf look", "Game titles")),
             Group("While a game runs", p("Layout", "Now playing") + p("Extras", "Home lands on Resume")),
             Group("Dock", p("Dock", "Apps dock") + p("Home & play", "Choose dock apps") + p("Dock", "Dock style"), p("Dock", "Dock on top", "Auto-hide dock")),
             Group("Widgets", p("Widgets", "Customize widgets", "Widgets on the home screen"), p("Widgets", "Widgets on the grid")),
@@ -130,6 +137,7 @@ object SettingsPlan {
                 p("Bottom screen", "Art height", "Logo size", "Art fade"),
             ),
             Group("Moving apps", p("Systems & launching", "Hold Back to move apps", "Move games too")),
+            Group("While playing", p("Systems & launching", "Voice in clips")),
         ),
         "sound" to listOf(
             Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Custom sounds", "Sound volume", "Pip's voice")),
@@ -137,8 +145,9 @@ object SettingsPlan {
         ),
         "controls" to listOf(
             Group(
-                "Buttons", p("Controls", "Button prompts", "Swap A and B") + p("Icon grid", "X button"),
+                "Buttons", p("Controls", "Button prompts", "Swap A and B", "Rebind buttons") + p("Icon grid", "X button"),
                 p("Controls", "Swap X and Y") + p("Layout", "Corner hints"),
+                // Replaced with the live bindings when the page is built (buttonsNote).
                 note = "Hold Select: game switcher · Hold Start: quick settings",
             ),
             Group(HomeButtonGroup, p(HomeButtonGroup, "Controller Home button"), p(HomeButtonGroup, "Hold the Home button")),
@@ -146,7 +155,7 @@ object SettingsPlan {
             Group(PadLinkGroup, emptyList()),
         ),
         "library" to listOf(
-            Group("Games", p("Library", "Sort games by", "Show hidden games", "Rescan games")),
+            Group("Games", p("Library", "Sort games by", "Show hidden games", "Rescan games", "Manuals") + p("Game folders", "More game folders", "Watch game folders")),
             Group("Systems", p("Systems & launching", "Systems and emulators", "Android apps")),
             Group(
                 "Artwork", p("Artwork & details", "Scrape library", "Set up sources", "Artwork to download"),
@@ -154,14 +163,20 @@ object SettingsPlan {
             ),
             Group(SOURCES, emptyList()),
             Group("RetroAchievements", p("RetroAchievements", "Account", "Show achievements"), p("RetroAchievements", "Look up games again", "Sign out")),
+            Group("Steam", p("Steam", "Steam Web API key", "Steam account", "Look up achievements"), p("Steam", "Sign out")),
             Group("Discord", p("Discord", "Discord status"), p("Discord", "Disconnect Discord")),
             Group("Bring your details", p("From Cocoon", "Import my Cocoon setup") + p("Your data", "Import details"), p("From Cocoon", "Undo Cocoon import")),
         ),
         "play" to listOf(
             Group(
-                "Playing", p("About", "Resume running games") + p("Home & play", "Close previous game", "Ask before closing a game", "Immersion mode"),
+                "Playing",
+                p("About", "Resume running games") + p("Home & play", "Close previous game", "Ask before closing a game", "Immersion mode") +
+                    p("Screen off", "Bottom screen while playing", "Off after") +
+                    // On an AYN device the three rows; elsewhere, or until Tandem may write system settings, the one note.
+                    p("Performance while playing", "Performance mode", "Fan mode", "Refresh rate", "Performance profiles"),
                 p("Home & play", "Pause games in sleep") + p("Systems & launching", "Launch animation"),
             ),
+            Group("Deck", p("Deck", "Trackpad sensitivity", "Default layout", "Key sounds", "Key haptics")),
             Group(
                 "Privacy", p("Home & play", "Private mode", "Go offline while a hidden game plays", "Stay offline until the game closes"),
                 p("Home & play", "Private mode PIN"),
@@ -197,6 +212,7 @@ private val Synonyms = mapOf(
     "Grid size" to "bigger smaller cards columns",
     "Games view" to "list grid coverflow",
     "Card shape" to "box art portrait square circle",
+    "Shelf look" to "bookcase wood matte open spines shelves wallpaper",
     "Swap screens" to "bottom touch library details flip",
     "Swap animation" to "flip scatter push depth fade instant transition",
     "Keep auto-rotate off" to "rotation orientation portrait landscape sideways tilt",
@@ -210,6 +226,7 @@ private val Synonyms = mapOf(
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",
+    "Rebind buttons" to "remap controller mapping chord hold bind shortcut",
     "X button" to "swap search screens",
     "Clock" to "time 24 hour",
     "Battery" to "percentage",
@@ -240,6 +257,13 @@ private class RowPool(sections: List<SettingSection>) {
     fun leftovers(): List<SettingRow> = rows.values.map { it.second }
 }
 
+/** The Buttons group's aside: what opens the game switcher and the quick settings, as they are bound right now. */
+private fun buttonsNote(style: String): String {
+    val map = ControllerStore.live
+    fun of(c: Command) = map[c]?.let { Prompts.bindingText(it, style) } ?: "No button"
+    return "${of(Command.Switcher)}: game switcher · ${of(Command.QuickPanel)}: quick settings"
+}
+
 /** ExtrasSettings.resumeLanding had no row anywhere; it belongs with the icon grid's Resume page. */
 private fun resumeLandingRow(): SettingRow {
     val on = io.github.zahakj.tandem.data.ExtrasStore.settings.resumeLanding
@@ -260,19 +284,21 @@ fun settingsCatalog(): List<SettingsCategory> {
     val onRescan = remember(ctx) { { LibraryScan.rescan(ctx) } }
     val pool = RowPool(
         appearanceSections() + listOf(
-            librarySettings(onRescan), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), widgetsSettings(),
-            achievementsSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
-            SettingSection("Extras", listOf(resumeLandingRow())),
+            librarySettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), widgetsSettings(),
+            achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
+            performanceSettings(), screenOffSettings(), deckSettings(), SettingSection("Extras", listOf(resumeLandingRow())),
         ) + controllerSettings(),
     )
     val look = Store.settings.look
     val settings = Store.settings
+    val bindings = ControllerStore.live
     val iconGrid = look.homeLayout == "grid"
+    val orbit = look.homeLayout == "orbit"
     SettingsPlan.dropped.forEach { pool.take(it) }
 
     fun page(id: String): List<SettingSection> = SettingsPlan.pages.getValue(id).map { g ->
         fun pick(list: List<SettingsPlan.Pick>) = list.mapNotNull { pk ->
-            val shown = when (pk.layout) { "grid" -> iconGrid; "other" -> !iconGrid; else -> true }
+            val shown = when (pk.layout) { "grid" -> iconGrid; "orbit" -> orbit; "other" -> !iconGrid; "rows" -> !iconGrid && !orbit; else -> true }
             // A row for the other layout is taken out unshown, so it never counts as forgotten.
             pool.take(pk)?.takeIf { shown }
         }
@@ -282,13 +308,13 @@ fun settingsCatalog(): List<SettingsCategory> {
             SettingsPlan.SOURCES -> pick(ScrapeConfig.settings.sourceOrder.map { SettingsPlan.Pick("Artwork & details", it.label) })
             else -> pick(g.main)
         }
-        SettingSection(g.title, main, more = pick(g.more), note = g.note)
+        SettingSection(g.title, main, more = pick(g.more), note = if (g.title == "Buttons") buttonsNote(look.prompts) else g.note)
     }
     // The theme pack's own music and sounds lead the Sound page, when the theme has any.
     val soundPage = listOf(SettingSection("Theme pack", pool.takeAll("Theme pack"), note = ThemePacks.byId(look.theme)?.name)) + page("sound")
     val pages = SettingsCategories.ids.associateWith { if (it == "sound") soundPage else page(it) }.toMutableMap()
     // Changes with what is hidden and whether it shows, so it is made here rather than picked from the pool.
-    pages["play"] = pages.getValue("play").let { p -> p.take(2) + hiddenSettings().let { SettingSection(it.title, it.rows, more = it.more) } + p.drop(2) }
+    pages["play"] = pages.getValue("play").let { p -> p.take(3) + hiddenSettings().let { SettingSection(it.title, it.rows, more = it.more) } + p.drop(3) }
     // A row the plan doesn't know yet still shows, so nothing is ever out of reach; a debug build says so.
     val left = pool.leftovers()
     if (left.isNotEmpty()) {
@@ -343,18 +369,21 @@ fun settingsCatalog(): List<SettingsCategory> {
         ),
         SettingsCategory(
             "controls", "Controls", Glyph.Gamepad, Palette.Lavender,
-            "Button prompts, swapping A/B and X/Y, what X does, your controllers and their Home button.",
-            Prompts.label(look.prompts) + " prompts" + (if (look.swapAB) " · A/B swapped" else ""),
+            "Button prompts, swapping A/B and X/Y, rebinding any button, what X does, your controllers and their Home button.",
+            Prompts.label(look.prompts) + " prompts" +
+                (if (Bindings.swapped(bindings, Command.Open, Command.Back)) " · A/B swapped" else "") +
+                (Bindings.changed(bindings).takeIf { it > 0 }?.let { " · ${io.github.zahakj.tandem.plural(it, "button")} rebound" } ?: ""),
             pages.getValue("controls"),
         ),
         SettingsCategory(
             "library", "Library & art", Glyph.Cartridge, Palette.Mint,
             "Sorting, hidden games, rescanning, systems and emulators, artwork and its sources, " +
-                (if (DiscordPresence.available) "RetroAchievements, Discord" else "RetroAchievements") + " and importing details.",
+                (if (DiscordPresence.available) "RetroAchievements, Steam, Discord" else "RetroAchievements, Steam") + " and importing details.",
             listOfNotNull(
                 if (games == 0) "No games yet" else "${io.github.zahakj.tandem.plural(games, "game")} · ${io.github.zahakj.tandem.plural(systems, "system")}",
                 "${io.github.zahakj.tandem.plural(ss.active.size, "source")} on",
                 if (ra.user.isNotBlank() && ra.key.isNotBlank()) "RA ✓" else null,
+                if (io.github.zahakj.tandem.data.SteamStore.account.signedIn) "Steam ✓" else null,
             ).joinToString(" · "),
             pages.getValue("library"),
         ),

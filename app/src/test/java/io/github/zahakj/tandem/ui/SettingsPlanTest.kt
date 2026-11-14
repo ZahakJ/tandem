@@ -13,8 +13,9 @@ import java.io.File
 class SettingsPlanTest {
     /** The files that build Settings rows (the feature side of [settingsCatalog]). */
     private val features = listOf(
-        "Appearance", "AchievementsUi", "CocoonSetup", "ControllerSettings", "DiscordSettings", "Flair", "HomeMode", "Perf",
-        "ScrapeScreen", "Settings", "SoundSettings", "SystemsScreen", "Widgets", "SettingsCatalog",
+        "Appearance", "AchievementsUi", "CocoonSetup", "ControllerSettings", "DeckPanel", "DiscordSettings", "Flair", "GameFoldersScreen", "HomeMode",
+        "Perf", "PerformanceSettings", "ScrapeScreen", "ScreenOffSettings", "Settings", "SoundSettings", "SteamUi", "SystemsScreen", "Widgets",
+        "SettingsCatalog", "Orbit",
     )
 
     /** Rows that aren't picked by label: galleries, and groups taken whole ([SettingsPlan.whole], the theme pack's audio, hidden). */

@@ -28,6 +28,8 @@ data class SmartRule(
     val random: Int = 0,
     /** The package of the emulator the game starts with; null: any. */
     val emulator: String? = null,
+    /** [GameStatus] ids, any of which a game must have ("none" for no status); empty: any status. */
+    val statuses: List<String> = emptyList(),
     /** [SORT_NAME], [SORT_RECENT], [SORT_MOST], [SORT_ADDED] or [SORT_SYSTEM]. */
     val sort: String = SORT_NAME,
 ) {
@@ -57,6 +59,7 @@ data class SmartRule(
             PLAYED_NO -> if (g.played) return false
         }
         if (emulator != null && g.emulator != emulator) return false
+        if (statuses.isNotEmpty() && (g.status ?: STATUS_NONE) !in statuses) return false
         return true
     }
 
@@ -88,6 +91,7 @@ data class SmartRule(
         const val PLAYED_ANY = "any"
         const val PLAYED_YES = "played"
         const val PLAYED_NO = "unplayed"
+        const val STATUS_NONE = "none"
         const val SORT_NAME = "name"
         const val SORT_RECENT = "recent"
         const val SORT_MOST = "most"
@@ -136,6 +140,8 @@ data class SmartGame(
     val lastPlayed: Long = 0,
     val playSeconds: Long = 0,
     val added: Long = 0,
+    /** The [GameStatus] id, or null. */
+    val status: String? = null,
 )
 
 /** Where a folder's games start: [OPEN_TOP], [OPEN_BOTTOM], or null for each game's own choice ([HomeFolder.openOn]). */

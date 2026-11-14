@@ -10,7 +10,7 @@ Tandem knows 104 systems. The common ones:
 | --- | --- | --- | --- |
 | Nintendo 3DS | `n3ds`, `3ds` | `.3ds` `.cia` `.cci` `.cxi` `.3dsx` `.zcci` | Azahar, RetroArch (Citra) |
 | Nintendo DS | `nds` | `.nds` `.dsi` `.zip` `.7z` | melonDS Dual, melonDS, DraStic, RetroArch |
-| Nintendo Switch | `switch` | `.nsp` `.xci` `.nca` `.nro` | Eden |
+| Nintendo Switch | `switch` | `.nsp` `.xci` `.nca` `.nro` | Eden Duo, Eden |
 | Nintendo Wii U | `wiiu` | `.wux` `.wud` `.wua` `.rpx` `.wuhb` | Cemu |
 | Wii, GameCube | `wii`, `gc` | `.iso` `.rvz` `.wbfs` `.gcz` | Dolphin, RetroArch |
 | Nintendo 64 | `n64` | `.n64` `.z64` `.v64` `.zip` | RetroArch (Mupen64Plus-Next, ParaLLEl), Mupen64Plus FZ |
@@ -23,12 +23,12 @@ Tandem knows 104 systems. The common ones:
 | Genesis, Master System, Game Gear | `genesis`, `megadrive`, `mastersystem`, `gamegear` | `.md` `.gen` `.sms` `.gg` `.zip` | RetroArch (Genesis Plus GX, PicoDrive) |
 | Saturn, Dreamcast | `saturn`, `dreamcast` | `.chd` `.cue` `.gdi` `.cdi` | Yaba Sanshiro, Flycast, Redream, RetroArch |
 | Arcade, Neo Geo | `arcade`, `mame`, `fbneo`, `neogeo` | `.zip` `.7z` `.chd` | RetroArch (FinalBurn Neo, MAME), MAME4droid |
-| Windows | `windows`, `pc`, `steam` | `.pcgame` `.steam` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
+| Windows | `windows`, `pc`, `steam` | `.steam` `.epic` `.pcgame` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
 | DOS, ScummVM | `dos`, `scummvm` | `.zip` `.dosz` `.exe` `.scummvm` | DOSBox Pure, ScummVM |
 
 The built-in [`platforms.json`](../../app/src/main/assets/platforms.json) lists every system, folder name and file
 type. Tandem offers each installed emulator that fits, and a system appears only when its folder has at least one
-game.
+game. PC games are shortcut files; [Windows and Steam games](library.md#windows-and-steam-games) explains them.
 
 ## Using your own platforms.json
 
@@ -85,7 +85,8 @@ The file is one object with a `platforms` list. Each entry is a system:
 | `folders` | No | Folder names under `ROMs/` to scan. Defaults to the `id`. |
 | `extensions` | Yes | File extensions that count as games, without the dot. Case doesn't matter. |
 | `skipDirs` | No | Subfolder names to ignore, for emulator data kept next to the games. |
-| `art` | No | Folder names under `ROMs/downloaded_media/` to take artwork from. Defaults to the `id`. |
+| `art` | No | Folder names under `ROMs/downloaded_media/` to take artwork from. Defaults to the `id`. Scrapes save into the first. |
+| `aliases` | No | Other names for the system, used to match Cocoon and Daijisho platform files and theme pack art (`3ds` for `n3ds`). |
 | `players` | Yes | The emulators that can run this system. The first one is the default. |
 
 ### Emulator fields
@@ -98,17 +99,32 @@ Each entry in `players` describes how to start one emulator.
 | `component` | Yes | The emulator's activity, as `package/full.activity.Name`. |
 | `action` | No | The intent action. Defaults to `android.intent.action.VIEW`. |
 | `game` | No | How the game is handed over; see below. Defaults to `data`. |
+| `extras` | No | Extra values to send with the intent. They keep their JSON type: a string, a list (sent as a string array), `true`/`false`, or a number. A templated number is written `{"int": "{file.id}"}` (also `long`, `float`, `bool`, `uri`, `string`). |
 | `extensions` | No | The file extensions this player opens. Other files of the system go to its other players, and the game menu offers it only for these. DroidDeck lists `steam` and `steamappid`. |
 | `own` | No | `true`: the files in `extensions` are this player's alone. No other player of the system is used or offered for them, whichever is the system's default. Moonlight owns `moonlight`. |
-| `extras` | No | Extra string values to send with the intent, as `"KEY": "value"`. |
+| `data`, `type` | No | Templates for the intent's data and MIME type, for players that want something other than the game file (`gamenative://run?appid={file.id}`, say). |
+| `categories` | No | Intent categories to add. |
+| `byExtension` | No | Changes for one kind of file: an object per extension (or `dir` for games that are folders) with its own `action`, `game`, `data` or `extras`. GameNative uses it to send `game_source` by extension. |
+| `store` | No | Where to get the emulator. A GitHub releases page opens in Obtainium when it is installed; without it, the Play Store. |
+| `note` | No | A remark for people editing the file; Tandem ignores it. |
 
-The `game` field takes one of three forms:
+`{"core": "mgba"}` is short for RetroArch (`com.retroarch.aarch64`) with that core; add `"package"` for another
+RetroArch build. A single `"launch"` object in place of `players` is accepted too.
+
+The `game` field takes one of these forms:
 
 | Value | What the emulator receives |
 | --- | --- |
 | `data` | A content link to the game as the intent's data. Most standalone emulators. |
 | `extra-uri:<key>` | The same content link, in the extra named `<key>`. |
 | `extra-path:<key>` | The plain file path, in the extra named `<key>`. RetroArch works this way. |
+| `data-file` | A `file://` link as the intent's data. |
+| `none` | Nothing: the game goes in `extras` or `data` through templates instead (Vita3K, GameNative, DroidDeck). |
+
+Templates in `extras`, `data` and `type`: `{file.path}`, `{file.uri}` (a shared link), `{file.fileuri}`,
+`{file.name}`, `{file.stem}`, `{file.ext}`, `{file.dir}`, `{file.mime}`, `{file.id}` (the id inside a small
+shortcut file, such as a Vita `.dpt` or a PC `.steam`), `{file.text}` (its first line), `{tags.<name>}` (a
+`[name] value` line in it), `{storage}`, `{roms}` and `{package}`.
 
 A content link points into the `ROMs` folder you picked on first launch, and Tandem grants the emulator access to that one file. That is why the second setup step matters for emulators that use `data` or `extra-uri`.
 

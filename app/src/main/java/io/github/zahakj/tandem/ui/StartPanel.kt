@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Collections
+import io.github.zahakj.tandem.plural
+
 import android.os.BatteryManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -414,6 +417,10 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             add(MenuAction("new", "New", Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
             add(MenuAction("sort", "Sort", Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             add(MenuAction("search", "Search", Glyph.Search, Palette.Sky) { StartMenu.go { Nav.search = true } })
+            // Play time, your games by status and your trophies, always one press from Start.
+            add(MenuAction("stats", "Stats & trophies", null, Palette.Butter, icon = TIcon.Trophy, sub = startStatsLine()) {
+                StartMenu.go { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }
+            })
             if (grid) {
                 add(MenuAction("edit", "Edit grid", Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
                 // Packs every tile to the front, closing the gaps (the grid otherwise keeps them).
@@ -564,4 +571,14 @@ private fun peekFocused() {
     HiddenItems.togglePeek(item)
     Sounds.select()
     Toasts.show(if (HiddenItems.peeking(item)) "Showing until hidden games are tucked away" else "Hidden again")
+}
+
+/** "3 playing · 12 trophies" for Start › Stats & trophies; null when there is nothing yet. */
+private fun startStatsLine(): String? {
+    val playing = Collections.byStatus().firstOrNull { it.id == Collections.PLAYING }?.games?.size ?: 0
+    val trophies = io.github.zahakj.tandem.data.ExtrasStore.trophies.unlocked.size
+    return listOfNotNull(
+        "$playing playing".takeIf { playing > 0 },
+        plural(trophies, "trophy", "trophies").takeIf { trophies > 0 },
+    ).joinToString(" · ").ifEmpty { null }
 }

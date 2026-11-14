@@ -205,7 +205,7 @@ object BackupUi {
                 }
             }
             OptionRow(
-                "Account keys and logins", "Scraping and RetroAchievements. The backup folder is readable by other apps.",
+                "Account keys and logins", "Scraping, RetroAchievements and Steam. The backup folder is readable by other apps.",
                 if (withKeys) "Included" else "Left out", withKeys, Palette.Peach, Modifier.takesFocus(MAKE, "keys", target == "keys"),
             ) {
                 withKeys = !withKeys

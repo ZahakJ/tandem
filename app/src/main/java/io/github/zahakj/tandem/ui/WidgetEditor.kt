@@ -175,7 +175,7 @@ private fun EditorTile(p: Placed, area: WidgetArea, routeKey: String, first: Boo
                 Pill("◀ ▶  A done", Palette.Butter, Modifier.darkChip())
             }
         } else if (focused) {
-            Pill(kind.name, kind.accent, Modifier.align(Alignment.BottomEnd).padding(6.dp).darkChip())
+            Pill(kind.label(w), kind.accent, Modifier.align(Alignment.BottomEnd).padding(6.dp).darkChip())
         }
     }
 }
@@ -271,7 +271,7 @@ fun WidgetMenu() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(kind.icon, style = MaterialTheme.typography.headlineSmall, color = kind.accent)
                         Spacer(Modifier.width(8.dp))
-                        Text(kind.name, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(kind.label(w), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                     Text(kind.blurb, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis)
                     Spacer(Modifier.height(10.dp))
@@ -327,7 +327,7 @@ fun WidgetMenu() {
                         if (onGrid) GridWidgets.remove(GridWidgets.key(w.id)) else {
                             val at = io.github.zahakj.tandem.data.WidgetStore.widgets.indexOfFirst { it.id == w.id }
                             Widgets.remove(w.id)
-                            Undo.offer("Removed ${kind.name}") {
+                            Undo.offer("Removed ${kind.label(w)}") {
                                 io.github.zahakj.tandem.data.WidgetStore.updateWidgets { list ->
                                     if (list.any { it.id == w.id }) list else list.toMutableList().apply { add(at.coerceIn(0, size), w) }
                                 }
@@ -378,6 +378,8 @@ fun WidgetGallery() {
                                 if (kind.id == "achievements") { WidgetUi.close(); raSignIn() }
                                 return@FocusCard
                             }
+                            // An Android widget is picked from the installed apps first (AppWidgets.kt).
+                            if (kind === AppWidgetKind) { WidgetUi.close(); AppWidgetUi.pick(AppWidgetTarget.Area(area)); return@FocusCard }
                             val w = Widgets.add(kind, area)
                             FocusMemory.remember("widgets:${if (area == WidgetArea.Top) 0 else 1}", "w:${w.id}")
                             WidgetUi.close()

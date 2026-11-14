@@ -141,14 +141,16 @@ object DeleteGame {
 
     private val mediaRoot: File get() = File(Library.romsDir, "downloaded_media")
 
-    /** Every folder a game may be deleted from: the ROMs folder and each system's folders (some live elsewhere). */
+    /** Every folder a game may be deleted from: every game folder tree and each system's folders (some live elsewhere). */
     private fun roots(): List<File> =
-        (listOf(Library.romsDir) + Libraries.all.orEmpty().flatMap { lib -> lib.platform.folders.map { Library.folder(it) } }).distinct()
+        (Library.roots() + systemFolders()).distinct()
 
     /** Folders that never go as a whole: the systems' folders and Tandem's own ones. */
-    private fun guarded(): List<File> =
-        Libraries.all.orEmpty().flatMap { lib -> lib.platform.folders.map { Library.folder(it) } } +
-            listOf(mediaRoot, File(Library.romsDir, "tandem"))
+    private fun guarded(): List<File> = systemFolders() + listOf(mediaRoot, File(Library.romsDir, "tandem"))
+
+    /** Each system's folders in every root (LibraryRoots), and the full paths added in Systems. */
+    private fun systemFolders(): List<File> =
+        Library.roots().flatMap { root -> Libraries.all.orEmpty().flatMap { lib -> lib.platform.folders.map { Library.folder(it, root) } } }
 
     /** Blocking. */
     private fun plan(g: Game): DeleteRequest {

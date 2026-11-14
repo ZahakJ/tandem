@@ -65,6 +65,7 @@ import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.data.playStatus
 import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -109,6 +110,8 @@ private class Spot(
     val style: io.github.zahakj.tandem.data.FolderStyle? = null,
     /** Drawn big and faint in the colour sweep when there is no hero (built-in and glyph folders). */
     val glyph: TIcon? = null,
+    /** The background is a wall of the covers inside ([CoverWall]) instead of a hero or the colour sweep. */
+    val wall: Boolean = false,
 )
 
 private fun spotFor(s: Selected): Spot? {
@@ -121,9 +124,12 @@ private fun spotFor(s: Selected): Spot? {
         val g = item.game
         if (g != null) return Spot(item.key, g.title, item.type, g.platform.name, item.color, item.art, null, null, game = g)
         // The designed look decides the hero and logo; built-in folders get their designed sweep, never an app's art.
+        // A cover wall says what kind of games are inside: a few of their names under the folder's.
+        val wall = item.style?.hero == io.github.zahakj.tandem.data.FolderStyle.HERO_WALL && item.games.isNotEmpty()
+        val blurb = item.blurb.ifBlank { if (wall) FolderLooks.strongGames(item.games).take(3).joinToString(" · ") { it.title } else "" }
         return Spot(
             item.key, item.title, item.type, item.detail, item.color, item.art, FolderLooks.hero(item), FolderLooks.logo(item),
-            games = item.games, blurb = item.blurb, style = item.style, glyph = FolderLooks.sweepGlyph(item),
+            games = item.games, blurb = blurb, style = item.style, glyph = FolderLooks.sweepGlyph(item), wall = wall,
         )
     }
     return when (s) {
@@ -224,6 +230,8 @@ private fun ItemSpot(s: Spot, shift: () -> Float, front: () -> Float) {
         Box(Modifier.fillMaxSize().swapSweep(slot).parallaxFill(shift, 0.14f)) {
             if (s.hero != null) {
                 KenBurns(rememberSizedRequest(s.hero, 1280), Modifier.fillMaxSize(), moving = Store.settings.look.kenBurns && Flair.floating)
+            } else if (s.wall) {
+                CoverWall(s.games, s.color, Modifier.fillMaxSize(), moving = Flair.floating)
             } else {
                 ColorSweep(s.color, Modifier.fillMaxSize().drift(s.key.hashCode(), 14.dp).glyphEcho(s.glyph))
             }
@@ -355,8 +363,10 @@ private fun GameSpot(s: Spot, game: Game, shift: () -> Float, front: () -> Float
                 Pill(game.platform.shortName, lerp(s.color, Color.White, 0.35f), Modifier.darkChip())
                 meta.year?.let { Pill("$it", Palette.Butter, Modifier.darkChip()) }
                 meta.genres.firstOrNull()?.let { Pill(Collections.tidyGenre(it), Palette.Lavender, Modifier.darkChip()) }
+                meta.playStatus?.let { Pill(it.chip, it.color, Modifier.darkChip()) }
                 if (resumable) Pill("● Running", Palette.Mint, Modifier.darkChip())
-                else if (meta.playSeconds >= 60) Pill(formatPlayTime(meta.playSeconds), Palette.Mint, Modifier.darkChip())
+                else playProgress(meta)?.let { Pill(it, Palette.Mint, Modifier.darkChip()) }
+                trophyChip(game)?.let { Pill(it, Palette.Butter, Modifier.darkChip()) }
                 if (meta.favorite) Pill("♥", Palette.Peach, Modifier.darkChip())
                 GameExtrasBadges(game, Modifier.darkChip())
             }

@@ -321,6 +321,7 @@ private fun iconLabel(plain: GridItem, s: FolderStyle): String = when (s.icon) {
     FolderStyle.ICON_GAME -> if (s.iconRef?.startsWith("app:") == true) "App icon" else FolderLooks.gameOf(plain, s.iconRef)?.title ?: "Game cover"
     FolderStyle.ICON_MOSAIC -> "Cover mosaic"
     FolderStyle.ICON_FAN -> "Cover fan"
+    FolderStyle.ICON_GENRE -> "Genre · " + (s.glyph ?: genreIcon(plain.title).name)
     FolderStyle.ICON_GLYPH -> "Glyph"
     FolderStyle.ICON_EMOJI -> s.emoji ?: "Emoji"
     FolderStyle.ICON_FILE -> s.iconFile?.let { File(it).name } ?: "Picture"
@@ -329,6 +330,7 @@ private fun iconLabel(plain: GridItem, s: FolderStyle): String = when (s.icon) {
 
 private fun heroLabel(plain: GridItem, s: FolderStyle): String = when (s.hero) {
     FolderStyle.HERO_SWEEP -> "Colour sweep"
+    FolderStyle.HERO_WALL -> "Cover wall"
     FolderStyle.HERO_GAME -> FolderLooks.gameOf(plain, s.heroRef)?.title ?: "A game's hero"
     FolderStyle.HERO_FILE -> s.heroFile?.let { File(it).name } ?: "Picture"
     else -> "Theme"
@@ -347,6 +349,7 @@ private fun sizeName(s: Int) = when (s) { 0 -> "Small"; 2 -> "Large"; else -> "M
 private fun iconId(s: FolderStyle) = when (s.icon) {
     FolderStyle.ICON_GAME -> "ref:${s.iconRef}"
     FolderStyle.ICON_GLYPH -> "glyph:${s.glyph}"
+    FolderStyle.ICON_GENRE -> "genre:${s.glyph}"
     FolderStyle.ICON_EMOJI -> "emoji:${s.emoji}"
     FolderStyle.ICON_FILE -> "file:${s.iconFile}"
     else -> s.icon
@@ -456,6 +459,8 @@ private fun choicesFor(
             if (FolderLooks.sources(plain, 2).size >= 2) {
                 icon(FolderStyle.ICON_MOSAIC, "Mosaic", base.copy(icon = FolderStyle.ICON_MOSAIC))
                 icon(FolderStyle.ICON_FAN, "Fan", base.copy(icon = FolderStyle.ICON_FAN))
+                val g = FolderLooks.glyph(base.glyph) ?: genreIcon(plain.title)
+                icon("genre:${g.name}", "Genre", base.copy(icon = FolderStyle.ICON_GENRE, glyph = g.name))
             }
             for (g in strong.filter { Libraries.of(it)?.box(it) != null }.take(18)) icon("ref:game:${g.key}", g.title, base.copy(icon = FolderStyle.ICON_GAME, iconRef = "game:${g.key}"))
             val apps = (plain.art as? TileArt.Folder)?.inside.orEmpty().filterIsInstance<TileArt.App>().take(12)
@@ -486,6 +491,7 @@ private fun choicesFor(
             fun hero(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { _ -> HeroThumb(plain, st) })
             hero(FolderStyle.HERO_AUTO, "Theme", base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null))
             hero(FolderStyle.HERO_SWEEP, "Colour sweep", base.copy(hero = FolderStyle.HERO_SWEEP))
+            if (plain.games.size >= 4) hero(FolderStyle.HERO_WALL, "Cover wall", base.copy(hero = FolderStyle.HERO_WALL))
             for (g in strong.filter { FolderLooks.gameHero(it) != null }.take(12)) hero("ref:${g.key}", g.title, base.copy(hero = FolderStyle.HERO_GAME, heroRef = g.key))
             for (f in pictures) hero("file:${f.path}", f.nameWithoutExtension, base.copy(hero = FolderStyle.HERO_FILE, heroFile = f.path))
             add(device)
@@ -522,6 +528,7 @@ private fun TitleThumb(plain: GridItem, st: FolderStyle) {
 private fun HeroPicture(item: GridItem, hero: File?, modifier: Modifier) {
     Box(modifier) {
         if (hero != null) AsyncImage(rememberSizedRequest(hero, 640), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+        else if (item.style?.hero == FolderStyle.HERO_WALL) CoverWall(item.games, item.color, Modifier.fillMaxSize(), moving = false)
         else ColorSweep(item.color, Modifier.fillMaxSize().glyphEcho(FolderLooks.sweepGlyph(item)))
     }
 }

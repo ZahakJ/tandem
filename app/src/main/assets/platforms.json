@@ -120,6 +120,17 @@
    ],
    "players": [
     {
+     "name": "Eden Duo",
+     "component": "io.github.zahakj.edenduo/org.yuzu.yuzu_emu.activities.EmulationActivity",
+     "action": "android.nfc.action.TECH_DISCOVERED",
+     "game": "data",
+     "extras": {
+      "companion": "hidden"
+     },
+     "store": "https://github.com/ZahakJ/eden-duo",
+     "note": "Eden with game companions on the second screen; Tandem shows them on demand"
+    },
+    {
      "name": "Eden",
      "component": "dev.eden.eden_emulator/org.yuzu.yuzu_emu.activities.EmulationActivity",
      "action": "android.nfc.action.TECH_DISCOVERED",

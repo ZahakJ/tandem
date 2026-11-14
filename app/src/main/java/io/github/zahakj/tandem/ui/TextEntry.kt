@@ -50,6 +50,23 @@ object TextEntry {
     }
 }
 
+/**
+ * A keyboard key's face: its label, tinted while [on] (Shift held, symbols switched in) and faded when [off] (a key
+ * that does nothing right now). Shared by the controller keyboard here and the Deck (DeckPanel.kt).
+ */
+@Composable
+internal fun KeyFace(
+    label: String, on: Boolean, off: Boolean = false, modifier: Modifier = Modifier,
+    tint: androidx.compose.ui.graphics.Color = Palette.Lavender, style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.titleSmall,
+) {
+    Box(
+        modifier.fillMaxSize().background(if (on) tint.copy(alpha = 0.3f) else androidx.compose.ui.graphics.Color.Transparent),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(label, style = style, color = if (off) Palette.Muted.copy(alpha = 0.5f) else Palette.Text, maxLines = 1)
+    }
+}
+
 private const val ROUTE = "textentry"
 private val LOWER = "abcdefghijklmnopqrstuvwxyz1234567890".map { it.toString() }
 private val SYMBOLS = "-_.@:/!?&'()+=#%*,;~".map { it.toString() }
@@ -117,14 +134,7 @@ fun TextEntryOverlay() {
                                 else -> text += k
                             }
                         },
-                    ) {
-                        Box(
-                            Modifier.fillMaxSize().background(if (on) Palette.Lavender.copy(alpha = 0.3f) else androidx.compose.ui.graphics.Color.Transparent),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(k, style = MaterialTheme.typography.titleSmall, color = if (off) Palette.Muted.copy(alpha = 0.5f) else Palette.Text, maxLines = 1)
-                        }
-                    }
+                    ) { KeyFace(k, on, off) }
                 }
             }
             Row(Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {

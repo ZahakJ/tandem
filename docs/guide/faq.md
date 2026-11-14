@@ -26,7 +26,7 @@ Yes. Tandem doesn't change their files, and it reads the same folders and artwor
 
 ### Does Tandem support Android apps and PC games?
 
-Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, DroidDeck, Winlator) are in [`platforms.json`](platforms.md) like any other system. To play games streamed from your own PC, see [Streaming from a home PC](streaming.md).
+Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, DroidDeck, Winlator) are in [`platforms.json`](platforms.md) like any other system; PC games are small shortcut files, see [Windows and Steam games](library.md#windows-and-steam-games). To play games streamed from your own PC, see [Streaming from a home PC](streaming.md).
 
 ### Is Tandem affiliated with AYN?
 
@@ -46,8 +46,8 @@ Both setup steps must be done:
 - Check the folder name: it must match one of the system's `folders` in [Systems and emulators](platforms.md#what-comes-built-in), for example `ROMs/n3ds` and not `ROMs/Nintendo 3DS`.
 - Check the file extension against the system's list.
 - Is the game hidden? Turn on **Settings › Library & art › Show hidden games**.
-- Are the games on an SD card? Tandem only reads `ROMs` in internal storage for now.
-- Did you add the files while Tandem was open? **Settings › Library & art › Rescan games**.
+- Are the games on an SD card? Add the card's games folder in **Settings › Library & art › Games › More game folders**; it needs a folder per system inside, like `ROMs`. See [Where games live](library.md#where-games-live).
+- Did you add the files while Tandem was open? They should appear by themselves within a few seconds while Tandem is on screen (**Watch game folders**); otherwise **Settings › Library & art › Rescan games**.
 - More than three folders deep? Tandem stops at three levels below the system folder.
 
 ### Pressing A does nothing, or says the emulator isn't installed

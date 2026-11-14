@@ -31,7 +31,7 @@ import kotlin.math.sin
 
 enum class TIcon {
     // Built-in apps
-    Gallery, Journal, Themes, Stats, Trophy, UpNext, Files, Controller, Gear,
+    Gallery, Journal, Notes, Themes, Stats, Trophy, UpNext, Files, Controller, Gear,
     // Collections
     Heart, Flame, NewBox, Rewind, Sprout, Genres, AllApps,
     // Genres
@@ -45,6 +45,8 @@ fun genreIcon(name: String): TIcon {
     val n = name.lowercase()
     return when {
         "rpg" in n || "role" in n -> TIcon.Sword
+        "action" in n && "adventure" in n -> TIcon.Bolt
+        "mystery" in n || "novel" in n -> TIcon.Book
         "adventure" in n -> TIcon.Book
         "racing" in n || "driving" in n || "race" in n -> TIcon.Flag
         "puzzle" in n -> TIcon.Puzzle
@@ -58,6 +60,7 @@ fun genreIcon(name: String): TIcon {
         "action" in n -> TIcon.Bolt
         "sim" in n || "life" in n || "farm" in n -> TIcon.Leaf
         "space" in n || "sci" in n -> TIcon.Planet
+        "retro" in n || "classic" in n -> TIcon.Star
         else -> listOf(TIcon.Star, TIcon.Diamond, TIcon.Planet, TIcon.Leaf, TIcon.Bolt)[(n.hashCode() and 0x7fffffff) % 5]
     }
 }
@@ -139,6 +142,17 @@ fun DrawScope.drawTIcon(icon: TIcon, s: Float, ink: Color, cut: Color) {
                 line(6.6f, 3.5f, 6.6f, 20.5f, hole, 1.2f * u)
             }
             poly(15f, 1.5f, 19.5f, 1.5f, 19.5f, 8.5f, 17.25f, 6.8f, 15f, 8.5f)
+        }
+        TIcon.Notes -> {
+            // A spiral pad with a pencil leaning on it.
+            rect(3f, 4.5f, 14.5f, 17.5f, 2.6f)
+            punch {
+                line(6.5f, 10.5f, 14f, 10.5f, hole, 1.7f * u); line(6.5f, 14f, 14f, 14f, hole, 1.7f * u); line(6.5f, 17.5f, 11f, 17.5f, hole, 1.7f * u)
+            }
+            for (x in listOf(6.5f, 10.25f, 14f)) { rect(x - 0.9f, 2f, 1.8f, 5f, 0.9f); punch { circle(x, 6.2f, 0.55f, c = hole) } }
+            line(13.5f, 21f, 21f, 9.5f, w = 3.2f * u)
+            punch { line(19.2f, 12.2f, 20.6f, 10.1f, hole, 1.2f * u) }
+            poly(12.6f, 22.3f, 12.9f, 19.6f, 14.9f, 20.9f)
         }
         TIcon.Themes -> {
             poly(12f, 2.5f, 5.5f, 4.8f, 2.5f, 11f, 4.5f, 17.8f, 10.5f, 21f, 13.5f, 19f, 12.5f, 16f, 15.5f, 14.8f, 20f, 14.5f, 21.5f, 9.5f, 17.5f, 4f)

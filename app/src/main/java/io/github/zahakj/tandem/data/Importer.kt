@@ -38,7 +38,8 @@ object Importer {
             val files = lib.games.associateBy { it.file.name }
             val ids = (lib.platform.artIds + lib.platform.id).distinct()
             val lists = buildList {
-                lib.platform.folders.forEach { add(File(Library.romsDir, "$it/gamelist.xml")) }
+                // Next to the games, in the ROMs folder and every other game folder tree (LibraryRoots).
+                for (root in Library.roots()) lib.platform.folders.forEach { add(File(Library.folder(it, root), "gamelist.xml")) }
                 ids.forEach { add(File(storage, "ES-DE/gamelists/$it/gamelist.xml")) }
                 if (cocoonBackup != null) ids.forEach { add(File(cocoonBackup, "categories/metadata/$it/gamelist.xml")) }
             }.filter { it.isFile }

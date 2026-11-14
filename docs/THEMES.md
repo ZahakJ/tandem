@@ -4,30 +4,25 @@ Tandem ships with three themes (Pastel Night, Paper and OLED Black) and reads th
 
 ## Built-in themes
 
-Pastel Night is the default. The game-flavoured themes each have their own animated backdrop, card style and system icon style. All their art is original and drawn by Tandem.
+Three themes are built in. All their art is original and drawn by Tandem.
 
-| Theme | Backdrop | Icon style |
-| --- | --- | --- |
-| Cartridge (`crt`) | 8-bit evening: blocky hills, pixel moon, scanlines | Pixel |
-| Handheld Green (`dmg`) | Dot-matrix screen with sprites bouncing about | LCD |
-| Indigo Cube (`indigo-cube`) | Floating translucent purple cubes | Clear plastic |
-| Neon Arcade (`neon-arcade`) | Tube signs, chasing marquee bulbs, scanlines | Neon outline |
-| Pocket Atomic (`pocket-atomic`) | A clear purple shell over a glowing circuit board | Clear plastic |
-| Midnight Disc (`midnight-disc`) | A spinning disc with a rainbow sheen | Chrome |
-| Blue Console Boot (`blue-boot`) | Towers of blue cubes rising in the fog | Glossy bubble |
-| Crimson Visor (`crimson-visor`) | A red wireframe tunnel on black | Neon outline |
-| Sunset Racer (`sunset-racer`) | Sun, palms and a road rushing by | Chrome |
-| Starfield Shooter (`star-shooter`) | Warp stars, a squadron and laser fire | Pixel |
-| Cozy Farm (`cozy-farm`) | Rolling fields, puffy clouds, a fence | Sticker |
-| Monster Catcher (`monster-catcher`) | Tall grass that rustles where something hides | Glossy bubble |
-| Dungeon (`dungeon`) | Stone wall lit by flickering torches | Carved |
-| Kart Rainbow (`kart-rainbow`) | A striped road winding through space | Glossy bubble |
+| Theme | Look | Backdrop | Icon style |
+| --- | --- | --- | --- |
+| Pastel Night (`pastel-night`) | The default: soft night sky, candy colours | Blobs | Glossy bubble |
+| Paper (`paper`) | Light, calm, daylight friendly | Blobs | Flat |
+| OLED Black (`oled`) | True black, outline highlight | Plain | Flat |
 
-And the calmer ones: Pastel Night (`pastel-night`), OLED Black (`oled`), Sakura (`sakura`), Mint Soda (`mint-soda`), Ocean (`ocean`), Forest (`forest`), Lavender Dream (`lavender-dream`), Paper (`paper`), Cotton Candy (`cotton-candy`) and High Contrast (`high-contrast`). The ids `sunset-arcade` and `ember` are aliases for Sunset Racer and Dungeon.
+Tandem used to ship 21 more (Cartridge, Neon Arcade, Cozy Farm and the rest). Their backdrops are all still there as
+wallpapers (`backdrop` below, and **Look & feel › Wallpaper**), and their icon styles under **Icon style**. A saved
+theme or a pack's `base` that names one of them becomes the built-in theme closest to it (`BuiltInThemes.renamed`):
+light ones Paper, the darkest OLED Black, the rest Pastel Night.
+
+A chosen accent colour is shifted towards the theme's text colour until it stands out from the background (a contrast
+of 3:1, `Themes.readableOn`), so an accent picked on a dark theme still shows on Paper, and a dark one on OLED Black.
 
 ### System icons
 
-Without a pack, every system tile shows a little original drawing of its kind of device (clamshell, landscape or brick handheld, hybrid, console, controller, disc, cartridge, computer, phone, arcade cabinet, screen, book) with the system's short name, in the theme's icon style: glossy bubble, neon outline, pixel, flat, clear plastic, chrome, LCD, sticker or carved. **Look & feel › Icons** changes the style, or uses one pack's icons with any theme (**Icons from**). On **Auto**, a theme pack shows its own art, and a built-in theme borrows the first Cocoon smart-folder pack in `ROMs/assets/smart_folders` if you have one; choose **Drawn by Tandem** to see the theme's own icon style.
+Without a pack, every system tile shows a little original drawing of its kind of device (clamshell, landscape or brick handheld, hybrid, console, controller, disc, cartridge, computer, phone, arcade cabinet, screen, book) with the system's short name, in the theme's icon style: glossy bubble, neon outline, pixel, flat, clear plastic, chrome, LCD, sticker or carved. **Look & feel › Icons** changes the style, or uses one pack's icons with any theme (**Icons from**). On **Auto**, a theme pack shows its own art and a built-in theme shows Tandem's drawn icons; a pack's art (a theme pack, or a Cocoon smart-folder pack in `ROMs/assets/smart_folders`) shows with a built-in theme only when you pick it in **Icons from**.
 
 ## Theme packs
 
@@ -36,17 +31,18 @@ Without a pack, every system tile shows a little original drawing of its kind of
 | `ROMs/tandem/themes/<pack>/` | Tandem packs, and every pack you import |
 | `ROMs/themes/<pack>/theme.json` | Packs Cocoon downloaded (read in place, never changed) |
 | `ROMs/assets/smart_folders/<pack>/`, `ROMs/assets/icon_overlays/<pack>/` | Cocoon's icon packs, found through the theme's `asset_refs` |
+| `ROMs/assets/music/<pack>/`, `ROMs/assets/sounds/<pack>/` | Cocoon's music and UI sound packs, found the same way; every sound pack here is also offered on its own under **Custom sounds** |
 
 **Look & feel › Theme packs › Manage packs** lists every pack with a live preview, its author and what it brings. Press A on a pack to:
 
 - **Use this theme**: its colours, wallpapers, icons, heroes and logos.
 - **Use its icons with my theme**: keep your theme, borrow the pack's art.
-- Switch **Colours**, **Wallpaper**, **System icons**, **Heroes & logos** and **Cover frames** on or off independently. With colours off the pack sits on top of the theme it builds on.
+- Switch **Colours**, **Wallpaper**, **System icons**, **Heroes & logos**, **Cover frames**, **Music** and **Sounds** on or off independently (the last two only for a pack that has them; they are `PackParts.music` and `sounds`, also switched in **Sound & music › Theme pack**). With colours off the pack sits on top of the theme it builds on.
 - **Remove pack** (only packs in `ROMs/tandem/themes`; Cocoon's own are left alone).
 
 ### Importing Cocoon packs
 
-Packs you already downloaded in Cocoon show up by themselves, with their art: Tandem reads the theme's `asset_refs`, finds the smart folder and icon overlay packs in `ROMs/assets/` by the `id` in their `metadata.json`, and credits their authors.
+Packs you already downloaded in Cocoon show up by themselves, with their art, music and sounds: Tandem reads the theme's `asset_refs`, finds the smart folder, icon overlay, music and sound packs in `ROMs/assets/<category>/` by the `id` in their `metadata.json` (else by `name`, else by folder name), and credits the icon packs' authors.
 
 To keep a pack (or bring one from another device), use **Import a folder** or **Import a .zip** in Manage packs and pick the pack folder, or a zip of it. Tandem copies it into `ROMs/tandem/themes/<name>/`. A zip may hold the theme folder itself or put it one or two levels down; it can also include the asset packs (`smart_folders/...`, `icon_overlays/...`) next to `theme.json`. An icon pack on its own (a `smart_folders` pack without a theme) imports too and shows up under **Icons from**.
 
@@ -71,6 +67,8 @@ What Tandem reads from a Cocoon theme (see `docs/example-cocoon-theme.json`):
 | `wallpaper_main` / `wallpaper_external` | Top / bottom screen wallpaper (picture or video) |
 | `asset_refs` (`smart_folders`) | `by_platform/<id>/icon.png`, `hero.png`, `logo.png` per system; `favorites`, `most_played`, `newly_added`, `recent` icons |
 | `asset_refs` (`icon_overlays`) | `<id>/overlay.png` frames over game covers (off until switched on) |
+| `asset_refs` (`music`) | Every audio file in the pack (three folders deep, by path), played as the theme's music |
+| `asset_refs` (`sounds`) | The pack's recorded UI sounds (its `sounds/` folder, or the pack folder itself) |
 
 System folders are matched by Tandem's system id, its aliases, folder names and common other names (`3ds`, `megadrive`, `ps1`, `gamecube`, ...).
 
@@ -88,10 +86,11 @@ my-pack/
   systems/<id>/logo.png    wide transparent logo drawn over the hero
   collections/<kind>/icon.png   favorites, most_played, newly_added, recent
   overlays/<id>/overlay.png     a frame drawn over that system's game covers
-  music/*.mp3                   the theme's music (MP3, OGG, Opus, FLAC, M4A, WAV), played in name order
+  music/*.mp3                   the theme's music, played in name order (bgm/ works too)
+  sounds/navigate.ogg ...       recorded UI sounds, named as below
 ```
 
-`smart_folders/.../by_platform/<id>/` and `icon_overlays/<id>/` (Cocoon's names) work in place of `systems/` and `overlays/`. `<id>` is Tandem's system id (`n3ds`, `gba`, `psx`... see `assets/platforms.json`) or any alias. PNG, WebP and JPG are read.
+`smart_folders/.../by_platform/<id>/` and `icon_overlays/<id>/` (Cocoon's names) work in place of `systems/` and `overlays/`. `<id>` is Tandem's system id (`n3ds`, `gba`, `psx`... see `assets/platforms.json`) or any alias. PNG, WebP and JPG are read; audio can be MP3, OGG, Opus, FLAC, M4A, AAC or WAV.
 
 `theme.json`: every key is optional; anything left out comes from the `base` theme.
 
@@ -136,7 +135,7 @@ my-pack/
 
 | Key | Values |
 | --- | --- |
-| `base` | A built-in theme id (see the tables above) |
+| `base` | `pastel-night`, `paper` or `oled` (an old theme id still works, as above) |
 | `mode` | `dark`, `oled` or `light` (used when there is no `base`) |
 | colours | `#RRGGBB`, `#AARRGGBB` or `rgba(r,g,b,a)`. `mint`, `peach`, `lavender`, `sky` and `butter` are the five colours Tandem uses for systems and collections; `on_accent` is text drawn on top of them |
 | `shape.corner` | Card corner radius in dp (0 to 60) |
@@ -161,16 +160,24 @@ Videos play muted, looping and hardware decoded. The player is released whenever
 
 ## Sounds and music
 
-UI sounds and the built-in soundtrack (Meadow Tales) are synthesized by Tandem, so there are no sound files. Your own music goes in
-`ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV).
+Tandem's UI sounds (eight packs: Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass and Air) and its one
+built-in soundtrack, Meadow Tales (six original pieces, played in turn), are synthesized by Tandem as it runs, so
+there are no sound files. Pip's voice is synthesized too: two to four soft, hummed notes with Pip's messages. Your own
+music goes in `ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV), picked with **Sound & music › Music from**.
+There are no system or game jingles: a game starts with the launch sound of whatever sound pack is playing.
 
-A theme pack can bring its own music: a `music/` folder in the pack (`bgm/` also works), a `music` list in
-`theme.json`, or, for Cocoon packs, the music asset packs its `asset_refs` name (in `ROMs/assets/music/`). While that pack is the theme its music plays instead of the background music, in order,
-and switching to another theme goes back. Each pack's music can be turned off in **Theme packs** (**Music**).
-Importing a pack copies its music with everything else.
+**A theme pack's music.** A `music/` folder in the pack (`bgm/` also works), a `music` list in `theme.json`, or, for
+Cocoon packs, the music asset packs its `asset_refs` name (in `ROMs/assets/music/`). While that pack is the theme and
+its **Music** part is on, its music plays in order instead of the music chosen in Sound & music, and switching to
+another theme goes back. Importing a pack copies its own `music/` with everything else; linked Cocoon packs stay in
+`ROMs/assets`.
 
-Recorded UI sounds work the same way: a `sounds/` folder in the pack, or the Cocoon sound asset pack its `asset_refs`
-name (in `ROMs/assets/sounds/`). Files are named for what they play: `navigate`, `select`, `back`, `launch`,
-`notification`, `folder_open`, `grid_zoom_in`, `grid_zoom_out`, `favorite`, `error`. **Sound & music › Recorded
-sounds** plays the theme's ("From the theme"), any Cocoon sound pack on its own, or none; sounds a pack doesn't have
-come from Tandem's own sound pack.
+**Recorded UI sounds.** A `sounds/` folder in the pack, or the Cocoon sound asset pack its `asset_refs` name (in
+`ROMs/assets/sounds/`). Files are named for what they play: `navigate` (or `move`), `select`, `confirm`, `back`,
+`launch`, `notification`, `folder_open` / `menu_open`, `folder_close` / `menu_close`, `grid_zoom_in`,
+`grid_zoom_out`, `page`, `favorite`, `error` and `saving_end` (`ui/SoundFiles.kt`). While the pack is the theme
+and its **Sounds** part is on, they play; sounds a pack doesn't have come from the chosen synthesized pack.
+
+Any recorded pack can also be used with any theme: **Sound & music › Sound pack › Custom**, then **Custom sounds**
+picks among every Cocoon sound pack in `ROMs/assets/sounds` and every theme pack with sounds of its own. The Start
+panel's **Sounds & music** page lists them too.

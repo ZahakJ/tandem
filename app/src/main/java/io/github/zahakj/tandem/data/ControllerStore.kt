@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.Binding
+import io.github.zahakj.tandem.Bindings
+import io.github.zahakj.tandem.Command
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,6 +24,11 @@ data class ControllerSettings(
     val holdHome: String = "switcher",
     /** Controller passthrough (PadLink.kt): a connected controller plays as the built-in one without asking. */
     val usePads: Boolean = false,
+    /**
+     * Rebound commands (Bindings.kt): command name to its binding ("L1+R1+Select", "hold:Select", "" for no button).
+     * Only the commands that differ from their default are here (see [io.github.zahakj.tandem.Bindings.stored]).
+     */
+    val bindings: Map<String, String> = emptyMap(),
 )
 
 /** `controllers.json` in the app's files folder, written like [ExtrasStore]. Safe to init from the service too. */
@@ -37,6 +45,17 @@ object ControllerStore {
     var nintendo: Set<String> = emptySet()
         private set
 
+    /** What every command is bound to, read for every key (and from the service's key thread), so a plain field. */
+    @Volatile
+    var bindings: Map<Command, Binding?> = Bindings.defaults
+        private set
+
+    /** The same map as Compose state, so hints and the rebind page redraw when a binding changes. */
+    var live by mutableStateOf(Bindings.defaults)
+        private set
+
+    fun binding(c: Command): Binding? = live[c]
+
     @Synchronized
     fun init(ctx: Context) {
         if (dir != null) return
@@ -49,11 +68,22 @@ object ControllerStore {
     fun reload() {
         val d = dir ?: return
         val s = runCatching { json.decodeFromString<ControllerSettings>(File(d, "controllers.json").readText()) }.getOrDefault(ControllerSettings())
-        synchronized(this) { settings = s; nintendo = s.nintendo }
+        synchronized(this) { apply(s) }
     }
 
+    private fun apply(s: ControllerSettings) {
+        settings = s
+        nintendo = s.nintendo
+        val map = Bindings.resolve(s.bindings)
+        bindings = map
+        live = map
+    }
+
+    /** Stores [map] (Bindings.kt) as the live bindings. */
+    fun setBindings(map: Map<Command, Binding?>) = update { it.copy(bindings = Bindings.stored(map)) }
+
     fun update(change: (ControllerSettings) -> ControllerSettings) {
-        val snapshot = synchronized(this) { change(settings).also { settings = it; nintendo = it.nintendo } }
+        val snapshot = synchronized(this) { change(settings).also { apply(it) } }
         val d = dir ?: return
         val text = json.encodeToString(snapshot)
         writer.execute {

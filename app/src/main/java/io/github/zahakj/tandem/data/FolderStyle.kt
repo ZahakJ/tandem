@@ -12,11 +12,11 @@ import kotlinx.serialization.json.Json
  */
 @Serializable
 data class FolderStyle(
-    /** [ICON_AUTO], [ICON_GAME], [ICON_MOSAIC], [ICON_FAN], [ICON_GLYPH], [ICON_EMOJI] or [ICON_FILE]. */
+    /** [ICON_AUTO], [ICON_GAME], [ICON_MOSAIC], [ICON_FAN], [ICON_GENRE], [ICON_GLYPH], [ICON_EMOJI] or [ICON_FILE]. */
     val icon: String = ICON_AUTO,
     /** For [ICON_GAME]: the tile key of the game or app whose cover or icon is shown ("game:<key>", "app:<pkg>"). */
     val iconRef: String? = null,
-    /** For [ICON_GLYPH]: one of Tandem's drawn icons, by name (TIcon). */
+    /** For [ICON_GLYPH] and [ICON_GENRE]: one of Tandem's drawn icons, by name (TIcon). */
     val glyph: String? = null,
     /** For [ICON_EMOJI]. */
     val emoji: String? = null,
@@ -26,7 +26,7 @@ data class FolderStyle(
     val color: Int? = null,
     /** [color] was taken from the icon's art, and is taken again when the icon changes. */
     val colorFromArt: Boolean = false,
-    /** [HERO_AUTO], [HERO_GAME], [HERO_FILE] or [HERO_SWEEP]. */
+    /** [HERO_AUTO], [HERO_GAME], [HERO_FILE], [HERO_SWEEP] or [HERO_WALL]. */
     val hero: String = HERO_AUTO,
     /** For [HERO_GAME]: the game's key. */
     val heroRef: String? = null,
@@ -55,6 +55,8 @@ data class FolderStyle(
         const val ICON_GAME = "game"
         const val ICON_MOSAIC = "mosaic"
         const val ICON_FAN = "fan"
+        /** The glyph on the colour, with a fan of covers rising under it. */
+        const val ICON_GENRE = "genre"
         const val ICON_GLYPH = "glyph"
         const val ICON_EMOJI = "emoji"
         const val ICON_FILE = "file"
@@ -62,6 +64,8 @@ data class FolderStyle(
         const val HERO_GAME = "game"
         const val HERO_FILE = "file"
         const val HERO_SWEEP = "sweep"
+        /** Rows of the covers inside, drifting past. */
+        const val HERO_WALL = "wall"
         const val LOGO_AUTO = "auto"
         const val LOGO_TEXT = "text"
         const val LOGO_FILE = "file"

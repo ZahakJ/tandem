@@ -75,8 +75,10 @@ object HomeBack {
             val target = if (back) GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg) else null
             // The companion first, then the game, which ends up with the focus (the companion never takes it).
             val ok = target != null && GameCompanion.toFront(app) && run {
-                // Bars hidden by the companion, not shown by the app it covers again; then the game.
+                // Bars hidden by the companion, not shown by the app it covers again; then the game. Home is a press
+                // on purpose, so a dimmed or dark panel lights up with it.
                 GameCompanion.claimBars()
+                GameCompanion.wake()
                 Thread.sleep(250)
                 GameResume.bringBack(app, target)
             }

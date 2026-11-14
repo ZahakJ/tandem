@@ -6,12 +6,16 @@
 <data-extraction-rules>
     <cloud-backup>
         <exclude domain="file" path="achievements.json" />
+        <exclude domain="file" path="steam.json" />
+        <exclude domain="file" path="steam/" />
         <exclude domain="file" path="scraping.json" />
         <exclude domain="file" path="launchbox/" />
         <exclude domain="file" path="details-tried.tsv" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="file" path="achievements.json" />
+        <exclude domain="file" path="steam.json" />
+        <exclude domain="file" path="steam/" />
         <exclude domain="file" path="scraping.json" />
         <exclude domain="file" path="launchbox/" />
         <exclude domain="file" path="details-tried.tsv" />

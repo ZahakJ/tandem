@@ -5,15 +5,20 @@ import io.github.zahakj.tandem.data.GameMeta
 import io.github.zahakj.tandem.data.ScanCache
 import io.github.zahakj.tandem.data.SortOrder
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.data.SystemPrefs
 import java.io.File
 
-/** One game file. [group] is the subfolder it sits in (for example a genre), or null at the top level. */
+/**
+ * One game file. [group] is the subfolder it sits in (for example a genre), or null at the top level. [root] is the
+ * game folder tree it was found in when that isn't the ROMs folder (LibraryRoots): its art is looked for there first.
+ */
 @androidx.compose.runtime.Immutable
 data class Game(
     val platform: Platform,
     val file: File,
     val fileTitle: String,
     val group: String?,
+    val root: File? = null,
 ) {
     val stem: String get() = file.nameWithoutExtension
 
@@ -131,11 +136,14 @@ object Library {
      */
     fun scan(platforms: List<Platform>, quick: Boolean = false): List<PlatformLibrary> {
         if (!quick) found = 0
+        val roots = roots()
         val libs = platforms.mapNotNull { platform ->
-            val games = gamesOf(platform, quick)
+            val games = gamesOf(platform, quick, roots)
             if (!quick) found += games.size
-            if (games.isEmpty()) null else PlatformLibrary(platform, games, ArtIndex(platform.artIds, quick))
+            if (games.isEmpty()) null else PlatformLibrary(platform, games, ArtIndex(platform.artIds, quick, roots))
         }
+        // The games' manuals (ROMs/manuals) are matched by name like their art, so they are looked for with the games.
+        Manuals.index(libs, quick)
         ScanCache.save()
         // Remember when each game first showed up, for "Recently added".
         val now = System.currentTimeMillis()
@@ -148,34 +156,48 @@ object Library {
     }
 
     /**
-     * The games for one system: from its own source (Android games) or its folders. Game keys are "system/file name",
-     * so the same name twice (two subfolders, or both n3ds/ and 3ds/) would clash; the first one found wins, with
-     * folders in platforms.json order and a folder's own files before its subfolders'.
+     * Every tree games are read from: the ROMs folder, then the folders added in Settings (LibraryRoots), in the
+     * order they were added. A root that isn't there right now (an SD card taken out) lists as empty, so its games
+     * are simply missing until it is back.
      */
-    fun gamesOf(platform: Platform, quick: Boolean = false): List<Game> =
-        (platform.source?.invoke(platform) ?: platform.folders.flatMap { walk(folder(it), platform, group = null, depth = 0, quick) })
-            .distinctBy { it.key }
+    fun roots(): List<File> = listOf(romsDir) + SystemPrefs.data.roots.map(::File)
 
-    /** A folder from platforms.json is under ROMs; one added in Systems is a full path. */
-    fun folder(name: String): File = if (name.startsWith("/")) File(name) else File(romsDir, name)
+    /**
+     * The games for one system: from its own source (Android games) or its folders in every root. Game keys are
+     * "system/file name", so the same name twice (two subfolders, both n3ds/ and 3ds/, or the same file in two
+     * roots) would clash; the first one found wins, with roots in order (the ROMs folder first), folders in
+     * platforms.json order and a folder's own files before its subfolders'.
+     */
+    fun gamesOf(platform: Platform, quick: Boolean = false, roots: List<File> = roots()): List<Game> =
+        platform.source?.invoke(platform) ?: LibraryRoots.merge(
+            roots.map { root ->
+                // A folder added in Systems is a full path of its own: walked once, with the ROMs folder.
+                val main = root == romsDir
+                val folders = if (main) platform.folders else platform.folders.filter { !it.startsWith("/") }
+                folders.flatMap { walk(folder(it, root), platform, group = null, depth = 0, quick, root = if (main) null else root) }
+            },
+        ) { it.key }
 
-    private fun walk(dir: File, platform: Platform, group: String?, depth: Int, quick: Boolean): List<Game> {
+    /** A folder from platforms.json is under [root] (the ROMs folder, or another root); one added in Systems is a full path. */
+    fun folder(name: String, root: File = romsDir): File = if (name.startsWith("/")) File(name) else File(root, name)
+
+    private fun walk(dir: File, platform: Platform, group: String?, depth: Int, quick: Boolean, root: File?): List<Game> {
         val found = mutableListOf<Game>()
         val listing = ScanCache.list(dir, quick)
         for (name in listing.files) {
             if (name.startsWith(".")) continue
             val f = File(dir, name)
-            if (platform.matches(name)) found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group)
+            if (platform.matches(name)) found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group, root)
         }
         for (name in listing.dirs) {
             if (name.startsWith(".")) continue
             val f = File(dir, name)
             if (f.extension.isNotEmpty() && f.extension.lowercase() in platform.extensions) {
                 // A folder named like a game file is one game (PS3 "Game.ps3" folders, for example).
-                found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group)
+                found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group, root)
             } else if (depth < MAX_DEPTH && name.lowercase() !in platform.skipDirs) {
                 // Emulators keep their own data next to the games (Azahar's nand/sdmc, for example); skip it.
-                found += walk(f, platform, group ?: name, depth + 1, quick)
+                found += walk(f, platform, group ?: name, depth + 1, quick, root)
             }
         }
         return found
@@ -196,46 +218,72 @@ object Library {
 }
 
 /**
- * Finds artwork in ROMs/downloaded_media/<system>/<kind>/, the layout ES-DE and similar frontends use.
- * A file belongs to a game when its name is the game's file name (without extension), optionally followed by
- * "__" and anything else, which is how some frontends keep several versions of the same picture.
+ * Finds artwork in `<root>/downloaded_media/<system>/<kind>/`, the layout ES-DE and similar frontends use, in every
+ * root games come from. A game's art is looked for in its own root first, then in the ROMs folder's (where scrapes
+ * save), see [LibraryRoots.artOrder]. A file belongs to a game when its name is the game's file name (without
+ * extension), optionally followed by "__" and anything else, which is how some frontends keep several versions of
+ * the same picture.
  */
-class ArtIndex(artIds: List<String>, quick: Boolean = false) {
+class ArtIndex(artIds: List<String>, quick: Boolean = false, roots: List<File> = listOf(Library.romsDir)) {
     enum class Kind(val dirs: List<String>) {
         Box(listOf("icon", "covers", "box2dfront", "boxart")),
         Hero(listOf("hero", "fanart", "screenshot_title", "titlescreens", "screenshot_gameplay", "screenshots")),
         Logo(listOf("logo", "marquees", "wheel")),
     }
 
-    /** Every wide picture of a game, one per folder (the newest edit), in [Kind.Hero]'s order of preference. */
-    private val wides = HashMap<String, MutableList<File>>()
+    /** What one root's media folders hold: a picture per game and kind, and every wide picture per game. */
+    private class Found(val byKind: Map<Kind, Map<String, File>>, val wides: Map<String, List<File>>)
 
-    private val index: Map<Kind, Map<String, File>> = Kind.entries.associateWith { kind ->
-        val byGame = HashMap<String, File>()
-        for (id in artIds) for (dir in kind.dirs) {
-            val folder = File(Library.romsDir, "downloaded_media/$id/$dir")
-            for (name in ScanCache.list(folder, quick).files) {
-                val f = File(folder, name)
-                val key = key(f.name)
-                val known = byGame[key]
-                // Earlier dirs in the list are preferred; within one dir the newest edit wins.
-                if (known == null || (known.parentFile == f.parentFile && f.lastModified() > known.lastModified())) {
-                    byGame[key] = f
-                }
-                if (kind == Kind.Hero) {
-                    val list = wides.getOrPut(key) { mutableListOf() }
-                    val same = list.indexOfFirst { it.parentFile == f.parentFile }
-                    if (same < 0) list += f else if (f.lastModified() > list[same].lastModified()) list[same] = f
+    private val main = Library.romsDir.path
+    private val perRoot: Map<String, Found> = roots.associate { it.path to read(it, artIds, quick) }
+
+    private fun read(root: File, artIds: List<String>, quick: Boolean): Found {
+        // Every wide picture of a game, one per folder (the newest edit), in [Kind.Hero]'s order of preference.
+        val wides = HashMap<String, MutableList<File>>()
+        val byKind = Kind.entries.associateWith { kind ->
+            val byGame = HashMap<String, File>()
+            for (id in artIds) for (dir in kind.dirs) {
+                val folder = File(root, "downloaded_media/$id/$dir")
+                for (name in ScanCache.list(folder, quick).files) {
+                    val f = File(folder, name)
+                    val key = key(f.name)
+                    val known = byGame[key]
+                    // Earlier dirs in the list are preferred; within one dir the newest edit wins.
+                    if (known == null || (known.parentFile == f.parentFile && f.lastModified() > known.lastModified())) {
+                        byGame[key] = f
+                    }
+                    if (kind == Kind.Hero) {
+                        val list = wides.getOrPut(key) { mutableListOf() }
+                        val same = list.indexOfFirst { it.parentFile == f.parentFile }
+                        if (same < 0) list += f else if (f.lastModified() > list[same].lastModified()) list[same] = f
+                    }
                 }
             }
+            byGame
         }
-        byGame
+        return Found(byKind, wides)
     }
 
-    fun find(kind: Kind, game: Game): File? = index[kind]?.get(game.stem.lowercase())
+    fun find(kind: Kind, game: Game): File? {
+        val key = game.stem.lowercase()
+        for (root in LibraryRoots.artOrder(game.root?.path, main)) perRoot[root]?.byKind?.get(kind)?.get(key)?.let { return it }
+        return null
+    }
 
-    /** The game's wide pictures (key art, title screens, screenshots), best kind first. */
-    fun wides(game: Game): List<File> = wides[game.stem.lowercase()].orEmpty()
+    /**
+     * The game's wide pictures (key art, title screens, screenshots), best kind first: its own root's, then those of
+     * kinds its root has none of from the ROMs folder.
+     */
+    fun wides(game: Game): List<File> {
+        val key = game.stem.lowercase()
+        val order = LibraryRoots.artOrder(game.root?.path, main)
+        if (order.size == 1) return perRoot[order[0]]?.wides?.get(key).orEmpty()
+        val out = ArrayList<File>()
+        for (root in order) for (f in perRoot[root]?.wides?.get(key).orEmpty()) {
+            if (out.none { it.parentFile?.name.equals(f.parentFile?.name, ignoreCase = true) }) out += f
+        }
+        return out
+    }
 
     private fun key(name: String): String {
         val cut = name.indexOf("__")

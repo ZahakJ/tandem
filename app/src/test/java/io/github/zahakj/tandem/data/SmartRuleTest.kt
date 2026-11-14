@@ -146,4 +146,13 @@ class SmartRuleTest {
         assertEquals(all.size, SmartRule(random = 50).run().size)
         assertEquals(5, SmartRule(random = 5, played = SmartRule.PLAYED_YES).run(many).size)
     }
+
+    @Test
+    fun statuses() {
+        val games = listOf(pokemon.copy(status = "playing"), zelda.copy(status = "finished"), bravely.copy(status = "completed"), mario)
+        assertEquals(listOf("Pokémon X"), SmartRule(statuses = listOf("playing")).run(games))
+        assertEquals(setOf("The Legend of Zelda", "Bravely Default"), SmartRule(statuses = listOf("finished", "completed")).run(games).toSet())
+        assertEquals(listOf("Super Mario World"), SmartRule(statuses = listOf(SmartRule.STATUS_NONE)).run(games))
+        assertEquals(4, SmartRule().run(games).size)
+    }
 }

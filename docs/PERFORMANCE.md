@@ -198,6 +198,8 @@ The bottom screen during play (ui/CompanionScreen.kt) never sees the player's in
   along a small loop (never more than 2 px off), at about 10 fps for 6 s. A touch eases it back in.
 - **Logo shine.** Each pass of a logo's shine is its own 1.1 s animation (about 30 fps on the companion or once
   idle), so it always finishes. The next pass starts only while the logo moves and nothing covers or dims it.
+- **Dark** (Screen off, or Off after; `ScreenOff.kt`): the faces fade out and leave the composition. One black box
+  remains, with no clock, no drift and no delay scheduled, so a dark panel costs nothing until it is touched.
 - Reduce motion, animations Off and battery saver keep it still; in the background it stops.
 
 ## Rules for new code
@@ -280,7 +282,7 @@ Add `framestats` for per-frame timings of the last 120 frames.
 
 ### Frame timing overlay
 
-**Settings › Play & system › Developer › Frame timing overlay** turns on JankStats for the top screen: a corner
+**Settings › Play & system › About › More options › Frame timing overlay** turns on JankStats for the top screen: a corner
 readout of frames, slow frames and the worst frame. Every frame longer than twice the display's frame time is
 logged with the route, open popup and swap state, with a summary every 10 seconds:
 

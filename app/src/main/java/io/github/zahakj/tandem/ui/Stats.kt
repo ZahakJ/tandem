@@ -77,7 +77,12 @@ import java.time.temporal.ChronoUnit
 
 /** The tabs on the stats screen; L1 and R1 switch between them. */
 object StatsTabs {
-    val names = listOf("Overview", "Sessions", "Achievements")
+    val names = listOf("Overview", "Library", "Trophies", "Sessions", "Achievements")
+    const val OVERVIEW = 0
+    const val LIBRARY = 1
+    const val TROPHIES = 2
+    const val SESSIONS = 3
+    const val ACHIEVEMENTS = 4
     var tab by mutableIntStateOf(0)
     fun shift(by: Int) { tab = (tab + by + names.size) % names.size }
 }
@@ -161,7 +166,7 @@ fun StatsScreen() {
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.padding(horizontal = 22.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             StatsTabs.names.forEachIndexed { i, name ->
-                val color = listOf(Palette.Mint, Palette.Sky, Palette.Butter)[i]
+                val color = listOf(Palette.Mint, Palette.Sky, Palette.Butter, Palette.Lavender, Palette.Peach)[i]
                 FocusCard(
                     Modifier.height(30.dp),
                     glow = color,
@@ -181,13 +186,16 @@ fun StatsScreen() {
         }
         Box(Modifier.weight(1f)) {
             when (tab) {
-                0 -> Overview()
-                1 -> SessionsList()
+                StatsTabs.OVERVIEW -> Overview()
+                StatsTabs.LIBRARY -> LibraryTab()
+                StatsTabs.TROPHIES -> TrophiesTab()
+                StatsTabs.SESSIONS -> SessionsList()
                 else -> AchievementsTab()
             }
         }
     }
     PlaySessionPopups()
+    StatusSorterPopup()
 }
 
 @Composable
@@ -300,15 +308,15 @@ private fun Overview() {
  * swallow coloured text, and the colour itself is kept readable on the theme.
  */
 @Composable
-private fun CoverCaption(text: String, color: Color) {
+internal fun CoverCaption(text: String, color: Color) {
     Box(Modifier.clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.82f)).padding(horizontal = 8.dp, vertical = 2.dp)) {
         Text(text, style = MaterialTheme.typography.labelMedium, color = Palette.readable(color), maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
 @Composable
-private fun StatTile(label: String, value: String, detail: String, color: Color, modifier: Modifier, route: String, key: String) {
-    FocusCard(modifier.height(96.dp), glow = color, onFocus = { FocusMemory.remember(route, key); Selection.current = Selected.Home }, onClick = { Toasts.show("$label: $value · $detail") }) {
+internal fun StatTile(label: String, value: String, detail: String, color: Color, modifier: Modifier, route: String, key: String, onClick: (() -> Unit)? = null) {
+    FocusCard(modifier.height(96.dp), glow = color, onFocus = { FocusMemory.remember(route, key); Selection.current = Selected.Home }, onClick = { onClick?.invoke() ?: Toasts.show("$label: $value · $detail") }) {
         Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(color.copy(alpha = 0.28f), Palette.Card))))
         Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.Center) {
             Text(label, style = MaterialTheme.typography.labelLarge, color = color)
@@ -428,7 +436,7 @@ private fun SessionsList() {
     val byKey = remember(Libraries.all) { Libraries.games.associateBy { it.key } }
     val onlyTitle = only?.let { titleFor(it, byKey[it]) }
     // Y on a session opens its menu; anywhere else it does what it always does.
-    InterceptButtons(Nav.route == Route.Stats && StatsTabs.tab == 1 && !Nav.overlayOpen && Layers.top == null) { b ->
+    InterceptButtons(Nav.route == Route.Stats && StatsTabs.tab == StatsTabs.SESSIONS && !Nav.overlayOpen && Layers.top == null) { b ->
         val s = PlaySessions.focused?.takeIf { b == Button.Y } ?: return@InterceptButtons false
         PlaySessions.openMenu(s)
         true
@@ -440,7 +448,7 @@ private fun SessionsList() {
                     PlaySessions.only = null
                 }
             } else {
-                EmptyNote("Every time you play, a session shows up here", "See the overview", Modifier.takesFocus(route, "empty", true)) { StatsTabs.tab = 0 }
+                EmptyNote("Every time you play, a session shows up here", "See the overview", Modifier.takesFocus(route, "empty", true)) { StatsTabs.tab = StatsTabs.OVERVIEW }
             }
         }
         return

@@ -79,14 +79,20 @@ class MainActivity : ComponentActivity() {
         Offline.startup(this)
         // Do Not Disturb left on for a game before a restart goes back off, the same way.
         Immersion.startup(this)
+        // And the AYN performance, fan and refresh-rate modes a game's profile changed.
+        Performance.startup(this)
         io.github.zahakj.tandem.data.WidgetStore.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.IconGridStore.init(this)
         io.github.zahakj.tandem.ui.CocoonSetup.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
         io.github.zahakj.tandem.data.ControllerStore.init(this)
+        // Swap A and B / Swap X and Y from an older setup become bindings.
+        io.github.zahakj.tandem.ui.Prompts.migrateSwaps()
         Gamepads.watch(this)
         RetroAchievements.init(this)
+        io.github.zahakj.tandem.data.SteamStore.init(this)
+        SteamAchievements.init(this)
         io.github.zahakj.tandem.ui.DevTools.init(this)
         // Settings' disk and system facts, read in the background so they are ready before Settings opens.
         io.github.zahakj.tandem.ui.Facts.refresh(this)
@@ -194,6 +200,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Hosted Android widgets update only while the library is in front (AppWidgets.kt).
+        io.github.zahakj.tandem.ui.AppWidgetHosting.start(this)
         // Home is bringing the game back instead (HomeBack): Tandem is only passing through, so nothing comes back yet.
         if (homeBack) return
         returned()
@@ -366,6 +374,7 @@ class MainActivity : ComponentActivity() {
         // The screen going off, or Tandem's own screensaver, isn't leaving: the library is still what shows on waking.
         if (getSystemService(android.os.PowerManager::class.java)?.isInteractive != false && !Dreaming.active) UpdateReturn.mark(this, false)
         homeBack = false
+        io.github.zahakj.tandem.ui.AppWidgetHosting.stop()
         io.github.zahakj.tandem.ui.PipMind.stopIdle()
         // The next cold start opens in this theme's colour (a no-op unless the theme changed).
         StartLook.remember(this, Themes.target)
@@ -391,6 +400,14 @@ class MainActivity : ComponentActivity() {
         LibraryGuest.mainStopped(this)
         if (SecondaryHome.front == null && !Dreaming.active) SecondaryHome.lookAtFront(this)
         super.onStop()
+    }
+
+    /** Android's answers while an Android widget is added (AppWidgetAdd): may Tandem host it, and its set-up screen. */
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: android.content.Intent?) {
+        if (io.github.zahakj.tandem.ui.AppWidgetAdd.onActivityResult(this, requestCode, resultCode)) return
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroy() {
@@ -555,7 +572,7 @@ class MainActivity : ComponentActivity() {
     private val triggerKeys = HashSet<Int>()
     private val triggerHeld = BooleanArray(2)
 
-    /** Analog triggers without key events: a pull past half way is one L2 / R2 press. */
+    /** Analog triggers without key events: a pull past half way presses L2 / R2, letting go releases it. */
     private fun triggerAxes(ev: android.view.MotionEvent) {
         if (!ev.isFromSource(android.view.InputDevice.SOURCE_JOYSTICK) || ev.deviceId in triggerKeys) return
         val values = floatArrayOf(
@@ -564,9 +581,15 @@ class MainActivity : ComponentActivity() {
         )
         for (i in 0..1) {
             val pulled = values[i] > if (triggerHeld[i]) 0.3f else 0.6f
-            if (pulled && !triggerHeld[i]) Buttons.press(if (i == 0) Button.L2 else Button.R2)
+            if (pulled != triggerHeld[i]) trigger(if (i == 0) KeyEvent.KEYCODE_BUTTON_L2 else KeyEvent.KEYCODE_BUTTON_R2, pulled)
             triggerHeld[i] = pulled
         }
+    }
+
+    /** A trigger pulled ([down]) or let go, as its button: through the bindings like a real one, so it can be held or join a chord. */
+    private fun trigger(code: Int, down: Boolean) {
+        val now = android.os.SystemClock.uptimeMillis()
+        handleKey(KeyEvent(now, now, if (down) KeyEvent.ACTION_DOWN else KeyEvent.ACTION_UP, code, 0))
     }
 
     /** L2 / R2 in long lists: [steps] moves at once in [direction] (a D-pad key code), as quick taps. */
@@ -590,7 +613,7 @@ class MainActivity : ComponentActivity() {
         return LibraryGuest.host?.libraryKey(event)
     }
 
-    /** Controller A selects and B goes back, the same as on a console. A/B and X/Y can be swapped in Appearance. */
+    /** Controller A selects and B goes back, the same as on a console; every button follows the bindings (Bindings.kt). */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         // Volume goes straight to Android (it reaches the app in front first): nothing of Tandem's sits in its way.
         if (event.keyCode == KeyEvent.KEYCODE_VOLUME_UP || event.keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
@@ -603,42 +626,32 @@ class MainActivity : ComponentActivity() {
         if (Chords.wakeScreensaver(event)) return true
         // The controller test sees every button, B and Start included.
         if (io.github.zahakj.tandem.ui.PadTest.active) return io.github.zahakj.tandem.ui.PadTest.onKey(event)
-        // Holds and combos (switcher, quick panel, private mode), and waking the screensaver.
-        if (Chords.onKey(event)) return true
-        // A controller's Home (guide) button, sent as BUTTON_MODE: the same as Home.
-        if (HomeButton.onKey(event)) return true
-        // The controller's own swap (Nintendo labels), then Swap A and B / Swap X and Y.
-        return afterSwaps(event, Gamepads.remap(event))
+        return handleKey(event)
+    }
+
+    /** Every key once the screensaver and the controller test have passed on it: the bindings, then the rest. */
+    private fun handleKey(event: KeyEvent): Boolean {
+        // The controller's own swap (Nintendo labels) first: the bindings name buttons as printed on the pad.
+        val code = Gamepads.remap(event)
+        if ((code == KeyEvent.KEYCODE_BUTTON_L2 || code == KeyEvent.KEYCODE_BUTTON_R2) && event.deviceId >= 0) triggerKeys += event.deviceId
+        // Presses, holds and chords become commands (Chords.kt); Open and Back come back as A and B.
+        val next = Chords.onKey(event, code) ?: return true
+        return afterBindings(event, next)
     }
 
     /**
-     * A tapped button hint (ui/Touch.kt): [code] is the button it shows, with every swap already applied (A, B or a
-     * D-pad arm). It is pressed and released through the same path as the real button.
+     * A tapped button hint (ui/Touch.kt): [code] is the button it shows, as the command it stands for (A opens, B goes
+     * back, or a D-pad arm), whatever button that command is bound to. It is pressed and released through the same
+     * path as the real button.
      */
     fun tapKey(code: Int) {
         val now = android.os.SystemClock.uptimeMillis()
-        afterSwaps(KeyEvent(now, now, KeyEvent.ACTION_DOWN, code, 0), code)
-        afterSwaps(KeyEvent(now, now, KeyEvent.ACTION_UP, code, 0), code)
+        afterBindings(KeyEvent(now, now, KeyEvent.ACTION_DOWN, code, 0), code)
+        afterBindings(KeyEvent(now, now, KeyEvent.ACTION_UP, code, 0), code)
     }
 
-    /** The rest of [dispatchKeyEvent], once [code] is the button [event] stands for. */
-    private fun afterSwaps(event: KeyEvent, code: Int): Boolean {
-        val button = when (code) {
-            KeyEvent.KEYCODE_BUTTON_X -> Button.X
-            KeyEvent.KEYCODE_BUTTON_Y -> Button.Y
-            KeyEvent.KEYCODE_BUTTON_START, KeyEvent.KEYCODE_MENU -> Button.Start
-            KeyEvent.KEYCODE_BUTTON_SELECT -> Button.Select
-            KeyEvent.KEYCODE_BUTTON_L1 -> Button.L1
-            KeyEvent.KEYCODE_BUTTON_R1 -> Button.R1
-            KeyEvent.KEYCODE_BUTTON_L2 -> Button.L2
-            KeyEvent.KEYCODE_BUTTON_R2 -> Button.R2
-            else -> null
-        }
-        if (button != null) {
-            if (button == Button.L2 || button == Button.R2) triggerKeys += event.deviceId
-            if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0) Buttons.press(button)
-            return true
-        }
+    /** The rest of [dispatchKeyEvent], once [code] is the key [event] stands for (A to select, B to go back, the D-pad). */
+    private fun afterBindings(event: KeyEvent, code: Int): Boolean {
         // Nothing highlighted (after touch, say): the first D-pad press brings the highlight back.
         if (event.action == KeyEvent.ACTION_DOWN && event.repeatCount == 0 && code in DPAD_KEYS) io.github.zahakj.tandem.ui.FocusCards.rescue(libraryRoot())
         // A held D-pad: the highlight moves on every repeat, the details follow it more calmly (Selection.follow).

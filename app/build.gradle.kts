@@ -152,6 +152,8 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation("io.coil-kt:coil-compose:2.7.0")
+    // A frame of a video as its picture (clips in the Gallery).
+    implementation("io.coil-kt:coil-video:2.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
     // Video wallpapers and video snaps (muted, looping, hardware decoded).
     implementation("androidx.media3:media3-exoplayer:1.4.1")

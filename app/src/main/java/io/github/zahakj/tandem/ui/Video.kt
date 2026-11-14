@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.aspectRatio
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -347,4 +350,39 @@ fun WallpaperStill(file: File, soft: Boolean, modifier: Modifier = Modifier, alp
         b, null, modifier.fillMaxSize().graphicsLayer { this.alpha = alpha() },
         contentScale = ContentScale.Crop, filterQuality = if (soft) FilterQuality.Low else FilterQuality.Medium,
     )
+}
+
+/**
+ * A clip from the Gallery, with its sound, looping, letterboxed to its own shape. Unlike [LoopingVideo] (wallpapers,
+ * always muted) this is something you chose to watch: it plays at full volume and stops when it leaves the screen
+ * or Tandem is hidden.
+ */
+@Composable
+fun ClipVideo(file: File, modifier: Modifier = Modifier) {
+    if (!rememberIsVisible()) return
+    val ctx = LocalContext.current
+    val player = remember(file) {
+        ExoPlayer.Builder(ctx).build().apply {
+            setMediaItem(MediaItem.fromUri(Uri.fromFile(file)))
+            repeatMode = Player.REPEAT_MODE_ALL
+            playWhenReady = true
+            prepare()
+        }
+    }
+    var size by remember(file) { mutableStateOf(VideoSize.UNKNOWN) }
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onVideoSizeChanged(s: VideoSize) { size = s }
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener); player.release() }
+    }
+    val ratio = if (size.width > 0 && size.height > 0) size.width * size.pixelWidthHeightRatio / size.height else 16f / 9f
+    Box(modifier, contentAlignment = Alignment.Center) {
+        AndroidView(
+            factory = { c -> TextureView(c).also { player.setVideoTextureView(it) } },
+            modifier = Modifier.fillMaxSize().wrapContentSize().aspectRatio(ratio),
+            onRelease = { player.clearVideoTextureView(it) },
+        )
+    }
 }

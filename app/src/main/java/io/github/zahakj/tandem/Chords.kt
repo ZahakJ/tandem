@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.HomeFolder
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
@@ -18,46 +19,102 @@ import io.github.zahakj.tandem.ui.Toasts
 import kotlin.math.abs
 
 /**
- * Held buttons and button combinations:
- * - Select tap: its usual action. Hold Select, or press Select + Start: the game switcher.
- * - Start tap: its usual action. Hold Start: the quick panel.
- * - L1 + R1 + Select: turn private mode on, or in private mode reveal (with the PIN) or re-hide hidden games.
- *
- * Select and Start fire on release so a hold can mean something else. Fed every key event by MainActivity.
+ * Controller buttons, from key events to commands (Bindings.kt). MainActivity feeds every key here: a [ChordEngine]
+ * works out which command a press, a hold or a chord means, and this carries it out: a direct command (the game
+ * switcher on a held Select, the quick panel on a held Start, private mode on L1 + R1 + Select) runs at once, a button
+ * command goes through [Buttons] as its logical button, and Open, Back and the controller's Home button go back to
+ * the activity as the key they stand for. While the rebind page is listening ([capture]), presses are collected
+ * into a new binding instead.
  */
 object Chords {
-    private const val HOLD_MS = 550L
-    private const val SELECT = KeyEvent.KEYCODE_BUTTON_SELECT
-    private const val START = KeyEvent.KEYCODE_BUTTON_START
-    private const val L1 = KeyEvent.KEYCODE_BUTTON_L1
-    private const val R1 = KeyEvent.KEYCODE_BUTTON_R1
-
     private val handler = Handler(Looper.getMainLooper())
-    private val held = HashSet<Int>()
+    private val engine = ChordEngine({ ControllerStore.bindings })
     /** Keys whose remaining events are swallowed (the press that woke the screensaver). */
     private val swallow = HashSet<Int>()
-    /** The current Select / Start press already did something, so its release is not a tap. */
-    private var selectUsed = false
-    private var startUsed = false
-    /** The shoulder button (L1 or R1) pressed with nothing else held, while nothing else has been pressed since. */
-    private var soloShoulder: Int? = null
-
-    private val selectHold = Runnable {
-        if (SELECT in held && !selectUsed) { selectUsed = true; Panels.openSwitcher() }
-    }
-    private val startHold = Runnable {
-        if (START in held && !startUsed) { startUsed = true; Panels.toggleQuick() }
+    private val tick = Runnable {
+        carry(engine.tick(SystemClock.uptimeMillis()), raw = 0)
+        schedule()
     }
 
-    /** True when the event was fully handled here and must not go further. */
-    fun onKey(e: KeyEvent): Boolean {
-        val code = if (e.keyCode == KeyEvent.KEYCODE_MENU) START else e.keyCode
-        if (wakeScreensaver(e)) return true
-        when (e.action) {
-            KeyEvent.ACTION_DOWN -> if (e.repeatCount == 0) onDown(code)
-            KeyEvent.ACTION_UP -> onUp(code)
+    private val capturing = ChordCapture()
+
+    /** While set, the rebind page is listening: each press, chord or hold made goes here once every button is up. */
+    var capture: ((Binding) -> Unit)? = null
+        set(value) {
+            field = value
+            capturing.reset()
+            captured = emptyList()
+            // Whatever was half pressed when listening started must not fire when it is let go.
+            if (value != null) engine.reset()
         }
-        return code == SELECT || code == START
+
+    /** The buttons pressed so far while listening, in order, for the popup. */
+    var captured by mutableStateOf<List<Pad>>(emptyList())
+        private set
+
+    /**
+     * Feeds a key whose code (after the pad's own Nintendo swap) is [code]. Null when the key was used up here;
+     * otherwise the key code the activity goes on with: A or B for Open and Back, or the key as it came for a
+     * button nothing is bound to and for keys that aren't buttons (the D-pad).
+     */
+    fun onKey(e: KeyEvent, code: Int): Int? {
+        val pad = Pad.of(code) ?: return code
+        val now = e.eventTime
+        if (e.action == KeyEvent.ACTION_DOWN && e.repeatCount > 0) {
+            // Repeats: only a pass-through key keeps going (A held on a tile), as the key it stands for.
+            return if (capture == null) engine.passOf(pad)?.let(::passCode) else null
+        }
+        capture?.let { listener ->
+            when (e.action) {
+                KeyEvent.ACTION_DOWN -> { capturing.down(pad, now); captured = capturing.sofar }
+                KeyEvent.ACTION_UP -> capturing.up(pad, now)?.let { b -> captured = emptyList(); listener(b) }
+            }
+            return null
+        }
+        val outs = when (e.action) {
+            KeyEvent.ACTION_DOWN -> engine.down(pad, now)
+            KeyEvent.ACTION_UP -> engine.up(pad, now)
+            else -> return null
+        }
+        schedule()
+        return carry(outs, raw = e.keyCode)
+    }
+
+    /** Carries out [outs]; the key code to go on with, or null. [raw] is the key as it came, for an unbound button. */
+    private fun carry(outs: List<ChordEngine.Out>, raw: Int): Int? {
+        var forward: Int? = null
+        for (o in outs) when (o) {
+            is ChordEngine.Out.Fire -> fire(o.commands)
+            is ChordEngine.Out.Pass -> if (o.command == Command.ControllerHome) HomeButton.press(o.down) else forward = passCode(o.command)
+            // A and B that no longer mean Open or Back must not reach the screens as keys either: Compose takes
+            // BUTTON_A as select and BUTTON_B as back wherever a key handler looks at it.
+            is ChordEngine.Out.Unbound -> if (raw != KeyEvent.KEYCODE_BUTTON_A && raw != KeyEvent.KEYCODE_BUTTON_B) forward = raw
+        }
+        return forward
+    }
+
+    /** The key a pass-through command goes on as; null for the Home button, which [HomeButton] takes. */
+    private fun passCode(c: Command): Int? = when (c) {
+        Command.Open -> KeyEvent.KEYCODE_BUTTON_A
+        Command.Back -> KeyEvent.KEYCODE_BUTTON_B
+        else -> null
+    }
+
+    /** The commands of one binding, as one press: the direct ones run here, the rest arrive in [Buttons] together. */
+    private fun fire(commands: List<Command>) {
+        for (c in commands) when (c) {
+            Command.QuickPanel -> Panels.toggleQuick()
+            Command.Switcher, Command.SwitcherChord -> Panels.openSwitcher()
+            Command.Hidden -> Privacy.combo()
+            else -> Unit
+        }
+        val buttons = commands.filter { it.kind == Command.Kind.Button }
+        buttons.firstOrNull()?.carrier?.let { Buttons.press(it, buttons.toSet()) }
+    }
+
+    private fun schedule() {
+        handler.removeCallbacks(tick)
+        engine.deadline?.let { handler.postAtTime(tick, it) }
     }
 
     /**
@@ -65,7 +122,7 @@ object Chords {
      * True when the event was used up that way. Checked before anything else gets the key, the controller test too.
      */
     fun wakeScreensaver(e: KeyEvent): Boolean {
-        val code = if (e.keyCode == KeyEvent.KEYCODE_MENU) START else e.keyCode
+        val code = if (e.keyCode == KeyEvent.KEYCODE_MENU) KeyEvent.KEYCODE_BUTTON_START else e.keyCode
         Idle.poke()
         if (e.action == KeyEvent.ACTION_DOWN && Screensaver.active) {
             Screensaver.wake()
@@ -79,61 +136,13 @@ object Chords {
         return false
     }
 
-    private fun onDown(code: Int) {
-        // L1 or R1 on its own is a tap (the grid zooms on its release); with any other button it is part of a chord.
-        soloShoulder = if ((code == L1 || code == R1) && held.isEmpty() && swallow.isEmpty()) code else null
-        // Any other button pressed while Select or Start is held makes them a modifier, not a tap.
-        if (code != SELECT && SELECT in held) { selectUsed = true; handler.removeCallbacks(selectHold) }
-        if (code != START && START in held) { startUsed = true; handler.removeCallbacks(startHold) }
-        held += code
-        when (code) {
-            SELECT -> {
-                selectUsed = false
-                when {
-                    L1 in held && R1 in held -> { selectUsed = true; Privacy.combo() }
-                    START in held -> { selectUsed = true; startUsed = true; handler.removeCallbacks(startHold); Panels.openSwitcher() }
-                    else -> handler.postDelayed(selectHold, HOLD_MS)
-                }
-            }
-            START -> {
-                startUsed = false
-                if (SELECT in held) { selectUsed = true; startUsed = true; handler.removeCallbacks(selectHold); Panels.openSwitcher() }
-                else handler.postDelayed(startHold, HOLD_MS)
-            }
-            L1, R1 -> if (SELECT in held && L1 in held && R1 in held) Privacy.combo()
-        }
-    }
-
-    private fun onUp(code: Int) {
-        held -= code
-        if (code == L1 || code == R1) {
-            val solo = soloShoulder == code
-            soloShoulder = null
-            io.github.zahakj.tandem.ui.IconGrid.shoulderUp(code == R1, solo)
-        }
-        when (code) {
-            SELECT -> {
-                handler.removeCallbacks(selectHold)
-                if (!selectUsed) Buttons.press(Button.Select)
-                selectUsed = true
-            }
-            START -> {
-                handler.removeCallbacks(startHold)
-                if (!startUsed) Buttons.press(Button.Start)
-                startUsed = true
-            }
-        }
-    }
-
     /** Forget held buttons; their release may never arrive once Tandem is in the background. */
     fun reset() {
-        handler.removeCallbacks(selectHold)
-        handler.removeCallbacks(startHold)
-        held.clear()
+        handler.removeCallbacks(tick)
+        engine.reset()
+        capturing.reset()
+        captured = emptyList()
         swallow.clear()
-        soloShoulder = null
-        selectUsed = true
-        startUsed = true
     }
 }
 

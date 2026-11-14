@@ -49,18 +49,20 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /*
- * Gallery: screenshots from the ROMs folder, emulators' own screenshot folders and Android's, grouped by the game
+ * Gallery: screenshots from the ROMs folder, emulators' own screenshot folders and Android's, and the companion's clips, grouped by the game
  * each one belongs to (matched by file or folder name). A grid of thumbnails, a full-screen viewer that steps with
  * the D-pad, and delete with a confirm.
  */
 
-/** One screenshot. */
-class Shot(val file: File, val time: Long, val source: String, val game: Game?)
+/** One screenshot, or a clip. */
+class Shot(val file: File, val time: Long, val source: String, val game: Game?) {
+    val video: Boolean get() = file.extension.equals("mp4", ignoreCase = true)
+}
 
 object Gallery {
     /** Where screenshots usually land, relative to the shared storage root. Missing folders are skipped. */
     private val FOLDERS = listOf(
-        "ROMs/screenshots" to "Tandem", "RetroArch/screenshots" to "RetroArch", "Pictures/Screenshots" to "Android",
+        "ROMs/screenshots" to "Tandem", io.github.zahakj.tandem.GameClip.DIR to "Tandem", "RetroArch/screenshots" to "RetroArch", "Pictures/Screenshots" to "Android",
         "DCIM/Screenshots" to "Android", "Pictures/RetroArch" to "RetroArch", "PSP/SCREENSHOT" to "PPSSPP",
         "citra-emu/screenshots" to "Citra", "lime3ds-emu/screenshots" to "Lime3DS", "Azahar/screenshots" to "Azahar",
         "duckstation/screenshots" to "DuckStation", "AetherSX2/snaps" to "AetherSX2", "NetherSX2/snaps" to "NetherSX2",
@@ -68,7 +70,7 @@ object Gallery {
         "Pictures/Dolphin" to "Dolphin", "Pictures/Eden" to "Eden", "Pictures/yuzu" to "Yuzu", "Pictures/Citron" to "Citron",
         "Pictures/Winlator" to "Winlator", "melonDS/screenshots" to "melonDS", "Pictures/Vita3K" to "Vita3K",
     )
-    private val IMAGE = setOf("png", "jpg", "jpeg", "webp")
+    private val IMAGE = setOf("png", "jpg", "jpeg", "webp", "mp4")
     private const val MAX = 3000
 
     /** Scans every folder (blocking: call off the main thread). Newest first. */
@@ -79,7 +81,7 @@ object Gallery {
         for ((rel, label) in FOLDERS) {
             val dir = File(root, rel)
             if (!dir.isDirectory) continue
-            dir.walkTopDown().maxDepth(3).filter { it.isFile && it.extension.lowercase() in IMAGE }.forEach { f ->
+            dir.walkTopDown().maxDepth(3).filter { it.isFile && it.extension.lowercase() in IMAGE && !it.name.startsWith(".") }.forEach { f ->
                 if (out.size < MAX && seen.add(f.canonicalPath)) out += f to label
             }
         }
@@ -119,25 +121,34 @@ fun GalleryScreen() {
             byGame.entries.sortedByDescending { it.value.size }.take(10).map { (k, v) -> "g:$k" to "${v.first().game!!.title} · ${v.size}" } +
             listOfNotNull(("other" to "Other").takeIf { list.orEmpty().any { it.game == null } })
     }
-    val shown = remember(list, group) {
+    val picking = ImagePick.request != null
+    val shown = remember(list, group, picking) {
+        // Choosing a picture leaves the clips out.
+        val pool = list.orEmpty().filter { !picking || !it.video }
         when {
-            group == "all" -> list.orEmpty()
-            group == "other" -> list.orEmpty().filter { it.game == null }
-            else -> list.orEmpty().filter { it.game?.key == group.removePrefix("g:") }
+            group == "all" -> pool
+            group == "other" -> pool.filter { it.game == null }
+            else -> pool.filter { it.game?.key == group.removePrefix("g:") }
         }
     }
     val keys = groups.map { "chip:${it.first}" } + shown.map { it.file.path }
     val target = rememberFocusTarget(route, keys)
+    val ctx = androidx.compose.ui.platform.LocalContext.current
     InterceptButtons(toolActive("gallery") && viewing == null) { b ->
         val at = FocusMemory.get(route)
         val i = shown.indexOfFirst { it.file.path == at }
-        if (b == Button.Y && i >= 0) { deleteShot(shown[i]); true } else false
+        when {
+            i < 0 -> false
+            b == Button.Y -> { deleteShot(shown[i]); true }
+            b == Button.X && !picking -> { shareShot(ctx, shown[i]); true }
+            else -> false
+        }
     }
     // Choosing a picture (an app's icon): A uses the screenshot; leaving the Gallery gives up.
-    val picking = ImagePick.request != null
     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { ImagePick.cancel() } }
     ToolScaffold(app, if (picking) ImagePick.request?.title else list?.let { plural(it.size, "screenshot") }, hints = {
         ButtonHint("A", if (picking) "Use picture" else "View", Palette.Mint)
+        if (!picking) ButtonHint("X", "Share", Palette.Sky)
         ButtonHint("Y", "Delete", Palette.Peach)
         ButtonHint("B", "Back", Palette.Lavender)
     }) {
@@ -166,6 +177,10 @@ fun GalleryScreen() {
                             onClick = { if (picking) ImagePick.pick(s.file) else viewing = i },
                         ) {
                             AsyncImage(rememberSizedRequest(s.file, 320), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                            if (s.video) Text(
+                                "▶ Clip", Modifier.align(Alignment.TopEnd).padding(6.dp).darkChip().padding(horizontal = 8.dp, vertical = 2.dp),
+                                style = MaterialTheme.typography.labelSmall, color = Palette.Peach, maxLines = 1,
+                            )
                             Text(
                                 s.game?.title ?: s.source, Modifier.align(Alignment.BottomStart).padding(6.dp).darkChip().padding(horizontal = 8.dp, vertical = 2.dp),
                                 style = MaterialTheme.typography.labelSmall, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
@@ -179,9 +194,40 @@ fun GalleryScreen() {
     ShotViewer(shown, viewing, onIndex = { viewing = it }, onClose = { viewing?.let { shown.getOrNull(it) }?.let { FocusMemory.remember(route, it.file.path) }; viewing = null; Nav.focusTick++ })
 }
 
+/**
+ * Android's share sheet for a screenshot or clip: pick an app, and the app asks where it goes (Discord asks for the
+ * channel or chat). It gets a copy in Tandem's cache, through its file provider, readable only by the app picked.
+ */
+private fun shareShot(ctx: android.content.Context, s: Shot) {
+    Thread({
+        val uri = runCatching {
+            val dir = java.io.File(ctx.cacheDir, "share").apply { mkdirs() }
+            dir.listFiles()?.forEach { it.delete() }
+            val copy = java.io.File(dir, s.file.name).also { s.file.copyTo(it, overwrite = true) }
+            androidx.core.content.FileProvider.getUriForFile(ctx, "${ctx.packageName}.shots", copy)
+        }.getOrNull()
+        android.os.Handler(android.os.Looper.getMainLooper()).post {
+            if (uri == null) { Toasts.show("Couldn't share it"); return@post }
+            val type = if (s.video) "video/mp4" else when (s.file.extension.lowercase()) {
+                "jpg", "jpeg" -> "image/jpeg"
+                "webp" -> "image/webp"
+                else -> "image/png"
+            }
+            val send = android.content.Intent(android.content.Intent.ACTION_SEND).setType(type)
+                .putExtra(android.content.Intent.EXTRA_STREAM, uri)
+                .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            send.clipData = android.content.ClipData.newRawUri(s.file.name, uri)
+            val title = s.game?.title?.let { "Share $it" } ?: "Share"
+            runCatching { ctx.startActivity(android.content.Intent.createChooser(send, title).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                .onFailure { Toasts.show("Nothing here can share it") }
+        }
+    }, "tandem-share").start()
+}
+
 private fun deleteShot(s: Shot, after: () -> Unit = {}) {
-    Confirm.hold("Delete this screenshot?", "${s.file.name} will be deleted from ${s.source}. This can't be undone.", "Delete") {
-        if (s.file.delete()) { Toasts.show("Screenshot deleted"); Gallery.version++; after() } else Toasts.show("Couldn't delete it")
+    val what = if (s.video) "clip" else "screenshot"
+    Confirm.hold("Delete this $what?", "${s.file.name} will be deleted from ${s.source}. This can't be undone.", "Delete") {
+        if (s.file.delete()) { Toasts.show("${what.replaceFirstChar { it.uppercase() }} deleted"); Gallery.version++; after() } else Toasts.show("Couldn't delete it")
     }
 }
 
@@ -191,8 +237,10 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
     val open = index != null && shots.isNotEmpty()
     val shown = rememberLatest(index)
     PanelGuard(open)
+    val ctx = androidx.compose.ui.platform.LocalContext.current
     InterceptButtons(open) { b ->
         if (b == Button.Y) shots.getOrNull(index ?: -1)?.let { deleteShot(it) { onClose() } }
+        if (b == Button.X) shots.getOrNull(index ?: -1)?.let { shareShot(ctx, it) }
         true
     }
     OverlayPanel(open, onClose = onClose) {
@@ -210,7 +258,8 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
             glow = Palette.Text, shape = RoundedCornerShape(24.dp), onClick = {},
         ) {
             Box(Modifier.fillMaxSize().background(Palette.NightDeep)) {
-                AsyncImage(rememberSizedRequest(s.file, 1600), null, Modifier.fillMaxSize().riseIn(s.file.path, 0, 10.dp, 0.97f), contentScale = ContentScale.Fit)
+                if (s.video) ClipVideo(s.file, Modifier.fillMaxSize().riseIn(s.file.path, 0, 10.dp, 0.97f))
+                else AsyncImage(rememberSizedRequest(s.file, 1600), null, Modifier.fillMaxSize().riseIn(s.file.path, 0, 10.dp, 0.97f), contentScale = ContentScale.Fit)
                 Row(
                     Modifier.align(Alignment.BottomCenter).padding(12.dp).darkChip().padding(horizontal = 14.dp, vertical = 6.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
@@ -222,6 +271,7 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
                     )
                     Text("${i + 1} / ${shots.size}", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                     ButtonHint("◀▶", "", Palette.Sky)
+                    ButtonHint("X", "Share", Palette.Sky)
                     ButtonHint("Y", "Delete", Palette.Peach)
                 }
             }

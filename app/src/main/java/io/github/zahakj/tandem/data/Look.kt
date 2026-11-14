@@ -27,6 +27,8 @@ data class Look(
 
     /** Game card shape: "rounded", "square", "circle", "portrait" (box art), "landscape". */
     val cardShape: String = "rounded",
+    /** The Shelf view's bookcase: "wood", "matte" (the theme's colours) or "open" (no bookcase, a thin shelf line on the wallpaper). */
+    val shelfLook: String = "wood",
     /** "small", "medium", "large", "huge", or "cols:<n>" for a fixed number of columns. */
     val gridSize: String = "medium",
     /** System tiles on the home screen: "pastel", "solid", "glass", "mono". */
@@ -38,8 +40,12 @@ data class Look(
     /** How much a picture or video wallpaper is darkened, so text stays readable. */
     val wallDim: Float = 0.35f,
 
-    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list" or "console". */
+    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list", "console" or "orbit". */
     val homeLayout: String = "shelves",
+    /** What the Orbit home's orbs are: "all" (systems, collections, apps), "games" (systems and collections) or "systems". */
+    val orbitGroups: String = "all",
+    /** The Orbit home's Continue ribbon (the last game played) above the spotlight. */
+    val orbitContinue: Boolean = true,
     /** How games show inside a system or collection: "grid", "list" or "carousel". */
     val gameView: String = "grid",
     /** Open folders and collections as a popup over the current screen instead of a new page. */

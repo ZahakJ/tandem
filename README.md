@@ -16,7 +16,9 @@ and Tandem starts it in the right emulator. Press Home, pick it again, and you'r
 back where you left off instead of at the title screen.
 
 No ads, no accounts, no analytics. Tandem only goes online for things you start
-yourself: scraping artwork, and RetroAchievements if you sign in.
+yourself: scraping artwork, RetroAchievements if you sign in, and the Discord status if you
+connect it. The one exception: Steam shortcuts missing art get Steam's store pictures by app id
+after a scan. Private mode keeps all of it offline.
 
 **[Website](https://zahakj.github.io/tandem/)** ·
 **[Docs](https://zahakj.github.io/tandem/docs/)** ·
@@ -41,11 +43,12 @@ yourself: scraping artwork, and RetroAchievements if you sign in.
 - **Two screens.** Library on top; art, details and play time on the bottom. **X** swaps the screens with a little animation, and everything works on a single screen too.
 - **While you play,** the bottom screen can show the game's art and session time, or a companion with a clock and quick controls, or stay free for emulators that use it.
 - **Resume where you left off.** If a game is still open in its emulator, Tandem brings it back instead of restarting it; a game switcher lists every running game. Needs [Shizuku](https://shizuku.rikka.app/); without it, games start fresh as usual.
-- **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** side panel, **hold Start** for brightness, volume and Wi-Fi, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout, and with Shizuku or root a pad connected mid-game can take over the built-in controls in any emulator. Touch works too.
-- **Make it yours.** Theme packs (Tandem's own and Cocoon's, with their music and sounds) on top of three built-in themes, five home layouts (shelves, an icon grid with 1 to 5 rows, carousel, list, console), animated and picture wallpapers, 15 widgets, an original soundtrack (Meadow Tales) or your own music, and eight UI sound packs.
+- **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** panel, **hold Start** for quick settings (brightness, volume, Wi-Fi, Battery saver), **R2** for a side panel with your notifications, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout, and with Shizuku or root a pad connected mid-game can take over the built-in controls in any emulator. Touch works too.
+- **Make it yours.** Theme packs (Tandem's own and Cocoon's, with their music and sounds) on top of three built-in themes, six home layouts (shelves, an icon grid with 1 to 5 rows, carousel, list, console and Orbit, Tandem's own), animated and picture wallpapers, 15 widgets, an original soundtrack (Meadow Tales) or your own music, and eight UI sound packs.
 - **Artwork and details.** Optional scraping from LaunchBox and libretro thumbnails (no account), ScreenScraper, IGDB and SteamGridDB (your keys) and HowLongToBeat. A setup guide tests each source; scrapes run in the background with progress on the bottom screen.
-- **Play tracking.** Play time, sessions and streaks in a stats screen, a journal for notes, CSV export, and RetroAchievements progress.
-- **Organized your way.** Folders, smart folders that fill themselves, collections, favourites and Up next; hide anything you'd rather not see, with an optional PIN.
+- **Play tracking.** Play time, sessions and streaks in a stats screen, a status for every game (backlog, playing, finished...), Tandem's own trophies on every system, a journal for notes, CSV export, and RetroAchievements progress.
+- **Notes while you play,** per game, as plain Markdown files: text, checklists, glossaries with drawn symbols, sketches, and screenshots taken from the bottom screen straight into a note.
+- **Organized your way.** Folders (shown as a grid, a bookshelf, a cartridge case or a carousel), smart folders that fill themselves, collections, favourites and Up next; hide anything you'd rather not see, with an optional PIN that also keeps Tandem offline.
 - **Discord status** (optional, in builds with Discord's Social SDK): shows the game you're playing with its cover; off until you connect.
 - **Home-screen mode,** with an apps drawer, a dock, and a screensaver (also as Android's own).
 - **Your files as they are.** Reads `ROMs/<system>/`, turns subfolders into folders, uses and saves art in `ROMs/downloaded_media/` (the ES-DE layout), and imports `gamelist.xml` and other launchers' backups.
@@ -81,7 +84,7 @@ Tandem needs Android 11 or newer. It doesn't include games, BIOS files or emulat
 1. Put your games in `ROMs/` in internal storage, one folder per system (`ROMs/n3ds`, `ROMs/gba`, …).
 2. Install and open Tandem, then allow **All files access** so it can read `ROMs/`.
 3. Pick the **ROMs** folder when asked, so Tandem can share games with emulators that need it.
-4. Optional: with Shizuku running, allow Tandem in it to enable resume. For artwork, **Settings › Art & accounts › Scrape library**.
+4. Optional: with Shizuku running, allow Tandem in it to enable resume. For artwork, **Settings › Library & art › Scrape library**.
 
 The [getting started guide](docs/guide/getting-started.md) has the details, and
 [Setting up on the AYN Thor](docs/guide/ayn-thor.md) covers the Thor.
@@ -100,9 +103,10 @@ built from the Markdown in [`docs/`](docs/):
 | [Systems and emulators](docs/guide/platforms.md) | The `platforms.json` reference |
 | [Importing](docs/guide/importing.md) | From ES-DE gamelists and launcher backups |
 | [Resume and Shizuku](docs/guide/resume.md) | How resume works, and what it needs |
-| [Streaming from a home PC](docs/guide/streaming.md) | Sunshine on the PC, Moonlight on the handheld, a tile per game |
 | [Themes](docs/guide/themes.md) · [Widgets](docs/guide/widgets.md) | Looks, layouts, packs, sounds; widgets |
 | [Android apps](docs/guide/apps.md) | The app menu, the drawer, choosing and moving screens |
+| [Notes](docs/guide/notes.md) | Notes per game: text, checklists, glossaries, sketches, screenshots |
+| [Streaming from a home PC](docs/guide/streaming.md) | Sunshine on the PC, Moonlight on the handheld |
 | [Privacy and scraping](docs/guide/privacy.md) | What is stored, and what each service receives |
 | [FAQ and troubleshooting](docs/guide/faq.md) | Common questions and fixes |
 | [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md) | For developers |

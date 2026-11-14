@@ -105,6 +105,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
+import io.github.zahakj.tandem.Command
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.GameCollection
@@ -120,6 +121,7 @@ import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.ExtrasStore
 import io.github.zahakj.tandem.data.FolderSort
+import io.github.zahakj.tandem.data.FolderViews
 import io.github.zahakj.tandem.data.GridShown
 import io.github.zahakj.tandem.data.GridSlots
 import io.github.zahakj.tandem.data.GridTree
@@ -264,21 +266,19 @@ object IconGrid {
 
     /** How many rows the grid shows now, so L1 / R1 can step on from the automatic size to fixed rows. */
     internal var autoRows = 2
+    /** A tile and the gap between tiles as the home grid draws them now, for fitting an Android widget's size to cells. */
+    internal var tileDp: Dp = 96.dp
+    internal var gapDp: Dp = 10.dp
     /** The grid is on the bottom screen (screens swapped), where at most 3 rows fit. */
     internal var onBottom = false
     /** Lines (columns of a sideways grid, rows of an up-and-down one) on one screen of the home grid. */
     internal var screenLines = 4
 
-    /** The zoom an L1 / R1 press on the grid asks for, done when that button comes up alone ([shoulderUp]). */
-    private var armedZoom = 0
-
-    fun armZoom(by: Int) { armedZoom = by }
-
-    /** L1 ([r1] false) or R1 came up; [solo]: pressed and released with no other button. */
-    fun shoulderUp(r1: Boolean, solo: Boolean) {
-        val by = armedZoom
-        armedZoom = 0
-        if (!solo || by != (if (r1) 1 else -1)) return
+    /**
+     * L1 ([by] -1) or R1 (1) tapped on the grid: bigger or smaller icons where the highlight is. A tap only: pressed
+     * with other buttons (L1 + R1 + Select) the shoulder is part of a chord and never arrives here (Chords.kt).
+     */
+    fun zoomTap(by: Int) {
         val folder = openFolder
         when {
             folder != null -> zoomFolder(folder, by)
@@ -353,6 +353,9 @@ fun folderColor(i: Int): Color = Color(FolderColors[abs(i) % FolderColors.size])
 
 private val AllAppsColor = Color(0xFF7F8BB0)
 
+/** The status collections: addable to the grid, never there by default. */
+private val StatusCollections = setOf(Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
+
 /** Each collection's own colour and drawn icon, so no two collections ever look alike (TandemIcons.kt). */
 private val CollectionLooks: Map<String, Pair<TIcon, Long>> = mapOf(
     "fav" to (TIcon.Heart to 0xFFEC5B8C),
@@ -360,6 +363,9 @@ private val CollectionLooks: Map<String, Pair<TIcon, Long>> = mapOf(
     "added" to (TIcon.NewBox to 0xFF4AA8E8),
     "continue" to (TIcon.Rewind to 0xFF35B9A0),
     "unplayed" to (TIcon.Sprout to 0xFF76BE4A),
+    Collections.PLAYING to (TIcon.Controller to 0xFF2FB67C),
+    Collections.BACKLOG to (TIcon.Book to 0xFF5B7CF0),
+    Collections.BEATEN to (TIcon.Trophy to 0xFFE8B23A),
 )
 
 /** What each collection is, for the other screen. */
@@ -369,6 +375,9 @@ private val CollectionBlurbs = mapOf(
     "added" to "The newest games in your library",
     "continue" to "Pick up where you left off",
     "unplayed" to "Fresh adventures you haven't started yet",
+    Collections.PLAYING to "The games you're in the middle of",
+    Collections.BACKLOG to "Games waiting their turn. Y › Status › Backlog on any game",
+    Collections.BEATEN to "Every game you've finished or completed, the latest first",
 )
 
 /** Hues for single genres, handed out in order so neighbours differ. */
@@ -394,6 +403,8 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
     private val collections: Map<String, GameCollection> = LinkedHashMap<String, GameCollection>().apply {
         Collections.continuePlaying().takeIf { it.isNotEmpty() }?.let { put("continue", GameCollection("continue", "Recently played", it, Palette.Mint)) }
         for (c in Collections.home()) put(c.id, c)
+        // The status collections can be added from Add here, but never show up on the grid by themselves.
+        for (c in Collections.byStatus()) if (c.games.isNotEmpty()) put(c.id, c)
     }
     val genres: Map<String, List<Game>> = Collections.genres()
     private val genreIndex: Map<String, Int> = genres.keys.withIndex().associate { (i, k) -> k to i }
@@ -411,7 +422,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
     }
 
     /** Tiles that show on the home grid unless hidden, in their default order. Recently played is a strip now (L2). */
-    val defaults: List<String> = systems.keys.map { "s:$it" } + collections.keys.filter { it != "continue" }.map { "col:$it" } +
+    val defaults: List<String> = systems.keys.map { "s:$it" } + collections.keys.filter { it != "continue" && it !in StatusCollections }.map { "col:$it" } +
         listOfNotNull("genres".takeIf { genres.isNotEmpty() }) + BuiltInApps.all.filter { it.onHome }.map { it.key }
 
     /** Folders being built now: a folder that (in broken data) holds itself shows as missing inside itself. */
@@ -480,7 +491,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
         return GridItem(
             "col:${c.id}", TileKind.Collection, c.title, "Collection", plural(c.games.size, "game"), color, art, c.games,
             Selected.Group(c.title, plural(c.games.size, "game"), c.games, color, GroupTarget.Collection(c.id)),
-            default = c.id != "continue", open = { openFolder(Route.Collection(c.id)) }, collectionId = c.id,
+            default = c.id != "continue" && c.id !in StatusCollections, open = { openFolder(Route.Collection(c.id)) }, collectionId = c.id,
             blurb = CollectionBlurbs[c.id].orEmpty(),
         )
     }
@@ -530,9 +541,10 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
     private fun widget(id: String): GridItem? {
         val w = Widgets.byId(id)?.takeIf { it.place == io.github.zahakj.tandem.data.WidgetPlace.Grid } ?: return null
         val kind = Widgets.kind(w)?.takeIf { it.available() } ?: return null
+        val name = kind.label(w)
         return GridItem(
-            GridWidgets.key(id), TileKind.Widget, kind.name, "Widget", GridWidgets.span(GridWidgets.key(id)).label, kind.accent,
-            TileArt.Symbol(Glyph.Layers, kind.accent), emptyList(), Selected.Group(kind.name, "Widget", emptyList(), kind.accent),
+            GridWidgets.key(id), TileKind.Widget, name, "Widget", GridWidgets.span(GridWidgets.key(id)).label, kind.accent,
+            TileArt.Symbol(Glyph.Layers, kind.accent), emptyList(), Selected.Group(name, "Widget", emptyList(), kind.accent),
             default = false, open = {}, blurb = kind.blurb, widgetId = id,
         )
     }
@@ -607,6 +619,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
         val out = ArrayList<String>()
         for (k in defaults) if (k !in here) out += k
         if ("continue" in collections && "col:continue" !in here) out += "col:continue"
+        for (id in StatusCollections) if (id in collections && "col:$id" !in here) out += "col:$id"
         if ("allapps" !in here) out += "allapps"
         for (a in BuiltInApps.all) if (!a.onHome && a.key !in here) out += a.key
         for (g in genres.keys) { val k = "genre:$g"; if (k !in here) out += k }
@@ -628,7 +641,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
 }
 
 @Composable
-private fun rememberCatalog(libs: List<PlatformLibrary>): GridCatalog {
+internal fun rememberCatalog(libs: List<PlatformLibrary>): GridCatalog {
     val ctx = LocalContext.current
     val meta = Store.meta
     val hidden = Privacy.view
@@ -768,11 +781,11 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
                 if (mv == null || isGapKey(key)) IconGrid.openMenu(key, null)
                 true
             }
-            // Zooms on release, and only when no other button joined in (L1 + R1, L1 + R1 + Select): Chords.
-            b == Button.L1 || b == Button.R1 -> { IconGrid.armZoom(if (b == Button.R1) 1 else -1); true }
+            b == Button.L1 || b == Button.R1 -> { IconGrid.zoomTap(if (b == Button.R1) 1 else -1); true }
             b == Button.L2 -> { HomeExtras.toggleRecent(); true }
-            // R2: the side panel (Pip, quick settings, notifications), as L2 brings the Recently played strip.
-            b == Button.R2 -> { Panels.toggleSide(); true }
+            // The side panel (Pip, quick settings, notifications), as L2 brings the Recently played strip. On R2 by
+            // default, where it shares the press with Page down (which has nothing to page here).
+            (b == Button.R2 || b == Button.SidePanel) && Buttons.has(Command.SidePanel) -> { Panels.toggleSide(); true }
             else -> false
         }
     }
@@ -841,7 +854,7 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
             }
             // A page shows whole columns only, centred: the next page starts just off the screen, never peeking in.
             val pageSide = if (mode == "paged") ((maxWidth - (m.tile * m.cols + m.gap * (m.cols - 1))) / 2).coerceAtLeast(m.margin) else m.margin
-            androidx.compose.runtime.SideEffect { IconGrid.autoRows = m.rows; IconGrid.onBottom = onBottom }
+            androidx.compose.runtime.SideEffect { IconGrid.autoRows = m.rows; IconGrid.onBottom = onBottom; IconGrid.tileDp = m.tile; IconGrid.gapDp = m.gap }
             // Room left above the (vertically centred) single row, for the details.
             val detailsH = if (single && split == 0.dp) ((areaH - m.cell - m.pad * 2) / 2).coerceAtLeast(0.dp) else 0.dp
             SwapFx.tileCorner = with(LocalDensity.current) { (m.tile * look.gridRoundness.coerceIn(0f, 0.5f)).toPx() }
@@ -2035,6 +2048,7 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
         val pkg = item.pkg?.takeIf { item.kind == TileKind.App }
         if (pkg != null) addAll(appMenuActions(ctx, pkg, done = { IconGrid.closeMenu() }, close = { IconGrid.closeMenu() }).filter { it.id != "home" })
         else             add(MenuAction("open", when { item.kind != TileKind.Game -> "Open"; RunningGames.list.any { it.game?.key == item.game?.key } -> "Resume"; else -> "Play" }, Glyph.Play, Palette.Mint) { IconGrid.closeMenu(); IconGrid.openedFrom = t.key.takeIf { inFolder == null }; item.open() })
+        item.game?.takeIf { item.kind == TileKind.Game }?.let { g -> add(StatusUi.action(g) { IconGrid.menuPage("status"); StatusUi.focusPage(IconGrid.MENU_ROUTE + ":" + t.key, g) }) }
         if (item.kind != TileKind.Now) {
             if (!sorted) add(MenuAction("move", "Move", Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(t.key, inFolder, siblings) })
             add(MenuAction("select", "Select", Glyph.Highlight, Palette.Sky, sub = "Mark several, then act on them all") {
@@ -2081,6 +2095,8 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
             val own = IconGridStore.folder(fid)?.sort ?: FolderSort.MANUAL
             // A smart folder keeps the order its rule sets.
             if (IconGridStore.folder(fid)?.smart != true) add(MenuAction("sortin", "Sort inside…", Glyph.Sort, Palette.Sky, value = FolderSort.label(own)) { IconGrid.menuPage("sort:$fid") })
+            add(MenuAction("viewin", "View as…", Glyph.Grid, Palette.Sky, value = FolderViews.label(IconGridStore.folder(fid)?.view ?: FolderViews.GRID),
+                help = "A grid of tiles, a bookshelf of spines, a case of cartridges or a carousel of covers. X inside the folder switches too.") { IconGrid.menuPage("view:$fid") })
             add(MenuAction("delete", "Delete folder…", Glyph.Trash, Palette.Peach, more = true) {
                 val f = IconGridStore.folder(fid)
                 if (f != null && f.items.none { it.isNotEmpty() }) {
@@ -2150,6 +2166,7 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
     val back = { IconGrid.choosingFolder = false; IconGrid.folderPage = null }
     val page = when {
         p == null -> null
+        p == "status" -> item.game?.let { g -> StatusUi.page(g, onBack = back) { IconGrid.closeMenu() } }
         p == "move" || p == "add" -> {
             val move = p == "move"
             val pick: (io.github.zahakj.tandem.data.HomeFolder) -> Unit = { f ->
@@ -2190,6 +2207,22 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
                         IconGridStore.setFolderSort(id, s)
                         Sounds.toggle(true)
                         Toasts.show(if (s == FolderSort.MANUAL) "Back to your own order" else "Sorted $label")
+                        IconGrid.closeMenu()
+                    }
+                },
+                onBack = back,
+            )
+        }
+        p.startsWith("view:") -> {
+            val id = p.removePrefix("view:")
+            val now = IconGridStore.folder(id)?.view ?: FolderViews.GRID
+            val blurbs = mapOf(FolderViews.GRID to "Tiles, as on the home grid", FolderViews.SHELF to "Spines on wooden shelves, one for each folder inside", FolderViews.CASE to "Cartridges and discs in a foam-lined case", FolderViews.CAROUSEL to "One cover at a time, the others turning away")
+            MenuPage(
+                "Show ${IconGridStore.folder(id)?.name ?: "folder"} as",
+                FolderViews.ALL.map { (v, label) ->
+                    MenuAction("v:$v", label, Glyph.Grid, Palette.Sky, value = if (v == now) "✓" else null, sub = blurbs[v]) {
+                        IconGridStore.setFolderView(id, v)
+                        Sounds.toggle(true)
                         IconGrid.closeMenu()
                     }
                 },
@@ -2300,6 +2333,8 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
         val sorted = folder.sort != io.github.zahakj.tandem.data.FolderSort.MANUAL
         // The slots' keys (empty spots included), filled in below once the panel knows its columns.
         val view = remember(fid) { arrayOf(emptyList<String>()) }
+        // In the Shelf and Case views, the folder each shown thing really sits in (a genre shelf's games are in that genre's folder).
+        val owners = remember(fid) { HashMap<String, String>() }
         val tiles = remember(folder, catalog) { SystemFolders.contents(folder, catalog).size }
         val selecting = IconGrid.selecting?.takeIf { it.folder == fid } != null
         InterceptButtons(visible) { b ->
@@ -2317,11 +2352,18 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
             when {
                 // A tile's menu, or Add here on an empty spot (the only thing Y does while a tile is carried); with
                 // tiles marked, what to do with them.
-                b == Button.Y && IconGrid.menu == null -> at?.takeIf { mv == null || isGapKey(it) }?.let { IconGrid.openMenu(it, fid) }
+                b == Button.Y && IconGrid.menu == null -> at?.takeIf { mv == null || isGapKey(it) }?.let { IconGrid.openMenu(it, owners[it] ?: fid) }
+                // X: the next way of showing it (grid, shelf, case).
+                b == Button.X && mv == null -> {
+                    val next = FolderViews.next(folder.view)
+                    IconGridStore.setFolderView(fid, next)
+                    Sounds.page()
+                    Toasts.show(FolderViews.label(next) + " view")
+                }
                 // Select marks (or unmarks) the highlighted tile; a long A does the same.
                 b == Button.Select && GridSelect.on(fid) -> at?.let { GridSelect.toggle(fid, it) }
-                // L1 / R1: bigger or smaller tiles in here, on release (IconGrid.shoulderUp), as on the home grid.
-                b == Button.L1 || b == Button.R1 -> IconGrid.armZoom(if (b == Button.R1) 1 else -1)
+                // L1 / R1: bigger or smaller tiles in here, as on the home grid.
+                b == Button.L1 || b == Button.R1 -> IconGrid.zoomTap(if (b == Button.R1) 1 else -1)
             }
             true
         }
@@ -2340,9 +2382,30 @@ private fun HomeFolderPanel(catalog: GridCatalog) {
                 }
                 IconGrid.moving?.carried == true -> ButtonHint("A", "Paste on an empty spot", Palette.Mint)
                 selecting -> SelectPill(fid, compact = true)
-                else -> ButtonHint("Y", "Options", Palette.Butter)
+                else -> {
+                    ButtonHint("X", FolderViews.label(FolderViews.next(folder.view)), Palette.Sky); Spacer(Modifier.width(10.dp))
+                    ButtonHint("Y", "Options", Palette.Butter)
+                }
             }
         }) {
+            // The Shelf and Case views; a tile being moved or marked shows the grid, where that happens.
+            if (folder.view != FolderViews.GRID && moving == null && !selecting && IconGrid.moving?.carried != true) {
+                val sections = remember(folder, catalog, config) { shelfSections(folder, catalog) }
+                val keys = remember(sections) { sections.flatMap { s -> s.items.map { it.key } } }
+                view[0] = keys
+                owners.clear(); for (s in sections) for (it in s.items) owners[it.key] = s.folderId
+                val target = rememberFocusTarget(route, keys)
+                val focus: (GridItem) -> Unit = { item -> Selection.follow { IconGrid.spot = item; Selection.current = item.selected } }
+                val open: (GridItem) -> Unit = { item -> if (canOpen(item)) { IconGrid.openedFrom = null; item.open() } }
+                val long: (GridItem) -> Unit = { item -> IconGrid.openMenu(item.key, owners[item.key] ?: fid) }
+                when (folder.view) {
+                    FolderViews.CASE -> CartCaseView(route, sections, target, focus, open, long)
+                    FolderViews.CAROUSEL -> FolderCarouselView(route, sections, open)
+                    else -> BookshelfView(route, sections, target, focus, open, long)
+                }
+                return@FolderSheet
+            }
+            owners.clear()
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 val gap = 22.dp
                 // As many 84 dp tiles as fit, or the number across chosen with L1 / R1 (bigger or smaller tiles, never

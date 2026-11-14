@@ -86,8 +86,31 @@ object Selection {
     }
 }
 
-/** Controller buttons that aren't plain navigation. A and B are handled as select and back. */
-enum class Button { X, Y, Start, Select, L1, R1, L2, R2 }
+/**
+ * Logical controller buttons, named after the button each command sits on by default: a screen that checks
+ * `b == Button.Y` means "the options button", whatever Options is bound to (Bindings.kt). A and B are handled as
+ * select and back. The last four are commands with no button of their own until the user gives them one; a
+ * screen handles them only where they make sense.
+ */
+enum class Button {
+    X, Y, Start, Select, L1, R1, L2, R2, SidePanel, Favourite, Screenshot, Clip;
+
+    /** The command this button stands for when pressed on its own (a tapped hint, a direct [Buttons.press]). */
+    val command: Command get() = when (this) {
+        X -> Command.Action
+        Y -> Command.Options
+        Start -> Command.StartMenu
+        Select -> Command.Surprise
+        L1 -> Command.Previous
+        R1 -> Command.Next
+        L2 -> Command.PageUp
+        R2 -> Command.PageDown
+        SidePanel -> Command.SidePanel
+        Favourite -> Command.Favourite
+        Screenshot -> Command.Screenshot
+        Clip -> Command.Clip
+    }
+}
 
 /** The Tandem screen the user is looking at; any other (a stale copy in another task) ignores buttons. */
 object ActiveHost {
@@ -119,8 +142,21 @@ object Buttons {
         return { handlers -= h }
     }
 
-    /** Called on the main thread for every press. */
-    fun press(b: Button) {
+    /**
+     * The commands behind the press being handled right now (Bindings.kt). Usually just the button's own; two
+     * commands that share a button (Page down and Side panel on R2) arrive as one press that carries both, and a
+     * screen asks [has] to tell which of them its button means here.
+     */
+    var commands: Set<Command> = emptySet()
+        private set
+
+    /** Whether the press being handled means [c]. Only meaningful inside a handler or collector. */
+    fun has(c: Command): Boolean = c in commands
+
+    /** Called on the main thread for every press. [commands] are the commands this press means, see [has]. */
+    fun press(b: Button, commands: Set<Command> = setOf(b.command)) {
+        // Collectors run a little later, on the main dispatcher, so the set stays until the next press.
+        this.commands = commands
         for (h in handlers.asReversed().toList()) if (h(b)) return
         presses.tryEmit(b)
     }

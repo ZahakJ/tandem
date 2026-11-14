@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.PerfProfile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -59,6 +60,16 @@ data class GameMeta(
      * ([CoverUrl.safe]); null when unknown or when the box came from the device or ScreenScraper.
      */
     val coverUrl: String? = null,
+    /** Backlog, playing, finished… ([GameStatus] ids); null: none. */
+    val status: String? = null,
+    /** When [status] was set. */
+    val statusAt: Long = 0,
+    /** When the game was first finished or completed; kept when it is played again. */
+    val finishedAt: Long = 0,
+    /** This game's own performance profile on an AYN device (Performance.kt); null fields, or null, use the default. */
+    val perf: PerfProfile? = null,
+    /** A manual or guide chosen by hand (Manuals.kt): a file path. Null reads the one found by name in ROMs/manuals. */
+    val manual: String? = null,
 )
 
 /** HowLongToBeat's averages, in seconds; 0 when nobody has logged that one yet. */
@@ -99,6 +110,8 @@ data class Settings(
     val hiddenFolders: List<HiddenFolder> = emptyList(),
     /** Battery saver is on: what it changed, to put back when it goes off (BatterySaver in QuickPanel.kt). */
     val batterySaver: BatteryBefore? = null,
+    /** Notice games copied in (or an SD card put back) while Tandem is on screen, without a rescan (FolderWatch.kt). */
+    val watchFolders: Boolean = true,
 )
 
 /** The settings Battery saver changes, as they were before it went on. */

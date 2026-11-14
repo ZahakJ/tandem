@@ -1,7 +1,11 @@
 package io.github.zahakj.tandem.ui
 
-import android.view.KeyEvent
 import androidx.compose.ui.graphics.Color
+import io.github.zahakj.tandem.Binding
+import io.github.zahakj.tandem.Bindings
+import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.Command
+import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.Store
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -12,26 +16,43 @@ import java.util.Locale
 data class PromptGlyph(val glyph: String, val color: Color?, val onColor: Color?, val square: Boolean = false)
 
 /**
- * Button prompts in the user's preferred style. Callers name the *action* button ("A" = confirm, "B" = back,
- * "X", "Y", plus "Start"/"Select"/"L"/"R"); with A/B or X/Y swapped, the prompt shows the physical button that
- * now does that job.
+ * Button prompts in the user's preferred style. Callers name the *action* button ("A" = open, "B" = back, "Y" =
+ * options, "L1" = previous... the logical [Button]s and A and B, or a [Command] by name): the prompt shows the
+ * button that command is bound to (Bindings.kt), as a chord or a hold in words when that is what it takes. A name
+ * that is no command ("L", "R") is drawn as it is.
  */
 object Prompts {
     val styles = listOf("tandem" to "Tandem", "xbox" to "Xbox", "playstation" to "PlayStation", "nintendo" to "Nintendo")
 
     fun label(id: String) = styles.firstOrNull { it.first == id }?.second ?: "Tandem"
 
+    /** The command a hint's button name stands for, or null for a plain button name. */
+    fun commandOf(button: String): Command? = when (button) {
+        "A" -> Command.Open
+        "B" -> Command.Back
+        else -> Button.entries.firstOrNull { it.name == button }?.command ?: Command.named(button)
+    }
+
     fun of(button: String): PromptGlyph {
         val look = Store.settings.look
-        val physical = when (button) {
-            "A" -> if (look.swapAB) "B" else "A"
-            "B" -> if (look.swapAB) "A" else "B"
-            "X" -> if (look.swapXY) "Y" else "X"
-            "Y" -> if (look.swapXY) "X" else "Y"
-            else -> button
-        }
-        val short = text(physical, look.prompts)
+        val command = commandOf(button) ?: return physical(button, look.prompts)
+        val binding = ControllerStore.binding(command)
+        val single = binding?.takeIf { !it.hold }?.single
+        if (single != null) return physical(single.name, look.prompts)
+        // A chord, a hold, or no button at all: words in a pill, in the style's plain colours.
+        val text = binding?.let { bindingText(it, look.prompts) } ?: "—"
         return when (look.prompts) {
+            "xbox" -> PromptGlyph(text, Color(0xFF5A5A66), Color.White)
+            "playstation" -> PromptGlyph(text, Color(0xFF26262E), Color.White)
+            "nintendo" -> PromptGlyph(text, Palette.Text, Palette.Night)
+            else -> PromptGlyph(text, null, null)
+        }
+    }
+
+    /** The glyph for one button as printed on the controller ([physical]: "A", "L1", "Select", "Home"). */
+    fun physical(physical: String, style: String): PromptGlyph {
+        val short = text(physical, style)
+        return when (style) {
             "xbox" -> when (physical) {
                 "A" -> PromptGlyph("A", Color(0xFF6CC24A), Color.White)
                 "B" -> PromptGlyph("B", Color(0xFFE5484D), Color.White)
@@ -62,16 +83,25 @@ object Prompts {
         else -> physical
     }
 
-    /** Applies the A/B and X/Y swaps to a raw key code from the controller. */
-    fun remap(keyCode: Int): Int {
+    /** What [c] is bound to right now, in words for a sentence ("L1+R1+Select"), or "no button". */
+    fun words(c: Command): String = ControllerStore.binding(c)?.let { bindingText(it, Store.settings.look.prompts) } ?: "no button"
+
+    /** A binding in words, each button as [text] says: "L1+R1+Select" ("L1+R1+−" in the Nintendo style), "Hold Start". */
+    fun bindingText(b: Binding, style: String): String =
+        (if (b.hold) "Hold " else "") + b.pads.sortedBy { it.ordinal }.joinToString("+") { text(it.name, style) }
+
+    /**
+     * Swap A and B and Swap X and Y used to be flags of their own, applied to the key codes; they are bindings now
+     * (Open on B and Back on A, Options on X and Action on Y: [Bindings.swap]). Run once at start, after the stores.
+     */
+    fun migrateSwaps() {
         val look = Store.settings.look
-        return when {
-            look.swapAB && keyCode == KeyEvent.KEYCODE_BUTTON_A -> KeyEvent.KEYCODE_BUTTON_B
-            look.swapAB && keyCode == KeyEvent.KEYCODE_BUTTON_B -> KeyEvent.KEYCODE_BUTTON_A
-            look.swapXY && keyCode == KeyEvent.KEYCODE_BUTTON_X -> KeyEvent.KEYCODE_BUTTON_Y
-            look.swapXY && keyCode == KeyEvent.KEYCODE_BUTTON_Y -> KeyEvent.KEYCODE_BUTTON_X
-            else -> keyCode
-        }
+        if (!look.swapAB && !look.swapXY) return
+        var map = ControllerStore.bindings
+        if (look.swapAB) map = Bindings.swap(map, Command.Open, Command.Back, true)
+        if (look.swapXY) map = Bindings.swap(map, Command.Options, Command.Action, true)
+        ControllerStore.setBindings(map)
+        Store.updateSettings { it.copy(look = it.look.copy(swapAB = false, swapXY = false)) }
     }
 }
 

@@ -60,6 +60,7 @@ export const SECTIONS = [
       ["themes", "docs/guide/themes.md", "Themes"],
       ["widgets", "docs/guide/widgets.md", "Widgets"],
       ["apps", "docs/guide/apps.md", "Android apps"],
+      ["notes", "docs/guide/notes.md", "Notes"],
     ],
   },
   {

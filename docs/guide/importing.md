@@ -5,7 +5,7 @@ Switching to Tandem shouldn't cost you the titles, descriptions, favorites and p
 ## When it happens
 
 - **Automatically, once,** the first time Tandem scans your games.
-- **Whenever you ask,** with **Settings › Library & art › Import details**. Run it again after scraping more games in ES-DE, or after making a new Cocoon backup.
+- **Whenever you ask,** with **Settings › Library & art › Bring your details › Import details**. Run it again after scraping more games in ES-DE, or after making a new Cocoon backup.
 
 Importing never touches the files it reads, and your old frontend keeps working.
 

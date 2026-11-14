@@ -44,8 +44,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.RetroAchievements
 import io.github.zahakj.tandem.Selected
+import io.github.zahakj.tandem.SteamAchievements
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.HomeStore
 import kotlinx.coroutines.delay
@@ -130,39 +132,92 @@ fun achievementsSettings(): SettingSection {
 
 private val RaAccountSignedOut = io.github.zahakj.tandem.data.RaAccount()
 
-/** The achievements tab on the stats screen: profile and recently earned. */
+/**
+ * One unlock on the achievements tab's recent list, from RetroAchievements or Steam, so both sort into one list.
+ * [at] is when it was earned (ms); 0 when the service didn't say, which puts it last.
+ */
+class RecentUnlock(
+    val key: String,
+    val title: String,
+    val game: String,
+    val line: String,
+    val badge: String,
+    val at: Long,
+    val steam: Boolean,
+    val detail: String,
+    /** What A does besides saying [detail]: a Steam unlock opens its game's list. */
+    val open: (() -> Unit)? = null,
+)
+
+/** RetroAchievements' "2024-05-01 12:00:00" (UTC) as ms; 0 when it doesn't read. */
+private fun raDateMs(date: String): Long = runCatching {
+    java.time.LocalDateTime.parse(date.trim().replace(' ', 'T')).toInstant(java.time.ZoneOffset.UTC).toEpochMilli()
+}.getOrDefault(0L)
+
+internal fun RetroAchievements.Earned.recent(): RecentUnlock = RecentUnlock(
+    key = "ra:$date/$title",
+    title = title,
+    game = game,
+    line = "$points pts" + (if (hardcore) " · hardcore" else "") + " · " + date.substringBefore(' '),
+    badge = badgeUrl,
+    at = raDateMs(date),
+    steam = false,
+    detail = description.ifBlank { title },
+)
+
+/**
+ * The achievements tab on the stats screen: the RetroAchievements profile and the Steam account, what was earned in
+ * the last 30 days on either, and every Steam game with achievements.
+ */
 @Composable
 fun AchievementsTab() {
     val route = "stats:2"
-    if (!RetroAchievements.enabled) {
+    val ra = RetroAchievements.enabled
+    val steam = SteamAchievements.enabled
+    if (!ra && !steam) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 PipNote(
-                    "Bring your RetroAchievements",
-                    "Sign in with your username and Web API key to see your trophies here and on the bottom screen.\n" +
-                        "Tandem only talks to RetroAchievements when this is on, and never about hidden games.",
+                    "Bring your achievements",
+                    "Sign in to RetroAchievements with your username and Web API key, or connect Steam with your own Web API key and account.\n" +
+                        "Tandem only talks to them when this is on, and never about hidden games.",
                     mood = 1,
                 )
-                FocusCard(
-                    Modifier.width(220.dp).height(44.dp).remembersFocus(route, "signin", true), glow = Palette.Butter,
-                    onFocus = { Selection.current = Selected.Home },
-                    onClick = { if (HomeStore.ra.key.isNotBlank()) { HomeStore.updateRa { it.copy(enabled = true) }; raVersion++ } else raSignIn() },
-                ) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(if (HomeStore.ra.key.isNotBlank()) "Turn achievements on" else "Sign in", style = MaterialTheme.typography.titleSmall, color = Palette.Butter)
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    FocusCard(
+                        Modifier.width(220.dp).height(44.dp).remembersFocus(route, "signin", true), glow = Palette.Butter,
+                        onFocus = { Selection.current = Selected.Home },
+                        onClick = { if (HomeStore.ra.key.isNotBlank()) { HomeStore.updateRa { it.copy(enabled = true) }; raVersion++ } else raSignIn() },
+                    ) {
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(if (HomeStore.ra.key.isNotBlank()) "Turn RetroAchievements on" else "RetroAchievements", style = MaterialTheme.typography.titleSmall, color = Palette.Butter)
+                        }
                     }
+                    SteamSignInButton(Modifier.remembersFocus(route, "steam-signin", false))
                 }
             }
         }
         return
     }
-    val version = raVersion
+    val version = raVersion + steamVersion
     // Whether each request has come back, so a failed one says so instead of "loading" forever.
     var profileDone by remember(version) { mutableStateOf(false) }
     var recentDone by remember(version) { mutableStateOf(false) }
-    val profile by produceState<RetroAchievements.Profile?>(null, version) { value = RetroAchievements.profile(); profileDone = true }
-    val recent by produceState<List<RetroAchievements.Earned>?>(null, version) { value = RetroAchievements.recent(); recentDone = true }
-    val target = rememberFocusTarget(route, listOf("profile") + recent.orEmpty().map { "${it.date}/${it.title}" })
+    val profile by produceState<RetroAchievements.Profile?>(null, version) { value = if (ra) RetroAchievements.profile() else null; profileDone = true }
+    val raRecent by produceState<List<RetroAchievements.Earned>?>(null, version) { value = if (ra) RetroAchievements.recent() else emptyList(); recentDone = true }
+    // Steam's side is what is cached: it changes as looks come back.
+    val steamRecords = SteamAchievements.games.values.toList()
+    val steamGames = remember(steamRecords, Libraries.all, Privacy.view, steam) { steamGameEntries() }
+    val recent: List<RecentUnlock>? = remember(raRecent, steamGames) {
+        raRecent?.let { list -> (list.map { it.recent() } + steamRecentUnlocks(steamGames)).sortedByDescending { it.at } }
+    }
+    val keys = buildList {
+        if (ra) add("profile")
+        if (steam) add("steam")
+        recent.orEmpty().forEach { add(it.key) }
+        steamGames.forEach { add("sg:${it.record.appId}") }
+    }
+    val target = rememberFocusTarget(route, keys)
     val grid = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
     LazyVerticalGrid(
         GridCells.Adaptive(240.dp),
@@ -172,7 +227,7 @@ fun AchievementsTab() {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item("profile", span = { GridItemSpan(maxLineSpan) }) {
+        if (ra) item("profile", span = { GridItemSpan(maxLineSpan) }) {
             FocusCard(
                 Modifier.fillMaxWidth().height(96.dp).takesFocus(route, "profile", target == "profile"), glow = Palette.Butter,
                 onFocus = { FocusMemory.remember(route, "profile"); Selection.current = Selected.Home },
@@ -206,6 +261,9 @@ fun AchievementsTab() {
                 }
             }
         }
+        if (steam) item("steam", span = { GridItemSpan(maxLineSpan) }) {
+            SteamProfileCard(steamGames, Modifier.takesFocus(route, "steam", target == "steam")) { FocusMemory.remember(route, "steam"); Selection.current = Selected.Home }
+        }
         item("recent-title", span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle("Earned in the last 30 days", Palette.Butter, Modifier.padding(top = 4.dp))
         }
@@ -218,24 +276,35 @@ fun AchievementsTab() {
             list.isEmpty() -> item("none", span = { GridItemSpan(maxLineSpan) }) {
                 PipNote("Nothing new this month", "Your next achievement will shine right here.", mood = 2)
             }
-            else -> items(list, key = { "${it.date}/${it.title}" }) { e ->
-                val key = "${e.date}/${e.title}"
+            else -> items(list, key = { it.key }) { e ->
+                val key = e.key
+                val color = if (e.steam) Palette.Sky else Palette.Butter
                 FocusCard(
-                    Modifier.fillMaxWidth().height(76.dp).takesFocus(route, key, target == key), glow = Palette.Butter, shape = RoundedCornerShape(16.dp),
+                    Modifier.fillMaxWidth().height(76.dp).takesFocus(route, key, target == key), glow = color, shape = RoundedCornerShape(16.dp),
                     onFocus = { FocusMemory.remember(route, key); Selection.current = Selected.Home },
-                    onClick = { Toasts.show(e.description.ifBlank { e.title }) },
+                    onClick = { e.open?.invoke() ?: Toasts.show(e.detail) },
                 ) {
                     Row(Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(e.badgeUrl, null, Modifier.size(56.dp).clip(RoundedCornerShape(10.dp)))
+                        AsyncImage(e.badge, null, Modifier.size(56.dp).clip(RoundedCornerShape(10.dp)).background(Palette.CardHigh))
                         Column(Modifier.weight(1f).padding(start = 10.dp)) {
                             Text(e.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(e.game, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text(
-                                "${e.points} pts" + (if (e.hardcore) " · hardcore" else "") + " · " + e.date.substringBefore(' '),
-                                style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1,
-                            )
+                            Text(e.line, style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
+                        if (e.steam) Pill("Steam", Palette.Sky, Modifier.padding(start = 6.dp))
                     }
+                }
+            }
+        }
+        if (steamGames.isNotEmpty()) {
+            item("steam-title", span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle("Steam games", Palette.Sky, Modifier.padding(top = 4.dp))
+            }
+            items(steamGames, key = { "sg:${it.record.appId}" }) { e ->
+                val key = "sg:${e.record.appId}"
+                SteamGameCard(e, Modifier.takesFocus(route, key, target == key)) {
+                    FocusMemory.remember(route, key)
+                    Selection.current = e.game?.let { Selected.GameItem(it) } ?: Selected.Home
                 }
             }
         }
@@ -250,6 +319,8 @@ private val greyscale = ColorFilter.colorMatrix(ColorMatrix().apply { setToSatur
  */
 @Composable
 fun AchievementsStrip(game: Game) {
+    // A Steam game (a .steam shortcut) has Steam's achievements, never RetroAchievements'.
+    if (SteamUi.applies(game)) { SteamStrip(game); return }
     if (!RetroAchievements.enabled || Privacy.isHidden(game) || RetroAchievements.consoleId(game.platform.id) == null) return
     val progress by produceState(RetroAchievements.cachedProgress(game), game.key) {
         // The value carries over from the game shown before: start from this one's.

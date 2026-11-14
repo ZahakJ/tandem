@@ -343,6 +343,9 @@ fun CollectionScreen(route: Route.Collection) {
         "most", "continue" -> Empty("Nothing played yet", "Games you play show up here.")
         in PlayedOnSystem -> Empty("Nothing played yet", "Games you play on this system show up here, most played first.")
         "unplayed" -> Empty("You've played them all!", "Every game has had a go. Impressive.")
+        Collections.PLAYING -> Empty("Nothing on the go", "Games you play for a while show up here by themselves.")
+        Collections.BACKLOG -> Empty("The backlog is clear", "Y › Status › Backlog on a game puts it here.")
+        Collections.BEATEN -> Empty("Nothing finished yet", "Y › Status › Finished when the credits roll.")
         "added" -> Empty("No games yet", "New games show up here after a rescan.", "Rescan") { LibraryScan.rescan(it) }
         else -> Empty("Nothing in this genre", "Its games were hidden or removed.")
     }
@@ -353,7 +356,7 @@ fun CollectionScreen(route: Route.Collection) {
 private object PlayedOnSystem { operator fun contains(id: String) = id.startsWith(Collections.PLAYED) }
 
 /** Collections that keep their own order instead of following "Sort by". */
-val ORDERED_COLLECTIONS = setOf("continue", "most", "added")
+val ORDERED_COLLECTIONS = setOf("continue", "most", "added", Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
 
 @Composable
 fun GenresScreen() {

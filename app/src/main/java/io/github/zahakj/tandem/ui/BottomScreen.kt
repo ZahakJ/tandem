@@ -74,6 +74,7 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.data.playStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -400,6 +401,7 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
     val color = Palette.forName(game.platform.id)
     // Wraps onto a second line instead of running off the edge.
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        meta.playStatus?.let { Pill(it.chip, it.color) }
         Pill(game.platform.shortName, color)
         meta.year?.let { Pill("$it", Palette.Butter) }
         meta.genres.map(Collections::tidyGenre).distinctBy { it.lowercase() }.take(3).forEach { Pill(it, Palette.Lavender) }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.PerfProfile
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -32,6 +33,22 @@ data class HomeSettings(
     val offlineHidden: Boolean = false,
     /** With [offlineHidden], the handheld stays offline until the hidden game's app has closed, not just left (Offline.kt). */
     val offlineUntilClosed: Boolean = true,
+    /** The performance mode, fan mode and refresh rate while any game plays, on an AYN device (Performance.kt). Null fields keep what is set. */
+    val perf: PerfProfile = PerfProfile(),
+    /**
+     * The bottom screen while a game plays, for every system and game without a choice of its own: "art", "tandem",
+     * "dark" (Screen off) or "off" (GameCompanion). null is game art; dual-screen emulators still get the screen.
+     */
+    val companion: String? = null,
+    /** Minutes without a touch on the bottom screen before it goes dark while a game plays (ScreenOff.kt); 0 is never. */
+    val companionOffAfter: Int = 0,
+    /** The Deck (ui/DeckPanel.kt): how far the game's pointer goes for a finger's movement (1 = as far). */
+    val deckSensitivity: Float = 1.5f,
+    /** A click sound and a haptic tick for each key on the Deck. */
+    val deckSounds: Boolean = true,
+    val deckHaptics: Boolean = true,
+    /** The keyboard the Deck opens with: DeckLayouts.FULL or GAME. */
+    val deckLayout: String = "full",
 )
 
 /** One stretch of play: game key, start time (ms) and length in seconds. Short names keep the file small. */
