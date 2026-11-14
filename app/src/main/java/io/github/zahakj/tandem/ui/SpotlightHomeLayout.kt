@@ -92,7 +92,7 @@ class SpotlightRail(val viewH: Float, val pitch: Float, val gap: Float, val tile
         const val FOCUS = 1.22f
 
         /** How much of a pitch a tile takes to fade out against the viewport's edge. */
-        const val EDGE_FADE = 0.35f
+        const val EDGE_FADE = 0.12f
 
         /** The tile at the highlight for [offset]. */
         fun index(offset: Float, count: Int): Int = if (count <= 0) 0 else offset.roundToInt().coerceIn(0, count - 1)
