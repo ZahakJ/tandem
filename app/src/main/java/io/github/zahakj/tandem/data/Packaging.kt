@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
  */
 
 /** Which edge of the front cover the system's band runs along. */
-enum class BandSide { Top, Left }
+enum class BandSide { Top, Left, Right }
 
 /** A system's logo on its band, beyond the plain wordmark: a few shapes the Shelf view draws itself. */
 enum class BandMark { None, Switch, Cube, Grid, Swirl, PlayStation }
@@ -80,7 +80,9 @@ object Packaging {
         PackSpec("switch", 170f, 104f, 10f, RED, RED, 0xFFFFFFFF, "NINTENDO SWITCH", "", frontBand = 0.1f, spineBand = 0.13f, mark = BandMark.Switch, cover = 99f / 161f),
         // 3DS: white case (135 × 122 × 12). White band across the cover's top with "NINTENDO 3DS" (the 3DS in red),
         // the same white head on the spine with the red 3DS mark, the art and title below it.
-        PackSpec("n3ds", 135f, 122f, 12f, WHITE, WHITE, 0xFFD7182A, "NINTENDO 3DS", "3DS", frontBand = 0.1f, spineBand = 0.12f, cover = 0.88f),
+        // The 3DS front carries its logo down a white strip along the RIGHT edge ("NINTENDO 3DS", reading top to bottom),
+        // not across the top.
+        PackSpec("n3ds", 135f, 122f, 12f, WHITE, WHITE, 0xFFD7182A, "NINTENDO 3DS", "3DS", side = BandSide.Right, frontBand = 0.085f, spineBand = 0.12f, cover = 0.88f),
         // DS: black case in North America and Japan (135 × 122 × 15), clear in Europe. A silver-white band across
         // the top with the "NINTENDO DS" logo in black; the spine's head the same.
         PackSpec("nds", 135f, 122f, 15f, BLACK, 0xFFE9EAEC, 0xFF1B1C1F, "NINTENDO DS", "DS", frontBand = 0.1f, spineBand = 0.12f, cover = 0.88f),
@@ -178,6 +180,39 @@ object Packaging {
     }
 
     const val SCAN_TOLERANCE = 0.06f
+
+    /**
+     * True when a picture ([argb], [w] by [h] pixels, a small decode) already has the system's band printed along its
+     * edge, as a real box scan does: most of the strip where the band goes is the band's colour. This catches real
+     * scans whatever their shape (scraped 3DS fronts often include a sliver of spine and are wider than the case),
+     * so they never get a second band.
+     */
+    fun hasBand(argb: IntArray, w: Int, h: Int, spec: PackSpec): Boolean {
+        if (w < 8 || h < 8 || argb.size < w * h) return false
+        val depth = when (spec.side) { BandSide.Top -> h; else -> w }
+        val strip = (depth * spec.frontBand * 0.6f).roundToInt().coerceAtLeast(1)
+        val band = spec.band.toInt()
+        var near = 0
+        var all = 0
+        fun close(c: Int): Boolean {
+            val dr = abs(((c shr 16) and 0xFF) - ((band shr 16) and 0xFF))
+            val dg = abs(((c shr 8) and 0xFF) - ((band shr 8) and 0xFF))
+            val db = abs((c and 0xFF) - (band and 0xFF))
+            return maxOf(dr, dg, db) <= 48
+        }
+        for (y in 0 until h) for (x in 0 until w) {
+            val inStrip = when (spec.side) {
+                BandSide.Top -> y in 1..strip
+                BandSide.Left -> x in 1..strip
+                BandSide.Right -> x in (w - 1 - strip) until (w - 1)
+            }
+            if (!inStrip) continue
+            all++
+            if (close(argb[y * w + x])) near++
+        }
+        // The logo is printed on the band, so a fair part of it is the logo's ink.
+        return all > 0 && near >= all * 0.55f
+    }
 
     /**
      * Where the spine is in a full wraparound scan (ScreenScraper's "box-texture"): back,

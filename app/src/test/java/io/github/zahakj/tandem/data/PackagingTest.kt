@@ -81,4 +81,15 @@ class PackagingTest {
         assertTrue("stored on its side", Packaging.isSpineShaped(1610, 100))
         assertFalse(Packaging.isSpineShaped(990, 1610))
     }
+
+    @Test fun aPrintedBandMarksARealScan() {
+        val spec = Packaging.of(listOf("n3ds"), Region.US)!!
+        val w = 90; val h = 100
+        val white = 0xFFF2F2F0.toInt(); val art = 0xFF2050A0.toInt()
+        // A scan: the art, with the white strip down its right edge.
+        val scan = IntArray(w * h) { i -> if (i % w >= w - 9) white else art }
+        assertTrue(Packaging.hasBand(scan, w, h, spec))
+        // Store art: the picture runs to every edge.
+        assertFalse(Packaging.hasBand(IntArray(w * h) { art }, w, h, spec))
+    }
 }

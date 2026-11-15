@@ -46,6 +46,7 @@ import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
@@ -217,81 +218,54 @@ object CoverShapes {
 }
 
 /**
- * Each game's logo for its spine, looked up off the main thread: finding it touches the storage, and a logo seen for
- * the first time is test-decoded to tell a cut-out from a picture. Done while a shelf composes, that held each new
- * shelf scrolling in for a tenth of a second or more. [warm] looks up a whole folder as it opens.
- */
-object SpineLogos {
-    /** A game's logo once looked up: the file, or none. */
-    class Found(val file: File?)
-
-    private val known = HashMap<String, androidx.compose.runtime.MutableState<Found?>>()
-    private val main = android.os.Handler(android.os.Looper.getMainLooper())
-
-    /** The game's logo, or null while it is still being looked up. A changed logo is looked up again. */
-    fun of(g: Game): Found? {
-        known[id(g)]?.let { return it.value }
-        warm(listOf(g))
-        return null
-    }
-
-    fun warm(games: List<Game>) {
-        val todo = games.filter { known[id(it)] == null }.distinctBy { id(it) }
-        if (todo.isEmpty()) return
-        val states = todo.associate { id(it) to androidx.compose.runtime.mutableStateOf<Found?>(null) }
-        known.putAll(states)
-        inBackground({
-            for (g in todo) {
-                val found = Found(runCatching { Libraries.of(g)?.logo(g) }.getOrNull())
-                main.post { states.getValue(id(g)).value = found }
-            }
-        })
-    }
-
-    private fun id(g: Game) = g.key + "\u0000" + g.meta.logo
-}
-
-/**
  * What the Shelf shows of each game's real packaging, looked up off the main thread (it touches the storage and
  * reads each picture's header): the picture for its front (a scan of the real box when there is one, else the box
  * art), whether that picture is a real box already or needs the system's band round it ([Packaging.isScan]), and
  * a scan of its spine. [warm] looks up a whole folder as it opens; [recheck] looks again for scans after a scrape.
  */
 object ShelfPacks {
-    class Pack(val art: File?, val spine: File?, val aspect: Float?, val scan: Boolean)
+    /**
+     * [thumb] and [logo] are small ready-made copies for the spine (the cover's art stretched soft over it, the logo
+     * turned down it), so a spine draws them straight away instead of each starting its own image load.
+     */
+    class Pack(
+        val art: File?, val spine: File?, val aspect: Float?, val scan: Boolean,
+        val thumb: androidx.compose.ui.graphics.ImageBitmap? = null, val logo: androidx.compose.ui.graphics.ImageBitmap? = null,
+    )
 
     private val known = HashMap<String, androidx.compose.runtime.MutableState<Pack?>>()
     private val main = android.os.Handler(android.os.Looper.getMainLooper())
 
     /** The game's packaging, or null while it is still being looked up. Changed box art is looked up again. */
-    fun of(g: Game): Pack? {
+    fun of(ctx: Context, g: Game): Pack? {
         known[id(g)]?.let { return it.value }
-        warm(listOf(g))
+        warm(ctx, listOf(g))
         return null
     }
 
-    fun warm(games: List<Game>) {
+    fun warm(ctx: Context, games: List<Game>) {
+        val app = ctx.applicationContext
         val todo = games.filter { known[id(it)] == null }.distinctBy { id(it) }
         if (todo.isEmpty()) return
         val states = todo.associate { id(it) to androidx.compose.runtime.mutableStateOf<Pack?>(null) }
         known.putAll(states)
         inBackground({
             for (g in todo) {
-                val pack = runCatching { look(g) }.getOrNull() ?: Pack(null, null, null, true)
+                val pack = runCatching { look(app, g) }.getOrNull() ?: Pack(null, null, null, true)
                 main.post { states.getValue(id(g)).value = pack }
             }
         })
     }
 
     /** Looks again, after a scrape, at the games of [games] that had no front or spine scan. */
-    fun recheck(games: List<Game>) {
+    fun recheck(ctx: Context, games: List<Game>) {
         val stale = games.filter { g -> known[id(g)]?.value?.let { it.spine == null || !it.scan } == true }
         if (stale.isEmpty()) return
         stale.forEach { known.remove(id(it)) }
-        warm(stale)
+        warm(ctx, stale)
     }
 
-    private fun look(g: Game): Pack {
+    private fun look(ctx: Context, g: Game): Pack {
         val lib = Libraries.of(g)
         // A scrape saves scans into their folders without telling the art index, so the folder is checked too.
         val front = lib?.boxFront(g) ?: saved(g, io.github.zahakj.tandem.data.MediaKind.Front)
@@ -302,15 +276,61 @@ object ShelfPacks {
             if (o.outWidth > 0 && o.outHeight > 0) o.outWidth.toFloat() / o.outHeight else null
         }
         val spine = lib?.boxSpine(g) ?: saved(g, io.github.zahakj.tandem.data.MediaKind.Spine)
-        return Pack(art, spine, aspect, Packaging.isScan(aspect, Cases.spec(g), fromScans = front != null))
+        val spec = Cases.spec(g)
+        val scan = Packaging.isScan(aspect, spec, fromScans = front != null) || (art != null && spec != null && banded(art, spec))
+        // The spine's own pictures, unless a scan of the real spine stands in for them.
+        val thumb = if (spine == null) art?.let { ShelfThumbs.load(ctx, it, 96, alpha = false) } else null
+        val logo = if (spine == null) lib?.logo(g)?.let { ShelfThumbs.load(ctx, it, 192, alpha = true) } else null
+        return Pack(art, spine, aspect, scan, thumb, logo)
     }
+
+    /** Whether the picture already has the system's band along its edge (a small decode, see [Packaging.hasBand]). */
+    private fun banded(f: File, spec: io.github.zahakj.tandem.data.PackSpec): Boolean = runCatching {
+        val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(f.path, o)
+        val opts = BitmapFactory.Options().apply { inSampleSize = maxOf(1, maxOf(o.outWidth, o.outHeight) / 96) }
+        val bmp = BitmapFactory.decodeFile(f.path, opts) ?: return@runCatching false
+        val px = IntArray(bmp.width * bmp.height)
+        bmp.getPixels(px, 0, bmp.width, 0, 0, bmp.width, bmp.height)
+        Packaging.hasBand(px, bmp.width, bmp.height, spec).also { bmp.recycle() }
+    }.getOrDefault(false)
 
     private fun saved(g: Game, kind: io.github.zahakj.tandem.data.MediaKind): File? {
         val dir = io.github.zahakj.tandem.data.Media.dirFor(g, kind)
         return listOf("jpg", "png").map { File(dir, "${g.stem}.$it") }.firstOrNull { it.isFile }
     }
 
-    private fun id(g: Game) = g.key + "\u0000" + g.meta.box
+    private fun id(g: Game) = g.key + "\u0000" + g.meta.box + "\u0000" + g.meta.logo
+}
+
+/**
+ * Small copies of the Shelf's spine pictures, made once and kept in the cache folder. A cover is often a big PNG,
+ * which has to be inflated whole even for a small copy: 130 of them took seconds of decoding while the shelf
+ * scrolled, every time the folder opened. A kept copy is a few kilobytes and decodes at once.
+ */
+private object ShelfThumbs {
+    fun load(ctx: Context, f: File, maxPx: Int, alpha: Boolean): androidx.compose.ui.graphics.ImageBitmap? = runCatching {
+        val dir = File(ctx.cacheDir, "shelf-thumbs").apply { mkdirs() }
+        val key = "${f.path}:${f.length()}:${f.lastModified()}:$maxPx".hashCode().toUInt().toString(16)
+        val kept = File(dir, "$key.webp")
+        val bmp = (if (kept.isFile) BitmapFactory.decodeFile(kept.path) else null) ?: run {
+            val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(f.path, o)
+            var sample = 1
+            while (maxOf(o.outWidth, o.outHeight) / (sample * 2) >= maxPx) sample *= 2
+            val src = BitmapFactory.decodeFile(f.path, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return@runCatching null
+            val scale = maxPx.toFloat() / maxOf(src.width, src.height)
+            val small = if (scale < 1f) android.graphics.Bitmap.createScaledBitmap(src, (src.width * scale).roundToInt().coerceAtLeast(1), (src.height * scale).roundToInt().coerceAtLeast(1), true)
+                .also { if (it !== src) src.recycle() } else src
+            kept.outputStream().use {
+                small.compress(if (alpha) android.graphics.Bitmap.CompressFormat.WEBP_LOSSLESS else android.graphics.Bitmap.CompressFormat.WEBP_LOSSY, if (alpha) 100 else 80, it)
+            }
+            small
+        }
+        // Sent to the GPU now, in the background, not on the frame that first shows it.
+        bmp.prepareToDraw()
+        bmp.asImageBitmap()
+    }.getOrNull()
 }
 
 /**
@@ -365,13 +385,12 @@ fun BookshelfView(
     val games = remember(sections) { sections.flatMap { s -> s.items.mapNotNull { it.game } } }
     // Every spine's logo, packaging and cover shape looked up in the background as the folder opens, ahead of the scroll.
     LaunchedEffect(games) {
-        SpineLogos.warm(games)
-        ShelfPacks.warm(games)
+        ShelfPacks.warm(ctx, games)
         CoverShapes.warm(ctx, games)
     }
     // A scrape that just finished may have brought box and spine scans.
     val scraped = io.github.zahakj.tandem.data.Scraper.run?.finished == true
-    LaunchedEffect(scraped) { if (scraped) ShelfPacks.recheck(games) }
+    LaunchedEffect(scraped) { if (scraped) ShelfPacks.recheck(ctx, games) }
     // The thickest spine and the widest cover among the folder's systems, for how many cases fit on a shelf.
     val widest = remember(games) {
         val specs = games.map { Cases.spec(it) }.distinct()
@@ -597,7 +616,7 @@ private fun Standing(
         return
     }
     val spec = Cases.spec(game)
-    val pack = ShelfPacks.of(game)
+    val pack = ShelfPacks.of(ctx, game)
     // The case as its system's real one: its height to scale with the shelf's tallest, its spine's thickness.
     val height = shelf.height * (Cases.height(spec) / tallest).coerceIn(0.6f, 1f)
     val size = CaseSize(spine = height * Cases.spine(spec), coverMax = shelf.coverMax, height = height)
@@ -667,15 +686,15 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
     val system = SystemColors.of(game.platform.id)
     val tint = CoverColors.of(ctx, game) ?: lerp(system, Palette.NightDeep, 0.35f)
     val scan = pack?.spine
-    // The cover's art, decoded small: stretched over the spine it is soft, as a blur would be, without a layer.
-    val art = pack?.art?.takeIf { scan == null }
-    val artPainter = art?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h * 0.5f))) }
+    val thumb = pack?.thumb?.takeIf { scan == null }
+    val artPainter = remember(thumb) { thumb?.let { androidx.compose.ui.graphics.painter.BitmapPainter(it) } }
     val scanPainter = scan?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h))) }
-    // The logo, looked up in the background; a scanned spine already has its own.
-    val found = if (scan != null) null else SpineLogos.of(game)
-    val logo = found?.file
-    val logoPainter = logo?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h * 0.66f))) }
+    // The logo, made ready with the pack; a scanned spine already has its own. Until the pack is there, neither shows.
+    val found = pack?.takeIf { scan == null }
+    val logo = found?.logo
+    val logoPainter = remember(logo) { logo?.let { androidx.compose.ui.graphics.painter.BitmapPainter(it) } }
     val measurer = rememberTextMeasurer()
+    val texts = remember(measurer) { SpineTexts(measurer) }
     val status = game.meta.playStatus
     val publisher = game.meta.publisher
     val plastic = spec?.plastic?.let { Color(it) }
@@ -696,13 +715,13 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
             if (scanPainter == null) {
                 val band = if (spec != null) inner.height * spec.spineBand else inner.height * 0.1f
                 // The head: the system's band and mark across the top of the print.
-                translate(inner.left, inner.top) { drawSpineHead(spec, game, Size(inner.width, band), measurer) }
+                translate(inner.left, inner.top) { drawSpineHead(spec, game, Size(inner.width, band), texts) }
                 // The foot: the publisher, as its logo sits at the foot of a real spine (not where a status is shown).
                 val foot = if (status == null && publisher != null) inner.width * 2.4f else if (status != null) inner.width * 0.9f else 0f
                 val ink = if (tint.luminance() > 0.6f && artPainter == null) Color(0xFF1B1C1F) else Color.White
                 if (status == null && publisher != null) {
                     val style = TextStyle(color = ink.copy(alpha = 0.8f), fontSize = (inner.width * 0.3f).coerceAtMost(9.dp.toPx()).toSp(), fontWeight = FontWeight.Bold)
-                    val t = measurer.measure(publisher.substringBefore(' ').substringBefore(',').uppercase(), style, overflow = TextOverflow.Clip, maxLines = 1, constraints = Constraints(maxWidth = foot.roundToInt().coerceAtLeast(1)))
+                    val t = texts.line(publisher.substringBefore(' ').substringBefore(',').uppercase(), style, foot.roundToInt().coerceAtLeast(1))
                     translate(inner.left, inner.bottom - foot) { rotate90 { drawText(t, topLeft = Offset((foot - t.size.width) / 2f, -(inner.width + t.size.height) / 2f)) } }
                 }
                 // The title down the middle: the game's logo turned on its side, or its name.
@@ -722,7 +741,7 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
                             color = ink, fontSize = (inner.width * 0.4f).coerceIn(7.dp.toPx(), 15.dp.toPx()).toSp(), fontWeight = FontWeight.ExtraBold,
                             shadow = androidx.compose.ui.graphics.Shadow(Color.Black.copy(alpha = if (ink == Color.White) 0.7f else 0f), blurRadius = 3f),
                         )
-                        val t = measurer.measure(game.title, style, overflow = TextOverflow.Ellipsis, maxLines = 1, constraints = Constraints(maxWidth = along.roundToInt().coerceAtLeast(1)))
+                        val t = texts.line(game.title, style, along.roundToInt().coerceAtLeast(1), TextOverflow.Ellipsis)
                         rotate90 { drawText(t, topLeft = Offset((along - t.size.width) / 2f, -(inner.width + t.size.height) / 2f)) }
                     }
                 }
@@ -741,6 +760,19 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
             ) { Text(status.mark, style = TextStyle(fontSize = (w.value * 0.3f).coerceIn(7f, 12f).sp, fontWeight = FontWeight.Black), color = Palette.NightDeep, maxLines = 1) }
         }
     }
+}
+
+/**
+ * A spine's words, laid out once and kept: the canvas is drawn again whenever the shelf around it moves, and laying
+ * the same line out on every draw was a good part of each frame.
+ */
+private class SpineTexts(private val measurer: androidx.compose.ui.text.TextMeasurer) {
+    private val laid = HashMap<List<Any>, androidx.compose.ui.text.TextLayoutResult>()
+
+    fun line(text: String, style: TextStyle, maxWidth: Int = Constraints.Infinity, overflow: TextOverflow = TextOverflow.Clip) =
+        laid.getOrPut(listOf(text, style, maxWidth, overflow)) {
+            measurer.measure(text, style, overflow = overflow, maxLines = 1, constraints = Constraints(maxWidth = maxWidth))
+        }
 }
 
 /**
@@ -779,7 +811,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpinePrint(
 
 /** The head of a spine: the system's band in its colour, with its mark (or short name) where the real spine has it. */
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpineHead(
-    spec: PackSpec?, game: Game, area: Size, measurer: androidx.compose.ui.text.TextMeasurer,
+    spec: PackSpec?, game: Game, area: Size, texts: SpineTexts,
 ) {
     val band = spec?.let { Color(it.band) } ?: SystemColors.of(game.platform.id)
     val ink = spec?.let { Color(it.bandInk) } ?: Color.White
@@ -795,9 +827,9 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpineHead(
             if (spec?.mark == BandMark.Grid) drawGrid(area)
             val label = spec?.spineMark?.ifEmpty { null } ?: game.platform.shortName.uppercase().take(6)
             val style = TextStyle(color = ink, fontSize = minOf(area.width * 0.34f, area.height * 0.42f).toSp(), fontWeight = FontWeight.Black)
-            var t = measurer.measure(label, style, maxLines = 1)
+            var t = texts.line(label, style)
             // A long mark shrinks to the spine's width rather than spilling over it.
-            if (t.size.width > area.width * 0.9f) t = measurer.measure(label, style.copy(fontSize = (style.fontSize.value * area.width * 0.9f / t.size.width).sp), maxLines = 1)
+            if (t.size.width > area.width * 0.9f) t = texts.line(label, style.copy(fontSize = (style.fontSize.value * area.width * 0.9f / t.size.width).sp))
             drawText(t, topLeft = Offset((area.width - t.size.width) / 2f, (area.height - t.size.height) / 2f))
         }
     }
@@ -823,6 +855,9 @@ private fun CaseFront(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, h: Dp
     if (spec.side == BandSide.Left) Row(Modifier.fillMaxSize()) {
         Box(band.width(h * spec.coverRatio * spec.frontBand).fillMaxHeight())
         picture(Modifier.weight(1f).fillMaxHeight())
+    } else if (spec.side == BandSide.Right) Row(Modifier.fillMaxSize()) {
+        picture(Modifier.weight(1f).fillMaxHeight())
+        Box(band.width(h * spec.coverRatio * spec.frontBand).fillMaxHeight())
     } else Column(Modifier.fillMaxSize()) {
         Box(band.fillMaxWidth().height(h * spec.frontBand))
         picture(Modifier.fillMaxWidth().weight(1f))
@@ -836,9 +871,10 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFrontBand(spec:
     drawRect(band)
     if (spec.mark == BandMark.Grid) drawGrid(size)
     val left = spec.side == BandSide.Left
-    // Measured along the band: across a top band, down a left one.
-    val long = if (left) size.height else size.width
-    val short = if (left) size.width else size.height
+    val right = spec.side == BandSide.Right
+    // Measured along the band: across a top band, down a side one.
+    val long = if (left || right) size.height else size.width
+    val short = if (left || right) size.width else size.height
     val markS = short * 0.62f
     val hasMark = spec.mark == BandMark.Switch || spec.mark == BandMark.Cube || spec.mark == BandMark.Swirl
     val style = TextStyle(color = ink, fontSize = (short * 0.42f).toSp(), fontWeight = FontWeight.Black, letterSpacing = (short * 0.02f).toSp())
@@ -849,6 +885,11 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFrontBand(spec:
         drawContext.transform.rotate(-90f, Offset.Zero)
         drawText(t, topLeft = Offset(-(pad + t.size.width), (short - t.size.height) / 2f))
         drawContext.transform.rotate(90f, Offset.Zero)
+        return
+    }
+    if (right) {
+        // Down the right edge from the top, reading top to bottom, as the 3DS cover has it.
+        rotate90 { drawText(t, topLeft = Offset(pad, -(short + t.size.height) / 2f)) }
         return
     }
     var x = pad
