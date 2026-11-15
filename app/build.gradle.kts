@@ -55,6 +55,11 @@ val buildPadLink = padlinkClang?.let { clang ->
 }
 if (buildPadLink == null) logger.warn("No NDK found: building without the controller passthrough helper")
 
+// The built-in updater (Updates.kt): checks GitHub for a new release and installs it when asked. F-Droid doesn't allow
+// apps that update themselves, so a build for it passes -PselfUpdate=false: BuildConfig.SELF_UPDATE is off and the
+// updater never runs or shows (R8 drops its code).
+val selfUpdate = providers.gradleProperty("selfUpdate").orNull?.trim()?.lowercase() != "false"
+
 android {
     namespace = "io.github.zahakj.tandem"
     compileSdk = 34
@@ -67,6 +72,8 @@ android {
         versionCode = 6
         versionName = "0.4.0"
         buildConfigField("long", "DISCORD_APP_ID", "${if (withDiscord) discordAppId else "0"}L")
+        buildConfigField("boolean", "SELF_UPDATE", selfUpdate.toString())
+        manifestPlaceholders["selfUpdate"] = selfUpdate.toString()
         if (withDiscord) {
             // Where Discord sends the authorization back: discord-<application ID>:/authorize/callback.
             manifestPlaceholders["discordScheme"] = "discord-$discordAppId"

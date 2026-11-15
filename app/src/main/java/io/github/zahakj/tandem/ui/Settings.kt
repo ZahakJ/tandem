@@ -285,7 +285,32 @@ fun aboutSettings(): SettingSection {
                 help = "Free and open source. No ads, no accounts, no tracking. Your data stays on your device.",
                 keywords = "version license open source credits",
             ) { Toasts.show("Made with love, free forever. Hi from Pip!") },
-        ),
+        ) + updateRows(),
+    )
+}
+
+/** Check for updates and Check now (Updates.kt); none in a build without the updater (F-Droid). */
+@Composable
+private fun updateRows(): List<SettingRow> {
+    if (!io.github.zahakj.tandem.BuildConfig.SELF_UPDATE) return emptyList()
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val updates = io.github.zahakj.tandem.Updates
+    val found = updates.found
+    return listOf(
+        SettingRow(
+            "Check now", updates.statusLine(), Palette.Lavender, icon = Glyph.Download,
+            help = "Asks GitHub whether a newer Tandem is out. Update downloads it, checks it is the real release (its " +
+                "checksum and Tandem's signing key) and installs it; Tandem restarts. With Shizuku it installs without a question; " +
+                "otherwise Android asks once to allow installs from Tandem.",
+            keywords = "update upgrade new version release download install github",
+            action = if (found != null) "See update" else "Check",
+        ) { if (found != null) UpdatePopup.show() else updates.check(ctx) },
+        toggle(
+            "Check for updates", Glyph.Refresh, Palette.Lavender,
+            "Look for a new Tandem once a day while Tandem is open, and say so in the Start panel. It only asks GitHub for the " +
+                "latest version number; nothing installs until you press Update. Private mode skips it.",
+            Store.settings.checkUpdates,
+        ) { on -> Store.updateSettings { it.copy(checkUpdates = on) } }.copy(keywords = "update automatic daily github"),
     )
 }
 

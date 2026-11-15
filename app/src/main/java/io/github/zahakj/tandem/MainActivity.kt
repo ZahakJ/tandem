@@ -218,6 +218,8 @@ class MainActivity : ComponentActivity() {
         // The Controller Home button service, switched back on if Android turned it off (Shizuku, off the main thread).
         val app = applicationContext
         Thread({ runCatching { A11yHeal.check(app) } }, "tandem-a11y").apply { priority = Thread.MIN_PRIORITY }.start()
+        // A new Tandem on GitHub, looked for at most once a day (off the main thread, quiet when offline).
+        Updates.daily(app)
         // Back from a game: its companion app closes, or stays running under Tandem's bottom screen (CompanionApps).
         CompanionApps.release()
         io.github.zahakj.tandem.data.SystemPrefs.init(this)

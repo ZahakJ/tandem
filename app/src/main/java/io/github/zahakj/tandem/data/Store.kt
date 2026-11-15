@@ -112,6 +112,8 @@ data class Settings(
     val batterySaver: BatteryBefore? = null,
     /** Notice games copied in (or an SD card put back) while Tandem is on screen, without a rescan (FolderWatch.kt). */
     val watchFolders: Boolean = true,
+    /** Look for a new Tandem on GitHub once a day (Updates.kt); only in builds with the updater (BuildConfig.SELF_UPDATE). */
+    val checkUpdates: Boolean = true,
 )
 
 /** The settings Battery saver changes, as they were before it went on. */

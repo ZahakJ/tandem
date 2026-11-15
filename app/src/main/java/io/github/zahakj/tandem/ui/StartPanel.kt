@@ -441,6 +441,10 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             add(MenuAction("theme", "Theme", Glyph.Theme, Palette.Lavender, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":theme"); StartMenu.page = "theme" })
             add(MenuAction("sounds", "Sounds & music", Glyph.Music, Palette.Peach, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sounds"); StartMenu.page = "sounds" })
             add(MenuAction("quick", "Quick settings", Glyph.Volume, Palette.Peach) { StartMenu.go { Panels.toggleQuick() } })
+            // A new Tandem is out (Updates.kt): one quiet row, A shows its notes and Update.
+            io.github.zahakj.tandem.Updates.found?.takeIf { io.github.zahakj.tandem.Updates.enabled }?.let { rel ->
+                add(MenuAction("update", "Tandem ${rel.version} is out", Glyph.Download, Palette.Mint, sub = "A to update") { StartMenu.go { UpdatePopup.show() } })
+            }
             add(MenuAction("settings", "Settings", null, Palette.Accent, value = "▸", icon = TIcon.Gear) {
                 FocusMemory.forget(StartMenu.ROUTE + ":settings"); StartMenu.page = "settings"
             })

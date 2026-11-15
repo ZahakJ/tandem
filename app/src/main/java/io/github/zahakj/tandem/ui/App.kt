@@ -576,6 +576,7 @@ private fun Main(resumes: Int) {
         WelcomeOverlay()
         ArtSetupOverlay()
         BackupUi.Host()
+        UpdateOverlay()
         ConfirmOverlay()
         TextEntryOverlay()
         // Over everything that can ask for it, the keyboard too.

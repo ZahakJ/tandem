@@ -186,7 +186,7 @@ object SettingsPlan {
             ),
             Group("Stats", p("Home & play", "Play stats"), p("Home & play", "Export play stats")),
             Group("Your data", p("Home & play", "Use Tandem as the Home screen") + p("Your data", "Back up", "Restore")),
-            Group("About", p("About", "About Tandem"), p("Developer", "Frame timing overlay", "Tour every theme")),
+            Group("About", p("About", "About Tandem", "Check now"), p("About", "Check for updates") + p("Developer", "Frame timing overlay", "Tour every theme")),
         ),
     )
 

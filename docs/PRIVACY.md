@@ -1,6 +1,7 @@
 # Privacy
 
-Tandem has no analytics, no telemetry, no ads and no account of its own. It does not phone home.
+Tandem has no analytics, no telemetry, no ads and no account of its own. It does not phone home, apart from a daily
+look at GitHub for a new version of Tandem, which sends nothing about you and can be turned off (see below).
 
 ## When Tandem uses the network
 
@@ -17,8 +18,15 @@ Only when you ask it to look something up online:
 Steam app id) and has no box art, hero or logo yet gets the missing ones from Steam's public store CDN
 (`cdn.cloudflare.steamstatic.com/steam/apps/<app id>/`: `library_600x900_2x.jpg`, `library_hero.jpg`, `logo.png`),
 saved like scraped art (`data/SteamArt.kt`). It sends only the app id, needs no account or key, never runs for a
-hidden game and is blocked in private mode. This is the one lookup Tandem makes without being asked; a failed one is
-tried again after the next scan.
+hidden game and is blocked in private mode. Apart from the update check below, this is the one lookup Tandem makes
+without being asked; a failed one is tried again after the next scan.
+
+**Update check.** Once a day while Tandem is open (and when you press **Check now** in Settings › Play & system ›
+About), Tandem asks GitHub's API for its latest release (`api.github.com/repos/ZahakJ/tandem/releases/latest`). The
+request carries nothing but Tandem's user agent; GitHub sees your IP address, as with any download. Only when you
+press **Update** does it download that release's APK and `SHA256SUMS` from github.com (`Updates.kt`). Turn it off with
+**Check for updates** (under More options there); it is blocked in private mode, and builds made with
+`-PselfUpdate=false` (for F-Droid) have no update check at all.
 
 RetroAchievements is contacted only after you sign in, to show your profile and progress, and when you open
 **Find match** in a game's Edit details (never for a hidden game).
@@ -43,7 +51,7 @@ turns on airplane mode (and Wi-Fi off, if Android keeps it on in airplane mode) 
 mode the user turned on is never turned off. Emulators' own network features are outside Tandem's control except
 through airplane mode. See [Private mode](guide/privacy.md#private-mode).
 
-Tandem never starts a scrape on its own or on a schedule (a scrape you start does keep running in the background until it finishes); the Steam shortcut art above is the only exception. The `INTERNET` permission exists only
+Tandem never starts a scrape on its own or on a schedule (a scrape you start does keep running in the background until it finishes); the Steam shortcut art and the update check above are the only exceptions. The `INTERNET` permission exists only
 for these features; `ACCESS_NETWORK_STATE` only lets Tandem warn you before a big download on mobile data.
 
 ## What is sent, and to whom

@@ -21,6 +21,12 @@ Pick one:
 
 Every release APK is signed with the same key, so updates install over the old version and keep your data.
 
+### Updates
+
+Installed from GitHub Releases, Tandem keeps itself up to date. Once a day while it is open it asks GitHub whether a newer version is out; if one is, a quiet **Tandem 0.4.1 is out** row appears in the Start panel (with a toast once, never over a game). Press A on it to read the release notes, then **Update**: Tandem downloads the APK, checks it against the release's `SHA256SUMS` and Tandem's signing key, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm. Tandem restarts on the new version with your data as it was. Nothing installs until you press Update.
+
+**Settings › Play & system › About › Check now** checks on demand and shows where an update stands; **Check for updates** (under More options) turns the daily check off, and private mode skips it. Obtainium still works if you prefer it.
+
 ## Put your games in place
 
 Tandem reads one folder: `ROMs` at the top of internal storage (`/storage/emulated/0/ROMs`). Inside it, each system has its own folder, named the way most frontends name them:
