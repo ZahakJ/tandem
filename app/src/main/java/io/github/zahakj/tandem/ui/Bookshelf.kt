@@ -104,9 +104,9 @@ object CoverColors {
         if (known != null) return known.value
         val state = androidx.compose.runtime.mutableStateOf<Color?>(null)
         colors[g.key] = state
-        val path = Libraries.of(g)?.box(g)?.path
         val app = ctx.applicationContext
-        if (path != null) inBackground({
+        inBackground({
+            val path = Libraries.of(g)?.box(g)?.path ?: return@inBackground
             FolderArtCache.dominant(app, path)?.let { c -> android.os.Handler(android.os.Looper.getMainLooper()).post { state.value = Color(c) } }
         })
         return state.value
@@ -133,8 +133,10 @@ object CoverShapes {
         if (known != null) return known.value
         val state = androidx.compose.runtime.mutableStateOf<Float?>(null)
         shapes[g.key] = state
-        val file = Libraries.of(g)?.box(g) ?: return null
-        inBackground({ measure(ctx, g.key, file)?.let { r -> main.post { state.value = r } } })
+        inBackground({
+            val file = Libraries.of(g)?.box(g) ?: return@inBackground
+            measure(ctx, g.key, file)?.let { r -> main.post { state.value = r } }
+        })
         return null
     }
 
@@ -205,6 +207,68 @@ object CoverShapes {
     const val DEFAULT = 0.66f
 }
 
+/**
+ * Each game's logo for its spine, looked up off the main thread: finding it touches the storage, and a logo seen for
+ * the first time is test-decoded to tell a cut-out from a picture. Done while a shelf composes, that held each new
+ * shelf scrolling in for a tenth of a second or more. [warm] looks up a whole folder as it opens.
+ */
+object SpineLogos {
+    /** A game's logo once looked up: the file, or none. */
+    class Found(val file: File?)
+
+    private val known = HashMap<String, androidx.compose.runtime.MutableState<Found?>>()
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
+
+    /** The game's logo, or null while it is still being looked up. A changed logo is looked up again. */
+    fun of(g: Game): Found? {
+        known[id(g)]?.let { return it.value }
+        warm(listOf(g))
+        return null
+    }
+
+    fun warm(games: List<Game>) {
+        val todo = games.filter { known[id(it)] == null }.distinctBy { id(it) }
+        if (todo.isEmpty()) return
+        val states = todo.associate { id(it) to androidx.compose.runtime.mutableStateOf<Found?>(null) }
+        known.putAll(states)
+        inBackground({
+            for (g in todo) {
+                val found = Found(runCatching { Libraries.of(g)?.logo(g) }.getOrNull())
+                main.post { states.getValue(id(g)).value = found }
+            }
+        })
+    }
+
+    private fun id(g: Game) = g.key + "\u0000" + g.meta.logo
+}
+
+/**
+ * The case a system's games came in, for its shelf: the plastic's colour, and the band at the top of the spine.
+ * White cases (3DS, Wii) have white spines with the title in black, as the real ones do; the rest keep a spine in
+ * the cover's colour under their system's band. Cardboard boxes and systems without a case of their own have none.
+ */
+internal class CaseKind(val plastic: Color, val band: Color, val bandText: Color, val label: String, val white: Boolean = false) {
+    companion object {
+        private val white = Color(0xFFF3F3F0)
+        private val black = Color(0xFF17181B)
+        private val kinds = mapOf(
+            "n3ds" to CaseKind(white, white, Color(0xFFD7182A), "3DS", white = true),
+            "wii" to CaseKind(white, white, Color(0xFF8A9096), "Wii", white = true),
+            "wiiu" to CaseKind(Color(0xFF1C8AC9), Color(0xFF1C8AC9), Color.White, "Wii U"),
+            "switch" to CaseKind(Color(0xFFE60012), Color(0xFFE60012), Color.White, "SWITCH"),
+            "gc" to CaseKind(black, black, Color.White, "GCN"),
+            "ps2" to CaseKind(black, black, Color.White, "PS2"),
+            "ps3" to CaseKind(Color(0xFF22252B), black, Color.White, "PS3"),
+            "ps4" to CaseKind(Color(0xFF0B3B8C), Color(0xFF0B3B8C), Color.White, "PS4"),
+            "ps5" to CaseKind(Color(0xFF0B3B8C), white, black, "PS5"),
+            "xbox" to CaseKind(Color(0xFF1C7A2C), Color(0xFF1C7A2C), Color.White, "XBOX"),
+            "xbox360" to CaseKind(Color(0xFF3FA535), Color(0xFF3FA535), Color.White, "360"),
+        )
+
+        fun of(system: String): CaseKind? = kinds[system]
+    }
+}
+
 /** How a case stands on the shelf: its spine, how wide its cover may open, and its height. */
 private class CaseSize(val spine: Dp, val coverMax: Dp, val height: Dp)
 
@@ -228,6 +292,13 @@ fun BookshelfView(
 ) {
     val list = rememberLazyListState()
     val look = ShelfLooks.current()
+    val ctx = LocalContext.current
+    // Every spine's logo and cover shape looked up in the background as the folder opens, ahead of the scroll.
+    LaunchedEffect(sections) {
+        val games = sections.flatMap { s -> s.items.mapNotNull { it.game } }
+        SpineLogos.warm(games)
+        CoverShapes.warm(ctx, games)
+    }
     BoxWithConstraints(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         // Two shelves to a screen, so it reads as a bookcase.
         val shelfH = (maxHeight / 2).coerceIn(170.dp, 280.dp)
@@ -480,7 +551,11 @@ private fun Standing(
                     alpha = if (open < 0.02f) 0f else 1f
                 },
             ) {
-                GameArt(game)
+                val kind = CaseKind.of(game.platform.id)
+                // In a plastic case the cover sits under its clear sleeve, the plastic showing round it.
+                Box(Modifier.fillMaxSize().then(if (kind != null) Modifier.background(kind.plastic).padding(3.dp).clip(RoundedCornerShape(2.dp)) else Modifier)) {
+                    GameArt(game)
+                }
                 // The case's plastic: a soft sheen across the cover, strongest at the hinge.
                 Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.35f), Color.Transparent, Color.White.copy(alpha = 0.08f)), endX = coverPx)))
             }
@@ -496,24 +571,32 @@ private fun Standing(
 private fun Spine(game: Game, w: Dp, h: Dp) {
     val ctx = LocalContext.current
     val system = SystemColors.of(game.platform.id)
-    val cover = CoverColors.of(ctx, game) ?: lerp(system, Palette.NightDeep, 0.35f)
-    val body = lerp(cover, Color.Black, 0.28f)
-    val logo = remember(game.key, game.meta.logo) { Libraries.of(game)?.logo(game) }
+    val kind = CaseKind.of(game.platform.id)
+    val white = kind?.white == true
+    val body = if (white) kind!!.plastic else lerp(CoverColors.of(ctx, game) ?: lerp(system, Palette.NightDeep, 0.35f), Color.Black, 0.28f)
+    // A white case's spine carries its title in print, not the logo (a white logo would vanish on it).
+    val found = if (white) SpineLogos.Found(null) else SpineLogos.of(game)
+    val logo = found?.file
     val status = game.meta.playStatus
+    val shade = if (white) 0.18f else 0.45f
     Box(
         Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp))
-            .background(Brush.horizontalGradient(listOf(lerp(body, Color.Black, 0.45f), body, lerp(body, Color.White, 0.18f), body, lerp(body, Color.Black, 0.5f))))
+            .background(Brush.horizontalGradient(listOf(lerp(body, Color.Black, shade), body, lerp(body, Color.White, 0.18f), body, lerp(body, Color.Black, shade + 0.05f))))
             // Hairline edges, so neighbouring spines of the same colour still read as two.
             .drawBehind {
                 drawRect(Color.Black.copy(alpha = 0.5f), size = Size(1.dp.toPx(), size.height))
                 drawRect(Color.White.copy(alpha = 0.2f), size = Size(size.width, 1.dp.toPx()))
             },
     ) {
-        // The system's band across the top, like a store shelf of the real thing.
-        Box(Modifier.fillMaxWidth().height(h * 0.1f).background(system), contentAlignment = Alignment.Center) {
+        // The system's band across the top, like a store shelf of the real thing: the case's own where it has one.
+        Box(
+            Modifier.fillMaxWidth().height(h * 0.1f).background(kind?.band ?: system)
+                .then(if (white) Modifier.drawBehind { drawRect(Color.Black.copy(alpha = 0.12f), Offset(0f, size.height - 1.dp.toPx()), Size(size.width, 1.dp.toPx())) } else Modifier),
+            contentAlignment = Alignment.Center,
+        ) {
             Text(
-                game.platform.shortName.uppercase().take(6), style = TextStyle(fontSize = (w.value * 0.2f).coerceIn(6f, 10f).sp, fontWeight = FontWeight.Black),
-                color = Color.White, maxLines = 1,
+                kind?.label ?: game.platform.shortName.uppercase().take(6), style = TextStyle(fontSize = (w.value * 0.2f).coerceIn(6f, 10f).sp, fontWeight = FontWeight.Black),
+                color = kind?.bandText ?: Color.White, maxLines = 1,
             )
         }
         val along = h * 0.66f
@@ -533,10 +616,10 @@ private fun Spine(game: Game, w: Dp, h: Dp) {
                         }
                     }
                 }
-            } else {
+            } else if (found != null) {
                 val measurer = rememberTextMeasurer()
                 Canvas(Modifier.requiredSize(w, along)) {
-                    val style = TextStyle(color = Color.White, fontSize = (w.value * 0.34f).coerceIn(8f, 15f).sp, fontWeight = FontWeight.ExtraBold)
+                    val style = TextStyle(color = if (white) Color(0xFF1B1C1F) else Color.White, fontSize = (w.value * 0.34f).coerceIn(8f, 15f).sp, fontWeight = FontWeight.ExtraBold)
                     val t = measurer.measure(game.title, style, overflow = TextOverflow.Ellipsis, maxLines = 1, constraints = Constraints(maxWidth = size.height.roundToInt()))
                     rotate90 { drawText(t, topLeft = Offset((size.height - t.size.width) / 2f, -(size.width + t.size.height) / 2f)) }
                 }
