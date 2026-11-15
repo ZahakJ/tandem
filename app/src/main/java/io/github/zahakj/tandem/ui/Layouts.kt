@@ -85,7 +85,10 @@ val HomeLayouts = listOf(
 )
 
 /** How games show inside a system or collection. */
-val GameViews = listOf("grid" to "Grid", "list" to "List", "carousel" to "Carousel")
+val GameViews = listOf("grid" to "Grid", "list" to "List", "carousel" to "Carousel", "shelf" to "Shelf", "case" to "Case")
+
+/** The games view after [v], for the view button over a system or collection. */
+fun nextGameView(v: String): String = GameViews[(GameViews.indexOfFirst { it.first == v } + 1).mod(GameViews.size)].first
 
 // --- Folders as popups ------------------------------------------------------------------------------------
 
@@ -161,10 +164,14 @@ fun FolderPopupHost() {
                 }
                 if (smart == null) Spacer(Modifier.width(8.dp))
                 FocusCard(
-                    Modifier.size(36.dp).headerControl(header, "view"), glow = Palette.Sky, shape = RoundedCornerShape(50),
-                    onClick = { Store.updateSettings { it.copy(look = it.look.copy(gameView = if (it.look.gameView == "list") "grid" else "list")) } },
+                    Modifier.height(36.dp).headerControl(header, "view"), glow = Palette.Sky, shape = RoundedCornerShape(50),
+                    onClick = { Store.updateSettings { it.copy(look = it.look.copy(gameView = nextGameView(it.look.gameView))) } },
                 ) {
-                    GlyphIcon(if (look.gameView == "list") Glyph.Grid else Glyph.Sort, Palette.Text, Modifier.padding(8.dp))
+                    Row(Modifier.padding(horizontal = 12.dp).align(Alignment.Center), verticalAlignment = Alignment.CenterVertically) {
+                        GlyphIcon(if (look.gameView == "list") Glyph.Sort else Glyph.Grid, Palette.Text, Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(GameViews.firstOrNull { it.first == look.gameView }?.second ?: "Grid", style = MaterialTheme.typography.labelLarge, maxLines = 1)
+                    }
                 }
             }
         }) {

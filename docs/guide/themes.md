@@ -12,7 +12,7 @@ Anything a theme sets can be changed on top of it in **Settings › Look & feel*
 
 The layout gallery at the top of **Settings › Home & layout** picks one of seven: **Shelves**, **Icon grid**, **Carousel**, **List**, **Console**, **Orbit** and **Spotlight**. The icon grid holds systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom; Orbit is Tandem's own (see [Orbit](#orbit) below); Spotlight puts one game's art across the whole screen (see [Spotlight](#spotlight)); the others show Continue playing, your systems and collections in their own way. Try them: switching back is one press.
 
-Inside a system, games show as a grid, a list or a carousel (**Games view**), with a choice of grid size, card shape (rounded, square, circle, tall box art or wide) and whether titles show.
+Inside a system or collection, games show as a grid, a list, a carousel, spines on a bookshelf (**Shelf**) or cartridges in a case (**Case**) (**Games view**, or the view button at the top of the system, next to Stats, or next to Sort when folders open as popups; it steps through them), with a choice of grid size, card shape (rounded, square, circle, tall box art or wide) and whether titles show.
 
 ### The icon grid
 

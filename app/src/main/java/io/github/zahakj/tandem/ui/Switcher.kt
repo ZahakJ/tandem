@@ -1,5 +1,11 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.data.Store
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -445,6 +451,13 @@ fun TopBarButtons() {
     val n = RunningGames.list.size
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         if (n > 0) TopChip("▶ $n open", Palette.Mint) { Panels.openSwitcher() }
+        // On a system or collection opened as a page, how its games show: grid, list, carousel, shelf or case.
+        if (Nav.route is Route.System || Nav.route is Route.Collection) {
+            val view = Store.settings.look.gameView
+            TopChip("▦ " + (GameViews.firstOrNull { it.first == view }?.second ?: "Grid"), Palette.Sky) {
+                Store.updateSettings { it.copy(look = it.look.copy(gameView = nextGameView(it.look.gameView))) }
+            }
+        }
         if (Nav.route != Route.Stats) TopChip("★ Stats", Palette.Butter) { Nav.go(Route.Stats) }
         TopChip("◐ Quick", Palette.Lavender) { Panels.toggleQuick() }
     }
@@ -453,10 +466,18 @@ fun TopBarButtons() {
 @Composable
 private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
     FocusCard(
-        Modifier.height(30.dp),
+        // Down goes back to the page below. Searching downwards from the top bar finds nothing on layouts whose
+        // content spans the full height (Spotlight's rail), so the screen's remembered item takes the focus back.
+        Modifier.height(30.dp).onPreviewKeyEvent { e ->
+            if (e.key != Key.DirectionDown) return@onPreviewKeyEvent false
+            if (e.type == KeyEventType.KeyDown) Nav.focusTick++
+            true
+        },
         glow = color,
         shape = RoundedCornerShape(50),
-        onFocus = { Selection.current = Selected.Home },
+        // Held like a screen's item, so the page under it doesn't take the focus back when it changes (the games view
+        // switched from here), until Down hands it back.
+        onFocus = { Selection.current = Selected.Home; FocusMemory.hold(Nav.route.key, "topbar", true) },
         onClick = onClick,
     ) {
         Box(Modifier.fillMaxHeight().background(color.copy(alpha = 0.16f)).padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {

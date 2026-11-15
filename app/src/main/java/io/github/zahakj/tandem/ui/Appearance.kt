@@ -354,7 +354,7 @@ fun appearanceSections(): List<SettingSection> {
                 ) { v -> updateLook { it.copy(homeLayout = v) } },
                 choice(
                     "Games view", Glyph.Grid, Palette.Butter,
-                    "How games show inside a system or collection: a grid of cards, a list with details (great for big libraries), or a coverflow.",
+                    "How games show inside a system or collection: a grid of cards, a list with details (great for big libraries), a coverflow, spines on a bookshelf, or cartridges in a case.",
                     GameViews, look.gameView, preview = { LayoutPreview("view-${look.gameView}", Modifier.fillMaxWidth().aspectRatio(1.6f)) },
                 ) { v -> updateLook { it.copy(gameView = v) } },
                 choice(
@@ -1052,6 +1052,26 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 tile(w / 2 - cw / 2, 12 * u, cw, cw, 0, focused = true)
                 bar(w / 2 - w * 0.17f, 66 * u, w * 0.34f, t.text, 5f)
                 bar(w / 2 - w * 0.12f, 75 * u, w * 0.24f, t.muted)
+            }
+            "view-shelf" -> {
+                // Two shelves of spines, one game turned out to show its cover.
+                val wood = Color(0xFF8A5A34)
+                for (row in 0 until 2) {
+                    val top = 8 * u + row * 42 * u
+                    for (i in 0 until 12) {
+                        val x0 = 8 * u + i * 9 * u + if (i > 1) 20 * u else 0f
+                        if (i == 2 && row == 0) tile(8 * u + 2 * 9 * u, top, 26 * u, 32 * u, 0, focused = true)
+                        else tile(x0, top + 2 * u, 7 * u, 30 * u, row * 5 + i)
+                    }
+                    drawRoundRect(wood, Offset(4 * u, top + 33 * u), Size(w - 8 * u, 4 * u), CornerRadius(1.5f * u))
+                }
+            }
+            "view-case" -> {
+                // Cartridges in rows on a dark foam tray.
+                drawRoundRect(Color(0xFF26262C), Offset(4 * u, 4 * u), Size(w - 8 * u, 84 * u), CornerRadius(6 * u))
+                val cols = 7
+                val cw = (w - 20 * u - 3 * u * (cols - 1)) / cols
+                for (row in 0 until 3) for (c in 0 until cols) tile(10 * u + c * (cw + 3 * u), 9 * u + row * 26 * u, cw, 21 * u, row + c, focused = row == 0 && c == 3)
             }
             "view-grid" -> {
                 val cols = 6

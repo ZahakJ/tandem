@@ -352,6 +352,38 @@ fun CollectionScreen(route: Route.Collection) {
     GameGrid(route.key, emptyList(), games, empty)
 }
 
+/**
+ * A system's or collection's games in the Shelf or Case view, the same views a home-grid folder has: its own games on
+ * the first shelf, then a shelf for each folder in it (a genre, a subfolder) with that folder's games. A game shows
+ * once, where it comes first.
+ */
+@Composable
+private fun GameShelfView(routeKey: String, folders: List<GroupItem>, games: List<Game>, case: Boolean) {
+    val ctx = LocalContext.current
+    val sections = remember(folders, games) {
+        val seen = HashSet<String>()
+        fun items(list: List<Game>) = list.filter { seen.add(it.key) }.map { g ->
+            val color = SystemColors.of(g.platform.id)
+            GridItem(
+                g.key, TileKind.Game, g.title, g.platform.name, g.platform.name, color, TileArt.GameBox(g), listOf(g),
+                Selected.GameItem(g), default = false, open = { Launcher.launch(ctx, g) }, game = g,
+            )
+        }
+        val own = games.map { it.platform.id }.distinct().singleOrNull()?.let { id -> Libraries.byId(id)?.platform?.name } ?: "Games"
+        buildList {
+            items(games).takeIf { it.isNotEmpty() }?.let { add(ShelfSection("own", own, Palette.Mint, it, "")) }
+            for (f in folders) items(f.games).takeIf { it.isNotEmpty() }?.let { add(ShelfSection("f:${f.key}", f.title, f.color, it, "")) }
+        }
+    }
+    val keys = remember(sections) { sections.flatMap { s -> s.items.map { it.key } } }
+    val target = rememberFocusTarget(routeKey, keys)
+    val focus: (GridItem) -> Unit = { item -> FocusMemory.remember(routeKey, item.key); Selection.current = item.selected }
+    val open: (GridItem) -> Unit = { item -> item.open() }
+    val long: (GridItem) -> Unit = { item -> item.game?.let { Nav.openMenu(it) } }
+    if (case) CartCaseView(routeKey, sections, target, focus, open, long)
+    else BookshelfView(routeKey, sections, target, focus, open, long)
+}
+
 /** Matches the "played:<system>" collection ids in a `when`. */
 private object PlayedOnSystem { operator fun contains(id: String) = id.startsWith(Collections.PLAYED) }
 
@@ -406,6 +438,7 @@ private fun GameGrid(routeKey: String, folders: List<GroupItem>, games: List<Gam
     when (Store.settings.look.gameView) {
         "list" -> return GameListView(routeKey, folders, games)
         "carousel" -> return GameCarouselView(routeKey, folders, games)
+        "shelf", "case" -> return GameShelfView(routeKey, folders, games, Store.settings.look.gameView == "case")
     }
     val keys = remember(folders, games) { folders.map { it.key } + games.map { it.key } }
     val target = rememberFocusTarget(routeKey, keys)
