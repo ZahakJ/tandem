@@ -1,0 +1,9 @@
+Tandem 0.4.0
+• Spotlight home: a cover rail with the game's art full screen
+• Orbit home and a Shelf view with real cover shapes
+• Stream PC games with Moonlight
+• Extra game folders, watched for new games
+• Performance profiles, manuals, Android widgets, Steam achievements
+• Controller rebinding and a keyboard/trackpad Deck
+• Do Not Disturb while playing; bottom screen off
+• Three built-in themes, sound packs, a side panel
