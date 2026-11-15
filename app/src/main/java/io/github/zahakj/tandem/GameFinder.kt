@@ -130,13 +130,14 @@ class GameFinder(platforms: List<Platform>, private val list: (File) -> ScanCach
 
     /**
      * The games in [root]. [tag] is what found games carry as their root (null for the ROMs folder). The ROMs folder
-     * ([main]) is never one system's folder itself, whatever its name.
+     * ([main]) is never one system's folder itself, whatever its name, and keeps its own layout: only its system
+     * folders hold games, never loose files or other folders in it (where updates, DLC and emulator data live).
      */
     fun find(root: File, tag: File?, main: Boolean): Found {
         val claims = mutableListOf<Claim>()
         val strays = mutableListOf<Game>()
         val own = if (main) emptyList() else names.allOf(root.name)
-        if (own.isNotEmpty()) own.forEach { claims += Claim(it, root, 0) } else look(root, null, 0, tag, claims, strays)
+        if (own.isNotEmpty()) own.forEach { claims += Claim(it, root, 0) } else look(root, null, 0, tag, claims, strays, strict = main)
         val games = LinkedHashMap<String, MutableList<Game>>()
         val folders = LinkedHashMap<String, MutableList<File>>()
         for (c in claims.sortedBy { it.rank }) {
@@ -151,16 +152,16 @@ class GameFinder(platforms: List<Platform>, private val list: (File) -> ScanCach
      * Walks a folder that belongs to no system yet: sub-folders named for a system are claimed, files of a kind
      * only one system has are its games, and other sub-folders are walked on (their name becomes the games' folder).
      */
-    private fun look(dir: File, group: String?, depth: Int, tag: File?, claims: MutableList<Claim>, strays: MutableList<Game>) {
+    private fun look(dir: File, group: String?, depth: Int, tag: File?, claims: MutableList<Claim>, strays: MutableList<Game>, strict: Boolean = false) {
         val listing = list(dir)
-        for (name in listing.files) {
+        if (!strict) for (name in listing.files) {
             if (name.startsWith(".")) continue
             val p = loose[name.substringAfterLast('.', "").lowercase()] ?: continue
             val f = File(dir, name)
             strays += Game(p, f, cleanTitle(f.nameWithoutExtension), group, tag)
         }
         for (name in listing.dirs) {
-            if (name.startsWith(".") || name.lowercase() in OWN_DIRS) continue
+            if (name.startsWith(".") || name.lowercase() in OWN_DIRS || notGames(name)) continue
             val f = File(dir, name)
             val systems = names.allOf(name)
             if (systems.isNotEmpty()) {
@@ -171,6 +172,7 @@ class GameFinder(platforms: List<Platform>, private val list: (File) -> ScanCach
                 }
                 continue
             }
+            if (strict) continue
             val gameDir = loose[f.extension.lowercase()]
             if (f.extension.isNotEmpty() && gameDir != null) {
                 strays += Game(gameDir, f, cleanTitle(f.nameWithoutExtension), group, tag)
@@ -211,6 +213,12 @@ class GameFinder(platforms: List<Platform>, private val list: (File) -> ScanCach
             "tandem", "manuals", "notes", "screenshots", "clips", "downloaded_media", "backups", "backup", "platforms", "themes",
             "assets", "media", "gamelists", "bios", "saves", "states",
         )
+
+        /** Words in a folder's name that say it holds add-ons for games, not games: never claimed or walked. */
+        private val ADD_ONS = setOf("update", "updates", "dlc", "dlcs", "patch", "patches", "mods", "cheats")
+
+        /** "switch-updates", "DLC", "Patches (3DS)": a folder of updates or add-ons, whose files aren't games of their own. */
+        fun notGames(name: String): Boolean = name.lowercase().split(Regex("[^a-z0-9]+")).any { it in ADD_ONS }
 
         /** "Mario Kart 7 (USA) (En,Fr,Es)" -> "Mario Kart 7". */
         fun cleanTitle(stem: String): String =

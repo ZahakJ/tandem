@@ -7,6 +7,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -207,9 +208,15 @@ class GameFinderTest {
 
     @Test fun platformsJsonFoldersComeFirstThenOtherNamesThenLooseFiles() {
         // Same file name three times: the first one found wins the key, as before (n3ds/ before 3ds/).
-        file("ROMs/3ds/A.3ds"); file("ROMs/n3ds/A.3ds"); file("ROMs/Nintendo 3DS/A.3ds"); file("ROMs/Other/A.3ds")
-        val games = found(File(tmp.root, "ROMs"), main = true).getValue("n3ds")
+        file("Games/3ds/A.3ds"); file("Games/n3ds/A.3ds"); file("Games/Nintendo 3DS/A.3ds"); file("Games/Other/A.3ds")
+        val games = found(File(tmp.root, "Games"), main = false).getValue("n3ds")
         assertEquals(listOf("n3ds/A.3ds", "3ds/A.3ds", "Nintendo 3DS/A.3ds", "Other/A.3ds"), games)
+    }
+
+    @Test fun theRomsFolderOnlyHasGamesInItsSystemFolders() {
+        // Updates and DLC sit beside the system folders in ROMs; a loose file or another folder there is no game.
+        file("ROMs/switch/A.nsp"); file("ROMs/switch-updates/A Update.nsp"); file("ROMs/Other/B.nsp"); file("ROMs/C.nsp")
+        assertEquals(listOf("switch/A.nsp"), found(File(tmp.root, "ROMs"), main = true).getValue("switch"))
     }
 
     @Test fun tandemsOwnFoldersAreNeverWalkedForLooseFiles() {
@@ -249,5 +256,13 @@ class GameFinderTest {
             val other = seen.put(n, p.id)
             assertTrue("$n is ${p.id} and $other", other == null || other == p.id)
         }
+    }
+
+    @Test fun updateAndDlcFoldersAreNeverGames() {
+        assertTrue(GameFinder.notGames("switch-updates"))
+        assertTrue(GameFinder.notGames("DLC"))
+        assertTrue(GameFinder.notGames("Patches (3DS)"))
+        assertFalse(GameFinder.notGames("Switch"))
+        assertFalse(GameFinder.notGames("Puzzle games"))
     }
 }
