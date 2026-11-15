@@ -1,0 +1,5 @@
+- Tandem updates itself: it tells you when a new version is out and installs it with one press, after checking it is genuine.
+- Shelf view shows games in their real packaging, with real box scans to download.
+- Any folder can hold your games, whatever it is called.
+- A game's details on the bottom screen are one piece of art in every layout.
+- Down from Stats and Quick goes back to the page; Shelf and Case views for every system.
