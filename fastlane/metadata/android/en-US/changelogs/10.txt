@@ -1,0 +1,1 @@
+- Down from Stats or Quick can no longer stay in the top bar, even after leaving a folder or waking the screen.
