@@ -1,0 +1,1 @@
+- Leaving a folder or system puts the highlight back on it, instead of on the item that was highlighted when Tandem started (Carousel home, and other screens).
