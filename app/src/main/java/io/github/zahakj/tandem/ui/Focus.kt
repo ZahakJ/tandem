@@ -233,7 +233,15 @@ fun layerActive(): Boolean = layerActive(LocalLayer.current)
  * (or a kept screen showing) would otherwise recompose every focusable item on the screen underneath.
  */
 @Composable
-fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier {
+fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier = takesFocusWhen(routeKey, itemKey, wanted) { wanted }
+
+/**
+ * [takesFocus], asking [wanted] each time focus is handed back rather than once when the item was composed. Items
+ * aren't composed again when you leave a screen and come back, so a choice made then went stale: on the Carousel
+ * home the card highlighted when Tandem started took the focus back after every folder you opened and left.
+ */
+@Composable
+private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?, wanted: () -> Boolean): Modifier {
     val requester = remember { FocusRequester() }
     val focused = remember { booleanArrayOf(false) }
     val layer = LocalLayer.current
@@ -242,18 +250,17 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
     DisposableEffect(view) {
         onDispose { if (focused[0]) { FocusCards.held(view.rootView, focused, false); FocusMemory.hold(routeKey, itemKey, false) } }
     }
-    LaunchedEffect(routeKey, wanted, layer) {
-        if (!wanted) return@LaunchedEffect
+    LaunchedEffect(routeKey, key, layer) {
         // Focus handed back (Nav.focusTick: a resume, Home) asks again. Watched here rather than read while composing,
         // so a resume doesn't recompose every focusable item on the screen in its first frame.
         snapshotFlow { Nav.focusTick to layerActive(layer) }.collectLatest { (_, active) ->
-            if (!active) return@collectLatest
+            if (!active || !wanted()) return@collectLatest
             // The item may still be animating in or not laid out yet; keep asking briefly until it takes focus.
             // The first try comes right after the next frame (the item is laid out by then), so a screen's highlight
             // shows at once instead of 70 ms late.
             repeat(12) { i ->
                 if (i == 0) androidx.compose.runtime.withFrameNanos { } else delay(70)
-                if (focused[0] || FocusMemory.movedOn(routeKey, itemKey)) return@collectLatest
+                if (focused[0] || FocusMemory.movedOn(routeKey, itemKey) || !wanted()) return@collectLatest
                 runCatching { requester.requestFocus() }
             }
         }
@@ -273,8 +280,8 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
  */
 @Composable
 fun Modifier.remembersFocus(routeKey: String, itemKey: String, fallback: Boolean): Modifier {
-    val wanted = FocusMemory.get(routeKey)?.let { it == itemKey } ?: fallback
-    return takesFocus(routeKey, itemKey, wanted)
+    // Asked when focus is handed back: the remembered item may have changed since this was composed.
+    return takesFocusWhen(routeKey, itemKey, fallback) { FocusMemory.get(routeKey)?.let { it == itemKey } ?: fallback }
 }
 
 /** Scroll positions per route, so a list comes back exactly where it was. */
