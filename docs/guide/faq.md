@@ -39,14 +39,15 @@ No. Tandem is an independent community project. It isn't affiliated with AYN or 
 Both setup steps must be done:
 
 - **All files access** must be on for Tandem in Android's settings (**Settings › Apps › Special app access › All files access** on most devices).
-- **The ROMs folder** must be picked in the folder picker, with **Use this folder**. If you picked a different folder by mistake, clear Tandem's storage in Android's app settings and go through setup again.
+- **A games folder** must be picked in the folder picker, with **Use this folder**: the folder your games are in, or `ROMs`. Picking a folder inside `ROMs` is refused, since `ROMs` is always read; pick `ROMs` itself.
 
 ### A system or game is missing
 
-- Check the folder name: it must match one of the system's `folders` in [Systems and emulators](platforms.md#what-comes-built-in), for example `ROMs/n3ds` and not `ROMs/Nintendo 3DS`.
+- Is the folder in? **Settings › Library & art › Games › Game folders** lists every folder Tandem reads; **Pick your games folder…** adds one.
+- Check the folder name: it must name the system, for example `n3ds`, `3DS` or `Nintendo 3DS`. Names Tandem knows are in [Systems and emulators](platforms.md#what-comes-built-in). Files only one system plays (`.3ds`, `.nsp`, `.gba`…) are found in any folder, but disc images and archives (`.iso`, `.chd`, `.zip`…) need a folder named for their system.
 - Check the file extension against the system's list.
 - Is the game hidden? Turn on **Settings › Library & art › Show hidden games**.
-- Are the games on an SD card? Add the card's games folder in **Settings › Library & art › Games › More game folders**; it needs a folder per system inside, like `ROMs`. See [Where games live](library.md#where-games-live).
+- Are the games on an SD card? Add the card's games folder in **Settings › Library & art › Games › Game folders**. See [Where games live](library.md#where-games-live).
 - Did you add the files while Tandem was open? They should appear by themselves within a few seconds while Tandem is on screen (**Watch game folders**); otherwise **Settings › Library & art › Rescan games**.
 - More than three folders deep? Tandem stops at three levels below the system folder.
 
@@ -57,7 +58,7 @@ Both setup steps must be done:
 
 ### The emulator opens but doesn't load the game
 
-- Emulators that receive a shared file need the `ROMs` folder you picked during setup. If you picked a subfolder, or a different folder, clear Tandem's storage and pick `ROMs` again.
+- Emulators that receive a shared file need the game's folder to have been picked: during setup, or in **Settings › Library & art › Games › Game folders**. Games in `ROMs` need `ROMs` itself picked; picking it again there renews the link.
 - For RetroArch, check that the core named in `platforms.json` is installed (RetroArch › Online Updater › Core Downloader) and that the `CONFIGFILE` path exists.
 - Some emulators need their own setup before any game loads: system files for Azahar, keys and firmware for Eden, game paths for Cemu.
 

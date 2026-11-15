@@ -39,6 +39,17 @@ class LibraryRootsTest {
         assertNull(LibraryRoots.pathOf(ext, null, internal))
     }
 
+    @Test fun theRomsFolderOrAllOfInternalStorageIsTheSharingLinkNotAGamesFolder() {
+        assertTrue(LibraryRoots.isRomsTree(ext, "primary:ROMs"))
+        assertTrue(LibraryRoots.isRomsTree(ext, "primary:roms/"))
+        assertTrue(LibraryRoots.isRomsTree(ext, "primary:"))
+        assertFalse(LibraryRoots.isRomsTree(ext, "primary:Games"))
+        assertFalse(LibraryRoots.isRomsTree(ext, "primary:ROMs/n3ds"))
+        assertFalse(LibraryRoots.isRomsTree(ext, "1234-ABCD:ROMs"))
+        assertFalse(LibraryRoots.isRomsTree(LibraryRoots.DOWNLOADS, "raw:/storage/emulated/0/ROMs"))
+        assertFalse(LibraryRoots.isRomsTree(ext, null))
+    }
+
     @Test fun theRomsFolderAndItsInsidesAndParentsCantBeAdded() {
         assertEquals(Verdict.IsRoms, LibraryRoots.check(roms, roms, emptyList()))
         assertEquals(Verdict.IsRoms, LibraryRoots.check("$internal/roms/", roms, emptyList()))

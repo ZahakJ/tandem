@@ -5,7 +5,7 @@ Install Tandem, lay out your games so it can find them, and get through the two 
 ## What you need
 
 - An Android handheld running **Android 11 or newer**. Tandem is designed around dual-screen devices like the AYN Thor, and works on a single screen too.
-- Your games, in a `ROMs` folder in internal storage (see below).
+- Your games, in any folder on the device or an SD card (see below).
 - The emulators you want to use, installed and opened once. The ones Tandem knows out of the box are listed in [Systems and emulators](platforms.md#what-comes-built-in).
 - Optional: [Shizuku](https://shizuku.rikka.app/), if you want games to [resume](resume.md) where you left them.
 
@@ -29,25 +29,31 @@ Installed from GitHub Releases, Tandem keeps itself up to date. Once a day while
 
 ## Put your games in place
 
-Tandem reads one folder: `ROMs` at the top of internal storage (`/storage/emulated/0/ROMs`). Inside it, each system has its own folder, named the way most frontends name them:
+Your games can stay where they are: you point Tandem at the folder during setup, and it can be called anything and
+laid out any way. The usual layout is a folder per system, and the names are forgiving (`n3ds`, `3DS`,
+`Nintendo 3DS` and `3DS ROMs` all work):
 
 ```text
-ROMs/
-├─ n3ds/          Nintendo 3DS
+Games/
+├─ 3DS/           Nintendo 3DS
 ├─ nds/           Nintendo DS
-├─ switch/        Nintendo Switch
-├─ wiiu/          Nintendo Wii U
-├─ gba/           Game Boy Advance
-├─ gbc/           Game Boy Color
-└─ gb/            Game Boy
+├─ Switch/        Nintendo Switch
+├─ GBA/           Game Boy Advance
+└─ PlayStation 2/
 ```
 
-If you already use ES-DE or Cocoon, your folders are probably laid out like this already. Folders inside a system folder (for example `ROMs/n3ds/RPG/`) show up in Tandem as folders, up to three levels deep. The full list of folder names and file types per system is in [Systems and emulators](platforms.md#what-comes-built-in).
+A single system's folder (`Games/3DS`) works too, and so does one folder with everything mixed together: a file only
+one system plays (`.3ds`, `.nsp`, `.gba`, `.sfc`…) is found wherever it is. Disc images and archives (`.iso`, `.chd`,
+`.zip`…) need a folder named for their system. Folders inside a system folder (for example `3DS/RPG/`) show up in
+Tandem as folders, up to three levels deep. The full list of names and file types per system is in
+[Systems and emulators](platforms.md#what-comes-built-in).
+
+`ROMs` at the top of internal storage (`/storage/emulated/0/ROMs`) is Tandem's own folder, where it keeps its data,
+and is always read for games too. If you already use ES-DE or Cocoon, your games are probably there already.
 
 > [!TIP]
-> Games on an SD card, or in a second folder? Once Tandem is set up, add the folder in **Settings › Library & art ›
-> Games › More game folders**. It is read the same way, a folder per system inside it, and its games join the same
-> systems. See [Where games live](library.md#where-games-live).
+> Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Games › Game
+> folders**. Their games join the same systems. See [Where games live](library.md#where-games-live).
 
 Artwork is optional. If you have scraped art before with another frontend, it is most likely in `ROMs/downloaded_media/`, and Tandem uses it as it is. [Your library](library.md#artwork) explains which folders it reads.
 
@@ -55,8 +61,8 @@ Artwork is optional. If you have scraped art before with another frontend, it is
 
 Pip greets you with two steps. Both are needed once, and Tandem remembers them.
 
-1. **Read your games.** Press A to open Android's **All files access** screen, switch Tandem on, and press B to come back. This lets Tandem read the `ROMs` folder and its artwork quickly.
-2. **Share games with emulators.** Press A, and Android's folder picker opens at `ROMs`. Tap **Use this folder**, then **Allow**. Some emulators (Eden, Cemu and melonDS among them) only open games that are shared with them this way, rather than by file path.
+1. **Read your games.** Press A to open Android's **All files access** screen, switch Tandem on, and press B to come back. This lets Tandem read your games and their artwork quickly.
+2. **Pick your games folder.** Press A, and Android's folder picker opens (at `ROMs`, if you have one). Go to the folder your games are in, tap **Use this folder**, then **Allow**. Some emulators (Eden, Cemu and melonDS among them) only open games that are shared with them this way, rather than by file path.
 
 If Shizuku is installed and running, a third, optional step appears: **Resume games**. Press A and allow Tandem in the Shizuku prompt. You can also do this later; see [Resume and Shizuku](resume.md).
 

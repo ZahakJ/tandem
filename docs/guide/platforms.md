@@ -6,7 +6,7 @@ Which systems Tandem knows, which emulators it starts, and how to add your own b
 
 Tandem knows 104 systems. The common ones:
 
-| System | Folders under `ROMs/` | Main file types | Emulators |
+| System | Folder names | Main file types | Emulators |
 | --- | --- | --- | --- |
 | Nintendo 3DS | `n3ds`, `3ds` | `.3ds` `.cia` `.cci` `.cxi` `.3dsx` `.zcci` | Azahar, RetroArch (Citra) |
 | Nintendo DS | `nds` | `.nds` `.dsi` `.zip` `.7z` | melonDS Dual, melonDS, DraStic, RetroArch |
@@ -82,7 +82,7 @@ The file is one object with a `platforms` list. Each entry is a system:
 | `id` | Yes | A short, unique, lowercase name. It is part of each game's identity (`gba/Some Game.gba`), so changing it later makes Tandem forget favorites and play time for that system. |
 | `name` | Yes | The full name, shown on system cards and the bottom screen. |
 | `short` | No | A few letters for tiles and pills, like `GBA`. Defaults to `name`. |
-| `folders` | No | Folder names under `ROMs/` to scan. Defaults to the `id`. |
+| `folders` | No | Folder names that mean this system in any game folder (matched loosely, see [How games are found](library.md#how-games-are-found)). Defaults to the `id`. A full path is one more folder of its own. |
 | `extensions` | Yes | File extensions that count as games, without the dot. Case doesn't matter. |
 | `skipDirs` | No | Subfolder names to ignore, for emulator data kept next to the games. |
 | `art` | No | Folder names under `ROMs/downloaded_media/` to take artwork from. Defaults to the `id`. Scrapes save into the first. |
@@ -126,7 +126,7 @@ Templates in `extras`, `data` and `type`: `{file.path}`, `{file.uri}` (a shared 
 shortcut file, such as a Vita `.dpt` or a PC `.steam`), `{file.text}` (its first line), `{tags.<name>}` (a
 `[name] value` line in it), `{storage}`, `{roms}` and `{package}`.
 
-A content link points into the `ROMs` folder you picked on first launch, and Tandem grants the emulator access to that one file. That is why the second setup step matters for emulators that use `data` or `extra-uri`.
+A content link points into the games folder you picked (on first launch, or in Game folders), and Tandem grants the emulator access to that one file. That is why the second setup step matters for emulators that use `data` or `extra-uri`.
 
 ## Finding an emulator's component and action
 

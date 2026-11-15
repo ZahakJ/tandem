@@ -113,7 +113,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `ControllerSettings.usePads` | Controls › Play with a controller › Always use a connected pad | toggle |
 | `Settings.sort`, `showHidden` | Library & art › Games › Sort games by / Show hidden games | choice / toggle |
 | (rescan) | Library & art › Games › Rescan games | action |
-| `SystemPrefs.roots` (with their document links in `SystemPrefs.trees`) | Library & art › Games › More game folders (the folder manager: `ui/GameFoldersScreen.kt`; A on a folder for options, Y takes it out with Undo) | link |
+| `SystemPrefs.roots` (with their document links in `SystemPrefs.trees`) | Library & art › Games › Game folders (the folder manager: `ui/GameFoldersScreen.kt`; A on a folder for options, Y takes it out with Undo) | link |
 | `Settings.watchFolders` | Library & art › Games › Watch game folders (`FolderWatch.kt`; only while Tandem is on screen) | toggle |
 | (manuals found, `Manuals.count`) | Library & art › Games › Manuals (how many manuals `ROMs/manuals/<system>/` holds; A rescans. Per game: Y › Edit details › Manual, stored in `GameMeta.manual`) | action |
 | Systems, emulators, folders (`SystemPrefs`); Cocoon and Daijisho platform files | Library & art › Systems › Systems and emulators | link |

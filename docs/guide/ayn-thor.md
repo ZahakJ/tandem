@@ -7,8 +7,8 @@ the Thor, skim to [Emulators on the Thor](#emulators-on-the-thor) and [The botto
 ## Before you start
 
 - Update the Thor's system software from AYN's settings app.
-- Copy your games to `ROMs` in **internal storage**. See [Getting started](getting-started.md#put-your-games-in-place)
-  for the folder names.
+- Copy your games to a folder in **internal storage** or on an SD card (`ROMs` is the default). See
+  [Getting started](getting-started.md#put-your-games-in-place) for how Tandem finds them.
 
 ## Emulators on the Thor
 

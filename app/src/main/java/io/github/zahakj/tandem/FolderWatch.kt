@@ -107,6 +107,8 @@ object FolderWatch {
         for (lib in libs) {
             if (lib.platform.isApps) continue
             for (root in roots) for (name in lib.platform.folders) Library.folder(name, root).takeIf { it.isDirectory }?.let { out += it }
+            // Folders named for the system some other way ("3DS ROMs", or a root that is one system's folder).
+            for (dir in lib.folders) if (dir.isDirectory) out += dir
         }
         for (lib in libs) if (!lib.platform.isApps) for (g in lib.games) g.file.parentFile?.let { out += it }
         return out.take(MAX_DIRS)

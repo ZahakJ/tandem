@@ -399,12 +399,13 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
 
         if (noGames || groups.isEmpty()) {
             val hidden = libs.any { it.games.isNotEmpty() }
+            val pick = rememberGameFolderPicker()
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 EmptyNote(
-                    if (hidden) "Every game is hidden" else "No games yet. Put them in ROMs/<system>",
-                    if (hidden) "Show hidden games" else "Look again",
+                    if (hidden) "Every game is hidden" else "No games yet. Pick the folder your games are in",
+                    if (hidden) "Show hidden games" else "Pick your games folder",
                     Modifier.takesFocus(route, SpotlightMode.EMPTY, target == SpotlightMode.EMPTY),
-                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else LibraryScan.rescan(ctx) }
+                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() }
             }
             return@BoxWithConstraints
         }

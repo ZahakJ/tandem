@@ -420,4 +420,11 @@ object Prefs {
 
     fun setRomsTree(ctx: Context, uri: Uri) =
         ctx.getSharedPreferences(NAME, Context.MODE_PRIVATE).edit().putString("roms_tree", uri.toString()).apply()
+
+    /**
+     * Whether first-run setup has a games folder: the ROMs folder's link (or all of internal storage's), or a games
+     * folder picked anywhere else, which comes with its own link (SystemPrefs.trees).
+     */
+    fun hasGamesFolder(ctx: Context): Boolean =
+        romsTree(ctx) != null || SystemPrefs.also { it.init(ctx) }.data.roots.isNotEmpty()
 }

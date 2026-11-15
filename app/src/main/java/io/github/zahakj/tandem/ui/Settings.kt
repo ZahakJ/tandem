@@ -218,7 +218,7 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
                 "Rescan games",
                 if (scanning) "Looking…" else plural(gameCount, "game"),
                 Palette.Mint, Glyph.Refresh,
-                help = "Look through the ROMs folder again, for games you just copied over. Tandem also checks by itself whenever you come back to it.",
+                help = "Look through your game folders again, for games you just copied over. Tandem also checks by itself whenever you come back to it.",
                 keywords = "refresh scan reload find new games",
                 onClick = onRescan,
             ),

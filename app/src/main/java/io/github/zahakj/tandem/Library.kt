@@ -29,8 +29,11 @@ data class Game(
     val title: String get() = meta.title ?: fileTitle
 }
 
-/** Everything found for one system: its games and where their artwork is. */
-class PlatformLibrary(val platform: Platform, val games: List<Game>, val art: ArtIndex) {
+/**
+ * Everything found for one system: its games, where their artwork is, and the [folders] found to be the system's in
+ * every root (empty when its games were all found loose, among other systems').
+ */
+class PlatformLibrary(val platform: Platform, val games: List<Game>, val art: ArtIndex, val folders: List<File> = emptyList()) {
     /** Subfolder names, in alphabetical order. */
     val groups: List<String> = games.mapNotNull { it.group }.distinct().sortedBy { it.lowercase() }
 
@@ -126,8 +129,12 @@ object FileChecks {
 }
 
 object Library {
+    /**
+     * Tandem's own folder on internal storage: its data (ROMs/tandem, manuals, notes, screenshots, scraped art) lives
+     * here, and it is always read for games too. It needn't exist: games can be anywhere (LibraryRoots), and the
+     * folder is made the first time Tandem saves something of its own.
+     */
     val romsDir: File = File(Environment.getExternalStorageDirectory(), "ROMs")
-    private const val MAX_DEPTH = 3
 
     /** Games found so far by the scan running now (the startup splash counts them up). */
     @Volatile var found = 0
@@ -140,10 +147,11 @@ object Library {
     fun scan(platforms: List<Platform>, quick: Boolean = false): List<PlatformLibrary> {
         if (!quick) found = 0
         val roots = roots()
+        val all = find(platforms, quick, roots) { n -> if (!quick) found += n }
         val libs = platforms.mapNotNull { platform ->
-            val games = gamesOf(platform, quick, roots)
-            if (!quick) found += games.size
-            if (games.isEmpty()) null else PlatformLibrary(platform, games, ArtIndex(platform.artIds, quick, roots))
+            val games = all.games[platform.id].orEmpty()
+            if (games.isEmpty()) null
+            else PlatformLibrary(platform, games, ArtIndex(platform.artIds, quick, roots), all.folders[platform.id].orEmpty())
         }
         // The games' manuals (ROMs/manuals) are matched by name like their art, so they are looked for with the games.
         Manuals.index(libs, quick)
@@ -160,55 +168,51 @@ object Library {
 
     /**
      * Every tree games are read from: the ROMs folder, then the folders added in Settings (LibraryRoots), in the
-     * order they were added. A root that isn't there right now (an SD card taken out) lists as empty, so its games
-     * are simply missing until it is back.
+     * order they were added. A root that isn't there right now (an SD card taken out, or no ROMs folder at all)
+     * lists as empty, so its games are simply missing until it is back.
      */
     fun roots(): List<File> = listOf(romsDir) + SystemPrefs.data.roots.map(::File)
 
+    /** What the game folders hold: each system's games, by system id, and the folders found to be each system's. */
+    class Found(val games: Map<String, List<Game>>, val folders: Map<String, List<File>>)
+
     /**
-     * The games for one system: from its own source (Android games) or its folders in every root. Game keys are
-     * "system/file name", so the same name twice (two subfolders, both n3ds/ and 3ds/, or the same file in two
-     * roots) would clash; the first one found wins, with roots in order (the ROMs folder first), folders in
-     * platforms.json order and a folder's own files before its subfolders'.
+     * The games of [platforms]: from their own source (Android games), or from every root, each walked once and its
+     * files handed to the systems they belong to (GameFinder: a folder per system, one system's folder, or a mix).
+     * Game keys are "system/file name", so the same name twice (two subfolders, both n3ds/ and 3ds/, or the same
+     * file in two roots) would clash; the first one found wins, with roots in order (the ROMs folder first), the
+     * folders platforms.json names in its order, then other folders named for the system, then files found loose.
+     * [counted] hears how many games each root added, for the splash.
      */
-    fun gamesOf(platform: Platform, quick: Boolean = false, roots: List<File> = roots()): List<Game> =
-        platform.source?.invoke(platform) ?: LibraryRoots.merge(
-            roots.map { root ->
+    fun find(platforms: List<Platform>, quick: Boolean = false, roots: List<File> = roots(), counted: (Int) -> Unit = {}): Found {
+        val finder = GameFinder(platforms) { ScanCache.list(it, quick) }
+        val perRoot = LinkedHashMap<String, MutableList<List<Game>>>()
+        val folders = LinkedHashMap<String, MutableList<File>>()
+        for (root in roots) {
+            val main = root == romsDir
+            val found = finder.find(root, tag = if (main) null else root, main = main)
+            for ((id, games) in found.games) perRoot.getOrPut(id) { mutableListOf() } += games
+            for ((id, dirs) in found.folders) folders.getOrPut(id) { mutableListOf() } += dirs
+            if (main) for (p in platforms) {
                 // A folder added in Systems is a full path of its own: walked once, with the ROMs folder.
-                val main = root == romsDir
-                val folders = if (main) platform.folders else platform.folders.filter { !it.startsWith("/") }
-                folders.flatMap { walk(folder(it, root), platform, group = null, depth = 0, quick, root = if (main) null else root) }
-            },
-        ) { it.key }
+                val own = p.folders.filter { it.startsWith("/") }.map(::File)
+                if (own.isEmpty() || p.source != null) continue
+                perRoot.getOrPut(p.id) { mutableListOf() } += own.flatMap { finder.walk(it, p, group = null, depth = 0, tag = null) }
+                folders.getOrPut(p.id) { mutableListOf() } += own.filter { it.isDirectory }
+            }
+            counted(found.games.values.sumOf { it.size })
+        }
+        val games = platforms.associate { p ->
+            p.id to (p.source?.invoke(p) ?: LibraryRoots.merge(perRoot[p.id].orEmpty()) { it.key })
+        }
+        return Found(games, folders)
+    }
 
     /** A folder from platforms.json is under [root] (the ROMs folder, or another root); one added in Systems is a full path. */
     fun folder(name: String, root: File = romsDir): File = if (name.startsWith("/")) File(name) else File(root, name)
 
-    private fun walk(dir: File, platform: Platform, group: String?, depth: Int, quick: Boolean, root: File?): List<Game> {
-        val found = mutableListOf<Game>()
-        val listing = ScanCache.list(dir, quick)
-        for (name in listing.files) {
-            if (name.startsWith(".")) continue
-            val f = File(dir, name)
-            if (platform.matches(name)) found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group, root)
-        }
-        for (name in listing.dirs) {
-            if (name.startsWith(".")) continue
-            val f = File(dir, name)
-            if (f.extension.isNotEmpty() && f.extension.lowercase() in platform.extensions) {
-                // A folder named like a game file is one game (PS3 "Game.ps3" folders, for example).
-                found += Game(platform, f, cleanTitle(f.nameWithoutExtension), group, root)
-            } else if (depth < MAX_DEPTH && name.lowercase() !in platform.skipDirs) {
-                // Emulators keep their own data next to the games (Azahar's nand/sdmc, for example); skip it.
-                found += walk(f, platform, group ?: name, depth + 1, quick, root)
-            }
-        }
-        return found
-    }
-
     /** "Mario Kart 7 (USA) (En,Fr,Es)" -> "Mario Kart 7". */
-    fun cleanTitle(stem: String): String =
-        stem.replace(Regex("""\s*[(\[][^)\]]*[)\]]"""), "").trim().ifEmpty { stem }
+    fun cleanTitle(stem: String): String = GameFinder.cleanTitle(stem)
 
     fun sorted(games: List<Game>, order: SortOrder): List<Game> = when (order) {
         SortOrder.Name -> games.sortedBy { it.title.lowercase() }

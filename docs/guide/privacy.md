@@ -115,7 +115,7 @@ All of it is on your device:
 | What Tandem turned off to go offline for a hidden game | `offline.json` in Tandem's private no-backup storage, only while it is offline | To put airplane mode and Wi-Fi back, even after a restart |
 | Downloaded artwork, logos and video snaps | `ROMs/downloaded_media/<system>/…` | So they are yours to keep, in the layout other frontends read. **Clear downloaded media** removes only what Tandem downloaded |
 | Game manuals and guides, and the page each was left at | `ROMs/manuals/<system>/` (your files, and copies of the ones you pick in Edit details); `manual-pages.json` in Tandem's private storage | Read on either screen. Never sent anywhere, never deleted by Tandem. See [Manuals and guides](library.md#manuals-and-guides) |
-| The `ROMs` folder you picked | Android app preferences | To share game files with emulators |
+| The `ROMs` folder, if you picked it | Android app preferences | To share game files with emulators |
 | The last game started in each emulator, and when the current session began | Android app preferences | Resume and play time |
 
 The JSON files are plain text. **Settings › Play & system › Back up** copies them to a dated folder in `ROMs/tandem/backup/`, where you can read them; keys and logins only go too if you switch on **Account keys and logins**. Tandem also makes automatic backups there before a restore, a Cocoon import or a reset of the look, and keeps the last five. A backup holds hidden games and hidden folders as they are in Tandem, and other apps with storage access can read that folder. Uninstalling Tandem deletes its private storage, but not those backups or your downloaded artwork. See [Back up and restore](library.md#back-up-and-restore).
@@ -130,7 +130,7 @@ Android's own backup may include Tandem's private storage if you have it switche
 | Internet | Scraping, RetroAchievements, Steam achievements and the Discord status, only when you start or connect them (see above). |
 | Network state | Warning you before a big download on mobile data. |
 | Wi-Fi state, and Modify system settings (optional) | The quick panel (hold Start): showing whether Wi-Fi is on, and changing brightness once you allow it. |
-| Access to the `ROMs` folder you pick | Handing individual game files to emulators that only accept shared files. |
+| Access to the games folders you pick | Handing individual game files to emulators that only accept shared files. |
 | See installed apps | Finding your emulators and bringing a running one back to the front. |
 | Notification access (optional, off until you allow it) | Showing your notifications in the side panel (R2 on home), where A opens one and Y clears it. They are kept in memory only, never stored or sent; in private mode only the app and time show. With Shizuku, Tandem can switch this on for itself when you ask. |
 | Microphone and screen capture (optional) | The companion's 15-second clips: the game's screen and sound, and your voice unless **Voice in clips** is off. With Shizuku, Tandem grants these to itself so a clip starts without asking. |

@@ -158,7 +158,7 @@ object SettingsPlan {
             Group(PadLinkGroup, emptyList()),
         ),
         "library" to listOf(
-            Group("Games", p("Library", "Sort games by", "Show hidden games", "Rescan games", "Manuals") + p("Game folders", "More game folders", "Watch game folders")),
+            Group("Games", p("Library", "Sort games by", "Show hidden games", "Rescan games", "Manuals") + p("Game folders", "Game folders", "Watch game folders")),
             Group("Systems", p("Systems & launching", "Systems and emulators", "Android apps")),
             Group(
                 "Artwork", p("Artwork & details", "Scrape library", "Set up sources", "Artwork to download"),

@@ -69,6 +69,8 @@ internal fun GamePickPanel() {
     var query by remember { mutableStateOf("") }
     val picked = remember { mutableStateListOf<String>() }
     LaunchedEffect(visible) { if (visible) { query = ""; picked.clear() } }
+    // With no games at all, the first button picks the folder they are in instead.
+    val pickFolder = rememberGameFolderPicker()
     val close: () -> Unit = { IconGrid.pickingGames = null; Nav.focusTick++ }
     val search: () -> Unit = { TextEntry.ask("Find a game", query, onChange = { query = it }) { query = it } }
     val place: () -> Unit = place@{
@@ -139,16 +141,21 @@ internal fun GamePickPanel() {
                 ) {
                     item("add", span = { GridItemSpan(maxLineSpan) }) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            val none = Libraries.games.isEmpty()
                             PillButton(
-                                if (picked.isEmpty()) "Add here" else "Add ${plural(picked.size, "game")} here", Palette.Mint,
-                                Modifier.takesFocus(PICK_ROUTE, "add", focusTarget == "add"),
-                            ) { place() }
+                                when {
+                                    none -> "Pick your games folder"
+                                    picked.isEmpty() -> "Add here"
+                                    else -> "Add ${plural(picked.size, "game")} here"
+                                },
+                                Palette.Mint, Modifier.takesFocus(PICK_ROUTE, "add", focusTarget == "add"),
+                            ) { if (none) pickFolder() else place() }
                             PillButton(if (q.isEmpty()) "Search…" else "Search: ${query.trim()}", Palette.Sky, Modifier) { search() }
                             if (q.isNotEmpty()) PillButton("Show all", Palette.Lavender, Modifier) { query = "" }
                         }
                     }
                     if (groups.isEmpty()) item("none", span = { GridItemSpan(maxLineSpan) }) {
-                        PipNote(if (q.isEmpty()) "No games yet" else "No matches", if (q.isEmpty()) "Games in your ROMs folders show up here." else "Accents and punctuation don't matter.", mood = 2)
+                        PipNote(if (q.isEmpty()) "No games yet" else "No matches", if (q.isEmpty()) "Pick the folder your games are in, and they show up here." else "Accents and punctuation don't matter.", mood = 2)
                     }
                     for ((name, games) in groups) {
                         item("h:$name", span = { GridItemSpan(maxLineSpan) }, contentType = "header") {

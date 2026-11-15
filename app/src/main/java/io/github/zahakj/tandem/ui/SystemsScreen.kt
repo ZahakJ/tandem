@@ -73,7 +73,11 @@ fun SystemsScreen() {
     var version by remember { mutableIntStateOf(0) }
     // Counts leave hidden games out (a hidden system looks empty) unless they are showing.
     val systems by produceState<List<SystemInfo>?>(null, version, io.github.zahakj.tandem.Privacy.view) {
-        value = withContext(Dispatchers.IO) { Platforms.all(ctx).map { SystemInfo(it, io.github.zahakj.tandem.Collections.visible(Library.gamesOf(it))) } }
+        value = withContext(Dispatchers.IO) {
+            val all = Platforms.all(ctx)
+            val found = Library.find(all).games
+            all.map { SystemInfo(it, io.github.zahakj.tandem.Collections.visible(found[it.id].orEmpty())) }
+        }
     }
     var open by remember { mutableStateOf<String?>(null) }
     var pickFor by remember { mutableStateOf<String?>(null) }

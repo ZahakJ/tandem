@@ -40,8 +40,8 @@ data class SystemsData(
     /** Folder path -> document tree link the user granted, so games there can be shared with emulators. */
     val trees: Map<String, String> = emptyMap(),
     /**
-     * More game folders, as absolute paths, each laid out like the ROMs folder (a folder per system) and scanned
-     * with it (LibraryRoots). Their document links sit in [trees].
+     * Game folders besides ROMs, as absolute paths, scanned with it whatever their layout (LibraryRoots,
+     * GameFinder). Their document links sit in [trees].
      */
     val roots: List<String> = emptyList(),
 )

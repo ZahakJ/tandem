@@ -148,9 +148,10 @@ object DeleteGame {
     /** Folders that never go as a whole: the systems' folders and Tandem's own ones. */
     private fun guarded(): List<File> = systemFolders() + listOf(mediaRoot, File(Library.romsDir, "tandem"))
 
-    /** Each system's folders in every root (LibraryRoots), and the full paths added in Systems. */
+    /** Each system's folders in every root (LibraryRoots), and the full paths added in Systems, and every other folder a scan found to be a system's. */
     private fun systemFolders(): List<File> =
-        Library.roots().flatMap { root -> Libraries.all.orEmpty().flatMap { lib -> lib.platform.folders.map { Library.folder(it, root) } } }
+        Library.roots().flatMap { root -> Libraries.all.orEmpty().flatMap { lib -> lib.platform.folders.map { Library.folder(it, root) } } } +
+            Libraries.all.orEmpty().flatMap { it.folders }
 
     /** Blocking. */
     private fun plan(g: Game): DeleteRequest {

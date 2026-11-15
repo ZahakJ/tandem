@@ -218,6 +218,8 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
     val continuing = Collections.continuePlaying()
     val collections = Collections.home()
     val genres = Collections.genres()
+    // For the empty library's entry. The picker it opens stays the same across recompositions.
+    val pick = rememberGameFolderPicker()
     // Hiding or unhiding a game changes counts, art and which systems show, so those are keys too.
     return remember(libs, continuing, collections, genres.size, look.homeSections, Store.meta, io.github.zahakj.tandem.Privacy.view, LibraryScan.scanning) {
         buildList {
@@ -266,12 +268,12 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
             if (isEmpty()) {
                 val hidden = libs.any { it.games.isNotEmpty() }
                 val title = if (hidden) "Every game is hidden" else "No games yet"
-                val detail = if (hidden) "Settings › Library › Show hidden games" else "Put games in ROMs/<system>, then A to rescan"
+                val detail = if (hidden) "Settings › Library › Show hidden games" else "Pick the folder your games are in with A"
                 add(
                     HomeEntry(
                         "empty:rescan", title, detail, "?", Palette.Peach, emptyList(), null,
-                        Selected.Setting(title, if (hidden) "Hidden" else "Rescan", detail, Palette.Peach, if (hidden) "Settings" else "Rescan"),
-                    ) { if (hidden) Nav.go(Route.SettingsPage("library")) else LibraryScan.rescan(ctx) },
+                        Selected.Setting(title, if (hidden) "Hidden" else "Pick your games folder", detail, Palette.Peach, if (hidden) "Settings" else "Pick"),
+                    ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() },
                 )
             }
         }

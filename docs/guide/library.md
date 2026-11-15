@@ -4,7 +4,11 @@ How Tandem finds games, where it gets artwork, what the collections are made of,
 
 ## How games are found
 
-On launch, and whenever you choose **Settings › Library & art › Rescan games**, Tandem looks through `ROMs/` in internal storage and every other game folder you added ([below](#where-games-live)). For each system in [`platforms.json`](platforms.md) it checks that system's folders (for example `ROMs/n3ds` and `ROMs/3ds` for the 3DS) and picks up every file with one of the system's extensions.
+On launch, and whenever you choose **Settings › Library & art › Rescan games**, Tandem looks through every game folder you picked and `ROMs/` in internal storage ([below](#where-games-live)), once each. A folder can be laid out three ways, and one folder can mix them:
+
+- **A folder per system.** A folder named for a system holds that system's games: every file with one of the system's extensions. The names are forgiving: the system's `folders` and aliases in [`platforms.json`](platforms.md), its name and short name, and a few nicknames, ignoring case, spaces, punctuation, a trailing "roms" or "games" and a maker in front. `n3ds`, `3DS`, `Nintendo 3DS`, `3DS ROMs` and `Nintendo - Nintendo 3DS` are all the 3DS.
+- **One system's folder.** Pick `Games/3DS` itself and everything in it is the 3DS's.
+- **Everything together.** A file only one system plays (`.3ds`, `.cia`, `.nsp`, `.xci`, `.gba`, `.sfc`, `.z64`…) is that system's wherever it sits, up to three folders down. Kinds several systems share, and everyday ones (`.iso`, `.bin`, `.cue`, `.chd`, `.zip`, `.7z`…), only count inside a folder named for a system.
 
 - **Subfolders become folders.** `ROMs/n3ds/RPG/Some Game.3ds` appears inside an **RPG** folder on the 3DS screen. Tandem goes up to three folders deep. On the icon grid, a system opening as a folder gets a folder inside for each subfolder, with a genre look and a cover wall on the other screen; games copied into a subfolder later join its folder there.
 - **Emulator data is skipped.** Some emulators keep their own folders next to the games, like Azahar's `nand` and `sdmc`. Each system can list folders to ignore (`skipDirs`).
@@ -18,14 +22,16 @@ A game is identified by its system and file name, like `n3ds/Some Game.3ds`. Tha
 
 ## Where games live
 
-`ROMs` on internal storage is always read. Games can also live in other places: an SD card, or another folder on the
-device. **Settings › Library & art › Games › More game folders** lists every folder Tandem reads from, with how many
-games each holds right now; **Add a folder…** opens Android's folder picker, where you pick the folder and tap **Use
-this folder**. A on a folder gives its options, and Y (or a long press) takes it out again, with Undo.
+Games can live anywhere on the device or an SD card. **Settings › Library & art › Games › Game folders** lists every
+folder Tandem reads from, with how many games each holds right now; **Pick your games folder…** opens Android's
+folder picker, where you pick the folder and tap **Use this folder**. An empty home offers the same button. A on a
+folder gives its options, and Y (or a long press) takes it out again, with Undo.
 
-- **Same layout everywhere.** Each folder is read exactly like `ROMs`: a folder per system inside it
-  (`/storage/1234-ABCD/Games/n3ds`, say), subfolders as folders, the same names and extensions, the same `skipDirs`.
-  The folder itself can be called anything.
+- **`ROMs` is the default.** `ROMs` on internal storage is Tandem's own folder, where it keeps its data, and it is
+  always read for games too. It doesn't have to exist: Tandem makes it the first time it saves something there.
+- **Any layout.** Each folder is read the [same way](#how-games-are-found): folders named for systems, one system's
+  folder, or games mixed together, with subfolders as folders and the same `skipDirs`. The folder itself can be
+  called anything.
 - **One library.** Games from every folder join the same systems. A game is still identified by its system and
   file name, so the same file in two folders counts once (the copy in `ROMs` wins), and moving a game to the SD card
   keeps its favorites, details and play time.

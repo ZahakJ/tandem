@@ -1,9 +1,10 @@
 package io.github.zahakj.tandem
 
 /**
- * The folders games are read from: the ROMs folder on internal storage, and any the user added in Settings ›
- * Library & art › Games › More game folders (an SD card, a second folder on the device). Every root has the same
- * layout, `<root>/<system folder>/...`, and they all pour into the same systems. Pure: the folder picker's answers,
+ * The folders games are read from: the ROMs folder on internal storage (Tandem's own, always read, even if it
+ * doesn't exist), and any the user picked in Settings › Library & art › Games › Game folders or from an empty home
+ * (an SD card, a games folder anywhere on the device). A root can be a folder per system, one system's own folder or
+ * a mix (GameFinder), and they all pour into the same systems. Pure: the folder picker's answers,
  * the checks on a new root and the merge are worked out here; Library.kt does the reading, and the roots
  * themselves sit in systems.json (SystemPrefs.roots) with the document links the picker granted (SystemPrefs.trees).
  */
@@ -34,6 +35,17 @@ object LibraryRoots {
             DOWNLOADS -> treeDocumentId.takeIf { it.startsWith("raw:/") }?.removePrefix("raw:")?.trimEnd('/')?.ifEmpty { null }
             else -> null
         }
+    }
+
+    /**
+     * True when the picker returned the ROMs folder on internal storage, or all of internal storage: its link is
+     * then Tandem's link for sharing games on internal storage (Launcher), not another games folder.
+     */
+    fun isRomsTree(authority: String?, treeDocumentId: String?): Boolean {
+        if (authority != EXTERNAL_STORAGE || treeDocumentId == null) return false
+        if (!treeDocumentId.startsWith("primary:", ignoreCase = true)) return false
+        val path = treeDocumentId.substringAfter(':').trim('/')
+        return path.isEmpty() || path.equals("ROMs", ignoreCase = true)
     }
 
     /** Why a picked folder can't be a root, or [Ok]. */

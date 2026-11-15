@@ -86,9 +86,9 @@ Tandem needs Android 11 or newer. It doesn't include games, BIOS files or emulat
 
 ## Quick start
 
-1. Put your games in `ROMs/` in internal storage, one folder per system (`ROMs/n3ds`, `ROMs/gba`, …).
-2. Install and open Tandem, then allow **All files access** so it can read `ROMs/`.
-3. Pick the **ROMs** folder when asked, so Tandem can share games with emulators that need it.
+1. Have your games in any folder on the device or an SD card: a folder per system (`n3ds`, `GBA`, `PlayStation 2`…), one system's folder, or everything together. `ROMs/` in internal storage is the default.
+2. Install and open Tandem, then allow **All files access** so it can read your games.
+3. Pick your games folder when asked, so Tandem can share games with emulators that need it.
 4. Optional: with Shizuku running, allow Tandem in it to enable resume. For artwork, **Settings › Library & art › Scrape library**.
 
 The [getting started guide](docs/guide/getting-started.md) has the details, and

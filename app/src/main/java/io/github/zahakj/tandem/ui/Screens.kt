@@ -257,6 +257,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
 @Composable
 private fun EmptyLibrary(allHidden: Boolean, target: String?) {
     val ctx = LocalContext.current
+    val pick = rememberGameFolderPicker()
     Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Pip(84.dp, mood = 2)
         Spacer(Modifier.width(14.dp))
@@ -264,15 +265,20 @@ private fun EmptyLibrary(allHidden: Boolean, target: String?) {
             Text(if (allHidden) "Every game is hidden" else "No games yet", style = MaterialTheme.typography.titleLarge)
             Text(
                 if (allHidden) "Turn on Show hidden games in Settings (Start) to see them."
-                else "Put games in ROMs/<system>, like ROMs/snes or ROMs/psx, or add a folder in Systems. Then rescan.",
+                else "Pick the folder your games are in, laid out any way: a folder per system, one system's folder, or all together.",
                 style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
             )
         }
         Spacer(Modifier.width(14.dp))
         PillButton(
-            if (LibraryScan.scanning) "Looking…" else "Rescan", Palette.Mint,
+            when {
+                LibraryScan.scanning -> "Looking…"
+                allHidden -> "Rescan"
+                else -> "Pick your games folder"
+            },
+            Palette.Mint,
             Modifier.takesFocus(Route.Home.key, "empty:rescan", target == "empty:rescan"),
-        ) { LibraryScan.rescan(ctx) }
+        ) { if (allHidden) LibraryScan.rescan(ctx) else pick() }
     }
 }
 

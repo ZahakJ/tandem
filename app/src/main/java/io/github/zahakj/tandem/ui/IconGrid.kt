@@ -1495,13 +1495,19 @@ private fun EmptyGrid(allHidden: Boolean) {
         Text(if (allHidden) "Your home grid is empty" else "No games yet", style = MaterialTheme.typography.titleLarge)
         Text(
             if (allHidden) "Press Y and pick Add to home, or turn on Show hidden games in Settings."
-            else "Put games in ROMs/<system>, like ROMs/snes, then rescan.",
+            else "Pick the folder your games are in, laid out any way.",
             style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(12.dp))
-        PillButton(if (LibraryScan.scanning) "Looking…" else "Rescan", Palette.Mint, Modifier.takesFocus(Route.Home.key, "empty:rescan", true)) {
-            LibraryScan.rescan(ctx)
-        }
+        val pick = rememberGameFolderPicker()
+        PillButton(
+            when {
+                LibraryScan.scanning -> "Looking…"
+                allHidden -> "Rescan"
+                else -> "Pick your games folder"
+            },
+            Palette.Mint, Modifier.takesFocus(Route.Home.key, "empty:rescan", true),
+        ) { if (allHidden) LibraryScan.rescan(ctx) else pick() }
     }
 }
 

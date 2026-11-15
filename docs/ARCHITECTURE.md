@@ -23,9 +23,12 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   display, play sessions (`Sessions`).
 - `Emulators.kt`: installed apps, kept current by package broadcasts. `AndroidApps.kt`: launchable apps and the
   Android Games system.
-- `Library.kt`: scans `<root>/<folder>` in every game folder tree (subfolders become groups); `ArtIndex` reads
+- `Library.kt`: scans every game folder tree, one walk per root (subfolders become groups); `ArtIndex` reads
   `<root>/downloaded_media/<system>/<kind>/`, the game's own root first, then the ROMs folder's.
-- `LibraryRoots.kt` (pure, tested): the game folder trees beyond `ROMs` (an SD card, another folder; stored in
+- `GameFinder.kt` (pure, tested): what a root holds, whatever its shape: folders named for systems (`SystemNames`,
+  loose matching of ids, folders, aliases, names and nicknames), a root that is one system's folder, and loose files
+  whose extension only one system has (`SystemNames.looseExtensions`).
+- `LibraryRoots.kt` (pure, tested): the game folder trees beyond `ROMs` (any folder the user picks; stored in
   `SystemPrefs.roots` with the picker's grants in `SystemPrefs.trees`): the folder picker's document ids as paths,
   what may be added, labels, the merge (the ROMs folder wins a key) and the art lookup order. Managed in
   `ui/GameFoldersScreen.kt`, which also holds the feature's settings rows.

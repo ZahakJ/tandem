@@ -10,8 +10,6 @@ import android.os.SystemClock
 import android.provider.DocumentsContract
 import android.provider.Settings
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -112,7 +110,7 @@ sealed interface Route {
     data object Apps : Route { override val key = "apps"; override val depth = 1 }
     data object Appearance : Route { override val key = "appearance"; override val depth = 2 }
     data object ThemePacks : Route { override val key = "themepacks"; override val depth = 3 }
-    /** Settings › Library & art › More game folders (GameFoldersScreen.kt). */
+    /** Settings › Library & art › Game folders (GameFoldersScreen.kt). */
     data object GameFolders : Route { override val key = "gamefolders"; override val depth = 3 }
     data object Scrape : Route { override val key = "scrape"; override val depth = 2 }
     data object Stats : Route { override val key = "stats"; override val depth = 1 }
@@ -295,7 +293,7 @@ fun LibraryRoot(activity: MainActivity) {
     val resumes = activity.resumeCount.intValue
     val ctx = LocalContext.current
     val hasFiles = remember(resumes) { Environment.isExternalStorageManager() }
-    var hasTree by remember(resumes) { mutableStateOf(Prefs.romsTree(ctx) != null) }
+    var hasTree by remember(resumes) { mutableStateOf(Prefs.hasGamesFolder(ctx)) }
     // The wallpaper belongs to the screen (SwapStage), so it doesn't restart when the library moves to the other one.
     TandemTheme {
         Box(Modifier.fillMaxSize()) {
@@ -341,7 +339,7 @@ object LibraryScan {
      * expected within a moment and the first frame can wait for it (StartFlow).
      */
     fun startEarly(ctx: Context): Boolean {
-        if (Libraries.all != null || !Environment.isExternalStorageManager() || Prefs.romsTree(ctx) == null) return false
+        if (Libraries.all != null || !Environment.isExternalStorageManager() || !Prefs.hasGamesFolder(ctx)) return false
         ensureLoaded(ctx)
         return Store.settings.autoImportDone && java.io.File(ctx.filesDir, "scan-cache.json").isFile
     }
@@ -946,28 +944,16 @@ private fun ToastHost() {
     }
 }
 
-/** True when the picked folder is the ROMs folder (or a folder above it), so games inside can be shared. */
-private fun isRomsTree(uri: Uri): Boolean {
-    val id = runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull() ?: return false
-    if (!id.startsWith("primary:", ignoreCase = true)) return false
-    val path = id.substringAfter(':').trim('/')
-    return path.isEmpty() || path.equals("ROMs", ignoreCase = true)
-}
-
-/** First run: Tandem needs to read the ROMs folder, and to be able to share game files with emulators. */
+/**
+ * First run: Tandem needs to read the games and their artwork, and a games folder it may share game files from with
+ * emulators: any folder with games in it, the ROMs folder, or all of internal storage (rememberGameFolderPicker).
+ */
 @Composable
 private fun SetupScreen(hasFiles: Boolean, hasTree: Boolean, onTree: () -> Unit) {
     val ctx = LocalContext.current
-    val pickTree = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-        if (!isRomsTree(uri)) {
-            Toasts.show("That isn't the ROMs folder. Pick \"ROMs\" on the internal storage, then \"Use this folder\"")
-            return@rememberLauncherForActivityResult
-        }
-        ctx.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        Prefs.setRomsTree(ctx, uri)
-        onTree()
-    }
+    // The picker opens at the ROMs folder when there is one; without it, wherever the system picker likes.
+    val start = remember { if (Library.romsDir.isDirectory) DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:ROMs") else null }
+    val pickTree = rememberGameFolderPicker(start) { onTree() }
     val shizukuAlive = remember { runCatching { Shizuku.pingBinder() }.getOrDefault(false) }
     val keys = listOfNotNull("files", "tree", "shizuku".takeIf { shizukuAlive })
     // Start on the first step that still needs doing.
@@ -984,12 +970,12 @@ private fun SetupScreen(hasFiles: Boolean, hasTree: Boolean, onTree: () -> Unit)
             Text("Let's find your games.", style = MaterialTheme.typography.bodyLarge, color = Palette.Muted)
         }
         Column(Modifier.weight(1.2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SetupStep(hasFiles, "1  Read your games", "Allow access to all files, so I can look through the ROMs folder and its artwork.", "files", target) {
+            SetupStep(hasFiles, "1  Read your games", "Allow access to all files, so I can look through your games and their artwork.", "files", target) {
                 ctx.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${ctx.packageName}")))
             }
-            SetupStep(hasTree, "2  Share games with emulators", "Pick the ROMs folder and tap \"Use this folder\". Some emulators only open games shared this way.", "tree", target) {
+            SetupStep(hasTree, "2  Pick your games folder", "Pick the folder your games are in, laid out any way, and tap \"Use this folder\". ROMs works too. Some emulators only open games shared this way.", "tree", target) {
                 if (!hasFiles) Toasts.show("Step 1 first, then this one")
-                else pickTree.launch(DocumentsContract.buildDocumentUri("com.android.externalstorage.documents", "primary:ROMs"))
+                else pickTree()
             }
             if (shizukuAlive) {
                 val ready = remember(ShizukuWatch.version) { Shell.ready() }

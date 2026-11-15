@@ -1,6 +1,7 @@
 package io.github.zahakj.tandem.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +46,7 @@ import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
 import io.github.zahakj.tandem.LibraryRoots
+import io.github.zahakj.tandem.Prefs
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.Store
@@ -54,11 +56,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 /*
- * Settings › Library & art › Games › More game folders: the folders games are read from (LibraryRoots). The ROMs
- * folder is always there; the others were picked with the system folder picker (an SD card, another folder laid out
- * the same way) and can be taken out again. A on a folder opens its options, Y (or a long press) takes it out, with
- * Undo: its games leave the library view, their details stay in library.json under the same keys, so adding it
- * back loses nothing.
+ * Settings › Library & art › Games › Game folders: the folders games are read from (LibraryRoots). The ROMs folder,
+ * Tandem's own, is always there; the others were picked with the system folder picker (an SD card, any folder with
+ * games in it, however it is laid out) and can be taken out again. A on a folder opens its options, Y (or a long
+ * press) takes it out, with Undo: its games leave the library view, their details stay in library.json under the
+ * same keys, so adding it back loses nothing.
  */
 
 /** The ROMs folder's key in the list; the other rows are keyed by their path. */
@@ -105,33 +107,9 @@ fun GameFoldersScreen() {
         }
     }
 
-    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        if (uri == null) return@rememberLauncherForActivityResult
-        val path = treePath(uri)
-        if (path == null) {
-            Toasts.show("That folder can't be used, try one on the device or SD card")
-            Sounds.error()
-            return@rememberLauncherForActivityResult
-        }
-        val name = LibraryRoots.label(path, internal)
-        when (LibraryRoots.check(path, romsPath, SystemPrefs.data.roots)) {
-            LibraryRoots.Verdict.IsRoms -> Toasts.show("That's the ROMs folder, which is always in")
-            LibraryRoots.Verdict.InsideRoms -> Toasts.show("$name is inside the ROMs folder, so its games are already found")
-            LibraryRoots.Verdict.AboveRoms -> Toasts.show("$name holds the ROMs folder; pick a folder with a system folder per system instead")
-            LibraryRoots.Verdict.Already -> Toasts.show("$name is already in")
-            LibraryRoots.Verdict.Ok -> {
-                // The grant lets games there be shared with emulators that only open document links (Launcher).
-                runCatching { ctx.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
-                SystemPrefs.update { it.copy(roots = it.roots + path, trees = it.trees + (path to uri.toString())) }
-                FocusMemory.remember(route, path)
-                Nav.focusTick++
-                Sounds.confirm()
-                Toasts.show("Added $name, looking for games…")
-                rescan()
-                return@rememberLauncherForActivityResult
-            }
-        }
-        Sounds.error()
+    val pick = rememberGameFolderPicker { path ->
+        FocusMemory.remember(route, if (path in SystemPrefs.data.roots) path else MAIN)
+        Nav.focusTick++
     }
 
     // Y on a folder takes it out (a long press on the touch screen is Y too).
@@ -153,12 +131,12 @@ fun GameFoldersScreen() {
             item(key = MAIN) {
                 val n = counts[romsPath] ?: 0
                 FolderRow(
-                    "ROMs", "Internal storage · always in", n, Palette.Mint, Modifier.takesFocus(route, MAIN, target == MAIN),
+                    "ROMs", "Tandem's own folder · always included", n, Palette.Mint, Modifier.takesFocus(route, MAIN, target == MAIN),
                     onFocus = {
                         FocusMemory.remember(route, MAIN); focused = MAIN
-                        Selection.current = Selected.Setting("ROMs", plural(n, "game"), "The ROMs folder on internal storage. Every other folder is read the same way and its games join the same systems.", Palette.Mint, "Options")
+                        Selection.current = Selected.Setting("ROMs", plural(n, "game"), "Tandem's own folder on internal storage, where it keeps its data. It is always read for games too, and needn't hold any.", Palette.Mint, "Options")
                     },
-                ) { Toasts.show("The ROMs folder is always in. Add more folders below") }
+                ) { Toasts.show("The ROMs folder is always included. Add your games folders below") }
             }
             items(roots, key = { it }) { path ->
                 val n = counts[path] ?: 0
@@ -172,7 +150,7 @@ fun GameFoldersScreen() {
                         FocusMemory.remember(route, path); focused = path
                         Selection.current = Selected.Setting(
                             name, if (there) plural(n, "game") else "Not there right now",
-                            if (there) "Read like the ROMs folder: a folder per system, subfolders as folders. Y takes it out again." else "The card or folder isn't mounted. Its games come back by themselves once it is.",
+                            if (there) "Games are found by their system folders (3DS, gba, PlayStation 2…) or by their kind of file. Y takes it out again." else "The card or folder isn't mounted. Its games come back by themselves once it is.",
                             color, "Options",
                         )
                     },
@@ -182,9 +160,9 @@ fun GameFoldersScreen() {
             item(key = ADD) {
                 AddRow(Modifier.takesFocus(route, ADD, target == ADD), onFocus = {
                     FocusMemory.remember(route, ADD); focused = ADD
-                    Selection.current = Selected.Setting("Add a folder", "SD card or device", "Pick a folder laid out like ROMs: a folder per system (n3ds, gba, switch…) with the games inside.", Palette.Mint, "Pick")
+                    Selection.current = Selected.Setting("Pick your games folder", "SD card or device", "Pick the folder your games are in: a folder per system, one system's folder, or games of every kind together.", Palette.Mint, "Pick")
                 }) {
-                    runCatching { picker.launch(null) }.onFailure { Toasts.show("No folder picker on this device") }
+                    pick()
                 }
             }
         }
@@ -223,6 +201,60 @@ fun GameFoldersScreen() {
     }
 }
 
+/**
+ * The system folder picker for "Pick your games folder", shared by Game folders, the empty home and first-run setup.
+ * A picked folder is checked (LibraryRoots.check), added as a game folder with its document link (which lets
+ * emulators that only open shared links have its games, Launcher) and the library is looked through again. Picking
+ * the ROMs folder, or all of internal storage, grants that link for internal storage instead. Returns what opens the
+ * picker, at [start] when given; [onAdded] hears the folder's path once it is in (the ROMs path for a granted link).
+ */
+@Composable
+fun rememberGameFolderPicker(start: Uri? = null, onAdded: (String) -> Unit = {}): () -> Unit {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val internal = remember { Environment.getExternalStorageDirectory().path }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val grant = { runCatching { ctx.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION) } }
+        val romsPath = Library.romsDir.path
+        if (LibraryRoots.isRomsTree(uri.authority, runCatching { DocumentsContract.getTreeDocumentId(uri) }.getOrNull())) {
+            grant()
+            Prefs.setRomsTree(ctx, uri)
+            Sounds.confirm()
+            Toasts.show(
+                if (treePath(uri) == internal) "Emulators can open games anywhere on internal storage now. Pick your games folder too if it isn't ROMs"
+                else "ROMs is always in. Emulators can open its games now",
+            )
+            onAdded(romsPath)
+            return@rememberLauncherForActivityResult
+        }
+        val path = treePath(uri)
+        if (path == null) {
+            Toasts.show("That folder can't be used, try one on the device or SD card")
+            Sounds.error()
+            return@rememberLauncherForActivityResult
+        }
+        val name = LibraryRoots.label(path, internal)
+        when (LibraryRoots.check(path, romsPath, SystemPrefs.data.roots)) {
+            LibraryRoots.Verdict.IsRoms -> Toasts.show("That's the ROMs folder, which is always in")
+            LibraryRoots.Verdict.InsideRoms -> Toasts.show("$name is inside the ROMs folder, so its games are already found")
+            LibraryRoots.Verdict.AboveRoms -> Toasts.show("$name holds the ROMs folder, so its games would show twice. Pick the folder your games are in")
+            LibraryRoots.Verdict.Already -> Toasts.show("$name is already in")
+            LibraryRoots.Verdict.Ok -> {
+                grant()
+                SystemPrefs.update { it.copy(roots = it.roots + path, trees = it.trees + (path to uri.toString())) }
+                Sounds.confirm()
+                Toasts.show("Added $name, looking for games…")
+                onAdded(path)
+                scope.launch { reloadLibrary(ctx) }
+                return@rememberLauncherForActivityResult
+            }
+        }
+        Sounds.error()
+    }
+    return { runCatching { launcher.launch(start) }.onFailure { Toasts.show("No folder picker on this device") } }
+}
+
 /** One game folder tree: its name, where it is, and how many games it holds right now. */
 @Composable
 private fun FolderRow(name: String, detail: String, games: Int, color: Color, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
@@ -247,8 +279,8 @@ private fun AddRow(focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
             GlyphChip(Glyph.Plus, Palette.Mint)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Add a folder…", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("An SD card, or another folder with a folder per system", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("Pick your games folder…", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("Any folder with games in it, on the device or an SD card", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -280,7 +312,7 @@ private fun RootDetails(path: String, games: Int, internal: String) {
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
                 bySystem.isEmpty() -> Text(
-                    "No games found here yet. Inside it, make a folder per system (n3ds, gba, switch…) and put the games in, as in ROMs.",
+                    "No games found here yet. Games are found in folders named for their system (3DS, GBA, PS2…), and files only one system plays (.3ds, .nsp, .gba…) are found anywhere.",
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
                 else -> for ((system, n) in bySystem) Row(Modifier.fillMaxWidth()) {
@@ -302,12 +334,12 @@ private fun FoldersHelp(extra: Int, romsGames: Int) {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Pip(72.dp, mood = 1)
         Spacer(Modifier.height(12.dp))
-        Text("More game folders", style = MaterialTheme.typography.titleLarge)
+        Text("Game folders", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(6.dp))
         Text(
-            "Games can live in more places than the ROMs folder: an SD card, or another folder on the device. Each one is laid out the same way, " +
-                "a folder per system, and its games join the same systems. " +
-                if (extra == 0) "ROMs holds ${plural(romsGames, "game")}." else "Right now ROMs and ${plural(extra, "more folder")} are in.",
+            "Point Tandem at the folder your games are in, on the device or an SD card, laid out any way: a folder per system, one system's folder, " +
+                "or every kind together. Their games join the same systems. " +
+                if (extra == 0) "Only ROMs is in so far, with ${plural(romsGames, "game")}." else "Right now ROMs and ${plural(extra, "more folder")} are in.",
             style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
         )
     }
@@ -322,10 +354,10 @@ fun gameFoldersSettings(): SettingSection {
         "Game folders",
         listOf(
             SettingRow(
-                "More game folders", if (roots.isEmpty()) "ROMs only" else "ROMs + ${plural(roots.size, "folder")}", Palette.Mint, Glyph.Folder,
-                help = "Read games from more places than the ROMs folder: an SD card, or another folder laid out the same way, a folder per system. " +
+                "Game folders", if (roots.isEmpty()) "ROMs only" else "ROMs + ${plural(roots.size, "folder")}", Palette.Mint, Glyph.Folder,
+                help = "The folders your games are in: pick any folder, on the device or an SD card, laid out any way. ROMs, Tandem's own folder, is always included. " +
                     "Their games join the same systems, and a folder that isn't there (the card is out) is skipped until it is back.",
-                opens = true, keywords = "sd card storage external roots folders paths directory more games second tree",
+                opens = true, keywords = "sd card storage external roots folders paths directory more games second tree pick games folder roms",
             ) { Nav.go(Route.GameFolders) },
             toggle(
                 "Watch game folders", Glyph.Eye, Palette.Mint,

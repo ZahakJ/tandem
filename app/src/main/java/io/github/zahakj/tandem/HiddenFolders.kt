@@ -143,7 +143,7 @@ object HiddenFolders {
      * games (a system may have several, like n3ds/ and 3ds/). For a whole system, its folders.
      */
     fun pathsOf(lib: PlatformLibrary, folder: String?): List<String> {
-        val bases = lib.platform.folders.map { Library.folder(it) }
+        val bases = (lib.platform.folders.map { Library.folder(it) } + lib.folders).distinct()
         val dirs = if (folder == null) bases else bases.map { File(it, folder) }
         val used = dirs.filter { d -> lib.games.any { it.file.path.startsWith(d.path + "/") } }.ifEmpty { dirs }
         return used.map { HiddenPaths.stored(it.path, root) }.distinctBy { it.lowercase() }

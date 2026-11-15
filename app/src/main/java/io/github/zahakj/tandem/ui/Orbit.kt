@@ -409,12 +409,13 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         when {
             noGames -> Box(zone, contentAlignment = Alignment.Center) {
                 val hidden = libs.any { it.games.isNotEmpty() }
+                val pick = rememberGameFolderPicker()
                 EmptyNote(
-                    if (hidden) "Every game is hidden" else "No games yet. Put them in ROMs/<system>",
-                    if (hidden) "Show hidden games" else "Look again",
+                    if (hidden) "Every game is hidden" else "No games yet. Pick the folder your games are in",
+                    if (hidden) "Show hidden games" else "Pick your games folder",
                     Modifier.focusRequester(emptyReq).focusProperties { if (orbs.isNotEmpty()) down = stageReq; left = FocusRequester.Cancel; right = FocusRequester.Cancel }
                         .takesFocus(route, Orbit.EMPTY, target == Orbit.EMPTY),
-                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else LibraryScan.rescan(ctx) }
+                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() }
             }
             cards.isNotEmpty() -> SpotFan(
                 cards, cardW, cardH, entry, route, target, fanFocus, fanReq, stageReq, ribbonReq.takeIf { last != null },
