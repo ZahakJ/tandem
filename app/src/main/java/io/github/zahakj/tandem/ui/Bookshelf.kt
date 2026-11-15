@@ -73,18 +73,27 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.data.BandMark
+import io.github.zahakj.tandem.data.BandSide
+import io.github.zahakj.tandem.data.PackSpec
+import io.github.zahakj.tandem.data.Packaging
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.playStatus
+import io.github.zahakj.tandem.data.systemIds
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.luminance
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /*
  * The Shelf view of a folder: its games as cases standing spine out on shelves, a shelf for the folder's own things
- * and one for each folder inside it (a system's genres). Each spine takes its cover's colour and wears the game's
- * logo turned on its side, its status mark at the foot. The highlighted one swings round to show its cover, and the
- * case has the cover's own proportions, so a Switch box stands tall and a Game Boy box lies wide, as the real ones
- * do. Settings › Home & layout › Shelf look picks the bookcase: warm wood, matte in the theme's colours, or open
+ * and one for each folder inside it (a system's genres). Each game stands in its system's real packaging
+ * ([Packaging]): the case's plastic and size, a spine printed as the real one is (the cover's art carried round, the
+ * system's band at the head, the logo down it, the publisher or the status at the foot) or a scan of the real spine,
+ * and the highlighted one swings round to show its cover: a scan of the real box, or the art laid into the system's
+ * front template. A Switch case stands slim and tall, a PS2 case taller and thicker, a DS case nearly square, a SNES
+ * box lies wide, as the real ones do. Settings › Home & layout › Shelf look picks the bookcase: warm wood, matte in the theme's colours, or open
  * (no bookcase, the cases on the wallpaper with a thin shelf line).
  *
  * Kept light on purpose: a closed case is one spine with no render layers of its own (its logo is drawn, not
@@ -243,30 +252,90 @@ object SpineLogos {
 }
 
 /**
- * The case a system's games came in, for its shelf: the plastic's colour, and the band at the top of the spine.
- * White cases (3DS, Wii) have white spines with the title in black, as the real ones do; the rest keep a spine in
- * the cover's colour under their system's band. Cardboard boxes and systems without a case of their own have none.
+ * What the Shelf shows of each game's real packaging, looked up off the main thread (it touches the storage and
+ * reads each picture's header): the picture for its front (a scan of the real box when there is one, else the box
+ * art), whether that picture is a real box already or needs the system's band round it ([Packaging.isScan]), and
+ * a scan of its spine. [warm] looks up a whole folder as it opens; [recheck] looks again for scans after a scrape.
  */
-internal class CaseKind(val plastic: Color, val band: Color, val bandText: Color, val label: String, val white: Boolean = false) {
-    companion object {
-        private val white = Color(0xFFF3F3F0)
-        private val black = Color(0xFF17181B)
-        private val kinds = mapOf(
-            "n3ds" to CaseKind(white, white, Color(0xFFD7182A), "3DS", white = true),
-            "wii" to CaseKind(white, white, Color(0xFF8A9096), "Wii", white = true),
-            "wiiu" to CaseKind(Color(0xFF1C8AC9), Color(0xFF1C8AC9), Color.White, "Wii U"),
-            "switch" to CaseKind(Color(0xFFE60012), Color(0xFFE60012), Color.White, "SWITCH"),
-            "gc" to CaseKind(black, black, Color.White, "GCN"),
-            "ps2" to CaseKind(black, black, Color.White, "PS2"),
-            "ps3" to CaseKind(Color(0xFF22252B), black, Color.White, "PS3"),
-            "ps4" to CaseKind(Color(0xFF0B3B8C), Color(0xFF0B3B8C), Color.White, "PS4"),
-            "ps5" to CaseKind(Color(0xFF0B3B8C), white, black, "PS5"),
-            "xbox" to CaseKind(Color(0xFF1C7A2C), Color(0xFF1C7A2C), Color.White, "XBOX"),
-            "xbox360" to CaseKind(Color(0xFF3FA535), Color(0xFF3FA535), Color.White, "360"),
-        )
+object ShelfPacks {
+    class Pack(val art: File?, val spine: File?, val aspect: Float?, val scan: Boolean)
 
-        fun of(system: String): CaseKind? = kinds[system]
+    private val known = HashMap<String, androidx.compose.runtime.MutableState<Pack?>>()
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
+
+    /** The game's packaging, or null while it is still being looked up. Changed box art is looked up again. */
+    fun of(g: Game): Pack? {
+        known[id(g)]?.let { return it.value }
+        warm(listOf(g))
+        return null
     }
+
+    fun warm(games: List<Game>) {
+        val todo = games.filter { known[id(it)] == null }.distinctBy { id(it) }
+        if (todo.isEmpty()) return
+        val states = todo.associate { id(it) to androidx.compose.runtime.mutableStateOf<Pack?>(null) }
+        known.putAll(states)
+        inBackground({
+            for (g in todo) {
+                val pack = runCatching { look(g) }.getOrNull() ?: Pack(null, null, null, true)
+                main.post { states.getValue(id(g)).value = pack }
+            }
+        })
+    }
+
+    /** Looks again, after a scrape, at the games of [games] that had no front or spine scan. */
+    fun recheck(games: List<Game>) {
+        val stale = games.filter { g -> known[id(g)]?.value?.let { it.spine == null || !it.scan } == true }
+        if (stale.isEmpty()) return
+        stale.forEach { known.remove(id(it)) }
+        warm(stale)
+    }
+
+    private fun look(g: Game): Pack {
+        val lib = Libraries.of(g)
+        // A scrape saves scans into their folders without telling the art index, so the folder is checked too.
+        val front = lib?.boxFront(g) ?: saved(g, io.github.zahakj.tandem.data.MediaKind.Front)
+        val art = front ?: lib?.box(g)
+        val aspect = art?.let { f ->
+            val o = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(f.path, o)
+            if (o.outWidth > 0 && o.outHeight > 0) o.outWidth.toFloat() / o.outHeight else null
+        }
+        val spine = lib?.boxSpine(g) ?: saved(g, io.github.zahakj.tandem.data.MediaKind.Spine)
+        return Pack(art, spine, aspect, Packaging.isScan(aspect, Cases.spec(g), fromScans = front != null))
+    }
+
+    private fun saved(g: Game, kind: io.github.zahakj.tandem.data.MediaKind): File? {
+        val dir = io.github.zahakj.tandem.data.Media.dirFor(g, kind)
+        return listOf("jpg", "png").map { File(dir, "${g.stem}.$it") }.firstOrNull { it.isFile }
+    }
+
+    private fun id(g: Game) = g.key + "\u0000" + g.meta.box
+}
+
+/**
+ * Each system's packaging ([Packaging], with the research behind it) and how big its case stands on a shelf. Spines
+ * are drawn half again as thick as the real ones (a Switch case's 10 mm on a 170 mm case would be a hairline on a
+ * phone) and never thinner than a tenth of the case's height, so the title still reads; the order of thickness is kept.
+ */
+internal object Cases {
+    private val specs = HashMap<String, PackSpec?>()
+
+    /** The packaging of [g]'s system in the user's region (their scrape region), or null for a system without one. */
+    fun spec(g: Game): PackSpec? {
+        val region = io.github.zahakj.tandem.data.ScrapeConfig.settings.regionPref
+        val key = g.platform.id + "/" + region.code
+        synchronized(specs) {
+            if (key in specs) return specs[key]
+            return Packaging.of(g.systemIds, region).also { specs[key] = it }
+        }
+    }
+
+    /** The spine's thickness over the case's height. */
+    fun spine(spec: PackSpec?): Float = if (spec == null) 0.14f else (spec.spineRatio * 1.5f).coerceIn(0.1f, 0.3f)
+
+    /** The case's height in millimetres, for standing cases of several systems side by side to scale. */
+    fun height(spec: PackSpec?): Float = spec?.heightMm ?: 190f
 }
 
 /** How a case stands on the shelf: its spine, how wide its cover may open, and its height. */
@@ -293,11 +362,20 @@ fun BookshelfView(
     val list = rememberLazyListState()
     val look = ShelfLooks.current()
     val ctx = LocalContext.current
-    // Every spine's logo and cover shape looked up in the background as the folder opens, ahead of the scroll.
-    LaunchedEffect(sections) {
-        val games = sections.flatMap { s -> s.items.mapNotNull { it.game } }
+    val games = remember(sections) { sections.flatMap { s -> s.items.mapNotNull { it.game } } }
+    // Every spine's logo, packaging and cover shape looked up in the background as the folder opens, ahead of the scroll.
+    LaunchedEffect(games) {
         SpineLogos.warm(games)
+        ShelfPacks.warm(games)
         CoverShapes.warm(ctx, games)
+    }
+    // A scrape that just finished may have brought box and spine scans.
+    val scraped = io.github.zahakj.tandem.data.Scraper.run?.finished == true
+    LaunchedEffect(scraped) { if (scraped) ShelfPacks.recheck(games) }
+    // The thickest spine and the widest cover among the folder's systems, for how many cases fit on a shelf.
+    val widest = remember(games) {
+        val specs = games.map { Cases.spec(it) }.distinct()
+        Pair(specs.maxOfOrNull { Cases.spine(it) } ?: 0.14f, specs.maxOfOrNull { it?.coverRatio ?: 1.15f } ?: 1.15f)
     }
     BoxWithConstraints(Modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         // Two shelves to a screen, so it reads as a bookcase.
@@ -305,10 +383,10 @@ fun BookshelfView(
         val plank = if (look == ShelfLooks.OPEN) 14.dp else 20.dp
         val side = if (look == ShelfLooks.OPEN) 0.dp else 12.dp
         val caseH = shelfH - plank - 24.dp
-        val size = CaseSize(spine = caseH * 0.2f, coverMax = caseH * 1.5f, height = caseH)
-        // As many spines as fit on a shelf with room left for a cover to swing open, a DS or 3DS box being wider
-        // than tall (the widest, a Game Boy box, pushes the last spine along a little); the rest go on the next shelf.
-        val perShelf = (((maxWidth - side * 2 - 36.dp) - (caseH * 1.15f - size.spine)) / (size.spine + 3.dp)).toInt().coerceAtLeast(1)
+        val size = CaseSize(spine = caseH * widest.first, coverMax = caseH * 1.5f, height = caseH)
+        // As many spines as fit on a shelf with room left for a cover to swing open (the widest of the folder's
+        // boxes, a Game Boy or SNES one); the rest go on the next shelf.
+        val perShelf = (((maxWidth - side * 2 - 36.dp) - (caseH * widest.second.coerceAtMost(1.5f) - size.spine)) / (size.spine + 3.dp)).toInt().coerceAtLeast(1)
         val rows = remember(sections, perShelf) { shelfRows(sections, perShelf) }
         // Empty shelves under the last one, so the bookcase always reaches the floor.
         val fill = ((maxHeight / shelfH).toInt() + 1 - rows.size).coerceAtLeast(0)
@@ -347,6 +425,8 @@ private fun ShelfRow(
     val shape = if (top && !open) RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp) else RoundedCornerShape(0.dp)
     Box(Modifier.fillMaxWidth().height(shelfH).clip(shape).cubby(look)) {
         if (row != null) {
+            // Cases of several systems stand to scale beside each other: the tallest fills the shelf.
+            val tallest = remember(row) { row.items.maxOfOrNull { it.game?.let { g -> Cases.height(Cases.spec(g)) } ?: 0f }?.takeIf { it > 0f } ?: 190f }
             Row(
                 Modifier.align(Alignment.BottomStart).padding(start = side + 18.dp, bottom = plank),
                 horizontalArrangement = Arrangement.spacedBy(3.dp),
@@ -359,7 +439,7 @@ private fun ShelfRow(
                         0 -> row.before?.let { Key.DirectionLeft to it }
                         else -> null
                     }
-                    Standing(route, item, size, item.key == target, onFocus, onOpen, onLong, wrap)
+                    Standing(route, item, size, tallest, item.key == target, onFocus, onOpen, onLong, wrap)
                 }
             }
         }
@@ -473,7 +553,7 @@ private fun Plank(modifier: Modifier, look: String) {
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun Standing(
-    route: String, item: GridItem, size: CaseSize, wanted: Boolean,
+    route: String, item: GridItem, shelf: CaseSize, tallest: Float, wanted: Boolean,
     onFocus: (GridItem) -> Unit, onOpen: (GridItem) -> Unit, onLong: (GridItem) -> Unit,
     /** A direction off the end of its shelf and the thing it goes to there. */
     wrap: Pair<Key, String>? = null,
@@ -506,7 +586,7 @@ private fun Standing(
         .pointerInput(item.key) { detectTapGestures(onTap = { onOpen(item); Sounds.select() }) }
     if (game == null) {
         // Not a game: a keepsake box with its tile art, lifting a little when highlighted.
-        val box = size.height * 0.5f
+        val box = shelf.height * 0.5f
         Box(
             base.size(box).graphicsLayer {
                 val open = openState.value
@@ -516,9 +596,20 @@ private fun Standing(
         ) { TileArtView(item.art, box) }
         return
     }
+    val spec = Cases.spec(game)
+    val pack = ShelfPacks.of(game)
+    // The case as its system's real one: its height to scale with the shelf's tallest, its spine's thickness.
+    val height = shelf.height * (Cases.height(spec) / tallest).coerceIn(0.6f, 1f)
+    val size = CaseSize(spine = height * Cases.spine(spec), coverMax = shelf.coverMax, height = height)
     val spinePx = with(density) { size.spine.toPx() }
-    // The cover's own proportions, as tall as the case: known once its picture's header has been read.
-    val cover = size.height * CoverShapes.clamp(CoverShapes.of(ctx, game))
+    // The cover's shape: a real box scan's own, else the system's real cover (the art is fitted into it). A system
+    // without packaging of its own keeps its picture's shape.
+    val ratio = when {
+        spec == null -> CoverShapes.clamp(CoverShapes.of(ctx, game))
+        pack?.scan == true && pack.art != null && pack.aspect != null -> pack.aspect.coerceIn(0.56f, 1.5f)
+        else -> spec.coverRatio
+    }
+    val cover = size.height * ratio
     val coverPx = with(density) { cover.toPx() }
     // Its cover, and the 3D layers of the swing, are only there while it is open or swinging: a closed case is just its spine.
     val swinging by remember { androidx.compose.runtime.derivedStateOf { openState.value > 0f } }
@@ -541,7 +632,7 @@ private fun Standing(
                         transformOrigin = TransformOrigin(1f, 0.5f); rotationY = -82f * openState.value; cameraDistance = 14f * this.density
                     } else Modifier,
                 ),
-            ) { Spine(game, size.spine, size.height) }
+            ) { Spine(game, spec, pack, size.spine, size.height) }
             if (swinging) Box(
                 Modifier.width(cover).fillMaxHeight().graphicsLayer {
                     val open = openState.value
@@ -551,10 +642,10 @@ private fun Standing(
                     alpha = if (open < 0.02f) 0f else 1f
                 },
             ) {
-                val kind = CaseKind.of(game.platform.id)
                 // In a plastic case the cover sits under its clear sleeve, the plastic showing round it.
-                Box(Modifier.fillMaxSize().then(if (kind != null) Modifier.background(kind.plastic).padding(3.dp).clip(RoundedCornerShape(2.dp)) else Modifier)) {
-                    GameArt(game)
+                val plastic = spec?.plastic
+                Box(Modifier.fillMaxSize().then(if (plastic != null) Modifier.background(Color(plastic)).padding(3.dp).clip(RoundedCornerShape(2.dp)) else Modifier)) {
+                    CaseFront(game, spec, pack, size.height)
                 }
                 // The case's plastic: a soft sheen across the cover, strongest at the hinge.
                 Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.35f), Color.Transparent, Color.White.copy(alpha = 0.08f)), endX = coverPx)))
@@ -564,66 +655,83 @@ private fun Standing(
 }
 
 /**
- * A case's spine: the cover's colour with a curved sheen, the system's band at the top, the logo (or the name) on its
- * side, its status at the foot. One box with its edges and its logo drawn, not composed, so a shelf of forty is light.
+ * A case's spine, as the real one is printed: the game's own art carried round from its cover (a strip of the
+ * cover's edge, soft and darkened a little so the title reads), the system's band at the head with its mark where
+ * the real spine has it, the game's logo (or its title) running down it, the publisher at the foot and the case's
+ * plastic showing as a thin rim round the print. A real spine scan, when there is one, is shown instead. All of it
+ * is drawn into one canvas (the pictures are small decodes), no layers, so a shelf of forty stays light.
  */
 @Composable
-private fun Spine(game: Game, w: Dp, h: Dp) {
+private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h: Dp) {
     val ctx = LocalContext.current
     val system = SystemColors.of(game.platform.id)
-    val kind = CaseKind.of(game.platform.id)
-    val white = kind?.white == true
-    val body = if (white) kind!!.plastic else lerp(CoverColors.of(ctx, game) ?: lerp(system, Palette.NightDeep, 0.35f), Color.Black, 0.28f)
-    // A white case's spine carries its title in print, not the logo (a white logo would vanish on it).
-    val found = if (white) SpineLogos.Found(null) else SpineLogos.of(game)
+    val tint = CoverColors.of(ctx, game) ?: lerp(system, Palette.NightDeep, 0.35f)
+    val scan = pack?.spine
+    // The cover's art, decoded small: stretched over the spine it is soft, as a blur would be, without a layer.
+    val art = pack?.art?.takeIf { scan == null }
+    val artPainter = art?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h * 0.5f))) }
+    val scanPainter = scan?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h))) }
+    // The logo, looked up in the background; a scanned spine already has its own.
+    val found = if (scan != null) null else SpineLogos.of(game)
     val logo = found?.file
+    val logoPainter = logo?.let { rememberAsyncImagePainter(rememberSizedRequest(it, tilePx(h * 0.66f))) }
+    val measurer = rememberTextMeasurer()
     val status = game.meta.playStatus
-    val shade = if (white) 0.18f else 0.45f
-    Box(
-        Modifier.fillMaxSize().clip(RoundedCornerShape(3.dp))
-            .background(Brush.horizontalGradient(listOf(lerp(body, Color.Black, shade), body, lerp(body, Color.White, 0.18f), body, lerp(body, Color.Black, shade + 0.05f))))
-            // Hairline edges, so neighbouring spines of the same colour still read as two.
-            .drawBehind {
-                drawRect(Color.Black.copy(alpha = 0.5f), size = Size(1.dp.toPx(), size.height))
-                drawRect(Color.White.copy(alpha = 0.2f), size = Size(size.width, 1.dp.toPx()))
-            },
-    ) {
-        // The system's band across the top, like a store shelf of the real thing: the case's own where it has one.
-        Box(
-            Modifier.fillMaxWidth().height(h * 0.1f).background(kind?.band ?: system)
-                .then(if (white) Modifier.drawBehind { drawRect(Color.Black.copy(alpha = 0.12f), Offset(0f, size.height - 1.dp.toPx()), Size(size.width, 1.dp.toPx())) } else Modifier),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                kind?.label ?: game.platform.shortName.uppercase().take(6), style = TextStyle(fontSize = (w.value * 0.2f).coerceIn(6f, 10f).sp, fontWeight = FontWeight.Black),
-                color = kind?.bandText ?: Color.White, maxLines = 1,
-            )
-        }
-        val along = h * 0.66f
-        Box(Modifier.align(Alignment.Center).padding(top = h * 0.04f), contentAlignment = Alignment.Center) {
-            if (logo != null) {
-                // Turned a quarter, reading from the top down, as spines do: drawn into the spine, no layer of its own.
-                val painter = rememberAsyncImagePainter(rememberSizedRequest(logo, tilePx(along)))
-                Canvas(Modifier.requiredSize(w * 0.8f, along)) {
-                    val intrinsic = painter.intrinsicSize
-                    if (intrinsic.isSpecified && intrinsic.width > 0f && intrinsic.height > 0f) {
-                        // The logo's room once turned: as long as the spine, as wide as the spine lets it be.
-                        val roomW = size.height; val roomH = size.width
-                        val scale = minOf(roomW / intrinsic.width, roomH / intrinsic.height)
-                        val dw = intrinsic.width * scale; val dh = intrinsic.height * scale
-                        rotate(90f) {
-                            translate((size.width - dw) / 2f, (size.height - dh) / 2f) { with(painter) { draw(Size(dw, dh)) } }
-                        }
-                    }
-                }
-            } else if (found != null) {
-                val measurer = rememberTextMeasurer()
-                Canvas(Modifier.requiredSize(w, along)) {
-                    val style = TextStyle(color = if (white) Color(0xFF1B1C1F) else Color.White, fontSize = (w.value * 0.34f).coerceIn(8f, 15f).sp, fontWeight = FontWeight.ExtraBold)
-                    val t = measurer.measure(game.title, style, overflow = TextOverflow.Ellipsis, maxLines = 1, constraints = Constraints(maxWidth = size.height.roundToInt()))
-                    rotate90 { drawText(t, topLeft = Offset((size.height - t.size.width) / 2f, -(size.width + t.size.height) / 2f)) }
+    val publisher = game.meta.publisher
+    val plastic = spec?.plastic?.let { Color(it) }
+    Box(Modifier.fillMaxSize().clip(RoundedCornerShape(2.dp))) {
+        Canvas(Modifier.fillMaxSize()) {
+            // The case's plastic round the printed insert: a little more at the head and foot, as a keep case has.
+            val rimX = if (plastic != null) 1.5.dp.toPx() else 0f
+            val rimY = if (plastic != null) 3.dp.toPx() else 0f
+            if (plastic != null) drawRect(Brush.horizontalGradient(listOf(lerp(plastic, Color.Black, 0.25f), plastic, lerp(plastic, Color.Black, 0.18f))))
+            val inner = androidx.compose.ui.geometry.Rect(rimX, rimY, size.width - rimX, size.height - rimY)
+            clipRect(inner.left, inner.top, inner.right, inner.bottom) {
+                translate(inner.left, inner.top) {
+                    val area = inner.size
+                    if (scanPainter != null) drawSpineScan(scanPainter, area, tint)
+                    else drawSpinePrint(artPainter, pack, spec, tint, area)
                 }
             }
+            if (scanPainter == null) {
+                val band = if (spec != null) inner.height * spec.spineBand else inner.height * 0.1f
+                // The head: the system's band and mark across the top of the print.
+                translate(inner.left, inner.top) { drawSpineHead(spec, game, Size(inner.width, band), measurer) }
+                // The foot: the publisher, as its logo sits at the foot of a real spine (not where a status is shown).
+                val foot = if (status == null && publisher != null) inner.width * 2.4f else if (status != null) inner.width * 0.9f else 0f
+                val ink = if (tint.luminance() > 0.6f && artPainter == null) Color(0xFF1B1C1F) else Color.White
+                if (status == null && publisher != null) {
+                    val style = TextStyle(color = ink.copy(alpha = 0.8f), fontSize = (inner.width * 0.3f).coerceAtMost(9.dp.toPx()).toSp(), fontWeight = FontWeight.Bold)
+                    val t = measurer.measure(publisher.substringBefore(' ').substringBefore(',').uppercase(), style, overflow = TextOverflow.Clip, maxLines = 1, constraints = Constraints(maxWidth = foot.roundToInt().coerceAtLeast(1)))
+                    translate(inner.left, inner.bottom - foot) { rotate90 { drawText(t, topLeft = Offset((foot - t.size.width) / 2f, -(inner.width + t.size.height) / 2f)) } }
+                }
+                // The title down the middle: the game's logo turned on its side, or its name.
+                val top = inner.top + band + inner.width * 0.25f
+                val bottom = inner.bottom - foot - inner.width * 0.2f
+                val along = bottom - top
+                if (along > 0f) translate(inner.left, top) {
+                    val intrinsic = logoPainter?.intrinsicSize
+                    if (logoPainter != null && intrinsic != null && intrinsic.isSpecified && intrinsic.width > 0f && intrinsic.height > 0f) {
+                        // The logo's room once turned: as long as the space, as wide as the spine lets it be.
+                        val roomW = along; val roomH = inner.width * 0.84f
+                        val scale = minOf(roomW / intrinsic.width, roomH / intrinsic.height)
+                        val dw = intrinsic.width * scale; val dh = intrinsic.height * scale
+                        rotate90 { translate((along - dw) / 2f, -(inner.width + dh) / 2f) { with(logoPainter) { draw(Size(dw, dh)) } } }
+                    } else if (found != null && logo == null) {
+                        val style = TextStyle(
+                            color = ink, fontSize = (inner.width * 0.4f).coerceIn(7.dp.toPx(), 15.dp.toPx()).toSp(), fontWeight = FontWeight.ExtraBold,
+                            shadow = androidx.compose.ui.graphics.Shadow(Color.Black.copy(alpha = if (ink == Color.White) 0.7f else 0f), blurRadius = 3f),
+                        )
+                        val t = measurer.measure(game.title, style, overflow = TextOverflow.Ellipsis, maxLines = 1, constraints = Constraints(maxWidth = along.roundToInt().coerceAtLeast(1)))
+                        rotate90 { drawText(t, topLeft = Offset((along - t.size.width) / 2f, -(inner.width + t.size.height) / 2f)) }
+                    }
+                }
+            }
+            // Hairline edges, so neighbouring spines of the same colour still read as two.
+            drawRect(Color.Black.copy(alpha = 0.5f), size = Size(1.dp.toPx(), size.height))
+            drawRect(Color.White.copy(alpha = 0.2f), size = Size(size.width, 1.dp.toPx()))
+            // The case's curve: a soft sheen down the middle, shade at the edges.
+            drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.32f), Color.Transparent, Color.White.copy(alpha = 0.1f), Color.Transparent, Color.Black.copy(alpha = 0.36f))))
         }
         // Its status at the foot of the spine (finished, playing…), so a shelf shows where you are at a glance.
         if (status != null) {
@@ -633,6 +741,167 @@ private fun Spine(game: Game, w: Dp, h: Dp) {
             ) { Text(status.mark, style = TextStyle(fontSize = (w.value * 0.3f).coerceIn(7f, 12f).sp, fontWeight = FontWeight.Black), color = Palette.NightDeep, maxLines = 1) }
         }
     }
+}
+
+/**
+ * A scanned spine filling the print: stretched across the spine's width (the drawn spine is thicker than the real
+ * one; the title runs along it, so it only grows bolder), and turned upright when it was stored on its side.
+ */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpineScan(painter: androidx.compose.ui.graphics.painter.Painter, area: Size, tint: Color) {
+    val intrinsic = painter.intrinsicSize
+    if (!intrinsic.isSpecified || intrinsic.width <= 0f || intrinsic.height <= 0f) { drawRect(tint, size = area); return }
+    if (intrinsic.width > intrinsic.height) {
+        // Stored on its side: turned a quarter clockwise, so its title reads from the top down, as North American spines do.
+        rotate90 { translate(0f, -area.width) { with(painter) { draw(Size(area.height, area.width)) } } }
+    } else with(painter) { draw(area) }
+}
+
+/**
+ * The printed spine without a scan: the cover's art carried round onto it, the strip of the cover nearest the spine
+ * (for a cover that needs the system's band, the strip the composed front starts with), darkened a little with the
+ * cover's own colour so the title reads. Before the art has loaded, or with none, the cover's colour.
+ */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpinePrint(
+    painter: androidx.compose.ui.graphics.painter.Painter?, pack: ShelfPacks.Pack?, spec: PackSpec?, tint: Color, area: Size,
+) {
+    drawRect(Brush.verticalGradient(listOf(lerp(tint, Color.Black, 0.2f), lerp(tint, Color.Black, 0.4f))), size = area)
+    val intrinsic = painter?.intrinsicSize
+    if (painter == null || intrinsic == null || !intrinsic.isSpecified || intrinsic.width <= 0f || intrinsic.height <= 0f) return
+    val scale = area.height / intrinsic.height
+    val dw = intrinsic.width * scale
+    val shown = if (pack?.scan == false && spec != null) area.height * spec.coverRatio else dw
+    // A scan's own edge (less a sliver of its border), or the left edge of the part the composed front shows.
+    val x = if (pack?.scan == false) -((dw - shown) / 2f).coerceAtLeast(0f) else -dw * 0.015f
+    translate(x, 0f) { with(painter) { draw(Size(dw, area.height)) } }
+    drawRect(tint.copy(alpha = 0.28f), size = area)
+    drawRect(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.18f), Color.Black.copy(alpha = 0.38f), Color.Black.copy(alpha = 0.18f))), size = area)
+}
+
+/** The head of a spine: the system's band in its colour, with its mark (or short name) where the real spine has it. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSpineHead(
+    spec: PackSpec?, game: Game, area: Size, measurer: androidx.compose.ui.text.TextMeasurer,
+) {
+    val band = spec?.let { Color(it.band) } ?: SystemColors.of(game.platform.id)
+    val ink = spec?.let { Color(it.bandInk) } ?: Color.White
+    drawRect(band, size = area)
+    drawRect(Color.Black.copy(alpha = 0.14f), Offset(0f, area.height - 1.dp.toPx()), Size(area.width, 1.dp.toPx()))
+    val c = Offset(area.width / 2f, area.height / 2f)
+    val s = minOf(area.width * 0.62f, area.height * 0.62f)
+    when (spec?.mark) {
+        BandMark.Switch -> drawSwitchMark(c, s, ink, band)
+        BandMark.Cube -> drawCubeMark(c, s, Color(0xFF8C7CF0))
+        BandMark.Swirl -> drawSwirlMark(c, s, ink)
+        else -> {
+            if (spec?.mark == BandMark.Grid) drawGrid(area)
+            val label = spec?.spineMark?.ifEmpty { null } ?: game.platform.shortName.uppercase().take(6)
+            val style = TextStyle(color = ink, fontSize = minOf(area.width * 0.34f, area.height * 0.42f).toSp(), fontWeight = FontWeight.Black)
+            var t = measurer.measure(label, style, maxLines = 1)
+            // A long mark shrinks to the spine's width rather than spilling over it.
+            if (t.size.width > area.width * 0.9f) t = measurer.measure(label, style.copy(fontSize = (style.fontSize.value * area.width * 0.9f / t.size.width).sp), maxLines = 1)
+            drawText(t, topLeft = Offset((area.width - t.size.width) / 2f, (area.height - t.size.height) / 2f))
+        }
+    }
+}
+
+/**
+ * The front of an open case, as its real cover is laid out. A real box scan (or art shaped like one, see
+ * [Packaging.isScan]) is shown as it is, its band already printed on it. Other art (a square store icon, a grid made
+ * for a launcher) gets the system's front template: its band along the top (the left for a PlayStation jewel case)
+ * with the system's mark and name, and the art filling the rest of the real cover's shape, cropped from its middle.
+ * The ratings box isn't drawn: Tandem doesn't know a game's rating, and a wrong one would mislead.
+ */
+@Composable
+private fun CaseFront(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, h: Dp) {
+    val art = pack?.art
+    if (art == null) { GameArt(game); return }
+    val picture = @Composable { modifier: Modifier ->
+        androidx.compose.foundation.Image(rememberAsyncImagePainter(rememberSizedRequest(art, tilePx(h))), game.title, modifier, contentScale = ContentScale.Crop)
+    }
+    if (spec == null || pack?.scan != false) { picture(Modifier.fillMaxSize()); return }
+    val measurer = rememberTextMeasurer()
+    val band = Modifier.drawBehind { drawFrontBand(spec, measurer) }
+    if (spec.side == BandSide.Left) Row(Modifier.fillMaxSize()) {
+        Box(band.width(h * spec.coverRatio * spec.frontBand).fillMaxHeight())
+        picture(Modifier.weight(1f).fillMaxHeight())
+    } else Column(Modifier.fillMaxSize()) {
+        Box(band.fillMaxWidth().height(h * spec.frontBand))
+        picture(Modifier.fillMaxWidth().weight(1f))
+    }
+}
+
+/** A cover's band: its colour, and the system's mark and name, at the left of a top band or down a left one. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawFrontBand(spec: PackSpec, measurer: androidx.compose.ui.text.TextMeasurer) {
+    val band = Color(spec.band)
+    val ink = Color(spec.bandInk)
+    drawRect(band)
+    if (spec.mark == BandMark.Grid) drawGrid(size)
+    val left = spec.side == BandSide.Left
+    // Measured along the band: across a top band, down a left one.
+    val long = if (left) size.height else size.width
+    val short = if (left) size.width else size.height
+    val markS = short * 0.62f
+    val hasMark = spec.mark == BandMark.Switch || spec.mark == BandMark.Cube || spec.mark == BandMark.Swirl
+    val style = TextStyle(color = ink, fontSize = (short * 0.42f).toSp(), fontWeight = FontWeight.Black, letterSpacing = (short * 0.02f).toSp())
+    val t = measurer.measure(spec.wordmark, style, maxLines = 1, overflow = TextOverflow.Clip, constraints = Constraints(maxWidth = (long * 0.8f).roundToInt().coerceAtLeast(1)))
+    val pad = short * 0.3f
+    if (left) {
+        // Near the band's top, turned to read from the bottom up, as North America's PlayStation covers have it.
+        drawContext.transform.rotate(-90f, Offset.Zero)
+        drawText(t, topLeft = Offset(-(pad + t.size.width), (short - t.size.height) / 2f))
+        drawContext.transform.rotate(90f, Offset.Zero)
+        return
+    }
+    var x = pad
+    if (hasMark) {
+        val c = Offset(x + markS / 2f, short / 2f)
+        when (spec.mark) {
+            BandMark.Switch -> drawSwitchMark(c, markS, ink, band)
+            BandMark.Cube -> drawCubeMark(c, markS, Color(0xFF8C7CF0))
+            else -> drawSwirlMark(c, markS, ink)
+        }
+        x += markS + pad * 0.6f
+    }
+    drawText(t, topLeft = Offset(x, (short - t.size.height) / 2f))
+}
+
+/** Nintendo Switch's mark, drawn: the two Joy-Con, the left an outline with its stick up top, the right solid with its stick low. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSwitchMark(c: Offset, s: Float, ink: Color, under: Color) {
+    val w = s * 0.4f; val gap = s * 0.1f
+    val r = androidx.compose.ui.geometry.CornerRadius(w * 0.5f)
+    val left = Offset(c.x - gap / 2f - w, c.y - s / 2f)
+    drawRoundRect(ink, left, Size(w, s), r, style = androidx.compose.ui.graphics.drawscope.Stroke(s * 0.09f))
+    drawCircle(ink, w * 0.2f, Offset(left.x + w / 2f, left.y + s * 0.3f))
+    val right = Offset(c.x + gap / 2f, c.y - s / 2f)
+    drawRoundRect(ink, right, Size(w, s), r)
+    drawCircle(under, w * 0.2f, Offset(right.x + w / 2f, right.y + s * 0.6f))
+}
+
+/** GameCube's mark, drawn: a cube seen from a corner, in outline. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawCubeMark(c: Offset, s: Float, ink: Color) {
+    val r = s / 2f
+    val pts = (0 until 6).map { i -> val a = Math.toRadians(90.0 + 60.0 * i); Offset(c.x + r * cos(a).toFloat(), c.y - r * sin(a).toFloat()) }
+    val stroke = s * 0.11f
+    for (i in 0 until 6) drawLine(ink, pts[i], pts[(i + 1) % 6], stroke)
+    for (i in listOf(1, 3, 5)) drawLine(ink, c, pts[i], stroke)
+}
+
+/** Dreamcast's mark, drawn: a swirl of three arcs closing in. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSwirlMark(c: Offset, s: Float, ink: Color) {
+    val stroke = androidx.compose.ui.graphics.drawscope.Stroke(s * 0.1f)
+    for (i in 0 until 3) {
+        val r = s / 2f * (1f - i * 0.28f)
+        drawArc(ink, -60f + i * 40f, 260f, false, Offset(c.x - r, c.y - r), Size(r * 2f, r * 2f), style = stroke)
+    }
+}
+
+/** Sega's grid behind a Genesis band: fine lines across it. */
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawGrid(area: Size) {
+    val line = Color(0xFFD0122A).copy(alpha = 0.55f)
+    val step = maxOf(area.height / 5f, 2f)
+    var y = step
+    while (y < area.height) { drawLine(line, Offset(0f, y), Offset(area.width, y), 1f); y += step }
+    var x = step
+    while (x < area.width) { drawLine(line.copy(alpha = 0.3f), Offset(x, 0f), Offset(x, area.height), 1f); x += step }
 }
 
 /** Draws [block] turned a quarter clockwise about the top left, in a space as wide as this is tall. */

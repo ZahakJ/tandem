@@ -45,6 +45,9 @@ class PlatformLibrary(val platform: Platform, val games: List<Game>, val art: Ar
      */
     fun logo(game: Game): File? = (FileChecks.file(game.meta.logo) ?: art.find(ArtIndex.Kind.Logo, game))?.takeIf { FileChecks.isCutout(it) }
     fun screenshot(game: Game): File? = FileChecks.file(game.meta.screenshot)
+    /** A scan of the game's real box front, and of its spine, when there is one (only the Shelf view uses them). */
+    fun boxFront(game: Game): File? = art.find(ArtIndex.Kind.Front, game)
+    fun boxSpine(game: Game): File? = art.find(ArtIndex.Kind.Spine, game)
 
     /**
      * Every picture that could fill a screen behind the game, with what kind it is: the details' own choices first,
@@ -229,6 +232,9 @@ class ArtIndex(artIds: List<String>, quick: Boolean = false, roots: List<File> =
         Box(listOf("icon", "covers", "box2dfront", "boxart")),
         Hero(listOf("hero", "fanart", "screenshot_title", "titlescreens", "screenshot_gameplay", "screenshots")),
         Logo(listOf("logo", "marquees", "wheel")),
+        /** Scans of the real retail box's front and spine, for the Shelf view (MediaKind.Front and .Spine). */
+        Front(listOf("box2dfront")),
+        Spine(listOf("box2dside")),
     }
 
     /** What one root's media folders hold: a picture per game and kind, and every wide picture per game. */

@@ -104,6 +104,8 @@ object Media {
             MediaKind.Title -> listOf("screenshot_title", "titlescreens")
             MediaKind.Gameplay -> listOf("screenshot_gameplay", "screenshots")
             MediaKind.Video -> listOf("videos")
+            MediaKind.Front -> listOf("box2dfront")
+            MediaKind.Spine -> listOf("box2dside")
         }
         val stem = game.stem
         for (id in game.platform.artIds) for (d in names) {
@@ -143,7 +145,7 @@ object Media {
         } else {
             // One picture at a time: a big download decodes to tens of megabytes, and several at once is a burst of
             // memory (and garbage collection) the screens feel.
-            synchronized(decodeLock) { encodeScaled(data, kind.maxPx) } ?: return null
+            synchronized(decodeLock) { encodeScaled(data, kind.maxPx, cutFor(game, kind)) } ?: return null
         }
         val dir = dirFor(game, kind).apply { mkdirs() }
         val target = File(dir, "${game.stem}.$ext")
@@ -165,13 +167,46 @@ object Media {
     /** Matroska / WebM files start with the EBML magic number (Steam trailers from LaunchBox are WebM). */
     private fun isWebm(d: ByteArray) = d.size > 4 && d[0] == 0x1A.toByte() && d[1] == 0x45.toByte() && d[2] == 0xDF.toByte() && d[3] == 0xA3.toByte()
 
-    private fun encodeScaled(data: ByteArray, maxPx: Int): Pair<ByteArray, String>? {
+    /**
+     * What to keep of a physical-box picture: a box front or spine scan as it is, the front or the spine cut out of
+     * a full wraparound scan (back, spine and front in one picture), and nothing when it is neither (a cover offered
+     * as a spine). [Cut] gets the decoded picture's size and gives the columns to keep, all of them, or null to drop
+     * it. Null for every other kind.
+     */
+    private fun cutFor(game: Game, kind: MediaKind): Cut? {
+        if (!kind.packaging) return null
+        val region = ScrapeConfig.settings.regionPref
+        val spec = Packaging.of(game.systemIds, region)
+        return Cut { w, h ->
+            val wrap = spec?.let { Packaging.spineIn(w, h, it) }
+            when {
+                kind == MediaKind.Spine && Packaging.isSpineShaped(w, h) -> 0 until w
+                kind == MediaKind.Spine -> wrap
+                // A front: cut from a wraparound, else the scan as it is (unless it is a lone spine).
+                wrap != null && spec != null -> Packaging.frontIn(w, h, spec, rightToLeft = region == Region.JP)
+                Packaging.isSpineShaped(w, h) -> null
+                else -> 0 until w
+            }
+        }
+    }
+
+    private fun interface Cut { fun columns(width: Int, height: Int): IntRange? }
+
+    private fun encodeScaled(data: ByteArray, maxPx: Int, cut: Cut? = null): Pair<ByteArray, String>? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeByteArray(data, 0, data.size, bounds)
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        // A wraparound is cut before it is scaled, so the spine keeps the detail the kind's size allows.
+        val keep = cut?.let { it.columns(bounds.outWidth, bounds.outHeight) ?: return null }
+        val keptW = keep?.let { it.last - it.first + 1 } ?: bounds.outWidth
         var sample = 1
-        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= maxPx) sample *= 2
-        val decoded = BitmapFactory.decodeByteArray(data, 0, data.size, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return null
+        while (maxOf(keptW, bounds.outHeight) / (sample * 2) >= maxPx) sample *= 2
+        val whole = BitmapFactory.decodeByteArray(data, 0, data.size, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return null
+        val decoded = if (keep == null || keptW == bounds.outWidth) whole else {
+            val x = (keep.first / sample).coerceIn(0, whole.width - 1)
+            val w = (keptW / sample).coerceIn(1, whole.width - x)
+            Bitmap.createBitmap(whole, x, 0, w, whole.height).also { if (it !== whole) whole.recycle() }
+        }
         val longest = maxOf(decoded.width, decoded.height)
         val bmp = if (longest > maxPx) {
             val f = maxPx.toFloat() / longest
@@ -311,7 +346,10 @@ data class Candidate(val kind: MediaKind, val source: String, val url: String, v
 
 /** libretro-thumbnails: free, no account. Pictures only (box, title screen, gameplay). */
 class Libretro(private val cacheDir: File) {
-    private val folder = mapOf(MediaKind.Box to "Named_Boxarts", MediaKind.Title to "Named_Titles", MediaKind.Gameplay to "Named_Snaps")
+    // Named_Boxarts are scans of the real boxes' fronts, so they also serve as the Shelf's physical box fronts.
+    private val folder = mapOf(
+        MediaKind.Box to "Named_Boxarts", MediaKind.Front to "Named_Boxarts", MediaKind.Title to "Named_Titles", MediaKind.Gameplay to "Named_Snaps",
+    )
     /** One picture name, with its match key and words worked out once. */
     private class Entry(val name: String) {
         val tokens = Match.tokens(name).toSet()
@@ -545,6 +583,9 @@ class ScreenScraper(private val s: ScrapeSettings) {
             MediaKind.Title -> listOf("sstitle")
             MediaKind.Gameplay -> listOf("ss")
             MediaKind.Video -> listOf("video-normalized", "video")
+            // The physical box: its front scan, its spine scan, or the full wraparound ("box-texture") to cut them from.
+            MediaKind.Front -> listOf("box-2D", "box-texture")
+            MediaKind.Spine -> listOf("box-2D-side", "box-texture")
         }
 
         fun pick(g: SsGame, kind: MediaKind, region: Region): SsMedia? {

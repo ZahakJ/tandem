@@ -63,6 +63,9 @@ fun LbGame.urls(k: MediaKind, region: Region): List<String> = when (k) {
     MediaKind.Title -> LbIndex.pick(this, listOf(LbArt.Title), region.code)
     MediaKind.Gameplay -> LbIndex.pick(this, listOf(LbArt.Gameplay), region.code)
     MediaKind.Video -> emptyList()
+    // Only scans of the real box ("Box - Front"), not rebuilt or fan-made fronts, and its spine.
+    MediaKind.Front -> LbIndex.pick(this, listOf(LbArt.BoxFront), region.code)
+    MediaKind.Spine -> LbIndex.pick(this, listOf(LbArt.BoxSpine), region.code)
 }.map { it.url } + if (k == MediaKind.Video) listOfNotNull(video?.replace("movie_max.", "movie480.")) else emptyList()
 
 fun IgdbGame.urls(k: MediaKind): List<String> = when (k) {

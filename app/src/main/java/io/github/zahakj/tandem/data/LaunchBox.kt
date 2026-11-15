@@ -26,6 +26,9 @@ enum class LbArt(val code: Char, val type: String) {
     BoxFront('B', "Box - Front"),
     BoxRebuilt('R', "Box - Front - Reconstructed"),
     BoxFanart('F', "Fanart - Box - Front"),
+    // The physical box's spine, for the Shelf view (the database takes no full wraparound scans). An index built
+    // before spines were kept has none until LaunchBox's monthly refresh.
+    BoxSpine('P', "Box - Spine"),
     Logo('L', "Clear Logo"),
     Background('H', "Fanart - Background"),
     Title('T', "Screenshot - Game Title"),

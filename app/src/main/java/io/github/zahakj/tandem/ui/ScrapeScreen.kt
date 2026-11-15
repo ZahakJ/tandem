@@ -273,7 +273,8 @@ private fun ScrapeSetup() {
                     ) { ScrapeConfig.update { it.copy(replaceLocked = !it.replaceLocked) } }
                 }
                 item("h:art") { SectionTitle("Artwork", Palette.Mint, Modifier.padding(top = 6.dp)) }
-                items(MediaKind.entries, key = { "k:${it.name}" }) { k ->
+                // The physical box front and spine are one choice: the Shelf view wants both.
+                items(MediaKind.entries.filter { it != MediaKind.Spine }, key = { "k:${it.name}" }) { k ->
                     val on = k in kinds
                     val value = when {
                         k == MediaKind.Video && on -> "On · ~${formatBytes(VIDEO_BYTES * (preview?.games ?: 0))}"
@@ -286,9 +287,12 @@ private fun ScrapeSetup() {
                         MediaKind.Title -> "The game's title screen"
                         MediaKind.Gameplay -> "A moment from the game"
                         MediaKind.Video -> "Short clip, about 3 MB a game (ScreenScraper, some LaunchBox games)"
+                        MediaKind.Front, MediaKind.Spine -> "Scans of the real box and its spine, kept apart from your box art (libretro, ScreenScraper, LaunchBox)"
                     }
-                    OptionRow("k:${k.name}", k.label, value, if (on) Palette.Mint else Palette.Muted, detail) {
-                        ScrapeConfig.update { it.copy(kinds = if (k in it.kinds) it.kinds - k else it.kinds + k) }
+                    val label = if (k == MediaKind.Front) "Physical boxes and spines (Shelf view)" else k.label
+                    val pair = if (k == MediaKind.Front) setOf(MediaKind.Front, MediaKind.Spine) else setOf(k)
+                    OptionRow("k:${k.name}", label, value, if (on) Palette.Mint else Palette.Muted, detail) {
+                        ScrapeConfig.update { it.copy(kinds = if (k in it.kinds) it.kinds - pair else it.kinds + pair) }
                     }
                 }
                 item("h:details") { SectionTitle("Details", Palette.Sky, Modifier.padding(top = 6.dp)) }

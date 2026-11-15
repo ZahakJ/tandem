@@ -21,13 +21,26 @@ enum class MediaKind(val field: String, val dir: String, val label: String, val 
     Logo("logo", "logo", "Logo", 800),
     Title("titleScreen", "screenshot_title", "Title screen", 960),
     Gameplay("screenshot", "screenshot_gameplay", "Gameplay screenshot", 960),
-    Video("video", "videos", "Video snap", 0);
+    Video("video", "videos", "Video snap", 0),
+
+    /**
+     * A scan of the real retail box's front, and of its spine, for the Shelf view only. Each has its own folder (the
+     * names Skraper and Batocera use), so the box art the rest of Tandem shows (the "icon" folder) is never replaced.
+     * Neither is kept in the game's details: the Shelf finds them in their folders.
+     */
+    Front("boxFront", "box2dfront", "Physical box front", 900),
+    Spine("boxSpine", "box2dside", "Box spine", 900);
+
+    /** True for the physical-box kinds, which only the Shelf view uses. */
+    val packaging: Boolean get() = this == Front || this == Spine
 
     fun get(m: GameMeta): String? = when (this) {
         Box -> m.box; Hero -> m.hero; Logo -> m.logo; Title -> m.titleScreen; Gameplay -> m.screenshot; Video -> m.video
+        Front, Spine -> null
     }
 
     fun set(m: GameMeta, path: String?): GameMeta = when (this) {
+        Front, Spine -> m
         Box -> m.copy(box = path); Hero -> m.copy(hero = path); Logo -> m.copy(logo = path)
         Title -> m.copy(titleScreen = path); Gameplay -> m.copy(screenshot = path); Video -> m.copy(video = path)
     }
@@ -105,8 +118,8 @@ enum class ScrapeSource(
         setOf(MediaKind.Box, MediaKind.Hero, MediaKind.Logo), emptySet(),
     ),
     Libretro(
-        "libretro thumbnails", "Box art, title screens and screenshots for classic systems",
-        setOf(MediaKind.Box, MediaKind.Title, MediaKind.Gameplay), emptySet(),
+        "libretro thumbnails", "Box art (real box scans), title screens and screenshots for classic systems",
+        setOf(MediaKind.Box, MediaKind.Front, MediaKind.Title, MediaKind.Gameplay), emptySet(),
     ),
     Hltb(
         "HowLongToBeat", "How long a game takes: main story, main + extras and 100%",
