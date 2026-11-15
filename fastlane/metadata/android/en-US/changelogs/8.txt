@@ -1,0 +1,1 @@
+- Down from Stats or Quick in the top bar always goes back to the page, in every home layout (it could get stuck on the Carousel home).
