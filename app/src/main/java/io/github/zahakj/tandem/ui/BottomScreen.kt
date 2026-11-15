@@ -353,7 +353,7 @@ private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill
         // The icon grid's big-icon details (Spotlight.kt).
         SpotlightView(selected, onPill)
     } else {
-        SpotlightGround(SpotlightMode.enabled && mode != "art" && mode != "both" && selected is Selected.GameItem)
+        SpotlightGround(mode != "art" && mode != "both" && selected is Selected.GameItem)
         AnimatedContent(selected, transitionSpec = { fadeIn(Motion.fade(260)) togetherWith fadeOut(Motion.fade(200)) }, label = "bottom") { s ->
             when (s) {
                 is Selected.GameItem -> GameDetails(s.game, mode)
@@ -373,7 +373,7 @@ private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill
 }
 
 /**
- * The theme's background over the wallpaper while [on] (a game on Spotlight's other screen), outside the details'
+ * The theme's background over the wallpaper while [on] (a game's details), outside the details'
  * cross-fade, so moving between games never lets the wallpaper show through between two pictures.
  */
 @Composable
@@ -394,31 +394,17 @@ private fun GameDetails(game: Game, mode: String) {
             AnimatedLogo(game, maxWidth = 320.dp, maxHeight = 76.dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 4.dp), textAlign = TextAlign.Center)
             GameInfo(game, resumable, descriptionLines = 3, pinHints = false)
         }
-        else -> if (SpotlightMode.enabled) SpotlightDetails(game, resumable) else {
-            val split = Store.settings.look.heroSplit.coerceIn(0.25f, 0.7f)
-            Column(Modifier.fillMaxSize()) {
-                Box(Modifier.fillMaxWidth().weight(split)) {
-                    HeroArt(game, Modifier.fillMaxSize().heroFade())
-                    HeroLogo(game, Modifier.align(Alignment.BottomCenter).padding(16.dp).riseIn(game.key).floating(game.key.hashCode(), bob = 4.dp))
-                    if (resumable) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopEnd).padding(14.dp).darkChip())
-                }
-                Column(
-                    Modifier.fillMaxWidth().weight(1f - split).padding(start = 22.dp, end = 22.dp, top = 10.dp, bottom = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) { GameInfo(game, resumable, descriptionLines = if (split > 0.55f) 4 else 7) }
-            }
-        }
+        else -> ArtDetails(game, resumable)
     }
 }
 
 /**
- * Spotlight's other screen: the game alone, as the top screen shows it, never half game and half wallpaper. Its art
- * fills the screen (the same picture as up top) and fades, down to where its words begin, into the theme's
- * background (which [Details] lays behind it), so the logo rests on the art and the info under it reads over any
- * picture.
+ * A game's details, in every home layout: the game alone, never half game and half wallpaper. Its art fills the
+ * screen and fades, down to where its words begin, into the theme's background (which [Details] lays behind it), so
+ * the logo rests on the art and the info under it reads over any picture and any wallpaper.
  */
 @Composable
-private fun SpotlightDetails(game: Game, resumable: Boolean) {
+private fun ArtDetails(game: Game, resumable: Boolean) {
     val look = Store.settings.look
     // Where the info starts (px from the top), so the fade ends just there whatever the info's height.
     var infoTop by remember(game.key) { mutableFloatStateOf(-1f) }
@@ -432,7 +418,7 @@ private fun SpotlightDetails(game: Game, resumable: Boolean) {
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 26.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
-            AnimatedLogo(game, maxWidth = 340.dp, maxHeight = 96.dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 6.dp), textAlign = TextAlign.Center)
+            AnimatedLogo(game, maxWidth = 340.dp, maxHeight = (96 * Hero.logoScale / 0.7f).dp, modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 6.dp), textAlign = TextAlign.Center)
             Column(
                 Modifier.fillMaxWidth().onPlaced { infoTop = it.positionInRoot().y },
                 verticalArrangement = Arrangement.spacedBy(7.dp),

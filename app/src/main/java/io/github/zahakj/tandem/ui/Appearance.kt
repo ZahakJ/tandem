@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -427,13 +428,9 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Style", Glyph.Screens, Palette.Sky,
-                    "Details shows art above the game's info. Art + info lets the moving art fill the screen with info on top. Animated art is pure eye candy. Clock keeps it calm.",
+                    "Details shows the game's art fading into its info. Art + info lets the moving art fill the screen with info on top. Animated art is pure eye candy. Clock keeps it calm.",
                     BottomModes, settings.bottomMode, preview = { BottomPreview(settings.bottomMode) },
                 ) { v -> Store.updateSettings { it.copy(bottomMode = v) } },
-                number(
-                    "Art height", Glyph.Screens, Palette.Sky, "How much of the details screen the game's art takes.",
-                    look.heroSplit, 0.3f, 0.65f, 0.05f, ::pct, preview = { BottomPreview("details") },
-                ) { v -> updateLook { it.copy(heroSplit = v ?: 0.475f) } },
                 number(
                     "Logo size", Glyph.Image, Palette.Sky, "The size of the game's logo over its art.",
                     look.heroLogoScale, 0.3f, 1f, 0.1f, ::pct,
@@ -781,7 +778,6 @@ private fun GridPreview() {
 /** A sketch of the bottom screen in the given style. */
 @Composable
 private fun BottomPreview(mode: String) {
-    val split = Store.settings.look.heroSplit
     Box(Modifier.fillMaxWidth(0.62f).aspectRatio(0.87f).clip(RoundedCornerShape(16.dp)).background(Palette.NightDeep)) {
         val art = Brush.linearGradient(listOf(Palette.Lavender, Palette.Peach, Palette.Sky))
         when (mode) {
@@ -799,9 +795,13 @@ private fun BottomPreview(mode: String) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) { PreviewLines() }
             }
-            else -> Column(Modifier.fillMaxSize()) {
-                Box(Modifier.fillMaxWidth().weight(split).background(art))
-                Column(Modifier.fillMaxWidth().weight(1f - split).padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) { PreviewLines() }
+            // The art fading down into the background, the info on its faded part.
+            else -> Box(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize().background(art).drawWithContent {
+                    drawContent()
+                    drawRect(Brush.verticalGradient(0.3f to Color.Transparent, 0.62f to Palette.NightDeep.copy(alpha = 0.88f), 1f to Palette.NightDeep.copy(alpha = 0.92f)))
+                })
+                Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) { PreviewLines() }
             }
         }
     }
