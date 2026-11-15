@@ -363,6 +363,8 @@ fun FocusCard(
     var counted by remember { mutableStateOf(false) }
     val view = androidx.compose.ui.platform.LocalView.current
     androidx.compose.runtime.DisposableEffect(view) { onDispose { if (counted) FocusCards.held(view.rootView, hasFocus, false) } }
+    // A card on the screen itself is where Down from the top bar can go back to.
+    val onPage = !LocalTopBar.current && LocalLayer.current.let { it == null || it is KeptLayer }
     val density = LocalDensity.current
     val growPx = with(density) { MaxFocusGrowth.toPx() }
     val focusScale = theme.focusScale
@@ -402,6 +404,7 @@ fun FocusCard(
             .onFocusChanged {
                 if (it.isFocused != counted) { counted = it.isFocused; FocusCards.held(view.rootView, hasFocus, it.isFocused) }
                 hasFocus[0] = it.isFocused
+                if (it.isFocused && onPage) TopBarFocus.noted(requester)
                 if (it.isFocused) { onFocus(); Sounds.move() } else pressed = false
             }
             // Focus, keys and taps sit outside the lift and zoom below, so D-pad focus search measures where the

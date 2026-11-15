@@ -1,6 +1,7 @@
 package io.github.zahakj.tandem.ui
 
 import io.github.zahakj.tandem.data.Store
+import kotlinx.coroutines.launch
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.KeyEventType
@@ -449,7 +450,7 @@ fun NowPlayingBanner(modifier: Modifier = Modifier) {
 @Composable
 fun TopBarButtons() {
     val n = RunningGames.list.size
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    androidx.compose.runtime.CompositionLocalProvider(LocalTopBar provides true) { Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         if (n > 0) TopChip("▶ $n open", Palette.Mint) { Panels.openSwitcher() }
         // On a system or collection opened as a page, how its games show: grid, list, carousel, shelf or case.
         if (Nav.route is Route.System || Nav.route is Route.Collection) {
@@ -460,19 +461,26 @@ fun TopBarButtons() {
         }
         if (Nav.route != Route.Stats) TopChip("★ Stats", Palette.Butter) { Nav.go(Route.Stats) }
         TopChip("◐ Quick", Palette.Lavender) { Panels.toggleQuick() }
-    }
+    } }
 }
 
 @Composable
 private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
+    val focus = androidx.compose.ui.platform.LocalFocusManager.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val mine = remember { booleanArrayOf(false) }
+    androidx.compose.runtime.DisposableEffect(Unit) { onDispose { if (mine[0]) TopBarFocus.holders-- } }
     FocusCard(
-        // Down goes back to the page below. Searching downwards from the top bar finds nothing on layouts whose
-        // content spans the full height (Spotlight's rail), so the screen's remembered item takes the focus back.
-        Modifier.height(30.dp).onPreviewKeyEvent { e ->
-            if (e.key != Key.DirectionDown) return@onPreviewKeyEvent false
-            if (e.type == KeyEventType.KeyDown) Nav.focusTick++
-            true
-        },
+        // Down always goes back to the page below, whatever the layout (TopBarFocus).
+        Modifier.height(30.dp)
+            .onFocusChanged { if (it.hasFocus != mine[0]) { mine[0] = it.hasFocus; TopBarFocus.holders += if (it.hasFocus) 1 else -1 } }
+            .onPreviewKeyEvent { e ->
+                if (e.key != Key.DirectionDown) return@onPreviewKeyEvent false
+                // On the release, so the page that takes the focus never gets half a key press (Spotlight's rail
+                // moved on the release it was handed).
+                if (e.type == KeyEventType.KeyUp) scope.launch { TopBarFocus.down(focus) }
+                true
+            },
         glow = color,
         shape = RoundedCornerShape(50),
         // Held like a screen's item, so the page under it doesn't take the focus back when it changes (the games view

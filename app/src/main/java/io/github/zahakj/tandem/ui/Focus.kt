@@ -159,6 +159,39 @@ object Layers {
 /** The popup an item sits in; null for the screen. */
 val LocalLayer = compositionLocalOf<Any?> { null }
 
+/** True inside the top bar's buttons (Stats, Quick...), which are never where Down from the top bar goes back to. */
+val LocalTopBar = androidx.compose.runtime.staticCompositionLocalOf { false }
+
+/**
+ * The way back down from the top bar, on every screen and layout. Each layout hands focus back its own way (some
+ * remember their item, some lie below the bar, some fill the screen beside it), and relying on any one of those
+ * left Down doing nothing on some of them. So Down tries, until the focus has left the bar: the item last
+ * highlighted on the screen ([noted] by every card and screen item), the screen's remembered item
+ * ([Nav.focusTick]), whatever lies below, and at last the next thing in order. It can't stay in the bar.
+ */
+object TopBarFocus {
+    /** How many top-bar buttons hold the focus (one at most; counted so a move between two never reads as none). */
+    var holders = 0
+    val held: Boolean get() = holders > 0
+    private var page: java.lang.ref.WeakReference<FocusRequester>? = null
+
+    /** [requester]'s item on the screen (not in a popup or the top bar) took the focus. */
+    fun noted(requester: FocusRequester) { page = java.lang.ref.WeakReference(requester) }
+
+    suspend fun down(focus: androidx.compose.ui.focus.FocusManager) {
+        page?.get()?.let { r -> runCatching { r.requestFocus() } }
+        if (!held) return
+        Nav.focusTick++
+        repeat(3) { androidx.compose.runtime.withFrameNanos { } }
+        if (!held) return
+        runCatching { focus.moveFocus(FocusDirection.Down) }
+        repeat(40) {
+            if (!held) return
+            if (runCatching { focus.moveFocus(FocusDirection.Next) }.getOrDefault(false) == false) return
+        }
+    }
+}
+
 /** Registers a popup layer while [visible]; content inside should be wrapped in [ProvideLayer]. */
 @Composable
 fun rememberLayer(visible: Boolean): Any {
@@ -230,6 +263,7 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
         focused[0] = it.isFocused
         FocusMemory.hold(routeKey, itemKey, it.isFocused)
         if (it.isFocused) FocusMemory.remember(routeKey, itemKey)
+        if (it.isFocused && (layer == null || layer is KeptLayer)) TopBarFocus.noted(requester)
     }
 }
 
