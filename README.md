@@ -27,12 +27,16 @@ after a scan. Private mode keeps all of it offline.
 
 <table>
   <tr>
-    <td width="61%"><img src="site/assets/screenshots/home-top.webp" alt="Home screen on the AYN Thor's top screen: a grid of system icons with the Nintendo 3DS highlighted, and a dock."></td>
-    <td><img src="site/assets/screenshots/home-bottom-system.webp" alt="The bottom screen at the same moment: the highlighted system with its game count and play time."></td>
+    <td width="61%"><img src="site/assets/screenshots/spotlight.webp" alt="The Spotlight home on the AYN Thor's top screen: Hades II's art fills the screen, a rail of covers on the left, its logo, story and play time on the right."></td>
+    <td><img src="site/assets/screenshots/spotlight-bottom.webp" alt="The bottom screen at the same moment: Hades II's art and logo, with its genres, play time and description."></td>
   </tr>
   <tr>
-    <td><img src="site/assets/screenshots/search.webp" alt="Search with zeld typed on a D-pad keyboard, showing thirteen Zelda games."></td>
+    <td><img src="site/assets/screenshots/orbit.webp" alt="The Orbit home: systems on a curved ring of round icons, the Nintendo 3DS in front with its games fanned out above."></td>
     <td><img src="site/assets/screenshots/ingame-art.webp" alt="The bottom screen while Pokémon Emerald is running: its art, logo and session time."></td>
+  </tr>
+  <tr>
+    <td><img src="site/assets/screenshots/shelf.webp" alt="The Nintendo DS folder in Shelf view: game spines on a wooden shelf, one turned to show its cover."></td>
+    <td><img src="site/assets/screenshots/game-bottom.webp" alt="The bottom screen for a running game: a Running badge and A Resume."></td>
   </tr>
 </table>
 
@@ -45,8 +49,9 @@ after a scan. Private mode keeps all of it offline.
 - **Resume where you left off.** If a game is still open in its emulator, Tandem brings it back instead of restarting it; a game switcher lists every running game. Needs [Shizuku](https://shizuku.rikka.app/); without it, games start fresh as usual.
 - **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** panel, **hold Start** for quick settings (brightness, volume, Wi-Fi, Battery saver), **R2** for a side panel with your notifications, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout, and with Shizuku or root a pad connected mid-game can take over the built-in controls in any emulator. Touch works too.
 - **Make it yours.** Theme packs (Tandem's own and Cocoon's, with their music and sounds) on top of three built-in themes, seven home layouts (shelves, an icon grid with 1 to 5 rows, carousel, list, console, Orbit, Tandem's own, and Spotlight, one game's art across the screen), animated and picture wallpapers, 15 widgets, an original soundtrack (Meadow Tales) or your own music, and eight UI sound packs.
+- **Playing.** Stream PC games from a home computer with Moonlight, set performance and fan modes per game on AYN handhelds, keep notifications quiet with Do Not Disturb while a game plays, read a game's manual on the bottom screen, or turn that screen off.
 - **Artwork and details.** Optional scraping from LaunchBox and libretro thumbnails (no account), ScreenScraper, IGDB and SteamGridDB (your keys) and HowLongToBeat. A setup guide tests each source; scrapes run in the background with progress on the bottom screen.
-- **Play tracking.** Play time, sessions and streaks in a stats screen, a status for every game (backlog, playing, finished...), Tandem's own trophies on every system, a journal for notes, CSV export, and RetroAchievements progress.
+- **Play tracking.** Play time, sessions and streaks in a stats screen, a status for every game (backlog, playing, finished...), Tandem's own trophies on every system, a journal for notes, CSV export, RetroAchievements progress and Steam achievements.
 - **Notes while you play,** per game, as plain Markdown files: text, checklists, glossaries with drawn symbols, sketches, and screenshots taken from the bottom screen straight into a note.
 - **Organized your way.** Folders (shown as a grid, a bookshelf, a cartridge case or a carousel), smart folders that fill themselves, collections, favourites and Up next; hide anything you'd rather not see, with an optional PIN that also keeps Tandem offline.
 - **Discord status** (optional, in builds with Discord's Social SDK): shows the game you're playing with its cover; off until you connect.

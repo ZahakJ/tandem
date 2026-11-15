@@ -2,23 +2,33 @@
 
 Real captures from an AYN Thor (top screen 1920×1080, bottom 1240×1080), used by
 the landing page (`site/index.html`) and the README. They are WebP, resized to
-1600 px wide (top screen) or 1000 px wide (bottom screen), about 1 MB in all.
+1600 px wide (top screen) or 1000 px wide (bottom screen), about 2 MB in all.
 
 | File | Screen | What it shows |
 | --- | --- | --- |
-| `home-top.webp` | Top | Home, icon grid layout, Nintendo 3DS highlighted (hero) |
-| `home-bottom-system.webp` | Bottom | The same moment: the 3DS with its game count and play time (hero) |
+| `spotlight.webp` | Top | The Spotlight home on Hades II (hero) |
+| `spotlight-bottom.webp` | Bottom | The same moment: Hades II's art with its details (hero) |
+| `spotlight-odyssey.webp` | Top | Spotlight on Super Mario Odyssey |
+| `spotlight-expedition.webp` | Top | Spotlight on a streamed PC game |
+| `spotlight-menu.webp` | Top | The Y menu on Spotlight |
+| `orbit.webp` | Top | The Orbit home, Nintendo 3DS in front |
+| `icon-grid.webp` | Top | The Icon grid home with widgets |
+| `shelf.webp` | Top | The DS folder in Shelf view |
+| `case.webp` | Top | The DS folder in Case view |
+| `carousel.webp` | Top | The Switch folder in Carousel view |
+| `stats.webp` | Top | Play stats, overview tab |
+| `home-top.webp` | Top | Home, icon grid layout, Nintendo 3DS highlighted (getting-started guide) |
+| `home-bottom-system.webp` | Bottom | The same moment: the 3DS with its game count and play time (getting-started guide) |
 | `home-bottom.webp` | Bottom | Pip's greeting, clock and Last played, with nothing highlighted |
 | `game-bottom.webp` | Bottom | A running game: **● Running** badge and **A Resume** |
 | `game-art-bottom.webp` | Bottom | A highlighted game's hero art and logo |
 | `folder-bottom.webp` | Bottom | A highlighted folder with a fan of its covers |
 | `ingame-art.webp` | Bottom | The in-game art screen while a game runs |
-| `system-grid.webp` | Top | A system opened, with genre folders first |
-| `folder-games.webp` | Top | A folder of games |
-| `game-menu.webp` | Top | The Y menu on a game |
+| `system-grid.webp` | Top | A system opened, with genre folders first (library guide) |
+| `game-menu.webp` | Top | The Y menu on a game, over the grid (controls guide) |
 | `search.webp` | Top | Search with four letters typed |
 | `resume.webp` | Top | The Resume card after pressing Home mid-game |
-| `settings.webp` | Top | Settings › Art & accounts |
+| `settings.webp` | Top | Settings, its seven pages |
 | `start-panel.webp` | Top | The Start side panel |
 | `screensaver.webp` | Top | The screensaver |
 
