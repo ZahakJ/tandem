@@ -173,22 +173,39 @@ object TopBarFocus {
     /** How many top-bar buttons hold the focus (one at most; counted so a move between two never reads as none). */
     var holders = 0
     val held: Boolean get() = holders > 0
-    private var page: java.lang.ref.WeakReference<FocusRequester>? = null
+    /** The page items most recently highlighted, newest last: one may since have left the screen (a folder closed). */
+    private val pages = ArrayDeque<java.lang.ref.WeakReference<FocusRequester>>()
 
     /** [requester]'s item on the screen (not in a popup or the top bar) took the focus. */
-    fun noted(requester: FocusRequester) { page = java.lang.ref.WeakReference(requester) }
+    fun noted(requester: FocusRequester) {
+        pages.removeAll { it.get() == null || it.get() === requester }
+        pages.addLast(java.lang.ref.WeakReference(requester))
+        while (pages.size > 12) pages.removeFirst()
+    }
 
     suspend fun down(focus: androidx.compose.ui.focus.FocusManager) {
-        page?.get()?.let { r -> runCatching { r.requestFocus() } }
-        if (!held) return
+        // The page items last highlighted, newest first; one that has left the screen simply doesn't take it.
+        for (r in pages.toList().asReversed()) {
+            val req = r.get() ?: continue
+            runCatching { req.requestFocus() }
+            androidx.compose.runtime.withFrameNanos { }
+            if (!held) return
+        }
         Nav.focusTick++
         repeat(3) { androidx.compose.runtime.withFrameNanos { } }
         if (!held) return
         runCatching { focus.moveFocus(FocusDirection.Down) }
+        androidx.compose.runtime.withFrameNanos { }
+        if (!held) return
         repeat(40) {
             if (!held) return
-            if (runCatching { focus.moveFocus(FocusDirection.Next) }.getOrDefault(false) == false) return
+            if (runCatching { focus.moveFocus(FocusDirection.Next) }.getOrDefault(false) == false) return@repeat
         }
+        if (!held) return
+        // Still in the bar (Next only went round it): let go of the focus altogether, and the screen's remembered
+        // item takes it back, as after touch.
+        focus.clearFocus(force = true)
+        Nav.focusTick++
     }
 }
 

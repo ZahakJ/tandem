@@ -469,6 +469,7 @@ private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
     val focus = androidx.compose.ui.platform.LocalFocusManager.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val mine = remember { booleanArrayOf(false) }
+    val job = remember { arrayOfNulls<kotlinx.coroutines.Job>(1) }
     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { if (mine[0]) TopBarFocus.holders-- } }
     FocusCard(
         // Down always goes back to the page below, whatever the layout (TopBarFocus).
@@ -477,8 +478,11 @@ private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
             .onPreviewKeyEvent { e ->
                 if (e.key != Key.DirectionDown) return@onPreviewKeyEvent false
                 // On the release, so the page that takes the focus never gets half a key press (Spotlight's rail
-                // moved on the release it was handed).
-                if (e.type == KeyEventType.KeyUp) scope.launch { TopBarFocus.down(focus) }
+                // moved on the release it was handed); a press whose release never comes here still goes down.
+                when (e.type) {
+                    KeyEventType.KeyDown -> if (e.nativeKeyEvent.repeatCount == 0) { job[0]?.cancel(); job[0] = scope.launch { kotlinx.coroutines.delay(300); TopBarFocus.down(focus) } }
+                    KeyEventType.KeyUp -> { job[0]?.cancel(); job[0] = null; scope.launch { TopBarFocus.down(focus) } }
+                }
                 true
             },
         glow = color,
