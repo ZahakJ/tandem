@@ -467,6 +467,7 @@ fun TopBarButtons() {
 @Composable
 private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
     val focus = androidx.compose.ui.platform.LocalFocusManager.current
+    val view = androidx.compose.ui.platform.LocalView.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val mine = remember { booleanArrayOf(false) }
     val job = remember { arrayOfNulls<kotlinx.coroutines.Job>(1) }
@@ -480,8 +481,8 @@ private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
                 // On the release, so the page that takes the focus never gets half a key press (Spotlight's rail
                 // moved on the release it was handed); a press whose release never comes here still goes down.
                 when (e.type) {
-                    KeyEventType.KeyDown -> if (e.nativeKeyEvent.repeatCount == 0) { job[0]?.cancel(); job[0] = scope.launch { kotlinx.coroutines.delay(300); TopBarFocus.down(focus) } }
-                    KeyEventType.KeyUp -> { job[0]?.cancel(); job[0] = null; scope.launch { TopBarFocus.down(focus) } }
+                    KeyEventType.KeyDown -> if (e.nativeKeyEvent.repeatCount == 0) { job[0]?.cancel(); job[0] = scope.launch { kotlinx.coroutines.delay(300); TopBarFocus.down(focus, view.rootView) } }
+                    KeyEventType.KeyUp -> { job[0]?.cancel(); job[0] = null; scope.launch { TopBarFocus.down(focus, view.rootView) } }
                 }
                 true
             },

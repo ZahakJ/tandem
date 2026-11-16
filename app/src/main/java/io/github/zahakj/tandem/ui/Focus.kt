@@ -159,6 +159,46 @@ object Layers {
 /** The popup an item sits in; null for the screen. */
 val LocalLayer = compositionLocalOf<Any?> { null }
 
+/**
+ * Everything on the screen (not in a popup or the top bar) that can take the focus right now, so the focus always has
+ * somewhere to go back to: Down from the top bar, or the first D-pad press when nothing is highlighted. Items with a
+ * key ([takesFocus]) say which screen and item they are; other cards join without one.
+ */
+object PageFocus {
+    // Per window (its root view): the top and bottom screens each have their own focus.
+    private class Entry(val root: android.view.View, val layer: Any?, val route: String?, val item: String?, val requester: FocusRequester) {
+        /** On the screen being shown: a screen kept composed while hidden (Settings, after you leave it) doesn't count. */
+        val shown: Boolean get() = layerActive(layer)
+    }
+    private val entries = java.util.IdentityHashMap<Any, Entry>()
+
+    fun add(token: Any, root: android.view.View, layer: Any?, route: String?, item: String?, requester: FocusRequester) { entries[token] = Entry(root, layer, route, item, requester) }
+
+    /** [requester] belongs to an item on the screen being shown. */
+    fun shown(requester: FocusRequester): Boolean = entries.values.any { it.requester === requester && it.shown }
+    fun remove(token: Any) { entries.remove(token) }
+
+    /** [item] on [route] is on screen now. */
+    fun has(route: String, item: String): Boolean = entries.values.any { it.route == route && it.item == item && it.shown }
+
+    fun find(root: android.view.View, route: String, item: String?): FocusRequester? =
+        item?.let { entries.values.firstOrNull { e -> e.root === root && e.shown && e.route == route && e.item == it }?.requester }
+
+    /** Asks [requester] for the focus; true once [done] says it worked (checked after a frame). */
+    suspend fun take(requester: FocusRequester, done: () -> Boolean): Boolean {
+        runCatching { requester.requestFocus() }
+        androidx.compose.runtime.withFrameNanos { }
+        return done()
+    }
+
+    /** The first of [route]'s items, then any card on the screen, that takes the focus. */
+    suspend fun takeAny(root: android.view.View, route: String, done: () -> Boolean): Boolean {
+        val all = entries.values.filter { it.root === root && it.shown }
+        for (e in all.filter { it.route == route } + all.filter { it.route != route }) if (take(e.requester, done)) return true
+        return false
+    }
+}
+
 /** True inside the top bar's buttons (Stats, Quick...), which are never where Down from the top bar goes back to. */
 val LocalTopBar = androidx.compose.runtime.staticCompositionLocalOf { false }
 
@@ -183,29 +223,22 @@ object TopBarFocus {
         while (pages.size > 12) pages.removeFirst()
     }
 
-    suspend fun down(focus: androidx.compose.ui.focus.FocusManager) {
+    suspend fun down(focus: androidx.compose.ui.focus.FocusManager, root: android.view.View) {
+        val route = Nav.route.key
+        // The screen's remembered item, when it is on screen.
+        PageFocus.find(root, route, FocusMemory.get(route))?.let { if (PageFocus.take(it) { !held }) return }
         // The page items last highlighted, newest first; one that has left the screen simply doesn't take it.
         for (r in pages.toList().asReversed()) {
             val req = r.get() ?: continue
-            runCatching { req.requestFocus() }
-            androidx.compose.runtime.withFrameNanos { }
-            if (!held) return
+            if (!PageFocus.shown(req)) continue
+            if (PageFocus.take(req) { !held }) return
         }
         Nav.focusTick++
         repeat(3) { androidx.compose.runtime.withFrameNanos { } }
         if (!held) return
+        // Anything on the page at all: this screen's items first, then any card on the screen.
+        if (PageFocus.takeAny(root, route) { !held }) return
         runCatching { focus.moveFocus(FocusDirection.Down) }
-        androidx.compose.runtime.withFrameNanos { }
-        if (!held) return
-        repeat(40) {
-            if (!held) return
-            if (runCatching { focus.moveFocus(FocusDirection.Next) }.getOrDefault(false) == false) return@repeat
-        }
-        if (!held) return
-        // Still in the bar (Next only went round it): let go of the focus altogether, and the screen's remembered
-        // item takes it back, as after touch.
-        focus.clearFocus(force = true)
-        Nav.focusTick++
     }
 }
 
@@ -250,7 +283,11 @@ fun layerActive(): Boolean = layerActive(LocalLayer.current)
  * (or a kept screen showing) would otherwise recompose every focusable item on the screen underneath.
  */
 @Composable
-fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier = takesFocusWhen(routeKey, itemKey, wanted) { wanted }
+fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier =
+    takesFocusWhen(routeKey, itemKey, wanted) { if (wanted) Want.Yes else Want.No }
+
+/** Whether an item should take the focus handed back. */
+private enum class Want { Yes, No }
 
 /**
  * [takesFocus], asking [wanted] each time focus is handed back rather than once when the item was composed. Items
@@ -258,11 +295,18 @@ fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Mod
  * home the card highlighted when Tandem started took the focus back after every folder you opened and left.
  */
 @Composable
-private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?, wanted: () -> Boolean): Modifier {
+private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?, wanted: () -> Want): Modifier {
     val requester = remember { FocusRequester() }
     val focused = remember { booleanArrayOf(false) }
     val layer = LocalLayer.current
     val view = androidx.compose.ui.platform.LocalView.current
+    // On the screen's list of things that can take the focus, while it is on screen.
+    val onPage = layer == null || layer is KeptLayer
+    DisposableEffect(routeKey, itemKey, onPage) {
+        val token = Any()
+        if (onPage) PageFocus.add(token, view.rootView, layer, routeKey, itemKey, requester)
+        onDispose { PageFocus.remove(token) }
+    }
     // Counted in FocusCards while it holds the focus, so a window left without a highlight is noticed (rescue).
     DisposableEffect(view) {
         onDispose { if (focused[0]) { FocusCards.held(view.rootView, focused, false); FocusMemory.hold(routeKey, itemKey, false) } }
@@ -271,14 +315,17 @@ private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?
         // Focus handed back (Nav.focusTick: a resume, Home) asks again. Watched here rather than read while composing,
         // so a resume doesn't recompose every focusable item on the screen in its first frame.
         snapshotFlow { Nav.focusTick to layerActive(layer) }.collectLatest { (_, active) ->
-            if (!active || !wanted()) return@collectLatest
+            if (!active || wanted() == Want.No) return@collectLatest
             // The item may still be animating in or not laid out yet; keep asking briefly until it takes focus.
             // The first try comes right after the next frame (the item is laid out by then), so a screen's highlight
             // shows at once instead of 70 ms late.
             repeat(12) { i ->
                 if (i == 0) androidx.compose.runtime.withFrameNanos { } else delay(70)
-                if (focused[0] || FocusMemory.movedOn(routeKey, itemKey) || !wanted()) return@collectLatest
-                runCatching { requester.requestFocus() }
+                if (focused[0] || FocusMemory.movedOn(routeKey, itemKey)) return@collectLatest
+                when (wanted()) {
+                    Want.No -> return@collectLatest
+                    Want.Yes -> runCatching { requester.requestFocus() }
+                }
             }
         }
     }
@@ -298,7 +345,9 @@ private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?
 @Composable
 fun Modifier.remembersFocus(routeKey: String, itemKey: String, fallback: Boolean): Modifier {
     // Asked when focus is handed back: the remembered item may have changed since this was composed.
-    return takesFocusWhen(routeKey, itemKey, fallback) { FocusMemory.get(routeKey)?.let { it == itemKey } ?: fallback }
+    return takesFocusWhen(routeKey, itemKey, fallback) {
+        if (FocusMemory.get(routeKey)?.let { it == itemKey } ?: fallback) Want.Yes else Want.No
+    }
 }
 
 /** Scroll positions per route, so a list comes back exactly where it was. */

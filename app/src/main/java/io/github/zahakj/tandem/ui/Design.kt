@@ -364,7 +364,13 @@ fun FocusCard(
     val view = androidx.compose.ui.platform.LocalView.current
     androidx.compose.runtime.DisposableEffect(view) { onDispose { if (counted) FocusCards.held(view.rootView, hasFocus, false) } }
     // A card on the screen itself is where Down from the top bar can go back to.
-    val onPage = !LocalTopBar.current && LocalLayer.current.let { it == null || it is KeptLayer }
+    val layer = LocalLayer.current
+    val onPage = !LocalTopBar.current && (layer == null || layer is KeptLayer)
+    androidx.compose.runtime.DisposableEffect(onPage) {
+        val token = Any()
+        if (onPage) PageFocus.add(token, view.rootView, layer, null, null, requester)
+        onDispose { PageFocus.remove(token) }
+    }
     val density = LocalDensity.current
     val growPx = with(density) { MaxFocusGrowth.toPx() }
     val focusScale = theme.focusScale
