@@ -1,0 +1,1 @@
+- Peanuts Native: Switch games it has built play natively from Tandem, with a Native badge and their companion on the bottom screen. Games it can build offer "Build native version" in their menu.
