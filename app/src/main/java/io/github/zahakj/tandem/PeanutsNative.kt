@@ -110,11 +110,26 @@ object PeanutsNative {
     /** Starts building [game] in Peanuts (5 to 40 minutes on the Thor); it shows its progress in its own app. */
     fun build(ctx: Context, game: Game) {
         val id = of(game)?.titleId ?: return
+        val token = "tandem${System.currentTimeMillis()}"
+        var answer: Pair<Boolean, String>? = null
         inBackground({
-            val said = Shell.run("am", "start", "-n", CTL, "-e", "cmd", "build", "-e", "title_id", id)
-            Log.i("Tandem", "Peanuts build $id: ${said?.trim()}")
+            // A restarted Peanuts knows no game until it has looked again.
+            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "scan")
+            Thread.sleep(12_000)
+            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "build", "-e", "title_id", id, "-e", "id", token)
+            repeat(10) {
+                Thread.sleep(500)
+                answer = Shell.run("cat", STATUS)?.let { parseAnswer(it, token) }
+                if (answer != null) return@inBackground
+            }
         }) {
-            io.github.zahakj.tandem.ui.Toasts.show("Building ${game.title} natively. This takes 5 to 40 minutes; you can keep playing meanwhile")
+            val (ok, why) = answer ?: (true to "")
+            Log.i("Tandem", "Peanuts build $id: $ok $why")
+            io.github.zahakj.tandem.ui.Toasts.show(
+                if (ok) "Building ${game.title} natively. This takes 5 to 40 minutes; you can keep playing meanwhile"
+                else "Peanuts Native can't build this copy: ${why.substringBefore(':').ifEmpty { "see its app" }}",
+                6000,
+            )
             readAt = 0L
             refresh()
         }
@@ -132,6 +147,13 @@ object PeanutsNative {
             }
         }
     }.getOrDefault(emptyMap())
+
+    /** Peanuts' answer to the command sent with [token]: whether it was taken, and why not. Null while it is pending. */
+    internal fun parseAnswer(text: String, token: String): Pair<Boolean, String>? = runCatching {
+        val r = Json.parseToJsonElement(text).jsonObject["last_result"] as? JsonObject ?: return null
+        if (r.str("id") != token || r["pending"]?.jsonPrimitive?.booleanOrNull == true) return null
+        (r["ok"]?.jsonPrimitive?.booleanOrNull == true) to r.str("message")
+    }.getOrNull()
 
     internal fun parseBuild(text: String): Pair<String, String>? = runCatching {
         val b = Json.parseToJsonElement(text).jsonObject["build"] as? JsonObject ?: return null

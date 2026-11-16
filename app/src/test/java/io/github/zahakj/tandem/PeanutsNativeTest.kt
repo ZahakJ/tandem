@@ -29,4 +29,10 @@ class PeanutsNativeTest {
         assertEquals(e, PeanutsNative.match(lib, "/s/switch/other.nsp", "Fire Emblem Three Houses"))
         assertNull(PeanutsNative.match(lib, "/s/switch/other.nsp", "Celeste"))
     }
+
+    @Test fun readsTheAnswerToItsOwnCommand() {
+        val text = """{"last_result":{"id":"t1","ok":false,"pending":false,"message":"This version is not one of this app's versions"}}"""
+        assertEquals(false to "This version is not one of this app's versions", PeanutsNative.parseAnswer(text, "t1"))
+        assertNull(PeanutsNative.parseAnswer(text, "t2"))
+    }
 }
