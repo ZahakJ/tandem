@@ -11,6 +11,9 @@ Only when you ask it to look something up online:
   "Scrape this game" in a game's Y menu).
 - **Choose artwork** in a game's Y menu, which asks every configured source for pictures of that one game.
 - **Test** on a source's setup card, which looks up one well-known game ("Super Mario Odyssey"), never yours.
+- **RoMM connection test** (Settings › Library & art › RoMM), only after you configure and enable it and explicitly
+  choose Test RoMM connection. It reads your configured HTTPS server's OpenAPI anonymously, then requests its platform
+  list with your Client API Token. It sends no local game information and performs no ROM changes or downloads.
 - **Downloading the LaunchBox database**, only after you agree to it (the LaunchBox card, the welcome, or the
   question when you start a scrape that needs it). A scrape you start refreshes a month-old copy, only on Wi-Fi.
 
@@ -60,6 +63,7 @@ Each source can be turned off in Settings › Library & art; a source that is of
 
 | Service | When | What it receives |
 | --- | --- | --- |
+| Your configured RoMM server | Only when enabled and you explicitly test the connection; blocked in private mode | An anonymous OpenAPI request, then the Client API Token in a Bearer header for the platform request, after version/operation validation. Redirects are rejected; no local library data is sent. |
 | LaunchBox (gamesdb.launchbox-app.com, images.launchbox-app.com) | On by default, no account | Nothing about your games: the whole database is downloaded and games are looked up on the device. Then the chosen pictures are downloaded by their LaunchBox file names. |
 | thumbnails.libretro.com | On by default, no account | The system's folder listing is downloaded once a week; then picture names derived from your game's file name or title. |
 | ScreenScraper (api.screenscraper.fr) | Only if you entered developer credentials | Your ScreenScraper login (if set), the developer ID, and for each game: the file name, file size, system, and CRC32/MD5 of the file (only for files up to 64 MB). If the file isn't recognised, the game's title. |
@@ -121,5 +125,8 @@ it, as Android would. In private mode the cards show only the app and the time.
 - The private mode PIN as a salted PBKDF2 hash, with the count of wrong tries (`private-pin.json`), and what Tandem
   changed to go offline for a hidden game (`offline.json`, only while it is offline): both in the no-backup storage,
   never in any backup.
+- RoMM server URL, Client API Token and enabled state: AES-GCM ciphertext in `noBackupFilesDir/romm-config.enc`,
+  protected by an Android Keystore key. Excluded from Android backups and Tandem's own backups, including Account
+  keys and logins. **Forget RoMM** deletes the local record and key; it does not revoke the token on the server.
 - The LaunchBox index (only your systems) in Tandem's private `launchbox/` folder. "Download again" on the
   LaunchBox card rebuilds it.

@@ -167,6 +167,7 @@ object SettingsPlan {
             Group(SOURCES, emptyList()),
             Group("RetroAchievements", p("RetroAchievements", "Account", "Show achievements"), p("RetroAchievements", "Look up games again", "Sign out")),
             Group("Steam", p("Steam", "Steam Web API key", "Steam account", "Look up achievements"), p("Steam", "Sign out")),
+            Group("RoMM", p("RoMM", "Enable RoMM", "RoMM server URL", "RoMM API token", "Test RoMM connection"), p("RoMM", "Forget RoMM")),
             Group("Discord", p("Discord", "Discord status"), p("Discord", "Disconnect Discord")),
             Group("Bring your details", p("From Cocoon", "Import my Cocoon setup") + p("Your data", "Import details"), p("From Cocoon", "Undo Cocoon import")),
         ),
@@ -288,7 +289,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val pool = RowPool(
         appearanceSections() + listOf(
             librarySettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), widgetsSettings(),
-            achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
+            achievementsSettings(), steamSettings(), rommSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
             performanceSettings(), screenOffSettings(), deckSettings(), SettingSection("Extras", listOf(resumeLandingRow())),
         ) + controllerSettings(),
     )

@@ -2,10 +2,15 @@
 
 Tandem keeps your library and play history on your device. There are no analytics, crash reports, ads, accounts or update checks, and nothing phones home.
 
-**When it goes online.** Tandem declares Android's internet permission for two optional features, and uses it only for them:
+For the full current network and storage inventory, see [the detailed privacy documentation](docs/PRIVACY.md).
+
+**When it goes online.** Optional features include:
 
 - **Scraping** artwork and details, only when you start it (for the whole library, a system, or one game), from the sources you leave switched on: LaunchBox, libretro thumbnails, ScreenScraper, IGDB, SteamGridDB and HowLongToBeat. The last four are off until you add your own keys or switch them on.
 - **RetroAchievements,** only after you sign in with your own username and API key.
+- **RoMM connection testing,** only after you configure and enable it and explicitly choose Test RoMM connection.
+  Only your chosen HTTPS server is contacted; no local game information is sent. The token and configuration are
+  encrypted with Android Keystore protection and excluded from backups. Private mode blocks these requests.
 
 **Hidden games are never sent anywhere,** nor are games in hidden folders or systems. Keys and logins stay in Tandem's private storage and are left out of every backup.
 

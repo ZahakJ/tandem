@@ -122,6 +122,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | Scraping sources and their keys (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) | Library & art › Sources, in order (each opens its setup card) | link |
 | RetroAchievements (`HomeStore.ra`) | Library & art › RetroAchievements › Account / Show achievements; More: Look up games again, Sign out | action / toggle |
 | Steam achievements (`SteamStore.account`, `steam.json`) | Library & art › Steam › Steam Web API key / Steam account / Look up achievements (once signed in); More: Sign out | action |
+| RoMM (`romm/RommVault.kt`, encrypted in `noBackupFilesDir`) | Library & art › RoMM › Enable RoMM / RoMM server URL / RoMM API token / Test RoMM connection; More: Forget RoMM | toggle / action |
 | Discord status (`DiscordPresence`, token in `noBackupFilesDir/discord.json`) | Library & art › Discord › Discord status (Connect); More: Disconnect Discord; Quick settings › Discord status tile pauses it (`shown`). Only in builds with Discord's SDK | action |
 | (import my Cocoon setup, import gamelists) | Library & art › Bring your details › Import my Cocoon setup / Import details; More: Undo Cocoon import | action |
 | Resume (Shizuku) | Play & system › Playing › Resume running games | action |

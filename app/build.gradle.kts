@@ -74,6 +74,7 @@ android {
         buildConfigField("long", "DISCORD_APP_ID", "${if (withDiscord) discordAppId else "0"}L")
         buildConfigField("boolean", "SELF_UPDATE", selfUpdate.toString())
         manifestPlaceholders["selfUpdate"] = selfUpdate.toString()
+        manifestPlaceholders["appLabel"] = "@string/app_name"
         if (withDiscord) {
             // Where Discord sends the authorization back: discord-<application ID>:/authorize/callback.
             manifestPlaceholders["discordScheme"] = "discord-$discordAppId"
@@ -118,6 +119,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix = ".romm.dev"
+            versionNameSuffix = "-romm-dev"
+            manifestPlaceholders["appLabel"] = "Tandem RoMM Dev"
+            // The fork must never offer an upstream APK as its own update.
+            buildConfigField("boolean", "SELF_UPDATE", "false")
+            manifestPlaceholders["selfUpdate"] = "false"
+        }
         release {
             // R8 shrinks and optimizes (inlining, removing Compose's debug-only paths). That matters a lot for
             // Compose: a debug build runs unoptimized code and stutters whenever a new screen is composed.
