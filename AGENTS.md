@@ -1,6 +1,12 @@
 
 # Tandem × RoMM Development Instructions
 
+## Session continuity
+- At the start of a new project session, and after context compaction when the current task is unclear, read `docs/ROMM_PROGRESS.md` before planning or editing.
+- Reconcile its current snapshot with the latest user request, `git status`, the current branch and relevant source. The journal records history and proposed work; it does not authorize new implementation, installation or server actions.
+- After meaningful implementation or validation, update the journal's current snapshot/checklist and append a concise dated entry with affected files, evidence, test results, remaining issues and the next step.
+- Distinguish automated results, user-reported emulator results and physical Thor observations. Never record tokens, private server addresses, ROM details or unredacted diagnostics in the journal.
+
 ## Project
 We are modifying the open-source Tandem Android frontend to add
 native RoMM integration for the AYN Thor dual-screen handheld.

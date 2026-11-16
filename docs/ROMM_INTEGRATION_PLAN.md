@@ -3,6 +3,9 @@
 Target: RoMM 5.4.1, native Tandem on the AYN Thor. Connection milestone implemented on
 `feature/romm-connection`; remote browsing and downloads remain planned.
 
+Current status and session handoff: [ROMM_PROGRESS.md](ROMM_PROGRESS.md). The user reported successful emulator
+connection, restart/persistence and private-mode checks on 2026-11-16; physical Thor validation remains pending.
+
 ## Design and current implementation
 
 Keep the existing single `app` module and feature-owned files. Do not introduce a separate app, backend,
@@ -146,7 +149,7 @@ the current patch.
 | --- | --- | --- |
 | 1. Audit/baseline | Map architecture, dependency/license assessment, wrapper debug build, exact baseline test failures recorded. | Complete; see repository audit. |
 | 2. Design | Native architecture, live contract policy, credentials, remote/local mapping, storage, lifecycle and tests documented. | This document. |
-| 3. Minimal connection | Optional settings, secure token, explicit authenticated GET, safe errors, private mode, mock unit tests, successful debug build. | Implemented; device/live validation pending. |
+| 3. Minimal connection | Optional settings, secure token, explicit authenticated GET, safe errors, private mode, mock unit tests, successful debug build. | Implemented; connection, restart/persistence and private-mode checks passed in the emulator per user report. Physical Thor checks pending. |
 | 4. Remote browsing | Verify live list/pagination/art contracts; controller search, remote badges, cache/offline behavior; local library unaffected. | Planned. |
 | 5. Downloads | Verified download contract, explicit platform/destination mapping, internal and SD targets, bounded streaming, cancellation, integrity/finalization/recovery tests. | Planned; no downloader now. |
 | 6. Discover and launch | Completed files rescan and launch via existing emulator config; offline and dual-screen regression tests on Thor. | Planned. |

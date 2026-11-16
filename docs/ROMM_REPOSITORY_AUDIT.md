@@ -3,6 +3,9 @@
 Audit date: 2026-11-16. Baseline commit: `a0a2bfaf35cef75f1f597c216aed7069e40d7e66`.
 Development branch: `feature/romm-connection`.
 
+This audit records the initial findings. For later implementation/test results and the next-session checklist, read
+[ROMM_PROGRESS.md](ROMM_PROGRESS.md).
+
 ## Scope and evidence
 
 The repository inventory, build scripts, manifest, architecture/build/UI/settings/privacy documentation,

@@ -1,4 +1,4 @@
 interface:
   display_name: "Thor Test Workflow"
-  short_description: "Build and validate Tandem on the physical AYN Thor"
-  default_prompt: "Use $thor-test-workflow to build Tandem, run unit tests, and report what is ready for physical Thor validation."
+  short_description: "Build and test Tandem on Thor or Android Emulator"
+  default_prompt: "Use $thor-test-workflow to build Tandem, run unit tests, and distinguish emulator results from pending physical Thor checks."

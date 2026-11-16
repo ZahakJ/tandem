@@ -1,5 +1,7 @@
 # Testing the RoMM connection milestone
 
+Current handoff/checklist: [ROMM_PROGRESS.md](ROMM_PROGRESS.md). Historical runs below remain useful baseline evidence.
+
 ## Automated evidence, 2026-11-16
 
 | Check | Result |
@@ -7,7 +9,8 @@
 | Untouched `./gradlew.bat assembleDebug` | Exit 0. |
 | Untouched `./gradlew.bat testDebugUnitTest` | Exit 1: 624 tests, 601 passed, 23 failed. |
 | Modified `./gradlew.bat assembleDebug` | Exit 0. |
-| Modified `./gradlew.bat testDebugUnitTest` | Exit 1: 653 tests, 630 passed, 23 failed. |
+| After connection implementation: `./gradlew.bat testDebugUnitTest` | Exit 1: 653 tests, 630 passed, 23 failed. |
+| After keyboard/paste support: `./gradlew.bat testDebugUnitTest` | Exit 1: 662 tests, 639 passed, 23 failed; all nine new editor tests passed. |
 | New RoMM suites | 29 passed: client 17, HTTPS transport 7, encryption 5. |
 | Failure comparison | All 23 method identities exactly match the captured pre-change baseline. No new failing test methods. |
 | APK inspection | `aapt` confirms package `io.github.zahakj.tandem.romm.dev`, label Tandem RoMM Dev, version `0.5.5-romm-dev`, original fully qualified main activity. |
@@ -20,6 +23,21 @@ Reports: `app/build/reports/tests/testDebugUnitTest/index.html` and
 
 No new dependencies or test exclusions were added. NDK is absent, so the optional native controller passthrough
 helper is not in this APK. Regular controller navigation still compiles; physical behavior has not been tested.
+
+## User-reported emulator acceptance, 2026-11-16
+
+The user reported these passes in the project chat after running Tandem RoMM Dev on the Windows Android Emulator:
+
+| Check | Result and evidence limit |
+| --- | --- |
+| Connect to configured RoMM server | USER-REPORTED PASS; no private address or token retained in project docs. |
+| Restart app and test again with saved credentials | USER-REPORTED PASS; confirms the workflow in the emulator, not Thor Keystore hardware behavior. |
+| Enable private mode and try connection testing | USER-REPORTED PASS; no independent packet capture was performed. |
+
+These checks do not need repeating merely because a new chat begins. Repeat when relevant code/configuration changes
+or a new symptom warrants it. Native clipboard/typing behavior was implemented but not separately described by the
+user; leave focused input validation pending. Physical Thor validation below is still NOT RUN. The transport path
+(direct HTTPS versus Tailscale) and full live OpenAPI were not supplied to the agent.
 
 ## Build locally
 
@@ -54,7 +72,8 @@ be shared between the two applications; separate app IDs do not isolate shared s
 
 ## Connection walkthrough
 
-1. Open **Tandem RoMM Dev → Settings → Library & art → RoMM** with the physical controller.
+1. Open **Tandem RoMM Dev → Start menu → Settings → Library & art → RoMM**. Use controller Start or the emulator
+   instructions below; a physical controller is not required for the emulator.
 2. Check it starts disabled and local browsing works without configuration.
 3. Enter your final HTTPS website URL in **RoMM server URL**, without `/api`, query parameters or embedded credentials.
    A plain reverse-proxy subpath is supported. For Tailscale, connect the Thor through its existing VPN route and use
@@ -74,7 +93,41 @@ be shared between the two applications; separate app IDs do not isolate shared s
    must also remove the old token and disable RoMM. Use test configuration for these checks rather than replacing
    working production credentials.
 
-## Pending physical and deployment checks
+## Entering URLs and tokens in the Windows emulator
+
+Complete first-run **Read your games** (all-files access) and **Pick your games folder** before opening the menu.
+An empty test folder on internal storage is sufficient; no ROMs are required. `LibraryRoot` only creates the main
+menu/navigation after both setup conditions are satisfied.
+
+With Tandem in the foreground, a short ADB `input keyevent 108` opens the **left Start panel**. Scroll to
+**Settings → All settings** for the main Settings screen, or **Settings → Library & art** to go directly to that
+category. RoMM is below Steam. `input keyevent 82` is also mapped to Start. These are controller/Android keycodes;
+do not assume an ordinary PC letter or emulator function-key shortcut sends them. Use `adb devices -l` and target
+the verified emulator serial with `-s`; do not assume a prior session's serial.
+
+The **right side panel** opens with R2 (`105`) on the home screen and contains notifications/quick controls; it
+does not lead to Tandem's full Settings. Holding Start for at least 550 ms opens the separate quick panel. Optional
+touchable Start/Menu hints default to off and are hidden on several home layouts, so use the injected short Start
+press when no menu button is visible. Close other dialogs/screensavers first if a press is intercepted.
+
+The text-entry dialog has an editable line above the controller keyboard. Click that line to type with the PC
+keyboard or paste with Ctrl+V. Its **Paste** key also inserts text from the Android clipboard at the current cursor,
+replacing any selection. Windows-to-emulator clipboard sharing must be working for Windows clipboard content to
+reach Android; if the Paste key inserts nothing, first check the emulator's clipboard/input settings.
+
+Press Enter or choose **Done** to save; Escape or the existing Back/Cancel action discards the edit. Controller
+navigation still starts on the first letter, and its keys edit at the shared cursor/selection. Press D-pad Down from
+the editable line to return to the controller keys. Tokens are fully masked; do not paste them into ADB commands.
+
+The change applies to the shared text-entry dialog, including both RoMM URL and token entry. Install the newly built
+debug APK over the existing development app before checking this behavior. No credentials are required to test the
+editor: use a synthetic value and cancel without saving it.
+
+Nine JVM editing tests cover mixed controller/native insertion, forward/reverse selection replacement, multiline
+paste normalization, deletion at the start/in the middle, and whole-code-point deletion of pasted emoji. Native
+keyboard/clipboard delivery and controller focus still need interactive emulator/device validation.
+
+## Pending physical Thor and deployment checks
 
 | Check | Expected | Status |
 | --- | --- | --- |
@@ -87,7 +140,8 @@ be shared between the two applications; separate app IDs do not isolate shared s
 | Disabled/private mode local use | No new RoMM network traffic; local browsing/launch unaffected. | Static/mock evidence; device NOT RUN |
 | Internal/SD download and emulator launch | Deferred until downloader and library integration exist. | N/A for this milestone |
 
-The user's live server schema was not fetched. When testing a deployment, review its OpenAPI and proxy authentication
+The full live server schema was not fetched by the agent; the app's successful probe reads and checks the live
+OpenAPI before its authenticated platform request. When testing further operations, review their OpenAPI and proxy authentication
 policy locally; do not publish the unredacted schema if it contains private deployment information. A mock is preferable
 for failure injection. Do not change server settings, disable download authentication, or modify server ROMs to test
 this feature.

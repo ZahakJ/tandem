@@ -9,6 +9,12 @@ Follow `AGENTS.md` and the requested development/review/test scope. Keep RoMM op
 
 Invoke: `Use $android-rom-downloads to design and test cancellable RoMM downloads to internal storage and SD card.`
 
+Read [the progress journal](../../../docs/ROMM_PROGRESS.md) for current implementation and acceptance before planning.
+The first milestone provides a connection probe and encrypted credential storage, not a downloader. Reuse
+`romm/RommClient.kt`/`RommVault.kt` and their privacy/credential boundaries as appropriate; do not create another
+plaintext token store or mistake the probe's bounded JSON response reader for a streaming ROM downloader. Journal
+entries and proposed milestones do not authorize production downloads or additional implementation by themselves.
+
 ## Inspect the existing integration points
 
 Under `app/src/main/java/io/github/zahakj/tandem/`, inspect:
@@ -64,6 +70,6 @@ Cover:
 - Traversal, ambiguous mappings, content duplicates versus name collisions, concurrent jobs, and unrelated sentinel files surviving cleanup.
 - Scanner invisibility before commit, correct platform after commit, concurrent scans, cache refresh, cross-root duplicates, and rescan failure.
 
-Mocks do not establish real SAF/SD behavior: mark physical Thor permission/storage/controller/dual-screen checks not run until observed. For implementation changes run `.\gradlew.bat testDebugUnitTest` and `.\gradlew.bat assembleDebug`; distinguish new failures from the baseline in `AGENTS.md` without disabling tests.
+Mocks and emulator checks do not establish real Thor SAF/SD behavior: mark physical permission/storage/controller/dual-screen checks not run until observed. For implementation changes run `.\gradlew.bat testDebugUnitTest` and `.\gradlew.bat assembleDebug`; compare failure identities with the recorded baseline in the journal/audit and fresh pre-change evidence, without disabling tests or treating historical counts as a permanent allowance. Update the journal with meaningful new implementation/validation and its evidence source.
 
 Report affected files, verified API assumptions, commands/results, storage/provider coverage, justified dependencies, and remaining integrity/recovery limits. Claim only behavior supported by evidence.

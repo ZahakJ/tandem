@@ -1,0 +1,12 @@
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+$device = "emulator-5554"
+
+& $adb -s $device shell am start -n "io.github.zahakj.tandem.romm.dev/io.github.zahakj.tandem.MainActivity"
+& $adb -s $device shell input keyevent 108
+
+& "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -avd Medium_Phone_API_37.0 -> opens the emulator
+
+to tell gpt from a new chat
+
+"Continue from the RoMM journal with remote library browsing"
+

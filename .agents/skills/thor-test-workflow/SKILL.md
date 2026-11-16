@@ -1,6 +1,6 @@
 ---
 name: thor-test-workflow
-description: Build, install, debug, and validate the modified Tandem Android app on a physical AYN Thor using the project Gradle wrapper and Android SDK tools. Use for device testing, controller and dual-screen regressions, RoMM connectivity, storage, permissions, and crash triage.
+description: Build, debug, and validate Tandem using its Gradle wrapper and Android SDK tools on a physical AYN Thor or Android Emulator, distinguishing emulator results from controller, dual-screen, storage and other hardware validation.
 ---
 
 # Thor Test Workflow
@@ -17,6 +17,14 @@ The skill lives in `.agents/skills/thor-test-workflow` and supports normal autom
 
 Follow the repository's `AGENTS.md`. Perform only the requested phases: invoking this skill does not by itself authorize installation, configuration changes, or server testing. Reuse existing authorization; do not ask again for an installation already requested. Inspect relevant source and current features before choosing checks. Report a feature that is not implemented as unavailable, rather than inventing settings, endpoints, or results. A validation request alone does not authorize application-code changes.
 
+Read [the progress journal](../../../docs/ROMM_PROGRESS.md) first for the current build/test history and accepted
+user observations. Do not re-run accepted checks solely because the chat changed. Recheck source and run fresh
+checks when code, configuration or symptoms justify it. Append meaningful new results with their evidence source;
+never turn an emulator pass into a physical Thor pass.
+
+For Windows Android Emulator work, read [the emulator reference](references/emulator.md). It covers the first-run
+menu gate, ADB Start versus R2, editable token entry and the boundary between emulator and hardware validation.
+
 Read [ADB and build commands](references/commands.md) when executing builds, installation, permissions, diagnostics, or crash investigation. Commands are PowerShell examples to adapt to verified paths and the selected device.
 
 ## Device and data safeguards
@@ -32,6 +40,8 @@ Read [ADB and build commands](references/commands.md) when executing builds, ins
 
 1. Inspect `app/build.gradle.kts`, the manifest, and `docs/guide/building.md`; verify JDK/SDK availability. Current documented prerequisites are JDK 17, SDK platform 34, and build-tools 34.0.0; recheck if the project changes. An absent NDK omits the controller passthrough helper: report that limitation when relevant.
 2. From the repository root run `.\gradlew.bat assembleDebug` and `.\gradlew.bat testDebugUnitTest` as separate commands, recording each exit code and failure independently. Do not install a stale APK after a failed build. A test compilation failure is not a completed test run.
+   Compare failure identities with the journal/audit and a captured pre-change run; historical counts are not a
+   permanent allowance for 23 failures. The root `AGENTS.md` need not contain the detailed baseline.
 3. Use the generated APK and output metadata to verify the package, variant, version, and launch activity. Current defaults are `app/build/outputs/apk/debug/app-debug.apk`, `io.github.zahakj.tandem`, and `.MainActivity`; do not assume they remain unchanged.
 4. When installation is requested, inspect the existing package, then use a serial-targeted `adb install -r`. This attempts to retain app data; it can fail when debug and release signing certificates differ. Stop and explain the conflict instead of erasing the installed app. Launch only after a successful install.
 
