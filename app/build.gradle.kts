@@ -69,8 +69,8 @@ android {
         applicationId = "io.github.zahakj.tandem"
         minSdk = 30
         targetSdk = 34
-        versionCode = 11
-        versionName = "0.5.4"
+        versionCode = 12
+        versionName = "0.5.5"
         buildConfigField("long", "DISCORD_APP_ID", "${if (withDiscord) discordAppId else "0"}L")
         buildConfigField("boolean", "SELF_UPDATE", selfUpdate.toString())
         manifestPlaceholders["selfUpdate"] = selfUpdate.toString()

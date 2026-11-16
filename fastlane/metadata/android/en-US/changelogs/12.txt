@@ -1,0 +1,3 @@
+- No more "Tandem isn't responding" after a touch on the bottom screen or the handheld menu during a game.
+- Spotlight: Up from the first cover reaches Stats and Quick.
+- Theme music comes back after the screensaver when a game is left open.
