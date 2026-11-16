@@ -69,7 +69,8 @@ object GameCompanion {
      * emulator does use the second screen picks "Leave to emulator" in the system's options (or a game's).
      */
     private val dualSystems = setOf("n3ds", "nds")
-    private val dualApps = listOf("azahar", "citra", "lime3ds", "borked3ds", "mandarine", "melonds", "drastic")
+    // Peanuts Native (nxnative) runs the game's companion on the second screen itself.
+    private val dualApps = listOf("azahar", "citra", "lime3ds", "borked3ds", "mandarine", "melonds", "drastic", "nxnative")
 
     fun usesBothScreens(platformId: String, pkg: String?): Boolean =
         platformId in dualSystems || pkg?.lowercase()?.let { p -> dualApps.any { it in p } } == true

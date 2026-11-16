@@ -137,6 +137,13 @@
      "game": "data",
      "store": "https://github.com/eden-emulator/Releases/releases",
      "note": "verify store page"
+    },
+    {
+     "name": "Peanuts Native",
+     "component": "dev.nxnative.android.peanuts/dev.peanuts.launch.LaunchActivity",
+     "game": "none",
+     "store": "https://github.com/igawa6/peanuts-native/releases",
+     "note": "Switch games rebuilt to run natively; Tandem plays the ones Peanuts has built there by default (PeanutsNative.kt)"
     }
    ]
   },

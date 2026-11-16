@@ -60,7 +60,10 @@ data class Platform(
     /** The emulator for [game]: its own choice if that is installed (and takes this file), else the system default. */
     fun playerFor(game: Game): LaunchSpec? {
         val ps = playersFor(game.file.name, players)
-        return ps.firstOrNull { it.name == game.meta.emulator } ?: ps.firstOrNull()
+        // A Switch game Peanuts Native has built plays natively; one it hasn't built never goes there.
+        PeanutsNative.playerFor(game, ps)?.let { return it }
+        val usable = if (PeanutsNative.ready(game)) ps else ps.filter { it.packageName != PeanutsNative.PKG }
+        return usable.firstOrNull { it.name == game.meta.emulator } ?: usable.firstOrNull()
     }
 
     /**

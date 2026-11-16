@@ -1,0 +1,141 @@
+package io.github.zahakj.tandem
+
+import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.ui.inBackground
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+
+/**
+ * Peanuts Native (github.com/igawa6/peanuts-native): Switch games rebuilt to run natively on the handheld, each
+ * built once on the device from the user's own dump, with Eden Duo's companions on the second screen. A Switch game
+ * that Peanuts has built plays there by default ([playerFor]); one it can build offers it in the game's menu
+ * ([build]); every other Switch game goes to its emulator as before.
+ *
+ * What Peanuts knows is read through its control command (peanuts/docs/CONTROL.md): `list` writes the library to
+ * its ctl folder, and `build` starts a build. The command is guarded by the DUMP permission, which adb's shell holds,
+ * so both go through Shizuku; without Shizuku Tandem knows nothing of Peanuts and plays games as before.
+ */
+object PeanutsNative {
+    const val PKG = "dev.nxnative.android.peanuts"
+    const val PLAYER = "Peanuts Native"
+    private const val CTL = "$PKG/dev.peanuts.ctl.Command"
+    private const val LIBRARY = "/sdcard/Android/data/$PKG/files/ctl/library.json"
+    private const val STATUS = "/sdcard/Android/data/$PKG/files/ctl/status.json"
+
+    /** One game in Peanuts' library. [state]: `ready`, `build`, `building` or `not_in_app` (no profile for it). */
+    data class Entry(val titleId: String, val name: String, val state: String, val companion: Boolean)
+
+    /** Peanuts' games by the path of their file in the user's game folder, as last read. */
+    var library by mutableStateOf<Map<String, Entry>>(emptyMap())
+        private set
+
+    /** The game being built, and how far along ("Importing · 31 %"), while one is. */
+    var building by mutableStateOf<Pair<String, String>?>(null)
+        private set
+
+    private var readAt = 0L
+
+    fun installed(): Boolean = Emulators.isInstalled(PKG)
+
+    /**
+     * [game]'s row: by its file, else by the folder Peanuts imported it into (its `.nup` sits in a folder named after
+     * the dump, beside it: `switch/<Name>.nsp` becomes `switch/<Name>/<Name>.nup`), else by its name.
+     */
+    fun of(game: Game): Entry? = match(library, game.file.path, game.title)
+
+    internal fun match(lib: Map<String, Entry>, path: String, title: String): Entry? {
+        lib[path]?.let { return it }
+        val dir = path.substringBeforeLast('/')
+        val stem = path.substringAfterLast('/').substringBeforeLast('.')
+        lib.entries.firstOrNull { (p, _) -> p.substringBeforeLast('/') == "$dir/$stem" }?.let { return it.value }
+        val name = simple(title)
+        return lib.values.firstOrNull { simple(it.name) == name }
+    }
+
+    /** "Fire Emblem: Three Houses" and "Fire Emblem Three Houses" are the same game. */
+    private fun simple(name: String): String = name.lowercase().filter { it.isLetterOrDigit() }
+
+    /** Built and ready to play natively. */
+    fun ready(game: Game): Boolean = of(game)?.state == "ready"
+
+    /** Peanuts can build it (it has a profile for this game and version). */
+    fun buildable(game: Game): Boolean = of(game)?.state == "build"
+
+    /**
+     * The player for [game] when Peanuts should have it: a built game nobody chose another emulator for, or one whose
+     * chosen player is Peanuts. Null leaves the choice to the system's emulators.
+     */
+    fun playerFor(game: Game, players: List<LaunchSpec>): LaunchSpec? {
+        if (game.platform.id != "switch") return null
+        val peanuts = players.firstOrNull { it.packageName == PKG } ?: return null
+        val chosen = game.meta.emulator
+        return when {
+            !ready(game) -> null
+            chosen == null || chosen == PLAYER -> peanuts
+            else -> null
+        }
+    }
+
+    /** Reads Peanuts' library again, in the background, at most every [minGapMs]. */
+    fun refresh(minGapMs: Long = 30_000L) {
+        // The installed list may not be read yet at startup: then Peanuts is simply asked (a missing app answers nothing).
+        if ((Emulators.installed.isNotEmpty() && !installed()) || !Shell.ready()) return
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - readAt < minGapMs) return
+        readAt = now
+        var read: Map<String, Entry>? = null
+        var job: Pair<String, String>? = null
+        inBackground({
+            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "list")
+            Thread.sleep(1500)
+            read = Shell.run("cat", LIBRARY)?.let(::parseLibrary)
+            job = Shell.run("cat", STATUS)?.let(::parseBuild)
+        }) {
+            Log.i("Tandem", "Peanuts Native: ${read?.count { it.value.state == "ready" } ?: "?"} games built")
+            read?.let { library = it }
+            building = job
+        }
+    }
+
+    /** Starts building [game] in Peanuts (5 to 40 minutes on the Thor); it shows its progress in its own app. */
+    fun build(ctx: Context, game: Game) {
+        val id = of(game)?.titleId ?: return
+        inBackground({
+            val said = Shell.run("am", "start", "-n", CTL, "-e", "cmd", "build", "-e", "title_id", id)
+            Log.i("Tandem", "Peanuts build $id: ${said?.trim()}")
+        }) {
+            io.github.zahakj.tandem.ui.Toasts.show("Building ${game.title} natively. This takes 5 to 40 minutes; you can keep playing meanwhile")
+            readAt = 0L
+            refresh()
+        }
+    }
+
+    private fun JsonObject.str(key: String): String = this[key]?.jsonPrimitive?.contentOrNull.orEmpty()
+
+    internal fun parseLibrary(text: String): Map<String, Entry> = runCatching {
+        val rows = Json.parseToJsonElement(text).jsonObject["library"]?.jsonArray ?: return emptyMap()
+        buildMap {
+            for (row in rows) {
+                val r = row.jsonObject
+                val path = r.str("game").takeIf { it.isNotEmpty() } ?: continue
+                put(path, Entry(r.str("title_id"), r.str("name"), r.str("state"), r["has_companion"]?.jsonPrimitive?.booleanOrNull == true))
+            }
+        }
+    }.getOrDefault(emptyMap())
+
+    internal fun parseBuild(text: String): Pair<String, String>? = runCatching {
+        val b = Json.parseToJsonElement(text).jsonObject["build"] as? JsonObject ?: return null
+        if (b["running"]?.jsonPrimitive?.booleanOrNull != true) return null
+        b.str("name") to "${b.str("step").replaceFirstChar { it.uppercase() }} · ${b["percent"]?.jsonPrimitive?.intOrNull ?: 0} %"
+    }.getOrNull()
+}

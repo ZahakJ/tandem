@@ -80,6 +80,8 @@ object GameExtras {
 @Composable
 fun GameExtrasBadges(game: Game, chip: Modifier = Modifier) {
     if (game.meta.companionApp != null) Pill("▣ Companion app", Palette.Sky, chip)
+    // Built by Peanuts Native: Play starts it natively.
+    if (io.github.zahakj.tandem.PeanutsNative.ready(game)) Pill("⚡ Native", Palette.Mint, chip)
 }
 
 /** The extras, as items under the fields in Edit details. [focus] notes which button holds the focus. */

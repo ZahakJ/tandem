@@ -214,6 +214,15 @@ fun GameMenu() {
                 val pinned = isPinnedToHome(g)
                 add(MenuAction("home", if (pinned) "Unpin from home" else "Pin to home", Glyph.Star, Palette.Butter, value = if (pinned) "★" else null) { togglePinToHome(g) })
             }
+            // Peanuts Native can build this Switch game to run natively (once, 5 to 40 minutes on the device).
+            val pn = io.github.zahakj.tandem.PeanutsNative
+            if (g.platform.id == "switch") pn.refresh()
+            if (pn.buildable(g)) add(MenuAction("native", "Build native version", Glyph.Star, Palette.Mint, help = "Peanuts Native rebuilds it to run without an emulator, once (5 to 40 minutes). Play then starts it natively.") {
+                Nav.closeOverlays(); pn.build(ctx, g)
+            })
+            pn.building?.takeIf { (name, _) -> name.equals(pn.of(g)?.name, ignoreCase = true) }?.let { (_, how) ->
+                add(MenuAction("native-progress", "Building natively", Glyph.Star, Palette.Mint, value = how) { pn.refresh(0) })
+            }
             add(MenuAction("notes", "Notes", icon = TIcon.Notes, color = Palette.Mint, help = "This game's notes, in ROMs/notes.") {
                 Nav.closeOverlays(); NotesUi.openFor(g)
             })
