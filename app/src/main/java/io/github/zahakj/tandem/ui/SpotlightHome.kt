@@ -473,6 +473,8 @@ private fun Modifier.railKeys(st: RailState, railLeft: Boolean, ctx: android.con
             Key.DirectionUp, Key.DirectionDown -> {
                 if (down) {
                     val dir = if (e.key == Key.DirectionUp) -1 else 1
+                    // Up from the first cover goes to the top bar (Stats, Quick), which nothing else leads to here.
+                    if (dir < 0 && !st.expanded && st.index == 0 && e.nativeKeyEvent.repeatCount == 0 && TopBarFocus.enter()) return@onKeyEvent true
                     if (st.expanded) st.scrollStory(dir * storyStep)
                     else st.step(dir * SpotlightRail.holdStep(e.nativeKeyEvent.eventTime - e.nativeKeyEvent.downTime))
                 }

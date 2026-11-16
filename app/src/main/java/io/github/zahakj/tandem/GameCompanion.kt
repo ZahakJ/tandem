@@ -515,6 +515,29 @@ class CompanionActivity : ComponentActivity() {
         SystemBars.hide(window)
     }
 
+    /** A note is being typed ([typing]): the window holds the focus on purpose. */
+    private var typingNow = false
+
+    /**
+     * This became the activity buttons go to (a touch on this screen, the AYN menu closing over the game, an app
+     * closing). A window that never takes the focus would leave every button press waiting until Android called
+     * Tandem not responding and offered to close it, so for as long as it is the top one it takes the presses, and
+     * the game is brought back to the front (with Shizuku, which knows its task), which takes the controller again.
+     */
+    override fun onTopResumedActivityChanged(isTopResumedActivity: Boolean) {
+        super.onTopResumedActivityChanged(isTopResumedActivity)
+        if (typingNow) return
+        if (!isTopResumedActivity) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+            return
+        }
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        SystemBars.hide(window)
+        val pkg = gamePackage ?: return
+        val app = applicationContext
+        Thread({ GameResume.target(Processes.snapshot(maxAgeMs = 0)?.tasks, pkg)?.let { GameResume.bringBack(app, it) } }, "companion-hand-back").start()
+    }
+
     /** A screenshot of the game's screen, saved and copied to the clipboard (GameShot.kt). */
     fun screenshot() {
         val title = info.value?.title ?: return
@@ -594,6 +617,7 @@ class CompanionActivity : ComponentActivity() {
      */
     fun typing(on: Boolean) {
         val app = applicationContext
+        typingNow = on
         if (on) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
             SystemBars.hide(window)

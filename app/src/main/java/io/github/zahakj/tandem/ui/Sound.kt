@@ -441,8 +441,11 @@ object Music {
         val fromGame = gameUp
         gameUp = false
         val am = audio()
-        // Someone is already listening to their own music: don't talk over it.
-        yielded = !fromGame && am != null && am.isMusicActive && player == null && !SynthEngine.running
+        // Someone is already listening to their own music: don't talk over it. A game still open in the background
+        // (back from the screensaver with an emulator left running) plays through its audio stream too; that isn't
+        // someone's music either, and taking it for that kept the theme's music off after every screensaver.
+        val gameOpen = io.github.zahakj.tandem.RunningGames.list.isNotEmpty()
+        yielded = !fromGame && !gameOpen && am != null && am.isMusicActive && player == null && !SynthEngine.running
         refresh()
     }
 

@@ -48,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -471,10 +472,15 @@ private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val mine = remember { booleanArrayOf(false) }
     val job = remember { arrayOfNulls<kotlinx.coroutines.Job>(1) }
-    androidx.compose.runtime.DisposableEffect(Unit) { onDispose { if (mine[0]) TopBarFocus.holders-- } }
+    val chip = remember { androidx.compose.ui.focus.FocusRequester() }
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        TopBarFocus.chip(chip, true)
+        onDispose { TopBarFocus.chip(chip, false); if (mine[0]) TopBarFocus.holders-- }
+    }
     FocusCard(
         // Down always goes back to the page below, whatever the layout (TopBarFocus).
         Modifier.height(30.dp)
+            .focusRequester(chip)
             .onFocusChanged { if (it.hasFocus != mine[0]) { mine[0] = it.hasFocus; TopBarFocus.holders += if (it.hasFocus) 1 else -1 } }
             .onPreviewKeyEvent { e ->
                 if (e.key != Key.DirectionDown) return@onPreviewKeyEvent false

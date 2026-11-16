@@ -216,6 +216,17 @@ object TopBarFocus {
     /** The page items most recently highlighted, newest last: one may since have left the screen (a folder closed). */
     private val pages = ArrayDeque<java.lang.ref.WeakReference<FocusRequester>>()
 
+    /** The top bar's buttons, left to right, while they are on screen. */
+    private val chips = ArrayList<FocusRequester>()
+
+    fun chip(requester: FocusRequester, on: Boolean) { if (on) chips += requester else chips.remove(requester) }
+
+    /**
+     * Into the top bar from a screen whose own Up never leads there (Spotlight's rail moves on Up, so its top is the
+     * way in): the rightmost button, Quick, nearest the corner. False when there is no top bar.
+     */
+    fun enter(): Boolean = chips.lastOrNull()?.let { runCatching { it.requestFocus() }.isSuccess } ?: false
+
     /** [requester]'s item on the screen (not in a popup or the top bar) took the focus. */
     fun noted(requester: FocusRequester) {
         pages.removeAll { it.get() == null || it.get() === requester }
