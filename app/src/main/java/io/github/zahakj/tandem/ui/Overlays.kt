@@ -249,7 +249,10 @@ fun GameMenu() {
                     help = "The emulator this game starts in. Tap to switch to the next installed one; the first is the system's own choice.") {
                     if (players.size > 1) {
                         val next = players[(players.indexOf(current) + 1) % players.size]
-                        Store.update(g.key) { it.copy(emulator = if (next == players.first()) null else next.name) }
+                        // The game's own default: Peanuts Native for a game it has built, else the system's first.
+                        val pn = io.github.zahakj.tandem.PeanutsNative
+                        val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.PKG } ?: players.first()
+                        Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
                     } else {
                         Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
                     }

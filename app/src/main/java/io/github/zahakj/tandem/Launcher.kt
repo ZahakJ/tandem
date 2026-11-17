@@ -122,6 +122,8 @@ object Launcher {
     fun start(ctx: Context, plan: Plan): LaunchProblem? {
         val pkg = if (plan.game.platform.isApps) AndroidApps.packageOf(plan.game) else plan.spec.packageName
         if (!Offline.beforeLaunch(ctx, plan.game, pkg)) { Offline.launchFailed(ctx); return LaunchProblem.NotOffline(plan.game, plan) }
+        // A Switch game in both Eden Duo and Peanuts Native carries on from whichever save is newer.
+        SaveSync.beforeLaunch(ctx, plan.game, pkg)?.let { said -> onMain { io.github.zahakj.tandem.ui.Toasts.show(said) } }
         val problem = try { open(ctx, plan) } catch (e: Exception) { Offline.launchFailed(ctx); throw e }
         if (problem != null) Offline.launchFailed(ctx)
         return problem
