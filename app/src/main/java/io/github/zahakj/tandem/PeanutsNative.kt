@@ -32,7 +32,7 @@ import kotlinx.serialization.json.jsonPrimitive
 object PeanutsNative {
     const val PKG = "dev.nxnative.android.peanuts"
     const val PLUS = "dev.nxnative.android.peanuts.plus"
-    /** Every Peanuts app Tandem knows, in the order a game that is ready in both plays. */
+    /** Every Peanuts app Tandem knows; a game ready in both plays in the later (fuller, newer) one. */
     val PACKAGES = listOf(PKG, PLUS)
     const val PLAYER = "Peanuts Native"
 
@@ -67,10 +67,10 @@ object PeanutsNative {
      */
     fun of(game: Game): Entry? = appFor(game)?.let { of(game, it) }
 
-    /** The Peanuts app [game] belongs to: the one it is ready in, else (fullest first) one that can build it. */
+    /** The Peanuts app [game] belongs to: the fullest one it is ready in, else the fullest one that can build it. */
     fun appFor(game: Game): String? {
         val rows = PACKAGES.mapNotNull { p -> of(game, p)?.let { p to it } }
-        return rows.firstOrNull { it.second.state == "ready" }?.first
+        return rows.lastOrNull { it.second.state == "ready" }?.first
             ?: rows.lastOrNull { it.second.state == "build" || it.second.state == "building" }?.first
             ?: rows.firstOrNull()?.first
     }
