@@ -61,7 +61,7 @@ object SaveSync {
             DEVICE in users -> listOf(Part("$EDEN_ROOT/$DEVICE/$title", "$peanutsRoot/$title"))
             // Eden has never saved this game: a Peanuts save goes to Eden's own user (Animal Crossing's to the device save).
             else -> {
-                val own = sh("users", EDEN_ROOT, "..").lines().map { it.trim() }.firstOrNull { it.length == 32 && it != DEVICE } ?: return null
+                val own = sh("users", EDEN_ROOT, ".").lines().map { it.trim() }.firstOrNull { it.length == 32 && it != DEVICE } ?: return null
                 listOf(Part("$EDEN_ROOT/${if (title == AcnhSave.TITLE) DEVICE else own}/$title", "$peanutsRoot/$title"))
             }
         }
@@ -71,7 +71,7 @@ object SaveSync {
         val newer = if (toPeanuts) edenAge - peanutsAge else peanutsAge - edenAge
         if (newer < SAME_S || (if (toPeanuts) edenAge else peanutsAge) == 0L) return null
 
-        val edenUser = user ?: sh("users", EDEN_ROOT, "..").lines().map { it.trim() }.firstOrNull { it.length == 32 && it != DEVICE }
+        val edenUser = user ?: sh("users", EDEN_ROOT, ".").lines().map { it.trim() }.firstOrNull { it.length == 32 && it != DEVICE }
         val stageRoot = File(ctx.cacheDir, "save-sync").apply { mkdirs() }
         try {
             // Every part is staged (and its account swapped) before anything is written, so a refusal changes nothing.

@@ -1,5 +1,6 @@
 # Moves one game's save between two emulators' storage, as root (SaveSync.kt). Every step is its own command:
-#   save-sync.sh users SAVE_ROOT TITLE      the user folders under Eden's save root that hold TITLE, newest first
+#   save-sync.sh users SAVE_ROOT TITLE      the user folders under Eden's save root that hold TITLE, biggest save
+#                                           first (a user that only opened the game has a few bytes of it)
 #   save-sync.sh age DIR                    the newest file time in DIR (seconds), 0 when it has no files
 #   save-sync.sh stage SRC STAGE REF        copies SRC to STAGE, owned and labelled like REF (Tandem's own folder)
 #   save-sync.sh install SRC DST BACKUP [work] [keep]
@@ -13,9 +14,9 @@ cmd="$1"; shift
 case "$cmd" in
 users)
   root="$1"; title="$2"
-  for u in $(ls -t "$root"); do
-    [ -d "$root/$u/$title" ] && [ -n "$(ls -A "$root/$u/$title")" ] && echo "$u"
-  done
+  for u in $(ls "$root"); do
+    [ -d "$root/$u/$title" ] && [ -n "$(ls -A "$root/$u/$title")" ] && echo "$(du -sk "$root/$u/$title" | cut -f1) $u"
+  done | sort -rn | cut -d' ' -f2
   exit 0 ;;
 age)
   [ -d "$1" ] || { echo 0; exit 0; }
@@ -36,7 +37,16 @@ install)
   src="$1"; dst="$2"; backup="$3"; work="$4"; keep="${5:-20}"
   [ -d "$src" ] && [ -n "$(ls -A "$src")" ] || { echo "no save in $src"; exit 2; }
   parent="$(dirname "$dst")"
-  mkdir -p "$parent" "$backup"
+  mkdir -p "$backup"
+  # The app's saves folder may not exist yet (it has never saved): made like the app's own folder above it, never
+  # as root, or the app can't open it.
+  if [ ! -d "$parent" ]; then
+    app="$(dirname "$parent")"
+    mkdir "$parent"
+    chown "$(stat -c %u:%g "$app")" "$parent"
+    chmod 2770 "$parent"
+    chcon "$(stat -c %C "$app")" "$parent"
+  fi
   owner="$(stat -c %u:%g "$parent")"
   label="$(stat -c %C "$parent")"
   if [ -d "$dst" ] && [ -n "$(ls -A "$dst")" ]; then
