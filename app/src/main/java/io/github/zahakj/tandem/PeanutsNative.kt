@@ -24,19 +24,29 @@ import kotlinx.serialization.json.jsonPrimitive
  * What Peanuts knows is read through its control command (peanuts/docs/CONTROL.md): `list` writes the library to
  * its ctl folder, and `build` starts a build. The command is guarded by the DUMP permission, which adb's shell holds,
  * so both go through Shizuku; without Shizuku Tandem knows nothing of Peanuts and plays games as before.
+ *
+ * There may be two of it: the release, and a build of it with more game profiles beside it under its own package
+ * ([PACKAGES]). Each keeps its own library, builds and saves; a game plays in the one that has built it, and is
+ * built in the one that can build it, the fuller build first.
  */
 object PeanutsNative {
     const val PKG = "dev.nxnative.android.peanuts"
+    const val PLUS = "dev.nxnative.android.peanuts.plus"
+    /** Every Peanuts app Tandem knows, in the order a game that is ready in both plays. */
+    val PACKAGES = listOf(PKG, PLUS)
     const val PLAYER = "Peanuts Native"
-    private const val CTL = "$PKG/dev.peanuts.ctl.Command"
-    private const val LIBRARY = "/sdcard/Android/data/$PKG/files/ctl/library.json"
-    private const val STATUS = "/sdcard/Android/data/$PKG/files/ctl/status.json"
+
+    private fun ctl(pkg: String) = "$pkg/dev.peanuts.ctl.Command"
+    private fun libraryFile(pkg: String) = "/sdcard/Android/data/$pkg/files/ctl/library.json"
+    private fun statusFile(pkg: String) = "/sdcard/Android/data/$pkg/files/ctl/status.json"
+
+    fun isPeanuts(pkg: String?): Boolean = pkg in PACKAGES
 
     /** One game in Peanuts' library. [state]: `ready`, `build`, `building` or `not_in_app` (no profile for it). */
     data class Entry(val titleId: String, val name: String, val state: String, val companion: Boolean)
 
-    /** Peanuts' games by the path of their file in the user's game folder, as last read. */
-    var library by mutableStateOf<Map<String, Entry>>(emptyMap())
+    /** Each Peanuts app's games by the path of their file in the user's game folder, as last read. */
+    var libraries by mutableStateOf<Map<String, Map<String, Entry>>>(emptyMap())
         private set
 
     /** The game being built, and how far along ("Importing · 31 %"), while one is. */
@@ -45,13 +55,25 @@ object PeanutsNative {
 
     private var readAt = 0L
 
-    fun installed(): Boolean = Emulators.isInstalled(PKG)
+    fun installed(): Boolean = PACKAGES.any(Emulators::isInstalled)
+
+    /** [pkg]'s row for [game]. */
+    fun of(game: Game, pkg: String): Entry? = libraries[pkg]?.let { match(it, game.file.path, game.title) }
 
     /**
-     * [game]'s row: by its file, else by the folder Peanuts imported it into (its `.nup` sits in a folder named after
-     * the dump, beside it: `switch/<Name>.nsp` becomes `switch/<Name>/<Name>.nup`), else by its name.
+     * [game]'s row: in the Peanuts app that has built it, else in the one that can build it, else any. A row is found
+     * by the game's file, else by the folder Peanuts imported it into (its `.nup` sits in a folder named after the
+     * dump, beside it: `switch/<Name>.nsp` becomes `switch/<Name>/<Name>.nup`), else by its name.
      */
-    fun of(game: Game): Entry? = match(library, game.file.path, game.title)
+    fun of(game: Game): Entry? = appFor(game)?.let { of(game, it) }
+
+    /** The Peanuts app [game] belongs to: the one it is ready in, else (fullest first) one that can build it. */
+    fun appFor(game: Game): String? {
+        val rows = PACKAGES.mapNotNull { p -> of(game, p)?.let { p to it } }
+        return rows.firstOrNull { it.second.state == "ready" }?.first
+            ?: rows.lastOrNull { it.second.state == "build" || it.second.state == "building" }?.first
+            ?: rows.firstOrNull()?.first
+    }
 
     internal fun match(lib: Map<String, Entry>, path: String, title: String): Entry? {
         lib[path]?.let { return it }
@@ -77,7 +99,8 @@ object PeanutsNative {
      */
     fun playerFor(game: Game, players: List<LaunchSpec>): LaunchSpec? {
         if (game.platform.id != "switch") return null
-        val peanuts = players.firstOrNull { it.packageName == PKG } ?: return null
+        val app = appFor(game) ?: return null
+        val peanuts = players.firstOrNull { it.packageName == app } ?: return null
         val chosen = game.meta.emulator
         return when {
             !ready(game) -> null
@@ -93,33 +116,37 @@ object PeanutsNative {
         val now = android.os.SystemClock.elapsedRealtime()
         if (now - readAt < minGapMs) return
         readAt = now
-        var read: Map<String, Entry>? = null
+        val apps = PACKAGES.filter { Emulators.installed.isEmpty() || Emulators.isInstalled(it) }
+        val read = HashMap<String, Map<String, Entry>>()
         var job: Pair<String, String>? = null
         inBackground({
-            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "list")
-            Thread.sleep(1500)
-            read = Shell.run("cat", LIBRARY)?.let(::parseLibrary)
-            job = Shell.run("cat", STATUS)?.let(::parseBuild)
+            for (pkg in apps) {
+                Shell.run("am", "start", "-n", ctl(pkg), "-e", "cmd", "list")
+                Thread.sleep(1500)
+                Shell.run("cat", libraryFile(pkg))?.let(::parseLibrary)?.takeIf { it.isNotEmpty() }?.let { read[pkg] = it }
+                if (job == null) job = Shell.run("cat", statusFile(pkg))?.let(::parseBuild)
+            }
         }) {
-            Log.i("Tandem", "Peanuts Native: ${read?.count { it.value.state == "ready" } ?: "?"} games built")
-            read?.let { library = it }
+            Log.i("Tandem", "Peanuts Native: ${read.values.sumOf { l -> l.count { it.value.state == "ready" } }} games built")
+            if (read.isNotEmpty()) libraries = libraries + read
             building = job
         }
     }
 
     /** Starts building [game] in Peanuts (5 to 40 minutes on the Thor); it shows its progress in its own app. */
     fun build(ctx: Context, game: Game) {
-        val id = of(game)?.titleId ?: return
+        val pkg = appFor(game) ?: return
+        val id = of(game, pkg)?.titleId ?: return
         val token = "tandem${System.currentTimeMillis()}"
         var answer: Pair<Boolean, String>? = null
         inBackground({
             // A restarted Peanuts knows no game until it has looked again.
-            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "scan")
+            Shell.run("am", "start", "-n", ctl(pkg), "-e", "cmd", "scan")
             Thread.sleep(12_000)
-            Shell.run("am", "start", "-n", CTL, "-e", "cmd", "build", "-e", "title_id", id, "-e", "id", token)
+            Shell.run("am", "start", "-n", ctl(pkg), "-e", "cmd", "build", "-e", "title_id", id, "-e", "id", token)
             repeat(10) {
                 Thread.sleep(500)
-                answer = Shell.run("cat", STATUS)?.let { parseAnswer(it, token) }
+                answer = Shell.run("cat", statusFile(pkg))?.let { parseAnswer(it, token) }
                 if (answer != null) return@inBackground
             }
         }) {

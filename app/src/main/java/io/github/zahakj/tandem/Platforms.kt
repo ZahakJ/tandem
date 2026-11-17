@@ -62,7 +62,7 @@ data class Platform(
         val ps = playersFor(game.file.name, players)
         // A Switch game Peanuts Native has built plays natively; one it hasn't built never goes there.
         PeanutsNative.playerFor(game, ps)?.let { return it }
-        val usable = if (PeanutsNative.ready(game)) ps else ps.filter { it.packageName != PeanutsNative.PKG }
+        val usable = ps.filter { !PeanutsNative.isPeanuts(it.packageName) || PeanutsNative.of(game, it.packageName)?.state == "ready" }
         return usable.firstOrNull { it.name == game.meta.emulator } ?: usable.firstOrNull()
     }
 

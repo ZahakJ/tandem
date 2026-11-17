@@ -66,7 +66,7 @@ object LaunchIntents {
             spec.game.startsWith("extra-path:") -> intent.putExtra(spec.game.substringAfter(':'), file.path)
         }
         // Peanuts Native knows the game by its title ID: it plays the .nup it imported, not the dump Tandem lists.
-        if (spec.packageName == PeanutsNative.PKG) PeanutsNative.of(game)?.titleId?.let { intent.putExtra("title_id", it) }
+        if (PeanutsNative.isPeanuts(spec.packageName)) PeanutsNative.of(game, spec.packageName)?.titleId?.let { intent.putExtra("title_id", it) }
         spec.data?.let { data = Uri.parse(vars.expand(it)) }
         // setData and setType each clear the other, so they're set together.
         val type = spec.type?.let(vars::expand)?.takeIf { it.isNotBlank() }

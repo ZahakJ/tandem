@@ -21,7 +21,7 @@ object SaveSync {
     const val EDEN = "io.github.zahakj.edenduo"
     private const val DATA = "/data/media/0/Android/data"
     private const val EDEN_ROOT = "$DATA/$EDEN/files/nand/user/save/0000000000000000"
-    private const val PEANUTS_ROOT = "$DATA/${PeanutsNative.PKG}/files/saves"
+    private fun peanutsRoot(pkg: String) = "$DATA/$pkg/files/saves"
     private const val BACKUPS = "/data/media/0/ROMs/tandem/save-sync/backups"
     /** Eden's device saves sit in the all-zero user. */
     private const val DEVICE = "00000000000000000000000000000000"
@@ -37,30 +37,32 @@ object SaveSync {
      * copy): call off the main thread. Returns what it did for the user to see, or null when nothing changed.
      */
     fun beforeLaunch(ctx: Context, game: Game, pkg: String): String? {
-        if (game.platform.id != "switch" || (pkg != EDEN && pkg != PeanutsNative.PKG)) return null
-        val title = PeanutsNative.of(game)?.titleId?.takeIf { it.length == 16 } ?: return null
-        if (!Emulators.isInstalled(EDEN) || !PeanutsNative.installed() || !Shell.ready()) return null
+        if (game.platform.id != "switch" || (pkg != EDEN && !PeanutsNative.isPeanuts(pkg))) return null
+        // The Peanuts app the game plays in: the one starting it, or the one that has built it.
+        val peanuts = if (PeanutsNative.isPeanuts(pkg)) pkg else PeanutsNative.appFor(game)?.takeIf { PeanutsNative.of(game, it)?.state == "ready" } ?: return null
+        val title = PeanutsNative.of(game, peanuts)?.titleId?.takeIf { it.length == 16 } ?: return null
+        if (!Emulators.isInstalled(EDEN) || !Emulators.isInstalled(peanuts) || !Shell.ready()) return null
         // A game already open is brought back as it is; its save is the one in memory.
         if (RunningGames.list.any { it.game?.key == game.key }) return null
-        return runCatching { sync(ctx, title, toPeanuts = pkg == PeanutsNative.PKG) }
+        return runCatching { sync(ctx, title, peanutsRoot(peanuts), toPeanuts = PeanutsNative.isPeanuts(pkg)) }
             .onFailure { Log.w("Tandem", "Save sync for $title failed", it) }
             .getOrElse { "Couldn't bring the save across: ${it.message}. Both saves are as they were" }
     }
 
-    private fun sync(ctx: Context, title: String, toPeanuts: Boolean): String? {
+    private fun sync(ctx: Context, title: String, peanutsRoot: String, toPeanuts: Boolean): String? {
         val script = script(ctx)
         fun sh(vararg args: String): String = Shell.run("su", "-c", (listOf("sh", script) + args).joinToString(" ") { "'$it'" })
             ?: error("root isn't available")
         val users = sh("users", EDEN_ROOT, title).lines().map { it.trim() }.filter { it.length == 32 }
         val user = users.firstOrNull { it != DEVICE }
         val parts = when {
-            user != null && DEVICE in users -> listOf(Part("$EDEN_ROOT/$user/$title", "$PEANUTS_ROOT/$title"), Part("$EDEN_ROOT/$DEVICE/$title", "$PEANUTS_ROOT/${title}_device"))
-            user != null -> listOf(Part("$EDEN_ROOT/$user/$title", "$PEANUTS_ROOT/$title"))
-            DEVICE in users -> listOf(Part("$EDEN_ROOT/$DEVICE/$title", "$PEANUTS_ROOT/$title"))
+            user != null && DEVICE in users -> listOf(Part("$EDEN_ROOT/$user/$title", "$peanutsRoot/$title"), Part("$EDEN_ROOT/$DEVICE/$title", "$peanutsRoot/${title}_device"))
+            user != null -> listOf(Part("$EDEN_ROOT/$user/$title", "$peanutsRoot/$title"))
+            DEVICE in users -> listOf(Part("$EDEN_ROOT/$DEVICE/$title", "$peanutsRoot/$title"))
             // Eden has never saved this game: a Peanuts save goes to Eden's own user (Animal Crossing's to the device save).
             else -> {
                 val own = sh("users", EDEN_ROOT, "..").lines().map { it.trim() }.firstOrNull { it.length == 32 && it != DEVICE } ?: return null
-                listOf(Part("$EDEN_ROOT/${if (title == AcnhSave.TITLE) DEVICE else own}/$title", "$PEANUTS_ROOT/$title"))
+                listOf(Part("$EDEN_ROOT/${if (title == AcnhSave.TITLE) DEVICE else own}/$title", "$peanutsRoot/$title"))
             }
         }
         fun age(dir: String) = sh("age", dir).trim().toLongOrNull() ?: 0L
