@@ -1,0 +1,1 @@
+- One save per Switch game across Eden Duo and Peanuts Native: whichever you play continues from the newest save. The other is backed up first. Needs Shizuku with root.
