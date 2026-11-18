@@ -85,7 +85,10 @@ object GameCompanion {
     /** What [game] gets: its own choice, else its system's, else the setting for everyone. */
     fun modeFor(game: Game, pkg: String? = null): String {
         val emu = pkg ?: if (game.platform.isApps) null else game.platform.playerFor(game)?.packageName
-        return CompanionMode.resolve(game.meta.companion, SystemPrefs.config(game.platform.id).companion, usesBothScreens(game.platform.id, emu), defaultMode())
+        // Peanuts fills the second screen only for a game it has a companion for; any other gets the art like Eden.
+        val both = usesBothScreens(game.platform.id, emu) &&
+            !(PeanutsNative.isPeanuts(emu) && PeanutsNative.of(game, emu!!)?.companion != true)
+        return CompanionMode.resolve(game.meta.companion, SystemPrefs.config(game.platform.id).companion, both, defaultMode())
     }
 
     /** True once this process has opened a companion (so the theme and stores are already loaded). */
