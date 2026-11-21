@@ -166,6 +166,18 @@ The scrape screen's options:
 | Region & language | from your device | Which box art and description to prefer: the four regions side by side, the languages in a grid |
 | Sources | | The sources in the order they are asked, with each one's state. A opens **Set up sources**, the one place to set them up and change their order |
 
+Highlight an art tile and the note beside **Start scraping** says what that kind is and where Tandem shows it:
+
+| Kind | Where it shows |
+| --- | --- |
+| Box art | The cover on every game card, on the shelves and with a game's details. The one picture every layout uses |
+| Hero | Wide key art: behind a game's details on the bottom screen, the Spotlight backdrop and the art behind a highlighted game |
+| Logo | The game's name drawn as art, over the hero on the bottom screen and in Spotlight instead of plain text |
+| Title screen | Behind a game that has no hero, and one of the pictures the bottom screen picks from |
+| Gameplay | A still from play: behind a game with no hero or title screen, and one of the pictures the bottom screen picks from. It doesn't move |
+| Video | A short clip that plays over the hero a moment after you highlight a game, only while **Look & feel › Video snaps** is on |
+| Physical box | Real scans of the box's front and spine, for the Shelf view and box-shaped covers |
+
 **Start scraping** runs it in the background: with two screens the progress card is on the other screen and you can
 keep browsing; the top bar shows **✦ Scraping 12/40** wherever you are. A scrape pauses while a game is in front and
 carries on when you're back. On the progress screen: **Stop**, **Pause** / **Resume**, **Keep browsing**; at the end

@@ -52,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -216,6 +217,21 @@ private fun kindLabel(k: MediaKind) = when (k) {
     MediaKind.Video -> "Video"
     MediaKind.Front, MediaKind.Spine -> "Physical box"
     else -> k.label
+}
+
+/** The highlighted art tile, so the side says what that kind is and where it shows. */
+private var focusedKind by mutableStateOf<MediaKind?>(null)
+
+/** Where a kind of artwork shows up in Tandem, for the side next to the tiles. */
+private fun kindWhere(k: MediaKind): String = when (k) {
+    MediaKind.Box -> "Box art: the cover on every game card, on the shelves and with a game's details. The one picture every layout uses."
+    MediaKind.Hero -> "Hero: wide key art. It fills the bottom screen behind a game's details, the Spotlight backdrop and the art behind a highlighted game."
+    MediaKind.Logo -> "Logo: the game's name drawn as art, laid over the hero on the bottom screen and in Spotlight instead of plain text."
+    MediaKind.Title -> "Title screen: shown behind a game when it has no hero, and one of the pictures the bottom screen picks from."
+    MediaKind.Gameplay -> "Gameplay: a still from play. Shown behind a game when it has no hero or title screen, and one of the pictures the bottom screen picks from. It doesn't move: clips are Video."
+    MediaKind.Video -> "Video: a short clip that plays over the hero a moment after you highlight a game, when Look & feel › Video snaps is on" +
+        if (Store.settings.look.videoSnaps) "." else " (it's off now)."
+    MediaKind.Front, MediaKind.Spine -> "Physical box: real scans of the box's front and spine, for the Shelf view and box-shaped covers."
 }
 
 private fun kindDetail(k: MediaKind): String = when (k) {
@@ -401,7 +417,8 @@ private fun ScrapeSetup() {
                             val sample = samples[k]
                             ArtTile(
                                 kindLabel(k), detail, on, Palette.Mint, kindGlyph(k),
-                                Modifier.weight(1f).height(140.dp).remembersFocus(route, "k:${k.name}", false),
+                                Modifier.weight(1f).height(140.dp).remembersFocus(route, "k:${k.name}", false)
+                                    .onFocusChanged { if (it.isFocused) focusedKind = k else if (focusedKind == k) focusedKind = null },
                                 art = sample?.let { file -> { AsyncImage(file, null, Modifier.fillMaxSize(), contentScale = kindFit(k)) } },
                             ) { ScrapeConfig.update { it.copy(kinds = if (k in it.kinds) it.kinds - pair else it.kinds + pair) } }
                         }
@@ -487,12 +504,14 @@ private fun ScrapeSetup() {
             if ((p?.hidden ?: 0) > 0 && !io.github.zahakj.tandem.Privacy.enabled) {
                 Text("${plural(p!!.hidden, "hidden game")} skipped, never sent anywhere", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center)
             }
-            // What the chosen mode will do (the Mode row has room only for its three choices).
+            // What the highlighted kind of art is and where it shows; otherwise what the chosen mode will do (the Mode
+            // row has room only for its three choices).
             Spacer(Modifier.height(8.dp))
+            val where = focusedKind
             Text(
-                "${cfg.mode.label}: ${cfg.mode.detail.replaceFirstChar { it.lowercase() }}",
-                Modifier.clip(RoundedCornerShape(14.dp)).background(Palette.Lavender.copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 6.dp),
-                style = MaterialTheme.typography.bodySmall, color = Palette.Lavender, textAlign = TextAlign.Center,
+                if (where != null) kindWhere(where) else "${cfg.mode.label}: ${cfg.mode.detail.replaceFirstChar { it.lowercase() }}",
+                Modifier.clip(RoundedCornerShape(14.dp)).background((if (where != null) Palette.Mint else Palette.Lavender).copy(alpha = 0.12f)).padding(horizontal = 12.dp, vertical = 6.dp),
+                style = MaterialTheme.typography.bodySmall, color = if (where != null) Palette.Mint else Palette.Lavender, textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
             val wantsSomething = cfg.mode == ScrapeMode.Basics || kinds.isNotEmpty() || (cfg.metadata && cfg.details.isNotEmpty())
