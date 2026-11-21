@@ -165,31 +165,38 @@ fun CompanionAppPage(g: Game, routeKey: String, modifier: Modifier, done: () -> 
             Text("Reading your apps…", Modifier.padding(horizontal = 34.dp, vertical = 12.dp), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
             return@Column
         }
-        val state = rememberLazyListState()
+        // The apps as a grid of icons, the chosen one ticked.
+        val state = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
         val current = g.meta.companionApp
         val target = current?.takeIf { c -> list.any { it.packageName == c } } ?: list.firstOrNull()?.packageName
         KeepInView(state, list.indexOfFirst { it.packageName == target }.coerceAtLeast(0))
-        LazyColumn(
+        androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+            androidx.compose.foundation.lazy.grid.GridCells.Adaptive(116.dp),
             Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 300.dp).fadingEdges(state), state = state,
-            contentPadding = PaddingValues(horizontal = 34.dp, vertical = FocusRoom), verticalArrangement = Arrangement.spacedBy(7.dp),
+            contentPadding = PaddingValues(horizontal = 34.dp, vertical = FocusRoom),
+            horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            items(list, key = { it.packageName }) { app ->
+            items(list.size, key = { list[it].packageName }) { i ->
+                val app = list[i]
                 val on = app.packageName == current
                 FocusCard(
-                    Modifier.fillMaxWidth().takesFocus(key, app.packageName, app.packageName == target),
-                    glow = Palette.Mint, shape = RoundedCornerShape(14.dp),
+                    Modifier.height(104.dp).takesFocus(key, app.packageName, app.packageName == target),
+                    glow = Palette.Mint, shape = RoundedCornerShape(16.dp),
                     onClick = {
                         Store.update(g.key) { it.copy(companionApp = app.packageName) }
                         Toasts.show("${app.label} starts with ${g.title}")
                         done()
                     },
                 ) {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
-                        AppIcon(app.packageName, Modifier.size(32.dp))
-                        Spacer(Modifier.width(12.dp))
-                        Text(app.label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        if (on) Pill("Chosen", Palette.Mint)
+                    Column(
+                        Modifier.matchParentSize().background(Palette.Mint.copy(alpha = if (on) 0.2f else 0.04f)).padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                    ) {
+                        AppIcon(app.packageName, Modifier.size(48.dp))
+                        Spacer(Modifier.height(6.dp))
+                        Text(app.label, style = MaterialTheme.typography.labelLarge, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
+                    if (on) TickBadge(true, Palette.Mint, Modifier.align(Alignment.TopEnd).padding(6.dp), size = 20.dp)
                 }
             }
         }
