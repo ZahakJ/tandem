@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -188,20 +189,20 @@ private fun HomeStep(cocoonFound: Boolean, pick: (LookPreset) -> Unit) {
             FocusCard(
                 Modifier.weight(1f).height(196.dp).takesFocus(route, p.id, target == p.id),
                 glow = p.color, shape = RoundedCornerShape(20.dp), onClick = { pick(p) },
-            ) {
+            ) { focused ->
                 Column(Modifier.fillMaxSize()) {
                     val footer = lerp(p.color, Palette.Night, 0.8f)
-                    // A sketch rather than the live grid settings, so it reads at a glance like the other three; the
-                    // badge sits on it, leaving the whole title line for the name.
-                    Box(Modifier.fillMaxWidth().weight(1f)) {
-                        LayoutPreview(p.layout, Modifier.fillMaxSize(), rounded = false, sketch = true)
-                        if (cocoonFound && p.id == "cocoon") {
-                            Pill("Suggested", p.color, Modifier.align(Alignment.TopEnd).padding(8.dp).background(footer, RoundedCornerShape(50)))
-                        }
-                    }
+                    // A sketch rather than the live grid settings, so it reads at a glance like the other three.
+                    LayoutPreview(p.layout, Modifier.fillMaxWidth().weight(1f), rounded = false, sketch = true)
                     Column(Modifier.fillMaxWidth().background(footer).padding(horizontal = 12.dp, vertical = 8.dp)) {
                         Text(p.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(p.changes.first(), style = MaterialTheme.typography.labelLarge, color = p.color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        // What it changes scrolls by on the highlighted card when it is longer than the card.
+                        Text(
+                            p.changes.first(),
+                            if (focused) Modifier.basicMarquee(iterations = Int.MAX_VALUE, initialDelayMillis = 900, velocity = 40.dp) else Modifier,
+                            style = MaterialTheme.typography.labelLarge, color = p.color, maxLines = 1,
+                            overflow = if (focused) TextOverflow.Clip else TextOverflow.Ellipsis,
+                        )
                     }
                 }
             }
