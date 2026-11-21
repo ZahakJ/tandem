@@ -10,7 +10,8 @@ Back goes there) and pulses the row. L1 and R1 flip pages (from a subpage, its p
 people flip while playing also sit in Quick settings (see [Found elsewhere](#found-elsewhere)).
 
 Code: `ui/SettingsCatalog.kt` (pages, subpages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane
-layout, side panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup
+layout, side panel), `ui/Choices.kt` (segmented choices, sliders, the option picker), `ui/Showcase.kt` (the side
+panel's showcases and their miniature scenes), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup
 looks the first-run welcome offers (Cozy shelves, Icon grid look, Orbit, Minimal); Settings no longer shows them. The
 user guide has every row in plain words, with defaults: [Every setting](guide/settings.md).
 
@@ -20,18 +21,32 @@ user guide has every row in plain words, with defaults: [Every setting](guide/se
    `icon`, a plain-language `help`, and `keywords` with the words people might search for.
 2. Choose the row type:
    - `toggle(...)` or `toggle = on` for a switch.
-   - `choice(...)` for a cycler; Left and Right step through it. Toggles that only mean something together (one
-     needs the other on) are one choice instead: Hold Back to move (Off, Apps, Apps and games), Offline for hidden
-     games, the icon grid's Resume page.
-   - `number(...)` for a slider; it draws a gauge.
+   - `choice(...)` for a choice; never build one by hand with `onLeft`/`onRight`, so the row can show its options
+     (`ui/Choices.kt`). Two to four short options (about 30 letters in all) sit on the row as a segmented control:
+     Left and Right move along them, A steps on. More, or longer, show the value with a grid mark, and A opens
+     `ChoicePicker`, a popup of option cards starting on the one in use (B returns to the row); Left and Right still
+     step. Toggles that only mean something together (one needs the other on) are one choice instead: UI sounds (Off
+     or a pack), Music (Off or a source), Hold Back to move (Off, Apps, Apps + games), Offline for hidden games, the
+     icon grid's Resume page.
+   - `number(...)` for a slider (track, fill, knob, value; Left and Right adjust). With a `themeValue`, a "Theme"
+     stop below the minimum lets the theme decide again.
    - `opens = true` for a link to another screen.
    - Anything else is an action.
-3. Place it in `SettingsPlan`: in a group of its page, or of a subpage when it is rare and belongs with others there
+3. If the setting changes how anything looks, give it a showcase (`ui/Showcase.kt`): pass `look`, a miniature of the
+   setting's effect drawn in Compose in the live theme's colours. For a toggle `look(on)` draws the On or the Off
+   look and the side panel plays them in turn (`ToggleShowcase`); for a choice `look(id)` draws one option, the side
+   panel plays every option in turn (`ChoiceShowcase`) and the picker's cards show it too. Each look holds about two
+   seconds with a crossfade, under a chip naming it and marking the one **In use**; with Reduce motion they stand
+   side by side, still. Keep scenes cheap: one Canvas, motion read in draw or layer lambdas (`loopClock`). Build
+   them from the scene helpers there (`MiniScreen`, `DeviceScene`, `LayoutPreview` with a changed `Look`) rather
+   than new drawing kits. A `preview` replaces the showcase where a live picture says more (a slider's value, the
+   accent swatches side by side).
+4. Place it in `SettingsPlan`: in a group of its page, or of a subpage when it is rare and belongs with others there
    (`Sub`, opened by a `link(...)` row on the page). Or drop it there on purpose. There are no folds: no "More
    options". `SettingsPlanTest` fails while a row is neither placed nor dropped, when a page grows past twelve rows,
    or when a subpage isn't opened from exactly one row; a debug build shows a stray row under **Not placed**. Add a
    line to the table below.
-4. Keep labels short (about 28 characters fit on one line). Put the explanation in `help`; it shows in the side
+5. Keep labels short (about 28 characters fit on one line). Put the explanation in `help`; it shows in the side
    panel and on the bottom screen.
 
 Before adding one, ask whether a good default would do, and whether the setting already exists somewhere else. Each
@@ -73,10 +88,10 @@ A "›" step after a page is its subpage.
 | `Look.homeLayout` | Home & layout › Layout gallery | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |
 | `Look.gridScroll` | Home & layout › Home screen › Scrolling (icon grid) | choice |
-| `Look.gridLabels`, `ExtrasSettings.focusLabels` | Home & layout › Home screen › Icon names (icon grid) | action |
+| `Look.gridLabels`, `ExtrasSettings.focusLabels` | Home & layout › Home screen › Icon names (icon grid: Always, Highlighted, Off) | choice |
 | `ExtrasSettings.recentStrip` | Home & layout › Home screen › Recently played strip (icon grid) | choice |
 | `Look.gridFolders` | Home & layout › Home screen › Folders open (icon grid) | choice |
-| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Home lands here) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
+| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Home lands) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
 | `Look.gridRows`, `gridRoundness`, `gridGap`, `gridHeroSplit` | Home & layout › Grid shape (icon grid) | choice / slider |
 | `Look.homeSections` | Home & layout › Home screen › Home rows (shelves, carousel, list, console) | choice |
 | `Look.systemTiles` | Home & layout › Home screen › System tiles (shelves, carousel, list, console) | choice |
@@ -94,7 +109,7 @@ A "›" step after a page is its subpage.
 | `SystemPrefs.singleScreen` | Two screens › Screens › Single screen | toggle |
 | `Look.swapScreens` | Two screens › Screens › Swap screens | toggle |
 | `AppsData.defaultScreen` | Two screens › Screens › Apps open on (Auto, Top, Bottom) | choice |
-| `AppsData.holdBackMoves`, `moveGames` | Two screens › Screens › Hold Back to move (Off, Apps, Apps and games; says what it still needs: Shizuku, the Home button service) | choice |
+| `AppsData.holdBackMoves`, `moveGames` | Two screens › Screens › Hold Back to move (Off, Apps, Apps + games; says what it still needs: Shizuku, the Home button service) | choice |
 | `SystemPrefs.keepRotationOff` | Two screens › Screens › Keep auto-rotate off | toggle |
 | `Look.gridDetails` (icon grid) or `Settings.bottomMode` (other layouts) | Two screens › Other screen › Other screen / Style | choice |
 | (bottom widgets) | Two screens › Other screen › Bottom screen when idle | link |
@@ -106,12 +121,10 @@ A "›" step after a page is its subpage.
 | `SystemConfig.companion`, `GameMeta.companion` | Library & art › Systems and emulators › A on a system › Bottom screen while playing; Y on a game › More › Bottom screen while playing (the same four choices, for that system or game alone) | menu |
 | Per-app screen, name, icon, game, hidden (`AppPrefs`) | Y on any app (dock, All apps, Android apps, grid) | menu |
 | `PackParts.music`, `PackParts.sounds` | Sound & music › Theme pack › Theme pack music / Theme pack sounds (the group shows only while the theme is a pack with music or sounds of its own) | toggle |
-| `Look.sounds`, `soundVolume` | Sound & music › Sounds › UI sounds / Sound volume | toggle / slider |
-| `Look.soundPack` | Sound & music › Sounds › Sound pack (Tandem's 8 packs, then **Custom** when any recorded pack is on the device) | choice |
-| `Look.soundFiles` | Sound & music › Sounds › Custom sounds (shown while Sound pack is Custom: Cocoon's sound packs in `ROMs/assets/sounds`, then theme packs' own `sounds`; `none` is no recorded pack) | choice |
+| `Look.sounds`, `soundPack`, `soundVolume` | Sound & music › Sounds › UI sounds (Off, Tandem's 8 packs, then **Custom** when any recorded pack is on the device) / Sound volume | choice / slider |
+| `Look.soundFiles` | Sound & music › Sounds › Custom sounds (shown while UI sounds is Custom: Cocoon's sound packs in `ROMs/assets/sounds`, then theme packs' own `sounds`; `none` is no recorded pack) | choice |
 | `Look.pipVoice` | Sound & music › Sounds › Pip's voice (a few soft hummed notes with Pip's messages) | toggle |
-| `Look.music`, `musicVolume` | Sound & music › Music › Music / Music volume | toggle / slider |
-| `Look.myMusic`, `soundtrack` | Sound & music › Music › Music from (My music folder, Built-in: Calm, Built-in: Meadow Tales; `soundtrack` null reads as Calm, or as Meadow Tales for a setup from before Calm) | choice |
+| `Look.music`, `myMusic`, `soundtrack`, `musicVolume` | Sound & music › Music › Music (Off, My music, Calm, Meadow Tales; `soundtrack` null reads as Calm, or as Meadow Tales for a setup from before Calm) / Music volume | choice / slider |
 | `Look.musicShuffle` | Sound & music › Music › Shuffle my music | toggle |
 | (next song) | Sound & music › Music › Next song | action |
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |
@@ -148,7 +161,7 @@ A "›" step after a page is its subpage.
 | `HomeSettings.freezeAsleep` | Play & system › Performance & sleep › Pause games in sleep (shows "Needs root Shizuku" without it) | toggle |
 | `HomeSettings.privateMode` | Play & system › Privacy & hidden › Private mode | toggle |
 | `Settings.showHidden` | Play & system › Privacy & hidden › Show hidden games (in private mode it asks for the PIN) | toggle |
-| `HomeSettings.offlineHidden`, `offlineUntilClosed` | Play & system › Privacy & hidden › Offline for hidden games (Off, While it plays, Until it closes) | choice |
+| `HomeSettings.offlineHidden`, `offlineUntilClosed` | Play & system › Privacy & hidden › Offline for hidden games (Off, Until closed, While playing) | choice |
 | `private-pin.json` (`PinVault`) | Play & system › Privacy & hidden › Private mode PIN | action |
 | `Settings.hiddenFolders`, `HomeFolder.hidden`, hidden games | Start › Hidden (each with Unhide; shown while something is hidden and, in private mode, revealed) | menu |
 | Home app role | Play & system › Tandem › Use Tandem as the Home screen | link |

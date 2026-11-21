@@ -13,6 +13,12 @@ change most first, and nothing is folded away. A row with **›** that names a g
 tiles, <kbd>Start</kbd> closes Settings. Each row's help shows beside it and on the other screen. See
 [Controls › Settings](controls.md#settings) for the buttons.
 
+**Every choice shows its options.** A few short ones sit on the row itself, the one in use filled: Left and Right move
+along them. More open as cards with A (each with a little picture of it when the setting changes how something looks),
+starting on the one in use. A number is a slider. For a setting that changes how anything looks, the panel beside the
+rows plays what it does: a switch shows its Off and On looks in turn, a choice each of its options, with a chip naming
+what is on screen and **In use** on yours. With Reduce motion they stand side by side, still.
+
 Some rows only show with the home layout they belong to (the icon grid's rows only with the icon grid, Orbit's only
 with Orbit, and so on), and a few show only when they can do something (Discord only in builds that include it, the
 Theme pack group only when your theme pack brings music or sounds).
@@ -25,7 +31,7 @@ The page opens with the gallery of themes and the gallery of theme packs; see [T
 
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
-| Colour | Accent colour | the theme's | Your own colour for toggles and the highlight. ◀▶ tries the swatches; A lets you type any colour, like `#FF7AB6`. |
+| Colour | Accent colour | the theme's | Your own colour for toggles and the highlight. ◀▶ tries the swatches; A shows them all as cards, and **Type a colour…** takes any, like `#FF7AB6`. |
 | Colour | Highlight style | the theme's | How the highlighted item is marked: Glow, Outline, Lift or Pulse. |
 | Colour | Surface | the theme's | What cards are made of: Solid, Frosted glass or Outlined. |
 | Wallpaper, icons & motion | Wallpaper › | | Opens **Wallpaper** (below). |
@@ -60,10 +66,10 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | --- | --- | --- | --- |
 | Home screen (icon grid) | Icon size | 7 across | How many icons fit across, 5 to 9. L1 / R1 on the grid change it too. |
 | Home screen (icon grid) | Scrolling | Sideways | Sideways, Pages (a page at a time, like the 3DS) or Up and down. |
-| Home screen (icon grid) | Icon names | Highlighted only | Names under the icons: Always, Highlighted only, or Off. |
+| Home screen (icon grid) | Icon names | Highlighted | Names under the icons: Always, Highlighted (only the highlighted icon's), or Off. |
 | Home screen (icon grid) | Folders open | Over the grid | A folder opens as a panel over the grid, or as a Full page. |
-| Home screen (icon grid) | Recently played strip | L2 shows it | A bar of your last games along the top of the grid: shown with L2, Always, or Off. |
-| Home screen (icon grid) | Resume page | Home lands here | A game still running gets a Resume page left of the grid. **Home lands here**: coming back to Tandem while it runs brings you to that page; **On**: the page is there but Home goes to the grid; **Off**: no Resume page. |
+| Home screen (icon grid) | Recently played strip | On L2 | A bar of your last games along the top of the grid: shown with L2 (On L2), Always, or Off. |
+| Home screen (icon grid) | Resume page | Home lands | A game still running gets a Resume page left of the grid. **Home lands**: coming back to Tandem while it runs brings you to that page; **On**: the page is there but Home goes to the grid; **Off**: no Resume page. |
 | Home screen (icon grid) | Grid shape › | | Opens **Grid shape** (below). |
 | Home screen (Orbit) | Orbit holds | Systems, collections, apps | What rides the orbit: all three, Systems and collections, or Systems only. |
 | Home screen (Orbit) | Continue ribbon | On | The last game you played as a wide card above the fan. |
@@ -76,7 +82,7 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | Home screen (every layout but the icon grid) | Now playing | On | A game still open in the background shows at the top of the home screen. |
 | Around the home | How games show › | | Opens **How games show** (below). |
 | Around the home | Dock & widgets › | | Opens **Dock & widgets** (below). |
-| Around the home | Clock | Like the system | 12-hour, 24-hour, like the system, or Hidden. |
+| Around the home | Clock | System | 12-hour, 24-hour, like the system (System), or Hidden. |
 | Around the home | Battery | On | The battery percentage beside the clock. |
 | Around the home | Screensaver | Off | After 2, 5, 10, 15 or 30 minutes without a button press, your covers drift across a night sky while Pip naps, so nothing burns into the screen. Any button or touch wakes it, and that press does nothing else. **Screensaver** in Quick settings (hold Start) starts it at once. |
 
@@ -117,9 +123,9 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | Screens | Single screen | Off | Use only the top screen; games always start there too. On by itself when there is one screen. |
 | Screens | Swap screens | Off | The library moves to the bottom (touch) screen and the details go on top. X does it on the icon grid and Orbit. Games still open on the top screen. |
 | Screens | Apps open on | Auto | Where an Android app opens unless it has its own screen: Auto (the screen you start it from), Top or Bottom. See [Android apps](apps.md#choosing-a-screen-for-apps). |
-| Screens | Hold Back to move | Apps | Hold Back for a moment in an app to move it to the other screen: **Apps**, **Apps and games** (a game in front moves too), or **Off**. Needs Shizuku and the Controller Home button service; the row says which is missing. |
+| Screens | Hold Back to move | Apps | Hold Back for a moment in an app to move it to the other screen: **Apps**, **Apps + games** (a game in front moves too), or **Off**. Needs Shizuku and the Controller Home button service; the row says which is missing. |
 | Screens | Keep auto-rotate off | On | The Thor turns auto-rotate on by itself now and then; Tandem turns it off again whenever you come back. |
-| Other screen | Other screen (icon grid) | Spotlight | What the other screen shows for the highlighted tile: Spotlight (the icon big, a game's art full screen) or Classic details. |
+| Other screen | Other screen (icon grid) | Spotlight | What the other screen shows for the highlighted tile: Spotlight (the icon big, a game's art full screen) or Classic (Tandem's details). |
 | Other screen | Style (other layouts but Spotlight) | Details | Details (the art fading into the game's info), Art + info, Animated art, or Clock. |
 | Other screen | Bottom screen when idle | Greeting | What the bottom screen shows when nothing is highlighted: Pip's greeting, or widgets you pick. |
 | Other screen | Art & video › | | Opens **Art & video** (below). |
@@ -131,7 +137,7 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| Video snaps | Balanced | Plays a game's video from `ROMs/downloaded_media/<system>/videos` after you rest on it: Off, Fast, Balanced or Battery saver (waits longest). Always muted, stopped while you play. |
+| Video snaps | Balanced | Plays a game's video from `ROMs/downloaded_media/<system>/videos` after you rest on it: Off, Fast, Balanced or Saver (waits longest). Always muted, stopped while you play. |
 | Moving art | On | Game art slowly pans and zooms. |
 | Logo size, Art fade | 70 %, Soft fade | The logo's size over the art; how the art blends into the background (Soft fade, Strong fade, Vignette, None). |
 
@@ -140,13 +146,11 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
 | Theme pack (only when your theme pack has music or sounds) | Theme pack music, Theme pack sounds | On | Play the pack's own music and recorded sounds instead of the choices below. |
-| Sounds | UI sounds | On | Clicks, chimes and the launch sound as you move around. |
-| Sounds | Sound pack | Modern | One of Tandem's eight packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air), or **Custom** when you have recorded packs. |
+| Sounds | UI sounds | Modern | Clicks, chimes and the launch sound as you move around: **Off**, one of Tandem's eight packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air), or **Custom** when you have recorded packs. |
 | Sounds | Custom sounds | | Shown with Custom: which recorded pack plays (Cocoon's from `ROMs/assets/sounds`, or a theme pack's own). |
 | Sounds | Sound volume | 50 % | How loud UI sounds are, compared with the system volume. |
 | Sounds | Pip's voice | On | Pip hums a few soft notes when it has something to tell you. |
-| Music | Music | On | Music while you browse. It fades out while a game runs and stays quiet while another app plays. |
-| Music | Music from | My music folder | Your songs from `ROMs/tandem/music` (MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Calm unless you pick Meadow Tales (a setup from before Calm keeps Meadow Tales). |
+| Music | Music | My music | Music while you browse, and where it comes from: **Off**, **My music** (your songs from `ROMs/tandem/music`: MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Calm unless you pick Meadow Tales (a setup from before Calm keeps Meadow Tales). It fades out while a game runs and stays quiet while another app plays. |
 | Music | Music volume | 40 % | How loud the music plays. |
 | Music | Shuffle my music | On | Plays your music folder in a random order. |
 | Music | Next song | | Skips to another song. |
@@ -243,7 +247,7 @@ it mutes Tandem too.
 | --- | --- | --- |
 | Private mode | Off | Hidden games stay hidden until your PIN brings them out, and Tandem stays offline. See [Private mode](privacy.md#private-mode). |
 | Show hidden games | Off | Hidden games, folders and systems show, dimmed. In private mode this needs your PIN. Start › Hidden lists everything hidden, each with Unhide. |
-| Offline for hidden games | Off | In private mode, airplane mode goes on while a hidden game plays: **While it plays** (back online when you return to Tandem), **Until it closes** (offline until the game's app has closed), or **Off**. Needs Shizuku. |
+| Offline for hidden games | Off | In private mode, airplane mode goes on while a hidden game plays: **While playing** (back online when you return to Tandem), **Until closed** (offline until the game's app has closed), or **Off**. Needs Shizuku. |
 | Private mode PIN | | Changes the 4 to 6 digit PIN. |
 
 **Play & system › Your data**

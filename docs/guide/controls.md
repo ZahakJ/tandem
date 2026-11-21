@@ -151,7 +151,7 @@ all scrolls as one list.
 
 When Tandem is your Android Home app (**Settings › Play & system › Use Tandem as the Home screen**, which asks Android to make it so):
 
-- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › Resume page**: Home lands here).
+- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › Resume page**: Home lands).
 - With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
   top screen over the game), the first **Home** brings the game back with its companion on the bottom screen, and the
   game keeps the controller. **Home** again within a few seconds goes to Tandem as usual.
@@ -376,8 +376,8 @@ Settings opens on seven tiles, one per page, each showing what is set now. On a 
 
 | Button | What it does |
 | --- | --- |
-| <kbd>A</kbd> | Switch a toggle, step to the next value, open a link, or run an action (the hints say which) |
-| Left / Right | Step a choice or a slider back and forth (rows drawn ‹ value ›) |
+| <kbd>A</kbd> | Switch a toggle, step to the next option, open a link, or run an action (the hints say which). On a choice with many options (its value has a small grid mark beside it), A opens them all as cards, starting on the one in use: pick one with A, or B to leave it as it is |
+| Left / Right | Move along a choice's options (a few short ones sit on the row itself, the one in use filled) or slide a number |
 | <kbd>A</kbd> on a › row that names a group (Wallpaper ›, Accounts ›) | Open that short page; <kbd>B</kbd> comes back |
 | <kbd>X</kbd> | Search every setting by name or by what it does ("nintendo", "bigger", "quiet"); A on a result takes you to it |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next page |
