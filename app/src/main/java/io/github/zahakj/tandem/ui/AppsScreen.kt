@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -94,27 +95,21 @@ fun AppsScreen() {
         return
     }
     val q = query.lowercase()
-    val shown = list.filter { (!gamesOnly || it.isGame) && (q.isEmpty() || it.label.lowercase().contains(q)) }
+    val shown = remember(list, q, gamesOnly) { list.filter { (!gamesOnly || it.isGame) && (q.isEmpty() || it.label.lowercase().contains(q)) } }
     val routeKey = Route.Apps.key
 
     // Android games go through the launcher (launch animation, play time); every app opens on its own screen.
     val open: (AndroidApps.App) -> Unit = { app -> Dock.open(ctx, app.packageName) }
 
     Column(Modifier.fillMaxSize()) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            FocusCard(Modifier.weight(1f).height(44.dp).remembersFocus(routeKey, "search", false), glow = Palette.Sky, shape = RoundedCornerShape(14.dp), onFocus = { focused = null; Selection.current = Selected.Home }, onClick = search) {
-                Row(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text("⌕ ", style = MaterialTheme.typography.titleLarge, color = Palette.Sky)
-                    Text(query.ifEmpty { "Search apps" }, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = if (query.isEmpty()) Palette.Muted else Palette.Text, maxLines = 1)
-                    ButtonHint("X", "Search", Palette.Sky)
-                }
-            }
-            FocusCard(Modifier.height(44.dp).remembersFocus(routeKey, "filter", false), glow = Palette.Mint, shape = RoundedCornerShape(14.dp), onFocus = { focused = null; Selection.current = Selected.Home }, onClick = { gamesOnly = !gamesOnly }) {
-                Row(Modifier.padding(horizontal = 14.dp).fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-                    Text(if (gamesOnly) "Games only" else "All apps", style = MaterialTheme.typography.titleSmall)
-                }
-            }
-            Text("${shown.size}", style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
+        // The search field and two tabs with their counts, as on the Systems screen: the choice is in sight, not a
+        // button that flips between two words.
+        val header: () -> Unit = { focused = null; Selection.current = Selected.Home }
+        val matching = remember(list, q) { list.filter { q.isEmpty() || it.label.lowercase().contains(q) } }
+        Row(Modifier.fillMaxWidth().padding(start = 22.dp, end = 22.dp, top = 6.dp).focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+            SearchField(query, "Search apps", Modifier.weight(1f).remembersFocus(routeKey, "search", false), onFocus = header, onClick = search)
+            FilterTab("All apps", matching.size, Palette.Sky, !gamesOnly, Modifier.remembersFocus(routeKey, "filter", false), onFocus = header) { gamesOnly = false }
+            FilterTab("Games", matching.count { it.isGame }, Palette.Butter, gamesOnly, Modifier.remembersFocus(routeKey, "games", false), onFocus = header) { gamesOnly = true }
         }
         if (shown.isEmpty()) {
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -158,17 +153,19 @@ fun AppsScreen() {
 
 @Composable
 private fun AppTile(app: AndroidApps.App, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    FocusCard(modifier, glow = Palette.forName(app.packageName), onFocus = onFocus, entry = true, onClick = onClick) {
-        Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    val color = Palette.forName(app.packageName)
+    FocusCard(modifier, glow = color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, entry = true, onClick = onClick) {
+        // Tinted like the system tiles, so the two screens read as one family.
+        Column(
+            Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color.copy(alpha = 0.16f), color.copy(alpha = 0.02f)))).padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+        ) {
             AppIcon(app.packageName, Modifier.size(IconSize))
             Spacer(Modifier.height(6.dp))
             Text(app.label, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
         if (app.isGame) {
-            Box(
-                Modifier.align(Alignment.TopEnd).padding(6.dp).size(20.dp).clip(CircleShape).background(Palette.NightDeep.copy(alpha = 0.75f)),
-                contentAlignment = Alignment.Center,
-            ) { Text("★", color = Palette.Butter, style = MaterialTheme.typography.labelMedium) }
+            Box(Modifier.align(Alignment.TopEnd).padding(6.dp)) { ArtBadge("Game", Palette.Butter, Glyph.Gamepad) }
         }
     }
 }
