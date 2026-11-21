@@ -1,6 +1,9 @@
 package io.github.zahakj.tandem
 
 import android.os.Environment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import io.github.zahakj.tandem.data.GameMeta
 import io.github.zahakj.tandem.data.ScanCache
 import io.github.zahakj.tandem.data.SortOrder
@@ -140,6 +143,10 @@ object Library {
     @Volatile var found = 0
         private set
 
+    /** Per root path, the games left out as copies of ones an earlier root holds (see [LibraryRoots.shadowed]). */
+    var shadowed by mutableStateOf<Map<String, LibraryRoots.Shadowed>>(emptyMap())
+        private set
+
     /**
      * Finds every game. With [quick], folders are read from the scan cache without touching storage, so the library
      * shows instantly at startup; a normal scan then only re-lists folders that changed.
@@ -148,6 +155,7 @@ object Library {
         if (!quick) found = 0
         val roots = roots()
         val all = find(platforms, quick, roots) { n -> if (!quick) found += n }
+        shadowed = all.shadowed
         val libs = platforms.mapNotNull { platform ->
             val games = all.games[platform.id].orEmpty()
             if (games.isEmpty()) null
@@ -174,7 +182,7 @@ object Library {
     fun roots(): List<File> = listOf(romsDir) + SystemPrefs.data.roots.map(::File)
 
     /** What the game folders hold: each system's games, by system id, and the folders found to be each system's. */
-    class Found(val games: Map<String, List<Game>>, val folders: Map<String, List<File>>)
+    class Found(val games: Map<String, List<Game>>, val folders: Map<String, List<File>>, val shadowed: Map<String, LibraryRoots.Shadowed> = emptyMap())
 
     /**
      * The games of [platforms]: from their own source (Android games), or from every root, each walked once and its
@@ -205,7 +213,16 @@ object Library {
         val games = platforms.associate { p ->
             p.id to (p.source?.invoke(p) ?: LibraryRoots.merge(perRoot[p.id].orEmpty()) { it.key })
         }
-        return Found(games, folders)
+        // Copies of a game an earlier root already gave, per root, so Game folders can say why a folder looks empty.
+        val shadowed = HashMap<String, LibraryRoots.Shadowed>()
+        for (p in platforms) {
+            if (p.source != null) continue
+            for ((root, s) in LibraryRoots.shadowed(perRoot[p.id].orEmpty(), { it.key }) { it.root?.path ?: romsDir.path }) {
+                val was = shadowed[root]
+                shadowed[root] = LibraryRoots.Shadowed((was?.count ?: 0) + s.count, (was?.listedFrom ?: emptySet()) + s.listedFrom)
+            }
+        }
+        return Found(games, folders, shadowed)
     }
 
     /** A folder from platforms.json is under [root] (the ROMs folder, or another root); one added in Systems is a full path. */

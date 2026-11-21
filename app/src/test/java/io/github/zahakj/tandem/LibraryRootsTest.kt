@@ -102,6 +102,23 @@ class LibraryRootsTest {
         assertEquals(listOf("a" to 1, "b" to 2), merged)
     }
 
+    @Test fun copiesOfGamesAnEarlierRootHasAreCountedForTheRootTheyAreIn() {
+        val roms = listOf("n3ds/Zelda.3ds" to "roms", "gba/Metroid.gba" to "roms")
+        val card = listOf("n3ds/Zelda.3ds" to "card", "gba/Metroid.gba" to "card", "n3ds/Pokemon.3ds" to "card")
+        val second = listOf("n3ds/Pokemon.3ds" to "second", "n3ds/Zelda.3ds" to "second")
+        val s = LibraryRoots.shadowed(listOf(roms, card, second), { it.first }) { it.second }
+        assertEquals(LibraryRoots.Shadowed(2, setOf("roms")), s["card"])
+        // One copy of the card's game, one of a ROMs game: both named.
+        assertEquals(LibraryRoots.Shadowed(2, setOf("card", "roms")), s["second"])
+        assertEquals(null, s["roms"])
+    }
+
+    @Test fun theSameNameTwiceInOneRootIsNotACopyOfAnotherFolder() {
+        // Two subfolders of one root clash too (n3ds/ and 3ds/); that's the root's own business, not a copy elsewhere.
+        val s = LibraryRoots.shadowed(listOf(listOf("a" to "card", "a" to "card")), { it.first }) { it.second }
+        assertEquals(emptyMap<String, LibraryRoots.Shadowed>(), s)
+    }
+
     @Test fun artIsLookedUpInTheGamesOwnRootThenTheRomsFolder() {
         assertEquals(listOf("/storage/1234-ABCD/Games", roms), LibraryRoots.artOrder("/storage/1234-ABCD/Games", roms))
         assertEquals(listOf(roms), LibraryRoots.artOrder(null, roms))

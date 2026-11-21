@@ -171,7 +171,7 @@ fun GameFoldersScreen() {
                 val name = LibraryRoots.label(path, internal)
                 val color = if (there) Palette.Sky else Palette.Peach
                 FolderCard(
-                    name, LibraryRoots.shortPath(path, internal), if (there) plural(n, "game") else "Not there right now", color, systemsIn[path].orEmpty(),
+                    name, LibraryRoots.shortPath(path, internal), if (!there) "Not there right now" else if (n == 0 && copies(path, internal) != null) "Copies only" else plural(n, "game"), color, systemsIn[path].orEmpty(),
                     Modifier.takesFocus(route, path, target == path),
                     onFocus = {
                         FocusMemory.remember(route, path); focused = path
@@ -181,6 +181,7 @@ fun GameFoldersScreen() {
                             color, "Options",
                         )
                     },
+                    empty = copiesNote(path, internal) ?: "No games found yet",
                 ) { FocusMemory.forget("gamefolder"); open = path }
             }
             item(key = ADD) {
@@ -298,6 +299,22 @@ fun rememberGameFolderPicker(start: Uri? = null, onAdded: (String) -> Unit = {})
 /** One of a folder's systems: how many of its games are there, and its pack picture (null: Tandem draws one). */
 private class FolderSystem(val platform: io.github.zahakj.tandem.Platform, val games: Int, val icon: File?)
 
+/**
+ * "1 game already in ROMs" when [path] holds copies of games another folder already gives (the same file name, see
+ * LibraryRoots.shadowed), so a folder of copies doesn't look empty. Null with no copies, or in private mode, where
+ * counting them could hint at hidden games.
+ */
+private fun copiesNote(path: String, internal: String): String? = copies(path, internal)?.let { (n, where) -> "${plural(n, "game")} already in $where" }
+
+/** How many of [path]'s games are copies of ones another folder gives, and that folder's name ("other folders" for several). */
+private fun copies(path: String, internal: String): Pair<Int, String>? {
+    if (io.github.zahakj.tandem.Privacy.enabled) return null
+    val s = Library.shadowed[path] ?: return null
+    val romsPath = Library.romsDir.path
+    val where = s.listedFrom.singleOrNull()?.let { if (it == romsPath) "ROMs" else LibraryRoots.label(it, internal) } ?: "other folders"
+    return s.count to where
+}
+
 /** How many systems a folder card shows as pictures before "+n". */
 private const val CARD_SYSTEMS = 5
 
@@ -306,7 +323,7 @@ private const val CARD_SYSTEMS = 5
  * first) and how many games it holds right now.
  */
 @Composable
-private fun FolderCard(name: String, detail: String, games: String, color: Color, systems: List<FolderSystem>, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+private fun FolderCard(name: String, detail: String, games: String, color: Color, systems: List<FolderSystem>, focus: Modifier, onFocus: () -> Unit, empty: String = "No games found yet", onClick: () -> Unit) {
     FocusCard(Modifier.fillMaxWidth().height(126.dp).then(focus), glow = color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, entry = true, onClick = onClick) {
         Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color.copy(alpha = 0.18f), color.copy(alpha = 0.03f)))).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -326,7 +343,7 @@ private fun FolderCard(name: String, detail: String, games: String, color: Color
                 if (systems.size > CARD_SYSTEMS) {
                     Text("+${systems.size - CARD_SYSTEMS}", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                 }
-                if (systems.isEmpty()) Text("No games found yet", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+                if (systems.isEmpty()) Text(empty, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.weight(1f))
                 Pill(games, color)
             }
@@ -377,7 +394,7 @@ private fun RootDetails(path: String, games: Int, internal: String) {
         Text(LibraryRoots.label(path, internal), style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(path, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.height(10.dp))
-        Pill(if (there) plural(games, "game") else "Not there right now", if (there) Palette.Sky else Palette.Peach)
+        Pill(if (!there) "Not there right now" else if (games == 0 && copies(path, internal) != null) "Copies only" else plural(games, "game"), if (there) Palette.Sky else Palette.Peach)
         Spacer(Modifier.height(10.dp))
         val scroll = rememberScrollState()
         Column(Modifier.weight(1f).fadingEdges(scroll).verticalScroll(scroll), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -387,13 +404,25 @@ private fun RootDetails(path: String, games: Int, internal: String) {
                     else "The folder isn't there right now. Its games are hidden until it is back.",
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
+                bySystem.isEmpty() && copies(path, internal) != null -> Text(
+                    copies(path, internal)!!.let { (n, where) ->
+                        if (n == 1) "The game here is already in $where: the same file, so it's listed once, from there. Nothing is lost; take the copy out of one of the folders if you like."
+                        else "The $n games here are already in $where: the same files, so each is listed once, from there. Nothing is lost; take the copies out of one of the folders if you like."
+                    },
+                    style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
+                )
                 bySystem.isEmpty() -> Text(
                     "No games found here yet. Games are found in folders named for their system (3DS, GBA, PS2…), and files only one system plays (.3ds, .nsp, .gba…) are found anywhere.",
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
-                else -> for ((system, n) in bySystem) Row(Modifier.fillMaxWidth()) {
-                    Text(system, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(plural(n, "game"), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
+                else -> {
+                    for ((system, n) in bySystem) Row(Modifier.fillMaxWidth()) {
+                        Text(system, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(plural(n, "game"), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
+                    }
+                    copiesNote(path, internal)?.let { note ->
+                        Text("Plus $note, listed from there.", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+                    }
                 }
             }
             Spacer(Modifier.height(8.dp))

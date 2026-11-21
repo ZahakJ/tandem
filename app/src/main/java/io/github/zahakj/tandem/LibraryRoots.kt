@@ -109,6 +109,28 @@ object LibraryRoots {
      */
     fun <G> merge(perRoot: List<List<G>>, key: (G) -> String): List<G> = perRoot.flatten().distinctBy(key)
 
+    /** Games a root holds that [merge] leaves out because an earlier root has the same one, and where they're listed from. */
+    data class Shadowed(val count: Int, val listedFrom: Set<String>)
+
+    /**
+     * For each root (by [rootOf]), how many of its games [merge] leaves out as copies of a game an earlier root
+     * already gave, and which roots those are listed from. Lets a folder holding only copies say so, rather than
+     * look empty.
+     */
+    fun <G> shadowed(perRoot: List<List<G>>, key: (G) -> String, rootOf: (G) -> String): Map<String, Shadowed> {
+        val firstFrom = HashMap<String, String>()
+        val out = HashMap<String, Shadowed>()
+        for (list in perRoot) for (g in list) {
+            val k = key(g)
+            val winner = firstFrom.putIfAbsent(k, rootOf(g)) ?: continue
+            val root = rootOf(g)
+            if (winner == root) continue
+            val was = out[root]
+            out[root] = Shadowed((was?.count ?: 0) + 1, (was?.listedFrom ?: emptySet()) + winner)
+        }
+        return out
+    }
+
     /**
      * Where a game's art is looked for, in order: its own root's `downloaded_media`, then the ROMs folder's (where
      * scrapes save). A game in the ROMs folder looks only there.
