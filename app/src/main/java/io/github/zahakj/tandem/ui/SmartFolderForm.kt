@@ -52,8 +52,8 @@ import kotlinx.coroutines.withContext
 
 /*
  * The smart folder editor: Start › New › Smart folder…, and Y › Edit rules… or Make this a smart folder on a folder.
- * The rule is a column of settings rows (‹value› choosers, pickers for systems and genres, the keyboard for the name
- * and the title pattern). On every change the matching games are worked out in the background and shown on the other
+ * The rule is a column of settings rows (choosers whose options A shows in a grid, a grid of systems and one of
+ * genres, the keyboard for the name and the title pattern). On every change the matching games are worked out in the background and shown on the other
  * screen (SmartPreview, in place of the details). Start or the last row saves; B leaves without saving.
  */
 
@@ -76,6 +76,8 @@ object SmartFolderForm {
     var openOn by mutableStateOf<String?>(null)
     /** The picker over the rows: [PICK_SYSTEMS], [PICK_GENRES], or null. */
     var page by mutableStateOf<String?>(null)
+    /** The choice whose options show in a grid over the rows (A on a chooser row), or null. */
+    internal var choosing by mutableStateOf<FormChoice?>(null)
     /** The games the rule matches now, for the previews; null until first worked out. */
     var matches by mutableStateOf<List<Game>?>(null)
         internal set
@@ -111,7 +113,7 @@ object SmartFolderForm {
     )
 
     fun close() {
-        folderId = null; page = null; matches = null
+        folderId = null; page = null; matches = null; choosing = null
         Nav.focusTick++
     }
 
@@ -202,6 +204,15 @@ fun SmartFolderFormHost() {
             }
         }
     }
+    // A chooser row's options; picking one goes back to the row.
+    val choosing = SmartFolderForm.choosing
+    val shownChoice = rememberLatest(choosing)
+    if (shownChoice != null) {
+        ChoicePopup(
+            choosing != null, shownChoice.title, shownChoice.help, shownChoice.options, shownChoice.selected, shownChoice.color,
+            "${SmartFolderForm.ROUTE}:choose", onClose = { SmartFolderForm.choosing = null; Nav.focusTick++ },
+        ) { i -> shownChoice.pick(i) }
+    }
 }
 
 @Composable
@@ -234,12 +245,17 @@ private fun <T> step(list: List<T>, now: T, by: Int): T {
     return if (i < 0) list.first() else list[(i + by + list.size) % list.size]
 }
 
-/** A ‹value› row stepping through [values]; A steps forward like Right. */
+/** A choice's options as a grid over the rows: [options] by index, [selected] the one in use. */
+internal class FormChoice(val title: String, val help: String, val options: List<PickOption<Int>>, val selected: Int, val color: androidx.compose.ui.graphics.Color, val pick: (Int) -> Unit)
+
+/** A row for a choice of [values]: A shows them all in a grid ([FormChoice]); Left and Right step through them. */
 private fun <T> chooser(label: String, values: List<T>, now: T, color: androidx.compose.ui.graphics.Color, icon: Glyph, help: String, name: (T) -> String, set: (T) -> Unit) =
     SettingRow(
         label, name(now), color, icon, help = help,
-        onLeft = { set(step(values, now, -1)) }, onRight = { set(step(values, now, 1)) },
-    ) { set(step(values, now, 1)) }
+        onLeft = { set(step(values, now, -1)) }, onRight = { set(step(values, now, 1)) }, action = "Choose",
+    ) {
+        SmartFolderForm.choosing = FormChoice(label, help, values.mapIndexed { i, v -> PickOption(i, name(v)) }, values.indexOf(now), color) { i -> set(values[i]) }
+    }
 
 @Composable
 private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
@@ -315,7 +331,10 @@ private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
     FormList(SmartFolderForm.ROUTE, rows, onHelp)
 }
 
-/** Systems or genres to pick, each with a switch, under one that clears them all. */
+/**
+ * Systems or genres to pick, as a grid: each system a tile with its icon, name and games, each genre a chip, ticked
+ * while picked; the first clears them all.
+ */
 @Composable
 private fun PickerPage(page: String, choices: FormChoices) {
     val f = SmartFolderForm
@@ -323,27 +342,59 @@ private fun PickerPage(page: String, choices: FormChoices) {
     val picked = if (systems) f.rule.systems else f.rule.genres
     fun pickedHas(k: String) = picked.any { it.equals(k, ignoreCase = !systems) }
     fun setPicked(list: List<String>) { f.rule = if (systems) f.rule.copy(systems = list) else f.rule.copy(genres = list) }
+    fun flip(k: String) = setPicked(if (pickedHas(k)) picked.filterNot { it.equals(k, ignoreCase = !systems) } else picked + k)
     val options: List<Pair<String, String>> = if (systems) choices.systems.map { it.first to it.second } else choices.genres.map { it to it }
     // Picked ones no longer in the library still show, so they can be taken off.
     val all = options + picked.filter { p -> options.none { it.first.equals(p, ignoreCase = !systems) } }.map { it to it }
     val counts = remember(choices) { choices.systems.associate { it.first to it.third } }
-    val rows = listOf(
-        "any" to SettingRow(if (systems) "Any system" else "Any genre", "", Palette.Mint, Glyph.Sparkle, help = "Clears the picks.", toggle = picked.isEmpty()) { setPicked(emptyList()) },
-    ) + all.map { (k, label) ->
-        "o:$k" to SettingRow(label, "", if (systems) Palette.Sky else Palette.Lavender, help = counts[k]?.let { plural(it, "game") }, toggle = pickedHas(k)) {
-            setPicked(if (pickedHas(k)) picked.filterNot { it.equals(k, ignoreCase = !systems) } else picked + k)
+    val route = "${SmartFolderForm.ROUTE}:$page"
+    val keys = listOf("any") + all.map { "o:${it.first}" }
+    val target = rememberFocusTarget(route, keys)
+    val color = if (systems) Palette.Sky else Palette.Lavender
+    val grid = androidx.compose.foundation.lazy.grid.rememberLazyGridState()
+    KeepInView(grid, keys.indexOf(target))
+    androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+        androidx.compose.foundation.lazy.grid.GridCells.Adaptive(if (systems) 150.dp else 170.dp),
+        Modifier.fillMaxSize().fadingEdges(grid), state = grid,
+        contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom),
+        horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        item("any") {
+            val any = picked.isEmpty()
+            if (systems) {
+                PictureToggle(
+                    "Any system", "Clears the picks", any, Palette.Mint, Modifier.height(SystemTile).takesFocus(route, "any", target == "any"),
+                    glyph = Glyph.Sparkle,
+                ) { setPicked(emptyList()) }
+            } else {
+                TickChip("Any genre", any, Palette.Mint, Modifier.takesFocus(route, "any", target == "any")) { setPicked(emptyList()) }
+            }
         }
-    }
-    if (all.isEmpty()) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        items(all.size, key = { "o:${all[it].first}" }) { i ->
+            val (k, label) = all[i]
+            val on = pickedHas(k)
+            val focus = Modifier.takesFocus(route, "o:$k", target == "o:$k")
+            if (systems) {
+                val platform = Libraries.byId(k)?.platform
+                PictureToggle(
+                    label, counts[k]?.let { plural(it, "game") } ?: "Not in the library now", on, color, Modifier.height(SystemTile).then(focus),
+                    glyph = Glyph.Cartridge, art = platform?.let { p -> { SystemIcon(p, 52.dp) } },
+                ) { flip(k) }
+            } else {
+                TickChip(label, on, color, focus) { flip(k) }
+            }
+        }
+        if (all.isEmpty()) item("none", span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
             Text(
                 if (systems) "No systems with games yet" else "No genres yet. Scrape game details and games sort themselves into genres.",
                 Modifier.padding(24.dp), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
         }
     }
-    FormList("${SmartFolderForm.ROUTE}:$page", if (all.isEmpty()) rows.take(1) else rows) {}
 }
+
+/** How tall a system's tile is in the systems picker. */
+private val SystemTile = 120.dp
 
 @Composable
 private fun FormList(route: String, rows: List<Pair<String, SettingRow>>, onHelp: (String?) -> Unit) {

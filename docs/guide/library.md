@@ -213,7 +213,7 @@ Folders made before shortcuts keep their contents off the home grid, as they wer
 
 A smart folder is a folder on the icon grid that fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". Its contents update when the library, a game's details or its play history change. The tile shows how many games are inside.
 
-To make one, press Start › **New** › **Smart folder…**. The rules are rows like those in Settings; the other screen shows the matching games as you change them. Start or **Make the folder** saves; B leaves without saving.
+To make one, press Start › **New** › **Smart folder…**. The rules are rows like those in Settings: A on a choice shows all its options in a grid (◀▶ steps through them too), **Systems** opens a grid of your systems with their icons and **Genres** one of genre chips, ticked while picked. The other screen shows the matching games as you change them. Start or **Make the folder** saves; B leaves without saving.
 
 | Rule | What it does |
 | --- | --- |
