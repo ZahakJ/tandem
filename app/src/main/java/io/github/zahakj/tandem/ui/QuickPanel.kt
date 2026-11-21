@@ -14,6 +14,7 @@ import android.text.format.Formatter
 import io.github.zahakj.tandem.DiscordPresence
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -253,17 +254,17 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
                     DiscordPresence.setShown(ctx, !DiscordPresence.shown)
                 })
             }
-            add(QuickTile("battery", "Battery saver", QuickIcon.Leaf, Palette.Mint, BatterySaver.on, if (BatterySaver.on) "On" else "Off", short = "Saver") {
+            add(QuickTile("battery", "Battery saver", QuickIcon.Leaf, Palette.Mint, BatterySaver.on, if (BatterySaver.on) "On" else "Off") {
                 BatterySaver.toggle(ctx)
             })
             // Private mode on at once, or off with the PIN (PrivateMode); the panel closes so the PIN pad has the screen.
-            add(QuickTile("private", "Private mode", QuickIcon.Shield, Palette.Lavender, private, if (private) "On" else "Off", short = "Private") {
+            add(QuickTile("private", "Private mode", QuickIcon.Shield, Palette.Lavender, private, if (private) "On" else "Off") {
                 Panels.close()
                 if (private) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
             })
             // Rests the screens now, like Android's own screen saver tile (Home & layout › Screensaver sets when it
             // comes by itself).
-            add(QuickTile("rest", "Screensaver", QuickIcon.Moon, Palette.Sky, null, "Start now", short = "Rest") {
+            add(QuickTile("rest", "Screensaver", QuickIcon.Moon, Palette.Sky, null, "Start now") {
                 Panels.close(); io.github.zahakj.tandem.Screensaver.start()
             })
             add(QuickTile("android", "Android", QuickIcon.Gear, Palette.Lavender, null, "Settings") {
@@ -284,8 +285,6 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
 /** One quick tile: [on] is null for a tile that does something rather than switches something. */
 private class QuickTile(
     val id: String, val label: String, val icon: QuickIcon, val color: Color, val on: Boolean?, val value: String,
-    /** The name on a small tile (the side panel). */
-    val short: String = label,
     val onClick: () -> Unit,
 )
 
@@ -315,49 +314,62 @@ private fun TileGrid(tiles: List<QuickTile>, key: String, narrow: Boolean, gap: 
 }
 
 /**
- * A tile: a round icon that fills with the tile's colour while it is on, the name and what it is set to. Small (the
- * side panel), the icon sits over a short name and the icon alone shows on or off.
+ * A tile: its icon, its full name and what it is set to. On is the strongest state: the tile washed in its colour, the
+ * icon on a filled disc, a bold name and the value in full text colour. Off is plain: a neutral tile, the icon in an
+ * outlined ring and the value muted. Small (the side panel), the icon sits over the name and the value.
  */
 @Composable
 private fun QuickTileCard(tile: QuickTile, modifier: Modifier, small: Boolean) {
     val on = tile.on == true
     val color = tile.color
-    FocusCard(modifier.height(if (small) 66.dp else 64.dp), glow = color, shape = RoundedCornerShape(18.dp), onClick = tile.onClick) {
+    val name = MaterialTheme.typography.let { if (small) it.labelMedium else it.titleSmall }
+        .copy(fontWeight = if (on) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.SemiBold)
+    val valueStyle = MaterialTheme.typography.let { if (small) it.labelSmall else it.labelMedium }
+    val valueColor = if (on) Palette.Text else Palette.Muted
+    FocusCard(modifier.height(if (small) 74.dp else 64.dp), glow = color, shape = RoundedCornerShape(18.dp), onClick = tile.onClick) {
         // Off tiles get a faint wash of the text colour: on a light theme the bare card matches the panel behind it.
-        Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.2f) else Palette.Text.copy(alpha = 0.06f)))
+        Box(Modifier.fillMaxSize().background(if (on) color.copy(alpha = 0.3f) else Palette.Text.copy(alpha = 0.06f)))
         if (small) {
             Column(
-                Modifier.fillMaxSize().padding(horizontal = 4.dp),
+                Modifier.fillMaxSize().padding(horizontal = 5.dp, vertical = 6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
             ) {
-                IconChip(tile, 30.dp)
-                Spacer(Modifier.height(5.dp))
-                Text(tile.short, style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                IconChip(tile, 28.dp)
+                Spacer(Modifier.height(4.dp))
+                ShrinkText(tile.label, name, maxLines = 1, color = Palette.Text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                Text(tile.value, style = valueStyle, color = valueColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         } else {
             Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconChip(tile, 34.dp)
                 Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    ShrinkText(tile.label, MaterialTheme.typography.titleSmall, maxLines = 1)
-                    Text(tile.value, style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    ShrinkText(tile.label, name, maxLines = 1, color = Palette.Text)
+                    Text(tile.value, style = valueStyle, color = valueColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
     }
 }
 
-/** Filled with the tile's colour while on, a soft tint of it while off; a tile that only does something keeps the tint. */
+/**
+ * On: a disc filled with the tile's colour. Off: the icon in a thin ring. A tile that only does something
+ * (Screensaver, Android) keeps a soft tint of its colour, neither on nor off.
+ */
 @Composable
 private fun IconChip(tile: QuickTile, size: Dp) {
-    val on = tile.on == true
-    val ink = when {
-        on -> if (tile.color.luminance() > 0.45f) Color(0xFF17141F) else Color.White
-        tile.on == null -> tile.color
-        else -> Palette.Muted
+    val ink = when (tile.on) {
+        true -> if (tile.color.luminance() > 0.45f) Color(0xFF17141F) else Color.White
+        false -> Palette.Text
+        null -> tile.color
     }
+    val chip = Modifier.size(size).clip(RoundedCornerShape(50))
     Box(
-        Modifier.size(size).clip(RoundedCornerShape(50)).background(if (on) tile.color else tile.color.copy(alpha = 0.14f)),
+        when (tile.on) {
+            true -> chip.background(tile.color)
+            false -> chip.border(1.5.dp, Palette.Muted.copy(alpha = 0.55f), RoundedCornerShape(50))
+            null -> chip.background(tile.color.copy(alpha = 0.16f))
+        },
         contentAlignment = Alignment.Center,
     ) { Box(Modifier.size(size * 0.6f)) { tile.icon.Draw(ink) } }
 }
