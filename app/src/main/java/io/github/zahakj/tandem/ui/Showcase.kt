@@ -432,29 +432,93 @@ internal fun DeviceScene(top: Shows, bottom: Shows) {
     MiniScreen { t, u -> device(t, top, bottom, 1f) }
 }
 
-/** Lays the two screens out in the box; returns the top and bottom screen rectangles' origin and size. */
+/**
+ * Where the parts of an AYN Thor fall in the box, in its own proportions (sizes in fractions of its width): the lid
+ * with the 16:9 top screen in its bezel, the hinge, and the body with the near-square bottom screen between the
+ * sticks and buttons.
+ */
+private class Thor(val lid: Area, val body: Area, val top: Area, val bottom: Area, val unit: Float)
+
+/** A rectangle as origin and size. */
+private class Area(val at: Offset, val size: Size)
+
+private const val LID_H = 0.6f
+private const val HINGE = 0.035f
+private const val BODY_H = 0.6f
+
+private fun DrawScope.thor(): Thor {
+    val total = LID_H + HINGE + BODY_H
+    val s = minOf(size.width * 0.94f, size.height * 0.96f / total)
+    val x0 = (size.width - s) / 2
+    val y0 = (size.height - total * s) / 2
+    val lid = Area(Offset(x0, y0), Size(s, LID_H * s))
+    val body = Area(Offset(x0, y0 + (LID_H + HINGE) * s), Size(s, BODY_H * s))
+    val topW = 0.86f * s
+    val top = Area(Offset(x0 + (s - topW) / 2, y0 + 0.055f * s), Size(topW, topW * 9f / 16f))
+    // The bottom screen is 1240 by 1080, a little wider than tall.
+    val botH = 0.42f * s
+    val botW = botH * 1240f / 1080f
+    val bottom = Area(Offset(x0 + (s - botW) / 2, body.at.y + 0.05f * s), Size(botW, botH))
+    return Thor(lid, body, top, bottom, s)
+}
+
+/** The top and bottom screens' origin and size, inside the handheld [thorShell] draws. */
 private fun DrawScope.screens(): Pair<Pair<Offset, Size>, Pair<Offset, Size>> {
-    // Top 16:9, bottom about 0.87 wide for its height, stacked with a hinge between, scaled to fit.
-    val unitW = 1f
-    val topH = 9f / 16f
-    val botW = 0.52f
-    val botH = botW / 0.87f
-    val totalH = topH + 0.05f + botH
-    val s = minOf(size.width * 0.92f / unitW, size.height * 0.94f / totalH)
-    val topSize = Size(unitW * s, topH * s)
-    val botSize = Size(botW * s, botH * s)
-    val y0 = (size.height - totalH * s) / 2
-    val topAt = Offset((size.width - topSize.width) / 2, y0)
-    val botAt = Offset((size.width - botSize.width) / 2, y0 + (topH + 0.05f) * s)
-    return (topAt to topSize) to (botAt to botSize)
+    val d = thor()
+    return (d.top.at to d.top.size) to (d.bottom.at to d.bottom.size)
+}
+
+/** The handheld around the screens: lid, hinge and body, the sticks, the D-pad, ABXY and the small buttons. */
+private fun DrawScope.thorShell(t: ThemeSpec) {
+    val d = thor()
+    val s = d.unit
+    val shell = lerp(t.card, Color.Black, 0.35f)
+    val edge = lerp(t.card, Color.White, 0.12f)
+    val part = lerp(t.card, Color.Black, 0.6f)
+    val r = CornerRadius(0.06f * s)
+    for (half in listOf(d.lid, d.body)) {
+        drawRoundRect(shell, half.at, half.size, r)
+        drawRoundRect(edge, half.at, half.size, r, style = Stroke(0.006f * s))
+    }
+    // The hinge: two knuckles at the sides of the gap.
+    val hy = d.lid.at.y + d.lid.size.height - 0.01f * s
+    for (hx in listOf(0.06f, 0.78f)) drawRoundRect(part, Offset(d.lid.at.x + hx * s, hy), Size(0.16f * s, HINGE * s + 0.02f * s), CornerRadius(0.012f * s))
+    // Each screen sits in a black glass panel a little bigger than it.
+    for (sc in listOf(d.top, d.bottom)) {
+        val m = 0.012f * s
+        drawRoundRect(Color.Black, Offset(sc.at.x - m, sc.at.y - m), Size(sc.size.width + 2 * m, sc.size.height + 2 * m), CornerRadius(0.02f * s))
+    }
+    val b = d.body
+    val left = b.at.x + 0.125f * s
+    val right = b.at.x + 0.875f * s
+    val upper = b.at.y + 0.17f * s
+    val lower = b.at.y + 0.39f * s
+    // Sticks: a ring and its cap.
+    for (c in listOf(Offset(left, upper), Offset(right, lower))) {
+        drawCircle(part, 0.06f * s, c)
+        drawCircle(edge, 0.04f * s, c)
+    }
+    // The D-pad, a plus.
+    val dp = Offset(left, lower)
+    val arm = 0.05f * s
+    val thick = 0.026f * s
+    drawRoundRect(part, Offset(dp.x - arm, dp.y - thick / 2), Size(arm * 2, thick), CornerRadius(thick * 0.3f))
+    drawRoundRect(part, Offset(dp.x - thick / 2, dp.y - arm), Size(thick, arm * 2), CornerRadius(thick * 0.3f))
+    // A, B, X and Y in a diamond, in the theme's accents.
+    val face = Offset(right, upper)
+    val off = 0.036f * s
+    listOf(Offset(0f, -off), Offset(off, 0f), Offset(0f, off), Offset(-off, 0f)).forEachIndexed { i, o ->
+        drawCircle(lerp(t.accents[i % t.accents.size], part, 0.35f), 0.017f * s, face + o)
+    }
+    // Start, Select and Home under the bottom screen.
+    val by = b.at.y + b.size.height - 0.07f * s
+    for (bx in listOf(0.4f, 0.5f, 0.6f)) drawRoundRect(part, Offset(b.at.x + bx * s - 0.022f * s, by), Size(0.044f * s, 0.014f * s), CornerRadius(0.007f * s))
 }
 
 private fun DrawScope.device(t: ThemeSpec, top: Shows, bottom: Shows, alpha: Float) {
     val (a, b) = screens()
+    thorShell(t)
     screen(t, a.first, a.second, top, alpha)
-    // The hinge.
-    val hy = a.first.y + a.second.height + (b.first.y - a.first.y - a.second.height) / 2
-    drawRoundRect(t.muted.copy(alpha = 0.35f), Offset(b.first.x, hy - 1.5f), Size(b.second.width, 3f), CornerRadius(1.5f))
     screen(t, b.first, b.second, bottom, alpha)
 }
 
@@ -568,6 +632,7 @@ internal fun SwapScene(style: String) {
     MiniScreen { t, _ ->
         val k = p.value
         val (a, b) = screens()
+        thorShell(t)
         fun pair(at: Offset, sz: Size, old: Shows, new: Shows, fromBelow: Boolean) {
             when (style) {
                 "push" -> clipRect(at.x, at.y, at.x + sz.width, at.y + sz.height) {
