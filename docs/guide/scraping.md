@@ -15,10 +15,11 @@ PC) as well as classic ones. Tandem downloads its index once and looks your game
 nothing about your games is sent anywhere. **libretro thumbnails** also needs no account and is always ready; it is
 great for classic systems and has nothing for Switch, Wii U or PC games.
 
-![The Artwork & details setup popup: six sources in order, ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat, each with its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
+![The Artwork & details setup popup: six source tiles, numbered in the order they are asked (ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat), each with what it needs and its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
 
 1. Open **Settings › Library & art** (Start › Settings ▸ › Library & art) and press A on **Set up sources**. The
-   **Artwork & details setup** popup lists every source in the order they are asked, each with its state.
+   **Artwork & details setup** popup shows every source as a tile, numbered in the order they are asked, with what
+   it needs and its state.
 2. Highlight **LaunchBox** (its state says **Not downloaded**) and press A. Its card explains what it gives.
 3. Press A on **Download (105 MB)**, then **Download** in the question. Wi-Fi is better; on a metered connection the
    question says so. Pip says "LaunchBox is ready: … games ✨" when it's done. Only your systems are kept.
@@ -123,15 +124,18 @@ order** on the Library & art page, and in the scrape screen.
 
 | In the list | What it does |
 | --- | --- |
+| The D-pad | Moves between the tiles |
 | <kbd>A</kbd> on a source | Opens its card: what it gives, whether it needs an account, exactly where to get a key, and what it sends |
-| <kbd>◀</kbd> / <kbd>▶</kbd> on a source | Asks it earlier or later |
+| <kbd>L1</kbd> / <kbd>R1</kbd> on a source | Asks it earlier or later (its number changes; the tile moves with the highlight) |
 | <kbd>B</kbd> | Done |
 
 A source's state: **Ready**, **Needs a key** (it will be skipped), **Not downloaded** (LaunchBox), **✓ Works** or
 **✗ Test failed** after a Test, **Downloading …%**, or **Off**.
 
-On a card: the key buttons (each shows ✓ once filled), **Turn off** / **Turn on**, **Download** (LaunchBox),
-**Test** and **Done**. **Test** does one real lookup of a well-known game (never one of yours) and shows ✓ with what
+On a card: the steps, what it gives and sends, the key fields (each says **Not set**, **Optional** or **Saved ✓**, or
+shows what you typed; A edits it), then **Turn off** / **Turn on**, **Download** (LaunchBox), **Test** and **Done**. The
+filled button is the obvious next step: **Turn on**, **Download**, **Test** once the keys are in, or **Done** while
+they aren't. **Test** does one real lookup of a well-known game (never one of yours) and shows ✓ with what
 it found, or ✗ with the reason: "Needs an API key", "Couldn't reach it. Check the Wi-Fi and try again", "It answered
 with an error (401)" and so on.
 
@@ -158,7 +162,7 @@ The scrape screen's options:
 | Artwork | Box art, Hero, Logo, Gameplay screenshot | Each kind on or off: Box art, Hero / fanart, Logo, Title screen, Gameplay screenshot, Video snap (about 3 MB a game), and **Physical boxes and spines** (real box scans for the Shelf view, kept apart from your box art) |
 | Game details | On | Name, Description, Genres, Developer & publisher, Release year, Players, Rating and Time to beat (HowLongToBeat), each on or off |
 | Region & language | from your device | Which box art and description to prefer |
-| Sources, in order | | As in the setup list; A opens a card, ◀▶ moves |
+| Sources, in order | | Each source's state; A opens its card, ◀▶ moves it earlier or later |
 
 **Start scraping** runs it in the background: with two screens the progress card is on the other screen and you can
 keep browsing; the top bar shows **✦ Scraping 12/40** wherever you are. A scrape pauses while a game is in front and

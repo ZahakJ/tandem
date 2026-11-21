@@ -607,17 +607,19 @@ fun ProgressBar(fraction: Float, modifier: Modifier = Modifier) {
 /**
  * A rounded button: a FocusCard with a word on it. Highlighted, it grows around its centre without lifting, so a row
  * of them stays in line. With [fill] it takes the width it is given (a share of a row) with the word centred, and
- * a word too long for it shrinks a little instead of being cut.
+ * a word too long for it shrinks a little instead of being cut. [filled] paints it in its colour, for the one button
+ * of a row that does the obvious next thing.
  */
 @Composable
-fun PillButton(text: String, color: Color, modifier: Modifier, fill: Boolean = false, onClick: () -> Unit) {
+fun PillButton(text: String, color: Color, modifier: Modifier, fill: Boolean = false, filled: Boolean = false, onClick: () -> Unit) {
+    val ink = if (filled) Palette.OnAccent else color
     FocusCard(modifier.height(42.dp), glow = color, shape = RoundedCornerShape(21.dp), lifts = false, onClick = onClick) {
         Box(
-            (if (fill) Modifier.fillMaxSize() else Modifier.fillMaxHeight()).background(color.copy(alpha = 0.22f)).padding(horizontal = 16.dp),
+            (if (fill) Modifier.fillMaxSize() else Modifier.fillMaxHeight()).background(if (filled) color else color.copy(alpha = 0.22f)).padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center,
         ) {
-            if (fill) ShrinkToFit { Text(text, style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1) }
-            else Text(text, style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1)
+            if (fill) ShrinkToFit { Text(text, style = MaterialTheme.typography.titleSmall, color = ink, maxLines = 1) }
+            else Text(text, style = MaterialTheme.typography.titleSmall, color = ink, maxLines = 1)
         }
     }
 }

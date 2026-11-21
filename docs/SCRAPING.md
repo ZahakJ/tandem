@@ -25,9 +25,10 @@ they belong to whoever registers them.
 ### Order
 
 Sources are asked in order, and each is asked only for what is still missing: if LaunchBox found the box art and
-description but no logo, SteamGridDB is asked for the logo only. Change the order with ◀▶ on a source. The default
-is ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro, HowLongToBeat; a source without its keys is skipped. For
-heroes and logos of PC, Switch and other modern systems, SteamGridDB goes first when it is on.
+description but no logo, SteamGridDB is asked for the logo only. Change the order with L1 / R1 on a source in
+**Set up sources** (or ◀▶ on its row in the scrape screen). The default is ScreenScraper, LaunchBox, IGDB,
+SteamGridDB, libretro, HowLongToBeat; a source without its keys is skipped. For heroes
+and logos of PC, Switch and other modern systems, SteamGridDB goes first when it is on.
 
 ### LaunchBox
 

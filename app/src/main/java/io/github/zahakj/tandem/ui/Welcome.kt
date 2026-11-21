@@ -271,13 +271,9 @@ private fun ArtStep(next: () -> Unit) {
         "Artwork & details",
         "LaunchBox and libretro need no account. IGDB, SteamGridDB and ScreenScraper add more with a free key: pick one to see how.",
     )
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        tiles.chunked(2).forEach { pair ->
-            Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                pair.forEach { s -> SourceTile(s, null, Modifier.weight(1f).takesFocus(route, s.name, target == s.name), compact = true) }
-            }
-        }
-    }
+    // The same tiles as the setup list, without the order (that is the list's business) or the two lines on what
+    // each gives, so the step fits under its title.
+    SourceGrid(tiles, columns = 3, tileHeight = 92.dp, route = route, target = target, compact = true)
     Spacer(Modifier.height(12.dp))
     Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if ("lb" in buttons) {

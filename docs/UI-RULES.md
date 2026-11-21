@@ -44,7 +44,8 @@ around their centre without lifting, so a row of them stays in line. So:
 - Pills hold one line. Text that can wrap goes in a rounded rectangle.
 - Rows of buttons that can grow use `FlowRow`. A fixed set of buttons across a popup shares its width equally
   (`PillButton(fill = true)` with `Modifier.weight(1f)`), 10 dp apart; keys and logins are labelled fields above
-  them, not loose pills (see the source cards in ui/ArtSetup.kt).
+  them, not loose pills (see the source cards in ui/ArtSetup.kt). The one button that does the obvious next thing
+  may be `filled`; the others stay soft.
 - A place whose size changes (widgets, icon grid cells) picks its layout from the room it really gets
   (`BoxWithConstraints`), drops secondary lines first, and shows a main value that must not be ellipsized (a time,
   a percentage, free space) through `ShrinkToFit` (ui/Edges.kt), which scales it down instead of cutting it. Never

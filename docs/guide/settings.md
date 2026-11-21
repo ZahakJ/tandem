@@ -147,12 +147,12 @@ it mutes Tandem too.
 | Systems | Systems and emulators | | Every system: shown or not, its emulator, its screen, its folders. See [The Systems and emulators screen](platforms.md#the-systems-and-emulators-screen). |
 | Systems | Android apps | | Every app on the device; mark which are games for the Android Games system. See [Android apps](apps.md). |
 | Artwork | Scrape library | | The scrape screen: what to fetch, for which games, from which sources. See [Artwork and scraping](scraping.md). |
-| Artwork | Set up sources | | The list of art sources with their keys and a Test button each. See [Setting up sources](scraping.md#setting-up-sources). |
+| Artwork | Set up sources | | The art sources as tiles in the order they are asked (L1 / R1 change it), each with its card of keys and a Test button. See [Setting up sources](scraping.md#setting-up-sources). |
 | Artwork | Artwork to download | Box, logo, hero, screenshot | Which pictures a scrape fetches: Box art; Box, logo, hero; Box, logo, hero, screenshot; All pictures; All, with videos. |
 | Artwork | Preferred region (More) | from your device | USA, Europe, Japan or World: box art and names from it are picked first. |
 | Artwork | Preferred language (More) | from your device | The language for descriptions and genres, when a source has it. |
 | Artwork | Clear downloaded media (More) | | Deletes what scraping downloaded (never your own art), for one system or all. Hold A to confirm. |
-| Sources, in order | one row per source | | Each source's state (Ready, Needs a key, Not downloaded, ✓ Works, Off) in the order they are asked; A opens its card, ◀▶ moves it earlier or later. |
+| Sources, in order | one row per source | | Each source's state (Ready, Needs a key, Not downloaded, ✓ Works, Off) in the order they are asked; A opens its card. |
 | RetroAchievements | Account | Sign in | Your RetroAchievements username and Web API key (retroachievements.org › Settings › Keys). |
 | RetroAchievements | Show achievements | On once signed in | Off, Tandem doesn't talk to RetroAchievements at all. |
 | RetroAchievements | Look up games again, Sign out (More) | | Match your games again (after replacing ROM files); forget the account. |
