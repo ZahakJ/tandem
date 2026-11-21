@@ -1,12 +1,12 @@
 # Privacy and scraping
 
-Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, and the Discord status if you connect it. The one exception is art for Steam shortcuts, below.
+Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, and the Discord status if you connect it. The two exceptions are a daily check for a new version of Tandem, and art for Steam shortcuts, both below.
 
 ## When Tandem uses the network
 
-Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements, Steam achievements and the Discord status only; there are no crash reports or update checks. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code.
+Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements, Steam achievements, the Discord status and its own update check only; there are no crash reports. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code.
 
-It goes online only when you ask it to, with one exception:
+It goes online only when you ask it to, with two exceptions:
 
 - **Scraping**: **Settings › Library & art › Scrape library**, **Scrape these games** in a system's Y menu, or **Scrape this game** in a game's Y menu. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
 - **Choose artwork** in a game's Y menu, which asks your sources for pictures of that one game.
@@ -15,9 +15,10 @@ It goes online only when you ask it to, with one exception:
 - **RetroAchievements**, only after you sign in with your username and web API key, and for **Find match** in a game's Edit details when you open it (never for a hidden game).
 - **Steam achievements**, only after you enter your own Steam Web API key and account: when you sign in, when you choose **Look up achievements**, when a Steam game is highlighted (at most every ten minutes), and once when you come back from playing one (never for a hidden game).
 - **Discord status**, only after you connect your Discord account, and only while a game plays (see [Discord status](#discord-status)).
-- **Steam shortcuts' art**, the exception: after a library scan, a Windows game that is a `.steam` shortcut and has no box art, hero or logo yet gets them from Steam's public store pictures, by its app id. No account, no key, nothing else sent, never for a hidden game, and never in private mode. To avoid it, put the pictures in place yourself ([Windows and Steam art](library.md#windows-and-steam-games)).
+- **The update check**, the first exception: once a day while Tandem is open (and when you press **Check now** in **Settings › Play & system › About**), Tandem asks GitHub for the number of its latest release. Nothing about you is sent beyond what any download carries (your IP address). The new APK is downloaded only when you press **Update**. **Check for updates** (under More options there) turns it off, private mode skips it, and builds made without self-update (for F-Droid) have none. See [Updates](getting-started.md#updates).
+- **Steam shortcuts' art**, the second exception: after a library scan, a Windows game that is a `.steam` shortcut and has no box art, hero or logo yet gets them from Steam's public store pictures, by its app id. No account, no key, nothing else sent, never for a hidden game, and never in private mode. To avoid it, put the pictures in place yourself ([Windows and Steam art](library.md#windows-and-steam-games)).
 
-Tandem never scrapes on its own or on a schedule. `ACCESS_NETWORK_STATE` only lets it warn you before a big download on mobile data.
+Tandem never scrapes on its own or on a schedule. Peanuts Native and the Switch save sync ([Switch games](switch.md)) work on the device only, through Shizuku, and never go online. `ACCESS_NETWORK_STATE` only lets it warn you before a big download on mobile data.
 
 In [private mode](#private-mode) none of this happens: Tandem stays offline.
 
@@ -114,6 +115,7 @@ All of it is on your device:
 | A salted hash of your private mode PIN, and the count of wrong tries | `private-pin.json` in Tandem's private no-backup storage | To check the PIN. Never in Tandem's backups or Android's backups |
 | What Tandem turned off to go offline for a hidden game | `offline.json` in Tandem's private no-backup storage, only while it is offline | To put airplane mode and Wi-Fi back, even after a restart |
 | Downloaded artwork, logos and video snaps | `ROMs/downloaded_media/<system>/…` | So they are yours to keep, in the layout other frontends read. **Clear downloaded media** removes only what Tandem downloaded |
+| Switch saves replaced by the save sync | `ROMs/tandem/save-sync/backups/<title ID>/<app>/` | So a save that was overwritten can be put back. The newest 20 per game and app are kept. See [Switch games](switch.md#backups) |
 | Game manuals and guides, and the page each was left at | `ROMs/manuals/<system>/` (your files, and copies of the ones you pick in Edit details); `manual-pages.json` in Tandem's private storage | Read on either screen. Never sent anywhere, never deleted by Tandem. See [Manuals and guides](library.md#manuals-and-guides) |
 | The `ROMs` folder, if you picked it | Android app preferences | To share game files with emulators |
 | The last game started in each emulator, and when the current session began | Android app preferences | Resume and play time |
@@ -126,15 +128,18 @@ Android's own backup may include Tandem's private storage if you have it switche
 
 | Permission | Used for |
 | --- | --- |
-| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
-| Internet | Scraping, RetroAchievements, Steam achievements and the Discord status, only when you start or connect them (see above). |
+| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs, play stats exports, Switch save-sync backups), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
+| Internet | Scraping, RetroAchievements, Steam achievements and the Discord status, only when you start or connect them, and the daily update check (see above). |
+| Install apps, and uninstall apps | Installing a new Tandem when you press **Update**; opening Android's uninstall screen for **Uninstall app…** on an Android game. |
+| Do Not Disturb access | **Immersion mode**: Do Not Disturb while a game plays. |
+| Eden Duo's companion control | Showing a Switch game's own second screen through Eden Duo (**Game screen**). |
 | Network state | Warning you before a big download on mobile data. |
 | Wi-Fi state, and Modify system settings (optional) | The quick panel (hold Start): showing whether Wi-Fi is on, and changing brightness once you allow it. |
 | Access to the games folders you pick | Handing individual game files to emulators that only accept shared files. |
 | See installed apps | Finding your emulators and bringing a running one back to the front. |
 | Notification access (optional, off until you allow it) | Showing your notifications in the side panel (R2 on home), where A opens one and Y clears it. They are kept in memory only, never stored or sent; in private mode only the app and time show. With Shizuku, Tandem can switch this on for itself when you ask. |
 | Microphone and screen capture (optional) | The companion's 15-second clips: the game's screen and sound, and your voice unless **Voice in clips** is off. With Shizuku, Tandem grants these to itself so a clip starts without asking. |
-| Shizuku (optional) | Checking whether an emulator is still running, and closing it before switching games. See [Resume and Shizuku](resume.md). In private mode, also turning airplane mode on while a hidden game plays. |
+| Shizuku (optional) | Checking whether an emulator is still running, and closing it before switching games, and the other features listed in [What Shizuku is used for](resume.md#what-shizuku-is-used-for). In private mode, also turning airplane mode on while a hidden game plays. With root, also copying Switch saves between Eden Duo and Peanuts Native ([Switch games](switch.md#one-save-across-eden-duo-and-peanuts-native)). |
 | Accessibility: "Tandem: Controller Home button" (optional, off until you switch it on) | Making a Bluetooth or USB controller's Home (guide) button work in other apps. It filters key events only: it keeps that one button from external controllers and lets everything else through. It cannot read the screen, records nothing and sends nothing. See [Controls](controls.md#bluetooth-and-usb-controllers). |
 
 ## The website

@@ -12,7 +12,7 @@ badge, and the A hint says **Resume**. A resume counts toward play time but not 
 ## Why it needs Shizuku
 
 Android doesn't let apps see which other apps are running. [Shizuku](https://shizuku.rikka.app/) lets an app you
-allow run a few commands with `adb`-level rights. Tandem uses only these:
+allow run a few commands with `adb`-level rights. For resume, Tandem uses only these:
 
 - `ps -A -o NAME` and `dumpsys activity activities`, to see which emulators have a game open.
 - `am force-stop <emulator package>`, to close an emulator before switching games (see below).
@@ -20,6 +20,31 @@ allow run a few commands with `adb`-level rights. Tandem uses only these:
 ### What counts as running
 
 A game counts as running only while its emulator has a window open (in front or in Recents). For emulators with a separate game screen (Eden, Azahar, Dolphin, Cemu, DuckStation, AetherSX2, melonDS, Winlator), that screen must be open; their menu alone doesn't count. A process Android keeps after you close a game is never shown as running or asked about.
+
+## What Shizuku is used for
+
+Resume is the main reason, but once Shizuku is running and Tandem is allowed, other features use it too. Without it,
+each of these is simply unavailable (its setting says **Needs Shizuku**), and everything else works.
+
+| Feature | Without Shizuku |
+| --- | --- |
+| [Resume](#what-resume-does), the **● Running** badge, the game switcher | Games start fresh |
+| **Close previous game**, **Ask before closing a game**, **Close game** on the companion | Games are never closed by Tandem |
+| The companion's **Screenshot**, and **+ Screenshot** in [Notes](notes.md) | No screenshots from the bottom screen |
+| The companion's **Clip** starting without a permission prompt | Android asks for the microphone and screen capture |
+| The [Deck](ayn-thor.md#while-you-play) keyboard and trackpad | The Deck says **Needs Shizuku** |
+| [Performance profiles](ayn-thor.md#performance-profiles) on AYN handhelds | The rows say **Needs Shizuku** |
+| [Moving apps](apps.md#moving-an-open-app) between screens by holding Back | Not available |
+| [Play with a controller](controls.md#play-with-a-controller-passthrough) (or root) | A new controller needs mapping in each emulator |
+| Wi-Fi, Bluetooth and Airplane tiles switched in place in Quick settings | The tiles open Android's settings page |
+| Allowing notification access and Do Not Disturb access for itself | You allow them in Android's settings |
+| Installing a Tandem update without a question | Android asks you to confirm |
+| Giving itself Eden Duo's control permission for the **Game screen** button | Tandem can't grant it to itself |
+| [Peanuts Native](switch.md#peanuts-native): native Switch games and **Build native version** | Switch games play in Eden Duo or Eden |
+| A companion app's **Close after** | The app stays open |
+| **Go offline while a hidden game plays** ([private mode](privacy.md#private-mode)) | Not available |
+| **Pause games in sleep** (needs Shizuku running **as root**) | Games keep running while the screen is off |
+| The [Switch save sync](switch.md#one-save-across-eden-duo-and-peanuts-native) (needs root) | Each app keeps its own save |
 
 ## Setting it up
 

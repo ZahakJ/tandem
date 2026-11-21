@@ -10,7 +10,7 @@ Tandem knows 104 systems. The common ones:
 | --- | --- | --- | --- |
 | Nintendo 3DS | `n3ds`, `3ds` | `.3ds` `.cia` `.cci` `.cxi` `.3dsx` `.zcci` | Azahar, RetroArch (Citra) |
 | Nintendo DS | `nds` | `.nds` `.dsi` `.zip` `.7z` | melonDS Dual, melonDS, DraStic, RetroArch |
-| Nintendo Switch | `switch` | `.nsp` `.xci` `.nca` `.nro` | Eden Duo, Eden |
+| Nintendo Switch | `switch` | `.nsp` `.xci` `.nca` `.nro` | Eden Duo, Eden, Peanuts Native (games it has built; see [Switch games](switch.md)) |
 | Nintendo Wii U | `wiiu` | `.wux` `.wud` `.wua` `.rpx` `.wuhb` | Cemu |
 | Wii, GameCube | `wii`, `gc` | `.iso` `.rvz` `.wbfs` `.gcz` | Dolphin, RetroArch |
 | Nintendo 64 | `n64` | `.n64` `.z64` `.v64` `.zip` | RetroArch (Mupen64Plus-Next, ParaLLEl), Mupen64Plus FZ |
@@ -29,6 +29,28 @@ Tandem knows 104 systems. The common ones:
 The built-in [`platforms.json`](../../app/src/main/assets/platforms.json) lists every system, folder name and file
 type. Tandem offers each installed emulator that fits, and a system appears only when its folder has at least one
 game. PC games are shortcut files; [Windows and Steam games](library.md#windows-and-steam-games) explains them.
+
+## The Systems and emulators screen
+
+**Settings › Library & art › Systems › Systems and emulators** lists every system Tandem knows in three groups: **In
+your library** (systems with games), **Turned off**, and **More systems · add a folder to start**. Each row says which
+emulator plays it ("Plays with Azahar"), or what it needs ("Needs Dolphin"), with a **Bottom ↓** pill when its games
+start on the bottom screen.
+
+A on a system opens its page:
+
+| Row | What it does |
+| --- | --- |
+| Show in library | On (the default) or off: a system turned off disappears from the library, games and all, until you turn it back on |
+| Start games on | Top screen (the default) or Bottom screen, for this system's games. A game's own **Start on** (Y › More) wins |
+| Bottom screen while playing | What the bottom screen shows while this system's games play: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Play & system › Playing** until you choose; 3DS and DS default to Leave to emulator |
+| Emulators | Every emulator that can run the system: **Default ✓** on the one in use, **Make default** on another installed one, **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
+| Folders | The system's folders: **Built in** for the usual names, **Not there yet** when that folder doesn't exist, **Remove** on one you added |
+| Add a folder… | Picks one more folder that holds only this system's games, anywhere on the device or SD card |
+
+A game can still use another emulator than its system's: Y on it › More › **Emulator**.
+
+![A system's page in Systems and emulators: Show in library, Start games on, Bottom screen while playing, the Emulators list with Default ✓ and Make default, and the Folders.](images/systems-emulators.png "A system in Systems and emulators")
 
 ## Using your own platforms.json
 

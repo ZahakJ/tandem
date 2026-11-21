@@ -19,7 +19,7 @@ permissions.
 | --- | --- | --- |
 | Nintendo 3DS | Azahar | Point it at your system files the first time you open it. |
 | Nintendo DS | MelonDualDS | A melonDS build with dual-screen support (`me.magnum.melondualds`). Turn on both screens in its settings. |
-| Nintendo Switch | Eden | Install keys and firmware in Eden first. |
+| Nintendo Switch | Eden Duo or Eden | Install keys and firmware first. Eden Duo adds game companions on the bottom screen; Peanuts Native can play games natively. See [Switch games](switch.md). |
 | Nintendo Wii U | Cemu | Set up its game paths once. |
 | Game Boy, Color, Advance | RetroArch (64-bit) | Package `com.retroarch.aarch64`. Download the **mGBA** and **Gambatte** cores from the Online Updater. |
 
@@ -56,7 +56,7 @@ Tandem keeps the bottom screen during play, in one of four styles (PC games and 
   use both screens. Wii U gets Game art, since Cemu leaves the bottom screen empty.
 
 Choose for every game at once in **Settings › Play & system › Playing › Bottom screen while playing** (3DS and DS
-emulators keep their own screen whatever it says), per system (Y on a system › **Bottom screen while playing**) or
+emulators keep their own screen whatever it says), per system (**Settings › Library & art › Systems and emulators**, A on the system › **Bottom screen while playing**) or
 per game (Y › More › **Bottom screen while playing**); the game's choice beats the system's, which beats the
 setting. Games started on the bottom screen never get it.
 
@@ -93,7 +93,8 @@ to jump; the page you were on is remembered for next time. See [Manuals and guid
 per-game companions). The game opens as usual, with Tandem below; when its companion is ready (an installed package
 for that exact game version), a **Game screen** button puts it on the bottom screen: Animal Crossing's island map and
 pockets, Fire Emblem's war map and units, and so on. Its **Hide** button, top right, hands the screen back to Tandem.
-Tandem gives itself Eden Duo's control permission through Shizuku the first time.
+Tandem gives itself Eden Duo's control permission through Shizuku the first time. Games built by Peanuts Native draw
+their own companion; see [Switch games](switch.md#peanuts-native).
 
 **Deck**: PC games (GameNative, Winlator) and [streamed games](streaming.md) get a fifth style, a keyboard and
 trackpad for the game on the top screen. Pick it with the **Deck** chip while a game plays, or make it the game's or
@@ -132,6 +133,7 @@ With an app open on the bottom screen over the game, **Home** brings the game an
 pausing the game; press it again for Tandem. From the game itself, Home goes to Tandem.
 
 ![The Game art style while Pokémon Emerald runs: the game's art and logo, the time played this session and in total, and Back to Tandem and Companion buttons.](../../site/assets/screenshots/ingame-art.webp "Game art, the default while you play")
+![The Tandem companion style on the bottom screen while a game plays: Pip, clock and battery, session time, dock apps, brightness and volume, and Back to Tandem, Game art and Close game buttons.](images/companion.png "The Tandem companion")
 
 The bottom screen answers touch only; the controller stays with the game. Tapping a dock app gives that app the
 controls until you touch the game's screen again, as Android always does. **Close game** needs Shizuku and asks for
