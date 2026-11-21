@@ -3,7 +3,6 @@ package io.github.zahakj.tandem.ui
 import io.github.zahakj.tandem.FileChecks
 import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.animation.AnimatedContent
@@ -36,6 +35,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -347,15 +347,25 @@ object DataJobs {
     }
 }
 
-/** One line of the settings list: a group heading, a row, or a group's "More options" switch. */
+/**
+ * One line of the settings list: a row, or a group's "More options" switch. The first line of a group carries the
+ * group's [heading], drawn above it in the same list item, so highlighting the line brings its heading into view in
+ * the same scroll (see [showsFromTop]).
+ */
 private sealed interface SettingsLine {
     val key: String
-    class Heading(val section: SettingSection) : SettingsLine { override val key = "h:${section.title}" }
-    class Item(val section: SettingSection, val row: SettingRow, val extra: Boolean) : SettingsLine {
+    val heading: SettingSection?
+    class Item(val section: SettingSection, val row: SettingRow, val extra: Boolean, override val heading: SettingSection?) : SettingsLine {
         override val key = rowKey(section.title, row.label)
     }
-    class More(val section: SettingSection, val open: Boolean) : SettingsLine { override val key = moreKey(section.title) }
+    class More(val section: SettingSection, val open: Boolean, override val heading: SettingSection?) : SettingsLine { override val key = moreKey(section.title) }
 }
+
+/**
+ * How much room focus scrolling keeps around the highlighted settings row: more than a row (with its gap and the
+ * edge fade), so the next row is already whole on screen when the highlight reaches it.
+ */
+val SettingsScrollRoom = 88.dp
 
 /**
  * The two-pane settings layout: grouped rows on the left, and on the right a panel that explains the highlighted
@@ -373,101 +383,76 @@ fun SettingsLayout(
     /**
      * Items above the sections (galleries). [header] must add exactly one list item per entry of [headerKeys], each
      * entry listing the focus keys inside that item; it gets the focus target and a callback for when one of them
-     * is focused.
+     * is focused. Each item brings its own title along when highlighted ([showsFromTop]).
      */
     header: (LazyListScope.(target: String?, onFocusKey: (String) -> Unit) -> Unit)? = null,
     headerKeys: List<List<String>> = emptyList(),
     headerRow: (String) -> SettingRow? = { null },
 ) {
-    var focusedKey by remember { mutableStateOf(FocusMemory.get(routeKey)) }
+    // Written as the highlight moves and read only by the side panel, so a move doesn't recompose the list.
+    val focusedKey = remember { mutableStateOf(FocusMemory.get(routeKey)) }
     val lines = buildList {
         for (s in sections) {
             if (s.rows.isEmpty() && s.more.isEmpty()) continue
-            add(SettingsLine.Heading(s))
-            s.rows.forEach { add(SettingsLine.Item(s, it, extra = false)) }
+            val start = size
+            fun heading() = s.takeIf { size == start }
+            s.rows.forEach { add(SettingsLine.Item(s, it, extra = false, heading = heading())) }
             if (s.more.isNotEmpty()) {
                 val open = SettingsUi.isOpen(routeKey, s.title) || s.rows.isEmpty()
-                if (open) s.more.forEach { add(SettingsLine.Item(s, it, extra = true)) }
-                if (s.rows.isNotEmpty()) add(SettingsLine.More(s, open))
+                if (open) s.more.forEach { add(SettingsLine.Item(s, it, extra = true, heading = heading())) }
+                if (s.rows.isNotEmpty()) add(SettingsLine.More(s, open, heading = heading()))
             }
         }
-    }
-    val focusedLine = lines.firstOrNull { it.key == focusedKey }
-    val focusedRow = focusedKey?.let(headerRow) ?: when (focusedLine) {
-        is SettingsLine.Item -> focusedLine.row
-        is SettingsLine.More -> moreRow(focusedLine.section, focusedLine.open) {}
-        else -> null
     }
     // Rows come and go (signing in adds some, a group folds away); the remembered item, or its neighbour, gets
     // focus and is scrolled to. Galleries and rows share one target, so focus can never end up nowhere.
-    val lineKeys = lines.filter { it !is SettingsLine.Heading }.map { it.key }
-    val target = rememberFocusTarget(routeKey, headerKeys.flatten() + lineKeys)
+    val target = rememberFocusTarget(routeKey, headerKeys.flatten() + lines.map { it.key })
     val state = rememberRouteListState(routeKey)
-    val revealScope = androidx.compose.runtime.rememberCoroutineScope()
-    // After the focus scroll that brings the row in: two scrolls at once cancel each other.
-    val revealAfterFocus: (Int) -> Unit = { above ->
-        revealScope.launch {
-            kotlinx.coroutines.delay(40)
-            androidx.compose.runtime.snapshotFlow { state.isScrollInProgress }.first { !it }
-            runCatching { state.reveal(above) }
-        }
-    }
     run {
         var index = headerKeys.indexOfFirst { target != null && target in it }
         if (index < 0) lines.indexOfFirst { it.key == target }.takeIf { it >= 0 }?.let { index = headerKeys.size + it }
-        KeepInView(state, index)
+        KeepInView(state, index, room = SettingsScrollRoom)
+    }
+    val onFocus: (String, SettingRow?) -> Unit = { key, row ->
+        FocusMemory.remember(routeKey, key)
+        focusedKey.value = key
+        // The bottom screen explains the setting too.
+        Selection.current = row?.let { Selected.Setting(it.label, it.shownValue, it.help, it.color, it.aLabel) } ?: Selected.Home
     }
     Row(Modifier.fillMaxSize().padding(start = 14.dp, end = 22.dp)) {
-        LazyColumn(
-            // Rows scrolled under the top bar or off the bottom fade out instead of being cut in half.
-            Modifier.weight(1.3f).fillMaxHeight().fadingEdges(state),
-            state = state,
-            // Room on every side for the focused row to grow and glow (the fade mask clips to the list).
-            contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            // A gallery above the rows is explained on the details screen like a row (or, without a row of its own, by
-            // the page's summary: see SettingsIdle).
-            header?.invoke(this, target) { key ->
-                // A gallery brings its title (the item above it, with no keys of its own) along, and the first one the top.
-                val h = headerKeys.indexOfFirst { key in it }
-                if (h > 0 && headerKeys[h - 1].isEmpty()) revealAfterFocus(if (headerKeys.subList(0, h - 1).all { it.isEmpty() }) 0 else h - 1)
-                FocusMemory.remember(routeKey, key); focusedKey = key
-                Selection.current = headerRow(key)?.let { Selected.Setting(it.label, it.shownValue, it.help, it.color, it.aLabel) } ?: Selected.Home
-            }
-            // contentType lets the list reuse a scrolled-away row's layout for the next row of the same kind.
-            items(lines, key = { it.key }, contentType = { it.javaClass }) { line ->
-                when (line) {
-                    is SettingsLine.Heading -> SettingsHeader(line.section.title, line.section.note)
-                    is SettingsLine.Item -> {
-                        val row = line.row
-                        SettingRowCard(row, Modifier.takesFocus(routeKey, line.key, line.key == target), flashKey = line.key) {
-                            // The first row under a heading brings the heading (and, at the top, the page's top) with it.
-                            val i = lines.indexOf(line)
-                            if (i > 0 && lines[i - 1] is SettingsLine.Heading) {
-                                // The page's top only when nothing (no gallery) sits above the first heading.
-                                val above = if (headerKeys.isEmpty() && lines.subList(0, i).all { it is SettingsLine.Heading }) 0 else headerKeys.size + i - 1
-                                revealAfterFocus(above)
+        ListScrolling(state, SettingsScrollRoom) {
+            LazyColumn(
+                // Rows scrolled under the top bar or off the bottom fade out instead of being cut in half.
+                Modifier.weight(1.3f).fillMaxHeight().fadingEdges(state),
+                state = state,
+                // Room on every side for the focused row to grow and glow (the fade mask clips to the list).
+                contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // A gallery above the rows is explained on the details screen like a row (or, without a row of its own,
+                // by the page's summary: see SettingsIdle).
+                header?.invoke(this, target) { key -> onFocus(key, headerRow(key)) }
+                // contentType lets the list reuse a scrolled-away row's layout for the next row of the same kind.
+                itemsIndexed(lines, key = { _, it -> it.key }, contentType = { _, it -> if (it.heading != null) 1 else 0 }) { i, line ->
+                    // The first line of the page (with no gallery above) brings the page's very top along.
+                    val top = if (i == 0 && headerKeys.isEmpty()) FocusRoom else 0.dp
+                    Column(if (line.heading != null || top > 0.dp) Modifier.showsFromTop(top) else Modifier) {
+                        line.heading?.let { SettingsHeader(it.title, it.note); Spacer(Modifier.height(8.dp)) }
+                        when (line) {
+                            is SettingsLine.Item -> SettingRowCard(line.row, Modifier.takesFocus(routeKey, line.key, line.key == target), flashKey = line.key) {
+                                onFocus(line.key, line.row)
                             }
-                            FocusMemory.remember(routeKey, line.key)
-                            focusedKey = line.key
-                            // The bottom screen explains the setting too.
-                            Selection.current = Selected.Setting(row.label, row.shownValue, row.help, row.color, row.aLabel)
-                        }
-                    }
-                    is SettingsLine.More -> {
-                        val row = moreRow(line.section, line.open) {
-                            SettingsUi.setOpen(routeKey, line.section.title, !line.open)
-                            // Opening moves the highlight to the first row that appeared; folding keeps it here.
-                            if (!line.open) line.section.more.firstOrNull()?.let {
-                                FocusMemory.remember(routeKey, rowKey(line.section.title, it.label))
-                                Nav.focusTick++
+                            is SettingsLine.More -> {
+                                val row = moreRow(line.section, line.open) {
+                                    SettingsUi.setOpen(routeKey, line.section.title, !line.open)
+                                    // Opening moves the highlight to the first row that appeared; folding keeps it here.
+                                    if (!line.open) line.section.more.firstOrNull()?.let {
+                                        FocusMemory.remember(routeKey, rowKey(line.section.title, it.label))
+                                        Nav.focusTick++
+                                    }
+                                }
+                                SettingRowCard(row, Modifier.takesFocus(routeKey, line.key, line.key == target), subtle = true) { onFocus(line.key, row) }
                             }
-                        }
-                        SettingRowCard(row, Modifier.takesFocus(routeKey, line.key, line.key == target), subtle = true) {
-                            FocusMemory.remember(routeKey, line.key)
-                            focusedKey = line.key
-                            Selection.current = Selected.Setting(row.label, row.value, row.help, row.color, row.aLabel)
                         }
                     }
                 }
@@ -475,9 +460,21 @@ fun SettingsLayout(
         }
         Spacer(Modifier.width(8.dp))
         Box(Modifier.weight(0.8f).fillMaxHeight().padding(top = FocusRoom, bottom = 22.dp)) {
-            SidePanel(focusedRow, sidePanelFallback)
+            SettingsSide(focusedKey, lines, headerRow, sidePanelFallback)
         }
     }
+}
+
+/** The side panel for the highlighted line; its own scope, so the highlight moving recomposes only the panel. */
+@Composable
+private fun SettingsSide(focusedKey: androidx.compose.runtime.State<String?>, lines: List<SettingsLine>, headerRow: (String) -> SettingRow?, fallback: @Composable () -> Unit) {
+    val key = focusedKey.value
+    val row = key?.let(headerRow) ?: when (val l = lines.firstOrNull { it.key == key }) {
+        is SettingsLine.Item -> l.row
+        is SettingsLine.More -> moreRow(l.section, l.open) {}
+        null -> null
+    }
+    SidePanel(row, fallback)
 }
 
 /** The row that opens or folds a group's extra options. */

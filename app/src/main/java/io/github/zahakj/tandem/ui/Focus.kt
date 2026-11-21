@@ -4,10 +4,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.gestures.BringIntoViewSpec
 import androidx.compose.foundation.gestures.LocalBringIntoViewSpec
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.relocation.bringIntoViewResponder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -382,33 +382,56 @@ fun rememberRouteGridState(key: String): LazyGridState {
     return state
 }
 
-private fun LazyListState.fullyVisible(index: Int): Boolean {
-    val info = layoutInfo
-    val item = info.visibleItemsInfo.firstOrNull { it.index == index } ?: return false
-    return item.offset >= info.viewportStartOffset && item.offset + item.size <= info.viewportEndOffset
+private suspend fun LazyListState.keepVisible(index: Int, room: Float) {
+    fun bounds() = layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }?.let { it.offset to it.offset + it.size }
+    show(index, room, ::bounds, layoutInfo.viewportStartOffset, layoutInfo.viewportEndOffset) { scrollToItem(index) }
 }
 
-private fun LazyGridState.fullyVisible(index: Int): Boolean {
-    val info = layoutInfo
-    val item = info.visibleItemsInfo.firstOrNull { it.index == index } ?: return false
-    return item.offset.y >= info.viewportStartOffset && item.offset.y + item.size.height <= info.viewportEndOffset
+private suspend fun LazyGridState.keepVisible(index: Int, room: Float) {
+    fun bounds() = layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }?.let { it.offset.y to it.offset.y + it.size.height }
+    show(index, room, ::bounds, layoutInfo.viewportStartOffset, layoutInfo.viewportEndOffset) { scrollToItem(index) }
+}
+
+/**
+ * Shows item [index] whole, moving the list as little as it can: an item that already shows whole stays put, one
+ * partly off an edge comes in [room] clear of that edge, and one not laid out yet is scrolled to first and backed
+ * off [room] from the top. scrollBy stops at either end, so an item near the end never jumps to the top and back.
+ * [start] and [end] are the list's viewport, in the same coordinates as [bounds].
+ */
+private suspend fun androidx.compose.foundation.gestures.ScrollableState.show(
+    index: Int, room: Float, bounds: () -> Pair<Int, Int>?, start: Int, end: Int, jump: suspend () -> Unit,
+) {
+    val keep = if (index > 0) room else 0f
+    val seen = bounds()
+    if (seen == null) {
+        jump()
+        val top = bounds()?.first ?: return
+        if (top < keep) scrollBy(top - keep)
+        return
+    }
+    val (top, bottom) = seen
+    if (top >= start && bottom <= end) return
+    scrollBy(if (top < start || bottom - top > end - start) top - keep else bottom - end + room)
 }
 
 /**
  * Keeps item [index] (the focus target) on screen: when a screen opens, when focus is handed back, and when the
  * target moves (after sorting, or a played game jumping to the front). Lazy lists only compose what's on screen,
- * so an item scrolled away can't take focus until it is scrolled to.
+ * so an item scrolled away can't take focus until it is scrolled to. [snap]: a list whose items snap to its top
+ * (the home rows) puts the item at the top whenever it isn't wholly in view, instead of moving the least it can.
  */
 @Composable
-fun KeepInView(state: LazyListState, index: Int, room: Dp = KeepRoom) {
+fun KeepInView(state: LazyListState, index: Int, room: Dp = KeepRoom, snap: Boolean = false) {
     val roomPx = with(LocalDensity.current) { room.toPx() }
     LaunchedEffect(state, index, Nav.focusTick) {
         if (index < 0) return@LaunchedEffect
         snapshotFlow { state.layoutInfo.totalItemsCount }.first { it > index }
-        if (!state.fullyVisible(index)) runCatching {
-            state.scrollToItem(index)
-            // Back off a little, so the item sits clear of the list's faded top edge.
-            if (index > 0 && roomPx > 0f) state.scrollBy(-roomPx)
+        runCatching {
+            if (!snap) state.keepVisible(index, roomPx)
+            else if (state.layoutInfo.visibleItemsInfo.none { it.index == index && it.offset >= state.layoutInfo.viewportStartOffset && it.offset + it.size <= state.layoutInfo.viewportEndOffset }) {
+                state.scrollToItem(index)
+                if (index > 0 && roomPx > 0f) state.scrollBy(-roomPx)
+            }
         }
     }
 }
@@ -419,26 +442,7 @@ fun KeepInView(state: LazyGridState, index: Int, room: Dp = KeepRoom) {
     LaunchedEffect(state, index, Nav.focusTick) {
         if (index < 0) return@LaunchedEffect
         snapshotFlow { state.layoutInfo.totalItemsCount }.first { it > index }
-        if (!state.fullyVisible(index)) runCatching {
-            state.scrollToItem(index)
-            if (index > 0 && roomPx > 0f) state.scrollBy(-roomPx)
-        }
-    }
-}
-
-/**
- * A row just took focus, and the non-focusable item at [above] (its section heading, or the page's first item) should
- * show with it: scrolls up just enough to show that item whole, or to the very top for the first item, so scrolling
- * back up never leaves a heading tucked under the top edge.
- */
-suspend fun LazyListState.reveal(above: Int) {
-    if (above < 0) return
-    if (above == 0) { if (firstVisibleItemIndex != 0 || firstVisibleItemScrollOffset != 0) animateScrollToItem(0); return }
-    val info = layoutInfo
-    val item = info.visibleItemsInfo.firstOrNull { it.index == above }
-    when {
-        item == null -> if (above < firstVisibleItemIndex) animateScrollToItem(above)
-        item.offset < info.viewportStartOffset -> animateScrollBy((item.offset - info.viewportStartOffset).toFloat())
+        runCatching { state.keepVisible(index, roomPx) }
     }
 }
 
@@ -450,7 +454,7 @@ val KeepRoom = 28.dp
  * glow) is never cut off at the edge of a list, and a row's heading stays in sight.
  */
 @OptIn(ExperimentalFoundationApi::class)
-private class PaddedBringIntoView(private val pad: Float) : BringIntoViewSpec {
+private open class PaddedBringIntoView(private val pad: Float) : BringIntoViewSpec {
     override fun calculateScrollDistance(offset: Float, size: Float, containerSize: Float): Float {
         val room = minOf(pad, ((containerSize - size) / 2f).coerceAtLeast(0f))
         val lead = offset - room
@@ -459,6 +463,27 @@ private class PaddedBringIntoView(private val pad: Float) : BringIntoViewSpec {
             lead < 0f -> lead
             trail > 0f -> minOf(trail, lead)
             else -> 0f
+        }
+    }
+}
+
+/**
+ * [PaddedBringIntoView] for one list that knows how far [state] can still scroll, and never asks for more. Compose
+ * stops a bring-into-view scroll the moment the list can't take all of a frame's step, and drops every request
+ * waiting on it: asking for room the list doesn't have (more than its end padding) would end each scroll near the
+ * top or bottom with a jolt, and could leave the row it was for short of the edge.
+ */
+private class ListBringIntoView(pad: Float, private val state: LazyListState) : PaddedBringIntoView(pad) {
+    override fun calculateScrollDistance(offset: Float, size: Float, containerSize: Float): Float {
+        val d = super.calculateScrollDistance(offset, size, containerSize)
+        val info = state.layoutInfo
+        val first = info.visibleItemsInfo.firstOrNull() ?: return d
+        val last = info.visibleItemsInfo.last()
+        return when {
+            d < 0f && first.index == 0 -> maxOf(d, first.offset.toFloat().coerceAtMost(0f))
+            d > 0f && last.index == info.totalItemsCount - 1 ->
+                minOf(d, (last.offset + last.size - info.viewportEndOffset + info.afterContentPadding).toFloat().coerceAtLeast(0f))
+            else -> d
         }
     }
 }
@@ -475,6 +500,42 @@ fun PaddedScrolling(pad: Dp = 40.dp, content: @Composable () -> Unit) {
     val px = with(LocalDensity.current) { pad.toPx() }
     val spec = remember(px) { PaddedBringIntoView(px) }
     CompositionLocalProvider(LocalBringIntoViewSpec provides spec, content = content)
+}
+
+/**
+ * Focus scrolling for the one list [state] inside [content] (put nothing else that scrolls in it, or give that its
+ * own [PaddedScrolling]): [pad] of room around the highlighted row, within what the list can really scroll. A long
+ * list of rows passes a [pad] taller than a row, so the row after the highlighted one already shows whole and a
+ * held D-pad glides down rows that are in view before they are highlighted.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ListScrolling(state: LazyListState, pad: Dp = 40.dp, content: @Composable () -> Unit) {
+    val px = with(LocalDensity.current) { pad.toPx() }
+    val spec = remember(px, state) { ListBringIntoView(px, state) }
+    CompositionLocalProvider(LocalBringIntoViewSpec provides spec, content = content)
+}
+
+/**
+ * A list item whose highlighted child brings the whole item into view, from its top (a section heading above the
+ * row, a gallery's title), and [extra] above that (the list's top padding, so the first item shows the very top),
+ * in the same scroll as the child. A second scroll for the heading, started after the first, fought it: while the
+ * D-pad was held it cancelled the scroll to the next row and pulled the list back up to a heading left behind.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun Modifier.showsFromTop(extra: Dp = 0.dp): Modifier {
+    val px = with(LocalDensity.current) { extra.toPx() }
+    val responder = remember(px) {
+        object : androidx.compose.foundation.relocation.BringIntoViewResponder {
+            override fun calculateRectForParent(localRect: androidx.compose.ui.geometry.Rect) =
+                localRect.copy(top = minOf(localRect.top, 0f) - px)
+
+            // The item doesn't scroll; the list it sits in does.
+            override suspend fun bringChildIntoView(localRect: () -> androidx.compose.ui.geometry.Rect?) = Unit
+        }
+    }
+    return bringIntoViewResponder(responder)
 }
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -22,9 +22,16 @@ around their centre without lifting, so a row of them stays in line. So:
 
 - Every scrolling container gets `Modifier.fadingEdges(state)` (`horizontal = true` for rows). It fades content
   over `FadeEdge` (22 dp) only where more content lies beyond the edge.
-- `KeepInView` scrolls the target `KeepRoom` (28 dp) clear of the top edge. Rows that snap to the top on purpose
-  pass `room = 0.dp` with a shorter fade.
-- D-pad focus keeps 40 dp of room around the highlighted item (`PaddedScrolling`, set at the app root).
+- `KeepInView` brings the target into view moving the list as little as it can, `KeepRoom` (28 dp) clear of the
+  edge it was beyond; it never scrolls past an end and back. Rows that snap to the top on purpose (the home rows)
+  pass `snap = true, room = 0.dp` with a shorter fade.
+- D-pad focus keeps 40 dp of room around the highlighted item (`PaddedScrolling`, set at the app root). A long
+  list of rows (Settings) wraps its list in `ListScrolling(state, room)`: a room taller than a row, so the next row
+  is already whole when the highlight reaches it, and never more than the list can scroll (asking for more stops the
+  scroll short). Anything scrolling inside such a list gets its own `PaddedScrolling`.
+- One scroll per highlight. A heading or title that should come into view with a row goes in the same list item,
+  with `Modifier.showsFromTop()` on the item, never in a second scroll launched after the first: two scrolls cancel
+  each other, and the late one pulls the list back while the D-pad is held.
 
 ## Popups
 

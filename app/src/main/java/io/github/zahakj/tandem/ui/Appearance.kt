@@ -530,25 +530,44 @@ fun appearanceSections(): List<SettingSection> {
     ) + listOfNotNull(themePackAudioSettings())
 }
 
-/** The galleries at the top of Look & feel: built-in themes, then theme packs (with the pack manager card). */
+/**
+ * The galleries at the top of Look & feel: built-in themes, then theme packs (with the pack manager card). Each is
+ * one list item with its title, so highlighting a card brings the title along ([showsFromTop]); the first one brings
+ * the page's top. Inside, the rows scroll with the usual room ([PaddedScrolling]), not the settings list's.
+ */
 fun lookHeader(routeKey: String): SettingsHeaderSpec = SettingsHeaderSpec(
-    keys = listOf(emptyList(), builtInThemeKeys(), emptyList(), packThemeKeys()),
+    keys = listOf(builtInThemeKeys(), packThemeKeys()),
     content = { target, onFocusKey ->
         val look = Store.settings.look
-        item(key = "gallery-title") { SettingsHeader("Themes", "A uses one · packs below") }
-        item(key = "gallery") { BuiltInThemeRow(look.theme, target, onFocusKey) }
-        item(key = "packs-title") { SettingsHeader("Theme packs", "Cocoon · Tandem") }
-        item(key = "packs") { PackThemeRow(look.theme, target, onFocusKey) }
+        item(key = "gallery") {
+            Column(Modifier.showsFromTop(FocusRoom)) {
+                SettingsHeader("Themes", "A uses one · packs below")
+                Spacer(Modifier.height(8.dp))
+                PaddedScrolling { BuiltInThemeRow(look.theme, target, onFocusKey) }
+            }
+        }
+        item(key = "packs") {
+            Column(Modifier.showsFromTop()) {
+                SettingsHeader("Theme packs", "Cocoon · Tandem")
+                Spacer(Modifier.height(8.dp))
+                PaddedScrolling { PackThemeRow(look.theme, target, onFocusKey) }
+            }
+        }
     },
     row = { key -> themeGalleryRow(key) },
 )
 
-/** The layout gallery at the top of Home & layout. */
+/** The layout gallery at the top of Home & layout, with its title (see [lookHeader]). */
 fun layoutHeader(routeKey: String): SettingsHeaderSpec = SettingsHeaderSpec(
-    keys = listOf(emptyList(), HomeLayouts.map { "layout:${it.first}" }),
+    keys = listOf(HomeLayouts.map { "layout:${it.first}" }),
     content = { target, onFocusKey ->
-        item(key = "layouts-title") { SettingsHeader("Home layout", "A switches") }
-        item(key = "layouts") { LayoutGallery(routeKey, Store.settings.look.homeLayout, target, onFocusKey) }
+        item(key = "layouts") {
+            Column(Modifier.showsFromTop(FocusRoom)) {
+                SettingsHeader("Home layout", "A switches")
+                Spacer(Modifier.height(8.dp))
+                PaddedScrolling { LayoutGallery(routeKey, Store.settings.look.homeLayout, target, onFocusKey) }
+            }
+        }
     },
     row = { key ->
         if (!key.startsWith("layout:")) return@SettingsHeaderSpec null

@@ -111,7 +111,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
     val outer = rememberRouteListState("home")
     // Now playing and Continue playing fit together, so show both rather than scrolling Now playing away.
     fun snapIndex(i: Int) = if (i == 1 && rows.firstOrNull()?.id == "now") 0 else i
-    KeepInView(outer, if (targetRow < 0) -1 else snapIndex(targetRow), room = 0.dp)
+    KeepInView(outer, if (targetRow < 0) -1 else snapIndex(targetRow), room = 0.dp, snap = true)
     val rowStates = HashMap<String, LazyListState>()
     for (r in rows) key(r.id) {
         val state = rememberRouteListState("home:row:${r.id}")
