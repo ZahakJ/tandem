@@ -170,10 +170,18 @@ object Nav {
         setRoute(r, 0)
     }
 
+    /** [go] without the double-press guard, for code that opens screens in a row (search opening a subpage over its page). */
+    fun goNow(r: Route) {
+        if (r == route) return
+        lastGo = SystemClock.uptimeMillis()
+        stack.addLast(route)
+        setRoute(r, 0)
+    }
+
     fun back(): Boolean {
         val r = stack.removeLastOrNull() ?: return false
         // Back to the Settings tiles from a page (maybe one reached with L1 / R1): that page's tile is highlighted.
-        if (r == Route.Settings) SettingsCategories.idOf(route)?.let { FocusMemory.remember(r.key, "cat:$it") }
+        if (r == Route.Settings) SettingsCategories.idOf(route)?.let { FocusMemory.remember(r.key, "cat:" + (SettingsCategories.parentOf(it) ?: it)) }
         setRoute(r, 0)
         return true
     }
@@ -798,8 +806,12 @@ private fun cycle(by: Int) {
             }
             step(ids, r.id)?.let { Nav.replace(Route.Collection(it), by); Sounds.page() }
         }
-        // Settings pages: L1 and R1 flip to the page before or after, like turning pages.
-        Route.Appearance, is Route.SettingsPage -> SettingsCategories.idOf(r)?.let { Nav.replace(SettingsCategories.route(SettingsCategories.step(it, by)), by); Sounds.page() }
+        // Settings pages: L1 and R1 flip to the page before or after, like turning pages; a subpage first goes back to its page.
+        Route.Appearance, is Route.SettingsPage -> SettingsCategories.idOf(r)?.let {
+            if (SettingsCategories.parentOf(it) != null) Nav.back()
+            Nav.replace(SettingsCategories.route(SettingsCategories.step(it, by)), by)
+            Sounds.page()
+        }
         else -> Unit
     }
 }
@@ -842,7 +854,8 @@ private fun TopBar() {
         Route.Systems -> "Systems"
         Route.Apps -> "Apps"
         Route.Appearance -> "Settings  ›  Look & feel"
-        is Route.SettingsPage -> "Settings  ›  ${SettingsCategories.title(r.id)}"
+        // A subpage names its page instead of Settings, as Theme packs does.
+        is Route.SettingsPage -> (SettingsCategories.parentOf(r.id)?.let(SettingsCategories::title) ?: "Settings") + "  ›  ${SettingsCategories.title(r.id)}"
         Route.ThemePacks -> "Look & feel  ›  Theme packs"
         Route.GameFolders -> "Library & art  ›  Game folders"
         Route.Scrape -> "Artwork & details"

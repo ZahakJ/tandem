@@ -250,7 +250,7 @@ fun AchievementsPage(g: Game, routeKey: String, modifier: Modifier, done: () -> 
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         val note = when {
             hidden -> "Hidden games are never looked up. Type an ID or choose No achievements instead."
-            !signedIn -> "Sign in to RetroAchievements (Settings › Art & accounts) to see suggestions. You can still type an ID."
+            !signedIn -> "Sign in to RetroAchievements (Settings › Library & art › Accounts) to see suggestions. You can still type an ID."
             !supported -> "RetroAchievements has no list for ${g.platform.name} that Tandem knows."
             current == null -> "Not matched yet."
             current == 0 -> "Currently: no achievements."

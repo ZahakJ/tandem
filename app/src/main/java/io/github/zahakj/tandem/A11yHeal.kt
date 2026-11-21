@@ -13,7 +13,7 @@ import android.util.Log
  * Shizuku, keeping every other service in the list as it was.
  *
  * It never does that after the user turned it off on purpose: opening Android's Accessibility settings from
- * Tandem's own row (Settings › Controls) with it on and coming back with it off counts as that, until the user
+ * Tandem's own row (Settings › Controls › Connected controllers) with it on and coming back with it off counts as that, until the user
  * switches it on again.
  */
 object A11yHeal {

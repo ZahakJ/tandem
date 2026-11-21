@@ -400,7 +400,7 @@ object Scraper {
         }
         val index = LaunchBoxDb.index()
         if (index == null) {
-            p.note("LaunchBox needs its database: Settings › Art & accounts › LaunchBox")
+            p.note("LaunchBox needs its database: Settings › Library & art › Set up sources › LaunchBox")
             return emptyMap()
         }
         if (wanted.any { !index.has(it) } && LaunchBoxDb.info?.platforms?.containsAll(wanted) != true) {

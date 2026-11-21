@@ -33,7 +33,7 @@ import java.lang.ref.WeakReference
  * already there. Coming back to Tandem shows the presentation again first and only then finishes the companion, so
  * the stock launcher never flashes.
  *
- * What it shows is chosen for every game at once (Settings › Play & system › Playing), per system and per game, the
+ * What it shows is chosen for every game at once (Settings › Two screens › While playing), per system and per game, the
  * most particular choice winning: the game's art, Tandem's companion (Pip, clock, quick bar, toggles), a dark screen
  * (Screen off, ScreenOff.kt: black and still until a tap, the biggest battery saving there is on the OLED panel), or
  * nothing (the emulator uses both screens itself: 3DS, DS).
@@ -78,7 +78,7 @@ object GameCompanion {
     fun usesBothScreens(platformId: String, pkg: String?): Boolean =
         platformId in dualSystems || pkg?.lowercase()?.let { p -> dualApps.any { it in p } } == true
 
-    /** The choice for every system and game without one of their own (Settings › Play & system › Playing): game art unless changed. */
+    /** The choice for every system and game without one of their own (Settings › Two screens › While playing): game art unless changed. */
     fun defaultMode(): String = HomeStore.settings.companion ?: ART
 
     /** What a system's games get by default: the user's choice for it, else [defaultMode] (or nothing for dual-screen emulators). */

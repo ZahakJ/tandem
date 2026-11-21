@@ -8,7 +8,7 @@ import java.io.File
 /**
  * Where Settings rows go (SettingsCatalog.kt). Rows are built in Compose, so this reads the feature files instead:
  * every row a settings feature builds with a fixed label must be placed by [SettingsPlan] or dropped on purpose, so a
- * new row can't end up in a leftover pile, and nothing is placed twice.
+ * new row can't end up in a leftover pile, and nothing is placed twice. Subpages must each be reached from one row.
  */
 class SettingsPlanTest {
     /** The files that build Settings rows (the feature side of [settingsCatalog]). */
@@ -18,9 +18,9 @@ class SettingsPlanTest {
         "SettingsCatalog", "Orbit", "SpotlightHome",
     )
 
-    /** Rows that aren't picked by label: galleries, and groups taken whole ([SettingsPlan.whole], the theme pack's audio, hidden). */
+    /** Rows that aren't picked by label: galleries, and groups taken whole ([SettingsPlan.ALL], the theme pack's audio). */
     private val notPicked = setOf(
-        "Theme packs", "Hidden folders and games", "Theme pack music", "Theme pack sounds",
+        "Theme packs", "Theme pack music", "Theme pack sounds",
         "No other controllers", "Controller in games", "Always use a connected pad",
     )
 
@@ -31,9 +31,12 @@ class SettingsPlanTest {
 
     private val rowLabel = Regex("""(?:SettingRow|toggle|choice|number)\(\s*"([^"]+)"""")
 
+    /** Every pick of every page and subpage, the rows opening subpages and the groups taken whole left out. */
+    private val rowPicks = SettingsPlan.pages.values.flatten().flatMap { it.main }
+        .filter { it.section != SettingsPlan.LINK && it.label != SettingsPlan.ALL }
+
     @Test fun everySettingsRowIsPlaced() {
-        val placed = SettingsPlan.pages.values.flatten().flatMap { it.main + it.more }.map { it.label }.toSet() +
-            SettingsPlan.dropped.map { it.label }
+        val placed = rowPicks.map { it.label }.toSet() + SettingsPlan.dropped.map { it.label }
         val built = features.flatMap { f -> rowLabel.findAll(ui(f)).map { it.groupValues[1] }.toList() }.toSet() - notPicked
         val missing = built - placed
         assertTrue("Rows no page places (add them to SettingsPlan, or drop them): $missing", missing.isEmpty())
@@ -42,19 +45,48 @@ class SettingsPlanTest {
     @Test fun everyPickNamesAGroupThatExists() {
         val groups = features.flatMap { f -> Regex("""SettingSection\(\s*"([^"]+)"""").findAll(ui(f)).map { it.groupValues[1] }.toList() }.toSet() +
             setOf(HomeButtonGroup, ControllersGroup, PadLinkGroup)
-        val picks = SettingsPlan.pages.values.flatten().flatMap { it.main + it.more } + SettingsPlan.dropped
+        val picks = SettingsPlan.pages.values.flatten().flatMap { it.main }.filter { it.section != SettingsPlan.LINK } + SettingsPlan.dropped
         val unknown = picks.map { it.section }.toSet() - groups
         assertTrue("Picks from groups no feature builds: $unknown", unknown.isEmpty())
     }
 
     @Test fun nothingIsPlacedTwice() {
-        val picks = SettingsPlan.pages.values.flatten().flatMap { it.main + it.more } + SettingsPlan.dropped
+        val picks = rowPicks + SettingsPlan.dropped
         val twice = picks.groupBy { it }.filter { it.value.size > 1 }.keys
         assertTrue("Placed twice: $twice", twice.isEmpty())
     }
 
-    @Test fun sevenPagesInTileOrder() {
-        assertEquals(SettingsCategories.ids, SettingsPlan.pages.keys.toList())
+    @Test fun sevenPagesInTileOrderThenSubpages() {
+        assertEquals(SettingsCategories.ids, SettingsPlan.pages.keys.take(7))
         assertEquals(7, SettingsCategories.ids.size)
+        assertEquals(SettingsPlan.subs.map { it.id }.toSet(), SettingsPlan.pages.keys.drop(7).toSet())
+    }
+
+    @Test fun everySubpageOpensFromOneRowOnItsPage() {
+        for (sub in SettingsPlan.subs) {
+            val links = SettingsPlan.pages.flatMap { (page, groups) -> groups.flatMap { it.main }.filter { it.section == SettingsPlan.LINK && it.label == sub.id }.map { page } }
+            assertEquals("Rows opening ${sub.id}", listOf(sub.parent), links)
+            assertTrue("${sub.parent} is one of the seven pages", sub.parent in SettingsCategories.ids)
+            assertTrue("A key for the row opening ${sub.id}", SettingsPlan.linkKey(sub.id) != null)
+        }
+        val links = SettingsPlan.pages.values.flatten().flatMap { it.main }.filter { it.section == SettingsPlan.LINK }.map { it.label }
+        assertTrue("Rows opening subpages that don't exist: ${links - SettingsPlan.subs.map { it.id }.toSet()}", links.all { SettingsPlan.sub(it) != null })
+    }
+
+    /** No page reads as a long list: a subpage takes a group's rarer rows instead (one row on the page). */
+    @Test fun pagesStayShort() {
+        for ((id, groups) in SettingsPlan.pages) {
+            // The most a page can show with any one layout (layout-only rows of the others never show together).
+            val most = listOf("grid", "orbit", "spotlight", "rows").maxOf { layout ->
+                // About Tandem stands in for Updates in builds without the updater, so never both.
+                groups.flatMap { it.main }.filter { it.label != "About Tandem" }.count { pk ->
+                    when (pk.layout) {
+                        null -> true; "grid" -> layout == "grid"; "nogrid" -> layout != "grid"; "orbit" -> layout == "orbit"
+                        "spotlight" -> layout == "spotlight"; "other" -> layout == "orbit" || layout == "rows"; else -> layout == "rows"
+                    }
+                }
+            }
+            assertTrue("$id shows $most rows; keep pages to twelve at most", most <= 12)
+        }
     }
 }

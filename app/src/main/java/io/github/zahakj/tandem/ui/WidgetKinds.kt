@@ -172,7 +172,7 @@ object WidgetKinds {
             content = { s, m ->
                 val list = rememberGames { Collections.recentlyAdded() }
                 val week = System.currentTimeMillis() - 7L * 24 * 3600_000
-                GameStrip(s, m, "Recently added", list.map { StripItem(it.key, it, it.title, badge = if (it.meta.firstSeen > week) "New" else null) }, "No games yet", "Pick your games folder in Settings › Game folders")
+                GameStrip(s, m, "Recently added", list.map { StripItem(it.key, it, it.title, badge = if (it.meta.firstSeen > week) "New" else null) }, "No games yet", "Pick your games folder in Settings › Library & art › Game folders")
             },
         ),
         WidgetKind(

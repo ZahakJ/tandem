@@ -6,7 +6,7 @@ import io.github.zahakj.tandem.ScreenOff
 import io.github.zahakj.tandem.data.HomeStore
 
 /**
- * The bottom screen while a game plays, for everyone at once (Settings › Play & system › Playing): which of the
+ * The bottom screen while a game plays, for everyone at once (Settings › Two screens › While playing): which of the
  * companion's faces it shows unless a system or game chose its own (GameCompanion.kt), and the Off after timer that
  * turns any of them dark after some minutes without a touch (ScreenOff.kt).
  */

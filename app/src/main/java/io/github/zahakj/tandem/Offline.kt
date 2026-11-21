@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
  * - [NetGate]: while private mode is on, every request Tandem itself makes (scraping and its downloads, the LaunchBox
  *   database, RetroAchievements, cover lookups, remote pictures) stops before it leaves the device. Nothing is kept to
  *   send later. The Discord status already shows nothing in private mode (DiscordPresence.show).
- * - [Offline]: with Settings › Play & system › Privacy › Go offline while a hidden game plays, starting a hidden game (only
+ * - [Offline]: with Settings › Play & system › Privacy & hidden › Offline for hidden games, starting a hidden game (only
  *   possible once the PIN revealed it) turns airplane mode on through Shizuku, and Wi-Fi off when Android keeps it on
  *   in airplane mode. It fails closed: when the handheld can't be confirmed offline (no Shizuku, a radio that won't
  *   switch) the game doesn't start, and Pip offers to start it anyway. What Tandem changed is written down at once

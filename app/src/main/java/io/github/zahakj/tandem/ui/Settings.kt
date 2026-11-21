@@ -44,7 +44,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -124,14 +123,13 @@ data class SettingRow(
 enum class RowKind { Toggle, Choice, Slider, Link, Action }
 
 /**
- * A titled group of rows. [rows] are the common ones; [more] are tucked away under "More options" until asked
- * for. [note] is a short aside shown next to the title ("For the icon grid").
+ * A titled group of rows, every one of them shown: Settings folds nothing away (rarer rows get a short page of their
+ * own instead, see SettingsPlan). [note] is a short aside shown next to the title ("For the icon grid").
  */
 data class SettingSection(
     val title: String,
     val rows: List<SettingRow>,
     val icon: Glyph? = null,
-    val more: List<SettingRow> = emptyList(),
     val note: String? = null,
 )
 
@@ -155,12 +153,8 @@ object SettingsIdle {
     }
 }
 
-/** Settings screen state that outlives a screen: open "More options" groups and the row search jumped to. */
+/** Settings screen state that outlives a screen: the row search jumped to. */
 object SettingsUi {
-    private val expanded = mutableStateMapOf<String, Boolean>()
-    fun isOpen(route: String, group: String) = expanded["$route|$group"] == true
-    fun setOpen(route: String, group: String, open: Boolean) { expanded["$route|$group"] = open }
-
     /** The row to pulse once (after a search jump), and a counter so the same row can pulse again. */
     var flashKey by mutableStateOf<String?>(null)
         private set
@@ -173,9 +167,8 @@ object SettingsUi {
     fun shouldFlash(key: String?) = key != null && key == flashKey && android.os.SystemClock.uptimeMillis() - flashAt < 2500
 }
 
-/** The focus key of a row: its group and label. Search and the "More options" switch use the same keys. */
+/** The focus key of a row: its group and label. Search uses the same keys. */
 fun rowKey(section: String, label: String) = "$section/$label"
-private fun moreKey(section: String) = "more:$section"
 
 /**
  * [LibraryScan.scanning] as Settings sees it. Settings stays composed while hidden (KeptScreen), and Tandem rescans
@@ -209,28 +202,21 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
                 help = "Write each game's name under its card. Handy when box art looks alike.", keywords = "names labels",
             ) { Store.updateSettings { it.copy(showTitles = !it.showTitles) } },
             SettingRow(
-                "Show hidden games", if (io.github.zahakj.tandem.Privacy.enabled) "Private" else onOff(s.showHidden), Palette.Mint, Glyph.Eye,
+                "Show hidden games", if (io.github.zahakj.tandem.Privacy.enabled) "Private" else onOff(s.showHidden), Palette.Lavender, Glyph.Eye,
                 toggle = if (io.github.zahakj.tandem.Privacy.enabled) null else s.showHidden,
-                help = "Games, folders and systems you hid with Y stay out of sight unless this is on. In private mode it asks for your PIN.",
-                keywords = "unhide",
+                help = "Games, folders and systems you hid with Y stay out of sight unless this is on; then they show, dimmed. " +
+                    "Start › Hidden lists everything hidden, each with Unhide. In private mode it asks for your PIN.",
+                keywords = "unhide hidden folders systems tuck away list",
             ) { toggleShowHidden() },
             SettingRow(
                 "Rescan games",
-                if (scanning) "Looking…" else plural(gameCount, "game"),
+                if (scanning) "Looking…" else plural(gameCount, "game") + when (val n = io.github.zahakj.tandem.Manuals.count) { 0 -> ""; else -> " · " + plural(n, "manual") },
                 Palette.Mint, Glyph.Refresh,
-                help = "Look through your game folders again, for games you just copied over. Tandem also checks by itself whenever you come back to it.",
-                keywords = "refresh scan reload find new games",
-                onClick = onRescan,
-            ),
-            SettingRow(
-                "Manuals",
-                when (val n = io.github.zahakj.tandem.Manuals.count) { 0 -> "None found"; else -> plural(n, "manual") } + " · ROMs/manuals",
-                Palette.Mint, Glyph.Text,
-                help = "Manuals and guides for your games, read from a game's Y menu and on the bottom screen while it plays. " +
-                    "Put them in ROMs/manuals/<system>/ named like the game, Pokemon Red.pdf for Pokemon Red.gb: a PDF, a zip or folder of " +
-                    "pictures, or a text or Markdown file. Or pick one per game under Y › Edit details › Manual. Rescanning picks new ones up.",
-                keywords = "manual guide pdf cbz walkthrough instructions booklet faq book read",
-                action = "Rescan",
+                help = "Look through your game folders again, for games you just copied over, and for manuals. Tandem also checks " +
+                    "by itself whenever you come back to it. Manuals and guides go in ROMs/manuals/<system>/ named like the game " +
+                    "(Pokemon Red.pdf for Pokemon Red.gb): a PDF, a zip or folder of pictures, or a text or Markdown file. Read them " +
+                    "from a game's Y menu and on the bottom screen while it plays, or pick one under Y › Edit details › Manual.",
+                keywords = "refresh scan reload find new games manual guide pdf cbz walkthrough instructions booklet faq book read",
                 onClick = onRescan,
             ),
         ),
@@ -280,16 +266,23 @@ fun aboutSettings(): SettingSection {
                 help = "With Shizuku running, picking a game that is still open brings it back instead of restarting it.",
                 keywords = "shizuku continue suspend",
             ) { askShizuku() },
-            SettingRow(
-                "About Tandem", "Version ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME} · GPL-3.0", Palette.Lavender, icon = Glyph.Heart,
-                help = "Free and open source. No ads, no accounts, no tracking. Your data stays on your device.",
-                keywords = "version license open source credits",
-            ) { Toasts.show("Made with love, free forever. Hi from Pip!") },
-        ) + updateRows(),
+        ) + updateRows().ifEmpty {
+            listOf(
+                SettingRow(
+                    "About Tandem", "Version ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME} · GPL-3.0", Palette.Lavender, icon = Glyph.Heart,
+                    help = AboutHelp, keywords = "version license open source credits",
+                ) { Toasts.show("Made with love, free forever. Hi from Pip!") },
+            )
+        },
     )
 }
 
-/** Check for updates and Check now (Updates.kt); none in a build without the updater (F-Droid). */
+private const val AboutHelp = "Free and open source (GPL-3.0). No ads, no accounts, no tracking. Your data stays on your device."
+
+/**
+ * Updates (this version, where an update stands, and A to check) and Check automatically (Updates.kt), standing in
+ * for About Tandem; none in a build without the updater (F-Droid), which shows About Tandem instead.
+ */
 @Composable
 private fun updateRows(): List<SettingRow> {
     if (!io.github.zahakj.tandem.BuildConfig.SELF_UPDATE) return emptyList()
@@ -298,18 +291,18 @@ private fun updateRows(): List<SettingRow> {
     val found = updates.found
     return listOf(
         SettingRow(
-            "Check now", updates.statusLine(), Palette.Lavender, icon = Glyph.Download,
-            help = "Asks GitHub whether a newer Tandem is out. Update downloads it, checks it is the real release (its " +
+            "Updates", updates.statusLine(), Palette.Lavender, icon = Glyph.Download,
+            help = "This is Tandem ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME}. A asks GitHub whether a newer one is out. Update downloads it, checks it is the real release (its " +
                 "checksum and Tandem's signing key) and installs it; Tandem restarts. With Shizuku it installs without a question; " +
-                "otherwise Android asks once to allow installs from Tandem.",
-            keywords = "update upgrade new version release download install github",
+                "otherwise Android asks once to allow installs from Tandem. $AboutHelp",
+            keywords = "update upgrade new version release download install github check now about license open source credits",
             action = if (found != null) "See update" else "Check",
         ) { if (found != null) UpdatePopup.show() else updates.check(ctx) },
         toggle(
             "Check automatically", Glyph.Refresh, Palette.Lavender,
             "Look for a new Tandem once a day while Tandem is open, and say so once with a message and in the Start panel. It only " +
                 "asks GitHub for the latest version number; nothing installs until you press Update. Off, nothing is checked or " +
-                "shown until you press Check now. Private mode skips it.",
+                "shown until you check with A on Updates. Private mode skips it.",
             Store.settings.checkUpdates,
         ) { on -> Store.updateSettings { it.copy(checkUpdates = on) } }.copy(keywords = "check for updates automatic daily github notification notify"),
     )
@@ -348,17 +341,11 @@ object DataJobs {
 }
 
 /**
- * One line of the settings list: a row, or a group's "More options" switch. The first line of a group carries the
- * group's [heading], drawn above it in the same list item, so highlighting the line brings its heading into view in
- * the same scroll (see [showsFromTop]).
+ * One row of the settings list. The first row of a group carries the group's [heading], drawn above it in the same
+ * list item, so highlighting the row brings its heading into view in the same scroll (see [showsFromTop]).
  */
-private sealed interface SettingsLine {
-    val key: String
-    val heading: SettingSection?
-    class Item(val section: SettingSection, val row: SettingRow, val extra: Boolean, override val heading: SettingSection?) : SettingsLine {
-        override val key = rowKey(section.title, row.label)
-    }
-    class More(val section: SettingSection, val open: Boolean, override val heading: SettingSection?) : SettingsLine { override val key = moreKey(section.title) }
+private class SettingsLine(val section: SettingSection, val row: SettingRow, val heading: SettingSection?) {
+    val key = rowKey(section.title, row.label)
 }
 
 /**
@@ -368,12 +355,9 @@ private sealed interface SettingsLine {
 val SettingsScrollRoom = 88.dp
 
 /**
- * The two-pane settings layout: grouped rows on the left, and on the right a panel that explains the highlighted
- * setting (with a live preview where one helps). [header] adds extra items above the sections (the theme gallery
- * on Look & feel) and may report focus through its callback to change the side panel.
- *
- * Each group shows its common rows; its [SettingSection.more] rows stay folded under a "More options" row until
- * it is opened (search opens it by itself when it jumps to one of them).
+ * The two-pane settings layout: grouped rows on the left, every one of them shown, and on the right a panel that
+ * explains the highlighted setting (with a live preview where one helps). [header] adds extra items above the
+ * sections (the theme gallery on Look & feel) and may report focus through its callback to change the side panel.
  */
 @Composable
 fun SettingsLayout(
@@ -391,21 +375,9 @@ fun SettingsLayout(
 ) {
     // Written as the highlight moves and read only by the side panel, so a move doesn't recompose the list.
     val focusedKey = remember { mutableStateOf(FocusMemory.get(routeKey)) }
-    val lines = buildList {
-        for (s in sections) {
-            if (s.rows.isEmpty() && s.more.isEmpty()) continue
-            val start = size
-            fun heading() = s.takeIf { size == start }
-            s.rows.forEach { add(SettingsLine.Item(s, it, extra = false, heading = heading())) }
-            if (s.more.isNotEmpty()) {
-                val open = SettingsUi.isOpen(routeKey, s.title) || s.rows.isEmpty()
-                if (open) s.more.forEach { add(SettingsLine.Item(s, it, extra = true, heading = heading())) }
-                if (s.rows.isNotEmpty()) add(SettingsLine.More(s, open, heading = heading()))
-            }
-        }
-    }
-    // Rows come and go (signing in adds some, a group folds away); the remembered item, or its neighbour, gets
-    // focus and is scrolled to. Galleries and rows share one target, so focus can never end up nowhere.
+    val lines = sections.flatMap { s -> s.rows.mapIndexed { i, r -> SettingsLine(s, r, heading = s.takeIf { i == 0 }) } }
+    // Rows come and go (signing in adds some); the remembered item, or its neighbour, gets focus and is scrolled to.
+    // Galleries and rows share one target, so focus can never end up nowhere.
     val target = rememberFocusTarget(routeKey, headerKeys.flatten() + lines.map { it.key })
     val state = rememberRouteListState(routeKey)
     run {
@@ -434,25 +406,12 @@ fun SettingsLayout(
                 header?.invoke(this, target) { key -> onFocus(key, headerRow(key)) }
                 // contentType lets the list reuse a scrolled-away row's layout for the next row of the same kind.
                 itemsIndexed(lines, key = { _, it -> it.key }, contentType = { _, it -> if (it.heading != null) 1 else 0 }) { i, line ->
-                    // The first line of the page (with no gallery above) brings the page's very top along.
+                    // The first row of the page (with no gallery above) brings the page's very top along.
                     val top = if (i == 0 && headerKeys.isEmpty()) FocusRoom else 0.dp
                     Column(if (line.heading != null || top > 0.dp) Modifier.showsFromTop(top) else Modifier) {
                         line.heading?.let { SettingsHeader(it.title, it.note); Spacer(Modifier.height(8.dp)) }
-                        when (line) {
-                            is SettingsLine.Item -> SettingRowCard(line.row, Modifier.takesFocus(routeKey, line.key, line.key == target), flashKey = line.key) {
-                                onFocus(line.key, line.row)
-                            }
-                            is SettingsLine.More -> {
-                                val row = moreRow(line.section, line.open) {
-                                    SettingsUi.setOpen(routeKey, line.section.title, !line.open)
-                                    // Opening moves the highlight to the first row that appeared; folding keeps it here.
-                                    if (!line.open) line.section.more.firstOrNull()?.let {
-                                        FocusMemory.remember(routeKey, rowKey(line.section.title, it.label))
-                                        Nav.focusTick++
-                                    }
-                                }
-                                SettingRowCard(row, Modifier.takesFocus(routeKey, line.key, line.key == target), subtle = true) { onFocus(line.key, row) }
-                            }
+                        SettingRowCard(line.row, Modifier.takesFocus(routeKey, line.key, line.key == target), flashKey = line.key) {
+                            onFocus(line.key, line.row)
                         }
                     }
                 }
@@ -465,27 +424,12 @@ fun SettingsLayout(
     }
 }
 
-/** The side panel for the highlighted line; its own scope, so the highlight moving recomposes only the panel. */
+/** The side panel for the highlighted row; its own scope, so the highlight moving recomposes only the panel. */
 @Composable
 private fun SettingsSide(focusedKey: androidx.compose.runtime.State<String?>, lines: List<SettingsLine>, headerRow: (String) -> SettingRow?, fallback: @Composable () -> Unit) {
     val key = focusedKey.value
-    val row = key?.let(headerRow) ?: when (val l = lines.firstOrNull { it.key == key }) {
-        is SettingsLine.Item -> l.row
-        is SettingsLine.More -> moreRow(l.section, l.open) {}
-        null -> null
-    }
-    SidePanel(row, fallback)
+    SidePanel(key?.let(headerRow) ?: lines.firstOrNull { it.key == key }?.row, fallback)
 }
-
-/** The row that opens or folds a group's extra options. */
-private fun moreRow(section: SettingSection, open: Boolean, onClick: () -> Unit) = SettingRow(
-    if (open) "Fewer options" else "More options",
-    if (open) "Hide ${section.more.size}" else "${section.more.size} more",
-    Palette.Muted, null,
-    "The less common ${section.title.lowercase()} settings: " + section.more.joinToString(", ") { it.label } + ".",
-    opens = !open, action = if (open) "Hide" else "Show",
-    onClick = onClick,
-)
 
 /** A section heading in a settings list: small, spaced capitals with a hairline, and an optional aside. */
 @Composable
@@ -503,11 +447,10 @@ fun SettingsHeader(title: String, note: String? = null) {
 
 /**
  * One settings row as a card: icon chip, label, and on the right what kind of row it is: a switch, ‹ value › for
- * choices, a gauge for numbers, a chevron for links. [flashKey] pulses the row once when search jumps to it;
- * [subtle] draws the quieter "More options" rows.
+ * choices, a gauge for numbers, a chevron for links. [flashKey] pulses the row once when search jumps to it.
  */
 @Composable
-fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: String? = null, subtle: Boolean = false, onFocus: () -> Unit) {
+fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: String? = null, onFocus: () -> Unit) {
     val stepper = row.onLeft != null || row.onRight != null
     // A jump from search pulses the row's outline twice, so the eye finds it.
     val flash = remember { Animatable(0f) }
@@ -530,19 +473,17 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
         Row(
             Modifier.fillMaxWidth()
                 .border(2.dp, row.color.copy(alpha = flash.value * 0.9f), RoundedCornerShape(16.dp))
-                .padding(horizontal = 12.dp, vertical = if (subtle) 6.dp else 9.dp),
+                .padding(horizontal = 12.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (row.icon != null) {
                 GlyphChip(row.icon, row.color)
                 Spacer(Modifier.width(12.dp))
-            } else if (subtle) {
-                Spacer(Modifier.width(42.dp))
             }
             Text(
                 row.label, Modifier.weight(1f),
-                style = if (subtle) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium,
-                color = if (subtle) Palette.Muted else Palette.Text,
+                style = MaterialTheme.typography.titleMedium,
+                color = Palette.Text,
                 maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.width(10.dp))
@@ -555,7 +496,7 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
                     }
                     if (stepper) Text("‹", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
                     if (stepper) Spacer(Modifier.width(6.dp))
-                    if (row.value.isNotEmpty()) ValuePill(row.value, if (subtle) Palette.Muted else row.color, Modifier.weight(1f, fill = false))
+                    if (row.value.isNotEmpty()) ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
                     if (stepper) Spacer(Modifier.width(6.dp))
                     if (stepper) Text("›", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
                     if (row.kind == RowKind.Link) {

@@ -47,8 +47,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.AndroidApps
 import io.github.zahakj.tandem.AppMove
-import io.github.zahakj.tandem.HiddenItem
-import io.github.zahakj.tandem.HiddenItems
 import io.github.zahakj.tandem.LaunchDisplay
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.data.AppPrefs
@@ -61,7 +59,6 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.Immersion
 import io.github.zahakj.tandem.Shell
 import io.github.zahakj.tandem.data.HomeStore
-import io.github.zahakj.tandem.data.IconGridStore
 import io.github.zahakj.tandem.data.Store
 import androidx.compose.ui.draw.clip
 import kotlinx.coroutines.Dispatchers
@@ -517,37 +514,29 @@ fun homeSettings(): SettingSection {
                     "Turning it off asks for the PIN. While it is off, ${Prompts.words(io.github.zahakj.tandem.Command.Hidden)} turns it on at once.",
                 keywords = "privacy hidden secret lock pin panic offline",
             ) { if (s.privateMode) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn() },
-            SettingRow(
-                "Go offline while a hidden game plays",
-                if (!s.privateMode) "Private mode only" else if (!shizuku) "Needs Shizuku" else onOff(s.offlineHidden), Palette.Lavender, Glyph.Shield,
-                help = "In private mode, airplane mode goes on while a hidden game plays and back off when it ends, so nothing in the game can go online. " +
-                    "Airplane mode you turned on yourself stays on. Needs Shizuku.",
-                toggle = if (!shizuku) null else s.offlineHidden,
-                keywords = "airplane mode offline network wifi internet hidden private game emulator",
-            ) {
-                if (!shizuku) Toasts.show("This needs Shizuku running, with Tandem allowed")
-                else HomeStore.updateSettings { it.copy(offlineHidden = !it.offlineHidden) }
-            },
-            SettingRow(
-                "Stay offline until the game closes",
-                if (!s.privateMode || !s.offlineHidden) "Needs the setting above" else onOff(s.offlineUntilClosed), Palette.Lavender, Glyph.Shield,
-                help = "Coming back to Tandem doesn't bring the internet back while the hidden game is still open in the background, " +
-                    "where it could still sync. Airplane mode goes off once its app has closed, or when you tuck hidden games away.",
-                toggle = if (!s.privateMode || !s.offlineHidden) null else s.offlineUntilClosed,
-                keywords = "airplane mode offline background sync close hidden private game emulator",
-            ) {
-                if (s.privateMode && s.offlineHidden) HomeStore.updateSettings { it.copy(offlineUntilClosed = !it.offlineUntilClosed) }
+            run {
+                // Going offline, and staying offline while the game is still open behind Tandem, as one choice.
+                // Until it closes comes first: it was what going offline did unless you changed it.
+                val options = listOf("off" to "Off", "closes" to "Until it closes", "plays" to "While it plays")
+                val now = if (!s.offlineHidden) "off" else if (s.offlineUntilClosed) "closes" else "plays"
+                fun set(v: String) = HomeStore.updateSettings { it.copy(offlineHidden = v != "off", offlineUntilClosed = if (v == "off") it.offlineUntilClosed else v == "closes") }
+                fun step(d: Int) = set(options[(options.indexOfFirst { it.first == now } + d + options.size) % options.size].first)
+                val needs = if (!shizuku) "Needs Shizuku" else null
+                SettingRow(
+                    "Offline for hidden games", needs ?: options.first { it.first == now }.second, Palette.Lavender, Glyph.Shield,
+                    help = "In private mode, airplane mode goes on while a hidden game plays, so nothing in the game can go online. " +
+                        "While it plays: back online when you come back to Tandem. Until it closes: still offline while the game is open " +
+                        "in the background, where it could sync, until its app has closed or you tuck hidden games away. Airplane mode " +
+                        "you turned on yourself stays on. Needs Shizuku." + if (!s.privateMode) " Only in private mode." else "",
+                    onLeft = if (needs != null) null else ({ step(-1) }), onRight = if (needs != null) null else ({ step(1) }),
+                    keywords = "airplane mode offline network wifi internet hidden private game emulator background sync close go offline stay offline",
+                ) { if (needs != null) Toasts.show("This needs Shizuku running, with Tandem allowed") else step(1) }
             },
             SettingRow(
                 "Private mode PIN", if (io.github.zahakj.tandem.PinVault.isSet) "Set" else "Not set", Palette.Lavender, Glyph.Shield,
                 help = "Change the 4 to 6 digit PIN that shows hidden games and turns private mode off. Forgot it? Y on the PIN pad starts a 24-hour wait, then you choose a new one.",
                 keywords = "pin code password change forgot private", action = "Change",
             ) { io.github.zahakj.tandem.PrivateMode.changePin() },
-            SettingRow(
-                "Play stats", "${HomeStore.sessions.size} sessions", Palette.Butter, Glyph.Chart,
-                "Your play time by day, system and game, every session you played, and your achievements.",
-                opens = true, keywords = "statistics time history sessions",
-            ) { Nav.go(Route.Stats) },
             SettingRow(
                 "Export play stats", "ROMs/tandem", Palette.Butter, Glyph.Save,
                 "Writes your play sessions as a spreadsheet file (CSV) to ROMs/tandem.", keywords = "csv spreadsheet",
@@ -556,66 +545,3 @@ fun homeSettings(): SettingSection {
     )
 }
 
-/**
- * Settings › Play & system › Hidden: every hidden folder, system, icon-grid folder and game, each with Unhide. Listed
- * only while hidden games are showing; otherwise one row that says how to show them (and, in private mode, not even
- * whether there are any).
- */
-@Composable
-fun hiddenSettings(): SettingSection {
-    val s = Store.settings
-    if (!Privacy.showHidden) {
-        val any = s.hiddenFolders.isNotEmpty() || Store.meta.values.any { it.hidden } || IconGridStore.config.folders.any { it.hidden }
-        return SettingSection(
-            "Hidden",
-            listOf(
-                SettingRow(
-                    "Hidden folders and games", if (Privacy.enabled) "Private" else if (any) "Tucked away" else "None",
-                    Palette.Lavender, Glyph.Eye,
-                    help = if (Privacy.enabled) "Listed here, each with Unhide, once your PIN shows them: Show here, or ${Prompts.words(io.github.zahakj.tandem.Command.Hidden)}."
-                    else "Hide a game, a folder or a whole system with Y. Start › Hidden lists them all, and so does this page while hidden games show.",
-                    keywords = "hidden folders systems unhide private start",
-                    // With nothing hidden, Show would only switch on Show hidden games for nothing. In private mode it
-                    // asks for the PIN either way, so it says nothing about whether anything is hidden.
-                    action = if (Privacy.enabled || any) "Show" else null,
-                ) { if (Privacy.enabled || any) toggleShowHidden() else Toasts.show("Nothing is hidden. Hide a game, folder or system with Y") },
-            ),
-        )
-    }
-    // The same list Start › Hidden shows, with the same Unhide (HiddenItems.kt).
-    val items = HiddenItems.all()
-    val rows = ArrayList<SettingRow>()
-    // The same row as when they are tucked away (so the highlight stays on it), now putting them away again.
-    val anyHidden = items.isNotEmpty() || Store.meta.values.any { it.hidden }
-    rows += SettingRow(
-        "Hidden folders and games", if (anyHidden) "Showing" else "None", Palette.Lavender, Glyph.Eye,
-        help = if (anyHidden) "Hidden games, folders and systems are showing, dimmed, each listed below with Unhide."
-        else "Nothing is hidden right now. Hide a game, a folder or a whole system with Y.",
-        keywords = "hidden folders systems unhide private start", action = "Tuck away",
-    ) { toggleShowHidden() }
-    val gameRows = ArrayList<SettingRow>()
-    for (item in items) {
-        val unhide = { Sounds.toggle(true); Undo.offer(HiddenItems.unhide(item)) { HiddenItems.rehide(item) } }
-        when (item) {
-            is HiddenItem.Folder -> rows += SettingRow(
-                item.name, HiddenItems.kind(item), Palette.Lavender, if (item.isSystem) Glyph.Cartridge else Glyph.Folder,
-                help = "Hidden with everything in it, games added later included." +
-                    if (item.entry.paths.isNotEmpty()) " " + item.entry.paths.joinToString(", ") { if (it.startsWith("/")) it else "ROMs/$it" } else "",
-                keywords = "hidden unhide", action = "Unhide",
-            ) { unhide() }
-            is HiddenItem.HomeFolderItem -> rows += SettingRow(
-                item.folder.name, HiddenItems.kind(item), Palette.Lavender, Glyph.Folder,
-                help = "A folder on the icon grid, hidden with the systems and games inside it.", keywords = "hidden unhide", action = "Unhide",
-            ) { unhide() }
-            is HiddenItem.GameItem -> gameRows += SettingRow(
-                item.name, item.game.platform.shortName, Palette.Lavender, Glyph.Gamepad,
-                help = "A game hidden by itself.", keywords = "hidden unhide", action = "Unhide",
-            ) { unhide() }
-        }
-    }
-    // Folders and systems first; single games fold under More options once there are a few.
-    val main = rows + gameRows.take((MAX_HIDDEN_ROWS - rows.size).coerceAtLeast(0))
-    return SettingSection("Hidden", main, more = gameRows.drop(main.size - rows.size))
-}
-
-private const val MAX_HIDDEN_ROWS = 6

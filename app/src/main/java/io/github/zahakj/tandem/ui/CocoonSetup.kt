@@ -292,7 +292,7 @@ object CocoonSetup {
             }
             io.github.zahakj.tandem.data.Backups.auto(ctx, "Cocoon import")
             apply(ctx, plan)
-            if (auto) Toasts.show("Your Cocoon setup is here ✨ Settings › Library › Undo Cocoon import puts it back")
+            if (auto) Toasts.show("Your Cocoon setup is here ✨ Settings › Play & system › Your data › Undo Cocoon import puts it back")
             else Toasts.show(
                 "Your Cocoon home and theme are in ✨" + if (plan.skipped.isNotEmpty()) " (no twin for ${plan.skipped.joinToString(", ")})" else "",
                 6000, Toasts.Action("Undo") { GridUndoUi.undo() },

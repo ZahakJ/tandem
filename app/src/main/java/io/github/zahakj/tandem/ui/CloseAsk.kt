@@ -90,7 +90,7 @@ internal fun CloseAskPanel() {
             HomeStore.updateSettings { it.copy(askBeforeClosing = false) }
             cancel()
             Sounds.toggle(false)
-            Toasts.show("I won't ask again. Turn it back on in Settings › Play & stats › Playing", 4500)
+            Toasts.show("I won't ask again. Turn it back on in Settings › Play & system › Playing", 4500)
         }
         true
     }

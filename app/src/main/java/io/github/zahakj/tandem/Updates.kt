@@ -27,8 +27,8 @@ import java.net.URL
 import java.security.MessageDigest
 
 /*
- * The built-in updater. Once a day while Tandem is in front (and when asked, from Settings › Play & system › About ›
- * Check now) it asks GitHub for the latest release. A newer one shows in the Start panel and in Settings; nothing
+ * The built-in updater. Once a day while Tandem is in front (and when asked, from Settings › Play & system ›
+ * Updates) it asks GitHub for the latest release. A newer one shows in the Start panel and in Settings; nothing
  * pops up over a game and nothing installs until the user presses Update. Then the APK is downloaded to the cache,
  * checked against the release's SHA256SUMS and against the signing key of the installed Tandem, and installed: with
  * Shizuku silently (`pm install`), otherwise through Android's installer, which asks once to allow installs from

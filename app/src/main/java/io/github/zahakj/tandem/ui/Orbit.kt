@@ -415,7 +415,7 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
                     if (hidden) "Show hidden games" else "Pick your games folder",
                     Modifier.focusRequester(emptyReq).focusProperties { if (orbs.isNotEmpty()) down = stageReq; left = FocusRequester.Cancel; right = FocusRequester.Cancel }
                         .takesFocus(route, Orbit.EMPTY, target == Orbit.EMPTY),
-                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() }
+                ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() }
             }
             cards.isNotEmpty() -> SpotFan(
                 cards, cardW, cardH, entry, route, target, fanFocus, fanReq, stageReq, ribbonReq.takeIf { last != null },

@@ -40,9 +40,10 @@ import io.github.zahakj.tandem.Selection
 
 /*
  * Settings search (X anywhere in Settings): a controller keyboard on the left, results on the right as you type.
- * It searches every row of every page (also the folded "More options" ones) by label, by synonyms the row lists
- * ("nintendo" finds Swap A and B), by its group and page and, last, by its help text; plus the pages, Quick looks,
- * themes and home layouts. A result opens its page, unfolds its group, and the row pulses so the eye finds it.
+ * It searches every row of every page and subpage by label, by synonyms the row lists ("nintendo" finds Swap A and B),
+ * by its group and page and, last, by its help text; plus the pages, themes, home layouts, and the few settings that
+ * live on a screen of their own (the scrape options, the art sources). A result opens its page (a subpage over its
+ * page, so Back goes there) and the row pulses so the eye finds it.
  */
 
 object SettingsSearch {
@@ -83,8 +84,8 @@ internal class Hit(
 
 /** Things worth suggesting before anything is typed: what people look for most. */
 private val Suggested = listOf(
-    "look", "home", "Colour/Accent colour", "Home screen/Home layout", "Buttons/Swap A and B", "Screens/Swap screens",
-    "Music/Background music", "Artwork/Scrape library", "preset:cocoon", "Home screen/Use Tandem as the Home screen",
+    "look", "home", "Colour/Accent colour", "layout:grid", "Buttons/Swap A and B", "Screens/Swap screens",
+    "Music/Music", "Artwork & accounts/Scrape library", "Tandem/Use Tandem as the Home screen",
 )
 
 @Composable
@@ -121,22 +122,23 @@ internal fun settingsHits(): List<Hit> {
     val cats = settingsCatalog()
     return buildList {
         for (c in cats) {
-            add(
+            // A subpage is found by its row on its page; the seven pages by their tiles.
+            if (c.parent == null) add(
                 Hit(
                     "cat:${c.id}", c.title, "Settings", c.summary, c.color, c.icon, c.blurb,
                     c.title, c.blurb, "",
                 ) { jump(Route.Settings, "cat:${c.id}") },
             )
+            // Where a row lives: its page (a subpage after its page), and its group when that says more.
+            val page = (c.parent?.let { SettingsCategories.title(it) + " › " } ?: "") + c.title
             for (s in c.sections) {
-                for (r in s.rows + s.more) {
-                    val extra = r in s.more
+                for (r in s.rows) {
                     val key = rowKey(s.title, r.label)
                     add(
                         Hit(
-                            key, r.label, "${c.title} › ${s.title}" + if (extra) " › More" else "", r.shownValue, r.color, r.icon, r.help,
+                            key, r.label, if (s.title == c.title) page else "$page › ${s.title}", r.shownValue, r.color, r.icon, r.help,
                             r.label, "${r.keywords} ${s.title} ${c.title}", r.help.orEmpty(),
                         ) {
-                            if (extra) SettingsUi.setOpen(c.route.key, s.title, true)
                             jump(c.route, key)
                             SettingsUi.flash(key)
                         },
@@ -144,6 +146,7 @@ internal fun settingsHits(): List<Hit> {
                 }
             }
         }
+        addAll(elsewhereHits())
         for (t in BuiltInThemes.list) {
             add(Hit("theme:${t.id}", t.name, "Look & feel › Themes", "Theme", t.accent, Glyph.Theme, t.tagline, t.name, "theme colours", t.tagline) {
                 jump(Route.Appearance, "theme:${t.id}")
@@ -293,15 +296,70 @@ private fun ResultRow(h: Hit, modifier: Modifier, onClick: () -> Unit) {
     }
 }
 
-/** Opens [route] (from wherever in Settings we are) with [key] highlighted. */
+/**
+ * Settings that live on a screen of their own, not in a Settings row: what a scrape fetches, the region and language
+ * (the Scrape library screen), each art source (its card under Set up sources), and play stats. Search still finds
+ * them and takes you there.
+ */
+private fun elsewhereHits(): List<Hit> {
+    val cfg = io.github.zahakj.tandem.data.ScrapeConfig.settings
+    val scrape = "Library & art › Scrape library"
+    fun open(then: () -> Unit) { jump(SettingsCategories.route("library"), rowKey("Artwork & accounts", "Scrape library")); then() }
+    return listOf(
+        Hit(
+            "scrape:kinds", "Artwork to download", scrape, "${cfg.kinds.size} kinds", Palette.Butter, Glyph.Image,
+            "Which pictures a scrape fetches: box art, logos, heroes, screenshots, physical boxes, videos. On the Scrape library screen.",
+            "Artwork to download", "media kinds box logo hero screenshot video scrape", "",
+        ) { open { ScrapeUi.open(now = true) } },
+        Hit(
+            "scrape:region", "Preferred region", scrape, cfg.regionPref.label, Palette.Butter, Glyph.Sort,
+            "Box art and names from this region are picked first. On the Scrape library screen, under Region & language.",
+            "Preferred region", "usa europe japan country scrape", "",
+        ) { open { ScrapeUi.open(now = true) } },
+        Hit(
+            "scrape:language", "Preferred language", scrape, io.github.zahakj.tandem.data.LANGUAGES[cfg.languagePref] ?: cfg.languagePref, Palette.Butter, Glyph.Text,
+            "Descriptions and genres come in this language when the source has it. On the Scrape library screen, under Region & language.",
+            "Preferred language", "translation descriptions scrape", "",
+        ) { open { ScrapeUi.open(now = true) } },
+        Hit(
+            "stats", "Play stats", "Start › Stats & trophies", "", Palette.Butter, Glyph.Chart,
+            "Your play time by day, system and game, every session you played, and your achievements. Export them under Play & system › Your data.",
+            "Play stats", "statistics time history sessions trophies", "",
+        ) { Nav.go(Route.Stats) },
+    ) + cfg.sourceOrder.map { s ->
+        Hit(
+            "source:${s.name}", s.label, "Library & art › Set up sources", "", Palette.Butter, Glyph.Key, "${s.gives}.",
+            s.label, "scraper source account key token api order ${s.name.lowercase()}", "",
+        ) { open { ArtSetup.open(s) } }
+    }
+}
+
+/** Opens Settings at row [key] of page [id] (a subpage over its page), from anywhere: the way to one setting. */
+fun openSetting(id: String, key: String) {
+    jump(SettingsCategories.route(id), key)
+    SettingsUi.flash(key)
+}
+
+/** Opens [route] (from wherever we are) with [key] highlighted; a subpage over its page, with its row highlighted. */
 private fun jump(route: Route, key: String) {
     FocusMemory.remember(route.key, key)
+    val id = SettingsCategories.idOf(route)
+    val parent = id?.let(SettingsCategories::parentOf)?.let(SettingsCategories::route)
+    if (id != null && parent != null) SettingsPlan.linkKey(id)?.let { FocusMemory.remember(parent.key, it) }
+    // From a subpage, search starts from its page (Back from the result goes there, not to this subpage).
+    if (Nav.route != route && SettingsCategories.idOf(Nav.route)?.let(SettingsCategories::parentOf) != null) Nav.back()
     val here = Nav.route
     when {
         here == route -> Nav.focusTick++
         route == Route.Settings -> Nav.toggleSettings()
+        parent != null && here == parent -> Nav.goNow(route)
+        parent != null && SettingsCategories.idOf(here) != null -> { Nav.replace(parent); Nav.goNow(route) }
+        parent != null -> { Nav.goNow(parent); Nav.goNow(route) }
         here == Route.Settings -> Nav.go(route)
         SettingsCategories.idOf(here) != null -> Nav.replace(route)
         else -> Nav.go(route)
     }
 }
+
+/** The Show hidden games row on Play & system › Privacy & hidden, where an empty home sends you when every game is hidden. */
+const val ShowHiddenKey = "Privacy & hidden/Show hidden games"

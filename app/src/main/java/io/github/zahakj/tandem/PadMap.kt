@@ -41,7 +41,7 @@ data class KeyLayout(val keys: Map<Int, String>, val axes: Map<Int, Axis>) {
  * the built-in pad would send for the same button. Pure, so it is tested on the JVM.
  *
  * - Buttons go by their Android key (A to A, Start to Start). With [nintendo] (the pad's Nintendo labels switch in
- *   Settings › Controls) A/B and X/Y swap first, as they do inside Tandem (Gamepads.remap), so the button printed A
+ *   Settings › Controls › Connected controllers) A/B and X/Y swap first, as they do inside Tandem (Gamepads.remap), so the button printed A
  *   is A in games too.
  * - Back from a controller (older Xbox pads send their View button so) is Select, and its Home / guide button is the
  *   built-in Home key, as the handheld's own Home button is.

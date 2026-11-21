@@ -99,10 +99,11 @@ import kotlinx.coroutines.withContext
 object ScrapeUi {
     var scope by mutableStateOf<ScrapeScope>(ScrapeScope.All)
 
-    fun open(scope: ScrapeScope = ScrapeScope.All) {
+    /** [now]: right after another screen change (Settings search going through Library & art), past Nav.go's guard. */
+    fun open(scope: ScrapeScope = ScrapeScope.All, now: Boolean = false) {
         if (!Scraper.running) Scraper.dismiss()
         this.scope = scope
-        if (Nav.route != Route.Scrape) Nav.go(Route.Scrape)
+        if (Nav.route != Route.Scrape) { if (now) Nav.goNow(Route.Scrape) else Nav.go(Route.Scrape) }
     }
 
     /** "Scrape this game" from the game menu: runs straight away, with toasts instead of the scrape screen. */
@@ -418,28 +419,6 @@ private fun LanguageRow(key: String) {
     val codes = LANGUAGES.keys.toList()
     fun step(d: Int) = ScrapeConfig.update { it.copy(language = codes[(codes.indexOf(l) + d + codes.size) % codes.size]) }
     OptionRow(key, "Language", LANGUAGES[l] ?: l, Palette.Lavender, "For descriptions and genres (ScreenScraper)", onSide = ::step) { step(1) }
-}
-
-/** One Settings row per source, in the user's order: its state, and A opens its setup card. */
-fun sourceRows(): List<SettingRow> {
-    val cfg = ScrapeConfig.settings
-    return cfg.sourceOrder.map { s ->
-        val (status, color) = sourceStatus(s, cfg)
-        val g = guideFor(s)
-        SettingRow(
-            s.label, status, color, Glyph.Key,
-            "${s.gives}. ${g.account}.",
-            opens = true, action = "Set up",
-            keywords = "scraper source account key token api ${s.name.lowercase()} " + when (s) {
-                ScrapeSource.Igdb -> "twitch client secret"
-                ScrapeSource.ScreenScraper -> "screenscraper developer login password user"
-                ScrapeSource.SteamGridDb -> "sgdb heroes grids logos"
-                ScrapeSource.LaunchBox -> "launchbox games database download offline"
-                ScrapeSource.Hltb -> "how long to beat time hours completion"
-                ScrapeSource.Libretro -> "thumbnails boxart"
-            },
-        ) { ArtSetup.open(s) }
-    }
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -838,21 +817,16 @@ fun ScrapeHost() {
 
 // ---------------------------------------------------------------------------------------------------------------
 
-private val PRESETS = listOf(
-    "Box art" to setOf(MediaKind.Box),
-    "Box, logo, hero" to setOf(MediaKind.Box, MediaKind.Logo, MediaKind.Hero),
-    "Box, logo, hero, screenshot" to setOf(MediaKind.Box, MediaKind.Logo, MediaKind.Hero, MediaKind.Gameplay),
-    "All pictures" to (MediaKind.entries.toSet() - MediaKind.Video),
-    "All, with videos" to MediaKind.entries.toSet(),
-)
-
 /** The last measured size of downloaded media, and what it was measured for. */
 private object MediaSizeCache {
     var key: Any? = null
     var value: Pair<Int, Long>? = null
 }
 
-/** Settings › Library & art › Artwork, and the rows of Sources, in order. */
+/**
+ * Settings › Library & art › Artwork & accounts. What a scrape fetches, the region and language are chosen on the
+ * Scrape library screen, and the sources and their order under Set up sources; Settings doesn't repeat them.
+ */
 @Composable
 fun scrapingSettings(): SettingSection {
     val s = ScrapeConfig.settings
@@ -864,7 +838,6 @@ fun scrapingSettings(): SettingSection {
         MediaSizeCache.key = sizeKey
         MediaSizeCache.value = value
     }
-    val preset = PRESETS.indexOfFirst { it.second == s.kinds }
     return SettingSection(
         "Artwork & details",
         listOf(
@@ -875,48 +848,24 @@ fun scrapingSettings(): SettingSection {
                 "Download box art, logos, heroes, videos and descriptions for your games, from LaunchBox and libretro (no account needed), ScreenScraper, IGDB, SteamGridDB and HowLongToBeat.",
                 opens = true, keywords = "scraper download artwork media metadata covers boxart",
             ) { ScrapeUi.open() },
-            run {
-                fun step(d: Int) = ScrapeConfig.update { it.copy(kinds = PRESETS[((if (preset < 0) 0 else preset) + d + PRESETS.size) % PRESETS.size].second) }
-                SettingRow(
-                    "Artwork to download", if (preset >= 0) PRESETS[preset].first else "Custom (${s.kinds.size})", Palette.Butter, Glyph.Image,
-                    "Which pictures a scrape fetches. More kinds look richer but take longer and use more space.",
-                    onLeft = { step(-1) }, onRight = { step(1) }, keywords = "media kinds box logo hero screenshot video",
-                ) { step(1) }
-            },
-            run {
-                fun step(d: Int) = ScrapeConfig.update { it.copy(region = Region.entries[(s.regionPref.ordinal + d + Region.entries.size) % Region.entries.size].code) }
-                SettingRow(
-                    "Preferred region", s.regionPref.label, Palette.Butter, Glyph.Sort,
-                    "Box art and names from this region are picked first, when a game has several.",
-                    onLeft = { step(-1) }, onRight = { step(1) }, keywords = "usa europe japan country",
-                ) { step(1) }
-            },
-            run {
-                val codes = LANGUAGES.keys.toList()
-                fun step(d: Int) = ScrapeConfig.update { it.copy(language = codes[(codes.indexOf(s.languagePref) + d + codes.size) % codes.size]) }
-                SettingRow(
-                    "Preferred language", LANGUAGES[s.languagePref] ?: s.languagePref, Palette.Butter, Glyph.Text,
-                    "Descriptions and genres come in this language when the source has it.",
-                    onLeft = { step(-1) }, onRight = { step(1) }, keywords = "translation descriptions",
-                ) { step(1) }
-            },
             SettingRow(
                 "Set up sources", "${s.active.size} of ${ScrapeSource.entries.size} on", Palette.Butter, Glyph.Wand,
                 "Artwork & details setup: what each source gives, which need an account, where to get a free key, and a Test button for each. Also changes the order they're asked in.",
                 opens = true, keywords = "wizard onboarding accounts keys tokens api order priority launchbox igdb twitch steamgriddb screenscraper howlongtobeat",
             ) { ArtSetup.openWizard() },
-        ) + sourceRows() + SettingRow(
-            "Clear downloaded media",
-            size?.let { (n, b) -> if (n == 0) "Nothing yet" else "$n files · ${formatBytes(b)}" } ?: "…",
-            Palette.Peach, Glyph.Restore,
-            "Delete what scraping downloaded, for one system or all of them, to free up space. Asks first.",
-            keywords = "delete space storage free",
-        ) {
-            when {
-                Scraper.running -> Toasts.show("Wait for the scrape to finish first")
-                size?.first == 0 -> Toasts.show("Nothing downloaded yet")
-                else -> GameEditor.confirmClear(size)
-            }
-        },
+            SettingRow(
+                "Clear downloaded media",
+                size?.let { (n, b) -> if (n == 0) "Nothing yet" else "$n files · ${formatBytes(b)}" } ?: "…",
+                Palette.Peach, Glyph.Restore,
+                "Delete what scraping downloaded, for one system or all of them, to free up space. Asks first.",
+                keywords = "delete space storage free",
+            ) {
+                when {
+                    Scraper.running -> Toasts.show("Wait for the scrape to finish first")
+                    size?.first == 0 -> Toasts.show("Nothing downloaded yet")
+                    else -> GameEditor.confirmClear(size)
+                }
+            },
+        ),
     )
 }

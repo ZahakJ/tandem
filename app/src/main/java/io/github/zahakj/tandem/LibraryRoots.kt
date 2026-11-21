@@ -2,7 +2,7 @@ package io.github.zahakj.tandem
 
 /**
  * The folders games are read from: the ROMs folder on internal storage (Tandem's own, always read, even if it
- * doesn't exist), and any the user picked in Settings › Library & art › Games › Game folders or from an empty home
+ * doesn't exist), and any the user picked in Settings › Library & art › Game folders or from an empty home
  * (an SD card, a games folder anywhere on the device). A root can be a folder per system, one system's own folder or
  * a mix (GameFinder), and they all pour into the same systems. Pure: the folder picker's answers,
  * the checks on a new root and the merge are worked out here; Library.kt does the reading, and the roots

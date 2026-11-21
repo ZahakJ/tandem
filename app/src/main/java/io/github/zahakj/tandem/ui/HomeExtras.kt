@@ -89,7 +89,7 @@ object HomeExtras {
     /** L2 on the icon grid: show or hide the strip, and land on its first game when it opens. */
     fun toggleRecent() {
         when (ExtrasStore.settings.recentStrip) {
-            "off" -> { Toasts.show("The Recently played strip is off. Settings › Motion & home"); return }
+            "off" -> { Toasts.show("The Recently played strip is off. Settings › Home & layout"); return }
             "always" -> {
                 Collections.continuePlaying().firstOrNull()?.let { FocusMemory.remember(Route.Home.key, recentKey(it)); Nav.focusTick++ }
                 return

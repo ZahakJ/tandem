@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 /*
- * Settings › Library & art › Games › Game folders: the folders games are read from (LibraryRoots). The ROMs folder,
+ * Settings › Library & art › Game folders: the folders games are read from (LibraryRoots). The ROMs folder,
  * Tandem's own, is always there; the others were picked with the system folder picker (an SD card, any folder with
  * games in it, however it is laid out) and can be taken out again. A on a folder opens its options, Y (or a long
  * press) takes it out, with Undo: its games leave the library view, their details stay in library.json under the

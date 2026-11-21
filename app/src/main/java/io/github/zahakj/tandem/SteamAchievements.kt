@@ -217,7 +217,7 @@ object SteamAchievements {
                 when (e.code) {
                     // "Requested app has no stats": a game without achievements, or one Steam has no stats for.
                     400 -> null
-                    401 -> { problem = "Steam didn't accept the API key. Check it in Settings › Library & art › Steam"; return null }
+                    401 -> { problem = "Steam didn't accept the API key. Check it in Settings › Library & art › Accounts"; return null }
                     403 -> { problem = "Steam says your game details are private. In Steam: Profile › Edit › Privacy › Game details › Public"; return null }
                     else -> { Log.w(TAG, "Steam achievements $appId: HTTP ${e.code}"); return null }
                 }

@@ -346,7 +346,7 @@ private fun ScrollStrip(modifier: Modifier) {
 
 private fun timesLabel(v: Float): String = (if (v == v.toInt().toFloat()) v.toInt().toString() else "%.2f".format(v).trimEnd('0')) + "×"
 
-/** Settings › Play & system › Deck. */
+/** Settings › Controls › Deck. */
 @Composable
 fun deckSettings(): SettingSection {
     val s = HomeStore.settings

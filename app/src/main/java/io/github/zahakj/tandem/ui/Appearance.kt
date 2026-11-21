@@ -233,7 +233,7 @@ fun AppearanceScreen() {
 /**
  * Every appearance section, as the old Appearance screen listed them. Settings › Look & feel, Home & layout, Two
  * screens, Controls and Sound pick their groups out of these by title and label (see SettingsCatalog.kt); a row
- * added here that no page picks still shows, under its page's "More options".
+ * added here that no page picks still shows, under "Not placed" on Play & system (SettingsPlanTest catches it first).
  */
 @Composable
 fun appearanceSections(): List<SettingSection> {

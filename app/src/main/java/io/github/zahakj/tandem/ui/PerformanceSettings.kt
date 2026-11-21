@@ -12,7 +12,7 @@ import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
 
 /*
- * The rows for performance profiles (Performance.kt): the global profile in Settings › Play & system › Playing, and a
+ * The rows for performance profiles (Performance.kt): the global profile in Settings › Play & system › Performance & sleep, and a
  * game's own in its Y menu. On a device that isn't an AYN, one note stands in for the rows.
  */
 
@@ -22,7 +22,7 @@ private const val PERF_KEYWORDS = "ayn thor performance mode fan speed cooling r
 /** "Keep" first, then AYN's values, as a choice row's options. */
 private fun keepThen(values: List<Pair<Int, String>>): List<Pair<String, String>> = listOf(KEEP_ID to "Keep") + values.map { it.first.toString() to it.second }
 
-/** Settings › Play & system › Playing: Performance mode, Fan mode and Refresh rate. */
+/** Settings › Play & system › Performance & sleep: Performance mode, Fan mode and Refresh rate. */
 @Composable
 fun performanceSettings(): SettingSection {
     val ctx = LocalContext.current
@@ -92,7 +92,7 @@ fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     }
     // All default again: nothing of its own to keep.
     fun set(p: PerfProfile) = Store.update(g.key) { it.copy(perf = p.takeIf { it.any }) }
-    val help = "For this game only; Default follows Settings › Play & system › Playing. Tap to go to the next choice."
+    val help = "For this game only; Default follows Settings › Play & system › Performance & sleep. Tap to go to the next choice."
     return listOf(
         MenuAction("perfmode", "Performance mode", Glyph.Motion, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help,
             step = { by -> set(own.copy(mode = next(own.mode, PerformancePlan.modes.map { it.first }, by))) }) {

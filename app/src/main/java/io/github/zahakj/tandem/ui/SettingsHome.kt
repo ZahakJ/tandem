@@ -55,7 +55,8 @@ private const val SEARCH_KEY = "search"
 @Composable
 fun SettingsScreen() {
     val ctx = LocalContext.current
-    val cats = settingsCatalog()
+    // The seven pages; their subpages open from rows on them.
+    val cats = settingsCatalog().filter { it.parent == null }
     val routeKey = Route.Settings.key
     val keys = listOf(SEARCH_KEY) + cats.map { "cat:${it.id}" }
     // The first visit opens on the first page's tile, not the search bar.
@@ -202,6 +203,8 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
                 ButtonHint("L1", "")
                 ButtonHint("R1", "Pages", Palette.Lavender)
                 ButtonHint("X", "Search", Palette.Sky)
+                // A subpage goes back to its page.
+                if (c.parent != null) ButtonHint("B", SettingsCategories.title(c.parent), Palette.Muted)
             }
         }
     }

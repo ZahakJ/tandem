@@ -268,12 +268,12 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
             if (isEmpty()) {
                 val hidden = libs.any { it.games.isNotEmpty() }
                 val title = if (hidden) "Every game is hidden" else "No games yet"
-                val detail = if (hidden) "Settings › Library › Show hidden games" else "Pick the folder your games are in with A"
+                val detail = if (hidden) "Settings › Play & system › Privacy & hidden › Show hidden games" else "Pick the folder your games are in with A"
                 add(
                     HomeEntry(
                         "empty:rescan", title, detail, "?", Palette.Peach, emptyList(), null,
                         Selected.Setting(title, if (hidden) "Hidden" else "Pick your games folder", detail, Palette.Peach, if (hidden) "Settings" else "Pick"),
-                    ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() },
+                    ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() },
                 )
             }
         }

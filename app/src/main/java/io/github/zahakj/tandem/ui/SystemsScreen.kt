@@ -358,22 +358,22 @@ fun systemsSettings(): SettingSection {
                     io.github.zahakj.tandem.ControllerHomeService.instance == null -> "Needs the Home button service"
                     else -> null
                 }
-                SettingRow(
-                    "Hold Back to move apps", needs ?: onOff(apps.holdBackMoves), Palette.Lavender, Glyph.Swap,
-                    "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. Needs Shizuku and the Controller Home button service (Controls).",
-                    toggle = if (needs != null) null else apps.holdBackMoves, keywords = "move app other screen swap display back button hold shizuku",
-                ) {
-                    if (needs != null) Toasts.show(needs.replaceFirst("Needs", "This needs"))
-                    else io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = !it.holdBackMoves) }
+                // Moving apps, and games too, as one choice: games only ever move along with apps.
+                val options = listOf("off" to "Off", "apps" to "Apps", "games" to "Apps and games")
+                val now = if (!apps.holdBackMoves) "off" else if (apps.moveGames) "games" else "apps"
+                fun step(d: Int) {
+                    val v = options[(options.indexOfFirst { it.first == now } + d + options.size) % options.size].first
+                    io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = v != "off", moveGames = if (v == "off") it.moveGames else v == "games") }
                 }
-            },
-            run {
-                val apps = io.github.zahakj.tandem.data.AppPrefs.data
                 SettingRow(
-                    "Move games too", onOff(apps.moveGames), Palette.Lavender, Glyph.Gamepad,
-                    "Holding Back moves a game to the other screen as well. Off, a game in front always stays where it is.",
-                    toggle = apps.moveGames, keywords = "move game other screen hold back",
-                ) { io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(moveGames = !it.moveGames) } }
+                    "Hold Back to move", needs ?: options.first { it.first == now }.second, Palette.Lavender, Glyph.Swap,
+                    "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. " +
+                        "Apps and games: a game in front moves too; with Apps, a game always stays where it is. Needs Shizuku and the Controller Home button service (Controls).",
+                    onLeft = if (needs != null) null else ({ step(-1) }), onRight = if (needs != null) null else ({ step(1) }),
+                    keywords = "move app other screen swap display back button hold shizuku move games too",
+                ) {
+                    if (needs != null) Toasts.show(needs.replaceFirst("Needs", "This needs")) else step(1)
+                }
             },
             SettingRow(
                 "Voice in clips", onOff(prefs.clipVoice), Palette.Lavender, Glyph.Volume,

@@ -9,7 +9,7 @@ import io.github.zahakj.tandem.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** Settings › Library & art › Discord (DiscordPresence.kt). No rows in builds without Discord's SDK. */
+/** Settings › Library & art › Accounts › Discord (DiscordPresence.kt). No rows in builds without Discord's SDK. */
 @Composable
 fun discordSettings(): SettingSection {
     if (!DiscordPresence.available) return SettingSection("Discord", emptyList())
@@ -26,7 +26,7 @@ fun discordSettings(): SettingSection {
                     "Never for hidden games, and nothing while private mode is on.",
                 keywords = keywords,
             ) {
-                if (linked) Toasts.show("Connected. Disconnect is under More options")
+                if (linked) Toasts.show("Connected. Disconnect Discord is the next row")
                 else Confirm.ask(
                     "Show what you play on Discord?",
                     "Discord opens and asks you to authorize Tandem. Then your status shows the game you're playing " +
@@ -37,8 +37,7 @@ fun discordSettings(): SettingSection {
                     if (activity != null) DiscordPresence.link(activity)
                 }
             },
-        ),
-        more = if (!linked) emptyList() else listOf(
+        ) + if (!linked) emptyList() else listOf(
             SettingRow(
                 "Disconnect Discord", "", Palette.Peach, Glyph.Key,
                 "Stop showing what you play, and forget the connection to your Discord account on this device.",

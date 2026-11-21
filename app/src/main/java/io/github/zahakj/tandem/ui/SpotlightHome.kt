@@ -405,7 +405,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
                     if (hidden) "Every game is hidden" else "No games yet. Pick the folder your games are in",
                     if (hidden) "Show hidden games" else "Pick your games folder",
                     Modifier.takesFocus(route, SpotlightMode.EMPTY, target == SpotlightMode.EMPTY),
-                ) { if (hidden) Nav.go(Route.SettingsPage("library")) else pick() }
+                ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() }
             }
             return@BoxWithConstraints
         }

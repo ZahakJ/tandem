@@ -28,7 +28,7 @@ import kotlin.math.roundToInt
  * AYN's control centre keeps its modes in Android's system settings (`performance_mode`, `fan_mode`,
  * `peak_refresh_rate` / `min_refresh_rate`), and a system service applies each one a moment after it changes. Tandem
  * writes the same keys with the WRITE_SETTINGS permission it already asks for (Quick settings' brightness): at
- * Sessions.start the game's profile (its own, else Settings › Play & system › Playing › Performance mode, Fan mode and Refresh rate)
+ * Sessions.start the game's profile (its own, else Settings › Play & system › Performance & sleep › Performance mode, Fan mode and Refresh rate)
  * goes in, and at Sessions.take what was there before comes back. What was changed is written down first
  * (`performance.json`, in the no-backup folder), so a Tandem restart puts it back unless a game is still being played,
  * and a mode the user changed themselves mid-game is left as they set it: only values still Tandem's go back.

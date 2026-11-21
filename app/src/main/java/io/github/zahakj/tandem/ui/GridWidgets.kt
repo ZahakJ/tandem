@@ -59,7 +59,7 @@ object GridWidgets {
     /** [key]'s size on the grid now. */
     fun span(key: String): GridSpan = IconGridStore.config.spans[key] ?: GridSpan.ONE
 
-    /** New widgets go in grid cells (the default), or in the widget row (Settings › Home & layout › Widgets › More › Widgets on the grid). */
+    /** New widgets go in grid cells (the default), or in the widget row (Settings › Home & layout › Dock & widgets › Widgets on the grid). */
     val inCells: Boolean get() = WidgetStore.config.gridPlace != "row"
 
     private fun ext(span: GridSpan) = GridSlots.extent(span, IconGrid.vertical)

@@ -94,7 +94,7 @@ import kotlin.math.sin
  * system's band at the head, the logo down it, the publisher or the status at the foot) or a scan of the real spine,
  * and the highlighted one swings round to show its cover: a scan of the real box, or the art laid into the system's
  * front template. A Switch case stands slim and tall, a PS2 case taller and thicker, a DS case nearly square, a SNES
- * box lies wide, as the real ones do. Settings › Home & layout › Shelf look picks the bookcase: warm wood, matte in the theme's colours, or open
+ * box lies wide, as the real ones do. Settings › Home & layout › How games show › Shelf look picks the bookcase: warm wood, matte in the theme's colours, or open
  * (no bookcase, the cases on the wallpaper with a thin shelf line).
  *
  * Kept light on purpose: a closed case is one spine with no render layers of its own (its logo is drawn, not
@@ -361,7 +361,7 @@ internal object Cases {
 /** How a case stands on the shelf: its spine, how wide its cover may open, and its height. */
 private class CaseSize(val spine: Dp, val coverMax: Dp, val height: Dp)
 
-/** The looks of the bookcase (Settings › Home & layout › Shelf look). */
+/** The looks of the bookcase (Settings › Home & layout › How games show › Shelf look). */
 object ShelfLooks {
     const val WOOD = "wood"
     const val MATTE = "matte"

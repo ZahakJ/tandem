@@ -16,7 +16,7 @@ const val ControllersGroup = "Game controllers"
 const val PadLinkGroup = "Play with a controller"
 
 /**
- * Settings › Controls: the controller Home button (an optional accessibility service, see ControllerHomeService.kt)
+ * Settings › Controls and its Connected controllers page: the controller Home button (an optional accessibility service, see ControllerHomeService.kt)
  * the controllers connected now, each with its own Nintendo-labels swap, and which one plays as the built-in
  * controller in games (PadLink.kt).
  */

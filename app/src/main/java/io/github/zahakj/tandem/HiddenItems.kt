@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /*
  * Everything hidden, as one list: hidden ROM folders and systems, hidden home-grid folders and games hidden by
- * themselves. Settings › Play & system › Hidden and Start › Hidden both list it and unhide through it.
+ * themselves. Start › Hidden lists it and unhides through it.
  *
  * Peeks: Start › Hidden › Y shows one hidden thing on its own until hidden games are next tucked away. They live in
  * memory only, count only while private mode is off, and never change what is sent anywhere (that is still
