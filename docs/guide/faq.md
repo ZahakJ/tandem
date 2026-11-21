@@ -18,7 +18,7 @@ Yes. Tandem is free software under the GNU GPL, version 3 or later. There are no
 
 ### Can I keep my games on an SD card, or in my own folder?
 
-Yes. Your games don't need to be in `ROMs`: pick any folder, on the device or an SD card, in **Settings › Library & art › Game folders › Pick your games folder…**, and add as many as you like. See [Your own games folder (SD card too)](library.md#your-own-games-folder-sd-card-too).
+Yes. Your games don't need to be in `ROMs`: pick any folder, on the device or an SD card, in **Settings › Library & art › Game folders › Pick your games folder…**, and add as many as you like. See [Your own games folder](library.md#your-own-games-folder).
 
 ### Can I use it as my home screen?
 
@@ -93,7 +93,7 @@ Go through these in order; the first few catch most cases.
 - **Check the folder name:** it must name the system, for example `n3ds`, `3DS` or `Nintendo 3DS`. Names Tandem knows are in [Systems and emulators](platforms.md#what-comes-built-in). Files only one system plays (`.3ds`, `.nsp`, `.gba`…) are found in any folder, but disc images and archives (`.iso`, `.chd`, `.zip`…) need a folder named for their system.
 - **Check the file extension** against the system's list.
 - **Is the game hidden?** Turn on **Settings › Play & system › Privacy & hidden › Show hidden games**, or look in <kbd>Start</kbd> › **Hidden**.
-- **Are the games on an SD card?** Add the card's games folder in **Settings › Library & art › Game folders**. See [Your own games folder (SD card too)](library.md#your-own-games-folder-sd-card-too).
+- **Are the games on an SD card?** Add the card's games folder in **Settings › Library & art › Game folders**. See [Your own games folder](library.md#your-own-games-folder).
 - **Did you add the files while Tandem was open?** They should appear by themselves within a few seconds while Tandem is on screen (**Watch game folders**); otherwise **Settings › Library & art › Rescan games**.
 
 <details>

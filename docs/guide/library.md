@@ -2,9 +2,9 @@
 
 How Tandem finds your games, where it gets their artwork, what the collections are made of, and where it keeps what it knows about each game.
 
-## Your own games folder (SD card too)
+## Your own games folder
 
-Your games don't have to live anywhere special. Keep them on an SD card, in `Download`, in a folder called `Games` or wherever they already are, and point Tandem at that folder. Since **0.5.0**, there's no hard-coded ROMs folder to copy things into.
+Your games can stay wherever they already are, on the device or an SD card, in folders named however you like. Point Tandem at a folder and its games join your library.
 
 1. Open **Settings › Library & art › Game folders**.
 2. Choose **Pick your games folder…**. Android's folder picker opens.
@@ -25,7 +25,7 @@ That's it: Tandem looks through the folder and its games join your library a mom
 
 ## Where games live
 
-Games can live anywhere on the device or an SD card: in `ROMs`, in folders you pick ([above](#your-own-games-folder-sd-card-too)), or both. **Settings › Library & art › Game folders** shows every folder Tandem reads from.
+Games can live anywhere on the device or an SD card: in `ROMs`, in folders you pick ([above](#your-own-games-folder)), or both. **Settings › Library & art › Game folders** shows every folder Tandem reads from.
 
 - **`ROMs` is always in.** It's Tandem's own folder on internal storage, where it keeps its data, and it's always read for games as well. It doesn't have to exist: Tandem makes it the first time it saves something there. `ROMs` keeps the folder-per-system layout: only its system folders (`ROMs/n3ds`, `ROMs/switch`…) hold games, never loose files or other folders in it. Games mixed together in one folder need that folder added in Game folders.
 - **Folders you add can be laid out any way.** Each is read the [same way](#how-games-are-found): folders named for systems, one system's folder, or games mixed together, with subfolders as folders and the same `skipDirs`. The folder itself can be called anything.

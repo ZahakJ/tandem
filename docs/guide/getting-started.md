@@ -84,7 +84,7 @@ Other layouts work too:
 The full list of names and file types per system is in [Systems and emulators](platforms.md#what-comes-built-in).
 
 > [!TIP]
-> Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Game folders**. Their games join the same systems. See [Your own games folder](library.md#your-own-games-folder-sd-card-too).
+> Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Game folders**. Their games join the same systems. See [Your own games folder](library.md#your-own-games-folder).
 
 <details>
 <summary>The ROMs folder, and what is never taken for a game</summary>

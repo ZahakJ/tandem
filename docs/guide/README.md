@@ -34,7 +34,7 @@ your games, the first launch and getting artwork. The same pages are on the webs
 
 | Page | What's in it |
 | --- | --- |
-| [Your library](library.md) | Your own games folder (SD card too), how games are found, artwork files, manuals, PC and Steam games, collections, folders, statuses, trophies, stats, backups |
+| [Your library](library.md) | Your own games folder, how games are found, artwork files, manuals, PC and Steam games, collections, folders, statuses, trophies, stats, backups |
 | [Artwork and scraping](scraping.md) | Art with no account, free keys, setting up sources, scrape options, when a scrape finds nothing |
 | [Systems and emulators](platforms.md) | The systems Tandem knows, the Systems and emulators screen, and `platforms.json` |
 | [Importing from Cocoon and ES-DE](importing.md) | Bringing titles, art, favourites and play time over |

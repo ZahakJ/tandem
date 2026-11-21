@@ -200,7 +200,7 @@ Where your games are, how they're sorted, and where their art and achievements c
 
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
-| Games & systems | Game folders | ROMs only | The folders your games are in, on the device or an SD card. See [Your own games folder](library.md#your-own-games-folder-sd-card-too). |
+| Games & systems | Game folders | ROMs only | The folders your games are in, on the device or an SD card. See [Your own games folder](library.md#your-own-games-folder). |
 | Games & systems | Rescan games | | Looks through every game folder again, for new games and manuals; the row shows how many of each. See [Manuals and guides](library.md#manuals-and-guides). |
 | Games & systems | Watch game folders | On | Games copied in over USB, or an SD card put back, show up a few seconds later without a rescan, while Tandem is on screen. |
 | Games & systems | Sort games by | Name | The order games appear in inside each system and collection: Name, Recently played, Most played, Release year, Rating or Recently added. |
