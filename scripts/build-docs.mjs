@@ -43,6 +43,7 @@ export const SECTIONS = [
     title: "Start",
     pages: [
       ["getting-started", "docs/guide/getting-started.md", "Getting started"],
+      ["settings", "docs/guide/settings.md", "Every setting"],
       ["faq", "docs/guide/faq.md", "FAQ and troubleshooting"],
     ],
   },
@@ -51,6 +52,7 @@ export const SECTIONS = [
     pages: [
       ["controls", "docs/guide/controls.md", "Controller reference"],
       ["resume", "docs/guide/resume.md", "Resume and Shizuku"],
+      ["switch", "docs/guide/switch.md", "Switch games"],
       ["streaming", "docs/guide/streaming.md", "Streaming from a home PC"],
     ],
   },
@@ -67,6 +69,7 @@ export const SECTIONS = [
     title: "Library",
     pages: [
       ["library", "docs/guide/library.md", "Your library"],
+      ["scraping", "docs/guide/scraping.md", "Artwork and scraping"],
       ["platforms", "docs/guide/platforms.md", "Systems and emulators"],
       ["importing", "docs/guide/importing.md", "Importing from Cocoon and ES-DE"],
       ["privacy", "docs/guide/privacy.md", "Privacy and scraping"],

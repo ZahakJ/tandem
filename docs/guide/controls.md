@@ -96,8 +96,36 @@ A tap on <kbd>Start</kbd> folds a panel open from the left. B goes back a page, 
 | Theme ▸ | Every theme and theme pack, applied at once |
 | Sounds & music ▸ | Music on or off, and every sound pack: Tandem's eight and any recorded ones |
 | Quick settings | The same panel as holding Start |
+| Tandem 0.6.2 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Updates](getting-started.md#updates)) |
 | Settings ▸ | All settings, or straight to one of the seven pages (and Import my Cocoon setup, when a Cocoon backup is there) |
 | Screensaver | Starts the screensaver now |
+
+![The Start panel folded open from the left: All apps, New, Sort, Search, Stats & trophies, Theme, Sounds & music, Quick settings, Settings and Screensaver.](../../site/assets/screenshots/start-panel.webp "The Start panel")
+
+## The top bar
+
+Every screen but the icon grid home (and folders opened full screen) has a bar along the top. From the left: Pip and
+where you are (**Tandem › Nintendo 3DS › RPG**), then on the right:
+
+| Item | When it shows | A does |
+| --- | --- | --- |
+| **✦ Scraping 12/40** | While a scrape runs (**⏸ Scraping paused** while it waits) | Nothing; the progress is on the other screen |
+| **▶ 2 open** | While games are running | The game switcher |
+| **▦ Grid** (the games view) | Inside a system or collection | The next view: Grid, List, Carousel, Shelf, Case |
+| **★ Stats** | Everywhere but Stats | The Stats screen |
+| **◐ Quick** | Always | Quick settings |
+| Battery, clock | As set in **Settings › Home & layout › Top bar** | |
+
+Press <kbd>Up</kbd> from the top of a page to reach the bar, Left and Right to move along it, and <kbd>Down</kbd> to go
+back to the page, onto what you had highlighted there.
+
+![The top bar over a system's games: Tandem › Nintendo Switch on the left, the Grid, Stats and Quick chips, the battery and the clock on the right, with Stats highlighted.](images/top-bar.png "The top bar")
+
+## Quick settings
+
+Hold <kbd>Start</kbd>, or **◐ Quick** in the top bar, or Start › **Quick settings**: brightness and volume, then tiles
+for Wi-Fi, Bluetooth, Airplane mode, Controller, Discord, Running, Private mode, Battery saver, Stats and Android's
+settings. See [Every setting › Quick settings](settings.md#quick-settings).
 
 ## The side panel
 
@@ -210,9 +238,11 @@ Y on anything lifts it out of the screen, a little bigger, over a blurred backgr
 
 ![The Y menu on Super Mario 3D Land: the game's cover lifted over a blurred grid, beside Play, Favorite, Add to Up next, Pin to home, Edit details and More.](../../site/assets/screenshots/game-menu.webp "The Y menu on a game")
 
-**On a game:** Play (or Resume), Favorite, Status (Backlog, Playing, Finished, Completed, Shelved, Endless or none; see [Game status](library.md#game-status)), Add to Up next, Pin to home (icon grid), Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Edit details. More: Emulator (A cycles through the installed ones that take this file), Start on (top or bottom screen), Bottom screen while playing, Choose artwork, Scrape this game, Hide this game, Play sessions…, Reset play history, Delete game…, View options.
+**On a game:** Play (or Resume), Favorite, Status (Backlog, Playing, Finished, Completed, Shelved, Endless or none; see [Game status](library.md#game-status)), Add to Up next, Pin to home (icon grid), Build native version and Building natively (Switch games Peanuts Native can build; see [Switch games](switch.md#peanuts-native)), Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Achievements (Steam games, once signed in), Edit details. More: Emulator (A cycles through the installed ones that take this file), Start on (top or bottom screen), Bottom screen while playing, Performance mode, Fan mode and Refresh rate (AYN handhelds; see [Performance profiles](ayn-thor.md#performance-profiles)), Choose artwork, Scrape this game, Hide this game, Play sessions… and Reset play history (once played), Delete game… (Uninstall app… for an Android game), View options.
 
-**On a system, collection or genre:** Open, Rescan games, Scrape these games, Sort by, Game titles, Show hidden games.
+![The More page of a game's Y menu: Emulator with Eden Duo, Start on, Bottom screen while playing, Choose artwork, Scrape this game, Hide this game and Delete game….](images/game-menu-more.png "Y › More… on a game")
+
+**On a system, collection or genre:** Open, Rescan games, Scrape these games, Hide this system (or Hide this folder; Unhide once hidden), Sort by, Game titles, Show hidden games. A on a system in **Systems and emulators** opens its emulator, start screen and **Bottom screen while playing** (see [Systems and emulators](platforms.md#the-systems-and-emulators-screen)).
 
 **On an icon grid tile:** Open, Move, Select, Move to folder…, Also add to folder…, Take out of the folder (Move up to… in a folder inside a folder), Sort and view or Game options, Design folder…, Rename folder, Sort inside…, View as…. More: Delete folder…, Hide, App info, Remove from home (Remove from folder inside one), Add to home…, Sort this folder…, Tidy up, Undo last change, Search, Swap screens.
 
