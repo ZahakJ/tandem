@@ -32,25 +32,33 @@ game. PC games are shortcut files; [Windows and Steam games](library.md#windows-
 
 ## The Systems and emulators screen
 
-**Settings › Library & art › Systems and emulators** lists every system Tandem knows in three groups: **In
-your library** (systems with games), **Turned off**, and **More systems · add a folder to start**. Each row says which
-emulator plays it ("Plays with Azahar"), or what it needs ("Needs Dolphin"), with a **Bottom ↓** pill when its games
-start on the bottom screen.
+**Settings › Library & art › Systems and emulators** shows every system Tandem knows as a grid of tiles, each with
+the system's picture (your icon pack's, as on the home screen, or Tandem's drawing of the device), its name and how
+many games it has. A tile also shows the app icon of the emulator that plays it, and says **No emulator**, **Off** or
+**Bottom** when that applies.
 
-A on a system opens its page:
+Three tabs at the top sort them, each with a count: **In your library** (systems with games), **Turned off**, and
+**More systems** (none of their games found yet; add a folder to start). **L1** and **R1** move between the tabs.
+Systems with the most games come first; ones with as many go by maker, so a maker's systems sit together. **X** (or
+the search field) searches by name, short name or maker: "sega", "gba", "Sony".
 
-| Row | What it does |
+A on a system opens its page, with its picture over its hero art:
+
+| Part | What it does |
 | --- | --- |
-| Show in library | On (the default) or off: a system turned off disappears from the library, games and all, until you turn it back on |
-| Start games on | Top screen (the default) or Bottom screen, for this system's games. A game's own **Start on** (Y › More) wins |
-| Bottom screen while playing | What the bottom screen shows while this system's games play: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Two screens › While playing** until you choose; 3DS and DS default to Leave to emulator |
-| Emulators | Every emulator that can run the system: **Default ✓** on the one in use, **Make default** on another installed one, **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
-| Folders | The system's folders: **Built in** for the usual names, **Not there yet** when that folder doesn't exist, **Remove** on one you added |
+| Show in library | A switch: on (the default) or off. A system turned off disappears from the library, games and all, and waits under **Turned off** until you turn it back on |
+| Emulators | Every emulator that can run the system, as cards with their app icons, installed ones first: **Default** (ticked) on the one in use, **Make default** on another installed one, **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
+| Start games on | **Top screen** (the default) or **Bottom screen**, two cards with a little drawing of the screens, for this system's games. A game's own **Start on** (Y › More) wins |
+| Bottom screen while playing | What the bottom screen shows while this system's games play, one card per choice: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Two screens › While playing** until you choose; 3DS and DS default to Leave to emulator |
+| Folders | The system's folders that are there as cards: **Built in** for the usual names, **Added** on one you added (A takes it out, with Undo). The usual names that aren't there yet share one **Also looks in** card |
 | Add a folder… | Picks one more folder that holds only this system's games, anywhere on the device or SD card |
+
+**B** goes back to the tile you opened (on its new tab, if you just turned the system off). With only one screen,
+Start games on and Bottom screen while playing are left out.
 
 A game can still use another emulator than its system's: Y on it › More › **Emulator**.
 
-![A system's page in Systems and emulators: Show in library, Start games on, Bottom screen while playing, the Emulators list with Default ✓ and Make default, and the Folders.](../../site/assets/screenshots/guide/systems-emulators.webp "A system in Systems and emulators")
+![A system's page in Systems and emulators: the system's art over its hero with the Show in library switch, emulator cards with their app icons and the default ticked, Top and Bottom screen cards, the bottom screen's choices as cards, and the folder cards.](../../site/assets/screenshots/guide/systems-emulators.webp "A system in Systems and emulators")
 
 ## Using your own platforms.json
 

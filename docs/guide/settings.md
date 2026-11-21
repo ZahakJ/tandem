@@ -195,8 +195,8 @@ it mutes Tandem too.
 | Games & systems | Rescan games | | Looks through every game folder again, for new games and manuals; the row shows how many of each. See [Manuals and guides](library.md#manuals-and-guides). |
 | Games & systems | Watch game folders | On | Games copied in over USB, or an SD card put back, show up a few seconds later without a rescan, while Tandem is on screen. |
 | Games & systems | Sort games by | Name | The order games appear in inside each system and collection: Name, Recently played, Most played, Release year, Rating or Recently added. |
-| Games & systems | Systems and emulators | | Every system: shown or not, its emulator, its screen, its folders. See [The Systems and emulators screen](platforms.md#the-systems-and-emulators-screen). |
-| Games & systems | Android apps | | Every app on the device; mark which are games for the Android Games system. See [Android apps](apps.md). |
+| Games & systems | Systems and emulators | | Every system as a tile with its picture, in tabs with a search: shown or not, its emulator, its screen, its folders. See [The Systems and emulators screen](platforms.md#the-systems-and-emulators-screen). |
+| Games & systems | Android apps | | Every app on the device, with a search and All apps / Games tabs; mark which are games (Y › Treat as game) for the Android Games system. See [Android apps](apps.md). |
 | Artwork & accounts | Scrape library | | The scrape screen: what to fetch (which pictures, details), for which games, the region and language, and the sources. See [Artwork and scraping](scraping.md). |
 | Artwork & accounts | Set up sources | | The art sources as tiles in the order they are asked (L1 / R1 change it), each with its card of keys and a Test button. See [Setting up sources](scraping.md#setting-up-sources). |
 | Artwork & accounts | Clear downloaded media | | Deletes what scraping downloaded (never your own art), for one system or all. Hold A to confirm. |

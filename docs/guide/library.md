@@ -25,10 +25,11 @@ A game is identified by its system and file name, like `n3ds/Some Game.3ds`. Tha
 
 ## Where games live
 
-Games can live anywhere on the device or an SD card. **Settings › Library & art › Game folders** lists every
-folder Tandem reads from, with how many games each holds right now; **Pick your games folder…** opens Android's
-folder picker, where you pick the folder and tap **Use this folder**. An empty home offers the same button. A on a
-folder gives its options, and Y (or a long press) takes it out again, with Undo.
+Games can live anywhere on the device or an SD card. **Settings › Library & art › Game folders** shows every
+folder Tandem reads from as a card, with the systems found in it (their pictures, most games first) and how many
+games it holds right now; the **Pick your games folder…** card opens Android's folder picker, where you pick the
+folder and tap **Use this folder**. An empty home offers the same button. A on a folder gives its options (**Look
+for games again** or **Take it out**), and Y (or a long press) takes it out straight away, with Undo.
 
 - **`ROMs` is the default.** `ROMs` on internal storage is Tandem's own folder, where it keeps its data, and it is
   always read for games too. It doesn't have to exist: Tandem makes it the first time it saves something there.
