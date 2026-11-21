@@ -216,10 +216,6 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
                 SortOrder.entries.map { it.name to it.label }, s.sort.name,
             ) { v -> Store.updateSettings { it.copy(sort = SortOrder.valueOf(v)) } }.copy(keywords = "order alphabetical recent"),
             SettingRow(
-                "Show game titles", onOff(s.showTitles), Palette.Mint, Glyph.Text, toggle = s.showTitles,
-                help = "Write each game's name under its card. Handy when box art looks alike.", keywords = "names labels",
-            ) { Store.updateSettings { it.copy(showTitles = !it.showTitles) } },
-            SettingRow(
                 "Show hidden games", if (io.github.zahakj.tandem.Privacy.enabled) "Private" else onOff(s.showHidden), Palette.Lavender, Glyph.Eye,
                 toggle = if (io.github.zahakj.tandem.Privacy.enabled) null else s.showHidden,
                 help = "Games, folders and systems you hid with Y stay out of sight unless this is on; then they show, dimmed. " +

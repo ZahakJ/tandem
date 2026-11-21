@@ -13,6 +13,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -180,21 +182,26 @@ private fun homeLabel(ids: List<String>) = ids.joinToString(" · ") {
 /** The icon grid home's settings (the "grid" layout). */
 private fun iconGridSettingRows(look: Look): List<SettingRow> {
     val preview: @Composable () -> Unit = { LayoutPreview("grid", Modifier.fillMaxWidth().aspectRatio(1.6f)) }
+    /** The grid with one setting changed, filling a showcase frame or a picker card. */
+    val grid: @Composable (Look) -> Unit = { l -> LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, look = l, focusLabel = !l.gridLabels) }
     return listOf(
         choice(
             "Icon size", Glyph.Grid, Palette.Sky,
             "How many icons fit across the screen, like the 3DS HOME menu's zoom. L1 and R1 change it on the grid too.",
-            (5..9).map { "$it" to "${IconGrid.sizeName(it)} · $it across" }, look.gridAcross.toString(), preview = preview,
+            (5..9).map { "$it" to "${IconGrid.sizeName(it)} · $it across" }, look.gridAcross.toString(),
+            look = { v -> grid(look.copy(gridAcross = v.toInt(), gridRows = 0)) },
         ) { v -> updateLook { it.copy(gridAcross = v.toInt()) } },
         choice(
             "Rows of icons", Glyph.Grid, Palette.Sky,
             "Fix the number of rows and the icons grow to fill the screen. One row is the 3DS HOME menu zoomed all the way in: big icons with the highlighted item's details above them. Auto follows Icon size. L1 and R1 change the rows on the grid (L1 on Large icons goes on to fewer rows).",
-            listOf("0" to "Auto", "1" to "1 row") + (2..5).map { "$it" to "$it rows" }, look.gridRows.toString(), preview = preview,
+            listOf("0" to "Auto", "1" to "1 row") + (2..5).map { "$it" to "$it rows" }, look.gridRows.toString(),
+            look = { v -> grid(look.copy(gridRows = v.toInt())) },
         ) { v -> updateLook { it.copy(gridRows = v.toInt()) } },
         choice(
             "Scrolling", Glyph.Motion, Palette.Sky,
             "Sideways with a peek of what's next, a page at a time (like the 3DS), or up and down.",
-            listOf("horizontal" to "Sideways", "paged" to "Pages", "vertical" to "Up and down"), look.gridScroll, preview = preview,
+            listOf("horizontal" to "Sideways", "paged" to "Pages", "vertical" to "Up and down"), look.gridScroll,
+            look = { v -> grid(look.copy(gridScroll = v)) },
         ) { v -> updateLook { it.copy(gridScroll = v) } },
         number(
             "Icon roundness", Glyph.Corners, Palette.Sky, "From square corners to circles.",
@@ -204,9 +211,6 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
             "Space between icons", Glyph.Grid, Palette.Sky, "The gap between icons, as a share of an icon.",
             look.gridGap, 0.1f, 0.5f, 0.04f, ::pct, preview = preview,
         ) { v -> updateLook { it.copy(gridGap = v ?: 0.26f) } },
-        toggle("Names under icons", Glyph.Text, Palette.Sky, "Write each icon's name under it.", look.gridLabels, preview = preview) { on ->
-            updateLook { it.copy(gridLabels = on) }
-        },
         number(
             "Hero split", Glyph.Screens, Palette.Sky,
             "Art of the highlighted icon above the grid. No split (the default) gives the icons the whole screen.",
@@ -215,27 +219,25 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
         choice(
             "Other screen", Glyph.Screens, Palette.Sky,
             "Spotlight shows the highlighted icon big over its colour (or its icon pack art) and games full-screen. Classic shows Tandem's details.",
-            listOf("spotlight" to "Spotlight", "classic" to "Classic details"), look.gridDetails,
+            listOf("spotlight" to "Spotlight", "classic" to "Classic"), look.gridDetails,
+            look = { v -> DeviceScene(Shows.Library, if (v == "spotlight") Shows.Spotlight else Shows.Details) },
         ) { v -> updateLook { it.copy(gridDetails = v) } },
         choice(
             "Folders open", Glyph.Folder, Palette.Sky, "As a big rounded panel over the grid, or as a full page.",
             listOf("popup" to "Over the grid", "fullscreen" to "Full page"), look.gridFolders,
+            look = { v -> FolderOpenScene(v) },
         ) { v -> updateLook { it.copy(gridFolders = v) } },
         choice(
             "X button", Glyph.Swap, Palette.Sky,
             "Swap the two screens with X on the icon grid and Orbit homes (search is in the Start panel and the grid's Y menu), everywhere, or keep X for search.",
-            listOf("swap-grid" to "Swap on grid and Orbit","swap" to "Swap everywhere", "search" to "Search"), look.xButton,
+            listOf("swap-grid" to "Swap on grid and Orbit", "swap" to "Swap everywhere", "search" to "Search"), look.xButton,
         ) { v -> updateLook { it.copy(xButton = v) } },
         choice(
             "Swap animation", Glyph.Swap, Palette.Sky,
             "How the screens trade places on X. Scatter: the icons fly apart and land on the other screen. Push: each screen's new side slides in from the hinge. Flip: both screens turn over like cards. Depth: the old side sinks back as the new one comes forward.",
             listOf("scatter" to "Scatter", "push" to "Push", "flip" to "Flip", "depth" to "Depth", "fade" to "Fade", "instant" to "Instant"), look.swapStyle,
+            look = { v -> SwapScene(v) },
         ) { v -> updateLook { it.copy(swapStyle = v) } },
-        choice(
-            "Icon pack", Glyph.Image, Palette.Sky,
-            "System and collection icons from a Cocoon smart-folder pack in ROMs/assets/smart_folders. Auto uses your Cocoon theme's own pack. Without one, Tandem draws its own.",
-            ThemePacks.iconSources(), look.iconPack,
-        ) { v -> updateLook { it.copy(iconPack = v) } },
     )
 }
 
@@ -289,30 +291,32 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Accent colour", Glyph.Sparkle, Palette.Accent,
-                    "Your own accent for toggles and highlights. Left and right try the swatches; A lets you type any colour, like #FF7AB6.",
+                    "Your own accent for toggles and highlights. Left and right try the swatches; A shows them all, and Type a colour… takes any, like #FF7AB6.",
                     accentOptions, look.accent ?: "",
                     preview = { AccentPreview() },
+                    look = { id -> ThemePreview(Themes.resolve(look.copy(accent = id.ifEmpty { null })), Modifier.fillMaxSize(), rounded = false) },
+                    extra = "Type a colour…" to {
+                        TextEntry.ask("Accent colour (hex)", look.accent ?: "#") { text ->
+                            val c = parseColor(text)
+                            if (c == null) { Toasts.show("That doesn't look like a colour"); Sounds.error() }
+                            else updateLook { it.copy(accent = c.toHex(), highlightColor = "accent") }
+                        }
+                    },
                 ) { id ->
                     if (id.isEmpty()) updateLook { it.copy(accent = null, highlightColor = "item") }
                     else updateLook { it.copy(accent = id, highlightColor = "accent") }
-                }.copy(onClick = {
-                    TextEntry.ask("Accent colour (hex)", look.accent ?: "#") { text ->
-                        val c = parseColor(text)
-                        if (c == null) { Toasts.show("That doesn't look like a colour"); Sounds.error() }
-                        else updateLook { it.copy(accent = c.toHex(), highlightColor = "accent") }
-                    }
-                }),
+                },
                 choice(
                     "Highlight style", Glyph.Highlight, Palette.Lavender,
                     "How the highlighted card is marked: a soft glow, a crisp outline, a lift with a big shadow, or a gently pulsing ring.",
                     listOf("" to "Theme · ${base.highlight.label}") + HighlightStyle.entries.map { it.id to it.label }, look.highlight ?: "",
-                    preview = { LookPreview() },
+                    look = { v -> ThemePreview(Themes.target.copy(highlight = HighlightStyle.of(v) ?: base.highlight), Modifier.fillMaxSize(), rounded = false) },
                 ) { v -> updateLook { it.copy(highlight = v.ifEmpty { null }) } },
                 choice(
                     "Surface", Glyph.Layers, Palette.Sky,
                     "What cards are made of: solid, frosted glass that lets the wallpaper glow through, or light outlines.",
                     listOf("" to "Theme · ${base.material.label}") + SurfaceMaterial.entries.map { it.id to it.label }, look.material ?: "",
-                    preview = { LookPreview() },
+                    look = { v -> ThemePreview(Themes.target.copy(material = SurfaceMaterial.of(v) ?: base.material), Modifier.fillMaxSize(), rounded = false) },
                 ) { v -> updateLook { it.copy(material = v.ifEmpty { null }) } },
             ),
         ),
@@ -323,13 +327,13 @@ fun appearanceSections(): List<SettingSection> {
                     "Icon style", Glyph.Gamepad, Palette.Accent,
                     "How Tandem draws system icons when a theme pack doesn't bring its own: a little device of the right kind with the system's name, as glossy bubbles, neon tubes, pixels, LCD, chrome and more.",
                     listOf("" to "Theme · ${base.iconStyle.label}") + IconStyle.entries.map { it.id to it.label }, look.iconStyle ?: "",
-                    preview = { IconsPreview(drawn = true) },
+                    look = { v -> IconStyleScene(IconStyle.of(v) ?: base.iconStyle) },
                 ) { v -> updateLook { it.copy(iconStyle = v.ifEmpty { null }) } },
                 choice(
                     "Icons from", Glyph.Image, Palette.Accent,
                     "Use a pack's system icons, heroes and logos with any theme, or always draw them. Auto uses the theme pack's own art; with a built-in theme it borrows the first Cocoon smart-folder pack in ROMs/assets/smart_folders. Drawn by Tandem shows the theme's icon style.",
                     ThemePacks.iconSources(), look.iconPack,
-                    preview = { IconsPreview(drawn = false) },
+                    preview = { IconsPreview() },
                 ) { v -> updateLook { it.copy(iconPack = v) } },
             ),
         ),
@@ -340,12 +344,13 @@ fun appearanceSections(): List<SettingSection> {
                     "Animation style", Glyph.Motion, Palette.Mint,
                     "Bouncy is playful, Smooth glides without overshoot, Minimal is quick and subtle, Off changes things instantly.",
                     listOf("" to "Theme · ${base.animation.label}") + AnimationStyle.entries.map { it.id to it.label }, look.motion ?: "",
-                    preview = { MotionPreview() },
+                    look = { v -> MotionStyleScene(AnimationStyle.of(v) ?: base.animation) },
                 ) { v -> updateLook { it.copy(motion = v.ifEmpty { null }) } },
                 toggle(
                     "Reduce motion", Glyph.Motion, Palette.Mint,
                     "Turns off moving wallpapers, panning art and bouncy animations everywhere. Battery saver does the same for wallpapers.",
                     settings.reduceMotion,
+                    look = { on -> StillnessScene(on) },
                 ) { on -> Store.updateSettings { it.copy(reduceMotion = on) } },
             ),
         ),
@@ -357,16 +362,19 @@ fun appearanceSections(): List<SettingSection> {
                     "An animated backdrop, the highlighted game's art, or your own picture or video: copy pictures (PNG, JPG, WebP) or videos (MP4, WebM) into ROMs/tandem/wallpapers and they show up here.",
                     wallOptions, look.wallTop.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme",
                     preview = { WallpaperPreview(look.wallTop, ScreenSlot.Top) },
+                    look = { v -> WallpaperArt(v, ScreenSlot.Top, moving = false) },
                 ) { v -> updateLook { it.copy(wallTop = v) } },
                 choice(
                     "Bottom screen", Glyph.Image, Palette.Peach,
                     "The same choices for the second screen. Game art and videos look great down there.",
                     wallOptions, look.wallBottom.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme",
                     preview = { WallpaperPreview(look.wallBottom, ScreenSlot.Bottom) },
+                    look = { v -> WallpaperArt(v, ScreenSlot.Bottom, moving = false) },
                 ) { v -> updateLook { it.copy(wallBottom = v) } },
                 number(
                     "Picture dimming", Glyph.Image, Palette.Peach, "Darkens picture and video wallpapers so text on top stays easy to read.",
                     look.wallDim, 0f, 0.8f, 0.05f, ::pct,
+                    preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { DimScene(look.wallDim) } },
                 ) { v -> updateLook { it.copy(wallDim = v ?: 0.35f) } },
             ),
         ),
@@ -374,54 +382,58 @@ fun appearanceSections(): List<SettingSection> {
             "Layout",
             listOf(
                 choice(
-                    "Home layout", Glyph.Home, Palette.Butter,
-                    "Shelves of rows, an icon grid, a coverflow carousel, a compact list, a console-style dashboard, Orbit, or Spotlight.",
-                    HomeLayouts, look.homeLayout, preview = { LayoutPreview(look.homeLayout, Modifier.fillMaxWidth().aspectRatio(1.6f)) },
-                ) { v -> updateLook { it.copy(homeLayout = v) } },
-                choice(
                     "Games view", Glyph.Grid, Palette.Butter,
                     "How games show inside a system or collection: a grid of cards, a list with details (great for big libraries), a coverflow, spines on a bookshelf, or cartridges in a case.",
-                    GameViews, look.gameView, preview = { LayoutPreview("view-${look.gameView}", Modifier.fillMaxWidth().aspectRatio(1.6f)) },
+                    GameViews, look.gameView,
+                    look = { v -> LayoutPreview("view-$v", Modifier.fillMaxSize(), rounded = false) },
                 ) { v -> updateLook { it.copy(gameView = v) } },
                 choice(
                     "Grid size", Glyph.Grid, Palette.Butter, "How big game cards are in a system, or a fixed number of columns.",
-                    Grid.sizes, look.gridSize, preview = { GridPreview() },
+                    Grid.sizes, look.gridSize,
+                    look = { v -> GridPreview(size = v) },
                 ) { v -> updateLook { it.copy(gridSize = v) } },
                 choice(
                     "Card shape", Glyph.Corners, Palette.Butter,
                     "Rounded, square, circle, tall box-art cards, or wide cards for screenshots and banners.",
-                    Grid.shapes, look.cardShape, preview = { GridPreview() },
+                    Grid.shapes, look.cardShape,
+                    look = { v -> GridPreview(shape = v) },
                 ) { v -> updateLook { it.copy(cardShape = v) } },
                 choice(
                     "Shelf look", Glyph.Layers, Palette.Butter,
                     "The bookcase behind the Shelf view of a folder: warm wood, matte boards in the theme's colours, or open, with the cases on your wallpaper and only a thin shelf line.",
                     ShelfLooks.choices, ShelfLooks.current(),
+                    look = { v -> LayoutPreview("view-shelf", Modifier.fillMaxSize(), rounded = false, look = look.copy(shelfLook = v)) },
                 ) { v -> updateLook { it.copy(shelfLook = v) } },
                 choice(
                     "System tiles", Glyph.Highlight, Palette.Butter, "The look of the system tiles on the home screen.",
                     Grid.tileStyles, look.systemTiles,
+                    look = { v -> SystemTilesScene(v) },
                 ) { v -> updateLook { it.copy(systemTiles = v) } },
                 toggle(
                     "Game titles", Glyph.Text, Palette.Butter, "Write each game's name under its card.", settings.showTitles,
-                    preview = { GridPreview() },
+                    look = { on -> GridPreview(titles = on) },
                 ) { on -> Store.updateSettings { it.copy(showTitles = on) } },
                 choice(
                     "Home rows", Glyph.Home, Palette.Butter, "Which rows the home screen shows, and in what order.",
                     HomeRowOrders.map { it.joinToString(",") to homeLabel(it) }, look.homeSections.joinToString(","),
+                    look = { v -> HomeRowsScene(v.split(",")) },
                 ) { v -> updateLook { it.copy(homeSections = v.split(",")) } },
                 choice(
                     "Open folders", Glyph.Folder, Palette.Butter,
                     "As a page, as a fullscreen page (the top bar slides away so the grid gets the whole screen), or as a popup over the screen you're on.",
                     listOf("page" to "Page", "fullscreen" to "Fullscreen", "popup" to "Popup"),
                     when { look.folderPopup -> "popup"; look.fullscreenFolders -> "fullscreen"; else -> "page" },
+                    look = { v -> FolderOpenScene(v) },
                 ) { v -> updateLook { it.copy(folderPopup = v == "popup", fullscreenFolders = v == "fullscreen") } },
                 toggle(
                     "Now playing", Glyph.Gamepad, Palette.Butter,
                     "While a game runs in the background, show it at the top of the home screen so you can jump back in.", look.nowPlaying,
+                    look = { on -> NowPlayingScene(on) },
                 ) { on -> updateLook { it.copy(nowPlaying = on) } },
                 toggle(
                     "Corner hints", Glyph.Gamepad, Palette.Butter, "A small reminder of the buttons in the corner of the top screen.",
                     look.cornerHints,
+                    look = { on -> CornerHintsScene(on) },
                 ) { on -> updateLook { it.copy(cornerHints = on) } },
             ),
         ),
@@ -435,16 +447,20 @@ fun appearanceSections(): List<SettingSection> {
                 toggle(
                     "Apps dock", Glyph.Grid, Palette.Lavender, "Your favourite Android apps on the home screen. Press Y on one to move or remove it.",
                     io.github.zahakj.tandem.data.HomeStore.settings.showDock,
+                    look = { on -> DockScene(on, look.dockStyle, look.dockTop, look.dockAutoHide) },
                 ) { on -> io.github.zahakj.tandem.data.HomeStore.updateSettings { it.copy(showDock = on) } },
                 choice(
                     "Dock style", Glyph.Layers, Palette.Lavender, "A floating bar, a full-width shelf, or just the icons. Applies to every layout except Shelves.",
                     DockStyles, look.dockStyle,
+                    look = { v -> DockScene(true, v, look.dockTop, look.dockAutoHide) },
                 ) { v -> updateLook { it.copy(dockStyle = v) } },
-                toggle("Dock on top", Glyph.Swap, Palette.Lavender, "Put the dock above the tiles instead of below them.", look.dockTop) { on ->
-                    updateLook { it.copy(dockTop = on) }
-                },
+                toggle(
+                    "Dock on top", Glyph.Swap, Palette.Lavender, "Put the dock above the tiles instead of below them.", look.dockTop,
+                    look = { on -> DockScene(true, look.dockStyle, on, look.dockAutoHide) },
+                ) { on -> updateLook { it.copy(dockTop = on) } },
                 toggle(
                     "Auto-hide dock", Glyph.Eye, Palette.Lavender, "The dock stays small and faded until you move into it.", look.dockAutoHide,
+                    look = { on -> DockScene(true, look.dockStyle, look.dockTop, on) },
                 ) { on -> updateLook { it.copy(dockAutoHide = on) } },
             ),
         ),
@@ -454,36 +470,43 @@ fun appearanceSections(): List<SettingSection> {
                 choice(
                     "Style", Glyph.Screens, Palette.Sky,
                     "Details shows the game's art fading into its info. Art + info lets the moving art fill the screen with info on top. Animated art is pure eye candy. Clock keeps it calm.",
-                    BottomModes, settings.bottomMode, preview = { BottomPreview(settings.bottomMode) },
+                    BottomModes, settings.bottomMode,
+                    look = { v -> BottomPreview(v) },
                 ) { v -> Store.updateSettings { it.copy(bottomMode = v) } },
                 number(
                     "Logo size", Glyph.Image, Palette.Sky, "The size of the game's logo over its art.",
                     look.heroLogoScale, 0.3f, 1f, 0.1f, ::pct,
+                    preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { LogoScene(look.heroLogoScale) } },
                 ) { v -> updateLook { it.copy(heroLogoScale = v ?: 0.7f) } },
                 choice(
                     "Art fade", Glyph.Layers, Palette.Sky, "How the art blends into the background below it.",
                     Hero.gradients, look.heroGradient,
+                    look = { v -> ArtFadeScene(v) },
                 ) { v -> updateLook { it.copy(heroGradient = v) } },
                 choice(
                     "Video snaps", Glyph.Image, Palette.Sky,
-                    "Plays a game's video (from ROMs/downloaded_media/<system>/videos) after you rest on it. Fast starts sooner; Battery saver waits longer so quick scrolling never decodes video. Always muted, and stopped while you play.",
-                    listOf("off" to "Off", "350" to "Fast", "650" to "Balanced", "1500" to "Battery saver"),
+                    "Plays a game's video (from ROMs/downloaded_media/<system>/videos) after you rest on it. Fast starts sooner; Saver waits longer so quick scrolling never decodes video. Always muted, and stopped while you play.",
+                    listOf("off" to "Off", "350" to "Fast", "650" to "Balanced", "1500" to "Saver"),
                     if (!look.videoSnaps) "off" else look.videoDelayMs.toString().takeIf { it in setOf("350", "650", "1500") } ?: "650",
+                    look = { v -> VideoSnapScene(v.toIntOrNull()) },
                 ) { v -> updateLook { if (v == "off") it.copy(videoSnaps = false) else it.copy(videoSnaps = true, videoDelayMs = v.toInt()) } },
                 toggle(
                     "Moving art", Glyph.Motion, Palette.Sky, "Game art slowly pans and zooms, like a living poster.", look.kenBurns,
+                    look = { on -> MovingArtScene(on) },
                 ) { on -> updateLook { it.copy(kenBurns = on) } },
             ),
         ),
         SettingSection(
             "Top bar",
             listOf(
-                toggle("Battery", Glyph.Battery, Palette.Mint, "Show the battery percentage next to the clock.", look.battery) { on ->
-                    updateLook { it.copy(battery = on) }
-                },
+                toggle(
+                    "Battery", Glyph.Battery, Palette.Mint, "Show the battery percentage next to the clock.", look.battery,
+                    look = { on -> TopBarScene(look.clock, on) },
+                ) { on -> updateLook { it.copy(battery = on) } },
                 choice(
                     "Clock", Glyph.Clock, Palette.Mint, "12-hour, 24-hour, whatever the system uses, or no clock at all.",
-                    Clock.formats, look.clock, preview = { ClockPreview() },
+                    listOf("system" to "System", "12" to "12-hour", "24" to "24-hour", "off" to "Hidden"), look.clock,
+                    look = { v -> TopBarScene(v, look.battery) },
                 ) { v -> updateLook { it.copy(clock = v) } },
             ),
         ),
@@ -492,16 +515,19 @@ fun appearanceSections(): List<SettingSection> {
             listOf(
                 choice(
                     "Button prompts", Glyph.Gamepad, Palette.Lavender, "How buttons are drawn in hints: Tandem's pastels, or Xbox, PlayStation or Nintendo style.",
-                    Prompts.styles, look.prompts, preview = { PromptPreview() },
+                    Prompts.styles, look.prompts,
+                    look = { v -> PromptsScene(v) },
                 ) { v -> updateLook { it.copy(prompts = v) } },
                 // The swaps are bindings (Bindings.swap): Open on B and Back on A, Options on X and Action on Y.
                 toggle(
                     "Swap A and B", Glyph.Swap, Palette.Lavender, "Confirm with B and go back with A, like on a Nintendo console. Hints follow along.",
-                    Bindings.swapped(bindings, Command.Open, Command.Back), preview = { PromptPreview() },
+                    Bindings.swapped(bindings, Command.Open, Command.Back),
+                    look = { on -> SwapButtonsScene(on, "A", "B", "Open", "Back") },
                 ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Open, Command.Back, on)) },
                 toggle(
                     "Swap X and Y", Glyph.Swap, Palette.Lavender, "Search with Y and open options with X.",
-                    Bindings.swapped(bindings, Command.Options, Command.Action), preview = { PromptPreview() },
+                    Bindings.swapped(bindings, Command.Options, Command.Action),
+                    look = { on -> SwapButtonsScene(on, "X", "Y", "Search", "Options") },
                 ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Options, Command.Action, on)) },
                 SettingRow(
                     "Rebind buttons", if (rebound == 0) "Defaults" else io.github.zahakj.tandem.plural(rebound, "change"), Palette.Lavender, Glyph.Gamepad,
@@ -516,13 +542,10 @@ fun appearanceSections(): List<SettingSection> {
             "Screens",
             listOf(
                 toggle(
-                    "Single screen", Glyph.Screens, Palette.Peach,
-                    "Leave the second screen alone (or turned off) and use only the top one. Games always start on the top screen too.", io.github.zahakj.tandem.data.SystemPrefs.data.singleScreen,
-                ) { on -> io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(singleScreen = on) }; activity?.showDetails() },
-                toggle(
                     "Swap screens", Glyph.Swap, Palette.Peach,
                     "The library moves to the bottom (touch) screen and the details go on top, instantly. X does this on the icon grid. Games still open on the top screen.",
                     look.swapScreens,
+                    look = { on -> DeviceScene(if (on) Shows.Details else Shows.Library, if (on) Shows.Library else Shows.Details) },
                 ) { on -> updateLook { it.copy(swapScreens = on) }; activity?.applyScreenRoles() },
                 toggle(
                     "Keep auto-rotate off", Glyph.Screens, Palette.Peach,
@@ -712,103 +735,108 @@ private fun DrawScope.card(t: ThemeSpec, at: Offset, size: Size, corner: CornerR
 @Composable
 private fun LookPreview() = ThemePreview(Themes.target, Modifier.fillMaxWidth().aspectRatio(1.45f))
 
+/** The look in the accent now, over every swatch side by side, the one in use ringed. */
 @Composable
 private fun AccentPreview() {
+    val mine = Store.settings.look.accent
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LookPreview()
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            AccentSwatches.take(7).forEach { (_, c) ->
-                val on = Store.settings.look.accent == c.toHex()
-                Box(Modifier.size(if (on) 20.dp else 16.dp).clip(CircleShape).background(c))
-            }
-        }
-    }
-}
-
-/** A ball that slides back and forth using the current animation style. */
-@Composable
-private fun MotionPreview() {
-    val x = remember { Animatable(0f) }
-    LaunchedEffect(Motion.style) {
-        while (true) {
-            x.animateTo(1f, Motion.move()); delay(700)
-            x.animateTo(0f, Motion.move()); delay(700)
-        }
-    }
-    Box(Modifier.fillMaxWidth().height(64.dp).clip(RoundedCornerShape(18.dp)).background(Palette.NightDeep.copy(alpha = 0.6f)).padding(12.dp)) {
-        Box(
-            Modifier.size(40.dp).graphicsLayer { translationX = x.value * (size.width * 4.2f) }
-                .clip(Palette.cardShape).background(Brush.linearGradient(listOf(Palette.Accent, Palette.Lavender))),
-        )
-    }
-}
-
-@Composable
-private fun WallpaperPreview(choice: String, slot: ScreenSlot) {
-    val tint = Palette.Lavender
-    val aspect = if (slot == ScreenSlot.Top) 16f / 9f else 0.87f
-    Box(Modifier.fillMaxWidth(if (slot == ScreenSlot.Top) 1f else 0.6f).aspectRatio(aspect).clip(RoundedCornerShape(16.dp))) {
-        val theme = Themes.live
-        when {
-            choice == "theme" -> {
-                val f = if (slot == ScreenSlot.Top) theme.wallpaperTop else theme.wallpaperBottom
-                if (f != null) MediaThumb(f) else Backdrop(theme.backdrop, tint)
-            }
-            choice == "hero" -> {
-                Backdrop(theme.backdrop, tint)
-                Text("Follows the highlighted game", Modifier.align(Alignment.Center).padding(12.dp), style = MaterialTheme.typography.labelLarge)
-            }
-            choice.startsWith("file:") -> MediaThumb(File(choice.removePrefix("file:")))
-            else -> Backdrop(BackdropStyle.of(choice) ?: theme.backdrop, tint)
-        }
-    }
-}
-
-@Composable
-private fun MediaThumb(file: File) {
-    if (file.extension.lowercase() in ThemePacks.videoExtensions) LoopingVideo(file, Modifier.fillMaxSize())
-    else AsyncImage(file, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-}
-
-/** Six of the user's systems as icons: drawn in the current style, or as they show now (pack art or drawn). */
-@Composable
-private fun IconsPreview(drawn: Boolean) {
-    val systems = previewSystems(6)
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        systems.take(6).chunked(3).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                row.forEach { (id, short) ->
-                    val lib = io.github.zahakj.tandem.Libraries.byId(id)
-                    if (!drawn && lib != null) SystemIcon(lib.platform, 72.dp)
-                    else if (!drawn) {
-                        val pack = ThemePacks.systemIcon(id)
-                        if (pack != null) AsyncImage(pack, null, Modifier.size(72.dp).clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Crop)
-                        else DrawnIcon(short, Devices.of(id), Palette.forName(id), 72.dp)
-                    } else DrawnIcon(short, Devices.of(id), Palette.forName(id), 72.dp)
+        AccentSwatches.chunked(7).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                row.forEach { (_, c) ->
+                    val on = mine == c.toHex()
+                    Box(
+                        Modifier.size(22.dp).clip(CircleShape)
+                            .then(if (on) Modifier.border(2.dp, Palette.Text, CircleShape).padding(3.dp) else Modifier)
+                            .clip(CircleShape).background(c),
+                    )
                 }
             }
         }
     }
 }
 
-/** A few cards in the chosen grid size and shape. */
 @Composable
-private fun GridPreview() {
-    val aspect = Grid.aspect(Store.settings.showTitles)
-    val cols = Store.settings.look.gridSize.removePrefix("cols:").toIntOrNull()
-        ?: when (Store.settings.look.gridSize) { "small" -> 6; "large" -> 4; "huge" -> 3; else -> 5 }
-    val shape = Grid.gameShape
+private fun WallpaperPreview(choice: String, slot: ScreenSlot) {
+    val aspect = if (slot == ScreenSlot.Top) 16f / 9f else 0.87f
+    Box(Modifier.fillMaxWidth(if (slot == ScreenSlot.Top) 1f else 0.6f).aspectRatio(aspect).clip(RoundedCornerShape(16.dp))) {
+        WallpaperArt(choice, slot, moving = true)
+    }
+}
+
+/**
+ * Wallpaper [choice] filling its box: a backdrop, the theme's own, game art, or a picture or video of yours. Not
+ * [moving] (the picker's many cards), backdrops hold still and a video shows as a play mark.
+ */
+@Composable
+private fun WallpaperArt(choice: String, slot: ScreenSlot, moving: Boolean) {
+    val tint = Palette.Lavender
+    val theme = Themes.live
+    Box(Modifier.fillMaxSize()) {
+        when {
+            choice == "theme" -> {
+                val f = if (slot == ScreenSlot.Top) theme.wallpaperTop else theme.wallpaperBottom
+                if (f != null) MediaThumb(f, moving) else Backdrop(theme.backdrop, tint, moving = moving)
+            }
+            choice == "hero" -> MiniScreen { t, _ -> miniArt(t, 0f, 0f, size.width, size.height); drawRect(Color.Black.copy(alpha = 0.25f)) }
+            choice.startsWith("file:") -> MediaThumb(File(choice.removePrefix("file:")), moving)
+            else -> Backdrop(BackdropStyle.of(choice) ?: theme.backdrop, tint, moving = moving)
+        }
+    }
+}
+
+@Composable
+private fun MediaThumb(file: File, moving: Boolean = true) {
+    val video = file.extension.lowercase() in ThemePacks.videoExtensions
+    when {
+        video && moving -> LoopingVideo(file, Modifier.fillMaxSize())
+        video -> Box(Modifier.fillMaxSize().background(Palette.NightDeep), contentAlignment = Alignment.Center) {
+            Text("▶", style = MaterialTheme.typography.headlineSmall, color = Palette.Muted)
+        }
+        else -> AsyncImage(file, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+    }
+}
+
+/** Six of the user's systems as their icons show now (a pack's art, or drawn). */
+@Composable
+private fun IconsPreview() {
+    val systems = previewSystems(6)
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        systems.take(6).chunked(3).forEach { row ->
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                row.forEach { (id, short) ->
+                    val lib = io.github.zahakj.tandem.Libraries.byId(id)
+                    val pack = if (lib == null) ThemePacks.systemIcon(id) else null
+                    when {
+                        lib != null -> SystemIcon(lib.platform, 72.dp)
+                        pack != null -> AsyncImage(pack, null, Modifier.size(72.dp).clip(RoundedCornerShape(12.dp)), contentScale = ContentScale.Crop)
+                        else -> DrawnIcon(short, Devices.of(id), Palette.forName(id), 72.dp)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** A few game cards in a grid [size] and card [shape], with or without [titles] (the settings in use by default). */
+@Composable
+private fun GridPreview(
+    size: String = Store.settings.look.gridSize, shape: String = Store.settings.look.cardShape, titles: Boolean = Store.settings.showTitles,
+) {
+    val art = when (shape) { "portrait" -> 0.7f; "landscape" -> 1.45f; else -> 1f }
+    val cols = size.removePrefix("cols:").toIntOrNull() ?: when (size) { "small" -> 6; "large" -> 4; "huge" -> 3; else -> 5 }
+    val clip = when (shape) { "circle" -> CircleShape; "square" -> RoundedCornerShape(3.dp); else -> Palette.cardShape }
     val colors = Palette.accents
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(Modifier.background(Palette.NightDeep).padding(10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         repeat(2) { r ->
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 repeat(cols.coerceAtMost(8)) { i ->
                     Column(Modifier.weight(1f)) {
                         Box(
-                            Modifier.fillMaxWidth().aspectRatio(if (Store.settings.showTitles) aspect / 0.82f else aspect).clip(shape)
+                            Modifier.fillMaxWidth().aspectRatio(art).clip(clip)
                                 .background(Brush.linearGradient(listOf(colors[(i + r) % colors.size], Palette.CardHigh))),
                         )
-                        if (Store.settings.showTitles) {
+                        if (titles) {
                             Spacer(Modifier.height(3.dp))
                             Box(Modifier.fillMaxWidth(0.7f).height(3.dp).clip(CircleShape).background(Palette.Muted).align(Alignment.CenterHorizontally))
                         }
@@ -819,10 +847,17 @@ private fun GridPreview() {
     }
 }
 
-/** A sketch of the bottom screen in the given style. */
+/** A sketch of the bottom screen in the given style, as tall as the box it gets. */
 @Composable
 private fun BottomPreview(mode: String) {
-    Box(Modifier.fillMaxWidth(0.62f).aspectRatio(0.87f).clip(RoundedCornerShape(16.dp)).background(Palette.NightDeep)) {
+    Box(Modifier.fillMaxSize().background(Palette.Night), contentAlignment = Alignment.Center) {
+        BottomSketch(mode, Modifier.fillMaxHeight().padding(vertical = 8.dp).aspectRatio(0.87f))
+    }
+}
+
+@Composable
+private fun BottomSketch(mode: String, modifier: Modifier) {
+    Box(modifier.clip(RoundedCornerShape(12.dp)).background(Palette.NightDeep)) {
         val art = Brush.linearGradient(listOf(Palette.Lavender, Palette.Peach, Palette.Sky))
         when (mode) {
             "clock" -> Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -860,21 +895,6 @@ private fun PreviewLines() {
     Box(Modifier.fillMaxWidth(0.7f).height(4.dp).clip(CircleShape).background(Palette.Muted.copy(alpha = 0.7f)))
 }
 
-@Composable
-private fun ClockPreview() {
-    val now by rememberMinute()
-    Text(Clock.format(now) ?: "No clock", style = MaterialTheme.typography.displaySmall)
-}
-
-@Composable
-private fun PromptPreview() {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        ButtonHint("A", "Play", Palette.Mint, tappable = false)
-        ButtonHint("B", "Back", Palette.Peach, tappable = false)
-        ButtonHint("X", "Search", Palette.Sky, tappable = false)
-        ButtonHint("Y", "Options", Palette.Butter, tappable = false)
-    }
-}
 
 private val LayoutBlurbs = mapOf(
     "shelves" to "Rows you scroll through: continue playing, systems, collections and your apps. Tandem's classic home.",
@@ -919,11 +939,18 @@ private fun LayoutGallery(routeKey: String, current: String, target: String?, on
  * A sketch of a layout in the live theme: "shelves", "grid", "carousel", "list", "console", or a games view
  * ("view-grid", "view-list", "view-carousel"). One Canvas, no images. The grid follows the icon grid's own settings;
  * as a [sketch] (the welcome's choices) it is a calm four by two with a plain dock instead.
+ *
+ * Showcases pass a [look] with one setting changed, and for the icon grid what lives outside [Look]: a name under
+ * the highlighted icon only ([focusLabel]), the Recently played strip ([strip]: its opacity, 0 for none) and the
+ * Resume page left of the grid ([resumePage]). [drift] (0 to 1) moves Spotlight's art.
  */
 @Composable
-fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = true, sketch: Boolean = false) {
+fun LayoutPreview(
+    id: String, modifier: Modifier = Modifier, rounded: Boolean = true, sketch: Boolean = false,
+    look: Look = Store.settings.look, focusLabel: Boolean = false, strip: Float = 0f, resumePage: Boolean = false,
+    drift: androidx.compose.runtime.State<Float>? = null,
+) {
     val t = Themes.live
-    val look = Store.settings.look
     Canvas(modifier.clip(RoundedCornerShape(if (rounded) 16.dp else 0.dp))) {
         val w = size.width
         val h = size.height
@@ -976,25 +1003,49 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 val across = look.gridAcross.coerceIn(4, 10)
                 val g = look.gridGap.coerceIn(0.08f, 0.6f)
                 val sideways = look.gridScroll == "horizontal"
+                val downward = look.gridScroll == "vertical"
                 val peek = if (sideways) 0.42f else 0f
-                val margin = w * 0.036f
-                var tw = (w - margin * 2) / (across + (across - 1) * g + if (peek > 0f) g + peek else 0f)
-                val gap = tw * g
-                val label = if (look.gridLabels) tw * 0.22f else 0f
                 val dockH = 16 * u
-                val areaTop = split + 4 * u
+                // The Resume page takes the left of the screen, the grid starting after it.
+                val left = if (resumePage) w * 0.27f else 0f
+                if (resumePage) {
+                    drawRoundRect(t.card, Offset(4 * u, split + 4 * u), Size(left - 8 * u, h - split - dockH - 6 * u), CornerRadius(5 * u))
+                    drawRoundRect(Brush.linearGradient(listOf(t.sky, t.lavender, t.peach)), Offset(7 * u, split + 7 * u), Size(left - 14 * u, (h - split - dockH) * 0.5f), CornerRadius(4 * u))
+                    bar(7 * u, split + (h - split - dockH) * 0.62f, left * 0.5f, t.text, 4f)
+                    drawRoundRect(t.mint, Offset(7 * u, split + (h - split - dockH) * 0.75f), Size(left * 0.35f, 7 * u), CornerRadius(3.5f * u))
+                }
+                // The Recently played strip along the top: covers in a band, faded while it waits for L2.
+                val stripH = if (strip > 0f) 15 * u else 0f
+                if (strip > 0f) {
+                    drawRoundRect(t.card, Offset(left + 4 * u, split + 3 * u), Size(w - left - 8 * u, stripH - 2 * u), CornerRadius(4 * u), alpha = strip)
+                    for (i in 0 until 7) tile(left + 7 * u + i * 11 * u, split + 5 * u, 8 * u, stripH - 6 * u, i + 3)
+                    if (strip < 1f) drawRoundRect(t.card, Offset(left + 4 * u, split + 3 * u), Size(w - left - 8 * u, stripH - 2 * u), CornerRadius(4 * u), alpha = 1f - strip)
+                }
+                val margin = left + w * 0.036f
+                val labelShare = if (look.gridLabels) 0.22f else 0f
+                val areaTop = split + stripH + 4 * u
                 val areaH = h - areaTop - dockH
+                var tw = (w - left - w * 0.072f) / (across + (across - 1) * g + if (peek > 0f) g + peek else 0f)
+                // A fixed number of rows: the icons grow until the rows fill the height, and the columns follow.
+                val fixedRows = look.gridRows.coerceIn(0, 6)
+                if (fixedRows > 0) tw = areaH / (fixedRows * (1 + labelShare) + (fixedRows - 1) * g)
+                val gap = tw * g
+                var label = tw * labelShare
                 tw = minOf(tw, areaH - label)
-                val rows = maxOf(1, ((areaH + gap) / (tw + label + gap)).toInt())
+                label = tw * labelShare
+                val rows = if (fixedRows > 0) fixedRows else maxOf(1, ((areaH + gap) / (tw + label + gap)).toInt())
                 val gridH = rows * (tw + label) + (rows - 1) * gap
-                val top = areaTop + (areaH - gridH) / 2
+                val top = if (downward) areaTop + 2 * u else areaTop + (areaH - gridH) / 2
                 val cr = CornerRadius(tw * look.gridRoundness.coerceIn(0f, 0.5f))
-                val cols = across + if (sideways) 1 else 0
-                for (c in 0 until cols) for (row in 0 until rows) {
+                val cols = if (fixedRows > 0) ((w - margin) / (tw + gap)).toInt() + 1 else across + if (sideways) 1 else 0
+                // Up and down: a peek of the next row under the last one.
+                val shownRows = rows + if (downward) 1 else 0
+                for (c in 0 until cols) for (row in 0 until shownRows) {
                     val x = margin + c * (tw + gap)
                     val y = top + row * (tw + label + gap)
+                    if (x > w || y > h - dockH) continue
                     val a = accents[(c * rows + row) % accents.size]
-                    val fade = if (sideways && c == cols - 1) 0.45f else 1f
+                    val fade = if ((sideways || fixedRows > 0) && x + tw > w - margin * 0.5f || downward && row == rows) 0.45f else 1f
                     drawRoundRect(
                         Brush.linearGradient(listOf(a, androidx.compose.ui.graphics.lerp(a, t.background, 0.35f)), Offset(x, y), Offset(x + tw, y + tw)),
                         Offset(x, y), Size(tw, tw), cr, alpha = fade,
@@ -1003,8 +1054,12 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                     if (c == 0 && row == 0) {
                         val o = 1.6f * u
                         drawRoundRect(t.text, Offset(x - o, y - o), Size(tw + 2 * o, tw + 2 * o), CornerRadius(cr.x + o), style = Stroke(1.1f * u))
+                        // The highlighted icon's name, when only it has one.
+                        if (label == 0f && focusLabel) drawRoundRect(t.text, Offset(x + tw * 0.1f, y + tw + 2.4f * u), Size(tw * 0.8f, 2.6f * u), CornerRadius(1.3f * u))
                     }
                 }
+                // Pages: dots for the page you are on.
+                if (look.gridScroll == "paged") for (i in 0 until 3) drawCircle(if (i == 0) t.text else t.muted, 1.4f * u, Offset(w / 2 + (i - 1) * 5 * u, h - dockH - 1 * u))
                 val dw = w * 0.36f
                 drawRoundRect(t.card.copy(alpha = 0.9f), Offset((w - dw) / 2, h - dockH + 3 * u), Size(dw, 10 * u), CornerRadius(5 * u))
                 for (i in 0 until 6) drawCircle(accents[(i + 2) % accents.size], 2.8f * u, Offset((w - dw) / 2 + dw * (i + 0.5f) / 6, h - dockH + 8 * u))
@@ -1077,9 +1132,11 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                         tile(cx - cw * s / 2, top, cw * s, cw * 1.38f * s, rank + 1)
                     }
                 }
-                drawRoundRect(t.card.copy(alpha = 0.9f), Offset(w * 0.32f, 5 * u), Size(w * 0.36f, 9 * u), CornerRadius(4.5f * u))
-                drawCircle(t.mint, 3 * u, Offset(w * 0.32f + 5 * u, 9.5f * u))
-                bar(w * 0.32f + 10 * u, 8 * u, w * 0.18f, t.text, 3f)
+                if (look.orbitContinue) {
+                    drawRoundRect(t.card.copy(alpha = 0.9f), Offset(w * 0.32f, 5 * u), Size(w * 0.36f, 9 * u), CornerRadius(4.5f * u))
+                    drawCircle(t.mint, 3 * u, Offset(w * 0.32f + 5 * u, 9.5f * u))
+                    bar(w * 0.32f + 10 * u, 8 * u, w * 0.18f, t.text, 3f)
+                }
                 for (i in 0 until 4) drawCircle(accents[(i + 2) % accents.size], 2.6f * u, Offset(w / 2 + (i - 1.5f) * 8 * u, h - 5.5f * u))
             }
             "spotlight" -> {
@@ -1087,7 +1144,21 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 // and the panel's logo, chips, lines of story and buttons on the other side.
                 val left = look.spotlightRail != "right"
                 fun x(at: Float, bw: Float) = if (left) at else w - at - bw
-                drawRect(Brush.linearGradient(listOf(t.sky, t.lavender, t.peach), Offset(w, 0f), Offset(0f, h)))
+                // The backdrop: the art (drifting while [drift] runs), the cover blurred to soft colour, or the theme dimmed.
+                when (look.spotlightBackdrop) {
+                    "dim" -> drawRect(Brush.radialGradient(listOf(t.card, t.backgroundDeep), Offset(w * 0.6f, h * 0.4f), w * 0.7f))
+                    "blur" -> drawRect(
+                        Brush.linearGradient(
+                            listOf(androidx.compose.ui.graphics.lerp(t.sky, t.background, 0.45f), androidx.compose.ui.graphics.lerp(t.lavender, t.background, 0.4f), androidx.compose.ui.graphics.lerp(t.peach, t.background, 0.45f)),
+                            Offset(w, 0f), Offset(0f, h),
+                        ),
+                    )
+                    else -> {
+                        val dx = kotlin.math.sin((drift?.value ?: 0f) * 2 * Math.PI).toFloat() * w * 0.08f
+                        drawRect(Brush.linearGradient(listOf(t.sky, t.lavender, t.peach), Offset(w + dx, 0f), Offset(dx, h)))
+                        drawCircle(t.butter.copy(alpha = 0.7f), 16 * u, Offset(w * 0.68f + dx, 30 * u))
+                    }
+                }
                 drawRect(
                     Brush.horizontalGradient(
                         if (left) listOf(t.background, t.background.copy(alpha = 0.2f), t.background.copy(alpha = 0.55f))
@@ -1123,8 +1194,15 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                 bar(w / 2 - w * 0.12f, 75 * u, w * 0.24f, t.muted)
             }
             "view-shelf" -> {
-                // Two shelves of spines, one game turned out to show its cover.
-                val wood = Color(0xFF8A5A34)
+                // Two shelves of spines, one game turned out to show its cover, in the bookcase Shelf look chooses: warm
+                // wood, matte boards in the theme's colours over a back panel, or open (only a thin line).
+                val open = look.shelfLook == ShelfLooks.OPEN
+                val wood = when (look.shelfLook) { ShelfLooks.MATTE -> t.cardHigh; ShelfLooks.OPEN -> t.muted.copy(alpha = 0.6f); else -> Color(0xFF8A5A34) }
+                when (look.shelfLook) {
+                    ShelfLooks.MATTE -> drawRoundRect(t.card.copy(alpha = 0.8f), Offset(3 * u, 4 * u), Size(w - 6 * u, 84 * u), CornerRadius(3 * u))
+                    ShelfLooks.OPEN -> Unit
+                    else -> drawRoundRect(Color(0xFF4A2F1C), Offset(3 * u, 4 * u), Size(w - 6 * u, 84 * u), CornerRadius(3 * u))
+                }
                 for (row in 0 until 2) {
                     val top = 8 * u + row * 42 * u
                     for (i in 0 until 12) {
@@ -1132,7 +1210,7 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
                         if (i == 2 && row == 0) tile(8 * u + 2 * 9 * u, top, 26 * u, 32 * u, 0, focused = true)
                         else tile(x0, top + 2 * u, 7 * u, 30 * u, row * 5 + i)
                     }
-                    drawRoundRect(wood, Offset(4 * u, top + 33 * u), Size(w - 8 * u, 4 * u), CornerRadius(1.5f * u))
+                    drawRoundRect(wood, Offset(4 * u, top + 33 * u), Size(w - 8 * u, if (open) 1.2f * u else 4 * u), CornerRadius(1.5f * u))
                 }
             }
             "view-case" -> {

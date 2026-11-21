@@ -58,7 +58,7 @@ import io.github.zahakj.tandem.Selection
 
 /** Options that fit on the row as a segmented control: two to four, each short. */
 internal fun fitsOnRow(options: List<Pair<String, String>>): Boolean =
-    options.size in 2..4 && options.all { it.second.length <= 13 } && options.sumOf { it.second.length } <= 27
+    options.size in 2..4 && options.all { it.second.length <= 13 } && options.sumOf { it.second.length } <= 30
 
 /** Every option of a choice row side by side, the one in use filled; a tap picks one. */
 @Composable

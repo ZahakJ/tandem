@@ -1,6 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -249,13 +251,8 @@ object SettingsPlan {
 
     /** Rows shown twice in the old screens, or standing for a gallery: built, but never placed. */
     val dropped: List<Pick> =
-        p("Library", "Show game titles") + // Home & layout › How games show › Game titles
-            p("Screens", "Single screen") + // Two screens › Single screen (the one that knows when there is one screen)
-            p("Home & play", "Apps dock on the home screen") + // Home & layout › Dock & widgets › Apps dock
-            p("Icon grid", "Icon pack") + // Look & feel › Icons from
-            p("Icon grid", "Names under icons") + // Home & layout › Icon names (always, highlighted only, off)
-            p("Motion & home", "Use Tandem as the Home screen") + // Play & system › Use Tandem as the Home screen
-            p("Layout", "Home layout") // the layout gallery at the top of Home & layout
+        p("Home & play", "Apps dock on the home screen") + // Home & layout › Dock & widgets › Apps dock
+            p("Motion & home", "Use Tandem as the Home screen") // Play & system › Use Tandem as the Home screen
 }
 
 /** Words people search for that a row's label doesn't contain (rows can also list their own `keywords`). */
@@ -333,13 +330,14 @@ private fun buttonsNote(style: String): String {
 private fun resumePageRow(): SettingRow {
     val shown = Store.settings.look.nowPlaying
     val lands = io.github.zahakj.tandem.data.ExtrasStore.settings.resumeLanding
-    val options = listOf("off" to "Off", "on" to "On", "land" to "Home lands here")
+    val options = listOf("off" to "Off", "on" to "On", "land" to "Home lands")
     val now = if (!shown) "off" else if (lands) "land" else "on"
     return choice(
         "Resume page", Glyph.Play, Palette.Mint,
-        "A game still running gets a Resume page left of the grid, one press from carrying on. Home lands here: coming " +
+        "A game still running gets a Resume page left of the grid, one press from carrying on. Home lands: coming " +
             "back to Tandem while it runs brings you straight to that page. Off, a running game has no page of its own.",
         options, now,
+        look = { v -> LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, resumePage = v != "off") },
     ) { v ->
         updateLook { it.copy(nowPlaying = v != "off") }
         if (v != "off") io.github.zahakj.tandem.data.ExtrasStore.update { it.copy(resumeLanding = v == "land") }
