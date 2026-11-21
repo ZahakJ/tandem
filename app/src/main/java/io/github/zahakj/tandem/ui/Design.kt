@@ -329,7 +329,8 @@ val FocusPadding = 12.dp
  *
  * Growth is capped by size: a wide row grows only a couple of percent and never spills out of its panel, while a
  * small tile grows by the theme's full focus scale. All per-frame work happens in layer and draw lambdas, so a
- * focus change never recomposes the card's content.
+ * focus change never recomposes the card's content. With [lifts] off it grows around its centre and stays put, for
+ * buttons side by side (a lifted one looks out of line with its neighbours).
  *
  * Touch (Touch.kt): an [entry] (a game, system, collection, app, a row of a built-in app) takes two taps, the
  * first highlighting it, and a long press highlights it and presses Y. A control acts on the first tap and takes
@@ -343,6 +344,7 @@ fun FocusCard(
     onFocus: () -> Unit = {},
     entry: Boolean = false,
     onLongPress: (() -> Unit)? = null,
+    lifts: Boolean = true,
     onClick: () -> Unit,
     content: @Composable BoxScope.(focused: Boolean) -> Unit,
 ) {
@@ -402,7 +404,7 @@ fun FocusCard(
     val surfaceColor = theme.cardHigh
     val muted = theme.muted
     val shadowDp = when (style) { HighlightStyle.Outline -> 0f; HighlightStyle.Lift -> 14f; else -> 10f }
-    val liftDp = if (style == HighlightStyle.Lift) 7f else 4f
+    val liftDp = if (!lifts) 0f else if (style == HighlightStyle.Lift) 7f else 4f
     Box(
         modifier
             .liftOrigin()

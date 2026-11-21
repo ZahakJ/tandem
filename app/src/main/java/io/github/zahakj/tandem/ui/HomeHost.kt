@@ -233,7 +233,7 @@ fun EmptyNote(line: String, action: String, focus: Modifier, modifier: Modifier 
         Spacer(Modifier.height(8.dp))
         Text(line, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.height(14.dp))
-        PillButton(action, color, focus, onAction)
+        PillButton(action, color, focus, onClick = onAction)
     }
 }
 

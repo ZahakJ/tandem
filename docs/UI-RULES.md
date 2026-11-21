@@ -7,7 +7,8 @@ may look cut off. The helpers live in `ui/Edges.kt`.
 ## Room for the highlight
 
 A highlighted `FocusCard` reaches past its bounds: it grows by up to `MaxFocusGrowth` (14 dp of width), lifts 4 dp
-(7 dp with Lift) and casts a 10 dp glow (14 dp with Lift). So:
+(7 dp with Lift) and casts a 10 dp glow (14 dp with Lift). Buttons (`PillButton`, `FocusCard(lifts = false)`) grow
+around their centre without lifting, so a row of them stays in line. So:
 
 - Leave `FocusRoom` (20 dp) above and below cards, and `FocusRoomSide` (16 dp) beside them wherever the container
   clips sideways (horizontal rows, popups, anything with `fadingEdges`).
@@ -38,7 +39,9 @@ A highlighted `FocusCard` reaches past its bounds: it grows by up to `MaxFocusGr
 - Every `Text` in a fixed-size place has `maxLines` and `overflow = TextOverflow.Ellipsis`.
 - Long help and details ellipsize or scroll; they never push button hints off a panel.
 - Pills hold one line. Text that can wrap goes in a rounded rectangle.
-- Rows of buttons that can grow use `FlowRow`.
+- Rows of buttons that can grow use `FlowRow`. A fixed set of buttons across a popup shares its width equally
+  (`PillButton(fill = true)` with `Modifier.weight(1f)`), 10 dp apart; keys and logins are labelled fields above
+  them, not loose pills (see the source cards in ui/ArtSetup.kt).
 - A place whose size changes (widgets, icon grid cells) picks its layout from the room it really gets
   (`BoxWithConstraints`), drops secondary lines first, and shows a main value that must not be ellipsized (a time,
   a percentage, free space) through `ShrinkToFit` (ui/Edges.kt), which scales it down instead of cutting it. Never

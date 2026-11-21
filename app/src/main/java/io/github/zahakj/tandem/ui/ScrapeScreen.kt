@@ -202,7 +202,7 @@ private fun OptionRow(
     ) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.titleSmall)
+                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (detail != null) Text(detail, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.width(8.dp))
@@ -485,7 +485,7 @@ private fun ScrapeProgress(run: ScrapeRun) {
             Spacer(Modifier.weight(1f))
             // When the run ends, Stop goes away and Done takes the focus.
             val target = rememberFocusTarget(routeKey, if (!run.finished) listOf("stop", "pause") else listOfNotNull("done", "new", "missed".takeIf { run.missedCount > 0 }))
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp)) {
                 if (!run.finished) {
                     PillButton("Stop", Palette.Peach, Modifier.takesFocus(routeKey, "stop", target == "stop")) { Scraper.cancel() }
                     PillButton(if (run.held) "Resume" else "Pause", Palette.Butter, Modifier.takesFocus(routeKey, "pause", target == "pause")) { Scraper.togglePause() }
@@ -560,7 +560,7 @@ private fun Stat(color: Color, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(8.dp).clip(CircleShape).background(color))
         Spacer(Modifier.width(8.dp))
-        Text(text, style = MaterialTheme.typography.bodyMedium)
+        Text(text, style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -604,12 +604,20 @@ fun ProgressBar(fraction: Float, modifier: Modifier = Modifier) {
     )
 }
 
-/** A rounded button: a FocusCard with a word on it. */
+/**
+ * A rounded button: a FocusCard with a word on it. Highlighted, it grows around its centre without lifting, so a row
+ * of them stays in line. With [fill] it takes the width it is given (a share of a row) with the word centred, and
+ * a word too long for it shrinks a little instead of being cut.
+ */
 @Composable
-fun PillButton(text: String, color: Color, modifier: Modifier, onClick: () -> Unit) {
-    FocusCard(modifier.height(42.dp), glow = color, shape = RoundedCornerShape(21.dp), onClick = onClick) {
-        Box(Modifier.fillMaxHeight().background(color.copy(alpha = 0.22f)).padding(horizontal = 16.dp), contentAlignment = Alignment.Center) {
-            Text(text, style = MaterialTheme.typography.titleSmall, color = color)
+fun PillButton(text: String, color: Color, modifier: Modifier, fill: Boolean = false, onClick: () -> Unit) {
+    FocusCard(modifier.height(42.dp), glow = color, shape = RoundedCornerShape(21.dp), lifts = false, onClick = onClick) {
+        Box(
+            (if (fill) Modifier.fillMaxSize() else Modifier.fillMaxHeight()).background(color.copy(alpha = 0.22f)).padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (fill) ShrinkToFit { Text(text, style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1) }
+            else Text(text, style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1)
         }
     }
 }

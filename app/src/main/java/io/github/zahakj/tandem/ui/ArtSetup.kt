@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -272,33 +273,32 @@ private fun SourceSheet(s: ScrapeSource, maxHeight: androidx.compose.ui.unit.Dp)
     val (status, color) = sourceStatus(s)
     val test = SourceTests.results[s]
 
-    fun saved(name: String, v: String) = if (v.isBlank()) name else "$name ✓"
     fun keyChanged() = SourceTests.forget(s)
-    val keys: List<SheetButton> = when (s) {
+    val keys: List<KeyField> = when (s) {
         ScrapeSource.ScreenScraper -> listOf(
-            SheetButton("devid", saved("Developer ID", cfg.ssDevId), if (cfg.ssDevId.isBlank()) Palette.Peach else Palette.Sky) {
+            KeyField("devid", "Developer ID", cfg.ssDevId) {
                 TextEntry.ask("ScreenScraper developer ID", cfg.ssDevId) { v -> ScrapeConfig.update { it.copy(ssDevId = v.trim()) }; keyChanged() }
             },
-            SheetButton("devpw", saved("Dev password", cfg.ssDevPassword), if (cfg.ssDevPassword.isBlank()) Palette.Peach else Palette.Sky) {
+            KeyField("devpw", "Dev password", cfg.ssDevPassword, secret = true) {
                 TextEntry.ask("ScreenScraper developer password", "", secret = true) { v -> ScrapeConfig.update { it.copy(ssDevPassword = v) }; keyChanged() }
             },
-            SheetButton("user", saved("Your login", cfg.ssUser), Palette.Lavender) {
+            KeyField("user", "Your login", cfg.ssUser, optional = true) {
                 TextEntry.ask("Your ScreenScraper username (optional)", cfg.ssUser) { v -> ScrapeConfig.update { it.copy(ssUser = v.trim(), ssVerifiedUser = "") }; keyChanged() }
             },
-            SheetButton("pw", saved("Your password", cfg.ssPassword), Palette.Lavender) {
+            KeyField("pw", "Your password", cfg.ssPassword, secret = true, optional = true) {
                 TextEntry.ask("Your ScreenScraper password", "", secret = true) { v -> ScrapeConfig.update { it.copy(ssPassword = v, ssVerifiedUser = "") }; keyChanged() }
             },
         )
         ScrapeSource.Igdb -> listOf(
-            SheetButton("id", saved("Client ID", cfg.igdbClientId), if (cfg.igdbClientId.isBlank()) Palette.Peach else Palette.Sky) {
+            KeyField("id", "Client ID", cfg.igdbClientId) {
                 TextEntry.ask("Twitch Client ID (dev.twitch.tv/console/apps)", cfg.igdbClientId) { v -> ScrapeConfig.update { it.copy(igdbClientId = v.trim()) }; keyChanged() }
             },
-            SheetButton("secret", saved("Client secret", cfg.igdbSecret), if (cfg.igdbSecret.isBlank()) Palette.Peach else Palette.Sky) {
+            KeyField("secret", "Client secret", cfg.igdbSecret, secret = true) {
                 TextEntry.ask("Twitch Client Secret", "", secret = true) { v -> ScrapeConfig.update { it.copy(igdbSecret = v.trim()) }; keyChanged() }
             },
         )
         ScrapeSource.SteamGridDb -> listOf(
-            SheetButton("key", saved("API key", cfg.sgdbKey), if (cfg.sgdbKey.isBlank()) Palette.Peach else Palette.Sky) {
+            KeyField("key", "API key", cfg.sgdbKey, secret = true) {
                 TextEntry.ask("SteamGridDB API key (steamgriddb.com › Preferences › API)", "", secret = true) { v -> ScrapeConfig.update { it.copy(sgdbKey = v.trim()) }; keyChanged() }
             },
         )
@@ -365,20 +365,50 @@ private fun SourceSheet(s: ScrapeSource, maxHeight: androidx.compose.ui.unit.Dp)
                 color = if (test.ok) Palette.Mint else Palette.Peach, maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(12.dp))
+        // The keys as labelled fields across the card, then the buttons sharing one row in equal widths.
         if (keys.isNotEmpty()) {
-            SheetRow(keys, target)
-            Spacer(Modifier.height(8.dp))
+            Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(SheetGap)) {
+                keys.forEach { k -> KeyFieldCard(k, Modifier.weight(1f).takesFocus(SHEET, k.key, target == k.key)) }
+            }
+            Spacer(Modifier.height(SheetGap))
         }
-        SheetRow(actions, target)
+        Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(SheetGap)) {
+            actions.forEach { b ->
+                PillButton(b.label, b.color, Modifier.weight(1f).takesFocus(SHEET, b.key, target == b.key), fill = true, onClick = b.onClick)
+            }
+        }
+    }
+}
+
+private val SheetGap = 10.dp
+
+/** A key or login a source needs: A opens the keyboard for it. Secrets show only that they are saved. */
+private class KeyField(val key: String, val label: String, val value: String, val secret: Boolean = false, val optional: Boolean = false, val onClick: () -> Unit) {
+    val color: Color get() = if (optional) Palette.Lavender else if (value.isBlank()) Palette.Peach else Palette.Sky
+    val shown: String get() = when {
+        value.isBlank() -> if (optional) "Optional" else "Not set"
+        secret -> "Saved ✓"
+        else -> value
     }
 }
 
 @Composable
-private fun SheetRow(buttons: List<SheetButton>, target: String?) {
-    Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        buttons.forEach { b ->
-            PillButton(b.label, b.color, Modifier.takesFocus(SHEET, b.key, target == b.key), b.onClick)
+private fun KeyFieldCard(k: KeyField, modifier: Modifier) {
+    FocusCard(modifier.height(52.dp), glow = k.color, shape = RoundedCornerShape(14.dp), lifts = false, onClick = k.onClick) {
+        Row(
+            Modifier.fillMaxSize().background(k.color.copy(alpha = 0.12f)).padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            GlyphIcon(Glyph.Key, k.color, Modifier.size(16.dp))
+            Spacer(Modifier.width(8.dp))
+            Column(Modifier.weight(1f)) {
+                Text(k.label, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    k.shown, style = MaterialTheme.typography.titleSmall, color = if (k.value.isBlank()) k.color else Palette.Text,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
