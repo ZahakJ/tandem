@@ -4,6 +4,8 @@ Switching to Tandem shouldn't cost you the titles, descriptions, favorites and p
 
 ## When it happens
 
+Importing runs on its own once, and again whenever you ask:
+
 - **Automatically, once,** the first time Tandem scans your games.
 - **Whenever you ask,** with **Settings › Play & system › Your data › Import details**. Run it again after scraping more games in ES-DE, or after making a new Cocoon backup.
 
@@ -21,11 +23,15 @@ For each system, Tandem checks these places and uses every file it finds:
 
 `<system>` is the system's `id` or one of its `art` names from [`platforms.json`](platforms.md), so for the 3DS both `n3ds` and `3ds` work.
 
-To import from Cocoon, make a backup in Cocoon first and make sure it is saved under `ROMs/backups/`.
+> [!TIP]
+> To import from Cocoon, make a backup in Cocoon first and make sure it is saved under `ROMs/backups/`.
 
 ## What comes across
 
-Each `<game>` entry is matched to a game in your library by **file name**, so the files need to be the same ones the other frontend saw.
+Each `<game>` entry is matched to a game in your library by **file name**, so the files need to be the same ones the other frontend saw. Titles, descriptions, genres, favorites, play history and artwork all come across.
+
+<details>
+<summary>Which gamelist field fills which Tandem field</summary>
 
 | Tandem field | Read from |
 | --- | --- |
@@ -45,6 +51,8 @@ Each `<game>` entry is matched to a game in your library by **file name**, so th
 
 Artwork paths can be relative to the gamelist (`./media/…`), start with `~/`, be absolute, or be content links into internal storage. Tandem only keeps a path if the file is actually there.
 
+</details>
+
 ## What wins when both have a value
 
 Tandem never overwrites what it already has:
@@ -55,10 +63,12 @@ Tandem never overwrites what it already has:
 
 ## Themes from Cocoon
 
+Your Cocoon look can come along too.
+
 Theme packs you downloaded in Cocoon (in `ROMs/themes`) show up in **Settings › Look & feel › Theme packs** by themselves, with their wallpapers, system icons, heroes and logos. You can also import a pack from a folder or a `.zip`. See [Themes](themes.md) for what Tandem reads from a pack, and the [example of the format](../example-cocoon-theme.json).
 
-**Import my Cocoon setup** (**Settings › Play & system › Your data**) goes further: from your newest Cocoon backup it brings over the home grid arrangement, folders, the theme pack and appearance values. **Undo Cocoon import** puts everything back as it was.
+**Settings › Play & system › Your data › Import my Cocoon setup** goes further: from your newest Cocoon backup it brings over the home grid arrangement, folders, the theme pack and appearance values. **Undo Cocoon import** puts everything back as it was.
 
 ## Going the other way
 
-Tandem's own data is plain JSON. **Settings › Play & system › Your data › Back up** writes it to a dated folder in `ROMs/tandem/backup/`, and any tool can read it. See [Back up and restore](library.md#back-up-and-restore).
+Leaving is just as easy. Tandem's own data is plain JSON: **Settings › Play & system › Your data › Back up** writes it to a dated folder in `ROMs/tandem/backup/`, and any tool can read it. See [Back up and restore](library.md#back-up-and-restore).
