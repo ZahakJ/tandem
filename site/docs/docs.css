@@ -84,6 +84,8 @@ kbd { display: inline-block; font: 700 0.78em/1.5 var(--mono); padding: 0 0.45em
 .pad--x { --pc: #ffb4a2; }
 .pad--y { --pc: #ffe49a; }
 .pad--pill { border-radius: 999px; padding: 0 0.6em; --pc: #dcd8ec; }
+.pad--dir { border-radius: 0.5em; font-size: 0.6em; min-width: 2.1em; height: 2.1em; vertical-align: 0.2em; --pc: #dcd8ec; }
+.pad--dir + .pad--dir { margin-left: 2px; }
 
 /* ── Top bar ── */
 .top {
@@ -211,6 +213,15 @@ kbd { display: inline-block; font: 700 0.78em/1.5 var(--mono); padding: 0 0.45em
 .callout--important { --c: var(--lav); }
 .callout--warning { --c: var(--butter); }
 .callout--caution { --c: var(--peach); }
+/* A fold: <details> in the Markdown. Asides and details for the curious. */
+.fold { margin: 0 0 24px; border-radius: 18px; background: var(--card); border: 1px solid var(--line-hi); }
+.fold > summary { display: flex; align-items: center; gap: 12px; padding: 13px 20px; cursor: pointer; font-weight: 800; color: var(--text); list-style: none; border-radius: 18px; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before { content: ""; flex: none; width: 7px; height: 7px; margin-left: 2px; border: solid var(--muted); border-width: 0 2px 2px 0; transform: rotate(-45deg); transition: transform 0.2s; }
+.fold[open] > summary::before { transform: rotate(45deg); }
+.fold > summary:hover { color: var(--mint); }
+.fold__body { padding: 2px 20px 4px; }
+@media (prefers-reduced-motion: reduce) { .fold > summary::before { transition: none; } }
 
 /* Screenshots in a handheld's bezel. A top and a bottom screen side by side come out the same height. */
 .shots { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center; gap: 18px; margin: 6px 0 30px; }
@@ -380,5 +391,6 @@ kbd { display: inline-block; font: 700 0.78em/1.5 var(--mono); padding: 0 0.45em
   .table, .table--tall { max-height: none; overflow: visible; }
   .doc :is(h2, h3) { break-after: avoid; }
   .doc :is(pre, .table, .callout, .shots, tr) { break-inside: avoid; }
+  .fold > summary::before { display: none; }
   .doc a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.85em; color: #555; overflow-wrap: anywhere; }
 }

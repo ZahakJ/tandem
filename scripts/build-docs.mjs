@@ -20,7 +20,12 @@
 // (GitHub-flavoured blocks, tables, task lists, fenced code) and a few extras
 // that still read well on GitHub:
 //   > [!NOTE] or > **Tip:** …   a callout card (Note, Tip, Important, Warning, Caution)
-//   <kbd>A</kbd> or :btn[A]     a controller button chip (A, B, X, Y, L1, Start…)
+//   <kbd>A</kbd> or :btn[A]     a controller button chip (A, B, X, Y, L1, Start…,
+//                               and the D-pad's ◀ ▶ ▲ ▼)
+//   <details>                   a fold that opens on a click, folded on GitHub
+//   <summary>…</summary>        too; each tag on a line of its own and blank
+//   …Markdown…                  lines around the body, which GitHub needs to
+//   </details>                  render it as Markdown
 //   a paragraph of images       screenshots in a handheld frame, side by side;
 //                               the image title ("…") is the caption
 //   front matter summary:       overrides the summary under the title
@@ -207,8 +212,9 @@ function inline(src, ctx) {
  *  shoulder, trigger and menu buttons become pills. */
 const PAD = { A: "a", B: "b", X: "x", Y: "y" };
 const PILL = /^(L|R|L1|R1|L2|R2|L3|R3|ZL|ZR|Start|Select|Home)$/;
+const DPAD = /^[◀▶▲▼]$/;
 function key(name) {
-  const k = PAD[name] ? ` class="pad pad--${PAD[name]}"` : PILL.test(name) ? ' class="pad pad--pill"' : "";
+  const k = PAD[name] ? ` class="pad pad--${PAD[name]}"` : PILL.test(name) ? ' class="pad pad--pill"' : DPAD.test(name) ? ' class="pad pad--dir"' : "";
   return `<kbd${k}>${esc(name)}</kbd>`;
 }
 
@@ -373,6 +379,27 @@ function blocks(lines, ctx, tight = false) {
       while (i < lines.length && (/^( {4}|\t)/.test(lines[i]) || RE.blank.test(lines[i]))) body.push(lines[i++].replace(/^( {4}|\t)/, ""));
       while (body.length && RE.blank.test(body[body.length - 1])) body.pop();
       html += `<pre><code>${esc(body.join("\n"))}</code></pre>\n`;
+      continue;
+    }
+    if ((m = /^ {0,3}<details( open)?>\s*$/i.exec(line))) {
+      // A fold: <details>, a <summary>…</summary> line, Markdown, </details>.
+      // Folds nest, so the closing tag is found by counting.
+      const open = !!m[1];
+      i++;
+      while (i < lines.length && RE.blank.test(lines[i])) i++;
+      const sm = /^ {0,3}<summary>(.*)<\/summary>\s*$/i.exec(lines[i] ?? "");
+      let summary = "More";
+      if (sm) { summary = sm[1]; i++; } else ctx.warn("<details> without a <summary>…</summary> line");
+      const body = [];
+      let depth = 1;
+      while (i < lines.length) {
+        if (/^ {0,3}<details( open)?>\s*$/i.test(lines[i])) depth++;
+        else if (/^ {0,3}<\/details>\s*$/i.test(lines[i]) && --depth === 0) break;
+        body.push(lines[i++]);
+      }
+      if (depth !== 0) ctx.warn("<details> without </details>");
+      i++;
+      html += `<details class="fold"${open ? " open" : ""}><summary>${inline(summary, ctx)}</summary>\n<div class="fold__body">\n${blocks(body, ctx)}</div></details>\n`;
       continue;
     }
     if (RE.html.test(line)) {
