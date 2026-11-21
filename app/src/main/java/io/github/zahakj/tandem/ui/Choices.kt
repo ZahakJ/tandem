@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +64,8 @@ internal fun fitsOnRow(options: List<Pair<String, String>>): Boolean =
 /** Every option of a choice row side by side, the one in use filled; a tap picks one. */
 @Composable
 internal fun Segmented(options: List<Pair<String, String>>, selected: String?, color: Color, focused: Boolean, onPick: (String) -> Unit) {
+    // The tap handlers outlive a recomposition; they call the row's latest pick, not the one they were made with.
+    val pick by rememberUpdatedState(onPick)
     Row(
         Modifier.clip(RoundedCornerShape(50)).background(Palette.Muted.copy(alpha = if (focused) 0.2f else 0.13f)).padding(3.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -72,7 +75,7 @@ internal fun Segmented(options: List<Pair<String, String>>, selected: String?, c
             val fill by animateColorAsState(if (on) color else Color.Transparent, Motion.fade(160), label = "segment")
             Box(
                 Modifier.clip(RoundedCornerShape(50)).background(fill)
-                    .pointerInput(id) { detectTapGestures { onPick(id) } }
+                    .pointerInput(id) { detectTapGestures { pick(id) } }
                     .padding(horizontal = 11.dp, vertical = 4.dp),
                 contentAlignment = Alignment.Center,
             ) {
