@@ -296,7 +296,7 @@ fun appearanceSections(): List<SettingSection> {
                     "Your own accent for toggles and highlights. Left and right try the swatches; A shows them all, and Type a colour… takes any, like #FF7AB6.",
                     accentOptions, look.accent ?: "",
                     preview = { AccentPreview() },
-                    look = { id -> ThemePreview(Themes.resolve(look.copy(accent = id.ifEmpty { null })), Modifier.fillMaxSize(), rounded = false) },
+                    look = { id -> AccentScene(Themes.resolve(look.copy(accent = id.ifEmpty { null })).accent) },
                     extra = "Type a colour…" to {
                         TextEntry.ask("Accent colour (hex)", look.accent ?: "#") { text ->
                             val c = parseColor(text)
@@ -312,13 +312,13 @@ fun appearanceSections(): List<SettingSection> {
                     "Highlight style", Glyph.Highlight, Palette.Lavender,
                     "How the highlighted card is marked: a soft glow, a crisp outline, a lift with a big shadow, or a gently pulsing ring.",
                     listOf("" to "Theme · ${base.highlight.label}") + HighlightStyle.entries.map { it.id to it.label }, look.highlight ?: "",
-                    look = { v -> ThemePreview(Themes.target.copy(highlight = HighlightStyle.of(v) ?: base.highlight), Modifier.fillMaxSize(), rounded = false) },
+                    look = { v -> HighlightScene(HighlightStyle.of(v) ?: base.highlight) },
                 ) { v -> updateLook { it.copy(highlight = v.ifEmpty { null }) } },
                 choice(
                     "Surface", Glyph.Layers, Palette.Sky,
                     "What cards are made of: solid, frosted glass that lets the wallpaper glow through, or light outlines.",
                     listOf("" to "Theme · ${base.material.label}") + SurfaceMaterial.entries.map { it.id to it.label }, look.material ?: "",
-                    look = { v -> ThemePreview(Themes.target.copy(material = SurfaceMaterial.of(v) ?: base.material), Modifier.fillMaxSize(), rounded = false) },
+                    look = { v -> SurfaceScene(SurfaceMaterial.of(v) ?: base.material) },
                 ) { v -> updateLook { it.copy(material = v.ifEmpty { null }) } },
             ),
         ),
@@ -1045,14 +1045,15 @@ fun LayoutPreview(
                 for (c in 0 until cols) for (row in 0 until shownRows) {
                     val x = margin + c * (tw + gap)
                     val y = top + row * (tw + label + gap)
-                    if (x > w || y > h - dockH) continue
+                    // Only whole icons: one the edge would cut (the peek of the next column or row) is left out, and
+                    // an arrow says the grid goes on that way.
+                    if (x + tw > w - w * 0.03f || y + tw + label > h - dockH + u) continue
                     val a = accents[(c * rows + row) % accents.size]
-                    val fade = if ((sideways || fixedRows > 0) && x + tw > w - margin * 0.5f || downward && row == rows) 0.45f else 1f
                     drawRoundRect(
                         Brush.linearGradient(listOf(a, androidx.compose.ui.graphics.lerp(a, t.background, 0.35f)), Offset(x, y), Offset(x + tw, y + tw)),
-                        Offset(x, y), Size(tw, tw), cr, alpha = fade,
+                        Offset(x, y), Size(tw, tw), cr,
                     )
-                    if (label > 0f) drawRoundRect(t.muted, Offset(x + tw * 0.2f, y + tw + label * 0.35f), Size(tw * 0.6f, label * 0.3f), CornerRadius(label), alpha = fade)
+                    if (label > 0f) drawRoundRect(t.muted, Offset(x + tw * 0.2f, y + tw + label * 0.35f), Size(tw * 0.6f, label * 0.3f), CornerRadius(label))
                     if (c == 0 && row == 0) {
                         val o = 1.6f * u
                         drawRoundRect(t.text, Offset(x - o, y - o), Size(tw + 2 * o, tw + 2 * o), CornerRadius(cr.x + o), style = Stroke(1.1f * u))
@@ -1060,6 +1061,12 @@ fun LayoutPreview(
                         if (label == 0f && focusLabel) drawRoundRect(t.text, Offset(x + tw * 0.1f, y + tw + 2.4f * u), Size(tw * 0.8f, 2.6f * u), CornerRadius(1.3f * u))
                     }
                 }
+                fun arrow(a: Offset, b: Offset, c: Offset) = drawPath(
+                    androidx.compose.ui.graphics.Path().apply { moveTo(a.x, a.y); lineTo(b.x, b.y); lineTo(c.x, c.y) }, t.muted, style = Stroke(1.2f * u),
+                )
+                val mid = top + gridH / 2
+                if (sideways || fixedRows > 0) arrow(Offset(w - 5 * u, mid - 4 * u), Offset(w - 2 * u, mid), Offset(w - 5 * u, mid + 4 * u))
+                if (downward) arrow(Offset(w / 2 - 4 * u, h - dockH - 3.5f * u), Offset(w / 2, h - dockH - 0.5f * u), Offset(w / 2 + 4 * u, h - dockH - 3.5f * u))
                 // Pages: dots for the page you are on.
                 if (look.gridScroll == "paged") for (i in 0 until 3) drawCircle(if (i == 0) t.text else t.muted, 1.4f * u, Offset(w / 2 + (i - 1) * 5 * u, h - dockH - 1 * u))
                 val dw = w * 0.36f
