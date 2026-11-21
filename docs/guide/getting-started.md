@@ -25,6 +25,8 @@ Every release APK is signed with the same key, so updates install over the old v
 
 Installed from GitHub Releases, Tandem keeps itself up to date. Once a day while it is open it asks GitHub whether a newer version is out; if one is, a quiet **Tandem 0.4.1 is out** row appears in the Start panel (with a toast once, never over a game). Press A on it to read the release notes, then **Update**: Tandem downloads the APK, checks it against the release's `SHA256SUMS` and Tandem's signing key, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm. Tandem restarts on the new version with your data as it was. Nothing installs until you press Update.
 
+![The update popup: Tandem 0.6.2 is out, its release notes, and the Update and Not now buttons.](images/update-popup.png "A new version, ready to install")
+
 **Settings › Play & system › About › Check now** checks on demand and shows where an update stands; **Check for updates** (under More options) turns the daily check off, and private mode skips it. Obtainium still works if you prefer it.
 
 ## Put your games in place
@@ -43,19 +45,21 @@ Games/
 ```
 
 A single system's folder (`Games/3DS`) works too, and so does one folder with everything mixed together: a file only
-one system plays (`.3ds`, `.nsp`, `.gba`, `.sfc`…) is found wherever it is. Disc images and archives (`.iso`, `.chd`,
+one system plays (`.3ds`, `.nsp`, `.gba`, `.sfc`…) is found wherever it is in that folder. Disc images and archives (`.iso`, `.chd`,
 `.zip`…) need a folder named for their system. Folders inside a system folder (for example `3DS/RPG/`) show up in
 Tandem as folders, up to three levels deep. The full list of names and file types per system is in
 [Systems and emulators](platforms.md#what-comes-built-in).
 
 `ROMs` at the top of internal storage (`/storage/emulated/0/ROMs`) is Tandem's own folder, where it keeps its data,
-and is always read for games too. If you already use ES-DE or Cocoon, your games are probably there already.
+and is always read for games too, in the folder-per-system layout only (`ROMs/3ds`, `ROMs/switch`…; loose files in
+`ROMs` itself are not games). If you already use ES-DE or Cocoon, your games are probably there already. Folders of
+updates, DLC, patches or mods are never taken for games.
 
 > [!TIP]
 > Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Games › Game
 > folders**. Their games join the same systems. See [Where games live](library.md#where-games-live).
 
-Artwork is optional. If you have scraped art before with another frontend, it is most likely in `ROMs/downloaded_media/`, and Tandem uses it as it is. [Your library](library.md#artwork) explains which folders it reads.
+Artwork is optional. If you have scraped art before with another frontend, it is most likely in `ROMs/downloaded_media/`, and Tandem uses it as it is; coming from Cocoon, the first scan also brings over the art its gamelists point to. [Your library](library.md#artwork) explains which folders it reads, and [Get artwork](#get-artwork) below fetches the rest.
 
 ## First launch
 
@@ -68,9 +72,30 @@ If Shizuku is installed and running, a third, optional step appears: **Resume ga
 
 Then Tandem scans your folders. The first time, it also looks for ES-DE gamelists and Cocoon backups and brings over what it finds: titles, descriptions, genres, favorites, play time and artwork paths. A message from Pip tells you how many games it updated. [Importing](importing.md) has the details.
 
+### The welcome
+
+After the first scan, Pip walks you through a few choices. Every step can be skipped: <kbd>A</kbd> chooses, <kbd>B</kbd> goes back a step (on the first step, **Skip all**). It shows once; everything in it is in Settings later.
+
+1. **Which home feels like yours?** Four starting looks, drawn live: **Cozy shelves** (rows of recent games, systems and collections), **Icon grid look** (a dense grid of icons like the 3DS; first when Cocoon files are found), **Orbit** (systems on an orbit of round icons) and **Minimal** (a compact list, no music). **Settings › Home & layout** has all seven layouts any time.
+2. **I found your Cocoon things** (only when Cocoon files are on the device): **Bring my Cocoon setup over** copies your Cocoon home, dock and theme from its newest backup, or **Wear** its theme pack.
+3. **Artwork & details**: the art sources, no-account ones first. **Get LaunchBox (105 MB, Wi-Fi)** downloads LaunchBox's index for art with no account; A on a source shows how to set it up. Skipping is fine: see [Get artwork](#get-artwork).
+4. **Pick up right where you left off**: allow Tandem in Shizuku for [resume](resume.md), or **Skip for now**.
+5. **Make Tandem your Home screen?** Then Home always brings you back to Tandem. Android asks you to confirm.
+6. **All set. Let's play!** The four buttons worth knowing: Y options, X search (or swap screens on the home), Start the Start panel (hold: quick settings), Select surprise me (hold: game switcher).
+
+![The welcome's first step: Which home feels like yours?, with four homes drawn side by side.](images/welcome-home.png "The welcome: pick a home")
+![The welcome's Artwork & details step: six source tiles and the Get LaunchBox button.](images/welcome-art.png "The welcome: artwork sources")
+
+## Get artwork
+
+> [!TIP]
+> **Art with no account:** **Settings › Library & art › Set up sources › LaunchBox › Download** (a one-time download of LaunchBox's index, about 105 MB), then **Settings › Library & art › Scrape library** › **Start scraping**. It is the closest thing to Cocoon's zero-setup scraper: no account, no key, and games are looked up on the handheld.
+
+That gives most systems box art, logos, hero art, screenshots and descriptions. For more, free keys of your own for SteamGridDB (great for PC and Switch), IGDB and ScreenScraper are optional. Tandem can't come with keys built in: each service hands keys to a person under terms that don't allow publishing them, and anything built into an open-source app can be read by anyone. [Artwork and scraping](scraping.md) has every step, a worked example, and what to do when a scrape finds nothing.
+
 ## Finding your way around
 
-The top screen is your library. The home screen has up to three rows:
+The top screen is your library. How the home screen looks depends on the layout you picked (see [Home layouts](themes.md#home-layouts)); the Shelves home has up to three rows:
 
 - **Continue playing**, the games you played most recently.
 - **Systems**, one card per system that has at least one game.
@@ -81,11 +106,18 @@ The top screen is your library. The home screen has up to three rows:
 
 The bottom screen shows details for whatever is highlighted. Move with the D-pad or left stick, press <kbd>A</kbd> to open or play, <kbd>B</kbd> to go back. <kbd>Y</kbd> on a game opens its menu, <kbd>X</kbd> searches, and <kbd>Start</kbd> opens the Start panel, where Settings is. The [controller reference](controls.md) lists every button.
 
+Along the top of most screens (not on the icon grid, which gives its icons the whole screen) runs the **top bar**: where you are, a **✦ Scraping** pill while a scrape runs, **▶ 2 open** while games are running (the game switcher), the games view chip inside a system, **★ Stats**, **◐ Quick** (quick settings), the battery and the clock. Press Up to reach it and Down to go back to the page.
+
+![The Y menu on a game: Play, Favorite, Status, Add to Up next, Pin to home, Notes, Edit details and More….](images/game-menu.png "Y on a game")
+
 To play, highlight a game and press A. Tandem starts it in the system's emulator. When you come back to Tandem (with Home, or by quitting the emulator), your place in the library is just as you left it.
 
 ## Next steps
 
 - On an AYN Thor? [Setting up on the AYN Thor](ayn-thor.md) has device-specific tips.
+- What every setting does, with its default: [Every setting](settings.md).
+- Artwork for your games: [Artwork and scraping](scraping.md).
 - Add a system or a different emulator: [Systems and emulators](platforms.md).
+- Switch games in Eden Duo and Peanuts Native, with one save: [Switch games](switch.md).
 - Make games come back where you left them: [Resume and Shizuku](resume.md).
 - Something not working: [FAQ and troubleshooting](faq.md).

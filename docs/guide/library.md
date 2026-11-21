@@ -8,11 +8,14 @@ On launch, and whenever you choose **Settings › Library & art › Rescan games
 
 - **A folder per system.** A folder named for a system holds that system's games: every file with one of the system's extensions. The names are forgiving: the system's `folders` and aliases in [`platforms.json`](platforms.md), its name and short name, and a few nicknames, ignoring case, spaces, punctuation, a trailing "roms" or "games" and a maker in front. `n3ds`, `3DS`, `Nintendo 3DS`, `3DS ROMs` and `Nintendo - Nintendo 3DS` are all the 3DS.
 - **One system's folder.** Pick `Games/3DS` itself and everything in it is the 3DS's.
-- **Everything together.** A file only one system plays (`.3ds`, `.cia`, `.nsp`, `.xci`, `.gba`, `.sfc`, `.z64`…) is that system's wherever it sits, up to three folders down. Kinds several systems share, and everyday ones (`.iso`, `.bin`, `.cue`, `.chd`, `.zip`, `.7z`…), only count inside a folder named for a system.
+- **Everything together.** A file only one system plays (`.3ds`, `.cia`, `.nsp`, `.xci`, `.gba`, `.sfc`, `.z64`…) is that system's wherever it sits in a folder you added (not in `ROMs` itself), up to three folders down. Kinds several systems share, and everyday ones (`.iso`, `.bin`, `.cue`, `.chd`, `.zip`, `.7z`…), only count inside a folder named for a system.
 
 - **Subfolders become folders.** `ROMs/n3ds/RPG/Some Game.3ds` appears inside an **RPG** folder on the 3DS screen. Tandem goes up to three folders deep. On the icon grid, a system opening as a folder gets a folder inside for each subfolder, with a genre look and a cover wall on the other screen; games copied into a subfolder later join its folder there.
 - **Emulator data is skipped.** Some emulators keep their own folders next to the games, like Azahar's `nand` and `sdmc`. Each system can list folders to ignore (`skipDirs`).
 - **Hidden files are skipped,** anything starting with a dot.
+- **Add-ons are never games.** Outside a system's own folder, a folder whose name says it holds updates, DLC,
+  patches, mods or cheats (`Switch Updates`, `DLC`, `Patches (3DS)`) is never looked in, and neither are the usual
+  data folders (`tandem`, `downloaded_media`, `manuals`, `notes`, `bios`, `saves`, `states` and the like).
 - **Titles are tidied.** `Mario Kart 7 (USA) (En,Fr,Es).3ds` is shown as **Mario Kart 7**. Region and version tags in brackets are dropped. If you import a title from a gamelist, that wins.
 
 A game is identified by its system and file name, like `n3ds/Some Game.3ds`. That means you can move a game between subfolders and keep its favorites and play time; renaming the file starts it fresh.
@@ -29,7 +32,9 @@ folder gives its options, and Y (or a long press) takes it out again, with Undo.
 
 - **`ROMs` is the default.** `ROMs` on internal storage is Tandem's own folder, where it keeps its data, and it is
   always read for games too. It doesn't have to exist: Tandem makes it the first time it saves something there.
-- **Any layout.** Each folder is read the [same way](#how-games-are-found): folders named for systems, one system's
+  `ROMs` keeps the folder-per-system layout: only its system folders (`ROMs/n3ds`, `ROMs/switch`…) hold games, never
+  loose files or other folders in it. Games mixed together in one folder need that folder added in Game folders.
+- **Any layout.** Each folder you add is read the [same way](#how-games-are-found): folders named for systems, one system's
   folder, or games mixed together, with subfolders as folders and the same `skipDirs`. The folder itself can be
   called anything.
 - **One library.** Games from every folder join the same systems. A game is still identified by its system and
@@ -77,7 +82,7 @@ you chose (Y › More › **Choose artwork**), a path from an import, or what a 
 see-through (a title card saved as a logo) is skipped, and the title shows as text instead. Android games fall back to
 their app icon.
 
-Tandem never changes or deletes artwork you put there. It can also download artwork for you: **Settings › Library & art › Scrape library**, **Scrape these games** on a system, or **Scrape this game** in a game's Y menu. The sources (LaunchBox and libretro thumbnails with no account; ScreenScraper, IGDB and SteamGridDB with your own keys; HowLongToBeat for times) are set up in **Settings › Library & art › Set up sources**, and asked in the order shown under **Sources, in order**. **Choose artwork** (Y › More) shows what every source has for one game, with L1 and R1 switching between box art, hero and logo, and **From this device** takes a picture of your own. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
+Tandem never changes or deletes artwork you put there. It can also download artwork for you, with no account through LaunchBox and libretro ([Artwork and scraping](scraping.md) walks through it): **Settings › Library & art › Scrape library**, **Scrape these games** on a system, or **Scrape this game** in a game's Y menu. The sources (LaunchBox and libretro thumbnails with no account; ScreenScraper, IGDB and SteamGridDB with your own keys; HowLongToBeat for times) are set up in **Settings › Library & art › Set up sources**, and asked in the order shown under **Sources, in order**. **Choose artwork** (Y › More) shows what every source has for one game, with L1 and R1 switching between box art, hero and logo, and **From this device** takes a picture of your own. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
 
 Once the LaunchBox database is downloaded (**Settings › Library & art › Sources, in order › LaunchBox**), Tandem fills in missing descriptions, genres, year, developer and players after each library scan, from the copy on the device. It never goes online for this and never changes a field you edited or locked.
 
@@ -166,6 +171,8 @@ For `ROMs/windows/Some Game.steam`, that is `icon/Some Game.jpg`, `hero/Some Gam
 **Steam achievements.** With your own Steam Web API key and account, Tandem shows a Steam game's achievements and
 tells you what you unlocked when you come back from playing. See [Steam achievements](#steam-achievements).
 
+![The bottom screen's details for a highlighted game: its art filling the screen and fading into the logo, chips, status, play time, HowLongToBeat estimate and description.](images/game-details-bottom.png "A game's details on the bottom screen")
+
 ## Collections
 
 Collections are lists Tandem builds from what it knows, without moving any files. They live in the bottom row of the home screen and appear as soon as they have something in them.
@@ -191,6 +198,12 @@ On the icon grid you can make your own folders (Y › **Move to folder…** › 
 - **Sort inside…** orders a folder by Manual (the default), A–Z, Recently played, Most played, Date added or System; folders inside come first. Your manual order is kept, so going back to Manual restores it. Move works only in Manual.
 - **Delete folder…** asks first: **Keep its contents** moves what was inside up a level, into the folder's place and the free spots after it; **Delete it and its subfolders** (hold A until its ring fills) removes the folder, the folders inside it and their shortcuts. Games and apps stay in your library either way, and Undo brings the folder back.
 - **Views.** Inside a folder, X switches how it shows its games (also Y › **View as…**): **Grid** (tiles, as on the home grid), **Shelf** (spines on shelves, each in its cover's colour with the game's logo and status, the highlighted one swinging round to show its cover in the cover's own proportions; folders inside get shelves of their own; **Settings › Home & layout › Shelf look** picks a wood, matte or open bookcase), **Case** (each game as the real thing for its system, a Switch card, a cartridge or a disc in a sleeve, in a foam-lined case, lifting out when highlighted) or **Carousel** (one cover at a time, the others turning away, with the name, status and play time under it). Moving and selecting tiles always happen in the grid.
+
+  Shelf and Case dress each game in its system's real packaging: a red Switch case, a white 3DS or Wii case, a blue Wii
+  U case, black GameCube and PS2 cases, with the band and logo printed across the top and the spine. Art that isn't a
+  real box scan gets the system's front template. The Shelf uses real box and spine scans first when you have them: turn on
+  **Physical boxes and spines** in the scrape screen's Artwork (from libretro, ScreenScraper and LaunchBox); they are
+  saved apart from your box art (`box2dfront`, `box2dside`), so nothing else changes.
 - Hiding a folder hides everything inside it, folders inside included.
 
 Folders made before shortcuts keep their contents off the home grid, as they were.
@@ -358,9 +371,7 @@ Tandem keeps its data as plain JSON in its private app storage. The main files:
 
 - `library.json`, what it knows about each game: title, description, genres, developer, publisher, year, players, rating, favorite, hidden, chosen emulator, artwork paths and play history.
 - `settings.json`, your settings, including the look, hidden folders and folder watching.
-- `icon-grid.json` (home grid and folders), `home.json` (dock and home settings), `widgets.json`, `sessions.json` (play sessions), `journal.json`, `extras.json`, `trophies.json` (the day each trophy was earned; not in backups, since trophies are worked out again from your play), `systems.json` (emulator choices, system folders and the game folders you added), `app-prefs.json` (your choices for Android apps, see [Android apps](apps.md)), `controllers.json` and `scraping.json`.
-- `settings.json`, your settings, including the look and hidden folders.
-- `icon-grid.json` (home grid and folders), `home.json` (dock and home settings), `widgets.json`, `sessions.json` (play sessions), `journal.json`, `extras.json`, `trophies.json` (the day each trophy was earned; not in backups, since trophies are worked out again from your play), `systems.json` (emulator choices and system folders), `app-prefs.json` (your choices for Android apps, see [Android apps](apps.md)), `controllers.json`, `scraping.json` and `manual-pages.json` (the page each manual was left at).
+- `icon-grid.json` (home grid and folders), `home.json` (dock and home settings), `widgets.json`, `sessions.json` (play sessions), `journal.json`, `extras.json`, `trophies.json` (the day each trophy was earned; not in backups, since trophies are worked out again from your play), `systems.json` (emulator choices, system folders and the game folders you added), `app-prefs.json` (your choices for Android apps, see [Android apps](apps.md)), `controllers.json`, `scraping.json` and `manual-pages.json` (the page each manual was left at).
 
 Uninstalling Tandem deletes these files. Back up first to keep them.
 

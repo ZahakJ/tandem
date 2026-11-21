@@ -1,5 +1,8 @@
 # Scraping artwork and game details
 
+The reference for scraping: sources, matching, options and files. For step-by-step setup (art with no account,
+getting keys) and what to do when a scrape finds nothing, see [Artwork and scraping](guide/scraping.md).
+
 Start a scrape from **Settings › Library & art › Scrape library**, from Y on a system (**Scrape these games**), or
 from Y › More › **Scrape this game**. **Settings › Library & art › Set up sources** (also a step in the first-run
 welcome) explains every source, takes its keys, and has a **Test** button that does one real lookup ("Super Mario
@@ -84,7 +87,12 @@ the new address in the site's scripts once, and otherwise skips HowLongToBeat fo
 - **Replace locked fields** (off by default). Anything you edit by hand (Y › Edit details, Y › Choose artwork) is
   locked. With this on, a scrape may replace locked fields too, and unlocks what it replaces. X on a field in Edit
   details locks or unlocks it.
-- **Artwork** and **Details**: which pictures and details to fetch.
+- **Artwork** and **Details**: which pictures and details to fetch. The default is box art, hero, logo and gameplay
+  screenshot, with every detail. **Settings › Library & art › Artwork to download** steps through presets (Box art;
+  Box, logo, hero; Box, logo, hero, screenshot; All pictures; All, with videos).
+- **Physical boxes and spines** (off by default): scans of the real retail box front and spine, for the Shelf view
+  only, from libretro, ScreenScraper and LaunchBox. They go to their own folders (`box2dfront`, `box2dside`), so the
+  box art the rest of Tandem shows is never replaced, and they are not kept in the game's details.
 - **Region / Language**: which box art and description to prefer.
 - **Games**: all systems, one system or one folder.
 - **Video snaps** (off by default, about 3 MB a game): from ScreenScraper, plus Steam trailers for some PC games in
@@ -94,8 +102,9 @@ the new address in the site's scripts once, and otherwise skips HowLongToBeat fo
 ## Files
 
 Media is saved as `ROMs/downloaded_media/<system>/<kind>/<rom file name without extension>.<ext>`, the ES-DE
-layout, with kinds `icon` (box), `hero`, `logo`, `screenshot_title`, `screenshot_gameplay` and `videos`. Pictures
-are scaled down (box 640 px, hero 1280 px, logo 800 px, screenshots 960 px) and saved as JPEG, or PNG when they
+layout, with kinds `icon` (box), `hero`, `logo`, `screenshot_title`, `screenshot_gameplay`, `videos`, and
+`box2dfront` and `box2dside` for physical box scans. Pictures
+are scaled down (box 640 px, hero 1280 px, logo 800 px, screenshots 960 px, box scans 900 px) and saved as JPEG, or PNG when they
 have transparency. Scraping pauses while a game is in front.
 
 **Cover address.** Next to the box art's file, a game's details keep the public https address it was downloaded
