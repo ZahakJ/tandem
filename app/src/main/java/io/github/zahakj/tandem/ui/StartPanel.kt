@@ -71,16 +71,18 @@ import java.util.Date
 
 /*
  * Start: a panel that folds open from the left, instead of the whole of Settings. Pip sits big at
- * the top (blinking, glancing about); the rows unfold one after another like a folded strip of paper; New, Sort and
- * Settings open their own page inside the panel. B goes back a page or folds it all away again (rows fold up in
- * reverse, then the panel slides out). The screen behind blurs and dims. D-pad only, focus stays inside. Works in
+ * the top (blinking, glancing about); the rows unfold one after another like a folded strip of paper; New and Sort
+ * open their own page inside the panel. Start is for going places and acting on the home screen, short enough to
+ * fit without scrolling; device switches (brightness, radios, Battery saver, the screensaver) are the quick
+ * settings' (QuickPanel.kt), and Settings opens Settings. B goes back a page or folds it all away again (rows fold up
+ * in reverse, then the panel slides out). The screen behind blurs and dims. D-pad only, focus stays inside. Works in
  * every home layout and on every screen outside Settings (where Start still goes back out).
  */
 
 object StartMenu {
     var open by mutableStateOf(false)
         private set
-    /** The page inside the panel: null for the main one, "new", "sort", "theme", "sounds", "settings" or "hidden". */
+    /** The page inside the panel: null for the main one, "new", "sort" or "hidden". */
     var page by mutableStateOf<String?>(null)
 
     /** The highlighted row on the Hidden page, for Y and the hints. */
@@ -190,11 +192,11 @@ fun StartPanelHost() {
                     .padding(start = 4.dp, end = 4.dp, top = 14.dp, bottom = 10.dp),
             ) {
                 StartHeader(unfold::value)
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(4.dp))
                 // Every page of the panel stays composed while it is open: the main page at once, the others (New,
-                // Sort, Settings) a few frames later, so opening one is only a slide in their layers, never a page
+                // Sort, Hidden) a few frames later, so opening one is only a slide in their layers, never a page
                 // composed in the frame A is pressed. Hidden pages are measured but not placed (no focus, no drawing).
-                // One page per frame, Settings first (the likeliest).
+                // One page per frame.
                 var warmPages by remember { androidx.compose.runtime.mutableIntStateOf(0) }
                 LaunchedEffect(Unit) {
                     delay(180)
@@ -212,7 +214,7 @@ fun StartPanelHost() {
     }
 }
 
-private val StartPages = listOf(null, "settings", "theme", "sounds", "new", "sort", "hidden")
+private val StartPages = listOf(null, "new", "sort", "hidden")
 
 /**
  * One page of the panel. Shown, it slides in from the side it was opened towards and its rows unfold; hidden, it
@@ -258,10 +260,17 @@ private fun StartPage(
                     .fadingEdges(scroll).verticalScroll(scroll).padding(horizontal = RowRoom, vertical = RowRoom),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
+                val progress = { if (page == null) unfold.value else pageUnfold.value * unfold.value.coerceAtLeast(0f) }
                 rows.forEachIndexed { i, a ->
+                    // A hairline between the main page's groups (go places · the home screen · Settings).
+                    if (i > 0 && a.id in StartGroupStarts) Box(
+                        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 3.dp).height(1.dp)
+                            .graphicsLayer { alpha = ((progress() - i * 0.055f) * 2f).coerceIn(0f, 1f) }
+                            .background(Palette.Text.copy(alpha = 0.09f)),
+                    )
                     ActionRow(
                         a, routeKey, shown && a.id == target, i, rise = false,
-                        modifier = Modifier.unfoldRow(i, rows.size) { if (page == null) unfold.value else pageUnfold.value * unfold.value.coerceAtLeast(0f) },
+                        modifier = Modifier.unfoldRow(i, rows.size, progress),
                     )
                 }
             }
@@ -292,7 +301,7 @@ private fun StartHeader(progress: () -> Float) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Tandem's logo, big: Pip blinks and glances the way you move.
-        Pip(62.dp)
+        Pip(56.dp)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text("Tandem", style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -369,6 +378,8 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             MenuAction("widget", "Widget…", Glyph.Layers, Palette.Sky) { StartMenu.go { Nav.go(Route.Widgets) } },
         )
         "sort" -> listOf(back) + (if (grid) listOf(
+            // Packs every tile to the front, closing the gaps (the grid otherwise keeps them).
+            MenuAction("tidy", "Home: close the gaps", Glyph.Sparkle, Palette.Mint) { StartMenu.go { tidyHome() } },
             MenuAction("home-name", "Home: A to Z", Glyph.Sort, Palette.Sky) { sortHome("name") },
             MenuAction("home-recent", "Home: recently played", Glyph.Clock, Palette.Sky) { sortHome("recent") },
             MenuAction("home-most", "Home: most played", Glyph.Chart, Palette.Sky) { sortHome("most") },
@@ -379,84 +390,43 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
                 Toasts.show("Games sorted: ${o.label}")
             }
         }
-        // Quick switches for what you change often; everything else is in Settings.
-        "theme" -> listOf(back) + (BuiltInThemes.list.map { it.id to it.name } + ThemePacks.packs.map { it.id to it.name }).map { (id, name) ->
-            MenuAction("theme:$id", name, Glyph.Theme, Palette.Lavender, value = if (Store.settings.look.theme == id) "✓" else null) {
-                applyTheme(id); Toasts.show(name)
-            }
-        }
-        "sounds" -> listOf(back) + listOf(
-            MenuAction("music", "Music", Glyph.Music, Palette.Peach, value = if (Store.settings.look.music) "On" else "Off") {
-                updateLook { it.copy(music = !it.music) }; Music.refresh()
-            },
-        ) + io.github.zahakj.tandem.audio.SoundPack.entries.map { sp ->
-            val now = Store.settings.look.let { it.soundPack == sp.id && it.soundFiles == "none" }
-            MenuAction("sfx:${sp.id}", sp.label, Glyph.Bell, Palette.Butter, value = if (now) "✓" else null) {
-                updateLook { it.copy(soundPack = sp.id, soundFiles = "none") }
-                Sounds.ensurePack(sp); Sounds.refreshFiles(); Sounds.select()
-            }
-        } + ThemePacks.customSounds().map { (id, name, _) ->
-            MenuAction("rec:$id", name, Glyph.Sparkle, Palette.Butter, value = if (Store.settings.look.soundFiles == id) "✓" else null) {
-                updateLook { it.copy(soundFiles = id) }; Sounds.refreshFiles(); Sounds.select()
-            }
-        }
-        "settings" -> listOf(
-            back,
-            MenuAction("all", "All settings", null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } },
-        ) + SettingsCategories.ids.map { id ->
-            MenuAction("cat:$id", SettingsCategories.title(id), CategoryGlyphs[id] ?: Glyph.Info, Palette.Lavender) {
-                StartMenu.go { Nav.go(SettingsCategories.route(id)) }
-            }
-        } + listOfNotNull(
-            MenuAction("cocoon", "Import my Cocoon setup", Glyph.Download, Palette.Sky) { StartMenu.go { CocoonSetup.run(ctx) } }
-                // Read in the background (Facts), never while composing: listing ROMs/backups took tens of ms.
-                .takeIf { Facts.cocoonBackup != null },
-        )
+        // Three groups, each thing in one place: going places, the home screen, then Settings. A row that only
+        // sometimes means something (Switch games, Undo, Hidden, an update) shows only then.
         else -> buildList {
+            if (RunningGames.list.isNotEmpty()) add(
+                MenuAction("switch", "Switch games", Glyph.Swap, Palette.Mint, value = "${RunningGames.list.size}") { StartMenu.go { Panels.openSwitcher() } },
+            )
             add(MenuAction("apps", "All apps", null, Palette.Sky, icon = TIcon.AllApps) { StartMenu.go { Panels.openApps() } })
-            add(MenuAction("new", "New", Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
-            add(MenuAction("sort", "Sort", Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             add(MenuAction("search", "Search", Glyph.Search, Palette.Sky) { StartMenu.go { Nav.search = true } })
             // Play time, your games by status and your trophies, always one press from Start.
             add(MenuAction("stats", "Stats & trophies", null, Palette.Butter, icon = TIcon.Trophy, sub = startStatsLine()) {
                 StartMenu.go { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }
             })
+            add(MenuAction("new", "New", Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
+            add(MenuAction("sort", "Sort", Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             if (grid) {
                 add(MenuAction("edit", "Edit grid", Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
-                // Packs every tile to the front, closing the gaps (the grid otherwise keeps them).
-                add(MenuAction("tidy", "Tidy up", Glyph.Sparkle, Palette.Mint) { StartMenu.go { tidyHome() } })
                 // Only while there is a grid change to take back.
                 IconGridStore.undoLabel?.let { label ->
                     add(MenuAction("undo", "Undo last change", Glyph.Refresh, Palette.Butter, sub = label) { StartMenu.go { GridUndoUi.undo() } })
                 }
-            }
-            else add(MenuAction("edit", "Edit widgets", Glyph.Move, Palette.Butter) { StartMenu.go { Nav.go(Route.Widgets) } })
-            if (RunningGames.list.isNotEmpty()) add(
-                MenuAction("switch", "Switch games", Glyph.Swap, Palette.Mint, value = "${RunningGames.list.size}") { StartMenu.go { Panels.openSwitcher() } },
-            )
+            } else add(MenuAction("edit", "Edit widgets", Glyph.Move, Palette.Butter) { StartMenu.go { Nav.go(Route.Widgets) } })
             // Only when something is hidden, and in private mode only while revealed (HiddenAccess.startRow).
             if (HiddenItems.offered()) add(
                 MenuAction("hidden", "Hidden", Glyph.Eye, Palette.Lavender, value = "${HiddenItems.count()}") { StartMenu.openHidden() },
             )
-            add(MenuAction("theme", "Theme", Glyph.Theme, Palette.Lavender, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":theme"); StartMenu.page = "theme" })
-            add(MenuAction("sounds", "Sounds & music", Glyph.Music, Palette.Peach, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sounds"); StartMenu.page = "sounds" })
-            add(MenuAction("quick", "Quick settings", Glyph.Volume, Palette.Peach) { StartMenu.go { Panels.toggleQuick() } })
+            // Straight to Settings' home: its tiles and search already lead to every page.
+            add(MenuAction("settings", "Settings", null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } })
             // A new Tandem is out (Updates.kt): one quiet row, A shows its notes and Update.
             io.github.zahakj.tandem.Updates.found?.takeIf { io.github.zahakj.tandem.Updates.enabled }?.let { rel ->
                 add(MenuAction("update", "Tandem ${rel.version} is out", Glyph.Download, Palette.Mint, sub = "A to update") { StartMenu.go { UpdatePopup.show() } })
             }
-            add(MenuAction("settings", "Settings", null, Palette.Accent, value = "▸", icon = TIcon.Gear) {
-                FocusMemory.forget(StartMenu.ROUTE + ":settings"); StartMenu.page = "settings"
-            })
-            add(MenuAction("rest", "Screensaver", Glyph.Clock, Palette.Lavender) { StartMenu.go { Screensaver.start() } })
         }
     }
 }
 
-private val CategoryGlyphs = mapOf(
-    "look" to Glyph.Theme, "home" to Glyph.Home, "screens" to Glyph.Screens, "sound" to Glyph.Music, "controls" to Glyph.Gamepad,
-    "library" to Glyph.Cartridge, "play" to Glyph.Chart,
-)
+/** The rows that open a group on the main page, with a hairline above them. */
+private val StartGroupStarts = setOf("new", "settings")
 
 /** Edit grid: the highlighted tile (or the first) starts moving, like Y › Move. */
 private fun editGrid() {
