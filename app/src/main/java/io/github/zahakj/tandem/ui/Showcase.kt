@@ -103,14 +103,15 @@ fun Showcase(labels: List<String>, current: Int, modifier: Modifier = Modifier, 
         while (true) { delay(SHOWCASE_HOLD_MS); shown = (shown + 1) % n }
     }
     val i = shown.coerceIn(0, n - 1)
-    Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier.fillMaxWidth()) {
+        // The scene alone in its frame, nothing drawn over it: the caption is a line of its own under it.
         Box(Modifier.fillMaxWidth().aspectRatio(aspect).clip(RoundedCornerShape(16.dp)).background(Palette.NightDeep)) {
             Crossfade(i, animationSpec = tween(450), label = "showcase") { k -> Box(Modifier.fillMaxSize()) { frame(k) } }
-            Caption(labels[i], i == current, color, Modifier.align(Alignment.TopStart).padding(8.dp))
         }
-        if (n in 2..12) {
-            Spacer(Modifier.height(8.dp))
-            Dots(n, i, current, color)
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Caption(labels[i], i == current, color, Modifier.weight(1f))
+            if (n in 2..12) { Spacer(Modifier.width(8.dp)); Dots(n, i, current, color) }
         }
     }
 }
@@ -148,14 +149,11 @@ private fun StillShowcase(labels: List<String>, current: Int, modifier: Modifier
     }
 }
 
-/** The chip on a showcase: what is on screen, and "In use" when that is the setting now. */
+/** The caption under a showcase: what is on screen, and "In use" when that is the setting now. */
 @Composable
 private fun Caption(label: String, inUse: Boolean, color: Color, modifier: Modifier) {
-    Row(
-        modifier.clip(RoundedCornerShape(50)).background(Palette.NightDeep.copy(alpha = 0.8f)).padding(start = 10.dp, end = if (inUse) 4.dp else 10.dp, top = 3.dp, bottom = 3.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(label, Modifier.widthIn(max = 180.dp), style = MaterialTheme.typography.labelLarge, color = if (inUse) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        Text(label, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleSmall, color = if (inUse) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
         if (inUse) {
             Spacer(Modifier.width(8.dp))
             Box(Modifier.clip(RoundedCornerShape(50)).background(color).padding(horizontal = 7.dp, vertical = 1.dp)) {
