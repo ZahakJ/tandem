@@ -130,12 +130,13 @@ own art for them always comes first. Switching themes repaints them at once.
 
 A theme pack is a folder with a `theme.json` and, if it likes, wallpapers and art for each system (icon, hero image and logo). Tandem reads packs from `ROMs/tandem/themes/`, and also understands the packs made for some other Android launchers, read in place without changing them.
 
-**Manage packs** in the Themes app lists every pack with a preview and its author. On a pack you can:
+**Manage packs** in the Themes app shows every pack as a card with a live preview and its author, two to a line, under
+three buttons that add packs: **Import a folder** or **Import a .zip** (it is copied into
+`ROMs/tandem/themes/<name>/`) and **Look again**. A on a pack:
 
 - **Use this theme:** its colours, wallpapers, icons, heroes and logos, and its music and sounds if it has any. A Cocoon theme brings the music and sound packs it links to in `ROMs/assets/music` and `ROMs/assets/sounds` (its `asset_refs`), so those play with it too.
 - **Use its icons with my theme:** keep your theme and borrow the pack's art.
-- Switch its **colours**, **wallpaper**, **system icons**, **heroes and logos**, **cover frames**, **music** and **sounds** on or off one by one.
-- **Import a folder** or **Import a .zip** to add a pack; it is copied into `ROMs/tandem/themes/<name>/`.
+- **What it brings:** a chip for each part, its **colours**, **wallpaper**, **system icons**, **heroes and logos**, **cover frames**, **music** and **sounds**, ticked while it is on; A switches one.
 
 Tandem never downloads packs. Packs belong to their authors: keep their names and credits, and share them the way the author asks.
 

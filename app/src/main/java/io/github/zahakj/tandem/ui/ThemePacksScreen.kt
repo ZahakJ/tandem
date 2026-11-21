@@ -17,8 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -93,47 +96,49 @@ fun ThemePacksScreen() {
     val actions = listOf("import:folder", "import:zip", "reload")
     val keys = actions + packs.map { it.id }
     val target = rememberFocusTarget(route, keys)
-    val state = rememberRouteListState(route)
-    KeepInView(state, keys.indexOf(target))
+    val grid = rememberLazyGridState()
+    // The three ways to add packs share the first line of the grid; each pack has a place of its own after them.
+    KeepInView(grid, keys.indexOf(target).let { if (it < actions.size) 0 else it - actions.size + 2 })
     LaunchedEffect(Unit) { ThemePacks.refresh() }
 
     Row(Modifier.fillMaxSize().padding(start = 14.dp, end = 22.dp)) {
-        LazyColumn(
-            Modifier.weight(1.3f).fillMaxHeight().fadingEdges(state),
-            state = state,
+        LazyVerticalGrid(
+            GridCells.Fixed(2),
+            Modifier.weight(1.3f).fillMaxHeight().fadingEdges(grid),
+            state = grid,
             contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(key = "h:add") { SettingsHeader("Add packs") }
-            item(key = "import:folder") {
-                ActionRow("Import a folder", "A pack folder: theme.json, wallpapers, icons", Glyph.Folder, Palette.Mint, "import:folder", target, route, { focused = it }) {
-                    if (!busy) runCatching { pickFolder.launch(null) }.onFailure { Toasts.show("No file picker on this device") }
-                }
-            }
-            item(key = "import:zip") {
-                ActionRow("Import a .zip", "A zipped Tandem or Cocoon pack", Glyph.Download, Palette.Sky, "import:zip", target, route, { focused = it }) {
-                    if (!busy) runCatching { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) }
-                        .onFailure { Toasts.show("No file picker on this device") }
-                }
-            }
-            item(key = "reload") {
-                ActionRow("Look again", "ROMs/tandem/themes and Cocoon's ROMs/themes", Glyph.Refresh, Palette.Butter, "reload", target, route, { focused = it }) {
-                    scope.launch {
-                        ThemePacks.refresh(force = true)
-                        val n = ThemePacks.packs.size
-                        Toasts.show(if (n == 0) "No theme packs found" else "Found ${plural(n, "theme pack")}")
+            item(key = "add", span = { GridItemSpan(maxLineSpan) }) {
+                Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    ActionTile("Import a folder", "theme.json, wallpapers, icons", Glyph.Folder, Palette.Mint, "import:folder", target, route, { focused = it }) {
+                        if (!busy) runCatching { pickFolder.launch(null) }.onFailure { Toasts.show("No file picker on this device") }
+                    }
+                    ActionTile("Import a .zip", "A Tandem or Cocoon pack", Glyph.Download, Palette.Sky, "import:zip", target, route, { focused = it }) {
+                        if (!busy) runCatching { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) }
+                            .onFailure { Toasts.show("No file picker on this device") }
+                    }
+                    ActionTile("Look again", "tandem/themes, Cocoon's themes", Glyph.Refresh, Palette.Butter, "reload", target, route, { focused = it }) {
+                        scope.launch {
+                            ThemePacks.refresh(force = true)
+                            val n = ThemePacks.packs.size
+                            Toasts.show(if (n == 0) "No theme packs found" else "Found ${plural(n, "theme pack")}")
+                        }
                     }
                 }
             }
-            item(key = "h:installed") { SettingsHeader(if (packs.isEmpty()) "No packs yet" else "Installed") }
-            if (packs.isEmpty()) item(key = "empty") {
+            item(key = "h:installed", span = { GridItemSpan(maxLineSpan) }) {
+                SettingsHeader(if (packs.isEmpty()) "No packs yet" else "Installed · ${packs.size}")
+            }
+            if (packs.isEmpty()) item(key = "empty", span = { GridItemSpan(maxLineSpan) }) {
                 Text(
                     "Cocoon packs you already downloaded appear here by themselves. Or import one above; it is copied into ROMs/tandem/themes.",
                     Modifier.padding(horizontal = 8.dp, vertical = 6.dp), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
             }
             items(packs, key = { it.id }) { p ->
-                PackRow(p, look, Modifier.takesFocus(route, p.id, p.id == target), onFocus = {
+                PackCard(p, look, Modifier.takesFocus(route, p.id, p.id == target), onFocus = {
                     FocusMemory.remember(route, p.id); focused = p.id
                     Selection.current = Selected.Setting(p.name, p.format.label, p.description.ifBlank { p.contents }, p.spec.accent)
                 }) { FocusMemory.forget("packmenu"); open = p.id }
@@ -154,46 +159,48 @@ fun ThemePacksScreen() {
 
 private fun plural(n: Int, one: String) = "$n ${if (n == 1) one else one + "s"}"
 
+/** A way to add packs: an icon over two short lines, a third of the grid's width. */
 @Composable
-private fun ActionRow(
+private fun androidx.compose.foundation.layout.RowScope.ActionTile(
     label: String, detail: String, icon: Glyph, color: androidx.compose.ui.graphics.Color, key: String, target: String?, route: String,
     onFocus: (String?) -> Unit, onClick: () -> Unit,
 ) {
     FocusCard(
-        Modifier.fillMaxWidth().takesFocus(route, key, key == target), glow = color, shape = RoundedCornerShape(16.dp),
+        Modifier.weight(1f).height(64.dp).takesFocus(route, key, key == target), glow = color, shape = RoundedCornerShape(16.dp),
         onFocus = { FocusMemory.remember(route, key); onFocus(null) }, onClick = onClick,
     ) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(icon, color)
-            Spacer(Modifier.width(12.dp))
+        Row(Modifier.fillMaxSize().background(color.copy(alpha = 0.08f)).padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlyphChip(icon, color, size = 36.dp, round = true)
+            Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
 }
 
+/** A pack as a card: its live miniature on top, then its name and who made it; the pack in use is marked on the picture. */
 @Composable
-private fun PackRow(p: ThemePack, look: Look, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+private fun PackCard(p: ThemePack, look: Look, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
     val spec = Themes.withParts(p.spec, look)
-    FocusCard(Modifier.fillMaxWidth().height(86.dp).then(focus), glow = spec.accent, shape = RoundedCornerShape(16.dp), onFocus = onFocus, onClick = onClick) {
-        Row(Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            ThemeMiniature(spec, p, Modifier.fillMaxHeight().aspectRatio(16f / 10f).clip(RoundedCornerShape(10.dp)), tile = 22.dp)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(p.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    listOfNotNull(p.author.ifBlank { null }?.let { "by $it" }, p.format.label).joinToString(" · "),
-                    style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
-                Text(p.contents, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    FocusCard(Modifier.fillMaxWidth().then(focus), glow = spec.accent, shape = RoundedCornerShape(18.dp), onFocus = onFocus, onClick = onClick) {
+        Column(Modifier.fillMaxWidth().padding(8.dp)) {
+            Box {
+                ThemeMiniature(spec, p, Modifier.fillMaxWidth().aspectRatio(16f / 9f).clip(RoundedCornerShape(12.dp)), tile = 26.dp)
+                val mark = when {
+                    look.theme == p.id -> "In use"
+                    look.iconPack == p.id -> "Its icons"
+                    else -> null
+                }
+                if (mark != null) Pill(mark, spec.accent, Modifier.align(Alignment.TopEnd).padding(6.dp).darkChip())
             }
-            Spacer(Modifier.width(8.dp))
-            when {
-                look.theme == p.id -> Pill("In use", spec.accent)
-                look.iconPack == p.id -> Pill("Icons", spec.accent)
-            }
+            Spacer(Modifier.height(8.dp))
+            Text(p.name, Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                listOfNotNull(p.author.ifBlank { null }?.let { "by $it" }, p.format.label).joinToString(" · "),
+                Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
         }
     }
 }
@@ -289,16 +296,25 @@ private fun PackMenu(pack: ThemePack?, onClose: () -> Unit) {
                         onClose()
                     }
                 }
-                MenuRow("Colours", onOff(parts.colors), "colors", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(colors = !it.colors) } }
-                if ("wallpaper" in keys) MenuRow("Wallpaper", onOff(parts.wallpaper), "wallpaper", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(wallpaper = !it.wallpaper) } }
-                if ("icon" in keys) MenuRow("System icons", onOff(parts.icons), "icon", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(icons = !it.icons) } }
-                if ("heroes" in keys) MenuRow("Heroes & logos", onOff(parts.heroes), "heroes", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(heroes = !it.heroes) } }
-                if ("frames" in keys) MenuRow("Cover frames", onOff(parts.frames), "frames", routeKey, target, Palette.Lavender) { setPart(p.id) { it.copy(frames = !it.frames) } }
-                if ("music" in keys) MenuRow("Music (${p.music.size})", onOff(parts.music), "music", routeKey, target, Palette.Lavender) {
-                    setPart(p.id) { it.copy(music = !it.music) }; Music.refresh()
-                }
-                if ("sounds" in keys) MenuRow("Sounds", onOff(parts.sounds), "sounds", routeKey, target, Palette.Lavender) {
-                    setPart(p.id) { it.copy(sounds = !it.sounds) }; Sounds.refreshFiles(); Sounds.select()
+                // What the pack brings, each part a chip with a tick: all of them in sight, two to a line.
+                Text("What it brings", Modifier.padding(start = 6.dp, top = 4.dp), style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
+                val chips = listOfNotNull(
+                    Triple("colors", "Colours", parts.colors) to { setPart(p.id) { it.copy(colors = !it.colors) } },
+                    (Triple("wallpaper", "Wallpaper", parts.wallpaper) to { setPart(p.id) { it.copy(wallpaper = !it.wallpaper) } }).takeIf { "wallpaper" in keys },
+                    (Triple("icon", "System icons", parts.icons) to { setPart(p.id) { it.copy(icons = !it.icons) } }).takeIf { "icon" in keys },
+                    (Triple("heroes", "Heroes & logos", parts.heroes) to { setPart(p.id) { it.copy(heroes = !it.heroes) } }).takeIf { "heroes" in keys },
+                    (Triple("frames", "Cover frames", parts.frames) to { setPart(p.id) { it.copy(frames = !it.frames) } }).takeIf { "frames" in keys },
+                    (Triple("music", "Music (${p.music.size})", parts.music) to { setPart(p.id) { it.copy(music = !it.music) }; Music.refresh() }).takeIf { "music" in keys },
+                    (Triple("sounds", "Sounds", parts.sounds) to { setPart(p.id) { it.copy(sounds = !it.sounds) }; Sounds.refreshFiles(); Sounds.select() }).takeIf { "sounds" in keys },
+                )
+                chips.chunked(2).forEach { line ->
+                    Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        line.forEach { (c, toggle) ->
+                            val (k, label, on) = c
+                            TickChip(label, on, Palette.Lavender, Modifier.weight(1f).takesFocus(routeKey, k, target == k)) { toggle() }
+                        }
+                        if (line.size == 1) Spacer(Modifier.weight(1f))
+                    }
                 }
                 if ("remove" in keys) MenuRow("Remove pack", null, "remove", routeKey, target, Palette.Peach) {
                     onClose()
