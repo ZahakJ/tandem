@@ -42,6 +42,8 @@ Three tabs at the top sort them, each with a count: **In your library** (systems
 Systems with the most games come first; ones with as many go by maker, so a maker's systems sit together. **X** (or
 the search field) searches by name, short name or maker: "sega", "gba", "Sony".
 
+![Systems and emulators: a search field and the In your library, Turned off and More systems tabs with their counts above a grid of system tiles (3DS, DS, Switch, PC, Wii U, then Game Boy, GBA, GBC and Vita), each with its picture, name, game count and emulator icon.](../../site/assets/screenshots/guide/systems-emulators.webp "Systems and emulators")
+
 A on a system opens its page, with its picture over its hero art:
 
 | Part | What it does |
@@ -58,7 +60,7 @@ Start games on and Bottom screen while playing are left out.
 
 A game can still use another emulator than its system's: Y on it › More › **Emulator**.
 
-![A system's page in Systems and emulators: the system's art over its hero with the Show in library switch, emulator cards with their app icons and the default ticked, Top and Bottom screen cards, the bottom screen's choices as cards, and the folder cards.](../../site/assets/screenshots/guide/systems-emulators.webp "A system in Systems and emulators")
+![The Nintendo DS page: the system's picture, maker and game count with the Show in library switch, then the emulators four to a row with their app icons: melonDS Dual ticked as the default, others marked Installed, and melonDS and DraStic with Get it.](../../site/assets/screenshots/guide/system-page.webp "A system's page")
 
 ## Using your own platforms.json
 

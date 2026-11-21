@@ -101,7 +101,7 @@ the screensaver) are in [Quick settings](#quick-settings), so nothing is in both
 
 Themes, sounds and music are in **Settings › Look & feel** and **Sound & music**, and in the **Themes** app.
 
-![The Start panel folded open from the left: All apps, Search, Stats & trophies, New, Sort, Edit grid and Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
+![The Start panel folded open from the left: All apps, Search, Stats & trophies, then New, Sort and Edit widgets (Edit grid on the icon grid), then Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
 
 ## The top bar
 
@@ -128,6 +128,8 @@ Hold <kbd>Start</kbd>, or **◐ Quick** in the top bar, or A on the Battery widg
 that takes you somewhere else. Brightness and volume, then tiles for Wi-Fi, Bluetooth, Airplane, Controller, Discord,
 Battery saver, Private mode, Screensaver and Android's settings. See
 [Every setting › Quick settings](settings.md#quick-settings).
+
+![The R2 side panel with the quick settings: Brightness and Volume sliders, then tiles for Wi-Fi and Bluetooth (both on, washed in their colours), Airplane, Controller, Discord (showing), Battery saver, Private mode, Screensaver and Android, each with its state under its name.](../../site/assets/screenshots/guide/quick-settings.webp "Quick settings")
 
 ## The side panel
 

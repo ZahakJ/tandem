@@ -152,6 +152,8 @@ without its keys is simply skipped, so with no keys the order is in effect Launc
 | <kbd>Y</kbd> on a game › **More…** › **Scrape this game** | That game alone, at once, with your settings in Force all mode (never replacing locked fields). Pip says "Looking for …" |
 | <kbd>Y</kbd> on a game › **More…** › **Choose artwork** | Shows what every source has for that game; L1 / R1 switch between box art, hero and logo; **From this device** uses a picture of your own |
 
+![The scrape screen: the art kinds as tiles with a real picture from your games, ticked when on (Box art, Hero, Logo, Gameplay), with Title screen, Video and Physical box off; on the right how many games will be checked, a note on the mode and Start scraping.](../../site/assets/screenshots/guide/scrape-library.webp "Settings › Library & art › Scrape library")
+
 The scrape screen's options:
 
 | Option | Default | What it does |

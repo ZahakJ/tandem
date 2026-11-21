@@ -19,6 +19,10 @@ starting on the one in use. A number is a slider. For a setting that changes how
 rows plays what it does: a switch shows its Off and On looks in turn, a choice each of its options, with a chip naming
 what is on screen and **In use** on yours. With Reduce motion they stand side by side, still.
 
+![Home & layout: System tiles and Open folders show their options on the row (Pastel, Solid colour, Glass, Minimal; Page, Fullscreen, Popup), Now playing is a switch, and the panel on the right plays Open folders' Page look with In use under it.](../../site/assets/screenshots/guide/settings-showcase.webp "Choices on the row, and a showcase")
+
+![The Accent colour cards: Theme (ticked, in use), Mint, Peach, Lavender, Sky, Butter, Sakura, Coral, Hot pink, Grape, Ocean and Teal, each a little switch and bar in that colour.](../../site/assets/screenshots/guide/settings-picker.webp "A choice with many options opens as cards")
+
 Some rows only show with the home layout they belong to (the icon grid's rows only with the icon grid, Orbit's only
 with Orbit, and so on), and a few show only when they can do something (Discord only in builds that include it, the
 Theme pack group only when your theme pack brings music or sounds).
@@ -191,7 +195,7 @@ it mutes Tandem too.
 
 ## Library & art
 
-![The Library & art page: the Games & systems and Artwork & accounts groups, with Set up sources highlighted and its help on the right.](../../site/assets/screenshots/guide/settings-library-art.webp "Settings › Library & art")
+![The Library & art page: Game folders (highlighted, its help on the right), Rescan games, Watch game folders, Sort games by, Systems and emulators and Android apps.](../../site/assets/screenshots/guide/settings-library-art.webp "Settings › Library & art")
 
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
