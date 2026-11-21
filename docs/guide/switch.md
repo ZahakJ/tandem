@@ -24,8 +24,8 @@ For one game, Tandem decides like this:
    (Eden Duo, then Eden; **Settings › Library & art › Systems and emulators** changes the system's).
 3. A game Peanuts Native hasn't built never goes to Peanuts, even if you pick it.
 
-To go back to the automatic choice after picking an emulator, press A on **Emulator** until it comes round to the
-game's default again (Peanuts Native for a built game, else the system's first emulator).
+To go back to the automatic choice after picking an emulator, press A on **Emulator** and pick the one marked
+**The system's choice**, the game's default (Peanuts Native for a built game, else the system's first emulator).
 
 ## Eden Duo's game screen
 

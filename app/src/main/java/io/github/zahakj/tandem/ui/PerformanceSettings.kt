@@ -74,15 +74,17 @@ fun performanceSettings(): SettingSection {
 }
 
 /**
- * Y on a game › More…: the game's own profile, one row per mode. Each cycles from "Use default" (the Playing setting)
- * through "Keep" and AYN's values. Nothing on a device without AYN's modes.
+ * Y on a game › More…: the game's own profile, one row per mode. A shows each mode's options, from "Default" (the
+ * Playing setting) through "Keep" and AYN's values; Left and Right step through them. Nothing on a device without
+ * AYN's modes.
  */
 fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     if (!Performance.available(ctx)) return emptyList()
     val own = g.meta.perf ?: PerfProfile()
     val base = HomeStore.settings.perf
+    fun all(values: List<Int>) = listOf<Int?>(null, PerfProfile.KEEP) + values
     fun next(cur: Int?, values: List<Int>, by: Int = 1): Int? {
-        val all = listOf<Int?>(null, PerfProfile.KEEP) + values
+        val all = all(values)
         return all[Math.floorMod(all.indexOf(cur) + by, all.size)]
     }
     fun name(v: Int?, default: Int?, label: (Int) -> String) = when (v) {
@@ -92,19 +94,32 @@ fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     }
     // All default again: nothing of its own to keep.
     fun set(p: PerfProfile) = Store.update(g.key) { it.copy(perf = p.takeIf { it.any }) }
-    val help = "For this game only; Default follows Settings › Play & system › Performance & sleep. Tap to go to the next choice."
+    /** Every option of one mode, the one in use ticked; Default says what it follows, Keep what it means. */
+    fun options(cur: Int?, values: List<Int>, default: Int?, label: (Int) -> String, pick: (Int?) -> Unit) = all(values).map { v ->
+        MenuChoice(
+            if (v == null) "Default" else if (v == PerfProfile.KEEP) "Keep" else label(v), v == cur,
+            sub = when (v) { null -> "As in Settings: " + (default?.let(label) ?: "Keep"); PerfProfile.KEEP -> "Leaves it as it is"; else -> null },
+        ) { pick(v) }
+    }
+    val help = "For this game only; Default follows Settings › Play & system › Performance & sleep."
+    val modes = PerformancePlan.modes.map { it.first }
+    val fans = PerformancePlan.fans.map { it.first }
+    val hz = Performance.supportedHz(ctx)
     return listOf(
         MenuAction("perfmode", "Performance mode", Glyph.Motion, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help,
-            step = { by -> set(own.copy(mode = next(own.mode, PerformancePlan.modes.map { it.first }, by))) }) {
-            set(own.copy(mode = next(own.mode, PerformancePlan.modes.map { it.first })))
+            step = { by -> set(own.copy(mode = next(own.mode, modes, by))) },
+            choices = options(own.mode, modes, base.mode, PerformancePlan::modeName) { v -> set(own.copy(mode = v)) }) {
+            set(own.copy(mode = next(own.mode, modes)))
         },
         MenuAction("perffan", "Fan mode", Glyph.Refresh, Palette.Peach, value = name(own.fan, base.fan, PerformancePlan::fanName), more = true, help = help,
-            step = { by -> set(own.copy(fan = next(own.fan, PerformancePlan.fans.map { it.first }, by))) }) {
-            set(own.copy(fan = next(own.fan, PerformancePlan.fans.map { it.first })))
+            step = { by -> set(own.copy(fan = next(own.fan, fans, by))) },
+            choices = options(own.fan, fans, base.fan, PerformancePlan::fanName) { v -> set(own.copy(fan = v)) }) {
+            set(own.copy(fan = next(own.fan, fans)))
         },
         MenuAction("perfhz", "Refresh rate", Glyph.Screens, Palette.Peach, value = name(own.hz, base.hz, PerformancePlan::hzName), more = true, help = help,
-            step = { by -> set(own.copy(hz = next(own.hz, Performance.supportedHz(ctx), by))) }) {
-            set(own.copy(hz = next(own.hz, Performance.supportedHz(ctx))))
+            step = { by -> set(own.copy(hz = next(own.hz, hz, by))) },
+            choices = options(own.hz, hz, base.hz, PerformancePlan::hzName) { v -> set(own.copy(hz = v)) }) {
+            set(own.copy(hz = next(own.hz, hz)))
         },
     )
 }

@@ -296,41 +296,46 @@ fun GameMenu() {
                 GameEditor.edit(g); Nav.closeOverlays()
             })
             if (!g.platform.isApps) {
-                fun switchEmulator(by: Int) {
-                    val next = players[Math.floorMod(players.indexOf(current) + by, players.size)]
-                    // The game's own default: Peanuts Native for a game it has built, else the system's first.
-                    val pn = io.github.zahakj.tandem.PeanutsNative
-                    val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.appFor(g) } ?: players.first()
-                    Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
-                }
+                // The game's own default: Peanuts Native for a game it has built, else the system's first.
+                val pn = io.github.zahakj.tandem.PeanutsNative
+                val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.appFor(g) } ?: players.firstOrNull()
+                fun setEmulator(next: io.github.zahakj.tandem.LaunchSpec) = Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
+                fun switchEmulator(by: Int) = setEmulator(players[Math.floorMod(players.indexOf(current) + by, players.size)])
                 add(MenuAction("emu", "Emulator", Glyph.Gamepad, Palette.Sky, value = current?.name ?: "Not installed", more = true,
-                    help = "The emulator this game starts in. Tap to switch to the next installed one; the first is the system's own choice.",
-                    step = if (players.size > 1) ::switchEmulator else null) {
-                    if (players.size > 1) switchEmulator(1)
-                    else Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
+                    help = "The emulator this game starts in. A shows every installed one; the first is the system's own choice.",
+                    step = if (players.size > 1) ::switchEmulator else null,
+                    choices = if (players.size > 1) players.map { p ->
+                        MenuChoice(
+                            p.name, p == current, sub = if (p == natural) "The system's choice" else null,
+                            art = p.packageName.takeIf { it.isNotBlank() }?.let { pkg -> { AppTileIcon(pkg, 30.dp) } },
+                        ) { setEmulator(p) }
+                    } else null) {
+                    Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
                 })
             }
             if (screenRow) {
                 val bottom = LaunchDisplay.wantsBottom(g)
                 val systemBottom = SystemPrefs.config(g.platform.id).bottomScreen
-                fun switchScreen() {
-                    val want = !bottom
-                    Store.update(g.key) { it.copy(screen = if (want == systemBottom) null else if (want) "bottom" else "top") }
-                }
+                fun setScreen(want: Boolean) = Store.update(g.key) { it.copy(screen = if (want == systemBottom) null else if (want) "bottom" else "top") }
+                val systems = "The system's screen"
                 add(MenuAction("screen", "Start on", Glyph.Screens, Palette.Butter, value = if (bottom) "Bottom screen" else "Top screen", more = true,
-                    help = "The screen this game opens on. Set back to the system's screen, it follows the system again.", step = { switchScreen() }) { switchScreen() })
+                    help = "The screen this game opens on. Set back to the system's screen, it follows the system again.", step = { setScreen(!bottom) },
+                    choices = listOf(
+                        MenuChoice("Top screen", !bottom, sub = systems.takeIf { !systemBottom }) { setScreen(false) },
+                        MenuChoice("Bottom screen", bottom, sub = systems.takeIf { systemBottom }) { setScreen(true) },
+                    )) { setScreen(!bottom) })
                 // What the bottom screen shows while it plays on the top one (GameCompanion.kt).
                 val companion = io.github.zahakj.tandem.GameCompanion.modeFor(g)
                 // PC games and streams also get the Deck, a keyboard and trackpad for the game.
                 val deck = io.github.zahakj.tandem.DeckGames.suits(g.platform.id, current?.packageName)
-                fun switchCompanion(by: Int) {
-                    val next = io.github.zahakj.tandem.GameCompanion.next(companion, deck, by)
-                    val inherited = io.github.zahakj.tandem.GameCompanion.systemMode(g.platform)
-                    Store.update(g.key) { it.copy(companion = if (next == inherited) null else next) }
-                }
+                val inherited = io.github.zahakj.tandem.GameCompanion.systemMode(g.platform)
+                fun setCompanion(next: String) = Store.update(g.key) { it.copy(companion = if (next == inherited) null else next) }
                 add(MenuAction("companion", "Bottom screen while playing", Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
                     help = "What the bottom screen shows while this game plays on the top one." + if (deck) " The Deck is a keyboard and trackpad for the game." else "",
-                    step = ::switchCompanion) { switchCompanion(1) })
+                    step = { by -> setCompanion(io.github.zahakj.tandem.GameCompanion.next(companion, deck, by)) },
+                    choices = io.github.zahakj.tandem.GameCompanion.choices(deck).map { (id, label) ->
+                        MenuChoice(label, id == companion, sub = "The system's choice".takeIf { id == inherited }) { setCompanion(id) }
+                    }) { setCompanion(io.github.zahakj.tandem.GameCompanion.next(companion, deck, 1)) })
             }
             // The game's own performance, fan and refresh-rate modes, on an AYN device (Performance.kt).
             addAll(performanceActions(ctx, g))

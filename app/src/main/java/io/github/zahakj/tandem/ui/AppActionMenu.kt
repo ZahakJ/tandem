@@ -166,11 +166,16 @@ fun appMenuActions(
     if (dual && !builtIn) {
         val own = AppPrefs.of(pkg).screen
         val shown = own?.let(AppScreen::label) ?: if (AppPrefs.data.defaultScreen == AppScreen.AUTO) "Auto" else "Default"
+        val order = listOf(null, AppScreen.TOP, AppScreen.BOTTOM)
+        fun setScreen(s: String?) = AppPrefs.update(pkg) { it.copy(screen = s) }
         add(MenuAction("screen", "Always open on", Glyph.Screens, Palette.Butter, value = shown,
-            help = "The screen this app always opens on. Tap for Top, then Bottom, then the default for every app.") {
-            val next = when (own) { null -> AppScreen.TOP; AppScreen.TOP -> AppScreen.BOTTOM; else -> null }
-            AppPrefs.update(pkg) { it.copy(screen = next) }
-        })
+            help = "The screen this app always opens on: Top, Bottom, or the default for every app.",
+            step = { by -> setScreen(order[Math.floorMod(order.indexOf(own) + by, order.size)]) },
+            choices = listOf(
+                MenuChoice("Default", own == null, sub = "Like every app: " + AppScreen.label(AppPrefs.data.defaultScreen)) { setScreen(null) },
+                MenuChoice("Top screen", own == AppScreen.TOP) { setScreen(AppScreen.TOP) },
+                MenuChoice("Bottom screen", own == AppScreen.BOTTOM) { setScreen(AppScreen.BOTTOM) },
+            )) { setScreen(order[Math.floorMod(order.indexOf(own) + 1, order.size)]) })
     }
     if (IconGrid.enabled) {
         val key = "app:$pkg"

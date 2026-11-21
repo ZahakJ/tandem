@@ -167,7 +167,7 @@ time a game plays, and put them back when you come back:
 
 - **For every game:** Settings › Play & system › Performance & sleep › **Performance mode**, **Fan mode** and **Refresh rate**.
   Each starts at **Keep**, which leaves that one as you set it in the control centre.
-- **For one game:** Y on the game › More › the same three rows. **Default** follows the settings above, **Keep**
+- **For one game:** Y on the game › More › the same three rows; A on one lists its options. **Default** follows the settings above, **Keep**
   leaves that one alone whatever the default says, and a value is this game's own. A demanding Switch game can have
   High performance, Sport and 120 Hz while Game Boy games keep the quiet Standard mode and 60 Hz.
 

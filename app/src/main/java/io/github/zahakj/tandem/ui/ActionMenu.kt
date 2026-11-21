@@ -115,7 +115,25 @@ class MenuAction(
     val hold: Boolean = false,
     /** A choice: Left and Right step back and forward through it (-1, 1), and its value shows ◂ ▸. */
     val step: ((Int) -> Unit)? = null,
+    /**
+     * Every option of a choice: A opens them as a page of the menu (the chosen one ticked) instead of running
+     * [onClick], so the options are in sight rather than stepped through blind. Left and Right still [step].
+     */
+    val choices: List<MenuChoice>? = null,
     val onClick: () -> Unit,
+) {
+    /** The same action doing [click] on A. */
+    fun withClick(click: () -> Unit) = MenuAction(id, label, glyph, color, value, more, icon, sub, art, onFocus, help, hold, step, choices, click)
+}
+
+/** One option of a choice in a Y menu ([MenuAction.choices]): picking it runs [pick] and goes back to the list. */
+class MenuChoice(
+    val label: String,
+    val selected: Boolean,
+    val sub: String? = null,
+    val glyph: Glyph? = null,
+    val art: (@Composable () -> Unit)? = null,
+    val pick: () -> Unit,
 )
 
 /** A page shown in place of the actions (picking a folder), with its own Back. */
@@ -145,9 +163,12 @@ object ActionMenu {
     /** The Start panel's share of the blur, kept apart so one closing popup can never leave the other's blur behind. */
     val panelDepth = mutableFloatStateOf(0f)
 
+    /** The choice whose options the open Y menu shows ([MenuAction.choices]), by action id; null on its lists. */
+    var choosing by mutableStateOf<String?>(null)
+
     /** Closes every Y menu (Home pressed, a launch). */
     fun dismiss() {
-        Nav.menuFor = null; Nav.groupMenu = false
+        Nav.menuFor = null; Nav.groupMenu = false; choosing = null
         IconGrid.menu = null; IconGrid.choosingFolder = false
         Panels.appMenu = null
     }
@@ -188,7 +209,7 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
     val open by rememberUpdatedState(visible)
     var more by remember { mutableStateOf(false) }
     val s = spec()?.let { SmartFolders.extendMenu(it) }
-    LaunchedEffect(visible) { if (visible) more = false }
+    LaunchedEffect(visible) { if (visible) { more = false; ActionMenu.choosing = null } }
     // The screen behind blurs in as the menu opens and clears as it closes.
     val depth = remember { Animatable(0f) }
     LaunchedEffect(visible) {
@@ -198,6 +219,7 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { ActionMenu.depth.floatValue = 0f } }
     if (visible) BackHandler {
         when {
+            ActionMenu.choosing != null -> ActionMenu.choosing = null
             s?.page != null -> s.page.onBack()
             more -> { more = false; FocusMemory.forget(s?.routeKey + ":more") }
             else -> onClose()
@@ -332,7 +354,15 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
     val page = s.page
     val mainActions = s.actions.filter { !it.more }
     val moreActions = s.actions.filter { it.more }
-    val pageKey = when { page != null -> "page:${page.title}"; more -> "more"; else -> "main" }
+    // A choice's options, over whichever list it is on.
+    val choosing = ActionMenu.choosing?.let { id -> s.actions.firstOrNull { it.id == id && it.choices != null } }
+    val pageKey = when { choosing != null -> "choose:${choosing.id}"; page != null -> "page:${page.title}"; more -> "more"; else -> "main" }
+    /** A on a choice opens its options, with the chosen one highlighted. */
+    fun opening(a: MenuAction): MenuAction = if (a.choices == null) a else a.withClick {
+        val at = a.choices.indexOfFirst { it.selected }
+        if (at >= 0) FocusMemory.remember("${s.routeKey}:choose:${a.id}", "ch:$at") else FocusMemory.forget("${s.routeKey}:choose:${a.id}")
+        ActionMenu.choosing = a.id
+    }
     Column(
         Modifier.widthIn(max = 290.dp).fillMaxWidth()
             .graphicsLayer { shape = RoundedCornerShape(24.dp); clip = true; shadowElevation = 22f * density }
@@ -342,17 +372,18 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
             Pip(18.dp, bounce = false)
             Spacer(Modifier.width(8.dp))
             Text(
-                when { page != null -> page.title; more -> "More"; else -> "Options" },
-                style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, modifier = Modifier.weight(1f),
+                when { choosing != null -> choosing.label; page != null -> page.title; more -> "More"; else -> "Options" },
+                style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
             )
-            ButtonHint("B", if (page != null || more) "Back" else "Close", Palette.Lavender)
+            ButtonHint("B", if (choosing != null || page != null || more) "Back" else "Close", Palette.Lavender)
         }
         AnimatedContent(
             pageKey,
             // Takes what's left of the card, so a long page scrolls instead of running off a short screen.
             Modifier.weight(1f, fill = false),
             transitionSpec = {
-                val forward = targetState != "main"
+                fun depth(k: String) = when { k == "main" -> 0; k.startsWith("choose:") -> 2; else -> 1 }
+                val forward = depth(targetState) > depth(initialState)
                 if (Motion.style == AnimationStyle.Off) fadeIn(tween(0)) togetherWith fadeOut(tween(0))
                 else (slideInHorizontally(tween(220)) { if (forward) it / 3 else -it / 3 } + fadeIn(tween(180)))
                     .togetherWith(slideOutHorizontally(tween(160)) { if (forward) -it / 4 else it / 4 } + fadeOut(tween(120)))
@@ -360,10 +391,17 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
             label = "menu-page",
         ) { key ->
             val routeKey = s.routeKey + ":" + key
+            val chosen = if (key.startsWith("choose:")) s.actions.firstOrNull { "choose:${it.id}" == key } else null
             val rows: List<MenuAction> = when {
+                key.startsWith("choose:") -> chosen?.choices.orEmpty().mapIndexed { i, c ->
+                    MenuAction("ch:$i", c.label, c.glyph ?: chosen?.glyph, chosen?.color ?: Palette.Mint, value = if (c.selected) "✓" else null, sub = c.sub, art = c.art) {
+                        c.pick()
+                        ActionMenu.choosing = null
+                    }
+                }
                 key.startsWith("page:") && page != null -> page.actions
-                key == "more" -> listOf(MenuAction("back", "Back", Glyph.Back, Palette.Lavender) { setMore(false) }) + moreActions
-                else -> mainActions + listOfNotNull(
+                key == "more" -> listOf(MenuAction("back", "Back", Glyph.Back, Palette.Lavender) { setMore(false) }) + moreActions.map(::opening)
+                else -> mainActions.map(::opening) + listOfNotNull(
                     MenuAction("more", "More…", Glyph.More, Palette.Sky, value = "${moreActions.size}") { FocusMemory.forget(s.routeKey + ":more"); setMore(true) }
                         .takeIf { moreActions.isNotEmpty() },
                 )
@@ -471,7 +509,12 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
         }
         if (a.value != null) {
             Spacer(Modifier.width(6.dp))
-            ValueChip(a.value, color, cycles = a.step != null, maxWidth = 120.dp)
+            ValueChip(a.value, color, cycles = a.step != null && a.choices == null, maxWidth = 120.dp)
+        }
+        // A choice that opens its options: the grid mark says A shows them all.
+        if (a.choices != null) {
+            Spacer(Modifier.width(6.dp))
+            GlyphIcon(Glyph.Grid, color.copy(alpha = 0.75f), Modifier.size(13.dp))
         }
     }
 }

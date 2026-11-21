@@ -8,7 +8,7 @@ Your other apps live in the dock, the **All apps** drawer (the last dock tile), 
 | --- | --- |
 | Open | Opens the app on its screen (shown on the right) |
 | Open on the other screen | Opens it on the other screen this once |
-| Always open on | Auto, Top or Bottom; A steps through them |
+| Always open on | Default, Top screen or Bottom screen; A shows the three, ◀▶ steps through them |
 | Add to home / Remove from home | Puts the app on the icon grid, or takes it off |
 | Pin to dock / Unpin from dock | The same for the dock |
 | Rename | A name of your own; clear it to go back to the app's name |
