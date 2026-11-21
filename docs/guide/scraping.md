@@ -15,10 +15,10 @@ PC) as well as classic ones. Tandem downloads its index once and looks your game
 nothing about your games is sent anywhere. **libretro thumbnails** also needs no account and is always ready; it is
 great for classic systems and has nothing for Switch, Wii U or PC games.
 
-![The Artwork & details setup popup: six source tiles, numbered in the order they are asked (ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat), each with what it needs and its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
+![The Artwork & details setup popup: six source tiles in the order they are asked, left to right (ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat), each with its icon, what it needs, what it gives and its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
 
 1. Open **Settings › Library & art** (Start › Settings ▸ › Library & art) and press A on **Set up sources**. The
-   **Artwork & details setup** popup shows every source as a tile, numbered in the order they are asked, with what
+   **Artwork & details setup** popup shows every source as a tile, in the order they are asked (left to right), with what
    it needs and its state.
 2. Highlight **LaunchBox** (its state says **Not downloaded**) and press A. Its card explains what it gives.
 3. Press A on **Download (105 MB)**, then **Download** in the question. Wi-Fi is better; on a metered connection the
@@ -27,7 +27,7 @@ great for classic systems and has nothing for Switch, Wii U or PC games.
 5. **Done**, then <kbd>B</kbd> to close the list. Back on Library & art, press A on **Scrape library**, and on the
    scrape screen press A on **Start scraping**.
 
-![LaunchBox's card: No account needed, what it gives and sends, how many games are on this device, and the Turn off, Download again, Test and Done buttons.](../../site/assets/screenshots/guide/launchbox-card.webp "The LaunchBox card")
+![LaunchBox's card: No account needed with its two notes on the left; what it gives, what it sends and how many games are on this device on the right; and the Turn off, Download again, Test and Done buttons.](../../site/assets/screenshots/guide/launchbox-card.webp "The LaunchBox card")
 
 You can also skip step 3: when you start a scrape and LaunchBox hasn't been downloaded, Tandem asks **Download
 LaunchBox's games database?** with **Download & scrape** (download it, then scrape) or **Skip LaunchBox** (scrape
@@ -84,7 +84,7 @@ Community-made covers, hero art and logos, matched by title. Great for PC and Sw
    key on the on-screen keyboard and press **Done**.
 4. **Test**: it should say "Found Super Mario Odyssey with … heroes".
 
-![SteamGridDB's card: Free account, the three steps to get a key, the API key button, and Turn off, Test and Done.](../../site/assets/screenshots/guide/steamgriddb-card.webp "The SteamGridDB card")
+![SteamGridDB's card: Free account and the three steps to get a key on the left, what it gives and sends on the right, the API key field showing Not set, and Turn off, Test and Done.](../../site/assets/screenshots/guide/steamgriddb-card.webp "The SteamGridDB card")
 
 ### ScreenScraper (optional, needs developer credentials)
 
@@ -126,7 +126,7 @@ order** on the Library & art page, and in the scrape screen.
 | --- | --- |
 | The D-pad | Moves between the tiles |
 | <kbd>A</kbd> on a source | Opens its card: what it gives, whether it needs an account, exactly where to get a key, and what it sends |
-| <kbd>L1</kbd> / <kbd>R1</kbd> on a source | Asks it earlier or later (its number changes; the tile moves with the highlight) |
+| <kbd>L1</kbd> / <kbd>R1</kbd> on a source | Asks it earlier or later: the tile moves one place, and the highlight with it |
 | <kbd>B</kbd> | Done |
 
 A source's state: **Ready**, **Needs a key** (it will be skipped), **Not downloaded** (LaunchBox), **✓ Works** or
