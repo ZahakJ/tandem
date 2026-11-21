@@ -139,22 +139,24 @@ private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = nu
 /**
  * A popup row. Takes focus when its key was the last used, or [first] when nothing was. [glyph] puts an icon chip in
  * front; [onSide] makes its value a choice that Left and Right step back and forward through (A is [onClick]).
+ * Give such a choice its [choices] (a few short words, [value] among them) and they all show, as a segmented track
+ * with the value lit, instead of the value alone between arrows.
  */
 @Composable
 fun MenuRow(
     label: String, value: String?, key: String, first: Boolean, routeKey: String, color: Color = Palette.Mint,
-    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, onClick: () -> Unit,
+    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, choices: List<String>? = null, onClick: () -> Unit,
 ) {
-    MenuItem(label, value, Modifier.remembersFocus(routeKey, key, first), color, glyph, onSide, onClick)
+    MenuItem(label, value, Modifier.remembersFocus(routeKey, key, first), color, glyph, onSide, choices, onClick)
 }
 
 /** A popup row that takes focus when [key] is the popup's focus [target]. */
 @Composable
 fun MenuRow(
     label: String, value: String?, key: String, routeKey: String, target: String?, color: Color = Palette.Mint,
-    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, onClick: () -> Unit,
+    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, choices: List<String>? = null, onClick: () -> Unit,
 ) {
-    MenuItem(label, value, Modifier.takesFocus(routeKey, key, key == target), color, glyph, onSide, onClick)
+    MenuItem(label, value, Modifier.takesFocus(routeKey, key, key == target), color, glyph, onSide, choices, onClick)
 }
 
 /** How tall a popup row is: rounded right off at the ends, so a list of them reads as bubbles. */
@@ -178,7 +180,8 @@ fun HoldMenuRow(label: String, key: String, routeKey: String, target: String?, c
 }
 
 @Composable
-private fun MenuItem(label: String, value: String?, focus: Modifier, color: Color, glyph: Glyph?, onSide: ((Int) -> Unit)?, onClick: () -> Unit) {
+private fun MenuItem(label: String, value: String?, focus: Modifier, color: Color, glyph: Glyph?, onSide: ((Int) -> Unit)?, choices: List<String>?, onClick: () -> Unit) {
+    val at = choices?.indexOf(value) ?: -1
     FocusCard(
         Modifier.fillMaxWidth().height(MenuRowHeight).then(focus).sideSteps(onSide),
         glow = color, shape = RoundedCornerShape(50), lifts = false, onClick = onClick,
@@ -189,7 +192,14 @@ private fun MenuItem(label: String, value: String?, focus: Modifier, color: Colo
                 Spacer(Modifier.width(10.dp))
             }
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (value != null) { Spacer(Modifier.width(8.dp)); ValueChip(value, color, cycles = onSide != null) }
+            if (choices != null && at >= 0) {
+                Spacer(Modifier.width(8.dp))
+                // A tap on an option steps there.
+                SegmentTrack(
+                    choices, at, color, Modifier.width((choices.size * 84).dp.coerceAtMost(280.dp)),
+                    onPick = { i -> if (i != at) onSide?.invoke(i - at) },
+                )
+            } else if (value != null) { Spacer(Modifier.width(8.dp)); ValueChip(value, color, cycles = onSide != null) }
         }
     }
 }

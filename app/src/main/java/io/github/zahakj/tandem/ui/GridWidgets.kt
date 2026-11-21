@@ -140,16 +140,27 @@ object GridWidgets {
         return null
     }
 
-    /** Resize on the grid (Y › Resize): the next size that fits where it sits, saved at once. */
-    fun resize(key: String) {
+    /**
+     * Resize on the grid (Y › Resize): the next size that fits where it sits, or exactly [to] (a size picked in the
+     * widget's menu) when it fits; saved at once.
+     */
+    fun resize(key: String, to: GridSpan? = null) {
         val w = widget(key) ?: return
         val kind = Widgets.kind(w) ?: return
         val shown = homeShown()
         val now = span(key)
-        val found = next(spans(kind), now) { s -> GridSlots.resize(shown.slots, shown.lanes, shown.ext, key, ext(s), shown.page) }
+        if (to == now) return
+        fun fits(s: GridSpan) = GridSlots.resize(shown.slots, shown.lanes, shown.ext, key, ext(s), shown.page)
+        val found = if (to != null) fits(to)?.let { to to it } else next(spans(kind), now, ::fits)
         if (found == null) {
             Sounds.error()
-            Toasts.show(if (spans(kind).size <= 1) "${kind.name} comes in one size" else "No room for another size here")
+            Toasts.show(
+                when {
+                    spans(kind).size <= 1 -> "${kind.name} comes in one size"
+                    to != null -> "No room for ${to.label} here"
+                    else -> "No room for another size here"
+                },
+            )
             return
         }
         GridUndoUi.run("Resized ${kind.name} to ${found.first.label}") {

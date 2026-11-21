@@ -179,23 +179,10 @@ fun ScrapeScreen() {
 
 private val ScrapeRoute get() = Route.Scrape.key
 
-/** A switch on the scrape screen: its label, a line on it, and the switch. */
+/** A switch on the scrape screen. */
 @Composable
-private fun SwitchRow(key: String, label: String, detail: String, on: Boolean, color: Color, onClick: () -> Unit) {
-    FocusCard(
-        Modifier.fillMaxWidth().remembersFocus(ScrapeRoute, key, false),
-        glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onClick = onClick,
-    ) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
-            Spacer(Modifier.width(10.dp))
-            Toggle(on, color)
-        }
-    }
-}
+private fun SwitchRow(key: String, label: String, detail: String, on: Boolean, color: Color, onClick: () -> Unit) =
+    SwitchCard(label, detail, on, color, Modifier.remembersFocus(ScrapeRoute, key, false), onClick = onClick)
 
 /** What the setup view says about the games in scope before a run. */
 private data class ScrapePreview(val games: Int, val noBox: Int, val noText: Int, val hidden: Int)

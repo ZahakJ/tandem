@@ -13,15 +13,17 @@ Open **Settings › Home & layout › Dock & widgets › Customize widgets**, or
 | <kbd>Y</kbd> | The highlighted widget's options |
 | <kbd>B</kbd> | Back |
 
-Every widget has:
+Every widget has the settings below. Each shows all its choices side by side, the chosen one lit: Left and right move
+it, A steps to the next, and a setting that is on or off is a switch.
 
-- **Size**: Small, Medium, Wide or Tall. On the bottom screen (two columns) Wide is a big card two rows high.
+- **Size**: Small, Medium, Wide or Tall. On the bottom screen (two columns) Wide is a big card two rows high. On the
+  icon grid, the cells it covers; a size with no room where the widget sits says so.
 - **Show on**: the home screen, the bottom screen, or both.
-- Its own settings, such as the clock style or which list the storage widget shows. Left and right change a setting too.
+- Its own settings, such as the clock style or which list the storage widget shows.
 - **Move**: the widget wiggles; move it with the D-pad and press A (or B) when it's in place.
 - **Remove widget**. The message offers Undo for 6 seconds.
 
-On the home screen the widget area has one row, or two when a Tall widget is there. You can fix it at one or two rows in the editor.
+On the home screen the widget area has one row, or two when a Tall widget is there. You can fix it at one or two rows in the editor (**Rows**: Auto, One, Two).
 
 ## On the icon grid
 

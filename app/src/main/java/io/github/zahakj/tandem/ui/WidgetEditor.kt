@@ -36,11 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onPreviewKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -82,12 +77,14 @@ fun WidgetsScreen() {
             )
             SideRow("+ Add a widget", null, routeKey, "add", list.isEmpty(), Palette.Mint) { WidgetUi.openGallery(area) }
             if (tab == 0) {
-                SideRow("Show on home", onOff(config.homeEnabled), routeKey, "home", false, Palette.Butter) {
+                val sideFocus = { Selection.current = Selected.Home; WidgetUi.focused = null }
+                SwitchCard("Show on home", null, config.homeEnabled, Palette.Butter, Modifier.remembersFocus(routeKey, "home", false), onFocus = sideFocus) {
                     WidgetStore.update { it.copy(homeEnabled = !it.homeEnabled) }
                 }
-                SideRow("Rows", when (config.homeRows) { 1 -> "One"; 2 -> "Two"; else -> "Auto" }, routeKey, "rows", false, Palette.Butter) {
-                    WidgetStore.update { it.copy(homeRows = (it.homeRows + 1) % 3) }
-                }
+                SegmentRow(
+                    "Rows", null, listOf("Auto", "One", "Two"), config.homeRows.coerceIn(0, 2), Palette.Butter,
+                    Modifier.remembersFocus(routeKey, "rows", false), trackWidth = null, onFocus = sideFocus,
+                ) { i -> WidgetStore.update { it.copy(homeRows = i) } }
             }
             SideRow(if (resetArmed) "Press again to reset" else "Reset to the default set", null, routeKey, "reset", false, Palette.Peach) {
                 if (!resetArmed) { resetArmed = true; return@SideRow }
@@ -193,50 +190,42 @@ private fun TabChip(label: String, selected: Boolean, color: Color, modifier: Mo
 @Composable
 private fun SideRow(label: String, value: String?, routeKey: String, key: String, first: Boolean, color: Color, onClick: () -> Unit) {
     FocusCard(
-        Modifier.fillMaxWidth().remembersFocus(routeKey, key, first), glow = color, shape = RoundedCornerShape(14.dp),
+        Modifier.fillMaxWidth().remembersFocus(routeKey, key, first), glow = color, shape = RoundedCornerShape(16.dp), lifts = false,
         onFocus = { FocusMemory.remember(routeKey, key); Selection.current = Selected.Home; WidgetUi.focused = null },
         onClick = onClick,
     ) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (value != null) Pill(value, color)
         }
     }
 }
 
-/** A row in the widget menu. With [onStep], left and right change the value too. */
+/** An action in the widget menu, shaped like the choice cards above it; its value (if any) in a chip. */
 @Composable
-private fun OptionRow(
-    label: String,
-    value: String?,
-    routeKey: String,
-    key: String,
-    first: Boolean,
-    color: Color = Palette.Mint,
-    onStep: ((Int) -> Unit)? = null,
-    onClick: () -> Unit,
-) {
-    val steps = if (onStep == null) Modifier else Modifier.onPreviewKeyEvent { e ->
-        val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
-        if (e.type == KeyEventType.KeyDown) onStep(d)
-        true
-    }
-    FocusCard(Modifier.fillMaxWidth().remembersFocus(routeKey, key, first).then(steps), glow = color, shape = RoundedCornerShape(14.dp), onClick = onClick) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (value != null) {
-                if (onStep != null) Text("◀ ", style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
-                Pill(value, color)
-                if (onStep != null) Text(" ▶", style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
-            }
+private fun OptionRow(label: String, value: String?, routeKey: String, key: String, first: Boolean, color: Color = Palette.Mint, onClick: () -> Unit) {
+    FocusCard(Modifier.fillMaxWidth().remembersFocus(routeKey, key, first), glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onClick = onClick) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = if (color == Palette.Peach) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (value != null) ValueChip(value, color)
         }
     }
 }
 
-private fun <T> cycle(list: List<T>, current: T, by: Int): T {
-    val i = list.indexOf(current).coerceAtLeast(0)
-    return list[((i + by) % list.size + list.size) % list.size]
+/**
+ * One of a widget's choices: a switch for on and off, otherwise every option side by side under its name, the
+ * chosen one lit (Left and Right move it, A steps round).
+ */
+@Composable
+private fun ChoiceOption(label: String, values: List<String>, labels: List<String>, current: String, routeKey: String, key: String, first: Boolean, color: Color, set: (String) -> Unit) {
+    val focus = Modifier.remembersFocus(routeKey, key, first)
+    if (values == listOf("on", "off")) {
+        SwitchCard(label, null, current == "on", color, focus) { set(if (current == "on") "off" else "on") }
+    } else {
+        SegmentRow(label, null, labels, values.indexOf(current).coerceAtLeast(0), color, focus, trackWidth = null) { i -> set(values[i]) }
+    }
 }
+
 
 /** A widget drawn at its real size in [area], shrunk to fit [box]. */
 @Composable
@@ -280,7 +269,7 @@ fun WidgetMenu() {
                     }
                     Spacer(Modifier.height(10.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        ButtonHint("◀▶", "Change", Palette.Butter)
+                        ButtonHint("◀▶", "Choose", Palette.Butter)
                         ButtonHint("B", "Done", Palette.Lavender)
                     }
                 }
@@ -289,23 +278,32 @@ fun WidgetMenu() {
                 Column(Modifier.weight(1f).fadingEdges(options).verticalScroll(options).padding(vertical = 14.dp, horizontal = 12.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
                     // On the icon grid the size is the cells it covers, and it stays where it was put.
                     val onGrid = w.place == WidgetPlace.Grid
+                    // Every size, place and option shows all its choices, the chosen one lit.
                     if (onGrid && GridWidgets.spans(kind).size > 1) {
                         val gridKey = GridWidgets.key(w.id)
-                        OptionRow("Size", GridWidgets.span(gridKey).label, key, "size", true, Palette.Butter, onStep = { GridWidgets.resize(gridKey) }) { GridWidgets.resize(gridKey) }
+                        val spans = GridWidgets.spans(kind)
+                        SegmentRow(
+                            "Size", "Cells it covers on the grid", spans.map { it.label }, spans.indexOf(GridWidgets.span(gridKey)), Palette.Butter,
+                            Modifier.remembersFocus(key, "size", true), trackWidth = null,
+                        ) { i -> GridWidgets.resize(gridKey, spans[i]) }
                     } else if (!onGrid && kind.sizes.size > 1) {
-                        val step = { by: Int -> Widgets.setSize(w.id, cycle(kind.sizes, w.size, by)) }
-                        OptionRow("Size", w.size.label, key, "size", true, Palette.Butter, onStep = step) { step(1) }
+                        SegmentRow(
+                            "Size", null, kind.sizes.map { it.label }, kind.sizes.indexOf(w.size), Palette.Butter,
+                            Modifier.remembersFocus(key, "size", true), trackWidth = null,
+                        ) { i -> Widgets.setSize(w.id, kind.sizes[i]) }
                     }
                     if (!onGrid) {
                         val places = WidgetPlace.entries.filter { it != WidgetPlace.Grid }
-                        val stepPlace = { by: Int -> Widgets.setPlace(w.id, cycle(places, w.place, by)) }
-                        OptionRow("Show on", w.place.label, key, "place", kind.sizes.size <= 1, Palette.Sky, onStep = stepPlace) { stepPlace(1) }
+                        SegmentRow(
+                            "Show on", null, places.map { it.label }, places.indexOf(w.place), Palette.Sky,
+                            Modifier.remembersFocus(key, "place", kind.sizes.size <= 1), trackWidth = null,
+                        ) { i -> Widgets.setPlace(w.id, places[i]) }
                     }
                     for (opt in kind.options.filter { it.showFor(w.size) }) {
-                        val current = w.options[opt.key] ?: opt.default
-                        val values = opt.choices.map { it.first }
-                        val step = { by: Int -> Widgets.setOption(w.id, opt.key, cycle(values, current, by)) }
-                        OptionRow(opt.label, opt.choices.firstOrNull { it.first == current }?.second ?: current, key, "opt:${opt.key}", false, kind.accent, onStep = step) { step(1) }
+                        ChoiceOption(
+                            opt.label, opt.choices.map { it.first }, opt.choices.map { it.second }, w.options[opt.key] ?: opt.default,
+                            key, "opt:${opt.key}", false, kind.accent,
+                        ) { v -> Widgets.setOption(w.id, opt.key, v) }
                     }
                     kind.actions(w).forEachIndexed { i, a ->
                         OptionRow(a.label, a.value, key, "act:$i", false, a.color) { a.run(); if (a.closes) WidgetUi.close() else if (a.refocus) WidgetUi.refocus() }

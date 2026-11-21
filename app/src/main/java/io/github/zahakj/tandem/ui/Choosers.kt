@@ -115,7 +115,35 @@ fun SegmentRow(
         glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onFocus = onFocus,
         onClick = { if (n > 0) onPick((selected + 1) % n) },
     ) {
-        Row(Modifier.fillMaxWidth().padding(start = if (glyph != null) 10.dp else 14.dp, end = 10.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        // Beside the label, or under it across the whole row when there is no [trackWidth] (a narrow column).
+        Column(Modifier.fillMaxWidth().padding(start = if (glyph != null) 10.dp else 14.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (glyph != null) {
+                    GlyphChip(glyph, color, size = 32.dp, round = true)
+                    Spacer(Modifier.width(10.dp))
+                }
+                Column(Modifier.weight(1f)) {
+                    Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    if (detail != null) Text(detail, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                if (trackWidth != null) {
+                    Spacer(Modifier.width(10.dp))
+                    SegmentTrack(labels, selected, color, Modifier.width(trackWidth), onPick = onPick)
+                }
+            }
+            if (trackWidth == null) {
+                Spacer(Modifier.height(6.dp))
+                SegmentTrack(labels, selected, color, Modifier.fillMaxWidth(), onPick = onPick)
+            }
+        }
+    }
+}
+
+/** A row with a switch: its [label], a line on it ([detail]), and the switch, which A flips. */
+@Composable
+fun SwitchCard(label: String, detail: String?, on: Boolean, color: Color, modifier: Modifier, glyph: Glyph? = null, onFocus: () -> Unit = {}, onClick: () -> Unit) {
+    FocusCard(modifier.fillMaxWidth(), glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onFocus = onFocus, onClick = onClick) {
+        Row(Modifier.fillMaxWidth().padding(start = if (glyph != null) 10.dp else 14.dp, end = 12.dp, top = 9.dp, bottom = 9.dp), verticalAlignment = Alignment.CenterVertically) {
             if (glyph != null) {
                 GlyphChip(glyph, color, size = 32.dp, round = true)
                 Spacer(Modifier.width(10.dp))
@@ -125,7 +153,7 @@ fun SegmentRow(
                 if (detail != null) Text(detail, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.width(10.dp))
-            SegmentTrack(labels, selected, color, if (trackWidth != null) Modifier.width(trackWidth) else Modifier.weight(1.2f), onPick = onPick)
+            Toggle(on, color)
         }
     }
 }
