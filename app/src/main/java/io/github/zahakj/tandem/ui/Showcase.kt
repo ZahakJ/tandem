@@ -254,6 +254,107 @@ private fun <T> moveIn(style: AnimationStyle): FiniteAnimationSpec<T> = when (st
     AnimationStyle.Off -> snap()
 }
 
+/**
+ * Three cards, the middle one highlighted in [style], each effect larger than life so the styles tell apart at a
+ * glance: Glow a wide soft halo, Outline a thick crisp ring and nothing else, Lift the card raised high over a dark
+ * shadow, Pulse a ring that swells and fades.
+ */
+@Composable
+internal fun HighlightScene(style: HighlightStyle) {
+    val pulse = loopClock(1100)
+    MiniScreen { t, u ->
+        val n = 3
+        val gap = 10 * u
+        val w = minOf((size.width - 24 * u - gap * (n - 1)) / n, 46 * u)
+        val left = (size.width - (w * n + gap * (n - 1))) / 2
+        val y = (size.height - w) / 2 + 4 * u
+        val r = 6 * u
+        for (i in 0 until n) {
+            val x = left + i * (w + gap)
+            if (i != 1) { miniTile(t, x, y, w, w, i, r, alpha = 0.7f); continue }
+            val c = Offset(x + w / 2, y + w / 2)
+            when (style) {
+                HighlightStyle.Glow -> {
+                    drawCircle(Brush.radialGradient(listOf(t.glow.copy(alpha = 0.85f), t.glow.copy(alpha = 0.25f), Color.Transparent), c, w * 1.05f), w * 1.05f, c)
+                    scale(1.1f, c) { miniTile(t, x, y, w, w, i, r) }
+                    drawRoundRect(t.glow.copy(alpha = 0.6f), Offset(x - u, y - u) - Offset(w * 0.05f, w * 0.05f), Size(w * 1.1f + 2 * u, w * 1.1f + 2 * u), CornerRadius(r * 1.2f), style = Stroke(1.2f * u))
+                }
+                HighlightStyle.Outline -> {
+                    miniTile(t, x, y, w, w, i, r)
+                    val o = 3.5f * u
+                    drawRoundRect(t.glow, Offset(x - o, y - o), Size(w + 2 * o, w + 2 * o), CornerRadius(r + o), style = Stroke(3.6f * u))
+                }
+                HighlightStyle.Lift -> {
+                    val lift = 10 * u
+                    drawRoundRect(Color.Black.copy(alpha = 0.55f), Offset(x + 3 * u, y + 6 * u), Size(w, w), CornerRadius(r))
+                    drawRoundRect(Brush.radialGradient(listOf(Color.Black.copy(alpha = 0.35f), Color.Transparent), Offset(c.x, y + w + 2 * u), w * 0.7f), Offset(x - 6 * u, y + w - 6 * u), Size(w + 12 * u, 16 * u))
+                    scale(1.14f, Offset(c.x, c.y - lift)) { miniTile(t, x, y - lift, w, w, i, r) }
+                }
+                HighlightStyle.Pulse -> {
+                    miniTile(t, x, y, w, w, i, r)
+                    val p = pulse.value
+                    val o = (2 + 9 * p) * u
+                    drawRoundRect(t.glow.copy(alpha = 1f - p), Offset(x - o, y - o), Size(w + 2 * o, w + 2 * o), CornerRadius(r + o), style = Stroke((3.2f - 2f * p) * u))
+                    drawRoundRect(t.glow, Offset(x - 2 * u, y - 2 * u), Size(w + 4 * u, w + 4 * u), CornerRadius(r + 2 * u), style = Stroke(1.6f * u))
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Cards over a bright, busy wallpaper, in [material]: Solid hides the wallpaper, Frosted lets it glow through a
+ * milky pane, Outlined is a bare border with the wallpaper showing whole.
+ */
+@Composable
+internal fun SurfaceScene(material: SurfaceMaterial) {
+    MiniScreen { t, u ->
+        drawRect(Brush.linearGradient(listOf(Color(0xFFFF8FB1), Color(0xFFFFD29A), Color(0xFF8FD3FF)), Offset.Zero, Offset(size.width, size.height)))
+        for (i in 0 until 7) drawCircle(listOf(t.mint, t.lavender, Color.White, t.peach)[i % 4].copy(alpha = 0.8f), (8 + i * 3) * u, Offset(size.width * (0.1f + i * 0.14f), size.height * (0.3f + 0.4f * (i % 2))))
+        val n = 2
+        val gap = 8 * u
+        val w = (size.width - 20 * u - gap) / n
+        val h = 62 * u
+        val y = (size.height - h) / 2
+        for (i in 0 until n) {
+            val x = 10 * u + i * (w + gap)
+            val r = CornerRadius(7 * u)
+            when (material) {
+                SurfaceMaterial.Solid -> drawRoundRect(t.cardHigh, Offset(x, y), Size(w, h), r)
+                SurfaceMaterial.Frosted -> {
+                    drawRoundRect(Color.White.copy(alpha = 0.42f), Offset(x, y), Size(w, h), r)
+                    drawRoundRect(Color.White.copy(alpha = 0.8f), Offset(x, y), Size(w, h), r, style = Stroke(0.8f * u))
+                }
+                SurfaceMaterial.Outlined -> drawRoundRect(t.text, Offset(x, y), Size(w, h), r, style = Stroke(2.4f * u))
+            }
+            val ink = if (material == SurfaceMaterial.Solid) t.text else Color(0xFF26262E)
+            miniBar(x + 6 * u, y + 10 * u, w * 0.6f, 6 * u, ink)
+            miniBar(x + 6 * u, y + 22 * u, w * 0.75f, 3.5f * u, ink, 0.7f)
+            miniBar(x + 6 * u, y + 30 * u, w * 0.5f, 3.5f * u, ink, 0.7f)
+        }
+    }
+}
+
+/** [accent] where it shows: a switch turned on, the highlight ring, a button and a progress bar, large. */
+@Composable
+internal fun AccentScene(accent: Color) {
+    MiniScreen { t, u ->
+        val x = 12 * u
+        // A switch, on.
+        drawRoundRect(accent, Offset(x, 14 * u), Size(30 * u, 16 * u), CornerRadius(8 * u))
+        drawCircle(t.onAccent, 6 * u, Offset(x + 22 * u, 22 * u))
+        miniBar(x + 38 * u, 19 * u, size.width * 0.35f, 5 * u, t.text)
+        // A highlighted card.
+        val w = 34 * u
+        miniTile(t, x, 42 * u, w, w, 1, 5 * u)
+        drawRoundRect(accent, Offset(x - 2.5f * u, 39.5f * u), Size(w + 5 * u, w + 5 * u), CornerRadius(7 * u), style = Stroke(2.8f * u))
+        // A button and a progress bar.
+        drawRoundRect(accent, Offset(x + w + 14 * u, 46 * u), Size(size.width * 0.32f, 12 * u), CornerRadius(6 * u))
+        drawRoundRect(t.muted.copy(alpha = 0.35f), Offset(x + w + 14 * u, 68 * u), Size(size.width * 0.42f, 4 * u), CornerRadius(2 * u))
+        drawRoundRect(accent, Offset(x + w + 14 * u, 68 * u), Size(size.width * 0.28f, 4 * u), CornerRadius(2 * u))
+    }
+}
+
 /** The highlight hopping along a row of cards, eased the way [style] eases. */
 @Composable
 internal fun MotionStyleScene(style: AnimationStyle) {
@@ -306,7 +407,7 @@ internal fun FloatScene(on: Boolean, amount: Int = 1) {
     val clock = loopClock(3200)
     MiniScreen { t, u ->
         val a = clock.value * 2 * PI.toFloat()
-        val reach = if (!on) 0f else (1.5f + amount * 1.8f) * u
+        val reach = if (!on) 0f else (2f + amount * 4f) * u
         miniArt(t, 0f, 0f, size.width, size.height * 0.62f)
         drawRect(Brush.verticalGradient(listOf(Color.Transparent, t.background), 0f, size.height * 0.62f))
         translate(sin(a) * reach * 0.6f, sin(a * 2) * reach) {
@@ -528,7 +629,11 @@ internal fun VideoSnapScene(delayMs: Int?) {
             drawArc(t.text, -90f, 360f * f, false, Offset(x + w / 2 - 7 * u, y + h / 2 - 7 * u), Size(14 * u, 14 * u), style = Stroke(2 * u))
         }
         miniRing(t, x, y, w, h, 3 * u, u)
-        miniBar(x, y + h + 6 * u, w * 0.5f, 4 * u, t.text)
+        // The wait before the video, to scale: a track for the whole loop, the resting part grey, then the video in colour.
+        val ty = y + h + 7 * u
+        drawRoundRect(t.muted.copy(alpha = 0.3f), Offset(x, ty), Size(w, 3 * u), CornerRadius(1.5f * u))
+        if (d != null) drawRoundRect(t.mint, Offset(x + w * d / SHOWCASE_HOLD_MS, ty), Size(w * (1 - d / SHOWCASE_HOLD_MS), 3 * u), CornerRadius(1.5f * u))
+        drawCircle(t.text, 2.4f * u, Offset(x + w * ms / SHOWCASE_HOLD_MS, ty + 1.5f * u))
     }
 }
 
@@ -551,7 +656,7 @@ internal fun ArtFadeScene(id: String) {
     MiniScreen { t, u ->
         miniArt(t, 0f, 0f, size.width, size.height * 0.7f)
         when (id) {
-            "strong" -> drawRect(Brush.verticalGradient(listOf(Color.Transparent, t.background), size.height * 0.1f, size.height * 0.5f))
+            "strong" -> drawRect(Brush.verticalGradient(listOf(Color.Transparent, t.background), 0f, size.height * 0.3f))
             "vignette" -> drawRect(Brush.radialGradient(listOf(Color.Transparent, t.background), Offset(size.width / 2, size.height * 0.3f), size.width * 0.55f))
             "none" -> Unit
             else -> drawRect(Brush.verticalGradient(listOf(Color.Transparent, t.background), size.height * 0.35f, size.height * 0.7f))
