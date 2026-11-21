@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -268,6 +269,13 @@ fun rememberLayer(visible: Boolean): Any {
 fun ProvideLayer(layer: Any, content: @Composable () -> Unit) = CompositionLocalProvider(LocalLayer provides layer, content = content)
 
 /**
+ * True while the screen around it is on its way out (the route changed and its fade still runs). Focus handed back
+ * on that change reached the leaving screen too, and its remembered row took the highlight back from the screen
+ * being shown (Back from a Settings page landed on Search). Reads state: call it in a snapshotFlow.
+ */
+val LocalScreenLeaving = staticCompositionLocalOf<() -> Boolean> { { false } }
+
+/**
  * The layer of a screen kept composed while hidden (KeptScreen in App.kt). Its items may take focus only while
  * [dormant] is false. A state, not a different layer value, so showing or hiding the screen recomposes nothing.
  */
@@ -320,6 +328,7 @@ private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?
     val focused = remember { booleanArrayOf(false) }
     val layer = LocalLayer.current
     val view = androidx.compose.ui.platform.LocalView.current
+    val leaving = LocalScreenLeaving.current
     // On the screen's list of things that can take the focus, while it is on screen.
     val onPage = layer == null || layer is KeptLayer
     DisposableEffect(routeKey, itemKey, onPage) {
@@ -334,7 +343,7 @@ private fun Modifier.takesFocusWhen(routeKey: String, itemKey: String, key: Any?
     LaunchedEffect(routeKey, key, layer) {
         // Focus handed back (Nav.focusTick: a resume, Home) asks again. Watched here rather than read while composing,
         // so a resume doesn't recompose every focusable item on the screen in its first frame.
-        snapshotFlow { Nav.focusTick to layerActive(layer) }.collectLatest { (_, active) ->
+        snapshotFlow { Nav.focusTick to (layerActive(layer) && !leaving()) }.collectLatest { (_, active) ->
             if (!active || wanted() == Want.No) return@collectLatest
             // The item may still be animating in or not laid out yet; keep asking briefly until it takes focus.
             // The first try comes right after the next frame (the item is laid out by then), so a screen's highlight

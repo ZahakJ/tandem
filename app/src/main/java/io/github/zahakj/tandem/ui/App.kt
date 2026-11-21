@@ -12,6 +12,7 @@ import android.provider.Settings
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.expandVertically
@@ -46,6 +47,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -553,8 +555,12 @@ private fun Main(resumes: Int) {
                     label = "route",
                 ) { route ->
                     // Composed once for its whole stay; only the layer below follows the animation.
-                    if (route != null) Box(Modifier.fillMaxSize().routeMotion(this).padding(top = if (isFullscreen(route, iconGrid)) 0.dp else TopBarHeight)) {
-                        RouteContent(route, libs)
+                    // Leaving once the route moved on: its items stop asking for focus (LocalScreenLeaving).
+                    val leaving = remember(this) { { transition.targetState == EnterExitState.PostExit } }
+                    if (route != null) CompositionLocalProvider(LocalScreenLeaving provides leaving) {
+                        Box(Modifier.fillMaxSize().routeMotion(this).padding(top = if (isFullscreen(route, iconGrid)) 0.dp else TopBarHeight)) {
+                            RouteContent(route, libs)
+                        }
                     }
                 }
             }
