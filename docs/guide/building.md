@@ -22,15 +22,6 @@ nix-shell --run './gradlew assembleDebug'
 
 The shell also points Gradle at the SDK's own `aapt2`, because the one Gradle downloads is a generic Linux binary that doesn't run on NixOS.
 
-## The controller passthrough helper
-
-Controller passthrough ([Controls](controls.md#play-with-a-controller-passthrough)) uses a small C program,
-`app/src/padlink/padlink.c`. The build compiles it for 64-bit ARM with the newest NDK in the SDK (task
-`buildPadLink`) and packs it as `lib/arm64-v8a/libpadlink.so`; native libraries are unpacked on install
-(`useLegacyPackaging`), so Tandem can run it through Shizuku or `su`. Without an NDK the build warns and leaves it out,
-and the feature stays hidden. To try it by hand on a device: `adb shell <Tandem's lib folder>/libpadlink.so` prints
-its usage.
-
 ## With a plain JDK and SDK
 
 Install JDK 17 and the Android SDK (Android Studio installs both). Then tell Gradle where the SDK is, either with an environment variable:
@@ -57,6 +48,17 @@ and build:
 ./gradlew assembleDebug
 ```
 
+## The controller passthrough helper
+
+Controller passthrough ([Controls](controls.md#play-with-a-controller-passthrough)) needs a small native helper, which the build makes for you when an NDK is installed. Without an NDK the build warns and leaves it out, and the feature stays hidden.
+
+<details>
+<summary>How the helper is built and packed</summary>
+
+The helper is a small C program, `app/src/padlink/padlink.c`. The build compiles it for 64-bit ARM with the newest NDK in the SDK (task `buildPadLink`) and packs it as `lib/arm64-v8a/libpadlink.so`; native libraries are unpacked on install (`useLegacyPackaging`), so Tandem can run it through Shizuku or `su`. To try it by hand on a device: `adb shell <Tandem's lib folder>/libpadlink.so` prints its usage.
+
+</details>
+
 ## Where the APK goes
 
 | Command | Output |
@@ -64,7 +66,10 @@ and build:
 | `./gradlew assembleDebug` | `app/build/outputs/apk/debug/app-debug.apk` |
 | `./gradlew assembleRelease` | `app/build/outputs/apk/release/app-release.apk` (R8 and baseline profile; signed with the debug key unless a `keystore.properties` is present) |
 
-A debug build is signed with your computer's debug key; official releases are signed with the project's release key. Both use the same app id, so Android won't install one over the other: switching between them means uninstalling first. Uninstalling deletes Tandem's data, so back up first (**Settings › Play & system › Your data › Back up**).
+A debug build is signed with your computer's debug key; official releases are signed with the project's release key. Both use the same app id, so Android won't install one over the other: switching between them means uninstalling first.
+
+> [!WARNING]
+> Uninstalling deletes Tandem's data, so back up first (**Settings › Play & system › Your data › Back up**).
 
 ## Installing on a device
 
@@ -94,7 +99,12 @@ The optional Discord status ([Privacy](privacy.md#discord-status)) uses Discord'
 
 4. Build as usual. The build also needs the Android NDK and CMake 3.22.1, which Android Studio installs from the SDK Manager. With Nix, `shell.nix` adds them by itself once `third_party/discord` exists. Without an NDK the build leaves Discord out and says so.
 
+<details>
+<summary>What the build adds with the Discord SDK</summary>
+
 With both the `.aar` and the ID present, the build compiles a small JNI bridge (`app/src/discord`) and adds the SDK's sign-in activity for the redirect. The SDK's voice-chat permissions are removed, and the build includes only the 64-bit ARM library (about 9 MB more).
+
+</details>
 
 ## Continuous integration
 
@@ -108,4 +118,4 @@ The website lives in `site/`, and the documentation pages are generated from the
 node scripts/build-docs.mjs
 ```
 
-That writes `site/docs/`, and fails on a broken link between pages. To preview, serve `site/` with any static file server, for example `npx serve site` or `python3 -m http.server -d site`.
+That writes `site/docs/`, and fails on a broken link between pages or to a heading. The header comment of the script lists the extras the guide can use and that still read well on GitHub: `<kbd>A</kbd>` button chips, `> [!TIP]` callouts and `<details>` folds. To preview, serve `site/` with any static file server, for example `npx serve site` or `python3 -m http.server -d site`.
