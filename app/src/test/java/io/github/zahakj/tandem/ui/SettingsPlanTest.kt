@@ -31,19 +31,32 @@ class SettingsPlanTest {
 
     private val rowLabel = Regex("""(?:SettingRow|toggle|choice|number)\(\s*"([^"]+)"""")
 
+    /**
+     * Rows and groups whose shown text comes from the string resources carry their English name as `en = "…"`
+     * (SettingRow.en, SettingSection.en; docs/TRANSLATING.md). A group's goes on its `SettingSection(` line.
+     */
+    private val englishName = Regex("""\ben = "([^"]+)"""")
+    private val sectionTitle = Regex("""SettingSection\(\s*"([^"]+)"""")
+    private val sectionEnglish = Regex("""SettingSection\([^\n]*\ben = "([^"]+)"""")
+
+    private fun groupsIn(src: String) = (sectionTitle.findAll(src) + sectionEnglish.findAll(src)).map { it.groupValues[1] }.toSet()
+
+    private fun rowsIn(src: String) =
+        rowLabel.findAll(src).map { it.groupValues[1] }.toSet() + (englishName.findAll(src).map { it.groupValues[1] }.toSet() - groupsIn(src))
+
     /** Every pick of every page and subpage, the rows opening subpages and the groups taken whole left out. */
     private val rowPicks = SettingsPlan.pages.values.flatten().flatMap { it.main }
         .filter { it.section != SettingsPlan.LINK && it.label != SettingsPlan.ALL }
 
     @Test fun everySettingsRowIsPlaced() {
         val placed = rowPicks.map { it.label }.toSet() + SettingsPlan.dropped.map { it.label }
-        val built = features.flatMap { f -> rowLabel.findAll(ui(f)).map { it.groupValues[1] }.toList() }.toSet() - notPicked
+        val built = features.flatMap { f -> rowsIn(ui(f)) }.toSet() - notPicked
         val missing = built - placed
         assertTrue("Rows no page places (add them to SettingsPlan, or drop them): $missing", missing.isEmpty())
     }
 
     @Test fun everyPickNamesAGroupThatExists() {
-        val groups = features.flatMap { f -> Regex("""SettingSection\(\s*"([^"]+)"""").findAll(ui(f)).map { it.groupValues[1] }.toList() }.toSet() +
+        val groups = features.flatMap { f -> groupsIn(ui(f)) }.toSet() +
             setOf(HomeButtonGroup, ControllersGroup, PadLinkGroup)
         val picks = SettingsPlan.pages.values.flatten().flatMap { it.main }.filter { it.section != SettingsPlan.LINK } + SettingsPlan.dropped
         val unknown = picks.map { it.section }.toSet() - groups

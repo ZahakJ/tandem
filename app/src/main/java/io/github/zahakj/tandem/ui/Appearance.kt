@@ -92,6 +92,7 @@ internal fun choice(
     preview: (@Composable () -> Unit)? = null,
     look: (@Composable (String) -> Unit)? = null,
     extra: Pair<String, () -> Unit>? = null,
+    en: String = label,
     set: (String) -> Unit,
 ): SettingRow {
     val ids = options.map { it.first }
@@ -102,7 +103,7 @@ internal fun choice(
         label, options.firstOrNull { it.first == current }?.second ?: options.first().second, color, icon, help,
         onLeft = { move(-1) }, onRight = { move(1) },
         preview = preview ?: look?.let { l -> { ChoiceShowcase(options, current, color) { l(it) } } },
-        options = options, selected = current, pick = set, optionLook = look, pickerExtra = extra,
+        options = options, selected = current, pick = set, optionLook = look, pickerExtra = extra, en = en,
         onClick = { if (row.picker) ChoicePicker.open(row) else set(stepIn(ids, current, 1)) },
     )
     return row
@@ -114,6 +115,7 @@ internal fun number(
     value: Float?, min: Float, max: Float, step: Float, format: (Float) -> String,
     themeValue: Float? = null,
     preview: (@Composable () -> Unit)? = null,
+    en: String = label,
     set: (Float?) -> Unit,
 ): SettingRow {
     val nullable = themeValue != null
@@ -135,7 +137,7 @@ internal fun number(
     return SettingRow(
         label, shown, color, icon, help,
         onLeft = { move(-1, wrap = false) }, onRight = { move(1, wrap = false) }, preview = preview, onClick = { move(1, wrap = true) },
-        slider = at, themed = if (nullable) value == null else null,
+        slider = at, themed = if (nullable) value == null else null, en = en,
     )
 }
 
@@ -147,10 +149,12 @@ internal fun toggle(
     label: String, icon: Glyph, color: Color, help: String, on: Boolean,
     preview: (@Composable () -> Unit)? = null,
     look: (@Composable (Boolean) -> Unit)? = null,
+    en: String = label,
     set: (Boolean) -> Unit,
 ) = SettingRow(
     label, onOff(on), color, icon, help, toggle = on,
     preview = preview ?: look?.let { l -> { ToggleShowcase(on, color) { l(it) } } },
+    en = en,
     onClick = { set(!on) },
 )
 

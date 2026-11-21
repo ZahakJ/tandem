@@ -133,11 +133,13 @@ internal fun settingsHits(): List<Hit> {
             val page = (c.parent?.let { SettingsCategories.title(it) + " › " } ?: "") + c.title
             for (s in c.sections) {
                 for (r in s.rows) {
-                    val key = rowKey(s.title, r.label)
+                    val key = rowKey(s.en, r.en)
                     add(
                         Hit(
                             key, r.label, if (s.title == c.title) page else "$page › ${s.title}", r.shownValue, r.color, r.icon, r.help,
-                            r.label, "${r.keywords} ${s.title} ${c.title}", r.help.orEmpty(),
+                            // The English label and group ([SettingRow.en]) count as synonyms, so English words find a
+                            // setting in every language (the search keyboard has Latin letters only).
+                            r.label, "${r.keywords} ${s.title} ${c.title} ${englishWords(r.en, r.label)} ${englishWords(s.en, s.title)}", r.help.orEmpty(),
                         ) {
                             jump(c.route, key)
                             SettingsUi.flash(key)
@@ -164,6 +166,9 @@ internal fun settingsHits(): List<Hit> {
         }
     }
 }
+
+/** A row's or group's English name ([SettingRow.en]) as extra search words, when it isn't what shows already ([shown]). */
+private fun englishWords(en: String, shown: String) = if (en == shown) "" else en
 
 /**
  * Hits for the normalized query [q], best first: every word typed must match. A word at the start of the label

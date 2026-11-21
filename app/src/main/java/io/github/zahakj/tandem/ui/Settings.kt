@@ -109,6 +109,12 @@ data class SettingRow(
     val pickerExtra: Pair<String, () -> Unit>? = null,
     /** For number rows the theme can decide: whether it does now. Null for rows without a "Theme" value. */
     val themed: Boolean? = null,
+    /**
+     * What the row is, in every language: its English label, which SettingsPlan places it by, focus and search jumps
+     * remember it by, and English search finds it by. Pass it whenever [label] comes from the string resources
+     * (docs/TRANSLATING.md); it never shows.
+     */
+    val en: String = label,
     val onClick: () -> Unit,
 ) {
     val kind: RowKind get() = when {
@@ -149,6 +155,8 @@ data class SettingSection(
     val rows: List<SettingRow>,
     val icon: Glyph? = null,
     val note: String? = null,
+    /** The group's English title, never shown: what SettingsPlan picks rows by (see [SettingRow.en]). */
+    val en: String = title,
 )
 
 /**
@@ -185,7 +193,7 @@ object SettingsUi {
     fun shouldFlash(key: String?) = key != null && key == flashKey && android.os.SystemClock.uptimeMillis() - flashAt < 2500
 }
 
-/** The focus key of a row: its group and label. Search uses the same keys. */
+/** The focus key of a row: its group's and its own English names ([SettingRow.en]). Search uses the same keys. */
 fun rowKey(section: String, label: String) = "$section/$label"
 
 /**
@@ -359,7 +367,7 @@ object DataJobs {
  * list item, so highlighting the row brings its heading into view in the same scroll (see [showsFromTop]).
  */
 private class SettingsLine(val section: SettingSection, val row: SettingRow, val heading: SettingSection?) {
-    val key = rowKey(section.title, row.label)
+    val key = rowKey(section.en, row.en)
 }
 
 /**

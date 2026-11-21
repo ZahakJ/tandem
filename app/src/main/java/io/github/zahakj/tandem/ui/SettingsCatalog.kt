@@ -295,8 +295,8 @@ private class RowPool(sections: List<SettingSection>) {
 
     init {
         for (s in sections) for (r in s.rows) {
-            val extra = Synonyms[r.label]
-            rows.putIfAbsent(rowKey(s.title, r.label), s.title to if (extra == null) r else r.copy(keywords = "${r.keywords} $extra"))
+            val extra = Synonyms[r.en]
+            rows.putIfAbsent(rowKey(s.en, r.en), s.title to if (extra == null) r else r.copy(keywords = "${r.keywords} $extra"))
         }
     }
 
@@ -345,12 +345,12 @@ private fun resumePageRow(): SettingRow {
 
 /** What a subpage's row on its page says it holds, in a few words. */
 private fun subSummary(id: String, rows: List<SettingRow>): String {
-    fun value(label: String) = rows.firstOrNull { it.label == label }?.shownValue
+    fun value(en: String) = rows.firstOrNull { it.en == en }?.shownValue
     return when (id) {
         "home/grid" -> value("Rows of icons")?.let { if (it == "Auto") "Auto rows" else it }
         "home/dock" -> if (HomeStore.settings.showDock) value("Dock style") else "Dock off"
         "screens/art" -> value("Video snaps")?.let { "Videos: $it" }
-        "controls/pads" -> rows.count { it.label !in PadsNotPads }.let { if (it == 0) "None connected" else "$it connected" }
+        "controls/pads" -> rows.count { it.en !in PadsNotPads }.let { if (it == 0) "None connected" else "$it connected" }
         "controls/deck" -> value("Default layout")
         "library/accounts" -> listOfNotNull(
             "RA ✓".takeIf { HomeStore.ra.user.isNotBlank() && HomeStore.ra.key.isNotBlank() },
