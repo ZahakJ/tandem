@@ -190,8 +190,8 @@ it mutes Tandem too.
 | Your data | Use Tandem as the Home screen | Off | Asks Android to make Tandem your Home app. |
 | Your data | Back up, Restore | | See [Back up and restore](library.md#back-up-and-restore). |
 | About | About Tandem | | The version and licence. |
-| About | Check now | | Asks GitHub whether a newer Tandem is out, and shows where an update stands. See [Updates](getting-started.md#updates). |
-| About | Check for updates (More) | On | Look for a new Tandem once a day while it is open. |
+| About | Check now | | Asks GitHub whether a newer Tandem is out, and shows where an update stands. See [Software updates](getting-started.md#software-updates). |
+| About | Check automatically | On | Look for a new Tandem once a day while it is open, say so once and show it in the Start panel. Off, only **Check now** looks. |
 | About | Frame timing overlay, Tour every theme (More) | Off | Tools for measuring smoothness and checking themes. You won't need them. |
 
 ## Quick settings

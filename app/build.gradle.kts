@@ -59,6 +59,9 @@ if (buildPadLink == null) logger.warn("No NDK found: building without the contro
 // apps that update themselves, so a build for it passes -PselfUpdate=false: BuildConfig.SELF_UPDATE is off and the
 // updater never runs or shows (R8 drops its code).
 val selfUpdate = providers.gradleProperty("selfUpdate").orNull?.trim()?.lowercase() != "false"
+// For screenshots and trying the updater: -PupdateFrom=0.6.0 builds a Tandem that checks for updates as if it were that
+// version, so the latest release shows up as new (installing it then fails the signing check on a debug build).
+val updateFrom = providers.gradleProperty("updateFrom").orNull?.trim().orEmpty()
 
 android {
     namespace = "io.github.zahakj.tandem"
@@ -73,6 +76,7 @@ android {
         versionName = "0.6.1"
         buildConfigField("long", "DISCORD_APP_ID", "${if (withDiscord) discordAppId else "0"}L")
         buildConfigField("boolean", "SELF_UPDATE", selfUpdate.toString())
+        buildConfigField("String", "UPDATE_FROM", "\"$updateFrom\"")
         manifestPlaceholders["selfUpdate"] = selfUpdate.toString()
         if (withDiscord) {
             // Where Discord sends the authorization back: discord-<application ID>:/authorize/callback.

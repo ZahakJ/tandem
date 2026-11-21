@@ -96,7 +96,7 @@ A tap on <kbd>Start</kbd> folds a panel open from the left. B goes back a page, 
 | Theme ▸ | Every theme and theme pack, applied at once |
 | Sounds & music ▸ | Music on or off, and every sound pack: Tandem's eight and any recorded ones |
 | Quick settings | The same panel as holding Start |
-| Tandem 0.6.2 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Updates](getting-started.md#updates)) |
+| Tandem 0.6.2 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Software updates](getting-started.md#software-updates)) |
 | Settings ▸ | All settings, or straight to one of the seven pages (and Import my Cocoon setup, when a Cocoon backup is there) |
 | Screensaver | Starts the screensaver now |
 

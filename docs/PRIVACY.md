@@ -24,8 +24,8 @@ without being asked; a failed one is tried again after the next scan.
 **Update check.** Once a day while Tandem is open (and when you press **Check now** in Settings › Play & system ›
 About), Tandem asks GitHub's API for its latest release (`api.github.com/repos/ZahakJ/tandem/releases/latest`). The
 request carries nothing but Tandem's user agent; GitHub sees your IP address, as with any download. Only when you
-press **Update** does it download that release's APK and `SHA256SUMS` from github.com (`Updates.kt`). Turn it off with
-**Check for updates** (under More options there); it is blocked in private mode, and builds made with
+press **Update** does it download that release's APK and `SHA256SUMS` from github.com (`Updates.kt`). Turn the daily check off
+with **Check automatically** (next to Check now); it is blocked in private mode, and builds made with
 `-PselfUpdate=false` (for F-Droid) have no update check at all.
 
 RetroAchievements is contacted only after you sign in, to show your profile and progress, and when you open

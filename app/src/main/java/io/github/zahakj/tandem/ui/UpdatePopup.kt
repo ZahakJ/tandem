@@ -77,7 +77,7 @@ fun UpdateOverlay() {
                 Spacer(Modifier.width(12.dp))
                 Column {
                     Text("Tandem ${r.version}", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text("You have ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
+                    Text("You have ${Updates.current}", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
                 }
             }
             Text(

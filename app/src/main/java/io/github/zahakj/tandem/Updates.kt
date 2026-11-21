@@ -153,7 +153,13 @@ object Updates {
 
     private var loaded = false
 
-    /** The updater exists in this build and the user leaves it on. */
+    /** The version updates are measured from: this build's, or the one it was built to pretend to be (-PupdateFrom). */
+    val current: String get() = BuildConfig.UPDATE_FROM.ifEmpty { BuildConfig.VERSION_NAME }
+
+    /**
+     * The updater exists in this build and the user leaves automatic checks on: the daily check, its toast and the
+     * Start panel row. Check now works either way.
+     */
     val enabled: Boolean get() = BuildConfig.SELF_UPDATE && Store.settings.checkUpdates
 
     /**
@@ -171,7 +177,7 @@ object Updates {
         val p = prefs(ctx)
         checkedAt = p.getLong(CHECKED, 0L)
         val kept = p.getString(FOUND, null)?.let { runCatching { Store.json.decodeFromString<Release>(it) }.getOrNull() }
-        if (kept != null && Releases.compare(kept.version, BuildConfig.VERSION_NAME) > 0) found = kept
+        if (kept != null && Releases.compare(kept.version, current) > 0) found = kept
         else {
             p.edit().remove(FOUND).apply()
             // An APK left from an update that is now installed.
@@ -205,7 +211,7 @@ object Updates {
             result.fold({ rel ->
                 checkedAt = System.currentTimeMillis()
                 val p = prefs(app).edit().putLong(CHECKED, checkedAt)
-                val newer = rel?.takeIf { Releases.compare(it.version, BuildConfig.VERSION_NAME) > 0 }
+                val newer = rel?.takeIf { Releases.compare(it.version, current) > 0 }
                 found = newer
                 if (newer != null) p.putString(FOUND, Store.json.encodeToString(newer)) else p.remove(FOUND)
                 p.apply()
@@ -230,7 +236,7 @@ object Updates {
 
     /** The row's words: this version and where the update stands. */
     fun statusLine(): String {
-        val now = BuildConfig.VERSION_NAME
+        val now = current
         return when (val s = state) {
             UpdateState.Checking -> "$now · Checking…"
             is UpdateState.Downloading -> "Downloading ${s.pct} %"

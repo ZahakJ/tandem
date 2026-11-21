@@ -75,11 +75,16 @@ No. Without it Tandem works fully as a frontend; games start fresh each time. Sh
 screenshots from the bottom screen, the Deck, performance profiles, Peanuts Native and more: the full list is in
 [What Shizuku is used for](resume.md#what-shizuku-is-used-for).
 
-### How do I update Tandem?
+### How do I update Tandem, or turn off update notifications?
 
-Installed from GitHub Releases, Tandem tells you when a new version is out (a **Tandem 0.6.2 is out** row in the Start
-panel) and installs it when you press **Update**. **Settings › Play & system › About › Check now** checks at once. See
-[Updates](getting-started.md#updates).
+Installed from GitHub Releases, Tandem checks once a day and tells you when a new version is out: a message once, and
+a **Tandem 0.6.2 is out** row in the Start panel. Press A on it, then **Update**; nothing installs before that.
+**Settings › Play & system › About › Check now** checks at once.
+
+To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › About › Check
+automatically** off. Then update by hand whenever you like: **Check now**, then **Update**, or download the APK from
+the [releases page](https://github.com/ZahakJ/tandem/releases/latest). See
+[Software updates](getting-started.md#software-updates).
 
 ### Which app does a Switch game play in?
 

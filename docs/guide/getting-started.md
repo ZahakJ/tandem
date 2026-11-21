@@ -21,13 +21,26 @@ Pick one:
 
 Every release APK is signed with the same key, so updates install over the old version and keep your data.
 
-### Updates
+### Software updates
 
-Installed from GitHub Releases, Tandem keeps itself up to date. Once a day while it is open it asks GitHub whether a newer version is out; if one is, a quiet **Tandem 0.4.1 is out** row appears in the Start panel (with a toast once, never over a game). Press A on it to read the release notes, then **Update**: Tandem downloads the APK, checks it against the release's `SHA256SUMS` and Tandem's signing key, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm. Tandem restarts on the new version with your data as it was. Nothing installs until you press Update.
+Installed from GitHub Releases, Tandem keeps itself up to date, and nothing installs until you say so.
 
-![The update popup: Tandem 0.6.2 is out, its release notes, and the Update and Not now buttons.](images/update-popup.png "A new version, ready to install")
+**How it works.** Once a day while Tandem is open, it asks GitHub for the number of its latest release (nothing else is sent). When a newer one is out:
 
-**Settings › Play & system › About › Check now** checks on demand and shows where an update stands; **Check for updates** (under More options) turns the daily check off, and private mode skips it. Obtainium still works if you prefer it.
+- a message says so once (**Tandem 0.6.2 is out · open Start to update**), never over a game;
+- a quiet **Tandem 0.6.2 is out** row waits in the Start panel until you update.
+
+![The Start panel with the Tandem 0.6.2 is out row, A to update.](../../site/assets/screenshots/guide/update-start-row.webp "A new version in the Start panel")
+
+Press A on that row to read the release notes, then **Update** (or **Not now**). Tandem downloads the APK, checks it against the release's `SHA256SUMS` and Tandem's own signing key, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm. Tandem restarts on the new version with your data as it was.
+
+![The update popup: Tandem 0.6.2 is out, its release notes, and the Update and Not now buttons.](../../site/assets/screenshots/guide/update-popup.webp "A new version, ready to install")
+
+**Checking by hand.** **Settings › Play & system › About › Check now** asks GitHub at once and shows where things stand: *Up to date*, *0.6.2 available* (A opens the notes and Update), the download's progress, or what went wrong.
+
+![Settings › Play & system › About: About Tandem, Check now showing the version and Up to date, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
+
+**Turning the automatic check off.** Switch **Settings › Play & system › About › Check automatically** off: Tandem then never asks GitHub by itself, shows no message and no Start panel row, and updates only when you press **Check now** and then **Update**. Private mode skips the automatic check too. You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
 
 ## Put your games in place
 

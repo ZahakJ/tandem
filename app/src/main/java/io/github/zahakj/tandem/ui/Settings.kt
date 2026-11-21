@@ -306,11 +306,12 @@ private fun updateRows(): List<SettingRow> {
             action = if (found != null) "See update" else "Check",
         ) { if (found != null) UpdatePopup.show() else updates.check(ctx) },
         toggle(
-            "Check for updates", Glyph.Refresh, Palette.Lavender,
-            "Look for a new Tandem once a day while Tandem is open, and say so in the Start panel. It only asks GitHub for the " +
-                "latest version number; nothing installs until you press Update. Private mode skips it.",
+            "Check automatically", Glyph.Refresh, Palette.Lavender,
+            "Look for a new Tandem once a day while Tandem is open, and say so once with a message and in the Start panel. It only " +
+                "asks GitHub for the latest version number; nothing installs until you press Update. Off, nothing is checked or " +
+                "shown until you press Check now. Private mode skips it.",
             Store.settings.checkUpdates,
-        ) { on -> Store.updateSettings { it.copy(checkUpdates = on) } }.copy(keywords = "update automatic daily github"),
+        ) { on -> Store.updateSettings { it.copy(checkUpdates = on) } }.copy(keywords = "check for updates automatic daily github notification notify"),
     )
 }
 

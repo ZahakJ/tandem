@@ -147,7 +147,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | Backups (`data/Backup.kt`, `ui/BackupScreen.kt`) | Play & system › Your data › Back up (parts to include, account keys) and Restore (backups newest first, X deletes; then parts to put back) | link |
 | (about) | Play & system › About › About Tandem (version and licence) | action |
 | Update check (`Updates.kt`) | Play & system › About › Check now (this version and the update's state: Up to date, 0.4.1 available, Downloading 42 %, Verifying, or what went wrong; A checks, or shows the update) | action |
-| `Settings.checkUpdates` | Play & system › About › More › Check for updates (once a day while Tandem is open; not in builds with `-PselfUpdate=false`) | toggle |
+| `Settings.checkUpdates` | Play & system › About › Check automatically (once a day while Tandem is open, with a toast once and the Start panel row; off, only Check now looks; not in builds with `-PselfUpdate=false`) | toggle |
 | Frame timing overlay, theme tour (`dev` preferences, `DevTools`) | Play & system › About › More › Frame timing overlay / Tour every theme | switch / action |
 | `Settings.welcomeDone` | Shown once after the first scan; not a row | n/a |
 | Game switcher, quick settings panel | Hold Select / hold Start anywhere, or what they are rebound to (a note under Controls › Buttons shows the live bindings) | n/a |
