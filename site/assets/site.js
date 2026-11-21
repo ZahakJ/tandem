@@ -31,3 +31,12 @@
   }, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 });
   items.forEach((el) => seen.observe(el));
 })();
+
+// The hero's tour stays on its first picture for people who asked for less motion.
+(function () {
+  var v = document.querySelector(".hero video");
+  if (v && window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    v.removeAttribute("autoplay");
+    v.pause();
+  }
+})();

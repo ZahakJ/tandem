@@ -9,6 +9,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-FFB4A2" alt="GPL-3.0-or-later"></a>
 </p>
 
+<p align="center">
+  <img src="site/assets/screenshots/demo.webp" alt="A short tour of Tandem on the AYN Thor's top screen: moving along Continue playing, opening the Nintendo 3DS system and its folders, the Start panel, the quick settings panel with brightness, volume and device tiles, and Settings." width="820">
+</p>
+
 Tandem is a free, open-source game frontend for Android handhelds, made for
 dual-screen devices like the AYN Thor. The top screen is your library; the
 bottom screen shows the art and details for whatever is highlighted. Pick a game
