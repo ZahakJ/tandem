@@ -192,6 +192,29 @@ fun PickRow(
     }
 }
 
+/**
+ * Where a number sits between its ends, as a slider: a track filled up to [fraction] (0..1) with a knob there,
+ * which glides when the number changes. [start] and [end] name the ends, under it.
+ */
+@Composable
+fun ValueTrack(fraction: Float, color: Color, modifier: Modifier = Modifier, start: String? = null, end: String? = null) {
+    val f by androidx.compose.animation.core.animateFloatAsState(fraction.coerceIn(0f, 1f), Motion.focus(), label = "track")
+    Column(modifier) {
+        BoxWithConstraints(Modifier.fillMaxWidth().height(16.dp), contentAlignment = Alignment.CenterStart) {
+            val knob = 16.dp
+            Box(Modifier.fillMaxWidth().height(6.dp).clip(CircleShape).background(color.copy(alpha = 0.18f)))
+            Box(Modifier.width((maxWidth - knob) * f + knob / 2).height(6.dp).clip(CircleShape).background(color))
+            Box(Modifier.offset(x = (maxWidth - knob) * f).size(knob).clip(CircleShape).background(color).padding(4.dp).clip(CircleShape).background(Palette.OnAccent))
+        }
+        if (start != null || end != null) {
+            Row(Modifier.fillMaxWidth().padding(top = 2.dp)) {
+                Text(start.orEmpty(), Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+                Text(end.orEmpty(), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+            }
+        }
+    }
+}
+
 /** How a [ChoicePopup] or [PictureToggle] says "this one": a filled round check. */
 @Composable
 fun TickBadge(on: Boolean, color: Color, modifier: Modifier = Modifier, size: Dp = 22.dp) {

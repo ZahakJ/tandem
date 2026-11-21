@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -272,7 +273,9 @@ private fun LengthEditor() {
         PanelSurface(Modifier.width(470.dp)) {
             SessionHeader(cur, game)
             Spacer(Modifier.height(14.dp))
-            StepCard("Length", formatPlayLong(seconds), Palette.Mint, Modifier.takesFocus(LENGTH, "value", target == "value"), { step(it) })
+            StepCard("Length", formatPlayLong(seconds), Palette.Mint, Modifier.takesFocus(LENGTH, "value", target == "value"), { step(it) }) {
+                ValueTrack(lengthFraction(seconds), Palette.Mint, start = "1 min", end = "24 h")
+            }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 ButtonHint("◀▶", "1 min")
@@ -327,8 +330,12 @@ private fun DateEditor() {
                 Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 4.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                StepCard("Day", t.format(dayFormat), Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }) { row = "day" }
-                StepCard("Time", t.format(timeFormat), Palette.Mint, Modifier.takesFocus(DATE, "time", target == "time"), { step("time", it, false) }) { row = "time" }
+                StepCard("Day", t.format(dayFormat), Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }, { row = "day" }) {
+                    WeekStrip(t, Palette.Sky)
+                }
+                StepCard("Time", t.format(timeFormat), Palette.Mint, Modifier.takesFocus(DATE, "time", target == "time"), { step("time", it, false) }, { row = "time" }) {
+                    ValueTrack((t.hour * 60 + t.minute) / 1440f, Palette.Mint, start = "Midnight", end = "Midnight")
+                }
             }
             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 ButtonHint("◀▶", "Change")
@@ -349,25 +356,62 @@ private fun DateEditor() {
     }
 }
 
-/** A row whose value ◀▶ changes; also tappable arrows for touch. [onFocus] says this row is the one L1 / R1 step. */
+/**
+ * A row whose value ◀▶ changes, with where it sits shown [under] it (a slider, the week); also tappable arrows for
+ * touch. [onFocus] says this row is the one L1 / R1 step.
+ */
 @Composable
-private fun StepCard(label: String, value: String, color: Color, modifier: Modifier, onStep: (Int) -> Unit, onFocus: () -> Unit = {}) {
+private fun StepCard(label: String, value: String, color: Color, modifier: Modifier, onStep: (Int) -> Unit, onFocus: () -> Unit = {}, under: @Composable () -> Unit) {
     FocusCard(
-        modifier.fillMaxWidth().height(52.dp).onPreviewKeyEvent { e ->
+        modifier.fillMaxWidth().onPreviewKeyEvent { e ->
             val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
             if (e.type == KeyEventType.KeyDown) onStep(d)
             true
         },
-        glow = color, shape = RoundedCornerShape(14.dp), onFocus = onFocus, onClick = {},
+        glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onFocus = onFocus, onClick = {},
     ) { focused ->
-        Row(Modifier.fillMaxSize().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("‹", Modifier.clickable { onStep(-1) }.padding(horizontal = 10.dp), style = MaterialTheme.typography.titleLarge, color = if (focused) color else Palette.Muted)
-            Text(value, Modifier.width(150.dp), style = MaterialTheme.typography.titleMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-            Text("›", Modifier.clickable { onStep(1) }.padding(horizontal = 10.dp), style = MaterialTheme.typography.titleLarge, color = if (focused) color else Palette.Muted)
+        Column(Modifier.fillMaxWidth().padding(start = 14.dp, end = 14.dp, top = 8.dp, bottom = 10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("‹", Modifier.clickable { onStep(-1) }.padding(horizontal = 10.dp), style = MaterialTheme.typography.titleLarge, color = if (focused) color else Palette.Muted)
+                Text(value, Modifier.width(170.dp), style = MaterialTheme.typography.titleMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+                Text("›", Modifier.clickable { onStep(1) }.padding(horizontal = 10.dp), style = MaterialTheme.typography.titleLarge, color = if (focused) color else Palette.Muted)
+            }
+            Spacer(Modifier.height(6.dp))
+            under()
         }
     }
 }
+
+/** A session length as a slider from a minute to a day, spread so the usual lengths (minutes to hours) get most of it. */
+private fun lengthFraction(seconds: Long): Float {
+    val span = (PlayHistory.MAX_SECONDS - PlayHistory.MIN_SECONDS).toFloat()
+    return Math.sqrt(((seconds - PlayHistory.MIN_SECONDS) / span).coerceIn(0f, 1f).toDouble()).toFloat()
+}
+
+/** The week of [t], Monday to Sunday, with its day lit; days still to come are faded, as a session can't be in them. */
+@Composable
+private fun WeekStrip(t: ZonedDateTime, color: Color) {
+    val monday = t.toLocalDate().minusDays((t.dayOfWeek.value - 1).toLong())
+    val today = java.time.LocalDate.now(zone)
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        for (i in 0 until 7) {
+            val d = monday.plusDays(i.toLong())
+            val on = d == t.toLocalDate()
+            Column(
+                Modifier.weight(1f).clip(RoundedCornerShape(10.dp)).background(if (on) color else color.copy(alpha = 0.08f))
+                    .graphicsLayer { alpha = if (d.isAfter(today)) 0.35f else 1f }.padding(vertical = 3.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                val ink = if (on) Palette.OnAccent else Palette.Text
+                Text(d.format(weekdayFormat), style = MaterialTheme.typography.labelSmall, color = ink.copy(alpha = 0.8f), maxLines = 1)
+                Text("${d.dayOfMonth}", style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1)
+            }
+        }
+    }
+}
+
+private val weekdayFormat = DateTimeFormatter.ofPattern("EEE")
 
 /** What "Clear all sessions" says about [these]. */
 internal fun clearDetail(these: List<PlaySession>, title: String?): String {
