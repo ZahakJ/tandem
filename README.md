@@ -79,7 +79,7 @@ the app: see [Systems and emulators](docs/guide/platforms.md).
 
 ## Install
 
-- **[GitHub Releases](https://github.com/ZahakJ/tandem/releases/latest):** download `tandem-<version>.apk` and open it on your handheld. After that Tandem tells you when a new version is out and installs it when you press Update ([how](docs/guide/getting-started.md#updates)).
+- **[GitHub Releases](https://github.com/ZahakJ/tandem/releases/latest):** download `tandem-<version>.apk` and open it on your handheld. After that Tandem tells you when a new version is out and installs it when you press Update ([how](docs/guide/getting-started.md#software-updates)).
 - **[Obtainium](https://obtainium.imranr.dev/):** add `https://github.com/ZahakJ/tandem` to get updates straight from releases.
 - **F-Droid:** planned; the listing is ready in [`fastlane/`](fastlane/metadata/android/en-US).
 
