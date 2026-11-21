@@ -133,7 +133,7 @@ With an app open on the bottom screen over the game, **Home** brings the game an
 pausing the game; press it again for Tandem. From the game itself, Home goes to Tandem.
 
 ![The Game art style while Pokémon Emerald runs: the game's art and logo, the time played this session and in total, and Back to Tandem and Companion buttons.](../../site/assets/screenshots/ingame-art.webp "Game art, the default while you play")
-![The Tandem companion style on the bottom screen while a game plays: Pip, clock and battery, session time, dock apps, brightness and volume, and Back to Tandem, Game art and Close game buttons.](images/companion.png "The Tandem companion")
+![The in-game art screen on the bottom screen while a game runs.](../../site/assets/screenshots/ingame-art.webp "The in-game art screen")
 
 The bottom screen answers touch only; the controller stays with the game. Tapping a dock app gives that app the
 controls until you touch the game's screen again, as Android always does. **Close game** needs Shizuku and asks for

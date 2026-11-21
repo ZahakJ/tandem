@@ -27,18 +27,18 @@ Installed from GitHub Releases, Tandem keeps itself up to date, and nothing inst
 
 **How it works.** Once a day while Tandem is open, it asks GitHub for the number of its latest release (nothing else is sent). When a newer one is out:
 
-- a message says so once (**Tandem 0.6.2 is out · open Start to update**), never over a game;
-- a quiet **Tandem 0.6.2 is out** row waits in the Start panel until you update.
+- a message says so once (**Tandem 0.6.1 is out · open Start to update**), never over a game;
+- a quiet **Tandem 0.6.1 is out** row waits in the Start panel until you update.
 
-![The Start panel with the Tandem 0.6.2 is out row, A to update.](../../site/assets/screenshots/guide/update-start-row.webp "A new version in the Start panel")
+![The Start panel with the Tandem 0.6.1 is out row, A to update.](../../site/assets/screenshots/guide/update-start-row.webp "A new version in the Start panel")
 
 Press A on that row to read the release notes, then **Update** (or **Not now**). Tandem downloads the APK, checks it against the release's `SHA256SUMS` and Tandem's own signing key, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm. Tandem restarts on the new version with your data as it was.
 
-![The update popup: Tandem 0.6.2 is out, its release notes, and the Update and Not now buttons.](../../site/assets/screenshots/guide/update-popup.webp "A new version, ready to install")
+![The update popup: Tandem 0.6.1 is out, its release notes, and the Update and Not now buttons.](../../site/assets/screenshots/guide/update-popup.webp "A new version, ready to install")
 
-**Checking by hand.** **Settings › Play & system › About › Check now** asks GitHub at once and shows where things stand: *Up to date*, *0.6.2 available* (A opens the notes and Update), the download's progress, or what went wrong.
+**Checking by hand.** **Settings › Play & system › About › Check now** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (A opens the notes and Update), the download's progress, or what went wrong.
 
-![Settings › Play & system › About: About Tandem, Check now showing the version and Up to date, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
+![Settings › Play & system › About: About Tandem, Check now showing 0.6.1 available, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
 
 **Turning the automatic check off.** Switch **Settings › Play & system › About › Check automatically** off: Tandem then never asks GitHub by itself, shows no message and no Start panel row, and updates only when you press **Check now** and then **Update**. Private mode skips the automatic check too. You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
 
@@ -96,8 +96,8 @@ After the first scan, Pip walks you through a few choices. Every step can be ski
 5. **Make Tandem your Home screen?** Then Home always brings you back to Tandem. Android asks you to confirm.
 6. **All set. Let's play!** The four buttons worth knowing: Y options, X search (or swap screens on the home), Start the Start panel (hold: quick settings), Select surprise me (hold: game switcher).
 
-![The welcome's first step: Which home feels like yours?, with four homes drawn side by side.](images/welcome-home.png "The welcome: pick a home")
-![The welcome's Artwork & details step: six source tiles and the Get LaunchBox button.](images/welcome-art.png "The welcome: artwork sources")
+![The welcome's first step: Which home feels like yours?, with four homes drawn side by side.](../../site/assets/screenshots/guide/welcome-home.webp "The welcome: pick a home")
+![The welcome's Artwork & details step: six source tiles, LaunchBox and libretro ready with no account, the others needing a key or turned off, and Next.](../../site/assets/screenshots/guide/welcome-art.webp "The welcome: artwork sources")
 
 ## Get artwork
 
@@ -121,7 +121,7 @@ The bottom screen shows details for whatever is highlighted. Move with the D-pad
 
 Along the top of most screens (not on the icon grid, which gives its icons the whole screen) runs the **top bar**: where you are, a **✦ Scraping** pill while a scrape runs, **▶ 2 open** while games are running (the game switcher), the games view chip inside a system, **★ Stats**, **◐ Quick** (quick settings), the battery and the clock. Press Up to reach it and Down to go back to the page.
 
-![The Y menu on a game: Play, Favorite, Status, Add to Up next, Pin to home, Notes, Edit details and More….](images/game-menu.png "Y on a game")
+![The Y menu on Animal Crossing: New Horizons: Play, Favorite, Status, Add to Up next, Notes, Edit details and More….](../../site/assets/screenshots/guide/game-menu.webp "Y on a game")
 
 To play, highlight a game and press A. Tandem starts it in the system's emulator. When you come back to Tandem (with Home, or by quitting the emulator), your place in the library is just as you left it.
 

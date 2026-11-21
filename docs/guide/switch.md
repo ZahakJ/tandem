@@ -56,8 +56,7 @@ most every 30 seconds). A game is matched to Peanuts' library by its file, by th
 
 No row shows for a game Peanuts has no profile for. Its progress also shows in Peanuts' own app.
 
-![The bottom screen with a Switch game Peanuts Native has built highlighted: its art, logo and the ⚡ Native badge.](images/peanuts-native-badge.png "A game Peanuts Native has built")
-![The Y menu on a Switch game Peanuts Native can build, with Build native version highlighted.](images/build-native.png "Build native version")
+![The bottom screen with a Switch game Peanuts Native has built highlighted: its art, logo and the ⚡ Native badge.](../../site/assets/screenshots/guide/peanuts-native-badge.webp "A game Peanuts Native has built")
 
 **The bottom screen.** Peanuts Native draws a game's second screen itself when it ships a companion for that game, so
 Tandem leaves the bottom screen to it (the **Leave to emulator** style). For a built game without a companion, the
@@ -74,7 +73,6 @@ Eden Duo and you carry on from the native one.
 When it copies, Pip says **Carried on from your Eden Duo save** or **Carried on from your native save**. When the two
 saves are the same age, nothing is copied and nothing is said.
 
-![Pip's message in the top-right corner as a Switch game starts: Carried on from your Eden Duo save.](images/save-sync-toast.png "The save came across")
 
 ### What it needs
 

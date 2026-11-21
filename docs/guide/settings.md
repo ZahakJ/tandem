@@ -3,7 +3,7 @@
 Every row in Tandem's Settings, page by page: what it does in plain words, and what it is set to until you change
 it. Open Settings with <kbd>Start</kbd> › **Settings** (or Start › Settings ▸ straight to one page).
 
-![Settings opened on its seven tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system.](images/settings-home.png "Settings: one tile per page")
+![Settings opened on its seven tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system.](../../site/assets/screenshots/guide/settings-home.webp "Settings: one tile per page")
 
 **Finding a setting.** Settings opens on seven tiles, one per page. On a page, rows sit in short groups, and the rarer
 ones fold under **More options** at the end of a group (A opens them). <kbd>X</kbd> searches every row, folded ones
@@ -134,7 +134,7 @@ it mutes Tandem too.
 
 ## Library & art
 
-![The Library & art page: the Games, Systems and Artwork groups, with Set up sources highlighted and its help on the right.](images/settings-library-art.png "Settings › Library & art")
+![The Library & art page: the Systems and Artwork groups, with Set up sources highlighted and its help on the right.](../../site/assets/screenshots/guide/settings-library-art.webp "Settings › Library & art")
 
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |

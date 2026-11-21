@@ -171,7 +171,7 @@ For `ROMs/windows/Some Game.steam`, that is `icon/Some Game.jpg`, `hero/Some Gam
 **Steam achievements.** With your own Steam Web API key and account, Tandem shows a Steam game's achievements and
 tells you what you unlocked when you come back from playing. See [Steam achievements](#steam-achievements).
 
-![The bottom screen's details for a highlighted game: its art filling the screen and fading into the logo, chips, status, play time, HowLongToBeat estimate and description.](images/game-details-bottom.png "A game's details on the bottom screen")
+![The bottom screen's details for a highlighted game: its art filling the screen and fading into the logo, chips, play time and description.](../../site/assets/screenshots/guide/game-details-bottom.webp "A game's details on the bottom screen")
 
 ## Collections
 

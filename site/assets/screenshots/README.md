@@ -32,6 +32,26 @@ the landing page (`site/index.html`) and the README. They are WebP, resized to
 | `start-panel.webp` | Top | The Start side panel |
 | `screensaver.webp` | Top | The screensaver |
 
+### `guide/`: the user guide's shots
+
+| File | Screen | What it shows |
+| --- | --- | --- |
+| `guide/welcome-home.webp` | Top | The welcome's first step, four homes |
+| `guide/welcome-art.webp` | Top | The welcome's Artwork & details step |
+| `guide/settings-home.webp` | Top | Settings, its seven tiles |
+| `guide/settings-library-art.webp` | Top | Library & art with Set up sources highlighted |
+| `guide/set-up-sources.webp` | Top | The Artwork & details setup popup |
+| `guide/launchbox-card.webp` | Top | LaunchBox's source card |
+| `guide/steamgriddb-card.webp` | Top | SteamGridDB's source card |
+| `guide/scrape-running.webp` | Bottom | The scrape card while a scrape runs |
+| `guide/scrape-done.webp` | Bottom | The scrape card after a scrape |
+| `guide/game-menu.webp` | Top | Y on a game |
+| `guide/game-menu-more.webp` | Top | Y › More… on a Switch game |
+| `guide/top-bar.webp` | Top | The top bar with Stats highlighted |
+| `guide/systems-emulators.webp` | Top | A system in Systems and emulators |
+| `guide/game-details-bottom.webp` | Bottom | A highlighted game's details |
+| `guide/peanuts-native-badge.webp` | Bottom | A natively built Switch game, ⚡ Native |
+
 ## Before capturing
 
 - Use a library of family-friendly games, and make sure nothing hidden is showing:

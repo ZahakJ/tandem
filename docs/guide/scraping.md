@@ -15,7 +15,7 @@ PC) as well as classic ones. Tandem downloads its index once and looks your game
 nothing about your games is sent anywhere. **libretro thumbnails** also needs no account and is always ready; it is
 great for classic systems and has nothing for Switch, Wii U or PC games.
 
-![The Artwork & details setup popup: six sources in order, ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat, each with its state.](images/set-up-sources.png "Settings › Library & art › Set up sources")
+![The Artwork & details setup popup: six sources in order, ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat, each with its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
 
 1. Open **Settings › Library & art** (Start › Settings ▸ › Library & art) and press A on **Set up sources**. The
    **Artwork & details setup** popup lists every source in the order they are asked, each with its state.
@@ -26,7 +26,7 @@ great for classic systems and has nothing for Switch, Wii U or PC games.
 5. **Done**, then <kbd>B</kbd> to close the list. Back on Library & art, press A on **Scrape library**, and on the
    scrape screen press A on **Start scraping**.
 
-![LaunchBox's card: No account needed, what it gives and sends, Not downloaded yet, and the Turn off, Download (105 MB), Test and Done buttons.](images/launchbox-card.png "The LaunchBox card, before its download")
+![LaunchBox's card: No account needed, what it gives and sends, how many games are on this device, and the Turn off, Download again, Test and Done buttons.](../../site/assets/screenshots/guide/launchbox-card.webp "The LaunchBox card")
 
 You can also skip step 3: when you start a scrape and LaunchBox hasn't been downloaded, Tandem asks **Download
 LaunchBox's games database?** with **Download & scrape** (download it, then scrape) or **Skip LaunchBox** (scrape
@@ -60,8 +60,8 @@ You have 40 Switch games, some with no box art, and you never set up any source.
    library** again shows the finished run: **All done!**, the new covers, and **Missed**, the games no source knew,
    to pick art for by hand (Y › More › **Choose artwork**).
 
-![The scrape screen while running: Pip, Finding art…, 18 of 40 games, the counts of games with new artwork, and covers popping in on the right.](images/scrape-running.png "A scrape under way")
-![The scrape card at the foot of the bottom screen after a scrape: New art for 12 games · details for 30, with the found, details, missing and complete counts.](images/scrape-done.png "A finished scrape on the bottom screen")
+![The scrape card on the bottom screen while a scrape runs: Finding art…, 196 of 198, the source being asked and the time left, with Pause and Cancel.](../../site/assets/screenshots/guide/scrape-running.webp "A scrape under way")
+![The scrape card at the foot of the bottom screen after a scrape: New art for 5 games · details for 173, with the found, details, missing, failed and complete counts.](../../site/assets/screenshots/guide/scrape-done.webp "A finished scrape on the bottom screen")
 
 ## Better coverage with free keys (optional)
 
@@ -83,7 +83,7 @@ Community-made covers, hero art and logos, matched by title. Great for PC and Sw
    key on the on-screen keyboard and press **Done**.
 4. **Test**: it should say "Found Super Mario Odyssey with … heroes".
 
-![SteamGridDB's card: Free account, the three steps to get a key, the API key button, and Turn off, Test and Done.](images/steamgriddb-card.png "The SteamGridDB card")
+![SteamGridDB's card: Free account, the three steps to get a key, the API key button, and Turn off, Test and Done.](../../site/assets/screenshots/guide/steamgriddb-card.webp "The SteamGridDB card")
 
 ### ScreenScraper (optional, needs developer credentials)
 

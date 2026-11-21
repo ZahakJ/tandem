@@ -96,7 +96,7 @@ A tap on <kbd>Start</kbd> folds a panel open from the left. B goes back a page, 
 | Theme ▸ | Every theme and theme pack, applied at once |
 | Sounds & music ▸ | Music on or off, and every sound pack: Tandem's eight and any recorded ones |
 | Quick settings | The same panel as holding Start |
-| Tandem 0.6.2 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Software updates](getting-started.md#software-updates)) |
+| Tandem 0.6.1 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Software updates](getting-started.md#software-updates)) |
 | Settings ▸ | All settings, or straight to one of the seven pages (and Import my Cocoon setup, when a Cocoon backup is there) |
 | Screensaver | Starts the screensaver now |
 
@@ -119,7 +119,7 @@ where you are (**Tandem › Nintendo 3DS › RPG**), then on the right:
 Press <kbd>Up</kbd> from the top of a page to reach the bar, Left and Right to move along it, and <kbd>Down</kbd> to go
 back to the page, onto what you had highlighted there.
 
-![The top bar over a system's games: Tandem › Nintendo Switch on the left, the Grid, Stats and Quick chips, the battery and the clock on the right, with Stats highlighted.](images/top-bar.png "The top bar")
+![The top bar over a system's games: Tandem › Nintendo 3DS on the left, the Grid, Stats and Quick chips, the battery and the clock on the right, with Stats highlighted.](../../site/assets/screenshots/guide/top-bar.webp "The top bar")
 
 ## Quick settings
 
@@ -240,7 +240,7 @@ Y on anything lifts it out of the screen, a little bigger, over a blurred backgr
 
 **On a game:** Play (or Resume), Favorite, Status (Backlog, Playing, Finished, Completed, Shelved, Endless or none; see [Game status](library.md#game-status)), Add to Up next, Pin to home (icon grid), Build native version and Building natively (Switch games Peanuts Native can build; see [Switch games](switch.md#peanuts-native)), Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Achievements (Steam games, once signed in), Edit details. More: Emulator (A cycles through the installed ones that take this file), Start on (top or bottom screen), Bottom screen while playing, Performance mode, Fan mode and Refresh rate (AYN handhelds; see [Performance profiles](ayn-thor.md#performance-profiles)), Choose artwork, Scrape this game, Hide this game, Play sessions… and Reset play history (once played), Delete game… (Uninstall app… for an Android game), View options.
 
-![The More page of a game's Y menu: Emulator with Eden Duo, Start on, Bottom screen while playing, Choose artwork, Scrape this game, Hide this game and Delete game….](images/game-menu-more.png "Y › More… on a game")
+![The More page of a game's Y menu: Emulator with Eden Duo, Start on, Bottom screen while playing, Performance mode, Fan mode, Refresh rate and Choose artwork; Scrape this game, Hide this game and Delete game… are further down.](../../site/assets/screenshots/guide/game-menu-more.webp "Y › More… on a game")
 
 **On a system, collection or genre:** Open, Rescan games, Scrape these games, Hide this system (or Hide this folder; Unhide once hidden), Sort by, Game titles, Show hidden games. A on a system in **Systems and emulators** opens its emulator, start screen and **Bottom screen while playing** (see [Systems and emulators](platforms.md#the-systems-and-emulators-screen)).
 

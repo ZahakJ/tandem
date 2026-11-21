@@ -78,7 +78,7 @@ screenshots from the bottom screen, the Deck, performance profiles, Peanuts Nati
 ### How do I update Tandem, or turn off update notifications?
 
 Installed from GitHub Releases, Tandem checks once a day and tells you when a new version is out: a message once, and
-a **Tandem 0.6.2 is out** row in the Start panel. Press A on it, then **Update**; nothing installs before that.
+a **Tandem 0.6.1 is out** row in the Start panel. Press A on it, then **Update**; nothing installs before that.
 **Settings › Play & system › About › Check now** checks at once.
 
 To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › About › Check

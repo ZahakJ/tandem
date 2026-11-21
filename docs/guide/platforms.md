@@ -50,7 +50,7 @@ A on a system opens its page:
 
 A game can still use another emulator than its system's: Y on it › More › **Emulator**.
 
-![A system's page in Systems and emulators: Show in library, Start games on, Bottom screen while playing, the Emulators list with Default ✓ and Make default, and the Folders.](images/systems-emulators.png "A system in Systems and emulators")
+![A system's page in Systems and emulators: Show in library, Start games on, Bottom screen while playing, the Emulators list with Default ✓ and Make default, and the Folders.](../../site/assets/screenshots/guide/systems-emulators.webp "A system in Systems and emulators")
 
 ## Using your own platforms.json
 
