@@ -15,18 +15,19 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,9 +40,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.plural
 import io.github.zahakj.tandem.CocoonPlatforms
 import io.github.zahakj.tandem.Emulators
@@ -59,28 +66,84 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-/** Every system with its games, for the Systems screen. */
-private class SystemInfo(val platform: Platform, val games: List<Game>)
+/** A system with its games and its pictures (looked up off the main thread along with the games). */
+internal class SystemEntry(val platform: Platform, val games: List<Game>, val icon: File?, val hero: File?, val maker: String?) {
+    val id: String get() = platform.id
+    val color: Color get() = SystemColors.of(platform.id)
+
+    /** Whether a search for [q] finds it: by name, short name, maker, id or another name it goes by. */
+    fun matches(q: String): Boolean =
+        q.isEmpty() || listOfNotNull(platform.name, platform.shortName, platform.id, maker).any { it.contains(q, ignoreCase = true) } ||
+            platform.aliases.any { it.contains(q, ignoreCase = true) }
+}
+
+/** The Systems screen's tabs, instead of three long sections one under the other. */
+internal enum class SystemsTab(val label: String, val short: String) {
+    Library("In your library", "Library"), Off("Turned off", "Off"), More("More systems", "More");
+
+    val color: Color get() = when (this) { Library -> Palette.Mint; Off -> Palette.Lavender; More -> Palette.Sky }
+
+    companion object {
+        /** A system turned off is Off whatever it holds; otherwise it is in the library once it has a game. */
+        fun of(e: SystemEntry): SystemsTab = when {
+            SystemPrefs.data.systems[e.id]?.enabled == false -> Off
+            e.games.isEmpty() -> More
+            else -> Library
+        }
+    }
+}
 
 /**
- * Systems: turn systems on and off, pick each one's default emulator (installed ones first, with a link to get the
- * rest), choose the screen its games start on, and add game folders from anywhere with the folder picker.
+ * Most games first, so what you play is at the start of the library; ties (every system in More has none) go by
+ * maker, then name, which keeps a maker's systems together instead of scattering them through the alphabet.
+ */
+private val SystemOrder = compareByDescending<SystemEntry> { it.games.size }
+    .thenBy { SystemMakers.rank(it.maker) }.thenBy { it.maker.orEmpty() }.thenBy { it.platform.name.lowercase() }
+
+/** The tab you were on, kept while you're elsewhere so coming back finds it. */
+private object SystemsMemory {
+    var tab by mutableStateOf<SystemsTab?>(null)
+}
+
+/** The grid's place in the screen's focus memory (the search field and tabs have their own keys). */
+private const val GRID = "grid"
+
+/** The narrowest a system tile gets; the grid fits as many across as that allows. */
+private val TileMin = 118.dp
+private val TileGap = 14.dp
+private val TilePad = 10.dp
+/** Under the art: the name and the game count. */
+private val TileText = 50.dp
+
+/**
+ * Systems: every system Tandem knows as a grid of tiles with its art, in three tabs (In your library, Turned off,
+ * More systems) with a search over names and makers. A on a system opens its page (SystemPage.kt): its emulators,
+ * the screen its games start on, what the bottom screen shows meanwhile, and its folders. X searches, L1 and R1 flip
+ * the tabs.
  */
 @Composable
 fun SystemsScreen() {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     var version by remember { mutableIntStateOf(0) }
-    // Counts leave hidden games out (a hidden system looks empty) unless they are showing.
-    val systems by produceState<List<SystemInfo>?>(null, version, io.github.zahakj.tandem.Privacy.view) {
+    val packs = IconPacks.version
+    // Counts leave hidden games out (a hidden system looks empty) unless they are showing. The pack art is found
+    // here too, off the main thread, so no tile looks for files while it is drawn.
+    val systems by produceState<List<SystemEntry>?>(null, version, io.github.zahakj.tandem.Privacy.view, packs) {
         value = withContext(Dispatchers.IO) {
             val all = Platforms.all(ctx)
             val found = Library.find(all).games
-            all.map { SystemInfo(it, io.github.zahakj.tandem.Collections.visible(found[it.id].orEmpty())) }
+            all.map { p ->
+                SystemEntry(
+                    p, io.github.zahakj.tandem.Collections.visible(found[p.id].orEmpty()),
+                    IconPacks.systemIcon(p.id), IconPacks.systemHero(p.id), SystemMakers.of(p.id),
+                )
+            }
         }
     }
     var open by remember { mutableStateOf<String?>(null) }
     var pickFor by remember { mutableStateOf<String?>(null) }
+    var query by remember { mutableStateOf("") }
     val changed: () -> Unit = { version++; scope.launch { reloadLibrary(ctx) } }
 
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
@@ -108,196 +171,211 @@ fun SystemsScreen() {
         return
     }
     val prefs = SystemPrefs.data
-    val mine = list.filter { it.games.isNotEmpty() && prefs.systems[it.platform.id]?.enabled != false }
-    val off = list.filter { prefs.systems[it.platform.id]?.enabled == false }
-    val more = list.filter { it.games.isEmpty() && prefs.systems[it.platform.id]?.enabled != false }
+    val byTab = remember(list, prefs) { list.groupBy { SystemsTab.of(it) }.mapValues { (_, v) -> v.sortedWith(SystemOrder) } }
+    val q = query.trim()
+    val found = remember(byTab, q) { SystemsTab.entries.associateWith { t -> byTab[t].orEmpty().filter { it.matches(q) } } }
+    val tab = SystemsMemory.tab ?: if (byTab[SystemsTab.Library].isNullOrEmpty()) SystemsTab.More else SystemsTab.Library
     val routeKey = Route.Systems.key
-    val first = (mine + off + more).firstOrNull()?.platform?.id
+    val shown = found[tab].orEmpty()
 
-    val listState = rememberRouteListState(routeKey)
-    LazyColumn(
-        Modifier.fillMaxSize().fadingEdges(listState),
-        state = listState,
-        contentPadding = PaddingValues(start = 22.dp, end = 22.dp, top = FocusRoom, bottom = 32.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        for ((title, group, color) in listOf(
-            Triple("In your library", mine, Palette.Mint),
-            Triple("Turned off", off, Palette.Lavender),
-            Triple("More systems · add a folder to start", more, Palette.Sky),
-        )) {
-            if (group.isEmpty()) continue
-            item(key = "h:$title") { SectionTitle(title, color, Modifier.padding(top = 8.dp)) }
-            items(group, key = { it.platform.id }) { info ->
-                SystemRow(info, Modifier.remembersFocus(routeKey, info.platform.id, info.platform.id == first)) { open = info.platform.id }
+    fun choose(t: SystemsTab, moveFocus: Boolean) {
+        if (t == tab) return
+        SystemsMemory.tab = t
+        Sounds.page()
+        // From the grid, the highlight goes to the new tab's grid (or its tab, when it's empty).
+        if (moveFocus) Nav.focusTick++
+    }
+    val search = { TextEntry.ask("Search systems or makers", query, onChange = { query = it }) { query = it } }
+    // A search with nothing on this tab shows the tab that has some.
+    LaunchedEffect(q) {
+        if (q.isNotEmpty() && found[tab].isNullOrEmpty()) SystemsTab.entries.firstOrNull { found[it].orEmpty().isNotEmpty() }?.let { SystemsMemory.tab = it }
+    }
+
+    // X searches; L1 and R1 flip the tabs, as they turn pages elsewhere.
+    InterceptButtons(true) { b ->
+        val free = Nav.route == Route.Systems && !Nav.overlayOpen && Layers.top == null
+        when {
+            !free -> false
+            b == Button.X -> { search(); true }
+            b == Button.L1 || b == Button.R1 -> {
+                val all = SystemsTab.entries
+                choose(all[(all.indexOf(tab) + (if (b == Button.R1) 1 else -1) + all.size) % all.size], FocusMemory.get(routeKey).let { it == null || it == GRID })
+                true
             }
+            else -> false
         }
     }
 
-    val shown = list.firstOrNull { it.platform.id == open }
-    PanelGuard(open != null)
-    OverlayPanel(open != null, onClose = { open = null; Nav.focusTick++ }) {
-        if (shown != null) SystemPanel(shown, onChanged = changed, onAddFolder = { pickFor = shown.platform.id; picker.launch(null) })
+    fun close() {
+        val id = open ?: return
+        open = null
+        // Back lands on the tile that was opened, on whichever tab it is now (one just turned off is under Turned off).
+        list.firstOrNull { it.id == id }?.let { e ->
+            val t = SystemsTab.of(e)
+            if (e.matches(q)) {
+                SystemsMemory.tab = t
+                FocusMemory.remember("$routeKey:${t.name}", id)
+                FocusMemory.remember(routeKey, GRID)
+            }
+        }
+        Nav.focusTick++
     }
-}
 
-@Composable
-private fun SystemRow(info: SystemInfo, modifier: Modifier, onClick: () -> Unit) {
-    val p = info.platform
-    val color = Palette.forName(p.id)
-    val config = SystemPrefs.config(p.id)
-    // players reads the installed list, which is Compose state, so this row follows installs and removals.
-    val players = p.players
-    val default = players.firstOrNull()
-    FocusCard(
-        modifier.fillMaxWidth(), glow = color,
-        onFocus = {
-            FocusMemory.remember(Route.Systems.key, p.id)
-            Selection.current = Selected.Group(p.name, plural(info.games.size, "game"), info.games, color)
-        },
-        entry = true,
-        onClick = onClick,
-    ) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                Modifier.size(width = 74.dp, height = 40.dp).clip(RoundedCornerShape(12.dp))
-                    .background(Brush.linearGradient(listOf(color, color.copy(alpha = 0.45f)))),
-                contentAlignment = Alignment.Center,
-            ) { Text(p.shortName, style = MaterialTheme.typography.titleSmall, color = Palette.NightDeep, maxLines = 1, overflow = TextOverflow.Ellipsis) }
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(p.name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    // The grid has the focus unless the search field or a tab had it last, or there is nothing in the grid.
+    val memory = FocusMemory.get(routeKey)
+    val inGrid = (memory == null || memory == GRID) && shown.isNotEmpty()
+    val headerWant = if (inGrid) null else memory?.takeIf { it != GRID } ?: "tab:${tab.name}"
+    val header: () -> Unit = { Selection.current = Selected.Home }
+
+    Column(Modifier.fillMaxSize()) {
+        BoxWithConstraints(Modifier.fillMaxWidth().padding(start = 22.dp, end = 22.dp, top = 6.dp)) {
+            val wide = maxWidth >= 760.dp
+            Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                SearchField(
+                    query, if (wide) "Search systems or makers" else "Search", Modifier.weight(1f).takesFocus(routeKey, "search", headerWant == "search"),
+                    onFocus = header, onClick = search,
+                )
+                SystemsTab.entries.forEach { t ->
+                    FilterTab(
+                        if (wide) t.label else t.short, found[t].orEmpty().size, t.color, t == tab,
+                        Modifier.takesFocus(routeKey, "tab:${t.name}", headerWant == "tab:${t.name}"), onFocus = header,
+                    ) { choose(t, false) }
+                }
+            }
+        }
+        if (shown.isEmpty()) {
+            Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Pip(70.dp, mood = 2)
+                Spacer(Modifier.height(10.dp))
                 Text(
                     when {
-                        p.isApps -> "Installed games and apps you add"
-                        default != null -> "Plays with ${default.name}"
-                        p.allPlayers.isEmpty() -> "No emulator listed"
-                        else -> "Needs ${p.allPlayers.first().name}"
+                        q.isNotEmpty() -> "No systems match \"$q\""
+                        tab == SystemsTab.Off -> "Nothing is turned off. A system you turn off waits here, games and all"
+                        tab == SystemsTab.More -> "Every system Tandem knows has games already"
+                        else -> "No games yet. Open a system in More systems and add its folder"
                     },
-                    style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (config.bottomScreen) Pill("Bottom ↓", Palette.Sky)
-                if (!config.enabled) Pill("Off", Palette.Muted)
-                else if (default == null && !p.isApps) Pill("No emulator", Palette.Peach)
-                Pill(plural(info.games.size, "game"), color)
+        } else {
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                val side = 22.dp
+                val columns = ((maxWidth - side * 2 + TileGap) / (TileMin + TileGap)).toInt().coerceIn(2, 9)
+                val cell = (maxWidth - side * 2 - TileGap * (columns - 1)) / columns
+                val art = cell - TilePad * 2
+                // Each tab keeps its own place in the grid and its own highlighted tile.
+                val gridRoute = "$routeKey:${tab.name}"
+                val keys = shown.map { it.id }
+                val target = rememberFocusTarget(gridRoute, keys)
+                val grid = rememberRouteGridState(gridRoute)
+                KeepInView(grid, keys.indexOf(target))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    modifier = Modifier.fillMaxSize().fadingEdges(grid),
+                    state = grid,
+                    contentPadding = PaddingValues(start = side, end = side, top = FocusRoom, bottom = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(TileGap),
+                    verticalArrangement = Arrangement.spacedBy(TileGap),
+                ) {
+                    items(shown, key = { it.id }) { e ->
+                        SystemTile(
+                            e, art, Modifier.height(art + TilePad * 2 + TileText).takesFocus(gridRoute, e.id, inGrid && e.id == target),
+                            onFocus = {
+                                FocusMemory.remember(routeKey, GRID)
+                                Selection.current = Selected.Group(e.platform.name, plural(e.games.size, "game"), e.games, e.color)
+                            },
+                        ) { open = e.id }
+                    }
+                }
             }
+        }
+    }
+
+    val shownEntry = rememberLatest(list.firstOrNull { it.id == open })
+    PanelGuard(open != null)
+    OverlayPanel(open != null, onClose = { close() }) {
+        val e = shownEntry ?: return@OverlayPanel
+        BoxWithConstraints(contentAlignment = Alignment.Center) {
+            SystemPage(e, maxWidth, maxHeight, onChanged = changed, onAddFolder = { pickFor = e.id; picker.launch(null) })
         }
     }
 }
 
-/** The popup for one system. */
+/**
+ * One system as a tile: its art (the icon pack's, else Tandem's drawing of the device), its name and games, and
+ * on the art what needs saying: Off, No emulator, Bottom screen, and the emulator that plays it as its app icon.
+ */
 @Composable
-private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: () -> Unit) {
-    val ctx = LocalContext.current
-    val p = info.platform
-    val color = Palette.forName(p.id)
+private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+    val p = e.platform
+    val color = e.color
     val config = SystemPrefs.config(p.id)
-    val routeKey = "system:${p.id}"
-    val players = p.players
-    val default = players.firstOrNull()
-    val hasSecond = Facts.run { ensure(ctx); hasSecondScreen }
-    Column(
-        Modifier.width(620.dp).background(Palette.Card, RoundedCornerShape(26.dp)).padding(horizontal = 8.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Row(Modifier.padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                Modifier.size(width = 86.dp, height = 46.dp).clip(RoundedCornerShape(14.dp))
-                    .background(Brush.linearGradient(listOf(color, color.copy(alpha = 0.45f)))),
-                contentAlignment = Alignment.Center,
-            ) { Text(p.shortName, style = MaterialTheme.typography.titleMedium, color = Palette.NightDeep, maxLines = 1) }
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(p.name, style = MaterialTheme.typography.titleLarge)
-                Text(plural(info.games.size, "game"), style = MaterialTheme.typography.bodyMedium, color = color)
-            }
-        }
-        // Fits the screen (the popup room caps the panel), scrolls with soft ends, and leaves room for the highlight.
-        val rows = rememberLazyListState()
-        LazyColumn(
-            Modifier.weight(1f, fill = false).heightIn(max = 360.dp).fadingEdges(rows), state = rows,
-            contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+    // players reads the installed list, which is Compose state, so the tile follows installs and removals.
+    val default = if (p.isApps) null else p.players.firstOrNull()
+    val off = !config.enabled
+    FocusCard(modifier, glow = color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, entry = true, onClick = onClick) {
+        Column(
+            Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color.copy(alpha = 0.2f), color.copy(alpha = 0.03f)))).padding(TilePad),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            item("h:system") { SectionTitle("This system", color) }
-            item("show") {
-                fun toggle() {
-                    SystemPrefs.updateSystem(p.id) { it.copy(enabled = !it.enabled) }
-                    Toasts.show(if (config.enabled) "${p.shortName} is hidden from your library" else "${p.shortName} is back")
-                    onChanged()
+            Box(Modifier.size(art)) {
+                SystemArt(e, art, Modifier.graphicsLayer { alpha = if (off) 0.4f else 1f })
+                Column(Modifier.align(Alignment.TopStart).padding(5.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    when {
+                        off -> ArtBadge("Off", Palette.Muted)
+                        !p.isApps && default == null -> ArtBadge("No emulator", Palette.Peach)
+                    }
+                    if (config.bottomScreen) ArtBadge("Bottom", Palette.Sky, Glyph.Screens)
                 }
-                MenuRow("Show in library", onOff(config.enabled), "show", true, routeKey, Palette.Mint, Glyph.Eye, onSide = { toggle() }) { toggle() }
-            }
-            item("screen") {
-                fun toggle() {
-                    if (!hasSecond) {
-                        Toasts.show("I can only find one screen")
-                    } else {
-                        SystemPrefs.updateSystem(p.id) { it.copy(bottomScreen = !it.bottomScreen) }
-                        if (SystemPrefs.data.singleScreen) Toasts.show("Single screen mode is on in Settings, so games stay on top")
-                    }
+                if (default != null) {
+                    Box(
+                        Modifier.align(Alignment.BottomEnd).padding(4.dp).size(art * 0.28f).clip(RoundedCornerShape(30))
+                            .background(Palette.NightDeep.copy(alpha = 0.8f)).padding(2.dp),
+                    ) { AppIcon(default.packageName, Modifier.fillMaxSize()) }
                 }
-                MenuRow("Start games on", if (config.bottomScreen) "Bottom screen" else "Top screen", "screen", false, routeKey, Palette.Sky, Glyph.Screens,
-                    onSide = { toggle() }) { toggle() }
             }
-            item("companion") {
-                // What the bottom screen shows while one of these games plays on the top one (GameCompanion.kt).
-                val mode = io.github.zahakj.tandem.GameCompanion.systemMode(p)
-                val deck = io.github.zahakj.tandem.DeckGames.suits(p.id, players.firstOrNull()?.packageName)
-                fun step(by: Int) { SystemPrefs.updateSystem(p.id) { it.copy(companion = io.github.zahakj.tandem.GameCompanion.next(mode, deck, by)) } }
-                MenuRow("Bottom screen while playing", io.github.zahakj.tandem.GameCompanion.label(mode), "companion", false, routeKey, Palette.Lavender, Glyph.Image,
-                    onSide = ::step) { step(1) }
-            }
-            if (!p.isApps) {
-                item("h:emu") { SectionTitle("Emulators", Palette.Butter, Modifier.padding(top = 6.dp)) }
-                // Installed first; keyed by position, since imported players may share a name.
-                itemsIndexed(p.allPlayers.sortedBy { if (it in players) 0 else 1 }, key = { i, _ -> "emu:$i" }) { _, spec ->
-                    val isInstalled = spec in players
-                    val label = if (spec.origin != null && !spec.name.contains(spec.origin)) "${spec.name} · ${spec.origin}" else spec.name
-                    val value = when {
-                        spec == default -> "Default ✓"
-                        isInstalled -> "Make default"
-                        else -> "Get it"
-                    }
-                    MenuRow(label, value, "emu:${spec.name}", false, routeKey, if (isInstalled) Palette.Mint else Palette.Peach, Glyph.Gamepad) {
-                        when {
-                            spec == default -> Toasts.show("${spec.name} already plays ${p.shortName} games")
-                            isInstalled -> {
-                                SystemPrefs.updateSystem(p.id) { it.copy(player = spec.name) }
-                                Toasts.show("${spec.name} now plays ${p.shortName} games")
-                            }
-                            else -> if (!Emulators.openStore(ctx, spec)) Toasts.show("Couldn't open a store for ${spec.name}")
-                        }
-                    }
-                }
-                item("h:folders") { SectionTitle("Folders", Palette.Lavender, Modifier.padding(top = 6.dp)) }
-                items(p.folders, key = { "f:$it" }) { folder ->
-                    val dir = Library.folder(folder)
-                    val extra = folder in config.folders
-                    val value = when {
-                        extra -> "Remove"
-                        dir.isDirectory -> "Built in"
-                        else -> "Not there yet"
-                    }
-                    MenuRow(shortPath(dir), value, "f:$folder", false, routeKey, if (extra) Palette.Peach else Palette.Lavender, Glyph.Folder) {
-                        if (extra) {
-                            SystemPrefs.updateSystem(p.id) { it.copy(folders = it.folders - folder) }
-                            Toasts.show("Removed ${dir.name}")
-                            onChanged()
-                        } else {
-                            Toasts.show(if (dir.isDirectory) "Games in ${shortPath(dir)} show up here" else "Make ${shortPath(dir)} and put games in it")
-                        }
-                    }
-                }
-                item("add") { MenuRow("Add a folder…", "Pick", "add", false, routeKey, Palette.Mint, Glyph.Plus, onClick = onAddFolder) }
-            }
+            Spacer(Modifier.height(7.dp))
+            Text(p.name, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                if (e.games.isEmpty()) default?.name ?: "No games yet" else plural(e.games.size, "game"),
+                style = MaterialTheme.typography.labelMedium, color = if (e.games.isEmpty()) Palette.Muted else color,
+                textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
         }
+    }
+}
+
+/** A small dark label over art, readable on any picture. */
+@Composable
+internal fun ArtBadge(text: String, color: Color, glyph: Glyph? = null) {
+    Row(
+        Modifier.clip(RoundedCornerShape(50)).background(Palette.NightDeep.copy(alpha = 0.82f)).padding(horizontal = 7.dp, vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (glyph != null) {
+            Box(Modifier.size(11.dp)) { GlyphIcon(glyph, color) }
+            Spacer(Modifier.width(4.dp))
+        }
+        Text(text, style = MaterialTheme.typography.labelSmall, color = color, maxLines = 1)
+    }
+}
+
+/** A system's picture at [size]: the icon pack's own (as on the home grid), else Tandem's drawing of the device. */
+@Composable
+internal fun SystemArt(e: SystemEntry, size: Dp, modifier: Modifier = Modifier) {
+    val icon = e.icon
+    if (icon != null) {
+        AsyncImage(
+            rememberSizedRequest(icon, tilePx(size)), e.platform.name,
+            modifier.size(size).clip(RoundedCornerShape(size * 0.16f)), contentScale = ContentScale.Crop,
+        )
+    } else {
+        DrawnIcon(e.platform.shortName.ifBlank { e.platform.name }, Devices.of(e.id), e.color, size, modifier)
     }
 }
 
 /** "/storage/emulated/0/ROMs/gba" -> "ROMs/gba". */
-private fun shortPath(dir: File): String = dir.path.removePrefix(Environment.getExternalStorageDirectory().path + "/")
+internal fun shortPath(dir: File): String = dir.path.removePrefix(Environment.getExternalStorageDirectory().path + "/")
 
 /** A folder picked in the system picker, as a file path (internal storage or an SD card), or null off local storage. */
 fun treePath(uri: Uri): String? =
