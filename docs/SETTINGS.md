@@ -57,7 +57,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 
 | Tile | Summary shows | Groups (› opens a subpage) |
 |---|---|---|
-| Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Start over |
+| Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Language; Start over |
 | Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included); Home screen (the rows for the layout in use, Grid shape › on the icon grid); Around the home (How games show ›, Dock & widgets ›, top bar, screensaver) |
 | Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
 | Sound & music | the theme pack's audio, or sound pack and music | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
@@ -84,6 +84,7 @@ A "›" step after a page is its subpage.
 | `Settings.reduceMotion` | Look & feel › Motion › Reduce motion | toggle |
 | `ExtrasSettings.floating`, `intensity` | Look & feel › Motion › Floating titles / Motion intensity | toggle / choice |
 | `Look.swapStyle` | Look & feel › Motion › Swap animation | choice |
+| (language, own preferences + LocaleManager on Android 13+) | Look & feel › Language › Language (System default or English, العربية, 日本語, 简体中文, Français; see TRANSLATING.md) | choice |
 | (reset) | Look & feel › Start over › Reset look (keeps buttons, screens, sounds and music) | action |
 | `Look.homeLayout` | Home & layout › Layout gallery | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |

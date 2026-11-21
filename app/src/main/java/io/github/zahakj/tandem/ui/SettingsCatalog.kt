@@ -145,6 +145,7 @@ object SettingsPlan {
         "look" to listOf(
             Group("Colour", p("Colour & highlight", "Accent colour", "Highlight style", "Surface")),
             Group("Wallpaper, icons & motion", link("look/wallpaper") + p("System icons", "Icon style", "Icons from") + link("look/motion")),
+            Group("Language", p("Language", "Language")),
             Group("Start over", p("Extras", "Reset look")),
         ),
         "home" to listOf(
@@ -377,6 +378,7 @@ fun settingsCatalog(): List<SettingsCategory> {
             librarySettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), widgetsSettings(),
             achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
             performanceSettings(), screenOffSettings(), deckSettings(), SettingSection("Extras", listOf(resumePageRow())),
+            languageSettings(),
         ) + controllerSettings(),
     )
     val look = Store.settings.look
@@ -427,7 +429,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val top = listOf(
         SettingsCategory(
             "look", "Look & feel", Glyph.Theme, Palette.Accent,
-            "Themes and theme packs, colours, wallpapers, system icons and motion.",
+            "Themes and theme packs, colours, wallpapers, system icons, motion and the language.",
             theme.name + (if (look.accent != null) " · own accent" else "") + (if (settings.reduceMotion) " · still" else ""),
             pages.getValue("look"),
         ),
