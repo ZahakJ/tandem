@@ -1,6 +1,6 @@
 # Tandem user guide
 
-Every page of the guide, in reading order. New to Tandem? Start with **Getting started**; it walks through install,
+Every page of the guide, in reading order. New to Tandem? Start with **[Getting started](getting-started.md)**: it walks through install,
 your games, the first launch and getting artwork. The same pages are on the website at
 [zahakj.github.io/tandem/docs](https://zahakj.github.io/tandem/docs/).
 
@@ -34,7 +34,7 @@ your games, the first launch and getting artwork. The same pages are on the webs
 
 | Page | What's in it |
 | --- | --- |
-| [Your library](library.md) | How games are found, game folders, artwork files, manuals, PC and Steam games, collections, folders, statuses, trophies, stats, backups |
+| [Your library](library.md) | Your own games folder (SD card too), how games are found, artwork files, manuals, PC and Steam games, collections, folders, statuses, trophies, stats, backups |
 | [Artwork and scraping](scraping.md) | Art with no account, free keys, setting up sources, scrape options, when a scrape finds nothing |
 | [Systems and emulators](platforms.md) | The systems Tandem knows, the Systems and emulators screen, and `platforms.json` |
 | [Importing from Cocoon and ES-DE](importing.md) | Bringing titles, art, favourites and play time over |
