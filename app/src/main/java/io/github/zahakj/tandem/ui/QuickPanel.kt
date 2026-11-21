@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -167,7 +168,7 @@ fun QuickPanel() {
  * its own header, with smaller tiles.
  */
 @Composable
-fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, narrow: Boolean) {
+fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, narrow: Boolean, onTop: () -> Unit = {}) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     // Re-read the device state once a second while open (radios take a moment to switch).
@@ -206,7 +207,7 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
     Column(verticalArrangement = Arrangement.spacedBy(gap)) {
         LevelCard(
             "Brightness", if (auto) "Auto" else "${bright * 100 / SystemControls.BRIGHT_STEPS}%", bright, SystemControls.BRIGHT_STEPS, Palette.Butter,
-            QuickIcon.Sun, Modifier.remembersFocus(key, "bright", true), compact = narrow,
+            QuickIcon.Sun, Modifier.remembersFocus(key, "bright", true).onFocusChanged { if (it.isFocused) onTop() }, compact = narrow,
             onStep = { d ->
                 if (!canBright) askWriteSettings(ctx)
                 else {

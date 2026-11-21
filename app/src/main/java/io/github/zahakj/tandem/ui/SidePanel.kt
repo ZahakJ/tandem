@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,6 +48,7 @@ import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Shell
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -129,7 +131,20 @@ fun SidePanelHost() {
                             }
                         }
                     }
-                    item("controls") { Column(Modifier.padding(top = 4.dp)) { QuickControls(KEY, narrow = true) } }
+                    item("controls") {
+                        // Back on the first control, the panel goes back to its very top: keeping the slider in view alone
+                        // left Pip's header half cut off after a scroll down and up. It waits for the highlight's own
+                        // scroll to settle, which would otherwise stop short of the top again.
+                        Column(Modifier.padding(top = 4.dp)) {
+                            QuickControls(KEY, narrow = true) {
+                                scope.launch {
+                                    delay(60)
+                                    snapshotFlow { list.isScrollInProgress }.first { !it }
+                                    list.animateScrollToItem(0)
+                                }
+                            }
+                        }
+                    }
                     item("notes-title") {
                         Row(Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text("Notifications", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
