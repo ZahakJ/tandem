@@ -495,37 +495,62 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
                 GlyphChip(row.icon, row.color)
                 Spacer(Modifier.width(12.dp))
             }
-            Text(
-                row.label, Modifier.weight(1f),
-                style = MaterialTheme.typography.titleMedium,
-                color = Palette.Text,
-                maxLines = 2, overflow = TextOverflow.Ellipsis,
-            )
-            Spacer(Modifier.width(10.dp))
-            when {
-                row.kind == RowKind.Toggle -> Toggle(row.toggle == true, row.color)
-                row.slider != null -> ValueTrack(row.slider, row.color, value = row.value, themed = row.themed, focused = focused, trackWidth = 132.dp)
-                row.segmented -> {
-                    val options = row.options.orEmpty()
-                    SegmentTrack(options.map { it.second }, options.indexOfFirst { it.first == row.selected }, row.color, Modifier.widthIn(max = 360.dp)) { i ->
-                        val id = options[i].first
-                        if (id != row.selected) { row.pick?.invoke(id); Sounds.toggle() }
+            LabelAndEnd(Modifier.weight(1f)) {
+                Text(
+                    row.label,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Palette.Text,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                )
+                when {
+                    row.kind == RowKind.Toggle -> Toggle(row.toggle == true, row.color)
+                    row.slider != null -> ValueTrack(row.slider, row.color, value = row.value, themed = row.themed, focused = focused, trackWidth = 132.dp)
+                    row.segmented -> {
+                        val options = row.options.orEmpty()
+                        SegmentTrack(options.map { it.second }, options.indexOfFirst { it.first == row.selected }, row.color, Modifier.widthIn(max = 360.dp)) { i ->
+                            val id = options[i].first
+                            if (id != row.selected) { row.pick?.invoke(id); Sounds.toggle() }
+                        }
                     }
-                }
-                row.picker -> PickValue(row.value, row.color, Modifier.widthIn(max = 240.dp))
-                // A row that steps without saying its options (built outside Settings, like the smart folder form).
-                else -> Row(Modifier.widthIn(max = 220.dp), verticalAlignment = Alignment.CenterVertically) {
-                    if (stepper) Text("‹", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
-                    if (stepper) Spacer(Modifier.width(6.dp))
-                    if (row.value.isNotEmpty()) ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
-                    if (stepper) Spacer(Modifier.width(6.dp))
-                    if (stepper) Text("›", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
-                    if (row.kind == RowKind.Link) {
-                        Spacer(Modifier.width(8.dp))
-                        Text("›", style = MaterialTheme.typography.titleLarge, color = Palette.Muted)
+                    row.picker -> PickValue(row.value, row.color, Modifier.widthIn(max = 240.dp))
+                    // A row that steps without saying its options (built outside Settings, like the smart folder form).
+                    else -> Row(Modifier.widthIn(max = 220.dp), verticalAlignment = Alignment.CenterVertically) {
+                        if (stepper) Text("‹", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
+                        if (stepper) Spacer(Modifier.width(6.dp))
+                        if (row.value.isNotEmpty()) ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
+                        if (stepper) Spacer(Modifier.width(6.dp))
+                        if (stepper) Text("›", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
+                        if (row.kind == RowKind.Link) {
+                            Spacer(Modifier.width(8.dp))
+                            Text("›", style = MaterialTheme.typography.titleLarge, color = Palette.Muted)
+                        }
                     }
                 }
             }
+        }
+    }
+}
+
+/**
+ * A row's label and the control at its end. The control is measured first but may not take the room the label
+ * needs: the label keeps its own width up to half the row, and the control fits what is left (a segmented control
+ * shrinks its options to it).
+ */
+@Composable
+private fun LabelAndEnd(modifier: Modifier, content: @Composable () -> Unit) {
+    Layout(content, modifier) { measurables, constraints ->
+        val total = constraints.maxWidth
+        val gap = 10.dp.roundToPx()
+        val label = measurables[0]
+        val end = measurables.getOrNull(1)
+        val keep = minOf(label.maxIntrinsicWidth(Constraints.Infinity), total / 2)
+        val endP = end?.measure(Constraints(maxWidth = (total - keep - gap).coerceAtLeast(0)))
+        val endW = endP?.let { it.width + gap } ?: 0
+        val labelP = label.measure(Constraints(maxWidth = (total - endW).coerceAtLeast(0)))
+        val h = maxOf(labelP.height, endP?.height ?: 0)
+        layout(total, h) {
+            labelP.place(0, (h - labelP.height) / 2)
+            endP?.place(total - endP.width, (h - endP.height) / 2)
         }
     }
 }
