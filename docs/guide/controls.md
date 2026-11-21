@@ -151,7 +151,7 @@ all scrolls as one list.
 
 When Tandem is your Android Home app (**Settings › Play & system › Use Tandem as the Home screen**, which asks Android to make it so):
 
-- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › Resume page**: Home lands).
+- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › Resume page**: Opens first).
 - With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
   top screen over the game), the first **Home** brings the game back with its companion on the bottom screen, and the
   game keeps the controller. **Home** again within a few seconds goes to Tandem as usual.

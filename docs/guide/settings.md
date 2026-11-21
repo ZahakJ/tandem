@@ -69,7 +69,7 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | Home screen (icon grid) | Icon names | Highlighted | Names under the icons: Always, Highlighted (only the highlighted icon's), or Off. |
 | Home screen (icon grid) | Folders open | Over the grid | A folder opens as a panel over the grid, or as a Full page. |
 | Home screen (icon grid) | Recently played strip | On L2 | A bar of your last games along the top of the grid: shown with L2 (On L2), Always, or Off. |
-| Home screen (icon grid) | Resume page | Home lands | A game still running gets a Resume page left of the grid. **Home lands**: coming back to Tandem while it runs brings you to that page; **On**: the page is there but Home goes to the grid; **Off**: no Resume page. |
+| Home screen (icon grid) | Resume page | Opens first | A game still running gets a Resume page left of the grid. **Opens first**: coming back to Tandem while it runs brings you to that page; **On**: the page is there but Home goes to the grid; **Off**: no Resume page. |
 | Home screen (icon grid) | Grid shape › | | Opens **Grid shape** (below). |
 | Home screen (Orbit) | Orbit holds | Systems, collections, apps | What rides the orbit: all three, Systems and collections, or Systems only. |
 | Home screen (Orbit) | Continue ribbon | On | The last game you played as a wide card above the fan. |

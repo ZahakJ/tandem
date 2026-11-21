@@ -329,11 +329,11 @@ private fun buttonsNote(style: String): String {
 private fun resumePageRow(): SettingRow {
     val shown = Store.settings.look.nowPlaying
     val lands = io.github.zahakj.tandem.data.ExtrasStore.settings.resumeLanding
-    val options = listOf("off" to "Off", "on" to "On", "land" to "Home lands")
+    val options = listOf("off" to "Off", "on" to "On", "land" to "Opens first")
     val now = if (!shown) "off" else if (lands) "land" else "on"
     return choice(
         "Resume page", Glyph.Play, Palette.Mint,
-        "A game still running gets a Resume page left of the grid, one press from carrying on. Home lands: coming " +
+        "A game still running gets a Resume page left of the grid, one press from carrying on. Opens first: coming " +
             "back to Tandem while it runs brings you straight to that page. Off, a running game has no page of its own.",
         options, now,
         look = { v -> LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, resumePage = v != "off") },

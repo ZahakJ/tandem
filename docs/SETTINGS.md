@@ -91,7 +91,7 @@ A "›" step after a page is its subpage.
 | `Look.gridLabels`, `ExtrasSettings.focusLabels` | Home & layout › Home screen › Icon names (icon grid: Always, Highlighted, Off) | choice |
 | `ExtrasSettings.recentStrip` | Home & layout › Home screen › Recently played strip (icon grid) | choice |
 | `Look.gridFolders` | Home & layout › Home screen › Folders open (icon grid) | choice |
-| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Home lands) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
+| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Opens first) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
 | `Look.gridRows`, `gridRoundness`, `gridGap`, `gridHeroSplit` | Home & layout › Grid shape (icon grid) | choice / slider |
 | `Look.homeSections` | Home & layout › Home screen › Home rows (shelves, carousel, list, console) | choice |
 | `Look.systemTiles` | Home & layout › Home screen › System tiles (shelves, carousel, list, console) | choice |
