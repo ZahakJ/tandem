@@ -439,6 +439,10 @@ object IconGridStore {
 
     val canUndo: Boolean get() = undoLabel != null
 
+    /** When the last undoable change was made in this run (wall clock ms), 0 for steps read back from the file. */
+    var undoAt by androidx.compose.runtime.mutableLongStateOf(0L)
+        private set
+
     private fun gridWidgets(): List<Widget> = WidgetStore.widgets.filter { it.place == WidgetPlace.Grid }
 
     /**
@@ -459,6 +463,7 @@ object IconGridStore {
             while (undos.size > UNDO_MAX) undos.removeAt(0)
         }
         undoLabel = u.label
+        undoAt = System.currentTimeMillis()
         saveUndo()
     }
 

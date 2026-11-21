@@ -90,11 +90,11 @@ the screensaver) are in [Quick settings](#quick-settings), so nothing is in both
 | Switch games | Only while a game runs: the game switcher |
 | All apps | The apps drawer |
 | Search | Search all games |
-| Stats & trophies | The Stats screen, with how many games you're playing and the trophies earned so far |
+| Stats & trophies | The Stats screen; beside it, the trophies earned so far |
 | New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
 | Sort ▸ | On the icon grid: close the gaps, or the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
 | Edit grid | On the icon grid: the highlighted tile starts moving; other layouts get Edit widgets |
-| Undo last change | Only while there is a change on the icon grid to undo |
+| Undo | For 15 minutes after a change on the icon grid, with what it takes back beside it (older steps: Y › More › Undo last change) |
 | Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
 | Settings | Settings' home, where every page and the search are |
 | Tandem 0.6.1 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Software updates](getting-started.md#software-updates)) |

@@ -45,6 +45,29 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -126,6 +149,13 @@ private val PanelWidth = 276.dp
 
 /** Room around the panel's rows for a focused row's halo (4 dp) and growth (2%). */
 private val RowRoom = 12.dp
+
+/** A row's height: roomy when there is space, never under the compact one (StartPage). */
+private val RowMax = 40.dp
+private val RowMin = 30.dp
+private val RowGap = 1.dp
+/** The hairline between groups, with its space above and below. */
+private val HairlineHeight = 7.dp
 
 @Composable
 fun StartPanelHost() {
@@ -247,7 +277,14 @@ private fun StartPage(
     }
     val scroll = rememberScrollState()
     androidx.compose.ui.layout.Layout(
-        content = {
+        content = { androidx.compose.foundation.layout.BoxWithConstraints(Modifier.fillMaxSize()) {
+            // The rows share the height there is, from roomy down to compact, so the main page fits whole even with
+            // Switch games, Undo and an update showing; only a page that can't fit at the compact height (a long
+            // Hidden list) keeps roomy rows and scrolls.
+            val lines = rows.drop(1).count { it.id in StartGroupStarts }
+            val room = maxHeight - RowRoom * 2 - HairlineHeight * lines - RowGap * (rows.size - 1).coerceAtLeast(0)
+            val fit = room / rows.size.coerceAtLeast(1)
+            val rowHeight = if (fit < RowMin) RowMax else fit.coerceAtMost(RowMax)
             // Room inside the faded, clipped list for the focused row's ring, halo and growth on every side
             // (about 7 dp), so the first, last and every row's ends show whole (docs/UI-RULES.md).
             Column(
@@ -258,23 +295,20 @@ private fun StartPage(
                         translationX = (1f - v) * size.width * (if (shown) 0.5f else 0.33f) * side
                     }
                     .fadingEdges(scroll).verticalScroll(scroll).padding(horizontal = RowRoom, vertical = RowRoom),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(RowGap),
             ) {
                 val progress = { if (page == null) unfold.value else pageUnfold.value * unfold.value.coerceAtLeast(0f) }
                 rows.forEachIndexed { i, a ->
                     // A hairline between the main page's groups (go places · the home screen · Settings).
                     if (i > 0 && a.id in StartGroupStarts) Box(
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 3.dp).height(1.dp)
+                        Modifier.fillMaxWidth().height(HairlineHeight).padding(horizontal = 16.dp, vertical = 3.dp)
                             .graphicsLayer { alpha = ((progress() - i * 0.055f) * 2f).coerceIn(0f, 1f) }
                             .background(Palette.Text.copy(alpha = 0.09f)),
                     )
-                    ActionRow(
-                        a, routeKey, shown && a.id == target, i, rise = false,
-                        modifier = Modifier.unfoldRow(i, rows.size, progress),
-                    )
+                    StartRow(a, routeKey, shown && a.id == target, rowHeight, Modifier.unfoldRow(i, rows.size, progress))
                 }
             }
-        },
+        } },
         modifier = Modifier.fillMaxSize(),
     ) { measurables, c ->
         val placeables = measurables.map { it.measure(c) }
@@ -406,9 +440,10 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             add(MenuAction("sort", "Sort", Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             if (grid) {
                 add(MenuAction("edit", "Edit grid", Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
-                // Only while there is a grid change to take back.
-                IconGridStore.undoLabel?.let { label ->
-                    add(MenuAction("undo", "Undo last change", Glyph.Refresh, Palette.Butter, sub = label) { StartMenu.go { GridUndoUi.undo() } })
+                // Only for a while after a change on the grid: an undo kept from days ago (they are saved) would
+                // only be a puzzle here. Older ones are still in Y › More › Undo last change on the grid.
+                IconGridStore.undoLabel?.takeIf { IconGridStore.undoAt > 0 && System.currentTimeMillis() - IconGridStore.undoAt < UNDO_FRESH_MS }?.let { label ->
+                    add(MenuAction("undo", "Undo", Glyph.Refresh, Palette.Butter, value = label) { StartMenu.go { GridUndoUi.undo() } })
                 }
             } else add(MenuAction("edit", "Edit widgets", Glyph.Move, Palette.Butter) { StartMenu.go { Nav.go(Route.Widgets) } })
             // Only when something is hidden, and in private mode only while revealed (HiddenAccess.startRow).
@@ -419,11 +454,14 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             add(MenuAction("settings", "Settings", null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } })
             // A new Tandem is out (Updates.kt): one quiet row, A shows its notes and Update.
             io.github.zahakj.tandem.Updates.found?.takeIf { io.github.zahakj.tandem.Updates.enabled }?.let { rel ->
-                add(MenuAction("update", "Tandem ${rel.version} is out", Glyph.Download, Palette.Mint, sub = "A to update") { StartMenu.go { UpdatePopup.show() } })
+                add(MenuAction("update", "Tandem ${rel.version} is out", Glyph.Download, Palette.Mint) { StartMenu.go { UpdatePopup.show() } })
             }
         }
     }
 }
+
+/** How long after a change on the grid Start offers to undo it. */
+private const val UNDO_FRESH_MS = 15 * 60_000L
 
 /** The rows that open a group on the main page, with a hairline above them. */
 private val StartGroupStarts = setOf("new", "settings")
@@ -551,8 +589,94 @@ private fun peekFocused() {
 private fun startStatsLine(): String? {
     val playing = Collections.byStatus().firstOrNull { it.id == Collections.PLAYING }?.games?.size ?: 0
     val trophies = io.github.zahakj.tandem.data.ExtrasStore.trophies.unlocked.size
-    return listOfNotNull(
-        "$playing playing".takeIf { playing > 0 },
-        plural(trophies, "trophy", "trophies").takeIf { trophies > 0 },
-    ).joinToString(" · ").ifEmpty { null }
+    // One short detail, beside the label on the same line: the trophies, or what you're playing before the first.
+    return when {
+        trophies > 0 -> plural(trophies, "trophy", "trophies")
+        playing > 0 -> "$playing playing"
+        else -> null
+    }
+}
+
+/**
+ * One row of the panel, on one line at any height from compact to roomy: an icon chip, the label, and on the right a
+ * quiet word for its value or detail ("3", "Moved Emulators"), a ✓ for the chosen one, or a › for a row that opens a
+ * page. Highlighted, it glows like a Y menu's row (ActionRow), whose look it shares.
+ */
+@Composable
+private fun StartRow(a: MenuAction, routeKey: String, wanted: Boolean, height: Dp, modifier: Modifier) {
+    val interaction = remember { MutableInteractionSource() }
+    val focused by interaction.collectIsFocusedAsState()
+    var pressed by remember { mutableStateOf(false) }
+    val glow = remember { Animatable(0f) }
+    LaunchedEffect(focused) { glow.animateTo(if (focused) 1f else 0f, if (Motion.style == AnimationStyle.Off) tween(0) else tween(160)) }
+    val color = a.color
+    val stroke = with(LocalDensity.current) { 2.dp.toPx() }
+    val click = { a.onClick(); Sounds.select() }
+    val requester = remember { FocusRequester() }
+    Row(
+        modifier.fillMaxWidth().height(height)
+            .takesFocus(routeKey, a.id, wanted)
+            .focusRequester(requester)
+            .onFocusChanged { if (it.isFocused) { Sounds.move(); a.onFocus?.invoke() } else pressed = false }
+            .graphicsLayer {
+                val sc = if (pressed) 0.97f else 1f + 0.02f * glow.value
+                scaleX = sc; scaleY = sc
+            }
+            .drawWithCache {
+                val r = CornerRadius(size.height / 2f)
+                val fill = Brush.horizontalGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)))
+                val ring = Brush.linearGradient(listOf(lerp(color, Color.White, 0.55f), color, lerp(color, Color.White, 0.3f)), Offset.Zero, Offset(size.width, size.height))
+                val halo = Brush.horizontalGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent))
+                onDrawBehind {
+                    val g = glow.value
+                    if (g > 0.01f) {
+                        drawRoundRect(halo, Offset(-stroke * 2, -stroke * 2), Size(size.width + stroke * 4, size.height + stroke * 4), CornerRadius(r.x + stroke * 2), alpha = g * 0.8f)
+                        drawRoundRect(fill, cornerRadius = r, alpha = g)
+                        drawRoundRect(ring, Offset(stroke / 2, stroke / 2), Size(size.width - stroke, size.height - stroke), r, style = Stroke(stroke), alpha = g)
+                    }
+                }
+            }
+            .focusable(interactionSource = interaction)
+            .onKeyEvent { e ->
+                val select = e.key == Key.DirectionCenter || e.key == Key.Enter || e.key == Key.NumPadEnter || e.key == Key.ButtonA
+                if (!select) return@onKeyEvent false
+                val was = pressed
+                pressed = e.type == KeyEventType.KeyDown
+                if (e.type == KeyEventType.KeyUp && was) click()
+                true
+            }
+            .pointerInput(a) {
+                detectTapGestures(
+                    onPress = { pressed = true; tryAwaitRelease(); pressed = false },
+                    onTap = { runCatching { requester.requestFocus() }; click() },
+                )
+            }
+            .padding(start = 6.dp, end = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val chip = (height - 8.dp).coerceIn(22.dp, 28.dp)
+        Box(
+            Modifier.size(chip).graphicsLayer { shape = RoundedCornerShape(if (a.art != null) chip * 0.3f else chip / 2); clip = true }
+                .background(color.copy(alpha = 0.2f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                a.art != null -> a.art.invoke()
+                a.icon != null -> Box(Modifier.size(chip * 0.74f)) { TIconGlyph(a.icon, color) }
+                a.glyph != null -> Box(Modifier.size(chip * 0.66f)) { GlyphIcon(a.glyph, color) }
+            }
+        }
+        Spacer(Modifier.width(10.dp))
+        ShrinkText(a.label, MaterialTheme.typography.titleSmall, Modifier.weight(1f), maxLines = 1)
+        val detail = a.value ?: a.sub
+        when (detail) {
+            null -> Unit
+            "▸" -> Text("›", style = MaterialTheme.typography.titleLarge, color = if (focused) color else Palette.Muted)
+            "✓" -> Text("✓", style = MaterialTheme.typography.titleSmall, color = Palette.Mint)
+            else -> Text(
+                detail, Modifier.padding(start = 8.dp).widthIn(max = 130.dp), style = MaterialTheme.typography.labelLarge,
+                color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
 }
