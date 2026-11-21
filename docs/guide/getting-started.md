@@ -38,7 +38,7 @@ Press A on that row to read the release notes, then **Update** (or **Not now**).
 
 **Checking by hand.** **Settings › Play & system › Updates** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (A opens the notes and Update), the download's progress, or what went wrong.
 
-![Settings › Play & system: Updates showing 0.6.1 available, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
+![Settings › Play & system: the Tandem group, with Updates showing 0.6.1 · Up to date, Check automatically and For tinkerers.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
 
 **Turning the automatic check off.** Switch **Settings › Play & system › Check automatically** off: Tandem then never asks GitHub by itself, shows no message and no Start panel row, and updates only when you press A on **Updates** and then **Update**. Private mode skips the automatic check too. You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
 
