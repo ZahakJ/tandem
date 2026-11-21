@@ -22,7 +22,7 @@ private const val PERF_KEYWORDS = "ayn thor performance mode fan speed cooling r
 /** "Keep" first, then AYN's values, as a choice row's options. */
 private fun keepThen(values: List<Pair<Int, String>>): List<Pair<String, String>> = listOf(KEEP_ID to "Keep") + values.map { it.first.toString() to it.second }
 
-/** Settings › Play & system › Playing › Performance while playing. */
+/** Settings › Play & system › Playing: Performance mode, Fan mode and Refresh rate. */
 @Composable
 fun performanceSettings(): SettingSection {
     val ctx = LocalContext.current

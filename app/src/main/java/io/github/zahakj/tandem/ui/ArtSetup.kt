@@ -49,7 +49,7 @@ import kotlinx.coroutines.withContext
 /*
  * "Artwork & details setup": every scraping source explained in plain words (what it gives, whether it needs an
  * account, exactly where to get a key), with fields for the keys and a Test button that does one real lookup.
- * The list of sources is a popup opened from Settings › Art & accounts and from the welcome; A on a source opens
+ * The list of sources is a popup opened from Settings › Library & art › Set up sources and from the welcome; A on a source opens
  * its card. Nothing here touches the network until the user presses Test or Download.
  */
 

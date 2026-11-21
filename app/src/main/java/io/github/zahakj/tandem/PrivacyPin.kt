@@ -216,7 +216,7 @@ object PrivateMode {
         }
     }
 
-    /** Settings › Private mode PIN: the current PIN first, then the new one twice. */
+    /** Settings › Play & system › Privacy › More › Private mode PIN: the current PIN first, then the new one twice. */
     fun changePin() {
         val pad = io.github.zahakj.tandem.ui.PinPad
         if (!PinVault.isSet) { pad.create("Choose a PIN for private mode") {}; return }

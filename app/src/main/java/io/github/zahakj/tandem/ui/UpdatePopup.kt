@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 
 /**
  * A new Tandem (Updates.kt): its version and release notes, with Update and Not now. Opened only by the user (Start ›
- * the update row, or Settings › Check now), never by itself. Up and Down scroll the notes; the buttons keep the focus.
+ * the update row, or Settings › Play & system › About › Check now), never by itself. Up and Down scroll the notes; the buttons keep the focus.
  */
 object UpdatePopup {
     const val ROUTE = "update"

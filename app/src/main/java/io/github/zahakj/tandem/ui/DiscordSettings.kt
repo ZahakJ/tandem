@@ -9,7 +9,7 @@ import io.github.zahakj.tandem.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-/** Settings › Art & accounts › Discord (DiscordPresence.kt). No rows in builds without Discord's SDK. */
+/** Settings › Library & art › Discord (DiscordPresence.kt). No rows in builds without Discord's SDK. */
 @Composable
 fun discordSettings(): SettingSection {
     if (!DiscordPresence.available) return SettingSection("Discord", emptyList())

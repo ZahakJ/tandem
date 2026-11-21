@@ -16,7 +16,7 @@ import io.github.zahakj.tandem.data.ControllerStore
  * KEYCODE_BUTTON_MODE, which Android itself ignores. This service sees only key events (no screen content, no
  * events about other apps), and only ever keeps that one button, and only from external controllers:
  * - tap: Android's Home (Tandem, when it is the Home app);
- * - hold: Android's recent apps, or Tandem's game switcher (Settings › Controls › Hold the Home button).
+ * - hold: Android's recent apps, or Tandem's game switcher (Settings › Controls › Controller Home button › More › Hold the Home button).
  * While Tandem itself is in front the button is left to Tandem, which treats it as Home ([HomeButton]).
  * The built-in Odin Controller's buttons always pass straight through.
  *

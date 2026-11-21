@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
 /*
- * The frame timing overlay (Settings › Data & about › Developer): JankStats watches every frame of the top screen's
+ * The frame timing overlay (Settings › Play & system › About › More): JankStats watches every frame of the top screen's
  * window; janky ones (longer than twice the display's frame time) are logged with what was on screen, under the tag
  * TandemJank, and a small corner readout shows the running totals. docs/PERFORMANCE.md explains how to use it.
  */

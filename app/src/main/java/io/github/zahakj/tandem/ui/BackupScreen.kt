@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /*
- * Settings › Data & about › Back up and Restore (data/Backup.kt does the file work).
+ * Settings › Play & system › Your data › Back up and Restore (data/Backup.kt does the file work).
  *
  * Back up: pick categories (all on), whether account keys go too (off), then Back up; a new snapshot is added to
  * ROMs/tandem/backup and older ones stay. Restore: the snapshots, newest first (X deletes one), then the categories

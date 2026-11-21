@@ -50,8 +50,8 @@ interface DiscordSdk {
 
 /**
  * Discord status: while a game plays, the user's Discord status says "Playing <game>" with its system and the time
- * played, and it clears when play stops. Off until the user connects their Discord account (Settings › Art &
- * accounts › Discord), which goes through Discord's own authorization (OAuth2 with PKCE, as a public client): Tandem
+ * played, and it clears when play stops. Off until the user connects their Discord account (Settings › Library &
+ * art › Discord), which goes through Discord's own authorization (OAuth2 with PKCE, as a public client): Tandem
  * never sees a password or a user token. Once connected, the quick panel's Discord tile pauses it ([setShown])
  * without disconnecting.
  *

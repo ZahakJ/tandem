@@ -25,7 +25,7 @@ object Importer {
 
     /**
      * With [firstTime] everything is brought over, favorites, hidden games and play history included. Later
-     * (Settings › Import details) only blanks are filled, so nothing the user changed in Tandem since is undone: an
+     * (Settings › Library & art › Bring your details › Import details) only blanks are filled, so nothing the user changed in Tandem since is undone: an
      * unfavorited game stays unfavorited, a reset play history stays reset, a field typed by hand stays.
      */
     fun importAll(libraries: List<PlatformLibrary>, firstTime: Boolean = false): Result {

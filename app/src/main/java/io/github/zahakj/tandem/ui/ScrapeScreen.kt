@@ -842,7 +842,7 @@ private object MediaSizeCache {
     var value: Pair<Int, Long>? = null
 }
 
-/** Settings › Artwork & details. */
+/** Settings › Library & art › Artwork, and the rows of Sources, in order. */
 @Composable
 fun scrapingSettings(): SettingSection {
     val s = ScrapeConfig.settings

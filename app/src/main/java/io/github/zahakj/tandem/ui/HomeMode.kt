@@ -557,7 +557,7 @@ fun homeSettings(): SettingSection {
 }
 
 /**
- * Settings › Play & stats › Hidden: every hidden folder, system, icon-grid folder and game, each with Unhide. Listed
+ * Settings › Play & system › Hidden: every hidden folder, system, icon-grid folder and game, each with Unhide. Listed
  * only while hidden games are showing; otherwise one row that says how to show them (and, in private mode, not even
  * whether there are any).
  */
