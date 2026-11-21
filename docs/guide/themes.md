@@ -1,7 +1,6 @@
 # Themes
 
-How to change Tandem's look: themes, home layouts, the icon grid, theme packs, wallpapers, and sounds and music. Everything here is in the **Themes** app on the home grid and in **Settings › Look & feel**, **Home & layout** and **Sound & music**, and applies instantly with a short cross-fade. For a quick switch, the Start panel has **Theme ▸** and **Sounds & music ▸** pages.
-
+How to change Tandem's look: themes, home layouts, the icon grid, theme packs, wallpapers, and sounds and music. Everything here is in the **Themes** app on the home grid and in **Settings › Look & feel**, **Home & layout** and **Sound & music**, and applies instantly with a short cross-fade.
 ## Built-in themes
 
 Tandem has three themes of its own: **Pastel Night** (the default), **Paper** (light) and **OLED Black**. Everything else comes from [theme packs](#theme-packs). Tandem's animated backdrops (pixels, an LCD, cubes, a marquee, a road into the sun, a farm, torchlight and more) are all there as wallpapers, and its drawn system icon styles (pixel, neon, LCD, chrome, plastic, sticker, rune...) under **Icon style**, so any theme can wear them. With a built-in theme, system tiles show Tandem's own drawn icons, unless **Look & feel › Icons from** picks a pack's art.
@@ -20,7 +19,7 @@ Inside a system or collection, games show as a grid, a list, a carousel, spines 
 - **Scrolling** sideways, by pages, or up and down; icon roundness, the space between icons, and names under icons.
 - **Folders** of your own: Y on a tile › Put in a folder. Folders open as a popup or a full page.
 - **Designing a folder:** see [Folder design](#folder-design) below.
-- **Empty spots** after the last icon and wherever one was taken away: A on one makes a folder or adds something right there, and moved icons can be dropped into them. Start › **Tidy up** closes the gaps. See [Controls](controls.md#empty-spots).
+- **Empty spots** after the last icon and wherever one was taken away: A on one makes a folder or adds something right there, and moved icons can be dropped into them. Start › Sort › **Home: close the gaps** (or **Tidy up** in Y's menu) closes them. See [Controls](controls.md#empty-spots).
 - **Other screen:** while the grid is on top, the bottom screen shows a spotlight of the highlighted tile, or the classic details. A highlighted game gets a title card: its art covers the whole screen (key art if it has some, else a title screen or gameplay shot, else the box, cropped on the busy part of the picture), its logo pops in and sways with a shine now and then, like the 3DS menu's banners, and a few chips and lines from its description introduce it in the lower left.
 - **X swaps the screens** on the grid, and on Orbit (you can make X always search instead, or always swap, in **Settings › Controls**).
 

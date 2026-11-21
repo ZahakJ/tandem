@@ -82,25 +82,26 @@ Every drop can be undone (Select, or a tap on the message).
 ## The Start panel
 
 A tap on <kbd>Start</kbd> folds a panel open from the left. B goes back a page, then closes it; Start closes it too.
+Start is for going places and arranging the home screen; switches for the device (brightness, Wi-Fi, Battery saver,
+the screensaver) are in [Quick settings](#quick-settings), so nothing is in both. Its rows come in three groups:
 
 | Row | What it does |
 | --- | --- |
+| Switch games | Only while a game runs: the game switcher |
 | All apps | The apps drawer |
-| New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
-| Sort ▸ | On the icon grid: the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
 | Search | Search all games |
 | Stats & trophies | The Stats screen, with how many games you're playing and the trophies earned so far |
-| Edit grid, Tidy up, Undo last change | On the icon grid (Undo only while there is something to undo); other layouts get Edit widgets |
-| Switch games | Only while a game runs: the game switcher |
+| New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
+| Sort ▸ | On the icon grid: close the gaps, or the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
+| Edit grid | On the icon grid: the highlighted tile starts moving; other layouts get Edit widgets |
+| Undo last change | Only while there is a change on the icon grid to undo |
 | Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
-| Theme ▸ | Every theme and theme pack, applied at once |
-| Sounds & music ▸ | Music on or off, and every sound pack: Tandem's eight and any recorded ones |
-| Quick settings | The same panel as holding Start |
+| Settings | Settings' home, where every page and the search are |
 | Tandem 0.6.1 is out | Only when a newer Tandem is out: A shows its release notes and **Update** (see [Software updates](getting-started.md#software-updates)) |
-| Settings ▸ | All settings, or straight to one of the seven pages (and Import my Cocoon setup, when a Cocoon backup is there) |
-| Screensaver | Starts the screensaver now |
 
-![The Start panel folded open from the left: All apps, New, Sort, Search, Stats & trophies, Theme, Sounds & music, Quick settings, Settings and Screensaver.](../../site/assets/screenshots/start-panel.webp "The Start panel")
+Themes, sounds and music are in **Settings › Look & feel** and **Sound & music**, and in the **Themes** app.
+
+![The Start panel folded open from the left: All apps, Search, Stats & trophies, New, Sort, Edit grid and Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
 
 ## The top bar
 
@@ -123,14 +124,16 @@ back to the page, onto what you had highlighted there.
 
 ## Quick settings
 
-Hold <kbd>Start</kbd>, or **◐ Quick** in the top bar, or Start › **Quick settings**: brightness and volume, then tiles
-for Wi-Fi, Bluetooth, Airplane mode, Controller, Discord, Running, Private mode, Battery saver, Stats and Android's
-settings. See [Every setting › Quick settings](settings.md#quick-settings).
+Hold <kbd>Start</kbd>, or **◐ Quick** in the top bar, or A on the Battery widget: the switches for the device, nothing
+that takes you somewhere else. Brightness and volume, then tiles for Wi-Fi, Bluetooth, Airplane, Controller, Discord,
+Battery saver, Private mode, Screensaver and Android's settings. See
+[Every setting › Quick settings](settings.md#quick-settings).
 
 ## The side panel
 
 <kbd>R2</kbd> on the home screen slides a panel in from the right: Pip with the date and time, battery and free
-space, the quick settings (the same tiles as holding Start), and your Android notifications. It all scrolls as one list.
+space, the quick settings (the same sliders and tiles as holding Start, smaller), and your Android notifications. It
+all scrolls as one list.
 
 - Notifications are grouped by app, newest app first, with the app's icon and name once above its cards.
 - <kbd>A</kbd> opens a notification. <kbd>Y</kbd> clears the highlighted one (its card says **Y Clear**); it slides
@@ -205,7 +208,7 @@ to change in their settings.
 - **During a game**, a controller that connects offers itself on the bottom screen: **Play with Xbox Wireless
   Controller?** Press its **A** or **Start** (or tap **Play with it**). Without the companion on the bottom screen,
   Android shows the same question as a short message over the game. It goes away by itself after about 12 seconds.
-- **Start › Quick settings › Controller**, or **Settings › Controls › Controller in games**,
+- **Controller** in Quick settings (hold Start), or **Settings › Controls › Controller in games**,
   steps through **Built-in** and each connected controller.
 - **Always use a connected pad** takes any controller that connects straight away, without asking.
 - **Disconnecting** the controller (switched off, unplugged, out of range) goes back to the built-in controls by

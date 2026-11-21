@@ -17,7 +17,7 @@ great for classic systems and has nothing for Switch, Wii U or PC games.
 
 ![The Artwork & details setup popup: six source tiles in the order they are asked, left to right (ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro thumbnails and HowLongToBeat), each with its icon, what it needs, what it gives and its state.](../../site/assets/screenshots/guide/set-up-sources.webp "Settings › Library & art › Set up sources")
 
-1. Open **Settings › Library & art** (Start › Settings ▸ › Library & art) and press A on **Set up sources**. The
+1. Open **Settings › Library & art** (Start › Settings › Library & art) and press A on **Set up sources**. The
    **Artwork & details setup** popup shows every source as a tile, in the order they are asked (left to right), with what
    it needs and its state.
 2. Highlight **LaunchBox** (its state says **Not downloaded**) and press A. Its card explains what it gives.

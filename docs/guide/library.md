@@ -315,7 +315,7 @@ For each game you get the total time played, the number of times you started it,
 
 ### Stats
 
-The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or **Trophies** app on the icon grid, or Quick settings › **Stats**. L1 and R1 switch its tabs:
+The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or **Trophies** app on the icon grid, or the **★ Stats** chip in the top bar. L1 and R1 switch its tabs:
 
 | Tab | What it shows |
 | --- | --- |

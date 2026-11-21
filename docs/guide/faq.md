@@ -32,7 +32,7 @@ Yes. Your installed Android games show up as their own system, every other app i
 
 Nothing is lost by skipping; everything in the welcome is in Settings.
 
-1. **Start › Settings ▸ › Library & art › Set up sources.** The **Artwork & details setup** popup lists the sources in
+1. **Start › Settings › Library & art › Set up sources.** The **Artwork & details setup** popup lists the sources in
    the order they are asked, each with its state.
 2. **LaunchBox (no account):** A on **LaunchBox**, then **Download (105 MB)** and **Download**. Wait for "LaunchBox is
    ready". This one download is all the no-account path needs; libretro thumbnails is always ready too.

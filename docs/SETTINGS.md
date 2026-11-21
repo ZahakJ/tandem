@@ -7,7 +7,7 @@ short **subpage**, opened from one › row on its page; B goes back to the page.
 subpage by label, synonyms ("nintendo" finds Swap A and B) and help text, plus the few settings that live on a screen
 of their own (see [Found elsewhere](#found-elsewhere)); picking a result opens its page (a subpage over its page, so
 Back goes there) and pulses the row. L1 and R1 flip pages (from a subpage, its page's neighbours). The quick switches
-people use most also sit in the Start panel and Quick settings (see [Quick switches](#quick-switches)).
+people flip while playing also sit in Quick settings (see [Found elsewhere](#found-elsewhere)).
 
 Code: `ui/SettingsCatalog.kt` (pages, subpages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane
 layout, side panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup
@@ -90,7 +90,7 @@ A "›" step after a page is its subpage.
 | `IconGridConfig.spans` | Y on a widget on the icon grid › Resize | menu |
 | `WidgetConfig.upNext` | the Up next widget, and Y › Add to Up next on a game | menu |
 | `Look.clock`, `battery` | Home & layout › Around the home › Clock / Battery | choice / toggle |
-| `HomeSettings.screensaverMinutes` | Home & layout › Around the home › Screensaver (also Start › Screensaver) | choice |
+| `HomeSettings.screensaverMinutes` | Home & layout › Around the home › Screensaver (Quick settings › Screensaver starts it now) | choice |
 | `SystemPrefs.singleScreen` | Two screens › Screens › Single screen | toggle |
 | `Look.swapScreens` | Two screens › Screens › Swap screens | toggle |
 | `AppsData.defaultScreen` | Two screens › Screens › Apps open on (Auto, Top, Bottom) | choice |
@@ -181,16 +181,16 @@ stored but not used yet. A saved theme that is no longer built in, and the old "
 
 ## Quick switches
 
-**Start** (the panel that folds open from the left) has **Theme ▸** and **Sounds & music ▸** for switching quickly:
-every built-in theme and theme pack; Music on or off, Tandem's eight sound packs and every recorded pack (Cocoon's and
-theme packs' own). Its **Settings ▸** page opens any of the seven pages directly. Code: `startRows` in
-`ui/StartPanel.kt`.
+**Start** (the panel that folds open from the left) holds no settings: it goes places and arranges the home screen,
+and its **Settings** row opens Settings' home. Its **Sort ▸** page sets `Settings.sort` (how games are sorted) beside
+the home grid's sorts. Code: `startRows` in `ui/StartPanel.kt`.
 
-**Quick settings** (hold Start, or Start › Quick settings, and at the top of the R2 side panel) has brightness and
-volume sliders, then tiles: Wi-Fi, Bluetooth and Airplane (switched in place with Shizuku, else they open Android's
-page), **Controller** (only where controller passthrough can work), **Discord** (only once an account is connected),
-**Running**, **Private mode**, **Battery saver**, **Stats** and **Android** (Android's settings). Code:
-`ui/QuickPanel.kt`.
+**Quick settings** (hold Start, the ◐ Quick chip, the Battery widget, and at the top of the R2 side panel: one set of
+controls, `QuickControls`) has the device switches only: brightness and volume sliders, then tiles for Wi-Fi,
+Bluetooth and Airplane (switched in place with Shizuku, else they open Android's page), **Controller** (only where
+controller passthrough can work), **Discord** (only once an account is connected), **Battery saver**, **Private
+mode**, **Screensaver** (starts it now) and **Android** (Android's settings), in rows as even as they come out.
+Code: `ui/QuickPanel.kt`.
 
 **Battery saver** turns on Reduce motion and the Minimal animation style, and turns off video snaps, moving art and
 music. It notes those five values first (`Settings.batterySaver`) and puts exactly them back when turned off; the

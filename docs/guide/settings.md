@@ -1,7 +1,7 @@
 # Every setting
 
 Every row in Tandem's Settings, page by page: what it does in plain words, and what it is set to until you change
-it. Open Settings with <kbd>Start</kbd> › **Settings** (or Start › Settings ▸ straight to one page).
+it. Open Settings with <kbd>Start</kbd> › **Settings**.
 
 ![Settings opened on its seven tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system.](../../site/assets/screenshots/guide/settings-home.webp "Settings: one tile per page")
 
@@ -78,7 +78,7 @@ Spotlight. See [Home layouts](themes.md#home-layouts). The Home screen group sho
 | Around the home | Dock & widgets › | | Opens **Dock & widgets** (below). |
 | Around the home | Clock | Like the system | 12-hour, 24-hour, like the system, or Hidden. |
 | Around the home | Battery | On | The battery percentage beside the clock. |
-| Around the home | Screensaver | Off | After 2, 5, 10, 15 or 30 minutes without a button press, your covers drift across a night sky while Pip naps, so nothing burns into the screen. Any button or touch wakes it, and that press does nothing else. Start › Screensaver starts it at once. |
+| Around the home | Screensaver | Off | After 2, 5, 10, 15 or 30 minutes without a button press, your covers drift across a night sky while Pip naps, so nothing burns into the screen. Any button or touch wakes it, and that press does nothing else. **Screensaver** in Quick settings (hold Start) starts it at once. |
 
 **Home & layout › Grid shape** (icon grid)
 
@@ -273,11 +273,13 @@ A few settings live on the screen they belong to, and Settings search (<kbd>X</k
 
 ## Quick settings
 
-Hold <kbd>Start</kbd> (or Start › **Quick settings**, the **◐ Quick** chip in the top bar, or the top of the R2 side
-panel) for the quick panel: brightness and volume sliders, then tiles for Wi-Fi, Bluetooth and Airplane mode (switched
-in place with Shizuku, else they open Android's page), **Controller** (only where controller passthrough can work),
-**Discord** (once connected), **Running**, **Private mode**, **Battery saver**, **Stats** and **Android** (Android's own
-settings).
+Hold <kbd>Start</kbd> (or the **◐ Quick** chip in the top bar, A on the Battery widget, or the top of the R2 side
+panel) for the quick panel: the switches for the device, while Start's panel has the places to go. Brightness and
+volume sliders (Left and Right change them, A switches auto brightness or mutes), then tiles for **Wi-Fi**,
+**Bluetooth** and **Airplane** (switched in place with Shizuku, else they open Android's page and say so),
+**Controller** (only where controller passthrough can work), **Discord** (once connected), **Battery saver**,
+**Private mode**, **Screensaver** (rests the screens now) and **Android** (Android's own settings). A tile's round icon
+fills with colour while it is on.
 
 **Battery saver** turns on Reduce motion and the Minimal animation style, and turns off video snaps, moving art and
 music, in one go; off again, it puts back exactly those five and nothing else.
