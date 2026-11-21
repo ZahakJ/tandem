@@ -249,10 +249,11 @@ object SettingsPlan {
         return rowKey(group.title, sub.title)
     }
 
-    /** Rows shown twice in the old screens, or standing for a gallery: built, but never placed. */
-    val dropped: List<Pick> =
-        p("Home & play", "Apps dock on the home screen") + // Home & layout › Dock & widgets › Apps dock
-            p("Motion & home", "Use Tandem as the Home screen") // Play & system › Use Tandem as the Home screen
+    /**
+     * Rows a feature builds that no page should show (a second copy of a setting placed elsewhere): built, but never
+     * placed. None today; rather than drop a duplicate, take it out of the feature.
+     */
+    val dropped: List<Pick> = emptyList()
 }
 
 /** Words people search for that a row's label doesn't contain (rows can also list their own `keywords`). */

@@ -159,13 +159,11 @@ fun Modifier.drift(seed: Int = 0, distance: Dp = 10.dp, periodMs: Int = 9000): M
 
 private val RECENT_MODES = listOf("button" to "On L2", "always" to "Always", "off" to "Off")
 
-/** The "Motion & home" settings: floating titles, Recently played, labels, Home screen. */
+/** The "Motion & home" settings: floating titles, how lively they are, Recently played, icon names. */
 @Composable
 fun flairSettings(): SettingSection {
-    val ctx = LocalContext.current
     val x = ExtrasStore.settings
     val look = Store.settings.look
-    val isHome = Facts.run { ensure(ctx); Facts.isHome }
     return SettingSection(
         "Motion & home",
         listOf(
@@ -199,10 +197,6 @@ fun flairSettings(): SettingSection {
                 Store.updateSettings { it.copy(look = it.look.copy(gridLabels = v == "always")) }
                 if (v != "always") ExtrasStore.update { it.copy(focusLabels = v == "focus") }
             },
-            SettingRow(
-                "Use Tandem as the Home screen", if (isHome) "On" else "Off", Palette.Mint, icon = Glyph.Home, opens = true,
-                help = "Then Home always brings you back here: once to Tandem, again to the first tile. Android asks you to confirm.",
-            ) { Panels.openHomeExplainer() },
         ),
         icon = Glyph.Motion,
     )

@@ -481,10 +481,6 @@ fun homeSettings(): SettingSection {
                 }, "tandem-immersion-allow").start()
             },
             SettingRow(
-                "Apps dock on the home screen", onOff(s.showDock), Palette.Sky, Glyph.Grid, toggle = s.showDock,
-                help = "Your favourite Android apps on the home screen.",
-            ) { HomeStore.updateSettings { it.copy(showDock = !it.showDock) } },
-            SettingRow(
                 "Choose dock apps", "${Dock.pinned(ctx).size} apps", Palette.Sky, Glyph.Grid,
                 "Pick which apps sit on the dock and in what order.", opens = true, keywords = "pin apps favourite",
             ) { Panels.openApps() },
