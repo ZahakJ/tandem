@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -197,16 +201,16 @@ object BackupUi {
         val keys = listOf("yes") + BackupCategory.entries.map { it.id } + listOf("keys", "no")
         val target = rememberFocusTarget(MAKE, keys)
         Panel(room, "Back up", "A new backup in ROMs/tandem/backup on this device. Older ones stay.", rows = {
-            BackupCategory.entries.forEach { c ->
+            CategoryGrid { c ->
                 val on = c in chosen
-                OptionRow(c.label, c.blurb, if (on) "On" else "Off", on, Palette.Sky, Modifier.takesFocus(MAKE, c.id, target == c.id)) {
+                TickCard(c.label, c.blurb, on, glyphOf(c), Palette.Sky, Modifier.weight(1f).height(CardHeight).takesFocus(MAKE, c.id, target == c.id)) {
                     chosen = if (on) chosen - c else chosen + c
                     Sounds.toggle(!on)
                 }
             }
-            OptionRow(
+            SwitchCard(
                 "Account keys and logins", "Scraping, RetroAchievements and Steam. The backup folder is readable by other apps.",
-                if (withKeys) "Included" else "Left out", withKeys, Palette.Peach, Modifier.takesFocus(MAKE, "keys", target == "keys"),
+                withKeys, Palette.Peach, Modifier.takesFocus(MAKE, "keys", target == "keys"), glyph = Glyph.Key,
             ) {
                 withKeys = !withKeys
                 Sounds.toggle(withKeys)
@@ -287,16 +291,22 @@ object BackupUi {
         val target = rememberFocusTarget(PICK, keys)
         val none = restoring.intersect(holds).isEmpty()
         Panel(room, title(s), line(s), rows = {
-            BackupCategory.entries.forEach { c ->
+            // Ticked: put back from the backup. Not ticked: what is on the device now stays.
+            CategoryGrid { c ->
                 if (c in holds) {
                     val on = c in restoring
-                    OptionRow(c.label, c.blurb, if (on) "Restore" else "Keep", on, Palette.Mint, Modifier.takesFocus(PICK, c.id, target == c.id)) {
+                    TickCard(
+                        c.label, if (on) "Put back from this backup" else "Keeps what's here now", on, glyphOf(c), Palette.Mint,
+                        Modifier.weight(1f).height(CardHeight).takesFocus(PICK, c.id, target == c.id),
+                    ) {
                         restoring = if (on) restoring - c else restoring + c
                         Sounds.toggle(!on)
                     }
                 } else {
                     // Not in this backup: shown faded, so the four categories always read the same.
-                    OptionText(c.label, "Not in this backup", Modifier.graphicsLayer { alpha = 0.35f })
+                    Box(Modifier.weight(1f).height(CardHeight).graphicsLayer { alpha = 0.35f }) {
+                        TickCard(c.label, "Not in this backup", false, glyphOf(c), Palette.Muted, Modifier.fillMaxSize().focusProperties { canFocus = false }) {}
+                    }
                 }
             }
             Text(
@@ -343,28 +353,23 @@ object BackupUi {
         Spacer(Modifier.height(6.dp))
     }
 
-    /** A switch-like row: a label, a line about it, and its state in a pill. */
-    @Composable
-    private fun OptionRow(label: String, detail: String, value: String, on: Boolean, color: Color, modifier: Modifier, onClick: () -> Unit) {
-        FocusCard(modifier.fillMaxWidth(), glow = color, shape = RoundedCornerShape(14.dp), onClick = onClick) {
-            OptionContent(label, detail) { Pill(value, if (on) color else Palette.Muted) }
-        }
+    private val CardHeight = 72.dp
+
+    private fun glyphOf(c: BackupCategory): Glyph = when (c) {
+        BackupCategory.Games -> Glyph.Gamepad
+        BackupCategory.Look -> Glyph.Theme
+        BackupCategory.Layout -> Glyph.Grid
+        BackupCategory.Systems -> Glyph.Cartridge
     }
 
+    /** The four parts of a backup as cards, two to a line, so they read the same on every page. */
     @Composable
-    private fun OptionText(label: String, detail: String, modifier: Modifier) {
-        androidx.compose.foundation.layout.Box(modifier.fillMaxWidth()) { OptionContent(label, detail) {} }
-    }
-
-    @Composable
-    private fun OptionContent(label: String, detail: String, end: @Composable () -> Unit) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    private fun CategoryGrid(card: @Composable RowScope.(BackupCategory) -> Unit) {
+        BackupCategory.entries.chunked(2).forEach { line ->
+            Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                line.forEach { card(it) }
+                if (line.size == 1) Spacer(Modifier.weight(1f))
             }
-            Spacer(Modifier.width(8.dp))
-            end()
         }
     }
 }

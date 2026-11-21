@@ -328,6 +328,31 @@ fun PictureToggle(
     }
 }
 
+/**
+ * Something switched on and off with an icon and a line about it, as a card for a grid of two or three across: the
+ * icon, its name over two lines on it, and a tick. Off, it fades back.
+ */
+@Composable
+fun TickCard(label: String, detail: String?, on: Boolean, glyph: Glyph, color: Color, modifier: Modifier, onFocus: () -> Unit = {}, onClick: () -> Unit) {
+    FocusCard(modifier, glow = color, shape = RoundedCornerShape(16.dp), lifts = false, onFocus = onFocus, onClick = onClick) {
+        Row(
+            Modifier.fillMaxSize()
+                .background(Brush.verticalGradient(listOf(color.copy(alpha = if (on) 0.22f else 0.06f), color.copy(alpha = if (on) 0.06f else 0.02f))))
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            GlyphChip(glyph, if (on) color else Palette.Muted, size = 38.dp, round = true)
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f).graphicsLayer { alpha = if (on) 1f else 0.7f }) {
+                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (detail != null) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            }
+            Spacer(Modifier.width(8.dp))
+            TickBadge(on, color)
+        }
+    }
+}
+
 /** A compact on/off chip with a check, for short words without pictures (kinds of details). */
 @Composable
 fun TickChip(label: String, on: Boolean, color: Color, modifier: Modifier, note: String? = null, onFocus: () -> Unit = {}, onClick: () -> Unit) {

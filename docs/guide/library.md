@@ -380,7 +380,7 @@ Uninstalling Tandem deletes these files. Back up first to keep them.
 
 **Settings › Play & system › Your data › Back up** saves a new backup in `ROMs/tandem/backup/<date_time>/`. Older backups stay. Each backup is a folder of the files above plus a `manifest.json` listing what is inside, the counts (games, tiles, folders, widgets, sessions) and Tandem's version.
 
-You choose what goes in, in four parts:
+You choose what goes in, in four parts, shown as four cards that A ticks or unticks:
 
 | Part | Holds |
 |---|---|
@@ -391,7 +391,7 @@ You choose what goes in, in four parts:
 
 Scraping keys and logins and your RetroAchievements key are left out unless you switch on **Account keys and logins**. The backup folder is on shared storage, where other apps with storage access can read it.
 
-**Restore** lists the backups, newest first, with a summary such as "1,204 games · 38 tiles · 6 folders · 2 days ago", and whether each was made by hand or automatically. Pick one, choose the parts to put back, and confirm. Each part is restored on its own: if one can't be read, the others still go back, and the message says which. Screens update straight away. Restoring never switches private mode off, and keys already on the device stay when the backup has none. X deletes the highlighted backup.
+**Restore** lists the backups, newest first, with a summary such as "1,204 games · 38 tiles · 6 folders · 2 days ago", and whether each was made by hand or automatically. Pick one, tick the parts to put back (an unticked part keeps what is on the device now), and confirm. Each part is restored on its own: if one can't be read, the others still go back, and the message says which. Screens update straight away. Restoring never switches private mode off, and keys already on the device stay when the backup has none. X deletes the highlighted backup.
 
 Tandem also saves an automatic backup before a restore, before **Import my Cocoon setup**, and before **Reset look**. It keeps the last five automatic backups; backups you make yourself stay until you delete them.
 
