@@ -1,0 +1,5 @@
+- Every choice shows its options: short ones on the row, longer ones as picture cards; numbers are sliders.
+- Visual settings play a small demo of what they do, drawn on a Thor.
+- Systems is a searchable grid with a page per system.
+- Start and Quick settings each have one job, nothing in both.
+- Scrape library explains each kind of art; Stats lists the games behind "more".
