@@ -792,6 +792,7 @@ fun orbitSettings(): SettingSection {
                 "Continue ribbon", Glyph.Play, Palette.Mint,
                 "The last game you played, as a wide card above the spotlight's fan. A picks it up again.",
                 look.orbitContinue,
+                look = { on -> LayoutPreview("orbit", Modifier.fillMaxSize(), rounded = false, look = look.copy(orbitContinue = on)) },
             ) { v -> updateLook { it.copy(orbitContinue = v) } }.copy(keywords = "orbit continue resume last played recent"),
         ),
     )

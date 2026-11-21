@@ -437,6 +437,21 @@ private fun DrawScope.screen(t: ThemeSpec, at: Offset, sz: Size, what: Shows, al
     drawRoundRect(t.muted.copy(alpha = 0.5f), at, sz, r, style = Stroke(1.2f))
 }
 
+/** Spotlight's art drifting and zooming slowly behind the game, or holding still. */
+@Composable
+internal fun SpotlightMotionScene(on: Boolean) {
+    val clock = loopClock(6000)
+    LayoutPreview("spotlight", Modifier.fillMaxSize(), rounded = false, look = Store.settings.look.copy(spotlightBackdrop = "art"), drift = if (on) clock else null)
+}
+
+/** Where an app opens: on the top screen, on the bottom one, or (Auto) on whichever you start it from. */
+@Composable
+internal fun AppScreenScene(where: String) = when (where) {
+    "top" -> DeviceScene(Shows.App, Shows.Details)
+    "bottom" -> DeviceScene(Shows.Library, Shows.App)
+    else -> DeviceScene(Shows.AppFaint, Shows.AppFaint)
+}
+
 /**
  * The screens trading places, the way [style] does it ("scatter", "push", "flip", "depth", "fade", "instant"): the
  * library and the details swap between the top and the bottom screen, and back.
@@ -822,6 +837,35 @@ internal fun HomeWidgetsScene(on: Boolean) {
             }
             miniShelves(t, u, top = 40 * u)
         } else miniShelves(t, u)
+    }
+}
+
+/** A new widget on the icon grid: in a spot of its own two cells wide and high, or in the widget row along the top. */
+@Composable
+internal fun GridWidgetScene(row: Boolean) {
+    MiniScreen { t, u ->
+        val top = if (row) 22 * u else 8 * u
+        if (row) {
+            drawRoundRect(t.card, Offset(5 * u, 4 * u), Size(size.width - 10 * u, 15 * u), CornerRadius(4 * u))
+            miniBar(9 * u, 8 * u, size.width * 0.14f, 6 * u, t.text)
+            drawRoundRect(t.mint, Offset(size.width * 0.28f, 7.5f * u), Size(size.width * 0.18f, 8 * u), CornerRadius(4 * u))
+        }
+        val gap = 3 * u
+        val s = (size.height - top - 18 * u - gap * 2) / 3
+        val cols = ((size.width - 10 * u) / (s + gap)).toInt()
+        for (c in 0 until cols) for (r in 0 until 3) {
+            // In cells: the widget takes the first two columns of the first two rows.
+            if (!row && c < 2 && r < 2) continue
+            miniTile(t, 5 * u + c * (s + gap), top + r * (s + gap), s, s, c * 3 + r, s * 0.22f)
+        }
+        if (!row) {
+            val w = s * 2 + gap
+            drawRoundRect(t.card, Offset(5 * u, top), Size(w, w), CornerRadius(s * 0.22f))
+            drawCircle(t.mint, w * 0.22f, Offset(5 * u + w / 2, top + w * 0.42f), style = Stroke(2 * u))
+            miniBar(5 * u + w * 0.25f, top + w * 0.76f, w * 0.5f, 3.5f * u, t.text)
+            miniRing(t, 5 * u, top, w, w, s * 0.22f, u)
+        }
+        drawRoundRect(t.card.copy(alpha = 0.9f), Offset(size.width * 0.32f, size.height - 13 * u), Size(size.width * 0.36f, 10 * u), CornerRadius(5 * u))
     }
 }
 

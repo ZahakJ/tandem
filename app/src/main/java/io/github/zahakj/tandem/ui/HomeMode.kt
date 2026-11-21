@@ -488,16 +488,12 @@ fun homeSettings(): SettingSection {
                 "Choose dock apps", "${Dock.pinned(ctx).size} apps", Palette.Sky, Glyph.Grid,
                 "Pick which apps sit on the dock and in what order.", opens = true, keywords = "pin apps favourite",
             ) { Panels.openApps() },
-            run {
-                fun step(d: Int) = HomeStore.updateSettings {
-                    it.copy(screensaverMinutes = SCREENSAVER_STEPS[(SCREENSAVER_STEPS.indexOf(s.screensaverMinutes).coerceAtLeast(0) + d + SCREENSAVER_STEPS.size) % SCREENSAVER_STEPS.size])
-                }
-                SettingRow(
-                    "Screensaver", if (s.screensaverMinutes == 0) "Off" else "After ${s.screensaverMinutes} min", Palette.Lavender, Glyph.Clock,
-                    "After a while without a button press, your covers drift slowly across a night sky while Pip naps, so nothing burns into the screen. Any button wakes it.",
-                    onLeft = { step(-1) }, onRight = { step(1) }, keywords = "idle sleep burn in",
-                ) { step(1) }
-            },
+            choice(
+                "Screensaver", Glyph.Clock, Palette.Lavender,
+                "After a while without a button press, your covers drift slowly across a night sky while Pip naps, so nothing burns into the screen. Any button wakes it.",
+                SCREENSAVER_STEPS.map { it.toString() to if (it == 0) "Off" else "After $it min" },
+                s.screensaverMinutes.takeIf { it in SCREENSAVER_STEPS }?.toString() ?: "0",
+            ) { v -> HomeStore.updateSettings { it.copy(screensaverMinutes = v.toInt()) } }.copy(keywords = "idle sleep burn in"),
             SettingRow(
                 "Pause games in sleep", if (!rootShizuku) "Needs root Shizuku" else onOff(s.freezeAsleep), Palette.Lavender, Glyph.Clock,
                 toggle = if (!rootShizuku) null else s.freezeAsleep,
@@ -517,20 +513,17 @@ fun homeSettings(): SettingSection {
             run {
                 // Going offline, and staying offline while the game is still open behind Tandem, as one choice.
                 // Until it closes comes first: it was what going offline did unless you changed it.
-                val options = listOf("off" to "Off", "closes" to "Until it closes", "plays" to "While it plays")
+                val options = listOf("off" to "Off", "closes" to "Until closed", "plays" to "While playing")
                 val now = if (!s.offlineHidden) "off" else if (s.offlineUntilClosed) "closes" else "plays"
                 fun set(v: String) = HomeStore.updateSettings { it.copy(offlineHidden = v != "off", offlineUntilClosed = if (v == "off") it.offlineUntilClosed else v == "closes") }
-                fun step(d: Int) = set(options[(options.indexOfFirst { it.first == now } + d + options.size) % options.size].first)
-                val needs = if (!shizuku) "Needs Shizuku" else null
-                SettingRow(
-                    "Offline for hidden games", needs ?: options.first { it.first == now }.second, Palette.Lavender, Glyph.Shield,
-                    help = "In private mode, airplane mode goes on while a hidden game plays, so nothing in the game can go online. " +
-                        "While it plays: back online when you come back to Tandem. Until it closes: still offline while the game is open " +
-                        "in the background, where it could sync, until its app has closed or you tuck hidden games away. Airplane mode " +
-                        "you turned on yourself stays on. Needs Shizuku." + if (!s.privateMode) " Only in private mode." else "",
-                    onLeft = if (needs != null) null else ({ step(-1) }), onRight = if (needs != null) null else ({ step(1) }),
-                    keywords = "airplane mode offline network wifi internet hidden private game emulator background sync close go offline stay offline",
-                ) { if (needs != null) Toasts.show("This needs Shizuku running, with Tandem allowed") else step(1) }
+                val help = "In private mode, airplane mode goes on while a hidden game plays, so nothing in the game can go online. " +
+                    "While it plays: back online when you come back to Tandem. Until it closes: still offline while the game is open " +
+                    "in the background, where it could sync, until its app has closed or you tuck hidden games away. Airplane mode " +
+                    "you turned on yourself stays on. Needs Shizuku." + if (!s.privateMode) " Only in private mode." else ""
+                val keywords = "airplane mode offline network wifi internet hidden private game emulator background sync close go offline stay offline"
+                if (!shizuku) SettingRow("Offline for hidden games", "Needs Shizuku", Palette.Lavender, Glyph.Shield, help, keywords = keywords) {
+                    Toasts.show("This needs Shizuku running, with Tandem allowed")
+                } else choice("Offline for hidden games", Glyph.Shield, Palette.Lavender, help, options, now) { v -> set(v) }.copy(keywords = keywords)
             },
             SettingRow(
                 "Private mode PIN", if (io.github.zahakj.tandem.PinVault.isSet) "Set" else "Not set", Palette.Lavender, Glyph.Shield,

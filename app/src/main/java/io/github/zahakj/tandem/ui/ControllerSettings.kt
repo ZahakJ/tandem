@@ -35,6 +35,16 @@ fun settingsResumes(): Int {
     return seen.intValue
 }
 
+/** Connected controllers (descriptor to name) as choices, two alike numbered so each has its own name. */
+private fun padChoices(pads: List<Pair<String, String>>): List<Pair<String, String>> {
+    val seen = HashMap<String, Int>()
+    return pads.map { (descriptor, name) ->
+        val n = (seen[name] ?: 0) + 1
+        seen[name] = n
+        descriptor to if (n > 1) "$name $n" else name
+    }
+}
+
 @Composable
 fun controllerSettings(): List<SettingSection> {
     val ctx = LocalContext.current
@@ -75,11 +85,9 @@ fun controllerSettings(): List<SettingSection> {
     )
 
     // Two identical pads get numbered, so each row has its own name.
-    val seen = HashMap<String, Int>()
-    val padRows = pads.map { (descriptor, name) ->
-        val n = (seen[name] ?: 0) + 1
-        seen[name] = n
-        val label = if (n > 1) "$name $n" else name
+    val names = padChoices(pads)
+    val padRows = pads.mapIndexed { i, (descriptor, name) ->
+        val label = names[i].second
         val on = descriptor in cs.nintendo
         toggle(
             label, Glyph.Gamepad, Palette.Lavender,
@@ -119,16 +127,18 @@ fun controllerSettings(): List<SettingSection> {
         )
     } else {
         listOf(
-            SettingRow(
-                "Controller in games", io.github.zahakj.tandem.PadLink.linked?.name ?: "Built-in", Palette.Lavender, Glyph.Gamepad,
+            choice(
+                "Controller in games", Glyph.Gamepad, Palette.Lavender,
                 "Which controller plays as the built-in one, in every emulator, mid-game included: games keep " +
                     "listening to the built-in controls and Tandem passes the chosen controller's buttons and sticks " +
-                    "to them. The built-in controls keep working too. A steps through Built-in and each connected " +
-                    "controller (also in Quick settings). A controller connecting during a game offers itself on the " +
-                    "bottom screen: press its A or Start. Disconnecting it goes back to the built-in controls.",
-                onLeft = { io.github.zahakj.tandem.PadLink.cycle() }, onRight = { io.github.zahakj.tandem.PadLink.cycle() },
-                keywords = "passthrough xbox bluetooth controller player 1 switch use this controller ${pads.joinToString(" ") { it.second }}",
-            ) { io.github.zahakj.tandem.PadLink.cycle() },
+                    "to them. The built-in controls keep working too (also in Quick settings). A controller connecting " +
+                    "during a game offers itself on the bottom screen: press its A or Start. Disconnecting it goes back " +
+                    "to the built-in controls.",
+                // Built-in, then each connected controller by name (two alike get numbered, as on Connected controllers).
+                listOf("" to "Built-in") + padChoices(pads),
+                linkState.linked.orEmpty(),
+            ) { v -> io.github.zahakj.tandem.PadLink.choose(v.ifEmpty { null }) }
+                .copy(keywords = "passthrough xbox bluetooth controller player 1 switch use this controller ${pads.joinToString(" ") { it.second }}"),
             toggle(
                 "Always use a connected pad", Glyph.Gamepad, Palette.Lavender,
                 "Always use a connected controller: one that connects plays as the built-in controller at once, " +

@@ -363,6 +363,7 @@ fun deckSettings(): SettingSection {
                 "Default layout", Glyph.Key, Palette.Sky,
                 "The keyboard the Deck opens with: the full keyboard, or the compact one with the WASD cluster and mouse buttons. Switch any time with the chips on the Deck.",
                 DeckLayouts.choices, s.deckLayout,
+                look = { v -> DeckScene(v) },
             ) { v -> HomeStore.updateSettings { it.copy(deckLayout = v) } }.copy(keywords = "deck keyboard layout qwerty wasd game keys"),
             toggle("Key sounds", Glyph.Volume, Palette.Sky, "A soft click for each key and tap on the Deck.", s.deckSounds) { on ->
                 HomeStore.updateSettings { it.copy(deckSounds = on) }

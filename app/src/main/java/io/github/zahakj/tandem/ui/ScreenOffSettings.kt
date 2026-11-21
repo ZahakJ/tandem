@@ -23,6 +23,12 @@ fun screenOffSettings(): SettingSection {
                     "that draws there itself. 3DS and DS emulators keep their own screen whatever this says. Y on a system or a game chooses for " +
                     "that one alone.",
                 GameCompanion.choices, s.companion ?: GameCompanion.ART,
+                look = { mode ->
+                    DeviceScene(
+                        Shows.Game,
+                        when (mode) { GameCompanion.TANDEM -> Shows.Companion; GameCompanion.DARK -> Shows.Off; GameCompanion.OFF -> Shows.Emulator; else -> Shows.Art },
+                    )
+                },
             ) { mode -> HomeStore.updateSettings { it.copy(companion = mode.takeIf { m -> m != GameCompanion.ART }) } }
                 .copy(keywords = "screen off dark black oled battery companion game art leave to emulator bottom screen while playing dim"),
             choice(

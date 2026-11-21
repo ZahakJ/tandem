@@ -1029,16 +1029,19 @@ fun spotlightHomeSettings(): SettingSection {
                 "Spotlight rail", Glyph.Home, Palette.Lavender,
                 "Which side the rail of covers runs down. The game's details take the other side.",
                 SpotlightMode.Rails, look.spotlightRail,
+                look = { v -> LayoutPreview("spotlight", Modifier.fillMaxSize(), rounded = false, look = look.copy(spotlightRail = v)) },
             ) { v -> updateLook { it.copy(spotlightRail = v) } }.copy(keywords = "spotlight rail side left right mirror covers"),
             choice(
                 "Spotlight backdrop", Glyph.Image, Palette.Peach,
                 "What fills the screen behind the highlighted game: its key art, its cover blurred, or just the theme's colour.",
                 SpotlightMode.Backdrops, look.spotlightBackdrop,
+                look = { v -> LayoutPreview("spotlight", Modifier.fillMaxSize(), rounded = false, look = look.copy(spotlightBackdrop = v)) },
             ) { v -> updateLook { it.copy(spotlightBackdrop = v) } }.copy(keywords = "spotlight backdrop background art hero blur cover dim wallpaper"),
             toggle(
                 "Spotlight motion", Glyph.Sparkle, Palette.Mint,
                 "The art behind the game drifts and zooms in very slowly. Off with Reduce motion too.",
                 look.spotlightMotion,
+                look = { on -> SpotlightMotionScene(on) },
             ) { v -> updateLook { it.copy(spotlightMotion = v) } }.copy(keywords = "spotlight motion zoom ken burns drift animation"),
         ),
     )

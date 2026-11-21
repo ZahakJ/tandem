@@ -413,6 +413,7 @@ fun systemsSettings(): SettingSection {
                 "Single screen", if (!hasSecond) "On · one screen" else onOff(prefs.singleScreen), Palette.Lavender, Glyph.Screens,
                 "Leave the second screen alone (or turned off) and use only the top one. Games always start on the top screen too.",
                 toggle = if (!hasSecond) null else prefs.singleScreen, keywords = "one screen dual bottom off",
+                preview = { ToggleShowcase(prefs.singleScreen, Palette.Lavender) { on -> DeviceScene(Shows.Library, if (on) Shows.Off else Shows.Details) } },
             ) {
                 if (!hasSecond) {
                     Toasts.show("Only one screen found, so games always start on it")
@@ -425,16 +426,15 @@ fun systemsSettings(): SettingSection {
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
-                val all = io.github.zahakj.tandem.data.AppScreen.ALL
-                fun step(d: Int) = io.github.zahakj.tandem.data.AppPrefs.updateAll {
-                    it.copy(defaultScreen = all[(all.indexOf(it.defaultScreen).coerceAtLeast(0) + d + all.size) % all.size])
-                }
-                SettingRow(
-                    "Apps open on", if (!hasSecond) "Top · one screen" else io.github.zahakj.tandem.data.AppScreen.label(apps.defaultScreen),
-                    Palette.Lavender, Glyph.Screens,
-                    "Where an app opens unless it has a screen of its own (Y › Always open on). Auto: the screen you start it from. A touch on the bottom screen opens it there; with the controller it opens where the library is. Games keep their own screen.",
-                    onLeft = { step(-1) }, onRight = { step(1) }, keywords = "apps launch screen top bottom main second display open on discord browser",
-                ) { step(1) }
+                val help = "Where an app opens unless it has a screen of its own (Y › Always open on). Auto: the screen you start it from. A touch on the bottom screen opens it there; with the controller it opens where the library is. Games keep their own screen."
+                val keywords = "apps launch screen top bottom main second display open on discord browser"
+                if (!hasSecond) SettingRow("Apps open on", "Top · one screen", Palette.Lavender, Glyph.Screens, help, keywords = keywords) {
+                    Toasts.show("Only one screen found, so apps open on it")
+                } else choice(
+                    "Apps open on", Glyph.Screens, Palette.Lavender, help,
+                    io.github.zahakj.tandem.data.AppScreen.ALL.map { it to io.github.zahakj.tandem.data.AppScreen.label(it) }, apps.defaultScreen,
+                    look = { v -> AppScreenScene(v) },
+                ) { v -> io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(defaultScreen = v) } }.copy(keywords = keywords)
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
@@ -445,21 +445,16 @@ fun systemsSettings(): SettingSection {
                     else -> null
                 }
                 // Moving apps, and games too, as one choice: games only ever move along with apps.
-                val options = listOf("off" to "Off", "apps" to "Apps", "games" to "Apps and games")
+                val options = listOf("off" to "Off", "apps" to "Apps", "games" to "Apps + games")
                 val now = if (!apps.holdBackMoves) "off" else if (apps.moveGames) "games" else "apps"
-                fun step(d: Int) {
-                    val v = options[(options.indexOfFirst { it.first == now } + d + options.size) % options.size].first
+                val help = "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. " +
+                    "Apps and games: a game in front moves too; with Apps, a game always stays where it is. Needs Shizuku and the Controller Home button service (Controls)."
+                val keywords = "move app other screen swap display back button hold shizuku move games too"
+                if (needs != null) SettingRow("Hold Back to move", needs, Palette.Lavender, Glyph.Swap, help, keywords = keywords) {
+                    Toasts.show(needs.replaceFirst("Needs", "This needs"))
+                } else choice("Hold Back to move", Glyph.Swap, Palette.Lavender, help, options, now) { v ->
                     io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = v != "off", moveGames = if (v == "off") it.moveGames else v == "games") }
-                }
-                SettingRow(
-                    "Hold Back to move", needs ?: options.first { it.first == now }.second, Palette.Lavender, Glyph.Swap,
-                    "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. " +
-                        "Apps and games: a game in front moves too; with Apps, a game always stays where it is. Needs Shizuku and the Controller Home button service (Controls).",
-                    onLeft = if (needs != null) null else ({ step(-1) }), onRight = if (needs != null) null else ({ step(1) }),
-                    keywords = "move app other screen swap display back button hold shizuku move games too",
-                ) {
-                    if (needs != null) Toasts.show(needs.replaceFirst("Needs", "This needs")) else step(1)
-                }
+                }.copy(keywords = keywords)
             },
             SettingRow(
                 "Voice in clips", onOff(prefs.clipVoice), Palette.Lavender, Glyph.Volume,
@@ -472,6 +467,7 @@ fun systemsSettings(): SettingSection {
                 "Launch animation", onOff(prefs.launchAnimation), Palette.Lavender, Glyph.Sparkle,
                 "The game's art zooms up with a little flourish while its emulator starts. Off starts games straight away.",
                 toggle = prefs.launchAnimation, keywords = "start transition zoom",
+                preview = { ToggleShowcase(prefs.launchAnimation, Palette.Lavender) { on -> LaunchScene(on) } },
             ) {
                 SystemPrefs.update { it.copy(launchAnimation = !it.launchAnimation) }
             },

@@ -774,18 +774,17 @@ fun widgetsSettings(): SettingSection {
             SettingRow(
                 "Widgets on the home screen", if (!c.homeEnabled) "Off" else if (top == 0) "None yet" else plural(top, "widget", "widgets"), Palette.Butter, Glyph.Layers,
                 "Show your widgets at the top of the home screen.", toggle = c.homeEnabled,
+                preview = { ToggleShowcase(c.homeEnabled, Palette.Butter) { on -> HomeWidgetsScene(on) } },
             ) {
                 WidgetStore.update { it.copy(homeEnabled = !it.homeEnabled) }
             },
-            run {
-                val step = { WidgetStore.update { it.copy(gridPlace = if (it.gridPlace == "row") "cells" else "row") } }
-                SettingRow(
-                    "Widgets on the grid", if (c.gridPlace == "row") "As a row" else "In cells", Palette.Butter, Glyph.Grid,
-                    "Where Add here › Widget… on the icon grid puts a new widget: in a spot of its own, 1 to 2 cells each way, " +
-                        "or in the widget row. Widgets already placed stay where they are.",
-                    onLeft = step, onRight = step, keywords = "widget grid cells row icon grid", onClick = step,
-                )
-            },
+            choice(
+                "Widgets on the grid", Glyph.Grid, Palette.Butter,
+                "Where Add here › Widget… on the icon grid puts a new widget: in a spot of its own, 1 to 2 cells each way, " +
+                    "or in the widget row. Widgets already placed stay where they are.",
+                listOf("cells" to "In cells", "row" to "As a row"), if (c.gridPlace == "row") "row" else "cells",
+                look = { v -> GridWidgetScene(v == "row") },
+            ) { v -> WidgetStore.update { it.copy(gridPlace = v) } }.copy(keywords = "widget grid cells row icon grid"),
             SettingRow(
                 "Bottom screen when idle", if (bottom == 0) "Greeting" else plural(bottom, "widget", "widgets"), Palette.Butter, Glyph.Screens,
                 "What the bottom screen shows when nothing is highlighted: Pip's greeting, or widgets you choose.",
