@@ -183,7 +183,9 @@ private fun homeLabel(ids: List<String>) = ids.joinToString(" · ") {
 private fun iconGridSettingRows(look: Look): List<SettingRow> {
     val preview: @Composable () -> Unit = { LayoutPreview("grid", Modifier.fillMaxWidth().aspectRatio(1.6f)) }
     /** The grid with one setting changed, filling a showcase frame or a picker card. */
-    val grid: @Composable (Look) -> Unit = { l -> LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, look = l, focusLabel = !l.gridLabels) }
+    val grid: @Composable (Look) -> Unit = { l ->
+        LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, look = l, focusLabel = io.github.zahakj.tandem.data.ExtrasStore.settings.focusLabels)
+    }
     return listOf(
         choice(
             "Icon size", Glyph.Grid, Palette.Sky,
