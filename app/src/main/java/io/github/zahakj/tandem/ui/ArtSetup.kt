@@ -224,7 +224,7 @@ private fun sourceColor(s: ScrapeSource): Color = when (s) {
 
 /** A source's round icon chip, grey while it is off. */
 @Composable
-private fun SourceChip(s: ScrapeSource, size: Dp, on: Boolean) =
+internal fun SourceChip(s: ScrapeSource, size: Dp, on: Boolean) =
     GlyphChip(sourceGlyph(s), if (on) sourceColor(s) else Palette.Muted, size = size, round = true)
 
 private val TileGap = 12.dp

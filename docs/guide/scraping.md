@@ -147,7 +147,7 @@ without its keys is simply skipped, so with no keys the order is in effect Launc
 
 | From | Scrapes |
 | --- | --- |
-| **Settings › Library & art › Scrape library** | The scrape screen, for all systems or one (◀▶ on **Games**) |
+| **Settings › Library & art › Scrape library** | The scrape screen, for all systems or one (A on **Games** opens a grid of your systems) |
 | <kbd>Y</kbd> on a system or one of its folders › **Scrape these games** | The scrape screen, for that system or folder |
 | <kbd>Y</kbd> on a game › **More…** › **Scrape this game** | That game alone, at once, with your settings in Force all mode (never replacing locked fields). Pip says "Looking for …" |
 | <kbd>Y</kbd> on a game › **More…** › **Choose artwork** | Shows what every source has for that game; L1 / R1 switch between box art, hero and logo; **From this device** uses a picture of your own |
@@ -156,13 +156,13 @@ The scrape screen's options:
 
 | Option | Default | What it does |
 | --- | --- | --- |
-| Games, Folder | All systems | Which games: all systems, one system, or one of its folders |
-| Mode | Missing selected | **Missing basics**: only games without box art or a description, and only those two. **Missing selected**: what you picked that a game doesn't have yet. **Force all**: fetch everything you picked again and replace it |
+| Games, Folder | All systems | Which games: A opens a grid of your systems with their icons, then of that system's folders |
+| Mode | Missing selected | The three side by side; ◀▶ moves between them. **Missing basics**: only games without box art or a description, and only those two. **Missing selected**: what you picked that a game doesn't have yet. **Force all**: fetch everything you picked again and replace it |
 | Replace locked fields | Off | Anything you edited or picked by hand is locked; on, a scrape may replace it too |
-| Artwork | Box art, Hero, Logo, Gameplay screenshot | Each kind on or off: Box art, Hero / fanart, Logo, Title screen, Gameplay screenshot, Video snap (about 3 MB a game), and **Physical boxes and spines** (real box scans for the Shelf view, kept apart from your box art) |
-| Game details | On | Name, Description, Genres, Developer & publisher, Release year, Players, Rating and Time to beat (HowLongToBeat), each on or off |
-| Region & language | from your device | Which box art and description to prefer |
-| Sources, in order | | Each source's state; A opens its card, ◀▶ moves it earlier or later |
+| Artwork | Box art, Hero, Logo, Gameplay screenshot | A tile for each kind, showing it from one of your games; A switches it: Box art, Hero / fanart, Logo, Title screen, Gameplay screenshot, Video snap (about 3 MB a game), and **Physical boxes** (real box and spine scans for the Shelf view, kept apart from your box art) |
+| Game details | On | A switch, then a chip for each: Name, Description, Genres, Developer & publisher, Release year, Players, Rating and Time to beat (HowLongToBeat) |
+| Region & language | from your device | Which box art and description to prefer: the four regions side by side, the languages in a grid |
+| Sources | | The sources in the order they are asked, with each one's state. A opens **Set up sources**, the one place to set them up and change their order |
 
 **Start scraping** runs it in the background: with two screens the progress card is on the other screen and you can
 keep browsing; the top bar shows **✦ Scraping 12/40** wherever you are. A scrape pauses while a game is in front and
