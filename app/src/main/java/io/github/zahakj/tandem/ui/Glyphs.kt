@@ -34,11 +34,11 @@ enum class Glyph {
     Chart, Trophy, Key, Shield, Cartridge, Wand
 }
 
-/** A glyph on a soft tinted chip, as used in settings rows. */
+/** A glyph on a soft tinted chip, as used in settings rows; [round] for a circle (the rounded popup rows). */
 @Composable
-fun GlyphChip(glyph: Glyph, color: Color, size: Dp = 30.dp, modifier: Modifier = Modifier) {
+fun GlyphChip(glyph: Glyph, color: Color, size: Dp = 30.dp, modifier: Modifier = Modifier, round: Boolean = false) {
     Box(
-        modifier.size(size).clip(RoundedCornerShape(size * 0.32f)).background(color.copy(alpha = 0.18f)),
+        modifier.size(size).clip(RoundedCornerShape(if (round) size / 2 else size * 0.32f)).background(color.copy(alpha = 0.18f)),
         contentAlignment = Alignment.Center,
     ) { GlyphIcon(glyph, color, Modifier.padding(size * 0.2f)) }
 }

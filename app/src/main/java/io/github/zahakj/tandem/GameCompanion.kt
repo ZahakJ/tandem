@@ -56,10 +56,13 @@ object GameCompanion {
 
     fun label(mode: String): String = (choices + deckChoice).firstOrNull { it.first == mode }?.second ?: "Game art"
 
-    /** The next choice after [mode], for rows that cycle; [deck] says whether the Deck is among them. */
-    fun next(mode: String, deck: Boolean = false): String {
+    /**
+     * The next choice after [mode] (or with [by] -1 the one before), for rows that cycle; [deck] says whether the Deck
+     * is among them.
+     */
+    fun next(mode: String, deck: Boolean = false, by: Int = 1): String {
         val list = choices(deck)
-        return list[(list.indexOfFirst { it.first == mode } + 1) % list.size].first
+        return list[((list.indexOfFirst { it.first == mode } + by) % list.size + list.size) % list.size].first
     }
 
     /**

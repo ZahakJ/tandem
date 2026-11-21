@@ -218,17 +218,19 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
         val rows = rememberLazyListState()
         LazyColumn(
             Modifier.weight(1f, fill = false).heightIn(max = 360.dp).fadingEdges(rows), state = rows,
-            contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(7.dp),
+            contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
+            item("h:system") { SectionTitle("This system", color) }
             item("show") {
-                MenuRow("Show in library", onOff(config.enabled), "show", true, routeKey, Palette.Mint) {
+                fun toggle() {
                     SystemPrefs.updateSystem(p.id) { it.copy(enabled = !it.enabled) }
                     Toasts.show(if (config.enabled) "${p.shortName} is hidden from your library" else "${p.shortName} is back")
                     onChanged()
                 }
+                MenuRow("Show in library", onOff(config.enabled), "show", true, routeKey, Palette.Mint, Glyph.Eye, onSide = { toggle() }) { toggle() }
             }
             item("screen") {
-                MenuRow("Start games on", if (config.bottomScreen) "Bottom screen" else "Top screen", "screen", false, routeKey, Palette.Sky) {
+                fun toggle() {
                     if (!hasSecond) {
                         Toasts.show("I can only find one screen")
                     } else {
@@ -236,14 +238,16 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
                         if (SystemPrefs.data.singleScreen) Toasts.show("Single screen mode is on in Settings, so games stay on top")
                     }
                 }
+                MenuRow("Start games on", if (config.bottomScreen) "Bottom screen" else "Top screen", "screen", false, routeKey, Palette.Sky, Glyph.Screens,
+                    onSide = { toggle() }) { toggle() }
             }
             item("companion") {
                 // What the bottom screen shows while one of these games plays on the top one (GameCompanion.kt).
                 val mode = io.github.zahakj.tandem.GameCompanion.systemMode(p)
                 val deck = io.github.zahakj.tandem.DeckGames.suits(p.id, players.firstOrNull()?.packageName)
-                MenuRow("Bottom screen while playing", io.github.zahakj.tandem.GameCompanion.label(mode), "companion", false, routeKey, Palette.Lavender) {
-                    SystemPrefs.updateSystem(p.id) { it.copy(companion = io.github.zahakj.tandem.GameCompanion.next(mode, deck)) }
-                }
+                fun step(by: Int) { SystemPrefs.updateSystem(p.id) { it.copy(companion = io.github.zahakj.tandem.GameCompanion.next(mode, deck, by)) } }
+                MenuRow("Bottom screen while playing", io.github.zahakj.tandem.GameCompanion.label(mode), "companion", false, routeKey, Palette.Lavender, Glyph.Image,
+                    onSide = ::step) { step(1) }
             }
             if (!p.isApps) {
                 item("h:emu") { SectionTitle("Emulators", Palette.Butter, Modifier.padding(top = 6.dp)) }
@@ -256,7 +260,7 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
                         isInstalled -> "Make default"
                         else -> "Get it"
                     }
-                    MenuRow(label, value, "emu:${spec.name}", false, routeKey, if (isInstalled) Palette.Mint else Palette.Peach) {
+                    MenuRow(label, value, "emu:${spec.name}", false, routeKey, if (isInstalled) Palette.Mint else Palette.Peach, Glyph.Gamepad) {
                         when {
                             spec == default -> Toasts.show("${spec.name} already plays ${p.shortName} games")
                             isInstalled -> {
@@ -276,7 +280,7 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
                         dir.isDirectory -> "Built in"
                         else -> "Not there yet"
                     }
-                    MenuRow(shortPath(dir), value, "f:$folder", false, routeKey, if (extra) Palette.Peach else Palette.Lavender) {
+                    MenuRow(shortPath(dir), value, "f:$folder", false, routeKey, if (extra) Palette.Peach else Palette.Lavender, Glyph.Folder) {
                         if (extra) {
                             SystemPrefs.updateSystem(p.id) { it.copy(folders = it.folders - folder) }
                             Toasts.show("Removed ${dir.name}")
@@ -286,7 +290,7 @@ private fun SystemPanel(info: SystemInfo, onChanged: () -> Unit, onAddFolder: ()
                         }
                     }
                 }
-                item("add") { MenuRow("Add a folder…", "Pick", "add", false, routeKey, Palette.Mint, onAddFolder) }
+                item("add") { MenuRow("Add a folder…", "Pick", "add", false, routeKey, Palette.Mint, Glyph.Plus, onClick = onAddFolder) }
             }
         }
     }

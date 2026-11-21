@@ -113,6 +113,8 @@ class MenuAction(
     val help: String? = null,
     /** Can't be undone: the row acts only when A (or a finger) is held until its ring fills (HoldConfirm.kt). */
     val hold: Boolean = false,
+    /** A choice: Left and Right step back and forward through it (-1, 1), and its value shows ◂ ▸. */
+    val step: ((Int) -> Unit)? = null,
     val onClick: () -> Unit,
 )
 
@@ -396,10 +398,11 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
     // A row that can't be undone acts only when held; its icon gets the ring and the row fills as it goes.
     val hold = if (a.hold) rememberHold(holdHint(a.label.lowercase().removeSuffix("…"))) { a.onClick() } else null
     Row(
-        modifier.fillMaxWidth().height(46.dp).then(if (rise) Modifier.riseIn(routeKey, index, 10.dp, 0.96f) else Modifier)
+        modifier.fillMaxWidth().height(42.dp).then(if (rise) Modifier.riseIn(routeKey, index, 10.dp, 0.96f) else Modifier)
             .takesFocus(routeKey, a.id, wanted)
             .focusRequester(requester)
-            .then(if (hold != null) Modifier.holdToConfirm(hold, requester).holdFill(hold, color, 18.dp) else Modifier)
+            .then(if (hold != null) Modifier.holdToConfirm(hold, requester).holdFill(hold, color, 21.dp) else Modifier)
+            .sideSteps(a.step)
             .onFocusChanged { if (it.isFocused) { Sounds.move(); a.onFocus?.invoke() } else pressed = false }
             .graphicsLayer {
                 val g = glow.value
@@ -407,7 +410,7 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
                 scaleX = sc; scaleY = sc
             }
             .drawWithCache {
-                val r = CornerRadius(size.height / 2.6f)
+                val r = CornerRadius(size.height / 2f)
                 val fill = Brush.horizontalGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)))
                 val ring = Brush.linearGradient(listOf(lerp(color, Color.White, 0.55f), color, lerp(color, Color.White, 0.3f)), Offset.Zero, Offset(size.width, size.height))
                 val halo = Brush.horizontalGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent))
@@ -446,7 +449,7 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            Modifier.size(32.dp).graphicsLayer { shape = RoundedCornerShape(if (hold != null) 16.dp else 10.dp); clip = true }
+            Modifier.size(30.dp).graphicsLayer { shape = RoundedCornerShape(if (a.art != null) 9.dp else 15.dp); clip = true }
                 .background(color.copy(alpha = 0.2f)).then(if (hold != null) Modifier.holdArc(hold, color) else Modifier),
             contentAlignment = Alignment.Center,
         ) {
@@ -468,10 +471,7 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
         }
         if (a.value != null) {
             Spacer(Modifier.width(6.dp))
-            Text(
-                a.value, Modifier.widthIn(max = 110.dp).background(color.copy(alpha = 0.18f), RoundedCornerShape(50)).padding(horizontal = 8.dp, vertical = 2.dp),
-                style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
-            )
+            ValueChip(a.value, color, cycles = a.step != null, maxWidth = 120.dp)
         }
     }
 }

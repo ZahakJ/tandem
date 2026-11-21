@@ -32,6 +32,9 @@ around their centre without lifting, so a row of them stays in line. So:
   your own outer padding.
 - Content that can outgrow the panel goes in a scrolling container with `Modifier.weight(1f, fill = false)` (or
   `PopupRoom`'s `maxHeight`), `fadingEdges`, highlight room and `KeepInView`. The Y game menu is the model.
+- Option rows (`MenuRow` in popups, `ActionRow` in Y menus) are 42 dp pills: an icon chip, the label, and the value
+  as a chip (`ValueChip`). A value that Left and Right step through shows ◂ ▸ (`onSide`, `MenuAction.step`); A
+  still goes to the next one. Groups of rows get a `SectionTitle`.
 
 ## Text
 

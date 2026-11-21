@@ -81,9 +81,9 @@ fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     if (!Performance.available(ctx)) return emptyList()
     val own = g.meta.perf ?: PerfProfile()
     val base = HomeStore.settings.perf
-    fun next(cur: Int?, values: List<Int>): Int? {
+    fun next(cur: Int?, values: List<Int>, by: Int = 1): Int? {
         val all = listOf<Int?>(null, PerfProfile.KEEP) + values
-        return all[(all.indexOf(cur) + 1) % all.size]
+        return all[Math.floorMod(all.indexOf(cur) + by, all.size)]
     }
     fun name(v: Int?, default: Int?, label: (Int) -> String) = when (v) {
         null -> "Default · " + (default?.let(label) ?: "Keep")
@@ -94,13 +94,16 @@ fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     fun set(p: PerfProfile) = Store.update(g.key) { it.copy(perf = p.takeIf { it.any }) }
     val help = "For this game only; Default follows Settings › Play & system › Playing. Tap to go to the next choice."
     return listOf(
-        MenuAction("perfmode", "Performance mode", Glyph.Motion, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help) {
+        MenuAction("perfmode", "Performance mode", Glyph.Motion, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help,
+            step = { by -> set(own.copy(mode = next(own.mode, PerformancePlan.modes.map { it.first }, by))) }) {
             set(own.copy(mode = next(own.mode, PerformancePlan.modes.map { it.first })))
         },
-        MenuAction("perffan", "Fan mode", Glyph.Refresh, Palette.Peach, value = name(own.fan, base.fan, PerformancePlan::fanName), more = true, help = help) {
+        MenuAction("perffan", "Fan mode", Glyph.Refresh, Palette.Peach, value = name(own.fan, base.fan, PerformancePlan::fanName), more = true, help = help,
+            step = { by -> set(own.copy(fan = next(own.fan, PerformancePlan.fans.map { it.first }, by))) }) {
             set(own.copy(fan = next(own.fan, PerformancePlan.fans.map { it.first })))
         },
-        MenuAction("perfhz", "Refresh rate", Glyph.Screens, Palette.Peach, value = name(own.hz, base.hz, PerformancePlan::hzName), more = true, help = help) {
+        MenuAction("perfhz", "Refresh rate", Glyph.Screens, Palette.Peach, value = name(own.hz, base.hz, PerformancePlan::hzName), more = true, help = help,
+            step = { by -> set(own.copy(hz = next(own.hz, Performance.supportedHz(ctx), by))) }) {
             set(own.copy(hz = next(own.hz, Performance.supportedHz(ctx))))
         },
     )

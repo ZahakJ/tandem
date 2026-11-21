@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -50,10 +51,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Collections
@@ -130,17 +136,29 @@ private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = nu
     }
 }
 
-/** A popup row. Takes focus when its key was the last used, or [first] when nothing was. */
+/**
+ * A popup row. Takes focus when its key was the last used, or [first] when nothing was. [glyph] puts an icon chip in
+ * front; [onSide] makes its value a choice that Left and Right step back and forward through (A is [onClick]).
+ */
 @Composable
-fun MenuRow(label: String, value: String?, key: String, first: Boolean, routeKey: String, color: Color = Palette.Mint, onClick: () -> Unit) {
-    MenuItem(label, value, Modifier.remembersFocus(routeKey, key, first), color, onClick)
+fun MenuRow(
+    label: String, value: String?, key: String, first: Boolean, routeKey: String, color: Color = Palette.Mint,
+    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, onClick: () -> Unit,
+) {
+    MenuItem(label, value, Modifier.remembersFocus(routeKey, key, first), color, glyph, onSide, onClick)
 }
 
 /** A popup row that takes focus when [key] is the popup's focus [target]. */
 @Composable
-fun MenuRow(label: String, value: String?, key: String, routeKey: String, target: String?, color: Color = Palette.Mint, onClick: () -> Unit) {
-    MenuItem(label, value, Modifier.takesFocus(routeKey, key, key == target), color, onClick)
+fun MenuRow(
+    label: String, value: String?, key: String, routeKey: String, target: String?, color: Color = Palette.Mint,
+    glyph: Glyph? = null, onSide: ((Int) -> Unit)? = null, onClick: () -> Unit,
+) {
+    MenuItem(label, value, Modifier.takesFocus(routeKey, key, key == target), color, glyph, onSide, onClick)
 }
+
+/** How tall a popup row is: rounded right off at the ends, so a list of them reads as bubbles. */
+private val MenuRowHeight = 42.dp
 
 /** A popup row for something that can't be undone: it acts only when held until its ring fills (HoldConfirm.kt). */
 @Composable
@@ -148,10 +166,10 @@ fun HoldMenuRow(label: String, key: String, routeKey: String, target: String?, c
     val hold = rememberHold(holdHint(label.lowercase()), onConfirm)
     val requester = remember { androidx.compose.ui.focus.FocusRequester() }
     FocusCard(
-        Modifier.fillMaxWidth().takesFocus(routeKey, key, key == target).focusRequester(requester).holdToConfirm(hold, requester),
-        glow = color, shape = RoundedCornerShape(14.dp), onClick = {},
+        Modifier.fillMaxWidth().height(MenuRowHeight).takesFocus(routeKey, key, key == target).focusRequester(requester).holdToConfirm(hold, requester),
+        glow = color, shape = RoundedCornerShape(50), lifts = false, onClick = {},
     ) {
-        Row(Modifier.fillMaxWidth().holdFill(hold, color, 14.dp).padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxSize().holdFill(hold, color, MenuRowHeight / 2).padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.width(8.dp))
             HoldRing(hold, color)
@@ -160,13 +178,46 @@ fun HoldMenuRow(label: String, key: String, routeKey: String, target: String?, c
 }
 
 @Composable
-private fun MenuItem(label: String, value: String?, focus: Modifier, color: Color, onClick: () -> Unit) {
-    FocusCard(Modifier.fillMaxWidth().then(focus), glow = color, shape = RoundedCornerShape(14.dp), onClick = onClick) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun MenuItem(label: String, value: String?, focus: Modifier, color: Color, glyph: Glyph?, onSide: ((Int) -> Unit)?, onClick: () -> Unit) {
+    FocusCard(
+        Modifier.fillMaxWidth().height(MenuRowHeight).then(focus).sideSteps(onSide),
+        glow = color, shape = RoundedCornerShape(50), lifts = false, onClick = onClick,
+    ) {
+        Row(Modifier.fillMaxSize().padding(start = if (glyph != null) 6.dp else 16.dp, end = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (glyph != null) {
+                GlyphChip(glyph, color, size = 30.dp, round = true)
+                Spacer(Modifier.width(10.dp))
+            }
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (value != null) { Spacer(Modifier.width(8.dp)); Pill(value, color) }
+            if (value != null) { Spacer(Modifier.width(8.dp)); ValueChip(value, color, cycles = onSide != null) }
         }
     }
+}
+
+/**
+ * A row's value as a coloured chip; with [cycles] it shows ◂ ▸, for a choice that Left and Right step through
+ * ([sideSteps]).
+ */
+@Composable
+internal fun ValueChip(value: String, color: Color, cycles: Boolean = false, modifier: Modifier = Modifier, maxWidth: Dp = 180.dp) {
+    Row(
+        modifier.widthIn(max = maxWidth).background(color.copy(alpha = 0.18f), RoundedCornerShape(50))
+            .padding(horizontal = if (cycles) 7.dp else 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val arrow = color.copy(alpha = 0.6f)
+        if (cycles) Text("◂", Modifier.padding(end = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
+        Text(value, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (cycles) Text("▸", Modifier.padding(start = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
+    }
+}
+
+/** Left and Right call [step] with -1 and 1 (a row whose value is a choice); without one they move the focus as usual. */
+internal fun Modifier.sideSteps(step: ((Int) -> Unit)?): Modifier = if (step == null) this else onPreviewKeyEvent { e ->
+    val by = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> 0 }
+    if (by == 0) return@onPreviewKeyEvent false
+    if (e.type == KeyEventType.KeyDown) { step(by); Sounds.move() }
+    true
 }
 
 /** What hiding a game (or folder, or system) says, without giving a hidden game away in private mode. */
@@ -244,38 +295,42 @@ fun GameMenu() {
                 help = "Locked details stay as you set them: scraping and gamelist imports leave them alone.") {
                 GameEditor.edit(g); Nav.closeOverlays()
             })
-            if (!g.platform.isApps) add(
-                MenuAction("emu", "Emulator", Glyph.Gamepad, Palette.Sky, value = current?.name ?: "Not installed", more = true,
-                    help = "The emulator this game starts in. Tap to switch to the next installed one; the first is the system's own choice.") {
-                    if (players.size > 1) {
-                        val next = players[(players.indexOf(current) + 1) % players.size]
-                        // The game's own default: Peanuts Native for a game it has built, else the system's first.
-                        val pn = io.github.zahakj.tandem.PeanutsNative
-                        val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.appFor(g) } ?: players.first()
-                        Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
-                    } else {
-                        Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
-                    }
-                },
-            )
+            if (!g.platform.isApps) {
+                fun switchEmulator(by: Int) {
+                    val next = players[Math.floorMod(players.indexOf(current) + by, players.size)]
+                    // The game's own default: Peanuts Native for a game it has built, else the system's first.
+                    val pn = io.github.zahakj.tandem.PeanutsNative
+                    val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.appFor(g) } ?: players.first()
+                    Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
+                }
+                add(MenuAction("emu", "Emulator", Glyph.Gamepad, Palette.Sky, value = current?.name ?: "Not installed", more = true,
+                    help = "The emulator this game starts in. Tap to switch to the next installed one; the first is the system's own choice.",
+                    step = if (players.size > 1) ::switchEmulator else null) {
+                    if (players.size > 1) switchEmulator(1)
+                    else Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
+                })
+            }
             if (screenRow) {
                 val bottom = LaunchDisplay.wantsBottom(g)
                 val systemBottom = SystemPrefs.config(g.platform.id).bottomScreen
-                add(MenuAction("screen", "Start on", Glyph.Screens, Palette.Butter, value = if (bottom) "Bottom screen" else "Top screen", more = true,
-                    help = "The screen this game opens on. Set back to the system's screen, it follows the system again.") {
+                fun switchScreen() {
                     val want = !bottom
                     Store.update(g.key) { it.copy(screen = if (want == systemBottom) null else if (want) "bottom" else "top") }
-                })
+                }
+                add(MenuAction("screen", "Start on", Glyph.Screens, Palette.Butter, value = if (bottom) "Bottom screen" else "Top screen", more = true,
+                    help = "The screen this game opens on. Set back to the system's screen, it follows the system again.", step = { switchScreen() }) { switchScreen() })
                 // What the bottom screen shows while it plays on the top one (GameCompanion.kt).
                 val companion = io.github.zahakj.tandem.GameCompanion.modeFor(g)
                 // PC games and streams also get the Deck, a keyboard and trackpad for the game.
                 val deck = io.github.zahakj.tandem.DeckGames.suits(g.platform.id, current?.packageName)
-                add(MenuAction("companion", "Bottom screen while playing", Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
-                    help = "What the bottom screen shows while this game plays on the top one." + if (deck) " The Deck is a keyboard and trackpad for the game." else "") {
-                    val next = io.github.zahakj.tandem.GameCompanion.next(companion, deck)
+                fun switchCompanion(by: Int) {
+                    val next = io.github.zahakj.tandem.GameCompanion.next(companion, deck, by)
                     val inherited = io.github.zahakj.tandem.GameCompanion.systemMode(g.platform)
                     Store.update(g.key) { it.copy(companion = if (next == inherited) null else next) }
-                })
+                }
+                add(MenuAction("companion", "Bottom screen while playing", Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
+                    help = "What the bottom screen shows while this game plays on the top one." + if (deck) " The Deck is a keyboard and trackpad for the game." else "",
+                    step = ::switchCompanion) { switchCompanion(1) })
             }
             // The game's own performance, fan and refresh-rate modes, on an AYN device (Performance.kt).
             addAll(performanceActions(ctx, g))
