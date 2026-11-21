@@ -1,6 +1,8 @@
 package io.github.zahakj.tandem.ui
 
 import io.github.zahakj.tandem.FileChecks
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -340,7 +342,8 @@ fun askShizuku() {
     }
 }
 
-fun onOff(b: Boolean) = if (b) "On" else "Off"
+/** On or Off, in Tandem's language. */
+fun onOff(b: Boolean) = Tx.s(if (b) R.string.common_on else R.string.common_off)
 
 /**
  * Slow data work from Settings (import, backup, restore): runs off the main thread with a toast when it starts and

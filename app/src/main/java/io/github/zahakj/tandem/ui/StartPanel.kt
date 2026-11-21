@@ -1,7 +1,8 @@
 package io.github.zahakj.tandem.ui
 
 import io.github.zahakj.tandem.Collections
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 
 import android.os.BatteryManager
 import androidx.activity.compose.BackHandler
@@ -338,8 +339,8 @@ private fun StartHeader(progress: () -> Float) {
         Pip(56.dp)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text("Tandem", style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            val line = listOfNotNull(Clock.format(now), if (battery >= 0) "$battery%" else null).joinToString(" · ")
+            Text(Tx.s(R.string.app_name), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            val line = listOfNotNull(Clock.format(now), if (battery >= 0) Tx.s(R.string.common_percent, battery) else null).joinToString(" · ")
             if (line.isNotEmpty()) Text(line, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
         }
     }
@@ -352,13 +353,13 @@ private fun StartHints(progress: () -> Float) {
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         val onItem = StartMenu.page == "hidden" && StartMenu.hiddenFocus.let { it != null && it != "back" && it != "toggle" }
-        ButtonHint("A", if (onItem) "Unhide" else "Choose", Palette.Mint)
+        ButtonHint("A", Tx.s(if (onItem) R.string.panels_start_hint_unhide else R.string.common_choose), Palette.Mint)
         // Y shows one thing on its own, which means nothing while everything hidden is showing.
         if (onItem && !io.github.zahakj.tandem.Privacy.showHidden) {
             val peeking = HiddenItems.all().firstOrNull { it.id == StartMenu.hiddenFocus }?.let { HiddenItems.peeking(it) } == true
-            ButtonHint("Y", if (peeking) "Hide again" else "Show here", Palette.Sky)
+            ButtonHint("Y", Tx.s(if (peeking) R.string.panels_start_hint_hide_again else R.string.panels_start_hint_show_here), Palette.Sky)
         }
-        ButtonHint("B", if (StartMenu.page != null) "Back" else "Close", Palette.Lavender)
+        ButtonHint("B", Tx.s(if (StartMenu.page != null) R.string.common_back else R.string.common_close), Palette.Lavender)
     }
 }
 
@@ -390,71 +391,70 @@ private fun Modifier.unfoldRow(i: Int, n: Int, progress: () -> Float): Modifier 
 private fun startRows(ctx: android.content.Context, page: String?): List<MenuAction> {
     // "Edit grid" (and the grid's New and Sort rows) whenever the icon grid is the home layout or on screen.
     val grid = IconGrid.isHome
-    val back = MenuAction("back", "Back", Glyph.Back, Palette.Lavender) { StartMenu.page = null }
+    val back = MenuAction("back", Tx.s(R.string.common_back), Glyph.Back, Palette.Lavender) { StartMenu.page = null }
+    val widget = MenuAction("widget", Tx.s(R.string.panels_start_new_widget), Glyph.Layers, Palette.Sky) { StartMenu.go { Nav.go(Route.Widgets) } }
     return when (page) {
         "hidden" -> hiddenRows()
         "new" -> listOf(back) + if (grid) listOf(
-            MenuAction("folder", "New folder…", Glyph.Folder, Palette.Butter) {
+            MenuAction("folder", Tx.s(R.string.panels_start_new_folder), Glyph.Folder, Palette.Butter) {
                 StartMenu.go {
-                    TextEntry.ask("Name the folder", "New folder") { name ->
-                        val n = name.trim().ifEmpty { "Folder" }
+                    TextEntry.ask(Tx.s(R.string.panels_start_name_folder), Tx.s(R.string.panels_start_folder_default)) { name ->
+                        val n = name.trim().ifEmpty { Tx.s(R.string.panels_start_folder_unnamed) }
                         IconGridStore.createFolder(n, null, homeShown(), IconGridStore.config.folders.size)
-                        Toasts.show("Made the folder $n. Y › Move to folder on any tile")
+                        Toasts.show(Tx.s(R.string.panels_start_folder_made, n))
                     }
                 }
             },
-            MenuAction("smart", "Smart folder…", Glyph.Sparkle, Palette.Lavender) { StartMenu.go { SmartFolderForm.openNew() } },
-            MenuAction("add", "Add to home…", Glyph.Plus, Palette.Mint) {
+            MenuAction("smart", Tx.s(R.string.panels_start_new_smart_folder), Glyph.Sparkle, Palette.Lavender) { StartMenu.go { SmartFolderForm.openNew() } },
+            MenuAction("add", Tx.s(R.string.panels_start_new_add_home), Glyph.Plus, Palette.Mint) {
                 StartMenu.go { FocusMemory.forget(IconGrid.ADD_ROUTE); if (Nav.route != Route.Home) Nav.replace(Route.Home); IconGrid.addAt = null; IconGrid.addFilter = null; IconGrid.adding = true }
             },
-            MenuAction("widget", "Widget…", Glyph.Layers, Palette.Sky) { StartMenu.go { Nav.go(Route.Widgets) } },
-        ) else listOf(
-            MenuAction("widget", "Widget…", Glyph.Layers, Palette.Sky) { StartMenu.go { Nav.go(Route.Widgets) } },
-        )
+            widget,
+        ) else listOf(widget)
         "sort" -> listOf(back) + (if (grid) listOf(
             // Packs every tile to the front, closing the gaps (the grid otherwise keeps them).
-            MenuAction("tidy", "Home: close the gaps", Glyph.Sparkle, Palette.Mint) { StartMenu.go { tidyHome() } },
-            MenuAction("home-name", "Home: A to Z", Glyph.Sort, Palette.Sky) { sortHome("name") },
-            MenuAction("home-recent", "Home: recently played", Glyph.Clock, Palette.Sky) { sortHome("recent") },
-            MenuAction("home-most", "Home: most played", Glyph.Chart, Palette.Sky) { sortHome("most") },
-            MenuAction("home-kind", "Home: systems first", Glyph.Cartridge, Palette.Sky) { sortHome("kind") },
+            MenuAction("tidy", Tx.s(R.string.panels_start_sort_tidy), Glyph.Sparkle, Palette.Mint) { StartMenu.go { tidyHome() } },
+            MenuAction("home-name", Tx.s(R.string.panels_start_sort_home_name), Glyph.Sort, Palette.Sky) { sortHome("name") },
+            MenuAction("home-recent", Tx.s(R.string.panels_start_sort_home_recent), Glyph.Clock, Palette.Sky) { sortHome("recent") },
+            MenuAction("home-most", Tx.s(R.string.panels_start_sort_home_most), Glyph.Chart, Palette.Sky) { sortHome("most") },
+            MenuAction("home-kind", Tx.s(R.string.panels_start_sort_home_kind), Glyph.Cartridge, Palette.Sky) { sortHome("kind") },
         ) else emptyList()) + SortOrder.entries.map { o ->
-            MenuAction("games-${o.name}", "Games: ${o.label}", Glyph.Sort, Palette.Mint, value = if (Store.settings.sort == o) "✓" else null) {
+            MenuAction("games-${o.name}", Tx.s(R.string.panels_start_sort_games, o.label), Glyph.Sort, Palette.Mint, value = if (Store.settings.sort == o) "✓" else null) {
                 Store.updateSettings { it.copy(sort = o) }
-                Toasts.show("Games sorted: ${o.label}")
+                Toasts.show(Tx.s(R.string.panels_start_sorted_games, o.label))
             }
         }
         // Three groups, each thing in one place: going places, the home screen, then Settings. A row that only
         // sometimes means something (Switch games, Undo, Hidden, an update) shows only then.
         else -> buildList {
             if (RunningGames.list.isNotEmpty()) add(
-                MenuAction("switch", "Switch games", Glyph.Swap, Palette.Mint, value = "${RunningGames.list.size}") { StartMenu.go { Panels.openSwitcher() } },
+                MenuAction("switch", Tx.s(R.string.panels_start_switch_games), Glyph.Swap, Palette.Mint, value = "${RunningGames.list.size}") { StartMenu.go { Panels.openSwitcher() } },
             )
-            add(MenuAction("apps", "All apps", null, Palette.Sky, icon = TIcon.AllApps) { StartMenu.go { Panels.openApps() } })
-            add(MenuAction("search", "Search", Glyph.Search, Palette.Sky) { StartMenu.go { Nav.search = true } })
+            add(MenuAction("apps", Tx.s(R.string.panels_start_all_apps), null, Palette.Sky, icon = TIcon.AllApps) { StartMenu.go { Panels.openApps() } })
+            add(MenuAction("search", Tx.s(R.string.panels_start_search), Glyph.Search, Palette.Sky) { StartMenu.go { Nav.search = true } })
             // Play time, your games by status and your trophies, always one press from Start.
-            add(MenuAction("stats", "Stats & trophies", null, Palette.Butter, icon = TIcon.Trophy, sub = startStatsLine()) {
+            add(MenuAction("stats", Tx.s(R.string.panels_start_stats), null, Palette.Butter, icon = TIcon.Trophy, sub = startStatsLine()) {
                 StartMenu.go { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }
             })
-            add(MenuAction("new", "New", Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
-            add(MenuAction("sort", "Sort", Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
+            add(MenuAction("new", Tx.s(R.string.panels_start_new), Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
+            add(MenuAction("sort", Tx.s(R.string.panels_start_sort), Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             if (grid) {
-                add(MenuAction("edit", "Edit grid", Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
+                add(MenuAction("edit", Tx.s(R.string.panels_start_edit_grid), Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
                 // Only for a while after a change on the grid: an undo kept from days ago (they are saved) would
                 // only be a puzzle here. Older ones are still in Y › More › Undo last change on the grid.
                 IconGridStore.undoLabel?.takeIf { IconGridStore.undoAt > 0 && System.currentTimeMillis() - IconGridStore.undoAt < UNDO_FRESH_MS }?.let { label ->
-                    add(MenuAction("undo", "Undo", Glyph.Refresh, Palette.Butter, value = label) { StartMenu.go { GridUndoUi.undo() } })
+                    add(MenuAction("undo", Tx.s(R.string.panels_start_undo), Glyph.Refresh, Palette.Butter, value = label) { StartMenu.go { GridUndoUi.undo() } })
                 }
-            } else add(MenuAction("edit", "Edit widgets", Glyph.Move, Palette.Butter) { StartMenu.go { Nav.go(Route.Widgets) } })
+            } else add(MenuAction("edit", Tx.s(R.string.panels_start_edit_widgets), Glyph.Move, Palette.Butter) { StartMenu.go { Nav.go(Route.Widgets) } })
             // Only when something is hidden, and in private mode only while revealed (HiddenAccess.startRow).
             if (HiddenItems.offered()) add(
-                MenuAction("hidden", "Hidden", Glyph.Eye, Palette.Lavender, value = "${HiddenItems.count()}") { StartMenu.openHidden() },
+                MenuAction("hidden", Tx.s(R.string.panels_start_hidden), Glyph.Eye, Palette.Lavender, value = "${HiddenItems.count()}") { StartMenu.openHidden() },
             )
             // Straight to Settings' home: its tiles and search already lead to every page.
-            add(MenuAction("settings", "Settings", null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } })
+            add(MenuAction("settings", Tx.s(R.string.panels_start_settings), null, Palette.Accent, icon = TIcon.Gear) { StartMenu.go { Nav.go(Route.Settings) } })
             // A new Tandem is out (Updates.kt): one quiet row, A shows its notes and Update.
             io.github.zahakj.tandem.Updates.found?.takeIf { io.github.zahakj.tandem.Updates.enabled }?.let { rel ->
-                add(MenuAction("update", "Tandem ${rel.version} is out", Glyph.Download, Palette.Mint) { StartMenu.go { UpdatePopup.show() } })
+                add(MenuAction("update", Tx.s(R.string.panels_start_update, rel.version), Glyph.Download, Palette.Mint) { StartMenu.go { UpdatePopup.show() } })
             }
         }
     }
@@ -468,7 +468,7 @@ private val StartGroupStarts = setOf("new", "settings")
 
 /** Edit grid: the highlighted tile (or the first) starts moving, like Y › Move. */
 private fun editGrid() {
-    if (Nav.route != Route.Home) { Nav.replace(Route.Home); Toasts.show("Pick a tile, then Start › Edit grid"); return }
+    if (Nav.route != Route.Home) { Nav.replace(Route.Home); Toasts.show(Tx.s(R.string.panels_start_edit_grid_pick)); return }
     val (_, arranged) = IconGrid.menuData ?: return
     val key = FocusMemory.get(Route.Home.key)?.takeIf { it in arranged } ?: arranged.firstOrNull() ?: return
     startMove(key, null, homeShown().slots)
@@ -484,9 +484,14 @@ private fun sortHome(by: String) {
         "most" -> items.sortedByDescending { it.games.sumOf { g -> g.meta.playSeconds } }
         else -> items.sortedBy { it.kind.ordinal }
     }
-    GridUndoUi.run(
-        when (by) { "name" -> "Home sorted A to Z"; "recent" -> "Home sorted by recently played"; "most" -> "Home sorted by most played"; else -> "Systems first" },
-    ) { IconGridStore.setOrder(sorted.map { it.key }) }
+    val said = when (by) {
+        "name" -> R.string.panels_start_sorted_home_name
+        "recent" -> R.string.panels_start_sorted_home_recent
+        "most" -> R.string.panels_start_sorted_home_most
+        else -> R.string.panels_start_sorted_home_kind
+    }
+    // The label is kept with the undo (saved), so it stays in the language it was made in.
+    GridUndoUi.run(Tx.s(said)) { IconGridStore.setOrder(sorted.map { it.key }) }
 }
 
 /**
@@ -499,26 +504,27 @@ private fun hiddenRows(): List<MenuAction> {
     val items = HiddenItems.all()
     val showing = Privacy.showHidden
     val peeks = HiddenItems.peeks
-    val back = MenuAction("back", "Back", Glyph.Back, Palette.Lavender, onFocus = { StartMenu.hiddenFocus = "back" }) { StartMenu.page = null }
+    val back = MenuAction("back", Tx.s(R.string.common_back), Glyph.Back, Palette.Lavender, onFocus = { StartMenu.hiddenFocus = "back" }) { StartMenu.page = null }
     val tuck = showing || !peeks.isEmpty
+    val showingWord = Tx.s(R.string.panels_start_hidden_showing)
     val toggle = MenuAction(
-        "toggle", if (tuck) "Tuck away" else "Show all hidden", Glyph.Eye, Palette.Sky,
-        value = if (showing) "Showing" else if (!peeks.isEmpty) "Some showing" else null,
+        "toggle", Tx.s(if (tuck) R.string.panels_start_hidden_tuck else R.string.panels_start_hidden_show_all), Glyph.Eye, Palette.Sky,
+        value = if (showing) showingWord else if (!peeks.isEmpty) Tx.s(R.string.panels_start_hidden_some_showing) else null,
         onFocus = { StartMenu.hiddenFocus = "toggle" },
     ) {
         if (tuck) {
             // In private mode this is the combo's own tuck-away (with its toast), and the page closes behind it.
             Privacy.tuckAway()
-            if (!Privacy.enabled) Toasts.show("Hidden games are tucked away")
+            if (!Privacy.enabled) Toasts.show(Tx.s(R.string.panels_start_hidden_tucked))
         } else {
             toggleShowHidden()
-            Toasts.show("Hidden games are showing")
+            Toasts.show(Tx.s(R.string.panels_start_hidden_shown))
         }
     }
     return listOf(back, toggle) + items.map { item ->
         MenuAction(
             item.id, hiddenName(item), hiddenGlyph(item), Palette.Lavender,
-            value = if (!showing && HiddenItems.peeking(item)) "Showing" else null,
+            value = if (!showing && HiddenItems.peeking(item)) showingWord else null,
             sub = HiddenItems.kind(item),
             art = hiddenArt(item),
             onFocus = { StartMenu.hiddenFocus = item.id; showDetails(item) },
@@ -569,7 +575,7 @@ private fun unhideFromStart(item: HiddenItem) {
     val undo = { HiddenItems.rehide(item); FocusMemory.remember("${StartMenu.ROUTE}:hidden", item.id) }
     if (next == null) {
         StartMenu.page = null
-        Undo.offer("$said. Nothing else is hidden", undo)
+        Undo.offer(Tx.s(R.string.panels_start_hidden_none_left, said), undo)
     } else {
         FocusMemory.remember("${StartMenu.ROUTE}:hidden", next.id)
         Undo.offer(said, undo)
@@ -579,10 +585,10 @@ private fun unhideFromStart(item: HiddenItem) {
 /** Y on the Hidden page: shows the highlighted thing on its own, or hides it again. */
 private fun peekFocused() {
     val item = HiddenItems.all().firstOrNull { it.id == StartMenu.hiddenFocus } ?: return
-    if (Privacy.showHidden) { Toasts.show("Everything hidden is showing already"); return }
+    if (Privacy.showHidden) { Toasts.show(Tx.s(R.string.panels_start_hidden_all_showing)); return }
     HiddenItems.togglePeek(item)
     Sounds.select()
-    Toasts.show(if (HiddenItems.peeking(item)) "Showing until hidden games are tucked away" else "Hidden again")
+    Toasts.show(Tx.s(if (HiddenItems.peeking(item)) R.string.panels_start_hidden_peek else R.string.panels_start_hidden_again))
 }
 
 /** "3 playing · 12 trophies" for Start › Stats & trophies; null when there is nothing yet. */
@@ -591,8 +597,8 @@ private fun startStatsLine(): String? {
     val trophies = io.github.zahakj.tandem.data.ExtrasStore.trophies.unlocked.size
     // One short detail, beside the label on the same line: the trophies, or what you're playing before the first.
     return when {
-        trophies > 0 -> plural(trophies, "trophy", "trophies")
-        playing > 0 -> "$playing playing"
+        trophies > 0 -> Tx.p(R.plurals.panels_start_trophies, trophies)
+        playing > 0 -> Tx.p(R.plurals.panels_start_playing, playing)
         else -> null
     }
 }

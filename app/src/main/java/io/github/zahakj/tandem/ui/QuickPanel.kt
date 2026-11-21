@@ -63,6 +63,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.Shell
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
@@ -197,16 +199,18 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
 
     if (!narrow) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Quick settings", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
-            Pill("${if (charging) "⚡ " else ""}$battery%", if (battery <= 20 && !charging) Palette.Peach else Palette.Mint)
-            if (total > 0) { Spacer(Modifier.width(8.dp)); Pill("${Formatter.formatShortFileSize(ctx, free)} free", Palette.Sky) }
+            Text(Tx.s(R.string.panels_quick_title), style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
+            Pill(batteryText(battery, charging), if (battery <= 20 && !charging) Palette.Peach else Palette.Mint)
+            if (total > 0) { Spacer(Modifier.width(8.dp)); Pill(freeText(free), Palette.Sky) }
         }
         Spacer(Modifier.height(14.dp))
     }
     val gap = if (narrow) 8.dp else 10.dp
     Column(verticalArrangement = Arrangement.spacedBy(gap)) {
         LevelCard(
-            "Brightness", if (auto) "Auto" else "${bright * 100 / SystemControls.BRIGHT_STEPS}%", bright, SystemControls.BRIGHT_STEPS, Palette.Butter,
+            Tx.s(R.string.panels_quick_brightness),
+            if (auto) Tx.s(R.string.panels_quick_brightness_auto) else Tx.s(R.string.common_percent, bright * 100 / SystemControls.BRIGHT_STEPS),
+            bright, SystemControls.BRIGHT_STEPS, Palette.Butter,
             QuickIcon.Sun, Modifier.remembersFocus(key, "bright", true).onFocusChanged { if (it.isFocused) onTop() }, compact = narrow,
             onStep = { d ->
                 if (!canBright) askWriteSettings(ctx)
@@ -226,49 +230,51 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
             },
         )
         LevelCard(
-            "Volume", if (vol == 0) "Muted" else "${vol * 100 / maxVol}%", vol, maxVol, Palette.Peach,
+            Tx.s(R.string.panels_quick_volume), if (vol == 0) Tx.s(R.string.panels_quick_muted) else Tx.s(R.string.common_percent, vol * 100 / maxVol),
+            vol, maxVol, Palette.Peach,
             if (vol == 0) QuickIcon.Muted else QuickIcon.Speaker, Modifier.remembersFocus(key, "vol", false), compact = narrow,
             onStep = { d -> SystemControls.setVolume(ctx, vol + d); tick++ },
             onClick = { SystemControls.setVolume(ctx, if (vol == 0) maxVol / 2 else 0); tick++ },
         )
         val private = io.github.zahakj.tandem.Privacy.enabled
         val tiles = buildList {
-            add(QuickTile("wifi", "Wi-Fi", QuickIcon.Wifi, Palette.Sky, wifi, if (wifi) "On" else "Off") {
+            add(QuickTile("wifi", Tx.s(R.string.panels_quick_wifi), QuickIcon.Wifi, Palette.Sky, wifi, onOff(wifi)) {
                 if (shizuku) io { SystemControls.setWifi(!wifi) } else { Panels.close(); SystemControls.open(ctx, Settings.Panel.ACTION_WIFI) }
             })
-            add(QuickTile("bt", "Bluetooth", QuickIcon.Bluetooth, Palette.Lavender, bt, if (bt) "On" else "Off") {
+            add(QuickTile("bt", Tx.s(R.string.panels_quick_bluetooth), QuickIcon.Bluetooth, Palette.Lavender, bt, onOff(bt)) {
                 if (shizuku) io { SystemControls.setBluetooth(!bt) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_BLUETOOTH_SETTINGS) }
             })
-            add(QuickTile("plane", "Airplane", QuickIcon.Plane, Palette.Peach, plane, if (plane) "On" else "Off") {
+            add(QuickTile("plane", Tx.s(R.string.panels_quick_airplane), QuickIcon.Plane, Palette.Peach, plane, onOff(plane)) {
                 if (shizuku) io { SystemControls.setAirplane(!plane) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_AIRPLANE_MODE_SETTINGS) }
             })
             // Steps through Built-in and each connected controller: the one that plays as the built-in one.
             if (padLink) {
                 val pad = io.github.zahakj.tandem.PadLink.linked
-                add(QuickTile("pad", "Controller", QuickIcon.Pad, Palette.Butter, pad != null, pad?.name ?: "Built-in") {
+                add(QuickTile("pad", Tx.s(R.string.panels_quick_controller), QuickIcon.Pad, Palette.Butter, pad != null, pad?.name ?: Tx.s(R.string.panels_quick_controller_builtin)) {
                     io.github.zahakj.tandem.PadLink.cycle()
                 })
             }
             // Pauses the Discord status without disconnecting (DiscordPresence.kt); only once an account is connected.
             if (DiscordPresence.available && DiscordPresence.linked) {
-                add(QuickTile("discord", "Discord", QuickIcon.Chat, Palette.Mint, DiscordPresence.shown, if (DiscordPresence.shown) "Showing" else "Paused") {
+                val said = Tx.s(if (DiscordPresence.shown) R.string.panels_quick_discord_showing else R.string.panels_quick_discord_paused)
+                add(QuickTile("discord", "Discord", QuickIcon.Chat, Palette.Mint, DiscordPresence.shown, said) { // tx-ok: a name
                     DiscordPresence.setShown(ctx, !DiscordPresence.shown)
                 })
             }
-            add(QuickTile("battery", "Battery saver", QuickIcon.Leaf, Palette.Mint, BatterySaver.on, if (BatterySaver.on) "On" else "Off") {
+            add(QuickTile("battery", Tx.s(R.string.panels_quick_battery_saver), QuickIcon.Leaf, Palette.Mint, BatterySaver.on, onOff(BatterySaver.on)) {
                 BatterySaver.toggle(ctx)
             })
             // Private mode on at once, or off with the PIN (PrivateMode); the panel closes so the PIN pad has the screen.
-            add(QuickTile("private", "Private mode", QuickIcon.Shield, Palette.Lavender, private, if (private) "On" else "Off") {
+            add(QuickTile("private", Tx.s(R.string.panels_quick_private), QuickIcon.Shield, Palette.Lavender, private, onOff(private)) {
                 Panels.close()
                 if (private) io.github.zahakj.tandem.PrivateMode.turnOff() else io.github.zahakj.tandem.PrivateMode.turnOn()
             })
             // Rests the screens now, like Android's own screen saver tile (Home & layout › Screensaver sets when it
             // comes by itself).
-            add(QuickTile("rest", "Screensaver", QuickIcon.Moon, Palette.Sky, null, "Start now") {
+            add(QuickTile("rest", Tx.s(R.string.panels_quick_screensaver), QuickIcon.Moon, Palette.Sky, null, Tx.s(R.string.panels_quick_screensaver_start)) {
                 Panels.close(); io.github.zahakj.tandem.Screensaver.start()
             })
-            add(QuickTile("android", "Android", QuickIcon.Gear, Palette.Lavender, null, "Settings") {
+            add(QuickTile("android", Tx.s(R.string.panels_quick_android), QuickIcon.Gear, Palette.Lavender, null, Tx.s(R.string.panels_quick_android_settings)) {
                 Panels.close(); SystemControls.open(ctx, Settings.ACTION_SETTINGS)
             })
         }
@@ -277,7 +283,7 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
     // Without Shizuku a radio tile can only open Android's own page for it.
     if (!shizuku) {
         Text(
-            "With Shizuku, Wi-Fi, Bluetooth and Airplane switch right here.",
+            Tx.s(R.string.panels_quick_shizuku_note),
             Modifier.padding(top = 8.dp, start = 4.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
         )
     }
@@ -375,8 +381,14 @@ private fun IconChip(tile: QuickTile, size: Dp) {
     ) { Box(Modifier.size(size * 0.6f)) { tile.icon.Draw(ink) } }
 }
 
+/** The battery pill's words: "87%", with a bolt while charging. */
+internal fun batteryText(level: Int, charging: Boolean) = (if (charging) "⚡ " else "") + Tx.s(R.string.common_percent, level)
+
+/** The storage pill's words: "12 GB free", the size in Tandem's language too. */
+internal fun freeText(bytes: Long) = Tx.s(R.string.common_size_free, Formatter.formatShortFileSize(Tx.context, bytes))
+
 private fun askWriteSettings(ctx: Context) {
-    Toasts.show("Allow Tandem to change system settings, then come back")
+    Toasts.show(Tx.s(R.string.panels_quick_allow_write))
     Panels.close()
     runCatching {
         ctx.startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:${ctx.packageName}")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -533,7 +545,7 @@ object BatterySaver {
                     look = it.look.copy(videoSnaps = false, kenBurns = false, music = false, motion = AnimationStyle.Minimal.id),
                 )
             }
-            Toasts.show("Battery saver on: still screens, no music")
+            Toasts.show(Tx.s(R.string.panels_quick_saver_on))
         } else {
             Store.updateSettings {
                 it.copy(
@@ -541,7 +553,7 @@ object BatterySaver {
                     look = it.look.copy(videoSnaps = b.videoSnaps, kenBurns = b.kenBurns, music = b.music, motion = b.motion),
                 )
             }
-            Toasts.show("Battery saver off")
+            Toasts.show(Tx.s(R.string.panels_quick_saver_off))
         }
         (ctx as? MainActivity)?.applyScreenRoles()
         Music.refresh()

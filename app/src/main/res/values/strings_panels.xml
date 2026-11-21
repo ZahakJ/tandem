@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The panels: Start (StartPanel.kt), the quick settings (QuickPanel.kt) and the side panel (SidePanel.kt).
+     Keys start with panels_, then the panel. See docs/TRANSLATING.md. Labels sit on one line in a narrow panel: keep
+     them as short as the English. -->
+<resources>
+    <!-- Start: the button hints. -->
+    <string name="panels_start_hint_unhide">Unhide</string>
+    <string name="panels_start_hint_hide_again">Hide again</string>
+    <string name="panels_start_hint_show_here">Show here</string>
+
+    <!-- Start: the main page. -->
+    <string name="panels_start_switch_games">Switch games</string>
+    <string name="panels_start_all_apps">All apps</string>
+    <string name="panels_start_search">Search</string>
+    <string name="panels_start_stats">Stats &amp; trophies</string>
+    <string name="panels_start_new">New</string>
+    <string name="panels_start_sort">Sort</string>
+    <string name="panels_start_edit_grid">Edit grid</string>
+    <string name="panels_start_undo">Undo</string>
+    <string name="panels_start_edit_widgets">Edit widgets</string>
+    <string name="panels_start_hidden">Hidden</string>
+    <string name="panels_start_settings">Settings</string>
+    <!-- A new version of Tandem: "Tandem 0.8.0 is out". -->
+    <string name="panels_start_update">Tandem %1$s is out</string>
+    <!-- Beside Stats & trophies: how many trophies are earned. -->
+    <plurals name="panels_start_trophies">
+        <item quantity="one">%1$d trophy</item>
+        <item quantity="other">%1$d trophies</item>
+    </plurals>
+    <!-- Beside Stats & trophies, before the first trophy: how many games have the status Playing. -->
+    <plurals name="panels_start_playing">
+        <item quantity="one">%1$d playing</item>
+        <item quantity="other">%1$d playing</item>
+    </plurals>
+
+    <!-- Start › New. -->
+    <string name="panels_start_new_folder">New folder…</string>
+    <string name="panels_start_new_smart_folder">Smart folder…</string>
+    <string name="panels_start_new_add_home">Add to home…</string>
+    <string name="panels_start_new_widget">Widget…</string>
+    <!-- The keyboard's title, and the name it starts with. -->
+    <string name="panels_start_name_folder">Name the folder</string>
+    <string name="panels_start_folder_default">New folder</string>
+    <!-- The name of a folder whose name was left empty. -->
+    <string name="panels_start_folder_unnamed">Folder</string>
+    <!-- "Y › Move to folder" names a menu item, as written there. -->
+    <string name="panels_start_folder_made">Made the folder %1$s. Y › Move to folder on any tile</string>
+
+    <!-- Start › Sort. Home: the icon grid's tiles; Games: the games inside a system. -->
+    <string name="panels_start_sort_tidy">Home: close the gaps</string>
+    <string name="panels_start_sort_home_name">Home: A to Z</string>
+    <string name="panels_start_sort_home_recent">Home: recently played</string>
+    <string name="panels_start_sort_home_most">Home: most played</string>
+    <string name="panels_start_sort_home_kind">Home: systems first</string>
+    <!-- An order for the games, like "Games: A to Z". -->
+    <string name="panels_start_sort_games">Games: %1$s</string>
+    <string name="panels_start_sorted_games">Games sorted: %1$s</string>
+    <!-- What Undo then undoes, shown with it. -->
+    <string name="panels_start_sorted_home_name">Home sorted A to Z</string>
+    <string name="panels_start_sorted_home_recent">Home sorted by recently played</string>
+    <string name="panels_start_sorted_home_most">Home sorted by most played</string>
+    <string name="panels_start_sorted_home_kind">Systems first</string>
+    <string name="panels_start_edit_grid_pick">Pick a tile, then Start › Edit grid</string>
+
+    <!-- Start › Hidden. -->
+    <string name="panels_start_hidden_tuck">Tuck away</string>
+    <string name="panels_start_hidden_show_all">Show all hidden</string>
+    <string name="panels_start_hidden_showing">Showing</string>
+    <string name="panels_start_hidden_some_showing">Some showing</string>
+    <string name="panels_start_hidden_tucked">Hidden games are tucked away</string>
+    <string name="panels_start_hidden_shown">Hidden games are showing</string>
+    <!-- After unhiding the last hidden thing: "Unhid a game. Nothing else is hidden". -->
+    <string name="panels_start_hidden_none_left">%1$s. Nothing else is hidden</string>
+    <string name="panels_start_hidden_all_showing">Everything hidden is showing already</string>
+    <string name="panels_start_hidden_peek">Showing until hidden games are tucked away</string>
+    <string name="panels_start_hidden_again">Hidden again</string>
+
+    <!-- The quick settings. -->
+    <string name="panels_quick_title">Quick settings</string>
+    <string name="panels_quick_brightness">Brightness</string>
+    <string name="panels_quick_brightness_auto">Auto</string>
+    <string name="panels_quick_volume">Volume</string>
+    <string name="panels_quick_muted">Muted</string>
+    <string name="panels_quick_wifi">Wi-Fi</string>
+    <string name="panels_quick_bluetooth">Bluetooth</string>
+    <string name="panels_quick_airplane">Airplane</string>
+    <!-- Which controller plays as the handheld's own: Built-in, or a connected controller's name. -->
+    <string name="panels_quick_controller">Controller</string>
+    <string name="panels_quick_controller_builtin">Built-in</string>
+    <!-- The Discord status tile: Showing or Paused. -->
+    <string name="panels_quick_discord_showing">Showing</string>
+    <string name="panels_quick_discord_paused">Paused</string>
+    <string name="panels_quick_battery_saver">Battery saver</string>
+    <string name="panels_quick_private">Private mode</string>
+    <string name="panels_quick_screensaver">Screensaver</string>
+    <string name="panels_quick_screensaver_start">Start now</string>
+    <!-- The tile that opens Android's own Settings app. -->
+    <string name="panels_quick_android">Android</string>
+    <string name="panels_quick_android_settings">Settings</string>
+    <string name="panels_quick_shizuku_note">With Shizuku, Wi-Fi, Bluetooth and Airplane switch right here.</string>
+    <string name="panels_quick_allow_write">Allow Tandem to change system settings, then come back</string>
+    <string name="panels_quick_saver_on">Battery saver on: still screens, no music</string>
+    <string name="panels_quick_saver_off">Battery saver off</string>
+
+    <!-- The side panel (R2). Pip greets you by the time of day. -->
+    <string name="panels_side_morning">Good morning!</string>
+    <string name="panels_side_afternoon">Good afternoon!</string>
+    <string name="panels_side_evening">Good evening!</string>
+    <string name="panels_side_late">Up late? Me too.</string>
+    <!-- A greeting from above, then: "Good morning! All quiet." -->
+    <string name="panels_side_all_quiet">%1$s All quiet.</string>
+    <!-- How many notifications there are. -->
+    <plurals name="panels_side_things">
+        <item quantity="one">One thing for you.</item>
+        <item quantity="other">%1$d things for you.</item>
+    </plurals>
+    <string name="panels_side_notifications">Notifications</string>
+    <string name="panels_side_clear_all">Clear all</string>
+    <string name="panels_side_allow_title">Let Pip show your notifications</string>
+    <string name="panels_side_allow_detail">They stay on this device. Tandem only shows them here.</string>
+    <string name="panels_side_nothing_new">Nothing new.</string>
+    <!-- Before the notifications Android keeps up while something is on (USB, a running service). -->
+    <string name="panels_side_on_device">On the device</string>
+    <!-- One of those, in private mode (its title is not shown). -->
+    <string name="panels_side_status">Status</string>
+    <string name="panels_side_cant_clear">This one can\'t be cleared</string>
+    <string name="panels_side_allow_access">Turn on Tandem here, then come back</string>
+    <string name="panels_side_private">Hidden in private mode</string>
+</resources>

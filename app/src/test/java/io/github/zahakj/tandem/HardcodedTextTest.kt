@@ -15,6 +15,9 @@ import java.io.File
 class HardcodedTextTest {
     /** Converted files, relative to the source root. Add each file once its extraction is done. */
     private val extracted = listOf(
+        "ui/StartPanel.kt",
+        "ui/QuickPanel.kt",
+        "ui/SidePanel.kt",
         "ui/LanguageSettings.kt",
     )
 
