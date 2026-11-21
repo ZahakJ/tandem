@@ -132,8 +132,16 @@ private fun nunito(weight: Int) = Font(
 
 val Nunito = FontFamily(nunito(400), nunito(600), nunito(700), nunito(800), nunito(900))
 
-private val TandemTypography = Typography().let { t ->
-    fun TextStyle.n() = copy(fontFamily = Nunito)
+/*
+ * Type in every language. Nunito has Latin (and Cyrillic, Vietnamese) only; Arabic, Japanese and Chinese letters
+ * fall back, glyph by glyph, to Android's own fonts (Noto), so a title mixing a Latin game name with Japanese keeps
+ * Nunito for the name and never shows empty boxes. Every style has a fixed line height (Material's), so a taller
+ * fallback font doesn't push lines apart or move baselines. What the styles do need is the language: it picks the
+ * Japanese or the Simplified Chinese shapes of the characters both share (and their line-breaking rules), which
+ * otherwise follow Android's language instead of Tandem's. See tandemTypography.
+ */
+private fun tandemTypography(locales: androidx.compose.ui.text.intl.LocaleList) = Typography().let { t ->
+    fun TextStyle.n() = copy(fontFamily = Nunito, localeList = locales)
     Typography(
         displaySmall = t.displaySmall.n().copy(fontWeight = FontWeight.Black, fontSize = 30.sp),
         headlineSmall = t.headlineSmall.n().copy(fontWeight = FontWeight.ExtraBold, fontSize = 22.sp),
@@ -166,11 +174,16 @@ fun TandemTheme(content: @Composable () -> Unit) {
             background = t.background, surface = t.background, onBackground = t.text, onSurface = t.text,
         )
     }
-    MaterialTheme(colorScheme = scheme, typography = TandemTypography) {
-        // On a screen stage the wallpaper (picture, video or drawn backdrop) is already behind everything, so the
-        // theme only sets colours and type; painting its background here would cover the wallpaper.
-        Surface(Modifier.fillMaxSize(), color = if (LocalOnStage.current) Color.Transparent else t.background, contentColor = t.text) {
-            content()
+    // Tandem's language (Tx.kt): the type's locale, and the layout direction (left to right until the RTL pass).
+    val locale = io.github.zahakj.tandem.Lang.locale
+    val typography = remember(locale) { tandemTypography(androidx.compose.ui.text.intl.LocaleList(locale.toLanguageTag())) }
+    CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides io.github.zahakj.tandem.Lang.layoutDirection) {
+        MaterialTheme(colorScheme = scheme, typography = typography) {
+            // On a screen stage the wallpaper (picture, video or drawn backdrop) is already behind everything, so the
+            // theme only sets colours and type; painting its background here would cover the wallpaper.
+            Surface(Modifier.fillMaxSize(), color = if (LocalOnStage.current) Color.Transparent else t.background, contentColor = t.text) {
+                content()
+            }
         }
     }
 }

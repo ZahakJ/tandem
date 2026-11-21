@@ -33,7 +33,15 @@
     <!-- Show and hide a Switch game's own second screen in Eden Duo (GameScreens.kt). -->
     <uses-permission android:name="io.github.zahakj.edenduo.permission.CONTROL_COMPANION" />
 
+    <!-- localeConfig: the languages Tandem speaks (Tx.kt, docs/TRANSLATING.md), offered in Android 13+'s own app
+         language setting. supportsRtl stays off until the RTL pass: Compose screens follow Lang.layoutDirection,
+         and this keeps the few framework views (toasts, hosted widgets) left to right with them. The activities
+         list locale|layoutDirection in configChanges: a new language redraws them in place (Tx) instead of
+         recreating them. -->
     <application
+        android:name=".TandemApplication"
+        android:localeConfig="@xml/locales_config"
+        android:supportsRtl="false"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar"
@@ -48,7 +56,7 @@
             android:launchMode="singleInstance"
             android:resumeWhilePausing="true"
             android:alwaysRetainTaskState="true"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density">
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|locale|layoutDirection">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -71,7 +79,7 @@
             android:excludeFromRecents="true"
             android:resumeWhilePausing="true"
             android:theme="@style/Tandem.Companion"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density" />
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|locale|layoutDirection" />
 
         <!-- The bottom screen when nothing else is there (SecondaryHome.kt). Android 10+ takes the secondary-display
              Home from the default Home app first, so while Tandem is the Home this replaces launcher3's app list down
@@ -86,7 +94,7 @@
             android:resumeWhilePausing="true"
             android:resizeableActivity="true"
             android:theme="@style/Tandem.Companion"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density">
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|density|locale|layoutDirection">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.SECONDARY_HOME" />

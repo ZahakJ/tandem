@@ -143,6 +143,8 @@ android {
     }
     // Native libraries are unpacked on install, so the passthrough helper can be run as a program.
     packaging { jniLibs { useLegacyPackaging = true } }
+    // A string not translated yet shows in English (docs/TRANSLATING.md); StringResourcesTest checks the rest.
+    lint { disable += "MissingTranslation" }
     buildFeatures {
         compose = true
         buildConfig = true
