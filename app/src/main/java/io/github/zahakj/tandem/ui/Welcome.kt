@@ -190,12 +190,17 @@ private fun HomeStep(cocoonFound: Boolean, pick: (LookPreset) -> Unit) {
                 glow = p.color, shape = RoundedCornerShape(20.dp), onClick = { pick(p) },
             ) {
                 Column(Modifier.fillMaxSize()) {
-                    LayoutPreview(p.layout, Modifier.fillMaxWidth().weight(1f), rounded = false)
-                    Column(Modifier.fillMaxWidth().background(lerp(p.color, Palette.Night, 0.8f)).padding(horizontal = 12.dp, vertical = 8.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(p.title, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            if (cocoonFound && p.id == "cocoon") Pill("Suggested", p.color)
+                    val footer = lerp(p.color, Palette.Night, 0.8f)
+                    // A sketch rather than the live grid settings, so it reads at a glance like the other three; the
+                    // badge sits on it, leaving the whole title line for the name.
+                    Box(Modifier.fillMaxWidth().weight(1f)) {
+                        LayoutPreview(p.layout, Modifier.fillMaxSize(), rounded = false, sketch = true)
+                        if (cocoonFound && p.id == "cocoon") {
+                            Pill("Suggested", p.color, Modifier.align(Alignment.TopEnd).padding(8.dp).background(footer, RoundedCornerShape(50)))
                         }
+                    }
+                    Column(Modifier.fillMaxWidth().background(footer).padding(horizontal = 12.dp, vertical = 8.dp)) {
+                        Text(p.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(p.changes.first(), style = MaterialTheme.typography.labelLarge, color = p.color, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }

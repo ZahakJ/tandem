@@ -873,10 +873,11 @@ private fun LayoutGallery(routeKey: String, current: String, target: String?, on
 
 /**
  * A sketch of a layout in the live theme: "shelves", "grid", "carousel", "list", "console", or a games view
- * ("view-grid", "view-list", "view-carousel"). One Canvas, no images.
+ * ("view-grid", "view-list", "view-carousel"). One Canvas, no images. The grid follows the icon grid's own settings;
+ * as a [sketch] (the welcome's choices) it is a calm four by two with a plain dock instead.
  */
 @Composable
-fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = true) {
+fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = true, sketch: Boolean = false) {
     val t = Themes.live
     val look = Store.settings.look
     Canvas(modifier.clip(RoundedCornerShape(if (rounded) 16.dp else 0.dp))) {
@@ -897,7 +898,31 @@ fun LayoutPreview(id: String, modifier: Modifier = Modifier, rounded: Boolean = 
             for (i in 0 until 5) drawCircle(accents[(i + 2) % accents.size], 2.6f * u, Offset((w - dw) / 2 + dw * (i + 0.5f) / 5, y + 4.5f * u))
         }
         when (id) {
-            "grid" -> {
+            "grid" -> if (sketch) {
+                // Four by two rounded squares, the first ringed, over a plain pill dock.
+                val across = 4
+                val gap = w * 0.045f
+                val tw = minOf((w * 0.8f - gap * (across - 1)) / across, (h - 34 * u - gap) / 2)
+                val left = (w - (tw * across + gap * (across - 1))) / 2
+                val top = (h - 20 * u - (tw * 2 + gap)) / 2
+                val cr = CornerRadius(tw * 0.26f)
+                for (row in 0 until 2) for (c in 0 until across) {
+                    val x = left + c * (tw + gap)
+                    val y = top + row * (tw + gap)
+                    val a = accents[(row * across + c) % accents.size]
+                    drawRoundRect(
+                        Brush.linearGradient(listOf(a, androidx.compose.ui.graphics.lerp(a, t.background, 0.35f)), Offset(x, y), Offset(x + tw, y + tw)),
+                        Offset(x, y), Size(tw, tw), cr,
+                    )
+                    if (c == 0 && row == 0) {
+                        val o = 1.8f * u
+                        drawRoundRect(t.text, Offset(x - o, y - o), Size(tw + 2 * o, tw + 2 * o), CornerRadius(cr.x + o), style = Stroke(1.2f * u))
+                    }
+                }
+                val dw = w * 0.3f
+                drawRoundRect(t.card.copy(alpha = 0.9f), Offset((w - dw) / 2, h - 17 * u), Size(dw, 10 * u), CornerRadius(5 * u))
+                for (i in 0 until 3) drawCircle(accents[(i + 2) % accents.size], 2.8f * u, Offset((w - dw) / 2 + dw * (i + 0.5f) / 3, h - 12 * u))
+            } else {
                 // The icon grid as it really lays out: square icons, a peek of the next column, a pill dock.
                 val split = if (look.gridHeroSplit <= 0f) 0f else h * look.gridHeroSplit.coerceIn(0.15f, 0.5f)
                 if (split > 0) {
