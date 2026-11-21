@@ -182,17 +182,21 @@ object Collections {
 
     /** Collection ids for smart folders: "smart:<folder id>". */
     const val SMART = "smart:"
-    /** Collection ids for the games played on one system, most played first (Stats › By system): "played:<platform id>". */
+    /**
+     * Collection ids for the games played on some systems, most played first (Stats › By system): "played:<platform id>",
+     * or several ids joined by commas for the box the smallest systems share.
+     */
     const val PLAYED = "played:"
 
     /** A collection by id, even when it has become empty (so its screen can say so instead of going blank). */
     fun byId(id: String): GameCollection? = when {
         id.startsWith("genre:") -> id.removePrefix("genre:").let { g -> GameCollection(id, g, genres()[g].orEmpty(), Palette.forName(g)) }
         id == "continue" -> GameCollection(id, "Continue playing", continuePlaying(), Palette.Mint)
-        id.startsWith(PLAYED) -> id.removePrefix(PLAYED).let { pid ->
-            val games = mostPlayed().filter { it.platform.id == pid }
-            val p = games.firstOrNull()?.platform ?: Libraries.byId(pid)?.platform
-            GameCollection(id, "${p?.shortName ?: pid} · most played", games, io.github.zahakj.tandem.ui.SystemColors.of(pid))
+        id.startsWith(PLAYED) -> id.removePrefix(PLAYED).split(',').let { ids ->
+            val games = mostPlayed().filter { it.platform.id in ids }
+            val p = games.firstOrNull()?.platform ?: Libraries.byId(ids.first())?.platform
+            val name = if (ids.size > 1) "${ids.size} more systems" else p?.shortName ?: ids.first()
+            GameCollection(id, "$name · most played", games, if (ids.size > 1) Palette.Lavender else io.github.zahakj.tandem.ui.SystemColors.of(ids.first()))
         }
         id.startsWith(SMART) -> IconGridStore.folder(id.removePrefix(SMART))?.takeIf { Privacy.canShowHomeFolder(it) }?.let { f ->
             GameCollection(id, f.name, smart(f), IconGridStore.config.styleOf("folder:${f.id}").color?.let { Color(it) } ?: folderColor(f.color))

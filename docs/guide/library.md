@@ -320,7 +320,7 @@ The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or
 
 | Tab | What it shows |
 | --- | --- |
-| Overview | Total play time, sessions and streaks, a 30-day chart, your most played games, and play time by system as a mosaic (a box per system, sized by its share). A on a system lists the games you have played on it, most played first |
+| Overview | Total play time, sessions and streaks, a 30-day chart, your most played games, and play time by system as a mosaic (a box per system, sized by its share). A on a system lists the games you have played on it, most played first; the box the smallest systems share ("6 more") lists the games played on all of them |
 | Library | Your played games by status: Playing, Backlog, Finished and completed, Shelved, Endless. **Sort your played games** goes through the ones without a status one at a time, most played first |
 | Trophies | The cabinet of games you finished, and every trophy, the ones still locked with a ring showing how far along you are |
 | Sessions | Every play session (below) |

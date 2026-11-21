@@ -615,9 +615,10 @@ private fun SystemMosaic(per: List<Pair<Platform, Long>>, route: String, target:
                 onFocus = { FocusMemory.remember(route, b.key); b.platform?.let { p -> Libraries.byId(p.id)?.let { Selection.current = Selected.System(it) } } ?: run { Selection.current = Selected.Home } },
                 onClick = {
                     val p = b.platform
-                    // The games played on that system, most played first: not the whole folder, which is mostly noise here.
-                    if (p != null) openFolder(Route.Collection(Collections.PLAYED + p.id))
-                    else Toasts.show(b.others.joinToString(", ") { it.shortName } + " · " + formatPlayTime(b.seconds))
+                    // The games played on that system (or on the systems sharing the box), most played first: not the whole
+                    // folder, which is mostly noise here.
+                    val ids = if (p != null) listOf(p.id) else b.others.map { it.id }
+                    openFolder(Route.Collection(Collections.PLAYED + ids.joinToString(",")))
                 },
             ) {
                 Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(b.color, androidx.compose.ui.graphics.lerp(b.color, Palette.NightDeep, 0.55f)))))
