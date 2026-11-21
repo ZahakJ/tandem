@@ -504,15 +504,15 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
             Spacer(Modifier.width(10.dp))
             when {
                 row.kind == RowKind.Toggle -> Toggle(row.toggle == true, row.color)
-                row.slider != null -> SliderBar(row.slider, row.value, row.color, row.themed, focused)
-                row.segmented -> Segmented(row.options.orEmpty(), row.selected, row.color, focused) { id ->
-                    if (id != row.selected) { row.pick?.invoke(id); Sounds.toggle() }
+                row.slider != null -> ValueTrack(row.slider, row.color, value = row.value, themed = row.themed, focused = focused, trackWidth = 132.dp)
+                row.segmented -> {
+                    val options = row.options.orEmpty()
+                    SegmentTrack(options.map { it.second }, options.indexOfFirst { it.first == row.selected }, row.color, Modifier.widthIn(max = 360.dp)) { i ->
+                        val id = options[i].first
+                        if (id != row.selected) { row.pick?.invoke(id); Sounds.toggle() }
+                    }
                 }
-                row.picker -> Row(Modifier.widthIn(max = 240.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
-                    Spacer(Modifier.width(8.dp))
-                    PickerMark(row.color, focused)
-                }
+                row.picker -> PickValue(row.value, row.color, Modifier.widthIn(max = 240.dp))
                 // A row that steps without saying its options (built outside Settings, like the smart folder form).
                 else -> Row(Modifier.widthIn(max = 220.dp), verticalAlignment = Alignment.CenterVertically) {
                     if (stepper) Text("‹", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
