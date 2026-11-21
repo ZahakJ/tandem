@@ -155,7 +155,7 @@ object SystemControls {
 @Composable
 fun QuickPanel() {
     OverlayPanel(Panels.quick, onClose = { Panels.close() }) {
-        PanelSurface(Modifier.width(620.dp)) { QuickControls("quick", narrow = false) }
+        PanelSurface(Modifier.width(660.dp)) { QuickControls("quick", narrow = false) }
     }
 }
 
@@ -163,7 +163,7 @@ fun QuickPanel() {
  * The quick settings themselves, one set for both places: device state you flip while playing. Brightness and volume
  * as sliders, then the tiles. Going places (stats, settings, the game switcher) is Start's job, never a tile here.
  * In the quick panel under a header with battery and storage; [narrow] in the side panel (SidePanel.kt), which has
- * its own header, with smaller tiles four to a row.
+ * its own header, with smaller tiles.
  */
 @Composable
 fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, narrow: Boolean) {
@@ -229,17 +229,15 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
             onStep = { d -> SystemControls.setVolume(ctx, vol + d); tick++ },
             onClick = { SystemControls.setVolume(ctx, if (vol == 0) maxVol / 2 else 0); tick++ },
         )
-        // Without Shizuku a radio can only open Android's own page for it, and its tile says so.
-        val radioOff = if (shizuku) "Off" else "Off · in Android"
         val private = io.github.zahakj.tandem.Privacy.enabled
         val tiles = buildList {
-            add(QuickTile("wifi", "Wi-Fi", QuickIcon.Wifi, Palette.Sky, wifi, if (wifi) "On" else radioOff) {
+            add(QuickTile("wifi", "Wi-Fi", QuickIcon.Wifi, Palette.Sky, wifi, if (wifi) "On" else "Off") {
                 if (shizuku) io { SystemControls.setWifi(!wifi) } else { Panels.close(); SystemControls.open(ctx, Settings.Panel.ACTION_WIFI) }
             })
-            add(QuickTile("bt", "Bluetooth", QuickIcon.Bluetooth, Palette.Lavender, bt, if (bt) "On" else radioOff) {
+            add(QuickTile("bt", "Bluetooth", QuickIcon.Bluetooth, Palette.Lavender, bt, if (bt) "On" else "Off") {
                 if (shizuku) io { SystemControls.setBluetooth(!bt) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_BLUETOOTH_SETTINGS) }
             })
-            add(QuickTile("plane", "Airplane", QuickIcon.Plane, Palette.Peach, plane, if (plane) "On" else radioOff) {
+            add(QuickTile("plane", "Airplane", QuickIcon.Plane, Palette.Peach, plane, if (plane) "On" else "Off") {
                 if (shizuku) io { SystemControls.setAirplane(!plane) } else { Panels.close(); SystemControls.open(ctx, Settings.ACTION_AIRPLANE_MODE_SETTINGS) }
             })
             // Steps through Built-in and each connected controller: the one that plays as the built-in one.
@@ -274,6 +272,13 @@ fun androidx.compose.foundation.layout.ColumnScope.QuickControls(key: String, na
         }
         TileGrid(tiles, key, narrow, gap)
     }
+    // Without Shizuku a radio tile can only open Android's own page for it.
+    if (!shizuku) {
+        Text(
+            "With Shizuku, Wi-Fi, Bluetooth and Airplane switch right here.",
+            Modifier.padding(top = 8.dp, start = 4.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
+        )
+    }
 }
 
 /** One quick tile: [on] is null for a tile that does something rather than switches something. */
@@ -285,13 +290,12 @@ private class QuickTile(
 )
 
 /**
- * The tiles in rows as even as they can be (seven make four and three, nine make five and four), every row as wide
- * as the panel, so there is never a lone tile or a hole at the end. Up to five to a row in the quick panel, four in
- * the narrower side panel.
+ * The tiles in rows as even as they can be, up to four to a row (seven make four and three, nine three threes), every
+ * row as wide as the panel, so there is never a lone tile or a hole at the end.
  */
 @Composable
 private fun TileGrid(tiles: List<QuickTile>, key: String, narrow: Boolean, gap: Dp) {
-    val most = if (narrow) 4 else 5
+    val most = 4
     val rows = (tiles.size + most - 1) / most
     val base = tiles.size / rows
     val extra = tiles.size % rows
@@ -331,9 +335,9 @@ private fun QuickTileCard(tile: QuickTile, modifier: Modifier, small: Boolean) {
                 Text(tile.short, style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         } else {
-            Row(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconChip(tile, 34.dp)
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
                     ShrinkText(tile.label, MaterialTheme.typography.titleSmall, maxLines = 1)
                     Text(tile.value, style = MaterialTheme.typography.labelMedium, color = if (on) color else Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
