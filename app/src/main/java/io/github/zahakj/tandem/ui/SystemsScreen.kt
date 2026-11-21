@@ -228,7 +228,7 @@ fun SystemsScreen() {
     val header: () -> Unit = { Selection.current = Selected.Home }
 
     Column(Modifier.fillMaxSize()) {
-        BoxWithConstraints(Modifier.fillMaxWidth().padding(start = 22.dp, end = 22.dp, top = 6.dp)) {
+        BoxWithConstraints(Modifier.fillMaxWidth().padding(start = 30.dp, end = 30.dp, top = 6.dp)) {
             val wide = maxWidth >= 760.dp
             Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                 SearchField(
@@ -259,7 +259,8 @@ fun SystemsScreen() {
             }
         } else {
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                val side = 22.dp
+                // Room at the sides for a highlighted tile to grow and glow without touching the screen edge.
+                val side = 30.dp
                 val columns = ((maxWidth - side * 2 + TileGap) / (TileMin + TileGap)).toInt().coerceIn(2, 9)
                 val cell = (maxWidth - side * 2 - TileGap * (columns - 1)) / columns
                 val art = cell - TilePad * 2
@@ -303,7 +304,7 @@ fun SystemsScreen() {
 
 /**
  * One system as a tile: its art (the icon pack's, else Tandem's drawing of the device), its name and games, and
- * on the art what needs saying: Off, No emulator, Bottom screen, and the emulator that plays it as its app icon.
+ * on the art Off, No emulator or Bottom when they apply, kept to its corner; the emulator that plays it sits by the count.
  */
 @Composable
 private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
@@ -327,20 +328,27 @@ private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () 
                     }
                     if (config.bottomScreen) ArtBadge("Bottom", Palette.Sky, Glyph.Screens)
                 }
-                if (default != null && default.component != io.github.zahakj.tandem.LaunchSpec.ANY_APP) {
-                    Box(
-                        Modifier.align(Alignment.BottomEnd).padding(4.dp).size(art * 0.28f).clip(RoundedCornerShape(30))
-                            .background(Palette.NightDeep.copy(alpha = 0.8f)).padding(2.dp),
-                    ) { AppIcon(default.packageName, Modifier.fillMaxSize()) }
-                }
             }
             Spacer(Modifier.height(7.dp))
             Text(p.name, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(
-                if (e.games.isEmpty()) default?.name ?: "No games yet" else plural(e.games.size, "game"),
-                style = MaterialTheme.typography.labelMedium, color = if (e.games.isEmpty()) Palette.Muted else color,
-                textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis,
-            )
+            // The count in a readable tone with the system's colour as a dot (some system colours are too dark to
+            // read as text), and the emulator's icon beside it rather than over the logo.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (e.games.isNotEmpty()) {
+                    Box(Modifier.size(7.dp).clip(RoundedCornerShape(50)).background(color))
+                    Spacer(Modifier.width(5.dp))
+                }
+                Text(
+                    if (e.games.isEmpty()) default?.name ?: "No games yet" else plural(e.games.size, "game"),
+                    Modifier.weight(1f, fill = false),
+                    style = MaterialTheme.typography.labelMedium, color = if (e.games.isEmpty()) Palette.Muted else Palette.Text.copy(alpha = 0.85f),
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                )
+                if (default != null && default.component != io.github.zahakj.tandem.LaunchSpec.ANY_APP) {
+                    Spacer(Modifier.width(6.dp))
+                    AppIcon(default.packageName, Modifier.size(18.dp))
+                }
+            }
         }
     }
 }

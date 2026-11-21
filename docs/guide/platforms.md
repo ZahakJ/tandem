@@ -34,7 +34,7 @@ game. PC games are shortcut files; [Windows and Steam games](library.md#windows-
 
 **Settings › Library & art › Systems and emulators** shows every system Tandem knows as a grid of tiles, each with
 the system's picture (your icon pack's, as on the home screen, or Tandem's drawing of the device), its name and how
-many games it has. A tile also shows the app icon of the emulator that plays it, and says **No emulator**, **Off** or
+many games it has, with the app icon of the emulator that plays it beside the count. Its corner says **No emulator**, **Off** or
 **Bottom** when that applies.
 
 Three tabs at the top sort them, each with a count: **In your library** (systems with games), **Turned off**, and
@@ -47,7 +47,7 @@ A on a system opens its page, with its picture over its hero art:
 | Part | What it does |
 | --- | --- |
 | Show in library | A switch: on (the default) or off. A system turned off disappears from the library, games and all, and waits under **Turned off** until you turn it back on |
-| Emulators | Every emulator that can run the system, as cards with their app icons, installed ones first: **Default** (ticked) on the one in use, **Make default** on another installed one, **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
+| Emulators | Every emulator that can run the system, as cards with their app icons, installed ones first: **Default** (ticked) on the one in use, **Installed** on another one (A makes it the default), **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
 | Start games on | **Top screen** (the default) or **Bottom screen**, two cards with a little drawing of the screens, for this system's games. A game's own **Start on** (Y › More) wins |
 | Bottom screen while playing | What the bottom screen shows while this system's games play, one card per choice: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Two screens › While playing** until you choose; 3DS and DS default to Leave to emulator |
 | Folders | The system's folders that are there as cards: **Built in** for the usual names, **Added** on one you added (A takes it out, with Undo). The usual names that aren't there yet share one **Also looks in** card |

@@ -2,7 +2,10 @@ package io.github.zahakj.tandem.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +32,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.focus.onFocusChanged
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -105,7 +112,8 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
     val panelWidth = maxWidth.coerceAtMost(980.dp)
     // The cards' room: the panel less its padding and the highlight's room on each side.
     val inner = panelWidth - 36.dp - FocusRoomSide * 2
-    val columns = if (inner >= 640.dp) 4 else if (inner >= 420.dp) 3 else 2
+    // Four across like the bottom screen's choices, so a row of cards reads as one deliberate band.
+    val columns = if (inner >= 480.dp) 4 else 2
     val cell = (inner - Gap * (columns - 1)) / columns
 
     PanelSurface(Modifier.width(panelWidth).heightIn(max = maxHeight)) {
@@ -120,7 +128,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
         Spacer(Modifier.height(8.dp))
         val scroll = rememberScrollState()
         Column(
-            Modifier.weight(1f, fill = false).fadingEdges(scroll).verticalScroll(scroll).padding(horizontal = FocusRoomSide, vertical = 10.dp),
+            Modifier.weight(1f, fill = false).fadingEdges(scroll, length = 36.dp).verticalScroll(scroll).padding(horizontal = FocusRoomSide, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             if (!p.isApps) {
@@ -211,7 +219,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                             ) { Toasts.show("Make ${shortPath(Library.folder(absent.first()))} and put ${p.shortName} games in it") }
                         }
                         FolderCard(
-                            "Add a folder…", "Only this system's games, anywhere", "Pick", Palette.Mint, Glyph.Plus,
+                            "Add a folder…", "Just this system's games", "Pick", Palette.Mint, Glyph.Plus,
                             Modifier.width(cell).focusAs("add"), onClick = onAddFolder,
                         )
                     }
@@ -221,10 +229,15 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 /** A titled group of cards, with a short note on what A does there. */
 @Composable
 private fun Section(title: String, color: Color, note: String?, content: @Composable ColumnScope.() -> Unit) {
-    Column {
+    // A card taking the highlight brings its whole section into view, title and all, so you always see which
+    // section you're in (on its own a card scrolled in with its title left under the header).
+    val whole = remember { BringIntoViewRequester() }
+    val scope = rememberCoroutineScope()
+    Column(Modifier.bringIntoViewRequester(whole).onFocusChanged { if (it.hasFocus) scope.launch { whole.bringIntoView() } }) {
         Row(Modifier.padding(start = 2.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(8.dp).background(color, CircleShape))
             Spacer(Modifier.width(8.dp))
@@ -287,14 +300,14 @@ private fun ShowSwitch(on: Boolean, modifier: Modifier, onClick: () -> Unit) {
 
 /** A card that is one of several choices: outlined and ticked in [color] while [chosen]. */
 @Composable
-private fun ChoiceCard(color: Color, chosen: Boolean, modifier: Modifier, onClick: () -> Unit, content: @Composable () -> Unit) {
+private fun ChoiceCard(color: Color, chosen: Boolean, modifier: Modifier, onClick: () -> Unit, content: @Composable (focused: Boolean) -> Unit) {
     val shape = RoundedCornerShape(16.dp)
-    FocusCard(modifier, glow = color, shape = shape, lifts = false, onClick = onClick) {
+    FocusCard(modifier, glow = color, shape = shape, lifts = false, onClick = onClick) { focused ->
         Box(
             Modifier.fillMaxSize().background(if (chosen) color.copy(alpha = 0.2f) else Palette.NightDeep.copy(alpha = 0.35f))
                 .border(1.5.dp, if (chosen) color.copy(alpha = 0.85f) else Color.Transparent, shape),
         ) {
-            content()
+            content(focused)
             if (chosen) {
                 Box(
                     Modifier.align(Alignment.TopEnd).padding(7.dp).size(20.dp).background(color, CircleShape),
@@ -316,7 +329,7 @@ private fun ScreenCard(bottom: Boolean, chosen: Boolean, modifier: Modifier, onC
             Column(Modifier.weight(1f)) {
                 Text(if (bottom) "Bottom screen" else "Top screen", style = MaterialTheme.typography.titleSmall, maxLines = 1)
                 Text(
-                    if (bottom) "The small screen, handy for touch" else "The big screen, the usual",
+                    if (bottom) "Handy for touch games" else "The big screen",
                     style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -347,20 +360,20 @@ private fun TwoScreens(lit: Int, color: Color, modifier: Modifier) {
 private fun ModeCard(mode: String, label: String, chosen: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val color = Palette.Lavender
     val (glyph, note) = when (mode) {
-        GameCompanion.ART -> Glyph.Image to "The game's art and details"
-        GameCompanion.TANDEM -> Glyph.Sparkle to "Clock, Pip and quick toggles"
-        GameCompanion.DARK -> Glyph.Battery to "Black until tapped, saves power"
+        GameCompanion.ART -> Glyph.Image to "Its art and details"
+        GameCompanion.TANDEM -> Glyph.Sparkle to "Clock and quick toggles"
+        GameCompanion.DARK -> Glyph.Battery to "Black until tapped"
         GameCompanion.DECK -> Glyph.Text to "Keyboard and trackpad"
-        else -> Glyph.Screens to "For emulators that use both"
+        else -> Glyph.Screens to "The emulator uses both"
     }
-    ChoiceCard(color, chosen, modifier.height(96.dp), onClick) {
+    ChoiceCard(color, chosen, modifier.height(104.dp), onClick) {
         Column(Modifier.fillMaxSize().padding(10.dp)) {
             GlyphChip(glyph, if (chosen) color else Palette.Muted, size = 30.dp, round = true)
             Spacer(Modifier.weight(1f))
             ShrinkToFit(Modifier.fillMaxWidth(), alignment = Alignment.CenterStart) {
                 Text(label.substringBefore(":"), style = MaterialTheme.typography.titleSmall, maxLines = 1)
             }
-            Text(note, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(note, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -373,7 +386,7 @@ private fun EmulatorCard(spec: LaunchSpec, installed: Boolean, isDefault: Boolea
         installed -> Palette.Butter
         else -> Palette.Peach
     }
-    ChoiceCard(color, isDefault, modifier.height(72.dp), onClick) {
+    ChoiceCard(color, isDefault, modifier.height(72.dp), onClick) { focused ->
         Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             if (installed && spec.component != LaunchSpec.ANY_APP) {
                 AppIcon(spec.packageName, Modifier.size(44.dp))
@@ -386,10 +399,12 @@ private fun EmulatorCard(spec: LaunchSpec, installed: Boolean, isDefault: Boolea
                 Text(
                     when {
                         isDefault -> "Default"
-                        installed -> "Make default"
+                        // Quiet until highlighted: a loud "Make default" on every card drowned out the one in use.
+                        installed -> if (focused) "A: make default" else "Installed"
                         else -> "Get it" + (spec.origin?.let { " · $it" } ?: "")
                     },
-                    style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelMedium, color = if (installed && !isDefault && !focused) Palette.Muted else color,
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
         }
