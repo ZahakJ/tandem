@@ -42,9 +42,8 @@ private fun LanguageLook(tag: String) {
     Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
         val text = Hello[tag]
         if (text == null) Box(Modifier.fillMaxSize(0.4f)) { TIconGlyph(TIcon.Gear, Palette.Sky) }
-        else Text(
-            text, style = MaterialTheme.typography.headlineSmall.copy(localeList = LocaleList(tag)), color = Palette.Text,
-            maxLines = 1,
-        )
+        else ShrinkToFit {
+            Text(text, style = MaterialTheme.typography.headlineSmall.copy(localeList = LocaleList(tag)), color = Palette.Text, maxLines = 1)
+        }
     }
 }
