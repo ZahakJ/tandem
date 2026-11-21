@@ -327,7 +327,7 @@ private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () 
                     }
                     if (config.bottomScreen) ArtBadge("Bottom", Palette.Sky, Glyph.Screens)
                 }
-                if (default != null) {
+                if (default != null && default.component != io.github.zahakj.tandem.LaunchSpec.ANY_APP) {
                     Box(
                         Modifier.align(Alignment.BottomEnd).padding(4.dp).size(art * 0.28f).clip(RoundedCornerShape(30))
                             .background(Palette.NightDeep.copy(alpha = 0.8f)).padding(2.dp),
