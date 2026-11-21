@@ -8,10 +8,9 @@ import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,8 +45,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -70,7 +71,6 @@ import kotlinx.coroutines.withContext
 
 private val Gap = 10.dp
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: () -> Unit, onAddFolder: () -> Unit) {
     val ctx = LocalContext.current
@@ -114,7 +114,6 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
     val inner = panelWidth - 36.dp - FocusRoomSide * 2
     // Four across like the bottom screen's choices, so a row of cards reads as one deliberate band.
     val columns = if (inner >= 480.dp) 4 else 2
-    val cell = (inner - Gap * (columns - 1)) / columns
 
     PanelSurface(Modifier.width(panelWidth).heightIn(max = maxHeight)) {
         Hero(e, Modifier.fillMaxWidth()) {
@@ -140,7 +139,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                         else -> "A makes one the default"
                     },
                 ) {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(Gap), verticalArrangement = Arrangement.spacedBy(Gap), maxItemsInEachRow = columns) {
+                    CardGrid(columns) { cell ->
                         emus.forEach { (i, spec) ->
                             key(i) {
                                 EmulatorCard(spec, installed = spec in players, isDefault = spec == default, Modifier.width(cell).focusAs("emu:$i")) {
@@ -188,7 +187,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
             }
             if (!p.isApps) {
                 Section("Folders", Palette.Mint, "Where ${p.shortName} games are read from, besides your game folders") {
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(Gap), verticalArrangement = Arrangement.spacedBy(Gap), maxItemsInEachRow = columns) {
+                    CardGrid(columns) { cell ->
                         present.forEach { folder ->
                             key(folder) {
                                 val dir = Library.folder(folder)
@@ -386,7 +385,7 @@ private fun EmulatorCard(spec: LaunchSpec, installed: Boolean, isDefault: Boolea
         installed -> Palette.Butter
         else -> Palette.Peach
     }
-    ChoiceCard(color, isDefault, modifier.height(72.dp), onClick) { focused ->
+    ChoiceCard(color, isDefault, modifier.height(84.dp), onClick) { focused ->
         Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             if (installed && spec.component != LaunchSpec.ANY_APP) {
                 AppIcon(spec.packageName, Modifier.size(44.dp))
@@ -395,7 +394,7 @@ private fun EmulatorCard(spec: LaunchSpec, installed: Boolean, isDefault: Boolea
             }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f).padding(end = if (isDefault) 18.dp else 0.dp)) {
-                Text(spec.name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(spec.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     when {
                         isDefault -> "Default"
@@ -425,6 +424,31 @@ private fun FolderCard(name: String, detail: String, state: String, color: Color
                 Text(name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(state, style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+}
+
+/**
+ * Cards [columns] to a row, each exactly a column wide, rows as tall as their tallest card. A FlowRow wrapped the
+ * last card of every row early (a quarter of the row stood empty), so the grid places them itself.
+ */
+@Composable
+private fun CardGrid(columns: Int, content: @Composable (cell: Dp) -> Unit) {
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val cell = (maxWidth - Gap * (columns - 1)) / columns
+        Layout({ content(cell) }) { measurables, constraints ->
+            val gap = Gap.roundToPx()
+            val width = constraints.maxWidth
+            val cellPx = (width - gap * (columns - 1)) / columns
+            val rows = measurables.map { it.measure(Constraints.fixedWidth(cellPx)) }.chunked(columns)
+            val heights = rows.map { row -> row.maxOf { it.height } }
+            layout(width, heights.sum() + gap * (rows.size - 1).coerceAtLeast(0)) {
+                var y = 0
+                rows.forEachIndexed { r, row ->
+                    row.forEachIndexed { c, p -> p.place(c * (cellPx + gap), y) }
+                    y += heights[r] + gap
+                }
             }
         }
     }
