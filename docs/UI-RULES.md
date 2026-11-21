@@ -77,7 +77,11 @@ Small chips over art (`darkChip()`), the full-screen dim behind a popup and the 
   that does the obvious thing (Add one, Look again, Show hidden games, Go back), so it never looks frozen on a
   controller. `PipNote` is for loading and error notes.
 - Settings rows use the row types in [SETTINGS.md](SETTINGS.md), a short label (about 28 characters) and the
-  explanation in `help`. Rare options go in the group's `more`.
+  explanation in `help`.
+- No folds. Nothing in Settings hides behind a "More options" or "N more" row: every row of a page shows, the most
+  used first. A page that grows past about a screen and a half moves a coherent set of rarer rows to a subpage, one
+  › row on the page named for what it holds (Wallpaper, Dock & widgets, Accounts), never a "More" or "Advanced"
+  catch-all of unrelated rows. Each setting has one place; a page doesn't repeat a row from another page.
 
 ## Touch
 

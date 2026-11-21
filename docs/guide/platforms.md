@@ -32,7 +32,7 @@ game. PC games are shortcut files; [Windows and Steam games](library.md#windows-
 
 ## The Systems and emulators screen
 
-**Settings › Library & art › Systems › Systems and emulators** lists every system Tandem knows in three groups: **In
+**Settings › Library & art › Systems and emulators** lists every system Tandem knows in three groups: **In
 your library** (systems with games), **Turned off**, and **More systems · add a folder to start**. Each row says which
 emulator plays it ("Plays with Azahar"), or what it needs ("Needs Dolphin"), with a **Bottom ↓** pill when its games
 start on the bottom screen.
@@ -43,7 +43,7 @@ A on a system opens its page:
 | --- | --- |
 | Show in library | On (the default) or off: a system turned off disappears from the library, games and all, until you turn it back on |
 | Start games on | Top screen (the default) or Bottom screen, for this system's games. A game's own **Start on** (Y › More) wins |
-| Bottom screen while playing | What the bottom screen shows while this system's games play: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Play & system › Playing** until you choose; 3DS and DS default to Leave to emulator |
+| Bottom screen while playing | What the bottom screen shows while this system's games play: Game art, Tandem companion, Screen off, Leave to emulator (and the Deck for PC games). Follows **Settings › Two screens › While playing** until you choose; 3DS and DS default to Leave to emulator |
 | Emulators | Every emulator that can run the system: **Default ✓** on the one in use, **Make default** on another installed one, **Get it** on one that isn't installed (opens Obtainium for a GitHub release when you have it, else the Play Store) |
 | Folders | The system's folders: **Built in** for the usual names, **Not there yet** when that folder doesn't exist, **Remove** on one you added |
 | Add a folder… | Picks one more folder that holds only this system's games, anywhere on the device or SD card |

@@ -89,8 +89,8 @@ the new address in the site's scripts once, and otherwise skips HowLongToBeat fo
   locked. With this on, a scrape may replace locked fields too, and unlocks what it replaces. X on a field in Edit
   details locks or unlocks it.
 - **Artwork** and **Details**: which pictures and details to fetch. The default is box art, hero, logo and gameplay
-  screenshot, with every detail. **Settings › Library & art › Artwork to download** steps through presets (Box art;
-  Box, logo, hero; Box, logo, hero, screenshot; All pictures; All, with videos).
+  screenshot, with every detail. The Artwork group of the scrape screen (**Settings › Library & art › Scrape library**) switches each
+  kind on or off.
 - **Physical boxes and spines** (off by default): scans of the real retail box front and spine, for the Shelf view
   only, from libretro, ScreenScraper and LaunchBox. They go to their own folders (`box2dfront`, `box2dside`), so the
   box art the rest of Tandem shows is never replaced, and they are not kept in the game's details.

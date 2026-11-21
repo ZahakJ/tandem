@@ -55,7 +55,7 @@ Tandem keeps the bottom screen during play, in one of four styles (PC games and 
 - **Leave to emulator**: Tandem stays off the bottom screen. This is the default for 3DS and DS, whose emulators
   use both screens. Wii U gets Game art, since Cemu leaves the bottom screen empty.
 
-Choose for every game at once in **Settings › Play & system › Playing › Bottom screen while playing** (3DS and DS
+Choose for every game at once in **Settings › Two screens › While playing › Bottom screen while playing** (3DS and DS
 emulators keep their own screen whatever it says), per system (**Settings › Library & art › Systems and emulators**, A on the system › **Bottom screen while playing**) or
 per game (Y › More › **Bottom screen while playing**); the game's choice beats the system's, which beats the
 setting. Games started on the bottom screen never get it.
@@ -105,7 +105,7 @@ switched with the chips at the top: the **Full keyboard** (letters, numbers, arr
 buttons, which stay pressed as long as your finger does). Shift, Ctrl and Alt are sticky: tap one for the next key,
 hold it to lock it until you tap it again. A held key repeats. The trackpad below moves the game's pointer as a
 laptop's does: a drag moves it, a tap clicks, a two-finger tap right-clicks, and two fingers dragging or the strip at
-the right edge scroll. **Settings › Play & system › Deck** sets the trackpad's sensitivity, the key sounds and
+the right edge scroll. **Settings › Controls › Deck** sets the trackpad's sensitivity, the key sounds and
 haptics, and the keyboard the Deck opens with. The Deck never dims or goes dark while it is up, whatever **Off after**
 says, so no key is lost to waking it.
 
@@ -117,7 +117,7 @@ move; a tap clicks where the pad's blue mark points instead. Either way the cont
 that reads the keyboard and mouse directly (some Winlator setups with raw input, a stream whose mouse mode is
 captured) may ignore what the Deck sends; switch the game to the ordinary keyboard and mouse mode if it does.
 
-**Pause games in sleep** (Settings › Play & system › Playing › More, on by default, needs Shizuku running as root): a
+**Pause games in sleep** (Settings › Play & system › Performance & sleep, on by default, needs Shizuku running as root): a
 minute after the screen goes off, games left open are paused, so an emulator's audio can't keep the handheld
 awake; they carry on where they were when you wake it.
 
@@ -165,7 +165,7 @@ The Thor's control centre has a performance mode (Standard, Performance, High pe
 Smart, Sport, or a custom speed) and a refresh rate for the top screen (60 or 120 Hz). Tandem can set them for the
 time a game plays, and put them back when you come back:
 
-- **For every game:** Settings › Play & system › Playing › **Performance mode**, **Fan mode** and **Refresh rate**.
+- **For every game:** Settings › Play & system › Performance & sleep › **Performance mode**, **Fan mode** and **Refresh rate**.
   Each starts at **Keep**, which leaves that one as you set it in the control centre.
 - **For one game:** Y on the game › More › the same three rows. **Default** follows the settings above, **Keep**
   leaves that one alone whatever the default says, and a value is this game's own. A demanding Switch game can have
@@ -203,7 +203,7 @@ the device's controller layout option.
 
 ## Tips
 
-- **Keep Tandem's data with your games.** **Settings › Play & system › Back up** saves favorites, play time,
+- **Keep Tandem's data with your games.** **Settings › Play & system › Your data › Back up** saves favorites, play time,
   the look, the home layout and emulator choices to `ROMs/tandem/backup/`; **Restore** puts them back on a new device.
 - **Hide what you don't play:** Y on a game › **Hide this game**.
 - **Already scraped with ES-DE?** Leave `ROMs/downloaded_media` where it is; Tandem uses the same artwork.

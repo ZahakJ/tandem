@@ -114,7 +114,7 @@ where you are (**Tandem › Nintendo 3DS › RPG**), then on the right:
 | **▦ Grid** (the games view) | Inside a system or collection | The next view: Grid, List, Carousel, Shelf, Case |
 | **★ Stats** | Everywhere but Stats | The Stats screen |
 | **◐ Quick** | Always | Quick settings |
-| Battery, clock | As set in **Settings › Home & layout › Top bar** | |
+| Battery, clock | As set in **Settings › Home & layout › Clock** and **Battery** | |
 
 Press <kbd>Up</kbd> from the top of a page to reach the bar, Left and Right to move along it, and <kbd>Down</kbd> to go
 back to the page, onto what you had highlighted there.
@@ -148,7 +148,7 @@ space, the quick settings (the same tiles as holding Start), and your Android no
 
 When Tandem is your Android Home app (**Settings › Play & system › Use Tandem as the Home screen**, which asks Android to make it so):
 
-- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › While a game runs › Home lands on Resume**).
+- From a game or another app, **Home** brings you back to Tandem's home screen with every popup closed and the bottom screen restored. If a game is still running, you land on its **Resume page** (**Settings › Home & layout › Resume page**: Home lands here).
 - With a game running and another app over it (Discord on the bottom screen over the companion, or a browser on the
   top screen over the game), the first **Home** brings the game back with its companion on the bottom screen, and the
   game keeps the controller. **Home** again within a few seconds goes to Tandem as usual.
@@ -186,7 +186,7 @@ game switcher.
 
 ### Nintendo button labels, per controller
 
-**Settings › Controls › Game controllers** lists the controllers connected right now by name. Each has a switch for
+**Settings › Controls › Connected controllers** lists the controllers connected right now by name. Each has a switch for
 **Nintendo button labels (swap A/B, X/Y)**: for Switch-style controllers in X-input mode, whose button printed A
 sends B. Switched on, A and B (and X and Y) are swapped for that controller only, so the button printed A confirms.
 It applies inside Tandem; the built-in controls and other controllers are unaffected, and your bindings (**Swap A and B**,
@@ -205,7 +205,7 @@ to change in their settings.
 - **During a game**, a controller that connects offers itself on the bottom screen: **Play with Xbox Wireless
   Controller?** Press its **A** or **Start** (or tap **Play with it**). Without the companion on the bottom screen,
   Android shows the same question as a short message over the game. It goes away by itself after about 12 seconds.
-- **Start › Quick settings › Controller**, or **Settings › Controls › Play with a controller › Controller in games**,
+- **Start › Quick settings › Controller**, or **Settings › Controls › Controller in games**,
   steps through **Built-in** and each connected controller.
 - **Always use a connected pad** takes any controller that connects straight away, without asking.
 - **Disconnecting** the controller (switched off, unplugged, out of range) goes back to the built-in controls by
@@ -375,7 +375,7 @@ Settings opens on seven tiles, one per page, each showing what is set now. On a 
 | --- | --- |
 | <kbd>A</kbd> | Switch a toggle, step to the next value, open a link, or run an action (the hints say which) |
 | Left / Right | Step a choice or a slider back and forth (rows drawn ‹ value ›) |
-| <kbd>A</kbd> on More options | Show the less common settings of that group |
+| <kbd>A</kbd> on a › row that names a group (Wallpaper ›, Accounts ›) | Open that short page; <kbd>B</kbd> comes back |
 | <kbd>X</kbd> | Search every setting by name or by what it does ("nintendo", "bigger", "quiet"); A on a result takes you to it |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next page |
 | <kbd>B</kbd> | Back to the tiles |

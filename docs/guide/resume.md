@@ -42,7 +42,7 @@ each of these is simply unavailable (its setting says **Needs Shizuku**), and ev
 | Giving itself Eden Duo's control permission for the **Game screen** button | Tandem can't grant it to itself |
 | [Peanuts Native](switch.md#peanuts-native): native Switch games and **Build native version** | Switch games play in Eden Duo or Eden |
 | A companion app's **Close after** | The app stays open |
-| **Go offline while a hidden game plays** ([private mode](privacy.md#private-mode)) | Not available |
+| **Offline for hidden games** ([private mode](privacy.md#private-mode)) | Not available |
 | **Pause games in sleep** (needs Shizuku running **as root**) | Games keep running while the screen is off |
 | The [Switch save sync](switch.md#one-save-across-eden-duo-and-peanuts-native) (needs root) | Each app keeps its own save |
 

@@ -48,8 +48,8 @@ Android brings an app that is already open back on the screen it is on. To move 
 
 While an app has the top screen, the bottom screen shows Tandem's library (Tandem must be the Home app). Touch it to take the controller there. What you start from it follows the usual rules: a game takes the top screen over the app, and an app opens on the bottom screen unless its own screen is set to Top. **Hold Back** swaps back, and **Home** puts everything back as usual. Without the library (Tandem isn't running) the bottom screen offers **Back to Tandem**, which moves the app down rather than closing it, and **Android apps**.
 
-Moving needs Shizuku (see [Resume and Shizuku](resume.md)), and holding Back needs the Controller Home button service (**Settings › Controls**). Games are never moved by holding Back unless **Settings › Two screens › Moving apps › Move games too** is on. **Hold Back to move apps** switches the shortcut off.
+Moving needs Shizuku (see [Resume and Shizuku](resume.md)), and holding Back needs the Controller Home button service (**Settings › Controls › Connected controllers**). Games are never moved by holding Back unless **Settings › Two screens › Hold Back to move** is set to **Apps and games**; **Off** switches the shortcut off.
 
 ## Where it is kept
 
-Per-app choices are kept in `app-prefs.json` next to Tandem's other data. **Settings › Play & system › Back up** saves them with **Systems & emulators**.
+Per-app choices are kept in `app-prefs.json` next to Tandem's other data. **Settings › Play & system › Your data › Back up** saves them with **Systems & emulators**.

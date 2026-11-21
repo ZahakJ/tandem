@@ -36,11 +36,11 @@ Press A on that row to read the release notes, then **Update** (or **Not now**).
 
 ![The update popup: Tandem 0.6.1 is out, its release notes, and the Update and Not now buttons.](../../site/assets/screenshots/guide/update-popup.webp "A new version, ready to install")
 
-**Checking by hand.** **Settings › Play & system › About › Check now** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (A opens the notes and Update), the download's progress, or what went wrong.
+**Checking by hand.** **Settings › Play & system › Updates** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (A opens the notes and Update), the download's progress, or what went wrong.
 
-![Settings › Play & system › About: About Tandem, Check now showing 0.6.1 available, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
+![Settings › Play & system: Updates showing 0.6.1 available, and Check automatically.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
 
-**Turning the automatic check off.** Switch **Settings › Play & system › About › Check automatically** off: Tandem then never asks GitHub by itself, shows no message and no Start panel row, and updates only when you press **Check now** and then **Update**. Private mode skips the automatic check too. You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
+**Turning the automatic check off.** Switch **Settings › Play & system › Check automatically** off: Tandem then never asks GitHub by itself, shows no message and no Start panel row, and updates only when you press A on **Updates** and then **Update**. Private mode skips the automatic check too. You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
 
 ## Put your games in place
 
@@ -69,7 +69,7 @@ and is always read for games too, in the folder-per-system layout only (`ROMs/3d
 updates, DLC, patches or mods are never taken for games.
 
 > [!TIP]
-> Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Games › Game
+> Games in more than one place, or on an SD card? Add each folder in **Settings › Library & art › Game
 > folders**. Their games join the same systems. See [Where games live](library.md#where-games-live).
 
 Artwork is optional. If you have scraped art before with another frontend, it is most likely in `ROMs/downloaded_media/`, and Tandem uses it as it is; coming from Cocoon, the first scan also brings over the art its gamelists point to. [Your library](library.md#artwork) explains which folders it reads, and [Get artwork](#get-artwork) below fetches the rest.

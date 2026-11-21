@@ -1,15 +1,18 @@
 # Settings: where everything lives
 
 Settings opens on seven tiles, one per page (four, then three), each summarising what is set, under a search bar.
-Each page is a few short groups; rare rows fold under **More options**. X searches every row, including folded ones,
-by label, synonyms ("nintendo" finds Swap A and B) and help text; picking a result opens its page, unfolds the group
-and pulses the row. L1 and R1 flip pages. The quick switches people use most also sit in the Start panel and Quick
-settings (see [Quick switches](#quick-switches)).
+Each page is a few short groups, the rows people change most first, and nothing folds away: a page fits in about a
+screen and a half. A coherent set of rarer rows (the wallpapers, the dock and widgets, accounts, performance) is a
+short **subpage**, opened from one › row on its page; B goes back to the page. X searches every row of every page and
+subpage by label, synonyms ("nintendo" finds Swap A and B) and help text, plus the few settings that live on a screen
+of their own (see [Found elsewhere](#found-elsewhere)); picking a result opens its page (a subpage over its page, so
+Back goes there) and pulses the row. L1 and R1 flip pages (from a subpage, its page's neighbours). The quick switches
+people use most also sit in the Start panel and Quick settings (see [Quick switches](#quick-switches)).
 
-Code: `ui/SettingsCatalog.kt` (pages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane layout, side
-panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup looks the
-first-run welcome offers (Cozy shelves, Icon grid look, Orbit, Minimal); Settings no longer shows them. The user guide
-has every row in plain words, with defaults: [Every setting](guide/settings.md).
+Code: `ui/SettingsCatalog.kt` (pages, subpages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane
+layout, side panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup
+looks the first-run welcome offers (Cozy shelves, Icon grid look, Orbit, Minimal); Settings no longer shows them. The
+user guide has every row in plain words, with defaults: [Every setting](guide/settings.md).
 
 ## How to add a setting
 
@@ -17,33 +20,39 @@ has every row in plain words, with defaults: [Every setting](guide/settings.md).
    `icon`, a plain-language `help`, and `keywords` with the words people might search for.
 2. Choose the row type:
    - `toggle(...)` or `toggle = on` for a switch.
-   - `choice(...)` for a cycler; Left and Right step through it.
+   - `choice(...)` for a cycler; Left and Right step through it. Toggles that only mean something together (one
+     needs the other on) are one choice instead: Hold Back to move (Off, Apps, Apps and games), Offline for hidden
+     games, the icon grid's Resume page.
    - `number(...)` for a slider; it draws a gauge.
    - `opens = true` for a link to another screen.
    - Anything else is an action.
-3. Place it in `SettingsPlan` (a group's main rows, or its More options), or drop it there on purpose.
-   `SettingsPlanTest` fails while a row is neither, and a debug build shows a stray row under **Not placed**. Add a
+3. Place it in `SettingsPlan`: in a group of its page, or of a subpage when it is rare and belongs with others there
+   (`Sub`, opened by a `link(...)` row on the page). Or drop it there on purpose. There are no folds: no "More
+   options". `SettingsPlanTest` fails while a row is neither placed nor dropped, when a page grows past twelve rows,
+   or when a subpage isn't opened from exactly one row; a debug build shows a stray row under **Not placed**. Add a
    line to the table below.
 4. Keep labels short (about 28 characters fit on one line). Put the explanation in `help`; it shows in the side
    panel and on the bottom screen.
 
-Before adding one, ask whether a good default would do, and whether the setting already exists somewhere else.
+Before adding one, ask whether a good default would do, and whether the setting already exists somewhere else. Each
+setting has one place: a page never repeats a row from another page or a subpage, and Settings doesn't repeat what a
+screen of its own already holds (the scrape options, the source order, the hidden list).
 
 ## Pages
 
-| Tile | Summary shows | Groups (common rows · More options) |
+| Tile | Summary shows | Groups (› opens a subpage) |
 |---|---|---|
-| Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery, Colour, Wallpaper, Icons, Motion, Start over |
-| Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included), Home screen (the rows for the layout in use), Games, While a game runs, Dock, Widgets, Top bar, Rest |
-| Two screens | single, swapped or the bottom style | Screens, Other screen, Moving apps, While playing |
-| Sound & music | the theme pack's audio, or sound pack and music | Theme pack (only when the theme pack has music or sounds), Sounds, Music |
-| Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons, Controller Home button, Game controllers, Play with a controller |
-| Library & art | games, systems, sources, RetroAchievements, Steam | Games, Systems, Artwork, Sources in order, RetroAchievements, Steam, Discord (only in builds with Discord's SDK), Bring your details |
-| Play & system | resume state, Home screen | Playing, Deck, Privacy, Hidden, Stats, Your data, About |
+| Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Start over |
+| Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included); Home screen (the rows for the layout in use, Grid shape › on the icon grid); Around the home (How games show ›, Dock & widgets ›, top bar, screensaver) |
+| Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
+| Sound & music | the theme pack's audio, or sound pack and music | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
+| Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons; Controllers (Connected controllers ›, Deck ›) |
+| Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems; Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
+| Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, For tinkerers ›) |
 
 ## Every setting and where it is
 
-"More" means the row is under that group's More options.
+A "›" step after a page is its subpage.
 
 | Setting (stored in) | Where | Row type |
 |---|---|---|
@@ -51,14 +60,15 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.packParts` | Look & feel › Theme packs › Manage packs (pack manager); music and sounds also Sound & music › Theme pack | link / toggle |
 | `Look.accent` | Look & feel › Colour › Accent colour (A types a hex colour; also sets what the highlight glows in) | choice |
 | `Look.highlight` | Look & feel › Colour › Highlight style | choice |
-| `Look.material` | Look & feel › Colour › More › Surface | choice |
+| `Look.material` | Look & feel › Colour › Surface | choice |
 | `Look.wallTop`, `wallBottom` | Look & feel › Wallpaper › Top screen / Bottom screen (your files from `ROMs/tandem/wallpapers`) | choice |
-| `Look.wallDim` | Look & feel › Wallpaper › More › Picture dimming | slider |
-| `Look.iconPack` | Look & feel › Icons › Icons from | choice |
-| `Look.iconStyle` | Look & feel › Icons › Icon style | choice |
+| `Look.wallDim` | Look & feel › Wallpaper › Picture dimming | slider |
+| `Look.iconPack` | Look & feel › Icons from | choice |
+| `Look.iconStyle` | Look & feel › Icon style | choice |
 | `Look.motion` | Look & feel › Motion › Animation style | choice |
 | `Settings.reduceMotion` | Look & feel › Motion › Reduce motion | toggle |
-| `ExtrasSettings.floating`, `intensity` | Look & feel › Motion › More › Floating titles / Motion intensity | toggle / choice |
+| `ExtrasSettings.floating`, `intensity` | Look & feel › Motion › Floating titles / Motion intensity | toggle / choice |
+| `Look.swapStyle` | Look & feel › Motion › Swap animation | choice |
 | (reset) | Look & feel › Start over › Reset look (keeps buttons, screens, sounds and music) | action |
 | `Look.homeLayout` | Home & layout › Layout gallery | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |
@@ -66,33 +76,34 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.gridLabels`, `ExtrasSettings.focusLabels` | Home & layout › Home screen › Icon names (icon grid) | action |
 | `ExtrasSettings.recentStrip` | Home & layout › Home screen › Recently played strip (icon grid) | choice |
 | `Look.gridFolders` | Home & layout › Home screen › Folders open (icon grid) | choice |
-| `Look.gridRows`, `gridRoundness`, `gridGap`, `gridHeroSplit` | Home & layout › Home screen › More (icon grid) | choice / slider |
+| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Home lands here) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
+| `Look.gridRows`, `gridRoundness`, `gridGap`, `gridHeroSplit` | Home & layout › Grid shape (icon grid) | choice / slider |
 | `Look.homeSections` | Home & layout › Home screen › Home rows (shelves, carousel, list, console) | choice |
+| `Look.systemTiles` | Home & layout › Home screen › System tiles (shelves, carousel, list, console) | choice |
 | `Look.folderPopup`, `fullscreenFolders` | Home & layout › Home screen › Open folders (other layouts) | choice |
-| `Look.systemTiles` | Home & layout › Home screen › More › System tiles (shelves, carousel, list, console) | choice |
 | `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue ribbon (Orbit) | choice / toggle |
 | `Look.spotlightRail`, `spotlightBackdrop`, `spotlightMotion` | Home & layout › Home screen › Spotlight rail (left, right) / Spotlight backdrop (art, blurred cover, dim) / Spotlight motion (Spotlight) | choice / choice / toggle |
-| `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › Games (Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
-| `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › While a game runs › Now playing / Home lands on Resume | toggle |
-| `HomeSettings.showDock`, `dock`, `Look.dockStyle` | Home & layout › Dock › Apps dock / Choose dock apps / Dock style | toggle / link / choice |
-| `Look.dockTop`, `dockAutoHide` | Home & layout › Dock › More | toggle |
-| `WidgetStore.widgets`, `WidgetConfig.homeEnabled` | Home & layout › Widgets › Customize widgets / Widgets on the home screen | link / toggle |
-| `WidgetConfig.gridPlace` | Home & layout › Widgets › More › Widgets on the grid (In cells, As a row) | choice |
+| `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › How games show (Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
+| `HomeSettings.showDock`, `dock`, `Look.dockStyle`, `dockTop`, `dockAutoHide` | Home & layout › Dock & widgets › Dock › Apps dock / Choose dock apps / Dock style / Dock on top / Auto-hide dock | toggle / link / choice |
+| `WidgetStore.widgets`, `WidgetConfig.homeEnabled` | Home & layout › Dock & widgets › Widgets › Customize widgets / Widgets on the home screen | link / toggle |
+| `WidgetConfig.gridPlace` | Home & layout › Dock & widgets › Widgets › Widgets on the grid (icon grid: In cells, As a row) | choice |
 | `IconGridConfig.spans` | Y on a widget on the icon grid › Resize | menu |
 | `WidgetConfig.upNext` | the Up next widget, and Y › Add to Up next on a game | menu |
-| `Look.clock`, `battery` | Home & layout › Top bar | choice / toggle |
-| `HomeSettings.screensaverMinutes` | Home & layout › Rest › Screensaver (also Start › Screensaver) | choice |
+| `Look.clock`, `battery` | Home & layout › Around the home › Clock / Battery | choice / toggle |
+| `HomeSettings.screensaverMinutes` | Home & layout › Around the home › Screensaver (also Start › Screensaver) | choice |
 | `SystemPrefs.singleScreen` | Two screens › Screens › Single screen | toggle |
 | `Look.swapScreens` | Two screens › Screens › Swap screens | toggle |
 | `AppsData.defaultScreen` | Two screens › Screens › Apps open on (Auto, Top, Bottom) | choice |
-| `Look.swapStyle`, `SystemPrefs.keepRotationOff` | Two screens › Screens › More › Swap animation / Keep auto-rotate off | choice / toggle |
+| `AppsData.holdBackMoves`, `moveGames` | Two screens › Screens › Hold Back to move (Off, Apps, Apps and games; says what it still needs: Shizuku, the Home button service) | choice |
+| `SystemPrefs.keepRotationOff` | Two screens › Screens › Keep auto-rotate off | toggle |
 | `Look.gridDetails` (icon grid) or `Settings.bottomMode` (other layouts) | Two screens › Other screen › Other screen / Style | choice |
-| `Look.videoSnaps`, `videoDelayMs`, `kenBurns` | Two screens › Other screen › Video snaps / Moving art | choice / toggle |
 | (bottom widgets) | Two screens › Other screen › Bottom screen when idle | link |
-| `Look.heroLogoScale`, `heroGradient` | Two screens › Other screen › More › Logo size / Art fade (`Look.heroSplit` has no row since the details became one piece of art) | slider / choice |
-| `AppsData.holdBackMoves`, `moveGames` | Two screens › Moving apps › Hold Back to move apps / Move games too (Hold Back says what it still needs: Shizuku, the Home button service) | toggle |
+| `Look.videoSnaps`, `videoDelayMs`, `kenBurns` | Two screens › Art & video › Video snaps / Moving art | choice / toggle |
+| `Look.heroLogoScale`, `heroGradient` | Two screens › Art & video › Logo size / Art fade (`Look.heroSplit` has no row since the details became one piece of art) | slider / choice |
+| `HomeSettings.companion` | Two screens › While playing › Bottom screen while playing (Game art, Tandem companion, Screen off, Leave to emulator: the choice for every system and game without one of its own; 3DS and DS emulators keep their screen) | choice |
+| `HomeSettings.companionOffAfter` | Two screens › While playing › Off after (Never, 1, 2, 5, 10 minutes without a touch before the bottom screen goes dark while a game plays; with Screen off, how long a tap lights it) | choice |
 | `SystemPrefs.clipVoice` | Two screens › While playing › Voice in clips (your microphone in the companion's 15-second clips) | toggle |
-| `SystemConfig.companion`, `GameMeta.companion` | Library & art › Systems › Systems and emulators › A on a system › Bottom screen while playing; Y on a game › More › Bottom screen while playing (the same four choices, for that system or game alone) | menu |
+| `SystemConfig.companion`, `GameMeta.companion` | Library & art › Systems and emulators › A on a system › Bottom screen while playing; Y on a game › More › Bottom screen while playing (the same four choices, for that system or game alone) | menu |
 | Per-app screen, name, icon, game, hidden (`AppPrefs`) | Y on any app (dock, All apps, Android apps, grid) | menu |
 | `PackParts.music`, `PackParts.sounds` | Sound & music › Theme pack › Theme pack music / Theme pack sounds (the group shows only while the theme is a pack with music or sounds of its own) | toggle |
 | `Look.sounds`, `soundVolume` | Sound & music › Sounds › UI sounds / Sound volume | toggle / slider |
@@ -101,57 +112,61 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.pipVoice` | Sound & music › Sounds › Pip's voice (a few soft hummed notes with Pip's messages) | toggle |
 | `Look.music`, `musicVolume` | Sound & music › Music › Music / Music volume | toggle / slider |
 | `Look.myMusic`, `soundtrack` | Sound & music › Music › Music from (My music folder, Built-in: Calm, Built-in: Meadow Tales; `soundtrack` null reads as Calm, or as Meadow Tales for a setup from before Calm) | choice |
+| `Look.musicShuffle` | Sound & music › Music › Shuffle my music | toggle |
 | (next song) | Sound & music › Music › Next song | action |
-| `Look.musicShuffle` | Sound & music › Music › More › Shuffle my music | toggle |
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |
-| `ControllerSettings.bindings` (Swap A and B) | Controls › Buttons › Swap A and B (Open on B, Back on A) | toggle |
+| `ControllerSettings.bindings` (Swap A and B, Swap X and Y) | Controls › Buttons › Swap A and B (Open on B, Back on A) / Swap X and Y | toggle |
 | `ControllerSettings.bindings` | Controls › Buttons › Rebind buttons (a page: every command with its button, chord or hold; A listens for 5 s, X resets one, Y clears one, Reset all) | link |
-| `ControllerSettings.bindings` (Swap X and Y), `Look.cornerHints` | Controls › Buttons › More › Swap X and Y / Corner hints | toggle |
-| (accessibility service `ControllerHomeService`) | Controls › Controller Home button (opens Android's Accessibility settings) | link |
-| `ControllerSettings.holdHome` | Controls › Controller Home button › More › Hold the Home button | choice |
-| `ControllerSettings.nintendo` | Controls › Game controllers › one row per connected controller (Nintendo button labels) | toggle |
-| (`PadLink`, not saved) | Controls › Play with a controller › Controller in games (also Quick settings › Controller) | choice |
-| `ControllerSettings.usePads` | Controls › Play with a controller › Always use a connected pad | toggle |
-| `Settings.sort`, `showHidden` | Library & art › Games › Sort games by / Show hidden games | choice / toggle |
-| (rescan) | Library & art › Games › Rescan games | action |
-| `SystemPrefs.roots` (with their document links in `SystemPrefs.trees`) | Library & art › Games › Game folders (the folder manager: `ui/GameFoldersScreen.kt`; A on a folder for options, Y takes it out with Undo) | link |
-| `Settings.watchFolders` | Library & art › Games › Watch game folders (`FolderWatch.kt`; only while Tandem is on screen) | toggle |
-| (manuals found, `Manuals.count`) | Library & art › Games › Manuals (how many manuals `ROMs/manuals/<system>/` holds; A rescans. Per game: Y › Edit details › Manual, stored in `GameMeta.manual`) | action |
-| Systems, emulators, folders (`SystemPrefs`); Cocoon and Daijisho platform files | Library & art › Systems › Systems and emulators | link |
-| Android apps and games (`AppPrefs`) | Library & art › Systems › Android apps | link |
-| Scraping (`ScrapeConfig`) | Library & art › Artwork › Scrape library; Set up sources; Artwork to download; More: region, language, clear media | link / choice / action |
-| Scraping sources and their keys (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) | Library & art › Sources, in order (each opens its setup card) | link |
-| RetroAchievements (`HomeStore.ra`) | Library & art › RetroAchievements › Account / Show achievements; More: Look up games again, Sign out | action / toggle |
-| Steam achievements (`SteamStore.account`, `steam.json`) | Library & art › Steam › Steam Web API key / Steam account / Look up achievements (once signed in); More: Sign out | action |
-| Discord status (`DiscordPresence`, token in `noBackupFilesDir/discord.json`) | Library & art › Discord › Discord status (Connect); More: Disconnect Discord; Quick settings › Discord status tile pauses it (`shown`). Only in builds with Discord's SDK | action |
-| (import my Cocoon setup, import gamelists) | Library & art › Bring your details › Import my Cocoon setup / Import details; More: Undo Cocoon import | action |
+| `Look.cornerHints` | Controls › Buttons › Corner hints | toggle |
+| (`PadLink`, not saved) | Controls › Controllers › Controller in games (also Quick settings › Controller) | choice |
+| `ControllerSettings.usePads` | Controls › Controllers › Always use a connected pad | toggle |
+| `ControllerSettings.nintendo` | Controls › Connected controllers › one row per connected controller (Nintendo button labels) | toggle |
+| (accessibility service `ControllerHomeService`) | Controls › Connected controllers › Controller Home button (opens Android's Accessibility settings) | link |
+| `ControllerSettings.holdHome` | Controls › Connected controllers › Hold the Home button | choice |
+| `HomeSettings.deckSensitivity` | Controls › Deck › Trackpad sensitivity (0.5× to 3×; the Deck is the bottom-screen keyboard and trackpad for PC games and streams) | slider |
+| `HomeSettings.deckLayout` | Controls › Deck › Default layout (Full keyboard, Game keys) | choice |
+| `HomeSettings.deckSounds`, `deckHaptics` | Controls › Deck › Key sounds / Key haptics | toggle |
+| `GameMeta.companion`, `SystemConfig.companion` (`deck`) | Y on a PC game › More › Bottom screen while playing, and the system's row in Systems: the Deck is a choice there only for PC games and streams | menu |
+| `SystemPrefs.roots` (with their document links in `SystemPrefs.trees`) | Library & art › Games & systems › Game folders (the folder manager: `ui/GameFoldersScreen.kt`; A on a folder for options, Y takes it out with Undo) | link |
+| (rescan, manuals found: `Manuals.count`) | Library & art › Games & systems › Rescan games (how many games and manuals; manuals in `ROMs/manuals/<system>/`. Per game: Y › Edit details › Manual, stored in `GameMeta.manual`) | action |
+| `Settings.watchFolders` | Library & art › Games & systems › Watch game folders (`FolderWatch.kt`; only while Tandem is on screen) | toggle |
+| `Settings.sort` | Library & art › Games & systems › Sort games by (also Start › Sort) | choice |
+| Systems, emulators, folders (`SystemPrefs`); Cocoon and Daijisho platform files | Library & art › Games & systems › Systems and emulators | link |
+| Android apps and games (`AppPrefs`) | Library & art › Games & systems › Android apps | link |
+| Scraping (`ScrapeConfig`) | Library & art › Artwork & accounts › Scrape library (what to fetch, region, language: the scrape screen); Clear downloaded media | link / action |
+| Scraping sources, their order and keys (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) | Library & art › Artwork & accounts › Set up sources (the tiles in order, L1/R1 move one; A opens its card) | link |
+| RetroAchievements (`HomeStore.ra`) | Library & art › Accounts › RetroAchievements › Account / Show achievements / Look up games again / Sign out | action / toggle |
+| Steam achievements (`SteamStore.account`, `steam.json`) | Library & art › Accounts › Steam › Steam Web API key / Steam account / Look up achievements / Sign out (the last two once signed in) | action |
+| Discord status (`DiscordPresence`, token in `noBackupFilesDir/discord.json`) | Library & art › Accounts › Discord › Discord status (Connect) / Disconnect Discord; Quick settings › Discord status tile pauses it (`shown`). Only in builds with Discord's SDK | action |
 | Resume (Shizuku) | Play & system › Playing › Resume running games | action |
 | `HomeSettings.closePrevious`, `askBeforeClosing` | Play & system › Playing › Close previous game / Ask before closing a game | toggle |
 | `HomeSettings.immersion` | Play & system › Playing › Immersion mode (shows "Needs Do Not Disturb access" until Tandem is allowed; A allows it through Shizuku, or opens Android's list) | toggle |
-| `HomeSettings.companion` | Play & system › Playing › Bottom screen while playing (Game art, Tandem companion, Screen off, Leave to emulator: the choice for every system and game without one of its own; 3DS and DS emulators keep their screen) | choice |
-| `HomeSettings.companionOffAfter` | Play & system › Playing › Off after (Never, 1, 2, 5, 10 minutes without a touch before the bottom screen goes dark while a game plays; with Screen off, how long a tap lights it) | choice |
-| `HomeSettings.perf` (`mode`, `fan`, `hz`) | Play & system › Playing › Performance mode / Fan mode / Refresh rate (AYN devices: the modes while any game plays, each Keep by default; the refresh rates are the ones the display has) | choice |
-| (none) | Play & system › Playing › Performance profiles: the one row that stands in for the three above on a device without AYN's modes ("AYN devices only"), or while Shizuku is not running ("Needs Shizuku": Android lets only the shell write AYN's keys) | action |
+| `SystemPrefs.launchAnimation` | Play & system › Playing › Launch animation | toggle |
+| `HomeSettings.perf` (`mode`, `fan`, `hz`) | Play & system › Performance & sleep › Performance mode / Fan mode / Refresh rate (AYN devices: the modes while any game plays, each Keep by default; the refresh rates are the ones the display has) | choice |
+| (none) | Play & system › Performance & sleep › Performance profiles: the one row that stands in for the three above on a device without AYN's modes ("AYN devices only"), or while Shizuku is not running ("Needs Shizuku": Android lets only the shell write AYN's keys) | action |
 | `GameMeta.perf` | Y on a game › More › Performance mode / Fan mode / Refresh rate (Default, Keep, or a value for this game) | menu |
-| `HomeSettings.freezeAsleep` | Play & system › Playing › More › Pause games in sleep (shows "Needs root Shizuku" without it) | toggle |
-| `SystemPrefs.launchAnimation` | Play & system › Playing › More › Launch animation | toggle |
-| `HomeSettings.deckSensitivity` | Play & system › Deck › Trackpad sensitivity (0.5× to 3×; the Deck is the bottom-screen keyboard and trackpad for PC games and streams) | slider |
-| `HomeSettings.deckLayout` | Play & system › Deck › Default layout (Full keyboard, Game keys) | choice |
-| `HomeSettings.deckSounds`, `deckHaptics` | Play & system › Deck › Key sounds / Key haptics | toggle |
-| `GameMeta.companion`, `SystemConfig.companion` (`deck`) | Y on a PC game › More › Bottom screen while playing, and the system's row in Systems: the Deck is a choice there only for PC games and streams | menu |
-| `HomeSettings.privateMode`, `offlineHidden`, `offlineUntilClosed` | Play & system › Privacy › Private mode / Go offline while a hidden game plays / Stay offline until the game closes | toggle |
-| `private-pin.json` (`PinVault`) | Play & system › Privacy › More › Private mode PIN | action |
-| `Settings.hiddenFolders`, `HomeFolder.hidden`, hidden games | Play & system › Hidden (listed with Unhide only while hidden games show); also Start › Hidden | action |
-| Play stats, export | Play & system › Stats › Play stats; More: Export play stats (CSV in `ROMs/tandem`) | link / action |
-| Home app role | Play & system › Your data › Use Tandem as the Home screen | link |
+| `HomeSettings.freezeAsleep` | Play & system › Performance & sleep › Pause games in sleep (shows "Needs root Shizuku" without it) | toggle |
+| `HomeSettings.privateMode` | Play & system › Privacy & hidden › Private mode | toggle |
+| `Settings.showHidden` | Play & system › Privacy & hidden › Show hidden games (in private mode it asks for the PIN) | toggle |
+| `HomeSettings.offlineHidden`, `offlineUntilClosed` | Play & system › Privacy & hidden › Offline for hidden games (Off, While it plays, Until it closes) | choice |
+| `private-pin.json` (`PinVault`) | Play & system › Privacy & hidden › Private mode PIN | action |
+| `Settings.hiddenFolders`, `HomeFolder.hidden`, hidden games | Start › Hidden (each with Unhide; shown while something is hidden and, in private mode, revealed) | menu |
+| Home app role | Play & system › Tandem › Use Tandem as the Home screen | link |
 | Backups (`data/Backup.kt`, `ui/BackupScreen.kt`) | Play & system › Your data › Back up (parts to include, account keys) and Restore (backups newest first, X deletes; then parts to put back) | link |
-| (about) | Play & system › About › About Tandem (version and licence) | action |
-| Update check (`Updates.kt`) | Play & system › About › Check now (this version and the update's state: Up to date, 0.4.1 available, Downloading 42 %, Verifying, or what went wrong; A checks, or shows the update) | action |
-| `Settings.checkUpdates` | Play & system › About › Check automatically (once a day while Tandem is open, with a toast once and the Start panel row; off, only Check now looks; not in builds with `-PselfUpdate=false`) | toggle |
-| Frame timing overlay, theme tour (`dev` preferences, `DevTools`) | Play & system › About › More › Frame timing overlay / Tour every theme | switch / action |
+| (import my Cocoon setup, import gamelists) | Play & system › Your data › Import my Cocoon setup / Undo Cocoon import / Import details | action |
+| Play stats, export | Start › Stats & trophies (the Stats screen); Play & system › Your data › Export play stats (CSV in `ROMs/tandem`) | link / action |
+| Update check (`Updates.kt`) | Play & system › Tandem › Updates (this version and the update's state: Up to date, 0.4.1 available, Downloading 42 %, Verifying, or what went wrong; A checks, or shows the update). Builds with `-PselfUpdate=false` show About Tandem (version and licence) instead | action |
+| `Settings.checkUpdates` | Play & system › Tandem › Check automatically (once a day while Tandem is open, with a toast once and the Start panel row; off, only Updates looks; not in builds with `-PselfUpdate=false`) | toggle |
+| Frame timing overlay, theme tour (`dev` preferences, `DevTools`) | Play & system › For tinkerers › Frame timing overlay / Tour every theme | switch / action |
 | `Settings.welcomeDone` | Shown once after the first scan; not a row | n/a |
 | Game switcher, quick settings panel | Hold Select / hold Start anywhere, or what they are rebound to (a note under Controls › Buttons shows the live bindings) | n/a |
 | `Settings.batterySaver` (what Battery saver changed) | Quick settings › Battery saver | tile |
+
+### Found elsewhere
+
+Settings search also finds these, which live on a screen of their own, and takes you there (`elsewhereHits` in
+`ui/SettingsSearch.kt`): what a scrape fetches (`ScrapeConfig.kinds`), the preferred region and language (the Scrape
+library screen), each art source (its card under Set up sources), and Play stats (the Stats screen).
 
 ### Fields with no row
 

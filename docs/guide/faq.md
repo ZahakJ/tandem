@@ -60,8 +60,8 @@ most systems.
 ### I'm coming from Cocoon. Do I lose my art?
 
 No. Tandem reads the same `ROMs/downloaded_media` art, and the first scan brings over what your newest Cocoon backup's
-gamelists point to: titles, descriptions, favourites, play time and artwork. **Settings › Library & art › Bring your
-details › Import my Cocoon setup** also brings your home grid, folders and theme. See [Importing](importing.md). For
+gamelists point to: titles, descriptions, favourites, play time and artwork. **Settings › Play & system › Your
+data › Import my Cocoon setup** also brings your home grid, folders and theme. See [Importing](importing.md). For
 the games Cocoon had no art for, LaunchBox (above) is the closest thing to Cocoon's no-setup scraper.
 
 ### Where is a setting?
@@ -79,10 +79,10 @@ screenshots from the bottom screen, the Deck, performance profiles, Peanuts Nati
 
 Installed from GitHub Releases, Tandem checks once a day and tells you when a new version is out: a message once, and
 a **Tandem 0.6.1 is out** row in the Start panel. Press A on it, then **Update**; nothing installs before that.
-**Settings › Play & system › About › Check now** checks at once.
+A on **Settings › Play & system › Updates** checks at once.
 
-To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › About › Check
-automatically** off. Then update by hand whenever you like: **Check now**, then **Update**, or download the APK from
+To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › Check
+automatically** off. Then update by hand whenever you like: A on **Updates**, then **Update**, or download the APK from
 the [releases page](https://github.com/ZahakJ/tandem/releases/latest). See
 [Software updates](getting-started.md#software-updates).
 
@@ -106,18 +106,18 @@ Both setup steps must be done:
 
 ### A system or game is missing
 
-- Is the folder in? **Settings › Library & art › Games › Game folders** lists every folder Tandem reads; **Pick your games folder…** adds one.
+- Is the folder in? **Settings › Library & art › Game folders** lists every folder Tandem reads; **Pick your games folder…** adds one.
 - Check the folder name: it must name the system, for example `n3ds`, `3DS` or `Nintendo 3DS`. Names Tandem knows are in [Systems and emulators](platforms.md#what-comes-built-in). Files only one system plays (`.3ds`, `.nsp`, `.gba`…) are found in any folder, but disc images and archives (`.iso`, `.chd`, `.zip`…) need a folder named for their system.
 - Check the file extension against the system's list.
-- Is the game hidden? Turn on **Settings › Library & art › Show hidden games**.
-- Are the games on an SD card? Add the card's games folder in **Settings › Library & art › Games › Game folders**. See [Where games live](library.md#where-games-live).
+- Is the game hidden? Turn on **Settings › Play & system › Privacy & hidden › Show hidden games**, or look in **Start › Hidden**.
+- Are the games on an SD card? Add the card's games folder in **Settings › Library & art › Game folders**. See [Where games live](library.md#where-games-live).
 - Did you add the files while Tandem was open? They should appear by themselves within a few seconds while Tandem is on screen (**Watch game folders**); otherwise **Settings › Library & art › Rescan games**.
 - More than three folders deep? Tandem stops at three levels below the system folder.
 - Loose game files directly in `ROMs`, or in a folder in `ROMs` that isn't named for a system? `ROMs` keeps the
   folder-per-system layout: move them into the system's folder, or add their folder in **Game folders**.
 - In a folder named like `Updates`, `DLC`, `Patches` or `Mods`? Those are never taken for games (outside a system's
   own folder).
-- Is the whole system turned off? **Settings › Library & art › Systems › Systems and emulators** lists it under
+- Is the whole system turned off? **Settings › Library & art › Systems and emulators** lists it under
   **Turned off**; A on it › **Show in library**.
 
 ### Pressing A does nothing, or says the emulator isn't installed
@@ -127,7 +127,7 @@ Both setup steps must be done:
 
 ### The emulator opens but doesn't load the game
 
-- Emulators that receive a shared file need the game's folder to have been picked: during setup, or in **Settings › Library & art › Games › Game folders**. Games in `ROMs` need `ROMs` itself picked; picking it again there renews the link.
+- Emulators that receive a shared file need the game's folder to have been picked: during setup, or in **Settings › Library & art › Game folders**. Games in `ROMs` need `ROMs` itself picked; picking it again there renews the link.
 - For RetroArch, check that the core named in `platforms.json` is installed (RetroArch › Online Updater › Core Downloader) and that the `CONFIGFILE` path exists.
 - Some emulators need their own setup before any game loads: system files for Azahar, keys and firmware for Eden, game paths for Cemu.
 
@@ -144,7 +144,7 @@ That is the normal behaviour without [Shizuku](resume.md). If Shizuku is set up,
 ### A scrape gets no art
 
 - **Private mode is on.** It keeps Tandem offline: Pip says "Private mode keeps Tandem offline: no scraping or art
-  lookups". Turn it off (**Settings › Play & system › Privacy › Private mode**, with your PIN), scrape, turn it back on.
+  lookups". Turn it off (**Settings › Play & system › Privacy & hidden › Private mode**, with your PIN), scrape, turn it back on.
 - **No source can answer.** A source without its key is skipped, and libretro has nothing for Switch, Wii U or PC
   games. Download LaunchBox's index (Set up sources › LaunchBox › **Download**), or add a SteamGridDB key.
 - **LaunchBox's index isn't downloaded,** or was skipped with **Skip LaunchBox**: the scrape notes "LaunchBox needs its

@@ -56,7 +56,7 @@ apksigner verify --print-certs tandem-0.3.0.apk
 sha256sum -c SHA256SUMS
 ```
 
-To see how a release looks to players (the Start panel row, the popup, Check now), build a Tandem that thinks it is
+To see how a release looks to players (the Start panel row, the popup, Settings › Play & system › Updates), build a Tandem that thinks it is
 older: `./gradlew assembleDebug -PupdateFrom=0.6.0`. It checks for updates as if it were 0.6.0, so the latest release
 shows up as new; a debug build can't install it (the signing keys differ), so Update stops with a message.
 

@@ -178,7 +178,7 @@ source is in the [scraping reference](../SCRAPING.md); what each source receives
 
 | What you see | Why, and what to do |
 | --- | --- |
-| "Private mode keeps Tandem offline: no scraping or art lookups" | Private mode is on, and it keeps Tandem offline. Turn it off in **Settings › Play & system › Privacy › Private mode** (it asks for your PIN), scrape, and turn it back on |
+| "Private mode keeps Tandem offline: no scraping or art lookups" | Private mode is on, and it keeps Tandem offline. Turn it off in **Settings › Play & system › Privacy & hidden › Private mode** (it asks for your PIN), scrape, and turn it back on |
 | **Start scraping** greyed, "Turn on at least one source below" | Every source is off or missing its key. Turn on LaunchBox or libretro, or add a key |
 | Switch, Wii U or PC games get nothing | With no keys, only LaunchBox and libretro are asked, and libretro has nothing for those systems. If you chose **Skip LaunchBox**, or its download failed, nothing was left to ask: download LaunchBox (above) and scrape again, or add a SteamGridDB key |
 | A source never seems to be asked | It has no key (**Needs a key**), so it is skipped. Add the key on its card and **Test** |

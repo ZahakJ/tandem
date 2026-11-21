@@ -25,7 +25,7 @@ A game is identified by its system and file name, like `n3ds/Some Game.3ds`. Tha
 
 ## Where games live
 
-Games can live anywhere on the device or an SD card. **Settings › Library & art › Games › Game folders** lists every
+Games can live anywhere on the device or an SD card. **Settings › Library & art › Game folders** lists every
 folder Tandem reads from, with how many games each holds right now; **Pick your games folder…** opens Android's
 folder picker, where you pick the folder and tap **Use this folder**. An empty home offers the same button. A on a
 folder gives its options, and Y (or a long press) takes it out again, with Undo.
@@ -56,7 +56,7 @@ and go into backups with the systems and emulators.
 system's folder and every folder holding a game). A game copied over USB or MTP, or deleted or renamed, shows up or
 goes a few seconds after the copy finishes, without a rescan; an SD card put back or taken out does the same.
 Nothing runs while Tandem is in the background or a game is playing; coming back to Tandem checks the folders as
-before. **Settings › Library & art › Games › Watch game folders** turns it off.
+before. **Settings › Library & art › Watch game folders** turns it off.
 
 ## Artwork
 
@@ -82,9 +82,9 @@ you chose (Y › More › **Choose artwork**), a path from an import, or what a 
 see-through (a title card saved as a logo) is skipped, and the title shows as text instead. Android games fall back to
 their app icon.
 
-Tandem never changes or deletes artwork you put there. It can also download artwork for you, with no account through LaunchBox and libretro ([Artwork and scraping](scraping.md) walks through it): **Settings › Library & art › Scrape library**, **Scrape these games** on a system, or **Scrape this game** in a game's Y menu. The sources (LaunchBox and libretro thumbnails with no account; ScreenScraper, IGDB and SteamGridDB with your own keys; HowLongToBeat for times) are set up in **Settings › Library & art › Set up sources**, and asked in the order shown under **Sources, in order**. **Choose artwork** (Y › More) shows what every source has for one game, with L1 and R1 switching between box art, hero and logo, and **From this device** takes a picture of your own. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
+Tandem never changes or deletes artwork you put there. It can also download artwork for you, with no account through LaunchBox and libretro ([Artwork and scraping](scraping.md) walks through it): **Settings › Library & art › Scrape library**, **Scrape these games** on a system, or **Scrape this game** in a game's Y menu. The sources (LaunchBox and libretro thumbnails with no account; ScreenScraper, IGDB and SteamGridDB with your own keys; HowLongToBeat for times) are set up in **Settings › Library & art › Set up sources**, and asked in the order their tiles show there (L1 / R1 move one). **Choose artwork** (Y › More) shows what every source has for one game, with L1 and R1 switching between box art, hero and logo, and **From this device** takes a picture of your own. Scraped pictures are saved in these same folders, and **Clear downloaded media** removes only what Tandem downloaded. See [Privacy and scraping](privacy.md#what-is-sent-and-to-whom) for what each source receives.
 
-Once the LaunchBox database is downloaded (**Settings › Library & art › Sources, in order › LaunchBox**), Tandem fills in missing descriptions, genres, year, developer and players after each library scan, from the copy on the device. It never goes online for this and never changes a field you edited or locked.
+Once the LaunchBox database is downloaded (**Settings › Library & art › Set up sources › LaunchBox**), Tandem fills in missing descriptions, genres, year, developer and players after each library scan, from the copy on the device. It never goes online for this and never changes a field you edited or locked.
 
 ## Manuals and guides
 
@@ -112,8 +112,8 @@ ROMs/manuals/psx/Final Fantasy VII.md
 
 When several files match one game, a PDF is read before a zip, before text, before a single picture, before a folder.
 Anything after a double underscore in the name is ignored (`Pokemon Red__scan.pdf`), like artwork. A rescan
-(**Settings › Library & art › Games › Rescan games**, or coming back to Tandem) picks up new manuals; the **Manuals**
-row there says how many were found.
+(**Settings › Library & art › Rescan games**, or coming back to Tandem) picks up new manuals; the row says how
+many were found.
 
 To use a file from anywhere else, Y › **Edit details** › **Manual** › **Choose file** picks it with Android's file
 picker; Tandem copies it into the game's manuals folder, named after the game, and remembers it as that game's manual
@@ -197,7 +197,7 @@ On the icon grid you can make your own folders (Y › **Move to folder…** › 
 - **Folders inside folders.** A folder can hold folders, two levels deep (Home › Games › RPGs). The header shows the way back, and B goes up one level. A folder can't be put inside itself or one of its own folders.
 - **Sort inside…** orders a folder by Manual (the default), A–Z, Recently played, Most played, Date added or System; folders inside come first. Your manual order is kept, so going back to Manual restores it. Move works only in Manual.
 - **Delete folder…** asks first: **Keep its contents** moves what was inside up a level, into the folder's place and the free spots after it; **Delete it and its subfolders** (hold A until its ring fills) removes the folder, the folders inside it and their shortcuts. Games and apps stay in your library either way, and Undo brings the folder back.
-- **Views.** Inside a folder, X switches how it shows its games (also Y › **View as…**): **Grid** (tiles, as on the home grid), **Shelf** (spines on shelves, each in its cover's colour with the game's logo and status, the highlighted one swinging round to show its cover in the cover's own proportions; folders inside get shelves of their own; **Settings › Home & layout › Shelf look** picks a wood, matte or open bookcase), **Case** (each game as the real thing for its system, a Switch card, a cartridge or a disc in a sleeve, in a foam-lined case, lifting out when highlighted) or **Carousel** (one cover at a time, the others turning away, with the name, status and play time under it). Moving and selecting tiles always happen in the grid.
+- **Views.** Inside a folder, X switches how it shows its games (also Y › **View as…**): **Grid** (tiles, as on the home grid), **Shelf** (spines on shelves, each in its cover's colour with the game's logo and status, the highlighted one swinging round to show its cover in the cover's own proportions; folders inside get shelves of their own; **Settings › Home & layout › How games show › Shelf look** picks a wood, matte or open bookcase), **Case** (each game as the real thing for its system, a Switch card, a cartridge or a disc in a sleeve, in a foam-lined case, lifting out when highlighted) or **Carousel** (one cover at a time, the others turning away, with the name, status and play time under it). Moving and selecting tiles always happen in the grid.
 
   Shelf and Case dress each game in its system's real packaging: a red Switch case, a white 3DS or Wii case, a blue Wii
   U case, black GameCube and PS2 cases, with the band and logo printed across the top and the spine. Art that isn't a
@@ -234,7 +234,7 @@ Smart folders can be designed, renamed, hidden and deleted like any folder. Noth
 
 ## Sorting and display
 
-Press Y on a system or collection screen while a folder is highlighted for the **View** menu (also in **Settings › Library & art › Games** and **Settings › Home & layout › Games**).
+Press Y on a system or collection screen while a folder is highlighted for the **View** menu (also in **Settings › Library & art** and **Settings › Home & layout › How games show**).
 
 - **Sort by**: Name, Recently played, Most played, Release year, Rating or Recently added. Continue playing, Most played and Recently added keep their own order.
 - **Game titles**: show the name under each tile, or only the art.
@@ -278,7 +278,7 @@ first earned is kept.
 ### Steam achievements
 
 A Steam game (a `.steam` shortcut, see [Windows and Steam games](#windows-and-steam-games)) can show its Steam
-achievements, the way RetroAchievements show for console games. Set it up in **Settings › Library & art › Steam**:
+achievements, the way RetroAchievements show for console games. Set it up in **Settings › Library & art › Accounts › Steam**:
 
 1. **Steam Web API key**: your own key from [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)
    (any domain name will do). It is kept on this device, out of Android's backups, and goes only to Steam.
@@ -315,7 +315,7 @@ For each game you get the total time played, the number of times you started it,
 
 ### Stats
 
-The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or **Trophies** app on the icon grid, Quick settings › **Stats**, or **Settings › Play & system › Stats**. L1 and R1 switch its tabs:
+The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or **Trophies** app on the icon grid, or Quick settings › **Stats**. L1 and R1 switch its tabs:
 
 | Tab | What it shows |
 | --- | --- |
@@ -325,7 +325,7 @@ The **Stats** screen opens from Start › **Stats & trophies**, the **Stats** or
 | Sessions | Every play session (below) |
 | Achievements | Your RetroAchievements, when signed in |
 
-**Export play stats** (under More options in **Settings › Play & system › Stats**) writes each game's play time, play count and last played to `ROMs/tandem/play-stats.csv`.
+**Export play stats** (**Settings › Play & system › Your data**) writes each game's play time, play count and last played to `ROMs/tandem/play-stats.csv`.
 
 ### Editing sessions
 
@@ -377,7 +377,7 @@ Uninstalling Tandem deletes these files. Back up first to keep them.
 
 ## Back up and restore
 
-**Settings › Play & system › Back up** saves a new backup in `ROMs/tandem/backup/<date_time>/`. Older backups stay. Each backup is a folder of the files above plus a `manifest.json` listing what is inside, the counts (games, tiles, folders, widgets, sessions) and Tandem's version.
+**Settings › Play & system › Your data › Back up** saves a new backup in `ROMs/tandem/backup/<date_time>/`. Older backups stay. Each backup is a folder of the files above plus a `manifest.json` listing what is inside, the counts (games, tiles, folders, widgets, sessions) and Tandem's version.
 
 You choose what goes in, in four parts:
 

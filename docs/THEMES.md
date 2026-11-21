@@ -22,7 +22,7 @@ of 3:1, `Themes.readableOn`), so an accent picked on a dark theme still shows on
 
 ### System icons
 
-Without a pack, every system tile shows a little original drawing of its kind of device (clamshell, landscape or brick handheld, hybrid, console, controller, disc, cartridge, computer, phone, arcade cabinet, screen, book) with the system's short name, in the theme's icon style: glossy bubble, neon outline, pixel, flat, clear plastic, chrome, LCD, sticker or carved. **Look & feel › Icons** changes the style, or uses one pack's icons with any theme (**Icons from**). On **Auto**, a theme pack shows its own art and a built-in theme shows Tandem's drawn icons; a pack's art (a theme pack, or a Cocoon smart-folder pack in `ROMs/assets/smart_folders`) shows with a built-in theme only when you pick it in **Icons from**.
+Without a pack, every system tile shows a little original drawing of its kind of device (clamshell, landscape or brick handheld, hybrid, console, controller, disc, cartridge, computer, phone, arcade cabinet, screen, book) with the system's short name, in the theme's icon style: glossy bubble, neon outline, pixel, flat, clear plastic, chrome, LCD, sticker or carved. **Look & feel › Icon style** changes the style, or uses one pack's icons with any theme (**Icons from**). On **Auto**, a theme pack shows its own art and a built-in theme shows Tandem's drawn icons; a pack's art (a theme pack, or a Cocoon smart-folder pack in `ROMs/assets/smart_folders`) shows with a built-in theme only when you pick it in **Icons from**.
 
 ## Theme packs
 

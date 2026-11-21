@@ -21,7 +21,7 @@ For one game, Tandem decides like this:
 1. **A game Peanuts Native has built plays there**, unless you picked another emulator for that game. If both
    Peanuts apps have built it, it plays in the fuller one (Peanuts Native+).
 2. Otherwise it plays in the emulator you picked for it (Y › More › **Emulator**), or else the system's emulator
-   (Eden Duo, then Eden; **Settings › Library & art › Systems › Systems and emulators** changes the system's).
+   (Eden Duo, then Eden; **Settings › Library & art › Systems and emulators** changes the system's).
 3. A game Peanuts Native hasn't built never goes to Peanuts, even if you pick it.
 
 To go back to the automatic choice after picking an emulator, press A on **Emulator** until it comes round to the

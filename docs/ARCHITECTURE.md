@@ -66,7 +66,7 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   `PrivateMode` (on, off and reveal behind it); the keypad is `ui/PinPad.kt`. `Offline.kt`: `NetGate` (nothing goes
   online in private mode) and airplane mode while a hidden game plays (`OfflinePlan`, through Shizuku). It fails
   closed: a hidden game whose launch can't confirm the handheld is offline doesn't start (`LaunchProblem.NotOffline`),
-  and with Stay offline until the game closes the radios stay off while the game's app runs (`hold`, rechecked every
+  and with Offline for hidden games set to Until it closes the radios stay off while the game's app runs (`hold`, rechecked every
   20 s).
 - `Immersion.kt`: immersion mode, Do Not Disturb with Tandem's own policy (alarms and media only, every visual effect
   suppressed) from `Sessions.start` to `Sessions.take`; `ImmersionPlan` (pure, tested) decides what to change and put
