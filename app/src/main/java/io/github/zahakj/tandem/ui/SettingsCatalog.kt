@@ -168,8 +168,8 @@ object SettingsPlan {
             Group("While playing", p("Screen off", "Bottom screen while playing", "Off after") + p("Systems & launching", "Voice in clips")),
         ),
         "sound" to listOf(
-            Group("Sounds", p("Sound & music", "UI sounds", "Sound pack", "Custom sounds", "Sound volume", "Pip's voice")),
-            Group("Music", p("Sound & music", "Music", "Music from", "Music volume", "Shuffle my music", "Next song")),
+            Group("Sounds", p("Sound & music", "UI sounds", "Custom sounds", "Sound volume", "Pip's voice")),
+            Group("Music", p("Sound & music", "Music", "Music volume", "Shuffle my music", "Next song")),
         ),
         "controls" to listOf(
             Group(
@@ -276,10 +276,8 @@ private val Synonyms = mapOf(
     "Style" to "bottom screen details art clock",
     "Video snaps" to "preview videos battery",
     "Moving art" to "ken burns pan zoom",
-    "UI sounds" to "clicks beeps sfx effects mute",
-    "Sound pack" to "recorded cocoon sounds sfx",
-    "Music" to "soundtrack bgm mute quiet background",
-    "Music from" to "soundtrack folder songs built-in calm meadow tales",
+    "UI sounds" to "clicks beeps sfx effects mute sound pack recorded cocoon",
+    "Music" to "soundtrack bgm mute quiet background music from folder songs built-in calm meadow tales",
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",
