@@ -19,8 +19,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,10 +41,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
 import io.github.zahakj.tandem.Collections
@@ -52,7 +61,9 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.SystemPrefs
 import io.github.zahakj.tandem.plural
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /*
@@ -84,8 +95,6 @@ fun GameFoldersScreen() {
     var open by remember { mutableStateOf<String?>(null) }
     val keys = listOf(MAIN) + roots + listOf(ADD)
     val target = rememberFocusTarget(route, keys)
-    val state = rememberRouteListState(route)
-    KeepInView(state, keys.indexOf(target))
 
     fun rescan() = scope.launch { reloadLibrary(ctx) }
 
@@ -120,32 +129,50 @@ fun GameFoldersScreen() {
         }
     }
 
+    // Each folder's systems with their pack art, most games first, for the pictures on its card. Looked up off the
+    // main thread: a pack picture is a file check.
+    val systemsIn by produceState<Map<String, List<FolderSystem>>>(emptyMap(), libs, io.github.zahakj.tandem.Privacy.view, IconPacks.version) {
+        value = withContext(Dispatchers.IO) {
+            libs.orEmpty().flatMap { lib ->
+                Collections.visible(lib.games).groupingBy { it.root?.path ?: romsPath }.eachCount().map { (root, n) -> root to (lib.platform to n) }
+            }.groupBy({ it.first }, { it.second }).mapValues { (_, v) ->
+                v.sortedByDescending { it.second }.map { (p, n) -> FolderSystem(p, n, IconPacks.systemIcon(p.id)) }
+            }
+        }
+    }
+
     Row(Modifier.fillMaxSize().padding(start = 14.dp, end = 22.dp)) {
-        LazyColumn(
-            Modifier.weight(1.3f).fillMaxHeight().fadingEdges(state),
-            state = state,
-            contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        val grid = rememberRouteGridState(route)
+        // The heading takes the grid's first place.
+        KeepInView(grid, keys.indexOf(target) + 1)
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(250.dp),
+            modifier = Modifier.weight(1.3f).fillMaxHeight().fadingEdges(grid),
+            state = grid,
+            contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = 6.dp, bottom = 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(key = "h:where") { SettingsHeader("Where games live") }
+            item(key = "h:where", span = { GridItemSpan(maxLineSpan) }) { SettingsHeader("Where games live") }
             item(key = MAIN) {
                 val n = counts[romsPath] ?: 0
-                FolderRow(
-                    "ROMs", "Tandem's own folder · always included", n, Palette.Mint, Modifier.takesFocus(route, MAIN, target == MAIN),
+                FolderCard(
+                    "ROMs", "Tandem's own folder · always in", plural(n, "game"), Palette.Mint, systemsIn[romsPath].orEmpty(),
+                    Modifier.takesFocus(route, MAIN, target == MAIN),
                     onFocus = {
                         FocusMemory.remember(route, MAIN); focused = MAIN
                         Selection.current = Selected.Setting("ROMs", plural(n, "game"), "Tandem's own folder on internal storage, where it keeps its data. It is always read for games too, and needn't hold any.", Palette.Mint, "Options")
                     },
-                ) { Toasts.show("The ROMs folder is always included. Add your games folders below") }
+                ) { Toasts.show("The ROMs folder is always included. Add your games folders beside it") }
             }
             items(roots, key = { it }) { path ->
                 val n = counts[path] ?: 0
                 val there = remember(path, libs) { File(path).isDirectory }
                 val name = LibraryRoots.label(path, internal)
-                val detail = LibraryRoots.shortPath(path, internal) + if (there) "" else " · not there right now"
                 val color = if (there) Palette.Sky else Palette.Peach
-                FolderRow(
-                    name, detail, n, color, Modifier.takesFocus(route, path, target == path),
+                FolderCard(
+                    name, LibraryRoots.shortPath(path, internal), if (there) plural(n, "game") else "Not there right now", color, systemsIn[path].orEmpty(),
+                    Modifier.takesFocus(route, path, target == path),
                     onFocus = {
                         FocusMemory.remember(route, path); focused = path
                         Selection.current = Selected.Setting(
@@ -156,9 +183,8 @@ fun GameFoldersScreen() {
                     },
                 ) { FocusMemory.forget("gamefolder"); open = path }
             }
-            item(key = "h:add") { SettingsHeader("Add") }
             item(key = ADD) {
-                AddRow(Modifier.takesFocus(route, ADD, target == ADD), onFocus = {
+                AddCard(Modifier.takesFocus(route, ADD, target == ADD), onFocus = {
                     FocusMemory.remember(route, ADD); focused = ADD
                     Selection.current = Selected.Setting("Pick your games folder", "SD card or device", "Pick the folder your games are in: a folder per system, one system's folder, or games of every kind together.", Palette.Mint, "Pick")
                 }) {
@@ -176,27 +202,41 @@ fun GameFoldersScreen() {
         }
     }
 
+    // A folder's options: both actions side by side as buttons, the usual one filled.
     val shownPath = rememberLatest(open)
     PanelGuard(open != null)
     OverlayPanel(open != null, onClose = { open = null; Nav.focusTick++ }) {
         val path = shownPath ?: return@OverlayPanel
         val routeKey = "gamefolder"
         val name = LibraryRoots.label(path, internal)
-        Column(Modifier.width(460.dp).background(Palette.Card, RoundedCornerShape(26.dp)).padding(horizontal = 8.dp, vertical = 16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(name, Modifier.padding(horizontal = 12.dp), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(LibraryRoots.shortPath(path, internal), Modifier.padding(horizontal = 12.dp), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(10.dp))
-            Column(Modifier.padding(horizontal = FocusRoomSide), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                MenuRow("Look for games again", null, "rescan", true, routeKey, Palette.Mint) {
+        val sheetTarget = rememberFocusTarget(routeKey, listOf("rescan", "remove"))
+        PanelSurface(Modifier.width(500.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlyphChip(Glyph.Folder, Palette.Sky, size = 46.dp, round = true)
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(name, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(LibraryRoots.shortPath(path, internal), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                PillButton("Look for games again", Palette.Mint, Modifier.weight(1f).takesFocus(routeKey, "rescan", sheetTarget == "rescan"), fill = true, filled = true) {
                     open = null
+                    Nav.focusTick++
                     Toasts.show("Looking for games…")
                     rescan()
                 }
-                MenuRow("Take this folder out", "Undo for 6 s", "remove", false, routeKey, Palette.Peach) {
+                PillButton("Take it out", Palette.Peach, Modifier.weight(1f).takesFocus(routeKey, "remove", sheetTarget == "remove"), fill = true) {
                     open = null
                     remove(path)
                 }
             }
+            Spacer(Modifier.height(10.dp))
+            Text(
+                "Taking it out hides its games; their details are kept, and Undo (for a few seconds) brings it back.",
+                style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
+            )
         }
     }
 }
@@ -255,33 +295,69 @@ fun rememberGameFolderPicker(start: Uri? = null, onAdded: (String) -> Unit = {})
     return { runCatching { launcher.launch(start) }.onFailure { Toasts.show("No folder picker on this device") } }
 }
 
-/** One game folder tree: its name, where it is, and how many games it holds right now. */
+/** One of a folder's systems: how many of its games are there, and its pack picture (null: Tandem draws one). */
+private class FolderSystem(val platform: io.github.zahakj.tandem.Platform, val games: Int, val icon: File?)
+
+/** How many systems a folder card shows as pictures before "+n". */
+private const val CARD_SYSTEMS = 5
+
+/**
+ * One game folder as a card: its name and where it is, then the systems found in it as their pictures (most games
+ * first) and how many games it holds right now.
+ */
 @Composable
-private fun FolderRow(name: String, detail: String, games: Int, color: Color, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    FocusCard(Modifier.fillMaxWidth().then(focus), glow = color, shape = RoundedCornerShape(16.dp), onFocus = onFocus, entry = true, onClick = onClick) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(Glyph.Folder, color)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+private fun FolderCard(name: String, detail: String, games: String, color: Color, systems: List<FolderSystem>, focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+    FocusCard(Modifier.fillMaxWidth().height(126.dp).then(focus), glow = color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, entry = true, onClick = onClick) {
+        Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color.copy(alpha = 0.18f), color.copy(alpha = 0.03f)))).padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                GlyphChip(Glyph.Folder, color, size = 38.dp)
+                Spacer(Modifier.width(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
             }
-            Spacer(Modifier.width(8.dp))
-            Pill(plural(games, "game"), color)
+            Spacer(Modifier.weight(1f))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                systems.take(CARD_SYSTEMS).forEach { s ->
+                    MiniSystemArt(s, 34.dp)
+                    Spacer(Modifier.width(6.dp))
+                }
+                if (systems.size > CARD_SYSTEMS) {
+                    Text("+${systems.size - CARD_SYSTEMS}", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                }
+                if (systems.isEmpty()) Text("No games found yet", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+                Spacer(Modifier.weight(1f))
+                Pill(games, color)
+            }
         }
     }
 }
 
+/** A system's picture, small: the pack's icon, or Tandem's drawing without its label. */
 @Composable
-private fun AddRow(focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    FocusCard(Modifier.fillMaxWidth().then(focus), glow = Palette.Mint, shape = RoundedCornerShape(16.dp), onFocus = onFocus, onClick = onClick) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(Glyph.Plus, Palette.Mint)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text("Pick your games folder…", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("Any folder with games in it, on the device or an SD card", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
+private fun MiniSystemArt(s: FolderSystem, size: Dp) {
+    val icon = s.icon
+    if (icon != null) {
+        AsyncImage(rememberSizedRequest(icon, tilePx(size)), s.platform.name, Modifier.size(size).clip(RoundedCornerShape(size * 0.22f)), contentScale = ContentScale.Crop)
+    } else {
+        DrawnIcon(s.platform.shortName.ifBlank { s.platform.name }, Devices.of(s.platform.id), SystemColors.of(s.platform.id), size)
+    }
+}
+
+/** The card that adds a folder: outlined, with a plus, like an empty place waiting for one. */
+@Composable
+private fun AddCard(focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(20.dp)
+    FocusCard(Modifier.fillMaxWidth().height(126.dp).then(focus), glow = Palette.Mint, shape = shape, onFocus = onFocus, onClick = onClick) {
+        Column(
+            Modifier.fillMaxSize().border(1.5.dp, Palette.Mint.copy(alpha = 0.45f), shape).padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+        ) {
+            GlyphChip(Glyph.Plus, Palette.Mint, size = 40.dp, round = true)
+            Spacer(Modifier.height(8.dp))
+            Text("Pick your games folder…", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text("On the device or an SD card, laid out any way", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
