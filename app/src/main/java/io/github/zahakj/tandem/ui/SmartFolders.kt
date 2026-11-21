@@ -101,10 +101,14 @@ object SmartFolders {
         val key = spec.routeKey.removePrefix(prefix)
         val f = key.takeIf { it.startsWith("folder:") }?.let { IconGridStore.folder(it.removePrefix("folder:")) }
         if (f == null) return if (page === spec.page) spec else MenuSpec(spec.routeKey, spec.title, spec.subtitle, spec.color, spec.actions, page, spec.aspect, spec.art)
-        val screen = MenuAction("screen", "Open games on", Glyph.Screens, Palette.Sky, value = FolderScreens.label(f.openOn)) {
-            val all = FolderScreens.ALL
-            IconGridStore.setOpenOn(f.id, all[(all.indexOf(f.openOn) + 1) % all.size])
-        }
+        val all = FolderScreens.ALL
+        fun stepScreen(by: Int) = IconGridStore.setOpenOn(f.id, all[Math.floorMod(all.indexOf(f.openOn) + by, all.size)])
+        val screen = MenuAction(
+            "screen", "Open games on", Glyph.Screens, Palette.Sky, value = FolderScreens.label(f.openOn), step = ::stepScreen,
+            choices = all.map { s ->
+                MenuChoice(FolderScreens.label(s), s == f.openOn, sub = if (s == null) "Each game's own choice" else null) { IconGridStore.setOpenOn(f.id, s) }
+            },
+        ) { stepScreen(1) }
         val added = if (f.smart) listOf(
             MenuAction("rules", "Edit rules…", Glyph.Sparkle, Palette.Mint) { IconGrid.closeMenu(); SmartFolderForm.edit(f.id) },
             screen,

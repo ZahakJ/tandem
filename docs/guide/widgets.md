@@ -27,7 +27,7 @@ On the home screen the widget area has one row, or two when a Tall widget is the
 
 ## On the icon grid
 
-With the icon grid as home, widgets can also sit on the grid itself, among the icons. Press A on an empty spot and pick **Add here › Widget…**. A widget on the grid covers 1×1, 2×1, 1×2 or 2×2 cells; Small, Medium, Tall and Wide sizes draw as those. Y on it gives **Widget options…** (the same settings as above), **Move**, **Resize** and **Remove widget** (under More). While moving it, Y changes its size to the next one that fits.
+With the icon grid as home, widgets can also sit on the grid itself, among the icons. Press A on an empty spot and pick **Add here › Widget…**. A widget on the grid covers 1×1, 2×1, 1×2 or 2×2 cells; Small, Medium, Tall and Wide sizes draw as those. Y on it gives **Widget options…** (the same settings as above), **Move**, **Resize** (A lists its sizes, the one it has ticked) and **Remove widget** (under More). While moving it, Y changes its size to the next one that fits.
 
 **Settings › Home & layout › Dock & widgets › Widgets on the grid** chooses where Add here › Widget… puts a new widget: **In cells** (the default) or **As a row**, in the widget row at the end of an up-and-down grid. Widgets already placed stay where they are.
 

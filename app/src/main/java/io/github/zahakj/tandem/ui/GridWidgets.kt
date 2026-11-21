@@ -214,7 +214,9 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
             WidgetUi.openMenu(w.id, WidgetArea.Top, inEditor = false)
         })
         add(MenuAction("move", "Move", Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(key, null, slots) })
-        if (GridWidgets.spans(kind).size > 1) add(MenuAction("resize", "Resize", Glyph.Corners, Palette.Butter, value = span.label) { GridWidgets.resize(key) })
+        // Every size, the one it has ticked; a size with no room says so when picked.
+        if (GridWidgets.spans(kind).size > 1) add(MenuAction("resize", "Resize", Glyph.Corners, Palette.Butter, value = span.label,
+            choices = GridWidgets.spans(kind).map { s -> MenuChoice(s.label, s == span) { GridWidgets.resize(key, s) } }) { GridWidgets.resize(key) })
         kind.actions(w).forEachIndexed { i, a ->
             add(MenuAction("act:$i", a.label, Glyph.Sparkle, a.color, value = a.value) {
                 a.run()
