@@ -27,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -80,6 +79,9 @@ object ArtSetup {
         val order = ScrapeConfig.settings.sourceOrder
         if (order.indexOf(s) + by !in order.indices) return
         ScrapeConfig.update { it.moved(s, by) }
+        // The highlight follows the source to its new place.
+        FocusMemory.remember(WIZARD, s.name)
+        Nav.focusTick++
         Sounds.move()
     }
 
@@ -220,28 +222,18 @@ private fun sourceColor(s: ScrapeSource): Color = when (s) {
     ScrapeSource.Hltb -> Palette.Accent
 }
 
-/** A source's round icon chip (grey while it is off), with its place in the order as a badge when [number] is given. */
+/** A source's round icon chip, grey while it is off. */
 @Composable
-private fun SourceChip(s: ScrapeSource, size: Dp, on: Boolean, number: Int? = null, badge: Color = Palette.Mint) {
-    Box(Modifier.size(size)) {
-        GlyphChip(sourceGlyph(s), if (on) sourceColor(s) else Palette.Muted, size = size, round = true)
-        if (number != null) {
-            Box(
-                Modifier.align(Alignment.TopStart).offset((-4).dp, (-4).dp).size(18.dp).background(badge, CircleShape),
-                contentAlignment = Alignment.Center,
-            ) { Text("$number", style = MaterialTheme.typography.labelSmall, color = Palette.OnAccent, maxLines = 1) }
-        }
-    }
-}
+private fun SourceChip(s: ScrapeSource, size: Dp, on: Boolean) =
+    GlyphChip(sourceGlyph(s), if (on) sourceColor(s) else Palette.Muted, size = size, round = true)
 
 private val TileGap = 12.dp
 
 /**
- * One source as a tile, tinted by its state: its icon (with its place in the order as [number]), name, what it
- * needs, two lines on what it gives (left out when [compact]), and its state. A opens its setup card.
+ * One source as a tile, tinted by its state: its icon, name, what it needs, two lines on what it gives (left out when [compact]), and its state. A opens its setup card.
  */
 @Composable
-fun SourceTile(s: ScrapeSource, number: Int?, modifier: Modifier, compact: Boolean = false, onFocus: () -> Unit = {}) {
+fun SourceTile(s: ScrapeSource, modifier: Modifier, compact: Boolean = false, onFocus: () -> Unit = {}) {
     val (status, color) = sourceStatus(s)
     val on = ScrapeConfig.settings.isOn(s)
     FocusCard(modifier, glow = color, shape = RoundedCornerShape(18.dp), onFocus = onFocus, onClick = { ArtSetup.open(s) }) {
@@ -252,7 +244,7 @@ fun SourceTile(s: ScrapeSource, number: Int?, modifier: Modifier, compact: Boole
                 .graphicsLayer { alpha = if (on) 1f else 0.7f },
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                SourceChip(s, 38.dp, on, number, color)
+                SourceChip(s, 38.dp, on)
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     // The whole name, always: a long one shrinks a little instead of being cut.
@@ -276,27 +268,26 @@ fun SourceTile(s: ScrapeSource, number: Int?, modifier: Modifier, compact: Boole
 }
 
 /**
- * [sources] as a grid of [SourceTile]s, [columns] across, each [tileHeight] tall. With [numbered] each shows its
- * place in the order. [onFocus] hears which one is highlighted.
+ * [sources] as a grid of [SourceTile]s, in their order, [columns] across, each [tileHeight] tall. [onFocus] hears
+ * which one is highlighted.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SourceGrid(
     sources: List<ScrapeSource>, columns: Int, tileHeight: Dp, route: String, target: String?,
-    numbered: Boolean = false, compact: Boolean = false, onFocus: (ScrapeSource) -> Unit = {},
+    compact: Boolean = false, onFocus: (ScrapeSource) -> Unit = {},
 ) {
-    // One FlowRow rather than a Row per line: a source moved into another line keeps its tile, and so its highlight.
+    // Tiles by place, not by source: keyed tiles kept their old places in the FlowRow when the order changed. A moved
+    // source takes the highlight to its new place through [target] instead.
     FlowRow(
         Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(TileGap),
         verticalArrangement = Arrangement.spacedBy(TileGap), maxItemsInEachRow = columns,
     ) {
-        sources.forEachIndexed { i, s ->
-            key(s.name) {
-                SourceTile(
-                    s, if (numbered) i + 1 else null, Modifier.weight(1f).height(tileHeight).takesFocus(route, s.name, target == s.name),
-                    compact, onFocus = { onFocus(s) },
-                )
-            }
+        sources.forEach { s ->
+            SourceTile(
+                s, Modifier.weight(1f).height(tileHeight).takesFocus(route, s.name, target == s.name),
+                compact, onFocus = { onFocus(s) },
+            )
         }
     }
 }
@@ -328,13 +319,13 @@ fun ArtSetupOverlay() {
                     Column(Modifier.weight(1f)) {
                         Text("Artwork & details setup", style = MaterialTheme.typography.titleLarge, maxLines = 1)
                         Text(
-                            "Scraping asks these in order, each only for what's still missing. LaunchBox and libretro need no account.",
+                            "Scraping asks these left to right, each only for what's still missing. LaunchBox and libretro need no account.",
                             style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
                 Spacer(Modifier.height(14.dp))
-                SourceGrid(order, columns, tileHeight, WIZARD, target, numbered = true, compact = tileHeight < 124.dp) { ArtSetup.highlighted = it }
+                SourceGrid(order, columns, tileHeight, WIZARD, target, compact = tileHeight < 124.dp) { ArtSetup.highlighted = it }
                 Spacer(Modifier.height(14.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     ButtonHint("A", "Set up", Palette.Mint)
