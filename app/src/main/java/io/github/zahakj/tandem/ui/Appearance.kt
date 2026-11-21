@@ -78,19 +78,32 @@ private fun <T> stepIn(list: List<T>, current: T, step: Int): T {
     return list[((i + step) % list.size + list.size) % list.size]
 }
 
-/** A row that picks one of [options] (id to label); A and right step forward, left steps back. */
+/**
+ * A row that picks one of [options] (id to label), showing them all (Choices.kt): a few short ones as a segmented
+ * control on the row, where A steps on; more as the value, where A opens the picker. Left and Right move along the
+ * options and stop at the ends. [look] draws one option as a miniature: the picker's cards show it, and without a
+ * [preview] of its own the side panel plays every option in turn ([ChoiceShowcase]).
+ */
 internal fun choice(
     label: String, icon: Glyph, color: Color, help: String,
     options: List<Pair<String, String>>, current: String,
     preview: (@Composable () -> Unit)? = null,
+    look: (@Composable (String) -> Unit)? = null,
+    extra: Pair<String, () -> Unit>? = null,
     set: (String) -> Unit,
 ): SettingRow {
     val ids = options.map { it.first }
-    val step = { d: Int -> set(stepIn(ids, current, d)) }
-    return SettingRow(
+    val at = ids.indexOf(current).coerceAtLeast(0)
+    fun move(d: Int) { ids.getOrNull(at + d)?.let(set) }
+    lateinit var row: SettingRow
+    row = SettingRow(
         label, options.firstOrNull { it.first == current }?.second ?: options.first().second, color, icon, help,
-        onLeft = { step(-1) }, onRight = { step(1) }, preview = preview, onClick = { step(1) },
+        onLeft = { move(-1) }, onRight = { move(1) },
+        preview = preview ?: look?.let { l -> { ChoiceShowcase(options, current, color) { l(it) } } },
+        options = options, selected = current, pick = set, optionLook = look, pickerExtra = extra,
+        onClick = { if (row.picker) ChoicePicker.open(row) else set(stepIn(ids, current, 1)) },
     )
+    return row
 }
 
 /** A row for a number. `null` means "the theme decides", shown as [themeLabel] and reachable by stepping below [min]. */
@@ -115,17 +128,29 @@ internal fun number(
             else -> set((Math.round(next / step) * step).coerceIn(min, max))
         }
     }
-    val shown = if (value == null && themeValue != null) "Theme · ${format(themeValue)}" else format(value ?: min)
+    val shown = format(value ?: themeValue ?: min)
     val at = ((value ?: themeValue ?: min) - min) / (max - min).coerceAtLeast(0.0001f)
     return SettingRow(
         label, shown, color, icon, help,
         onLeft = { move(-1, wrap = false) }, onRight = { move(1, wrap = false) }, preview = preview, onClick = { move(1, wrap = true) },
-        slider = at,
+        slider = at, themed = if (nullable) value == null else null,
     )
 }
 
-internal fun toggle(label: String, icon: Glyph, color: Color, help: String, on: Boolean, preview: (@Composable () -> Unit)? = null, set: (Boolean) -> Unit) =
-    SettingRow(label, onOff(on), color, icon, help, toggle = on, preview = preview, onClick = { set(!on) })
+/**
+ * A switch. [look] draws the setting's effect Off and On: without a [preview] of its own, the side panel plays the
+ * two in turn ([ToggleShowcase]), and switching shows the new look at once.
+ */
+internal fun toggle(
+    label: String, icon: Glyph, color: Color, help: String, on: Boolean,
+    preview: (@Composable () -> Unit)? = null,
+    look: (@Composable (Boolean) -> Unit)? = null,
+    set: (Boolean) -> Unit,
+) = SettingRow(
+    label, onOff(on), color, icon, help, toggle = on,
+    preview = preview ?: look?.let { l -> { ToggleShowcase(on, color) { l(it) } } },
+    onClick = { set(!on) },
+)
 
 internal fun pct(v: Float) = "${Math.round(v * 100)}%"
 

@@ -98,20 +98,38 @@ data class SettingRow(
     val slider: Float? = null,
     /** What A does, when the row kind doesn't say it well ("Show", "Hide"). */
     val action: String? = null,
+    /** For choice rows: every option (id to label), so the row can show them all (see Choices.kt), and the one in use. */
+    val options: List<Pair<String, String>>? = null,
+    val selected: String? = null,
+    /** Chooses an option by id: from the segmented control, the picker, or a tap. */
+    val pick: ((String) -> Unit)? = null,
+    /** A miniature of one option, for the picker's cards. */
+    val optionLook: (@Composable (String) -> Unit)? = null,
+    /** One more card at the end of the picker that does something else (Type a colour…), and what it does. */
+    val pickerExtra: Pair<String, () -> Unit>? = null,
+    /** For number rows the theme can decide: whether it does now. Null for rows without a "Theme" value. */
+    val themed: Boolean? = null,
     val onClick: () -> Unit,
 ) {
     val kind: RowKind get() = when {
         toggle != null -> RowKind.Toggle
         slider != null -> RowKind.Slider
-        onLeft != null || onRight != null -> RowKind.Choice
+        options != null || onLeft != null || onRight != null -> RowKind.Choice
         opens -> RowKind.Link
         else -> RowKind.Action
     }
 
+    /** A choice whose options all fit on the row, as a segmented control. */
+    val segmented: Boolean get() = options != null && fitsOnRow(options)
+
+    /** A choice with too many options (or too long) for the row: A opens [ChoicePicker]. */
+    val picker: Boolean get() = options != null && !segmented
+
     /** What A does, for the hints. */
     val aLabel: String get() = action ?: when (kind) {
         RowKind.Toggle -> "Switch"
-        RowKind.Slider, RowKind.Choice -> "Next"
+        RowKind.Choice -> if (picker) "Choose" else "Next"
+        RowKind.Slider -> "Next"
         RowKind.Link -> "Open"
         RowKind.Action -> "Do it"
     }
@@ -446,8 +464,9 @@ fun SettingsHeader(title: String, note: String? = null) {
 }
 
 /**
- * One settings row as a card: icon chip, label, and on the right what kind of row it is: a switch, ‹ value › for
- * choices, a gauge for numbers, a chevron for links. [flashKey] pulses the row once when search jumps to it.
+ * One settings row as a card: icon chip, label, and on the right what kind of row it is: a switch, every option as a
+ * segmented control (or the value and a grid mark when A opens the picker), a slider for numbers, a chevron for
+ * links. [flashKey] pulses the row once when search jumps to it.
  */
 @Composable
 fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: String? = null, onFocus: () -> Unit) {
@@ -487,13 +506,19 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
                 maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.width(10.dp))
-            when (row.kind) {
-                RowKind.Toggle -> Toggle(row.toggle == true, row.color)
+            when {
+                row.kind == RowKind.Toggle -> Toggle(row.toggle == true, row.color)
+                row.slider != null -> SliderBar(row.slider, row.value, row.color, row.themed, focused)
+                row.segmented -> Segmented(row.options.orEmpty(), row.selected, row.color, focused) { id ->
+                    if (id != row.selected) { row.pick?.invoke(id); Sounds.toggle() }
+                }
+                row.picker -> Row(Modifier.widthIn(max = 240.dp), verticalAlignment = Alignment.CenterVertically) {
+                    ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
+                    Spacer(Modifier.width(8.dp))
+                    PickerMark(row.color, focused)
+                }
+                // A row that steps without saying its options (built outside Settings, like the smart folder form).
                 else -> Row(Modifier.widthIn(max = 220.dp), verticalAlignment = Alignment.CenterVertically) {
-                    if (row.slider != null) {
-                        Gauge(row.slider, row.color)
-                        Spacer(Modifier.width(8.dp))
-                    }
                     if (stepper) Text("‹", style = MaterialTheme.typography.titleLarge, color = if (focused) row.color else Palette.Muted.copy(alpha = 0.35f))
                     if (stepper) Spacer(Modifier.width(6.dp))
                     if (row.value.isNotEmpty()) ValuePill(row.value, row.color, Modifier.weight(1f, fill = false))
@@ -514,15 +539,6 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
 fun ValuePill(text: String, color: Color, modifier: Modifier = Modifier) {
     Box(modifier.clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.18f)).padding(horizontal = 10.dp, vertical = 3.dp)) {
         Text(text, color = color, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-    }
-}
-
-/** A small level gauge for number rows. */
-@Composable
-private fun Gauge(fraction: Float, color: Color) {
-    val f = fraction.coerceIn(0f, 1f)
-    Box(Modifier.width(44.dp).height(6.dp).clip(CircleShape).background(Palette.Muted.copy(alpha = 0.25f))) {
-        Box(Modifier.fillMaxHeight().fillMaxWidth(f.coerceAtLeast(0.06f)).clip(CircleShape).background(color))
     }
 }
 
@@ -592,13 +608,16 @@ private fun SidePanelContent(r: SettingRow) {
     }
 }
 
-/** The button hints under the side panel: what A does for this kind of row, ◀▶ when it steps, search and back. */
+/**
+ * The button hints under the side panel: what A does for this kind of row (Next on a segmented choice, Choose where
+ * it opens the picker), ◀▶ to move along the choices or slide a number, search and back.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SettingsHints(r: SettingRow?) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (r != null) ButtonHint("A", r.aLabel, r.color)
-        if (r != null && (r.onLeft != null || r.onRight != null)) ButtonHint("◀▶", "Change", r.color)
+        if (r != null && (r.onLeft != null || r.onRight != null)) ButtonHint("◀▶", if (r.kind == RowKind.Slider) "Adjust" else "Change", r.color)
         ButtonHint("X", "Search", Palette.Sky)
         ButtonHint("B", "Back", Palette.Muted)
     }

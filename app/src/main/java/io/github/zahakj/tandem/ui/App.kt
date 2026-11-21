@@ -577,6 +577,7 @@ private fun Main(resumes: Int) {
         // Search sits below the menus, so Y on a result opens the game menu on top of it.
         SearchOverlay()
         SettingsSearchOverlay()
+        ChoicePickerOverlay()
         GroupMenu()
         GameMenu()
         GameEditorOverlays()
