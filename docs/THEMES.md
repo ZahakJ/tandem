@@ -160,9 +160,9 @@ Videos play muted, looping and hardware decoded. The player is released whenever
 
 ## Sounds and music
 
-Tandem's UI sounds (eight packs: Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass and Air) and its one
-built-in soundtrack, Meadow Tales (six original pieces, played in turn), are synthesized by Tandem as it runs, so
-there are no sound files. Pip's voice is synthesized too: two to four soft, hummed notes with Pip's messages. Your own
+Tandem's UI sounds (eight packs: Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass and Air) and its two
+built-in soundtracks, Calm (the default: two slow, soft pieces) and Meadow Tales (six original pieces for a small
+orchestra), each played through its pieces in turn, are synthesized by Tandem as it runs, so there are no sound files. Pip's voice is synthesized too: two to four soft, hummed notes with Pip's messages. Your own
 music goes in `ROMs/tandem/music/` (MP3, OGG, Opus, FLAC, M4A, WAV), picked with **Sound & music › Music from**.
 There are no system or game jingles: a game starts with the launch sound of whatever sound pack is playing.
 

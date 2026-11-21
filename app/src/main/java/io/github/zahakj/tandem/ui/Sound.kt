@@ -472,7 +472,7 @@ object Music {
         } else {
             stopFile()
             val ctx = app ?: return
-            val song = Tracks.byId(trackId()) ?: Tracks.all.first()
+            val song = Tracks.byId(trackId()) ?: pieces().first()
             SynthEngine.volume = synthVolume()
             // The built-in soundtrack plays through its pieces: the next one each time a song comes round.
             SynthEngine.onLooped = { main.post { nextPiece() } }
@@ -481,13 +481,22 @@ object Music {
         }
     }
 
-    /** The built-in piece playing now, or the one to start with (a random one, once per run). */
-    fun trackId(): String = builtInTrack ?: Tracks.all.random().id.also { builtInTrack = it }
+    /** The chosen built-in soundtrack's pieces. */
+    private fun pieces() = Tracks.of(Store.settings.look.soundtrackId)
+
+    /**
+     * The built-in piece playing now, or the one to start with: a random one of the chosen soundtrack, once per run
+     * and again when another soundtrack is chosen.
+     */
+    fun trackId(): String {
+        val pieces = pieces()
+        return builtInTrack?.takeIf { id -> pieces.any { it.id == id } } ?: pieces.random().id.also { builtInTrack = it }
+    }
 
     private var builtInTrack: String? = null
 
     private fun nextPiece() {
-        val ids = Tracks.all.map { it.id }
+        val ids = pieces().map { it.id }
         builtInTrack = ids[(ids.indexOf(builtInTrack) + 1) % ids.size]
         refresh()
     }

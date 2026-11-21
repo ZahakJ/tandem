@@ -134,7 +134,7 @@ internal fun resetLook(old: Look): Look = Look().copy(
     prompts = old.prompts, swapAB = old.swapAB, swapXY = old.swapXY, xButton = old.xButton,
     singleScreen = old.singleScreen, swapScreens = old.swapScreens,
     sounds = old.sounds, soundVolume = old.soundVolume, soundPack = old.soundPack, soundFiles = old.soundFiles,
-    music = old.music, musicVolume = old.musicVolume, myMusic = old.myMusic, musicShuffle = old.musicShuffle,
+    music = old.music, musicVolume = old.musicVolume, myMusic = old.myMusic, soundtrack = old.soundtrack, musicShuffle = old.musicShuffle,
     pipVoice = old.pipVoice, packParts = old.packParts,
 )
 

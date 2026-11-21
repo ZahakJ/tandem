@@ -142,12 +142,14 @@ fun soundSettings(trackCount: Int): SettingSection {
             choice(
                 "Music from", Glyph.Folder, Palette.Peach,
                 "My music folder plays your own songs from ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV); " +
-                    (if (trackCount == 0) "it's empty right now, so the built-in soundtrack plays. " else "${io.github.zahakj.tandem.plural(trackCount, "song")} found. ") +
-                    "Built-in is Meadow Tales, Tandem's own soundtrack." + fallback,
-                listOf("folder" to "My music folder", "builtin" to "Built-in: Meadow Tales"), if (look.myMusic) "folder" else "builtin",
+                    (if (trackCount == 0) "it's empty right now, so the built-in soundtrack plays (${Tracks.soundtracks.first { it.first == look.soundtrackId }.second}). "
+                    else "${io.github.zahakj.tandem.plural(trackCount, "song")} found. ") +
+                    "Tandem's own: Calm, slow and soft piano, harp and celesta, or Meadow Tales, a small orchestra." + fallback,
+                listOf("folder" to "My music folder") + Tracks.soundtracks.map { (id, name) -> id to "Built-in: $name" },
+                if (look.myMusic) "folder" else look.soundtrackId,
                 preview = nowCard,
             ) { v ->
-                updateLook { it.copy(myMusic = v == "folder", music = true) }
+                updateLook { it.copy(myMusic = v == "folder", soundtrack = if (v == "folder") it.soundtrack else v, music = true) }
                 if (v == "folder" && trackCount == 0) Toasts.show("Add songs to ROMs/tandem/music first")
             },
             toggle("Shuffle my music", Glyph.Refresh, Palette.Peach, "Play the music folder in a random order.", look.musicShuffle) { on ->
@@ -182,7 +184,7 @@ private fun bottomScreenMuted(ctx: android.content.Context): Boolean =
 @Composable
 fun SoundCues() {
     val look = Store.settings.look
-    LaunchedEffect(look.music, look.musicVolume, look.myMusic, look.theme, look.packParts) { Music.refresh() }
+    LaunchedEffect(look.music, look.musicVolume, look.myMusic, look.soundtrack, look.theme, look.packParts) { Music.refresh() }
     LaunchedEffect(look.soundPack) { Sounds.ensurePack(SoundPack.of(look.soundPack)) }
     LaunchedEffect(look.soundFiles, look.theme, look.packParts) { Sounds.refreshFiles() }
 
@@ -303,7 +305,7 @@ fun NowPlayingCard(modifier: Modifier = Modifier) {
         else -> Music.trackId()
     }
     val song = Tracks.byId(id)
-    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: "Your music" else song?.title ?: "Hillside Breeze"
+    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: "Your music" else song?.title ?: Tracks.of(look.soundtrackId).first().title
     val mood = if (ownFiles) Music.source else song?.mood.orEmpty()
     Column(modifier) {
         Box(Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(18.dp))) {
@@ -385,6 +387,7 @@ fun MoodArt(id: String, modifier: Modifier = Modifier) {
             "file" -> drawVinyl(time)
             "hillside-breeze" -> drawHills(time, dusk = false)
             "flying-home" -> drawHills(time, dusk = true)
+            "soft-morning" -> drawHills(time, dusk = false)
             "seaside-train" -> drawSeaside(time)
             "lantern-town" -> drawLanterns(time)
             "forest-spirits" -> drawSpirits(time)

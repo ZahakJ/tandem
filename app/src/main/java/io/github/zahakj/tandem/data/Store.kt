@@ -170,9 +170,16 @@ object Store {
     fun reload() {
         if (!::metaFile.isInitialized) return
         val m = runCatching { json.decodeFromString<Map<String, GameMeta>>(metaFile.readText()) }.getOrDefault(emptyMap())
-        val s = runCatching { json.decodeFromString<Settings>(settingsFile.readText()) }.getOrDefault(Settings())
+        val s = runCatching { json.decodeFromString<Settings>(settingsFile.readText()) }.getOrDefault(Settings()).let(::keepSoundtrack)
         synchronized(this) { meta = m; settings = s }
     }
+
+    /**
+     * Calm became the default soundtrack after Meadow Tales: a setup that got past the welcome without choosing one
+     * keeps Meadow Tales. A new one is given Calm for good when its welcome finishes (Welcome.finish).
+     */
+    internal fun keepSoundtrack(s: Settings): Settings =
+        if (s.welcomeDone && s.look.soundtrack == null) s.copy(look = s.look.copy(soundtrack = "meadow")) else s
 
     /** Shared "nothing known" value, so looking up a game without details doesn't allocate. */
     private val NoMeta = GameMeta()

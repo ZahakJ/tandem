@@ -100,7 +100,7 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.soundFiles` | Sound & music › Sounds › Custom sounds (shown while Sound pack is Custom: Cocoon's sound packs in `ROMs/assets/sounds`, then theme packs' own `sounds`; `none` is no recorded pack) | choice |
 | `Look.pipVoice` | Sound & music › Sounds › Pip's voice (a few soft hummed notes with Pip's messages) | toggle |
 | `Look.music`, `musicVolume` | Sound & music › Music › Music / Music volume | toggle / slider |
-| `Look.myMusic` | Sound & music › Music › Music from (My music folder, Built-in: Meadow Tales) | choice |
+| `Look.myMusic`, `soundtrack` | Sound & music › Music › Music from (My music folder, Built-in: Calm, Built-in: Meadow Tales; `soundtrack` null reads as Calm, or as Meadow Tales for a setup from before Calm) | choice |
 | (next song) | Sound & music › Music › Next song | action |
 | `Look.musicShuffle` | Sound & music › Music › More › Shuffle my music | toggle |
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |

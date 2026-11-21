@@ -225,7 +225,7 @@ private val Synonyms = mapOf(
     "UI sounds" to "clicks beeps sfx effects mute",
     "Sound pack" to "recorded cocoon sounds sfx",
     "Music" to "soundtrack bgm mute quiet background",
-    "Music from" to "soundtrack folder songs built-in meadow",
+    "Music from" to "soundtrack folder songs built-in calm meadow tales",
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",

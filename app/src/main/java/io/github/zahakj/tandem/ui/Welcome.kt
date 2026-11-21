@@ -71,7 +71,8 @@ object Welcome {
     internal var shown by mutableStateOf(false)
 
     fun finish() {
-        Store.updateSettings { it.copy(welcomeDone = true) }
+        // The soundtrack is written down now, so a later start doesn't take this setup for one from before Calm.
+        Store.updateSettings { it.copy(welcomeDone = true, look = it.look.copy(soundtrack = it.look.soundtrack ?: "calm")) }
         Nav.focusTick++
     }
 }

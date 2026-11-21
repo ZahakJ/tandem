@@ -108,7 +108,7 @@ Spotlight. See [Home layouts](themes.md#home-layouts).
 | Sounds | Sound volume | 50 % | How loud UI sounds are, compared with the system volume. |
 | Sounds | Pip's voice | On | Pip hums a few soft notes when it has something to tell you. |
 | Music | Music | On | Music while you browse. It fades out while a game runs and stays quiet while another app plays. |
-| Music | Music from | My music folder | Your songs from `ROMs/tandem/music` (MP3, OGG, Opus, FLAC, M4A, WAV), or Built-in: Meadow Tales. An empty folder plays the built-in soundtrack. |
+| Music | Music from | My music folder | Your songs from `ROMs/tandem/music` (MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Calm unless you pick Meadow Tales (a setup from before Calm keeps Meadow Tales). |
 | Music | Music volume | 40 % | How loud the music plays. |
 | Music | Next song | | Skips to another song. |
 | Music | Shuffle my music (More) | On | Plays your music folder in a random order. |

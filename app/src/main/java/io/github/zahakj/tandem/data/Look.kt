@@ -148,6 +148,12 @@ data class Look(
      * ROMs/tandem/music when there are any (true), else Tandem's built-in soundtrack.
      */
     val myMusic: Boolean = true,
+    /**
+     * The built-in soundtrack (audio/Tracks.kt): "calm" or "meadow" (Meadow Tales). Null until chosen, which reads
+     * as Calm ([soundtrackId]); a setup from before Calm, whose welcome is done, reads as Meadow Tales (Store.reload),
+     * so an update doesn't change the music someone is used to.
+     */
+    val soundtrack: String? = null,
     /** Shuffle the files in ROMs/tandem/music. */
     val musicShuffle: Boolean = true,
     /** Pip babbles when it shows a message. */
@@ -159,7 +165,9 @@ data class Look(
     val packParts: Map<String, PackParts> = emptyMap(),
     /** System icon style for drawn icons ("neon", "pixel"...), or null for the theme's own. */
     val iconStyle: String? = null,
-)
+) {
+    val soundtrackId: String get() = soundtrack ?: "calm"
+}
 
 /** Which parts of a theme pack are used. Each can be switched off on its own in Theme packs. */
 @Serializable
