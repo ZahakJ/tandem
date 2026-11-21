@@ -86,7 +86,7 @@ object Lang {
             // Android keeps the app's language (its own Settings › Apps › Tandem › Language changes it too), so it
             // has the last word; a choice made before an update to Android 13 is handed to it once.
             val system = systemChoice()
-            if (system == null && tag != SYSTEM && !prefs.getBoolean("handed", false)) setSystemChoice(tag)
+            if (system == SYSTEM && tag != SYSTEM && !prefs.getBoolean("handed", false)) setSystemChoice(tag)
             else if (system != null) tag = system
             prefs.edit().putBoolean("handed", true).putString(KEY, tag).apply()
         }
@@ -112,7 +112,10 @@ object Lang {
 
     /** The configuration changed: the language may have (Android's, or Tandem's in Android's settings). */
     private fun refresh() {
-        if (Build.VERSION.SDK_INT >= 33) systemChoice().orEmpty().let { if (it != chosen) chosen = it }
+        if (Build.VERSION.SDK_INT >= 33) systemChoice()?.takeIf { it != chosen }?.let { tag ->
+            chosen = tag
+            app.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, tag).apply()
+        }
         apply()
     }
 
@@ -135,12 +138,14 @@ object Lang {
         if (Build.VERSION.SDK_INT >= 33) app.getSystemService(LocaleManager::class.java).systemLocales[0] ?: Locale.getDefault()
         else Resources.getSystem().configuration.locales[0] ?: Locale.getDefault()
 
-    /** The app language Android keeps (13+): a tag, or null for none (follow the system). */
+    /** The app language Android keeps (13+): a tag, [SYSTEM] for none, or null when Android couldn't be asked. */
     private fun systemChoice(): String? {
         if (Build.VERSION.SDK_INT < 33) return null
         val list = runCatching { app.getSystemService(LocaleManager::class.java).applicationLocales }.getOrNull() ?: return null
-        if (list.isEmpty) return null
+        if (list.isEmpty) return SYSTEM
         val l = list[0]
+        // The pseudo-locales of a debug build (docs/TRANSLATING.md) stay as they are.
+        if (l.country == "XA" || l.country == "XB") return l.toLanguageTag()
         // Back to one of ours: zh-Hans-CN and zh-CN are the same choice, any English is English.
         return offered.firstOrNull { Locale.forLanguageTag(it.tag).let { o -> o.language == l.language && (o.country.isEmpty() || o.country == l.country || l.script == "Hans") } }?.tag
             ?: l.toLanguageTag()
@@ -153,9 +158,6 @@ object Lang {
                 if (tag == SYSTEM) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(tag)
         }
     }
-
-    /** The name of the language in use, in itself (the Language row's value). */
-    fun nameOf(tag: String): String = offered.firstOrNull { it.tag == tag }?.name ?: Tx.s(R.string.common_language_system)
 
     private fun isRtl(l: Locale) = l.language in setOf("ar", "fa", "he", "iw", "ur")
 }

@@ -122,6 +122,9 @@ android {
     }
 
     buildTypes {
+        // en-XA (accented and a third longer) and ar-XB (right to left) for checking text fits and nothing is left
+        // in English, set with `adb shell cmd locale set-app-locales` (docs/TRANSLATING.md). Debug builds only.
+        debug { isPseudoLocalesEnabled = true }
         release {
             // R8 shrinks and optimizes (inlining, removing Compose's debug-only paths). That matters a lot for
             // Compose: a debug build runs unoptimized code and stutters whenever a new screen is composed.
