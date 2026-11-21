@@ -362,12 +362,11 @@ private fun PickerPage(page: String, choices: FormChoices) {
         item("any") {
             val any = picked.isEmpty()
             if (systems) {
-                PictureToggle(
-                    "Any system", "Clears the picks", any, Palette.Mint, Modifier.height(SystemTile).takesFocus(route, "any", target == "any"),
-                    glyph = Glyph.Sparkle,
-                ) { setPicked(emptyList()) }
+                PickTile("Any system", "Clears the picks", any, Palette.Mint, Modifier.takesFocus(route, "any", target == "any"), art = {
+                    GlyphChip(Glyph.Sparkle, if (any) Palette.Mint else Palette.Muted, size = 44.dp, round = true)
+                }) { setPicked(emptyList()) }
             } else {
-                TickChip("Any genre", any, Palette.Mint, Modifier.takesFocus(route, "any", target == "any")) { setPicked(emptyList()) }
+                PickTile("Any genre", null, any, Palette.Mint, Modifier.takesFocus(route, "any", target == "any"), art = null) { setPicked(emptyList()) }
             }
         }
         items(all.size, key = { "o:${all[it].first}" }) { i ->
@@ -376,12 +375,11 @@ private fun PickerPage(page: String, choices: FormChoices) {
             val focus = Modifier.takesFocus(route, "o:$k", target == "o:$k")
             if (systems) {
                 val platform = Libraries.byId(k)?.platform
-                PictureToggle(
-                    label, counts[k]?.let { plural(it, "game") } ?: "Not in the library now", on, color, Modifier.height(SystemTile).then(focus),
-                    glyph = Glyph.Cartridge, art = platform?.let { p -> { SystemIcon(p, 52.dp) } },
-                ) { flip(k) }
+                PickTile(label, counts[k]?.let { plural(it, "game") } ?: "Not in the library now", on, color, focus, art = {
+                    if (platform != null) SystemIcon(platform, 48.dp) else GlyphChip(Glyph.Cartridge, Palette.Muted, size = 44.dp, round = true)
+                }) { flip(k) }
             } else {
-                TickChip(label, on, color, focus) { flip(k) }
+                PickTile(label, null, on, color, focus, art = null) { flip(k) }
             }
         }
         if (all.isEmpty()) item("none", span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
@@ -393,8 +391,28 @@ private fun PickerPage(page: String, choices: FormChoices) {
     }
 }
 
-/** How tall a system's tile is in the systems picker. */
-private val SystemTile = 120.dp
+/**
+ * A system or genre in the picker, ticked while picked. A system has its icon above its name; a genre is just its
+ * name. Names take two lines and shrink a little rather than being cut, and every tile of a kind is the same height.
+ */
+@Composable
+private fun PickTile(label: String, detail: String?, on: Boolean, color: androidx.compose.ui.graphics.Color, focus: Modifier, art: (@Composable () -> Unit)?, onClick: () -> Unit) {
+    FocusCard(focus.height(if (art != null) 128.dp else 58.dp), glow = color, shape = RoundedCornerShape(16.dp), onClick = onClick) {
+        Box(Modifier.matchParentSize().background(color.copy(alpha = if (on) 0.2f else 0.05f)))
+        if (art != null) {
+            Column(Modifier.fillMaxSize().padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Box(Modifier.weight(1f).graphicsLayer { alpha = if (on) 1f else 0.6f }, contentAlignment = Alignment.Center) { art() }
+                ShrinkText(label, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth().height(40.dp), maxLines = 2, minScale = 0.75f, textAlign = TextAlign.Center)
+                if (detail != null) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+            }
+        } else {
+            Row(Modifier.fillMaxSize().padding(start = 12.dp, end = 34.dp), verticalAlignment = Alignment.CenterVertically) {
+                ShrinkText(label, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), maxLines = 2, minScale = 0.75f)
+            }
+        }
+        TickBadge(on, color, Modifier.align(if (art != null) Alignment.TopEnd else Alignment.CenterEnd).padding(6.dp), size = 22.dp)
+    }
+}
 
 @Composable
 private fun FormList(route: String, rows: List<Pair<String, SettingRow>>, onHelp: (String?) -> Unit) {

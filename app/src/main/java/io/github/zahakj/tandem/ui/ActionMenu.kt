@@ -503,8 +503,8 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
             ShrinkText(a.label, MaterialTheme.typography.titleSmall, Modifier.weight(1f), maxLines = 2)
         } else {
             Column(Modifier.weight(1f)) {
-                Text(a.label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(a.sub, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ShrinkText(a.label, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), maxLines = 1, minScale = 0.7f)
+                ShrinkText(a.sub, MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), maxLines = 1, minScale = 0.8f, color = Palette.Muted)
             }
         }
         if (a.value != null) {

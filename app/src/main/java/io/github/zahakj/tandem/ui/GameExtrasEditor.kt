@@ -194,7 +194,7 @@ fun CompanionAppPage(g: Game, routeKey: String, modifier: Modifier, done: () -> 
                     ) {
                         AppIcon(app.packageName, Modifier.size(48.dp))
                         Spacer(Modifier.height(6.dp))
-                        Text(app.label, style = MaterialTheme.typography.labelLarge, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                        ShrinkText(app.label, MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth().height(34.dp), maxLines = 2, minScale = 0.75f, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
                     if (on) TickBadge(true, Palette.Mint, Modifier.align(Alignment.TopEnd).padding(6.dp), size = 20.dp)
                 }

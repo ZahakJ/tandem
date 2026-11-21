@@ -112,14 +112,14 @@ fun ThemePacksScreen() {
         ) {
             item(key = "add", span = { GridItemSpan(maxLineSpan) }) {
                 Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    ActionTile("Import a folder", "theme.json, wallpapers, icons", Glyph.Folder, Palette.Mint, "import:folder", target, route, { focused = it }) {
+                    ActionTile("Import a folder", "A pack folder", Glyph.Folder, Palette.Mint, "import:folder", target, route, { focused = it }) {
                         if (!busy) runCatching { pickFolder.launch(null) }.onFailure { Toasts.show("No file picker on this device") }
                     }
-                    ActionTile("Import a .zip", "A Tandem or Cocoon pack", Glyph.Download, Palette.Sky, "import:zip", target, route, { focused = it }) {
+                    ActionTile("Import a .zip", "A zipped pack", Glyph.Download, Palette.Sky, "import:zip", target, route, { focused = it }) {
                         if (!busy) runCatching { pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream")) }
                             .onFailure { Toasts.show("No file picker on this device") }
                     }
-                    ActionTile("Look again", "tandem/themes, Cocoon's themes", Glyph.Refresh, Palette.Butter, "reload", target, route, { focused = it }) {
+                    ActionTile("Look again", "Find new packs", Glyph.Refresh, Palette.Butter, "reload", target, route, { focused = it }) {
                         scope.launch {
                             ThemePacks.refresh(force = true)
                             val n = ThemePacks.packs.size
@@ -166,15 +166,15 @@ private fun androidx.compose.foundation.layout.RowScope.ActionTile(
     onFocus: (String?) -> Unit, onClick: () -> Unit,
 ) {
     FocusCard(
-        Modifier.weight(1f).height(64.dp).takesFocus(route, key, key == target), glow = color, shape = RoundedCornerShape(16.dp),
+        Modifier.weight(1f).height(68.dp).takesFocus(route, key, key == target), glow = color, shape = RoundedCornerShape(16.dp),
         onFocus = { FocusMemory.remember(route, key); onFocus(null) }, onClick = onClick,
     ) {
         Row(Modifier.fillMaxSize().background(color.copy(alpha = 0.08f)).padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             GlyphChip(icon, color, size = 36.dp, round = true)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ShrinkText(label, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), maxLines = 1, minScale = 0.75f)
+                Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 2)
             }
         }
     }
@@ -196,10 +196,11 @@ private fun PackCard(p: ThemePack, look: Look, focus: Modifier, onFocus: () -> U
                 if (mark != null) Pill(mark, spec.accent, Modifier.align(Alignment.TopEnd).padding(6.dp).darkChip())
             }
             Spacer(Modifier.height(8.dp))
-            Text(p.name, Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(
+            // Two lines kept for the name on every card, so the cards of a line stay the same height.
+            Text(p.name, Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.titleSmall, minLines = 2, maxLines = 2)
+            ShrinkText(
                 listOfNotNull(p.author.ifBlank { null }?.let { "by $it" }, p.format.label).joinToString(" · "),
-                Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth().padding(horizontal = 4.dp), maxLines = 1, minScale = 0.75f, color = Palette.Muted,
             )
         }
     }
