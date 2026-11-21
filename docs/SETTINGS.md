@@ -8,7 +8,8 @@ settings (see [Quick switches](#quick-switches)).
 
 Code: `ui/SettingsCatalog.kt` (pages and groups: `SettingsPlan`), `ui/Settings.kt` (row types, two-pane layout, side
 panel), `ui/SettingsHome.kt` (tiles), `ui/SettingsSearch.kt`. `ui/Presets.kt` holds the four whole-setup looks the
-first-run welcome offers (Cozy, Icon grid look, Orbit, Minimal); Settings no longer shows them.
+first-run welcome offers (Cozy shelves, Icon grid look, Orbit, Minimal); Settings no longer shows them. The user guide
+has every row in plain words, with defaults: [Every setting](guide/settings.md).
 
 ## How to add a setting
 
@@ -88,10 +89,10 @@ Before adding one, ask whether a good default would do, and whether the setting 
 | `Look.gridDetails` (icon grid) or `Settings.bottomMode` (other layouts) | Two screens › Other screen › Other screen / Style | choice |
 | `Look.videoSnaps`, `videoDelayMs`, `kenBurns` | Two screens › Other screen › Video snaps / Moving art | choice / toggle |
 | (bottom widgets) | Two screens › Other screen › Bottom screen when idle | link |
-| `Look.heroSplit`, `heroLogoScale`, `heroGradient` | Two screens › Other screen › More › Art height / Logo size / Art fade | slider / choice |
+| `Look.heroLogoScale`, `heroGradient` | Two screens › Other screen › More › Logo size / Art fade (`Look.heroSplit` has no row since the details became one piece of art) | slider / choice |
 | `AppsData.holdBackMoves`, `moveGames` | Two screens › Moving apps › Hold Back to move apps / Move games too (Hold Back says what it still needs: Shizuku, the Home button service) | toggle |
 | `SystemPrefs.clipVoice` | Two screens › While playing › Voice in clips (your microphone in the companion's 15-second clips) | toggle |
-| `SystemConfig.companion`, `GameMeta.companion` | Y on a system › Bottom screen while playing; Y on a game › More › Bottom screen while playing (the same four choices, for that system or game alone) | menu |
+| `SystemConfig.companion`, `GameMeta.companion` | Library & art › Systems › Systems and emulators › A on a system › Bottom screen while playing; Y on a game › More › Bottom screen while playing (the same four choices, for that system or game alone) | menu |
 | Per-app screen, name, icon, game, hidden (`AppPrefs`) | Y on any app (dock, All apps, Android apps, grid) | menu |
 | `PackParts.music`, `PackParts.sounds` | Sound & music › Theme pack › Theme pack music / Theme pack sounds (the group shows only while the theme is a pack with music or sounds of its own) | toggle |
 | `Look.sounds`, `soundVolume` | Sound & music › Sounds › UI sounds / Sound volume | toggle / slider |
