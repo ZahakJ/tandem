@@ -294,8 +294,17 @@ fun layerActive(): Boolean = layerActive(LocalLayer.current)
  * (or a kept screen showing) would otherwise recompose every focusable item on the screen underneath.
  */
 @Composable
-fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier =
-    takesFocusWhen(routeKey, itemKey, wanted) { if (wanted) Want.Yes else Want.No }
+fun Modifier.takesFocus(routeKey: String, itemKey: String, wanted: Boolean): Modifier {
+    val kept = LocalLayer.current is KeptLayer
+    return takesFocusWhen(routeKey, itemKey, wanted) {
+        // A screen kept composed while hidden (the Settings tiles) is shown again before it recomposes with its new
+        // target, so [wanted] is still the one from its last hand back: the Search bar or the first tile took the
+        // focus and the tile of the page just left gave up. The item remembered since (Nav.back notes that tile)
+        // decides, while it is on screen.
+        val now = FocusMemory.get(routeKey)?.takeIf { kept && PageFocus.has(routeKey, it) }?.let { it == itemKey } ?: wanted
+        if (now) Want.Yes else Want.No
+    }
+}
 
 /** Whether an item should take the focus handed back. */
 private enum class Want { Yes, No }
