@@ -248,14 +248,25 @@ private fun <T> step(list: List<T>, now: T, by: Int): T {
 /** A choice's options as a grid over the rows: [options] by index, [selected] the one in use. */
 internal class FormChoice(val title: String, val help: String, val options: List<PickOption<Int>>, val selected: Int, val color: androidx.compose.ui.graphics.Color, val pick: (Int) -> Unit)
 
-/** A row for a choice of [values]: A shows them all in a grid ([FormChoice]); Left and Right step through them. */
-private fun <T> chooser(label: String, values: List<T>, now: T, color: androidx.compose.ui.graphics.Color, icon: Glyph, help: String, name: (T) -> String, set: (T) -> Unit) =
-    SettingRow(
+/**
+ * A row for a choice of [values], drawn like a settings choice (Choices.kt): a few short ones as a segmented track
+ * where A steps round, more as the value where A shows them all in a grid ([FormChoice]). Left and Right step
+ * through them and stop at the ends.
+ */
+private fun <T> chooser(label: String, values: List<T>, now: T, color: androidx.compose.ui.graphics.Color, icon: Glyph, help: String, name: (T) -> String, set: (T) -> Unit): SettingRow {
+    val options = values.mapIndexed { i, v -> "$i" to name(v) }
+    val at = values.indexOf(now)
+    fun move(by: Int) { if (at < 0) set(values.first()) else values.getOrNull(at + by)?.let(set) }
+    val inGrid = !fitsOnRow(options)
+    return SettingRow(
         label, name(now), color, icon, help = help,
-        onLeft = { set(step(values, now, -1)) }, onRight = { set(step(values, now, 1)) }, action = "Choose",
+        onLeft = { move(-1) }, onRight = { move(1) }, action = if (inGrid) "Choose" else null,
+        options = options, selected = "$at", pick = { id -> set(values[id.toInt()]) },
     ) {
-        SmartFolderForm.choosing = FormChoice(label, help, values.mapIndexed { i, v -> PickOption(i, name(v)) }, values.indexOf(now), color) { i -> set(values[i]) }
+        if (inGrid) SmartFolderForm.choosing = FormChoice(label, help, values.mapIndexed { i, v -> PickOption(i, name(v)) }, at, color) { i -> set(values[i]) }
+        else set(step(values, now, 1))
     }
+}
 
 @Composable
 private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
