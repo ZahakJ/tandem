@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -89,7 +91,7 @@ object HomeExtras {
     /** L2 on the icon grid: show or hide the strip, and land on its first game when it opens. */
     fun toggleRecent() {
         when (ExtrasStore.settings.recentStrip) {
-            "off" -> { Toasts.show("The Recently played strip is off. Settings › Home & layout"); return }
+            "off" -> { Toasts.show(Tx.s(R.string.home_recent_off)); return }
             "always" -> {
                 Collections.continuePlaying().firstOrNull()?.let { FocusMemory.remember(Route.Home.key, recentKey(it)); Nav.focusTick++ }
                 return
@@ -166,7 +168,7 @@ fun ResumePage(running: RunningGame, routeKey: String, target: String?, modifier
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.size(9.dp).clip(CircleShape).background(Palette.Mint).floating(3, bob = 1.5.dp, periodMs = 1400, breathe = 0.2f, tilt = 0f, restsWhenIdle = true))
                     Spacer(Modifier.width(7.dp))
-                    Text("CONTINUE", style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White, maxLines = 1)
+                    Text(Tx.s(R.string.home_resume_continue), style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White, maxLines = 1)
                 }
                 // The logo takes whatever height is left, so the text and buttons below always fit the card.
                 Box(Modifier.fillMaxWidth().weight(1f).padding(vertical = 6.dp), contentAlignment = Alignment.CenterStart) {
@@ -178,7 +180,7 @@ fun ResumePage(running: RunningGame, routeKey: String, target: String?, modifier
                     Text(game.title, style = MaterialTheme.typography.titleLarge.onArt(), color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     val line = listOfNotNull(
                         game.platform.name,
-                        session?.takeIf { it >= 60 }?.let { "${formatPlayTime(it)} this session" },
+                        session?.takeIf { it >= 60 }?.let { Tx.s(R.string.home_resume_session, formatPlayTime(it)) },
                         running.appName,
                     ).joinToString(" · ")
                     Text(line, style = MaterialTheme.typography.labelLarge.onArt(), color = lerp(color, Color.White, 0.6f), maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -188,9 +190,9 @@ fun ResumePage(running: RunningGame, routeKey: String, target: String?, modifier
                             Modifier.graphicsLayer { alpha = if (focused) 1f else 0.75f }.darkChip().padding(horizontal = 12.dp, vertical = 6.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            ButtonHint("A", "Resume", Palette.Mint)
-                            ButtonHint("Y", "Close", Palette.Peach)
-                            if (others > 0) ButtonHint("X", "Switch", Palette.Sky)
+                            ButtonHint("A", Tx.s(R.string.home_resume_hint_resume), Palette.Mint)
+                            ButtonHint("Y", Tx.s(R.string.common_close), Palette.Peach)
+                            if (others > 0) ButtonHint("X", Tx.s(R.string.home_resume_hint_switch), Palette.Sky)
                         }
                     }
                 }
@@ -203,7 +205,7 @@ fun ResumePage(running: RunningGame, routeKey: String, target: String?, modifier
 private val resumeConfirm = PressTwice()
 
 fun resumePageClose(ctx: android.content.Context, running: RunningGame) {
-    if (!resumeConfirm.press(running.pkg, "Press Y again to close ${running.game?.title ?: running.appName}")) return
+    if (!resumeConfirm.press(running.pkg, Tx.s(R.string.home_resume_close_again, running.game?.title ?: running.appName))) return
     closeRunning(ctx, running) { Nav.focusTick++ }
 }
 
@@ -232,10 +234,10 @@ fun RecentStrip(routeKey: String, target: String?, games: List<Game>, overlay: B
             Row(Modifier.padding(start = 30.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GlyphIcon(Glyph.Clock, Palette.Mint, Modifier.size(15.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Recently played", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                Text(Tx.s(R.string.home_recent_title), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                 if (ExtrasStore.settings.recentStrip == "button") {
                     Spacer(Modifier.width(10.dp))
-                    ButtonHint("L2", "Hide", Palette.Lavender)
+                    ButtonHint("L2", Tx.s(R.string.home_recent_hint_hide), Palette.Lavender)
                 }
             }
             LazyRow(
@@ -256,7 +258,7 @@ fun RecentStrip(routeKey: String, target: String?, games: List<Game>, overlay: B
                             Column(Modifier.weight(1f).padding(start = 8.dp)) {
                                 Text(g.title, style = MaterialTheme.typography.labelLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                                 Text(
-                                    if (g.key in running) "● Running" else g.platform.shortName, style = MaterialTheme.typography.labelSmall,
+                                    if (g.key in running) Tx.s(R.string.home_recent_running) else g.platform.shortName, style = MaterialTheme.typography.labelSmall,
                                     color = if (g.key in running) Palette.Mint else Palette.Muted, maxLines = 1,
                                 )
                             }

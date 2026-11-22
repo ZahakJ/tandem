@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.focusable
@@ -70,13 +72,20 @@ data class SlotTarget(val folder: String?, val index: Int)
 private val EmptySpotColor = Color(0xFF8C95B5)
 
 /** The highlighted "tile" while an empty spot has focus: one for every spot, so moving between them is calm. */
-val EmptySpotItem: GridItem by lazy {
-    GridItem(
-        "gap", TileKind.Empty, "Empty spot", "Free spot", "", EmptySpotColor, TileArt.Symbol(Glyph.Plus, EmptySpotColor), emptyList(),
-        io.github.zahakj.tandem.Selected.Group("Empty spot", "", emptyList(), EmptySpotColor), default = false, open = {},
-        blurb = "A adds a folder, game, app or widget here",
-    )
-}
+val EmptySpotItem: GridItem
+    get() {
+        // One per language: the same item while it lasts, made again when the language changes.
+        val lang = io.github.zahakj.tandem.Lang.revision.intValue
+        emptySpot?.takeIf { it.first == lang }?.let { return it.second }
+        val title = Tx.s(R.string.grid_spot_title)
+        return GridItem(
+            "gap", TileKind.Empty, title, Tx.s(R.string.grid_spot_type), "", EmptySpotColor, TileArt.Symbol(Glyph.Plus, EmptySpotColor), emptyList(),
+            io.github.zahakj.tandem.Selected.Group(title, "", emptyList(), EmptySpotColor), default = false, open = {},
+            blurb = Tx.s(R.string.grid_spot_blurb),
+        ).also { emptySpot = lang to it }
+    }
+
+private var emptySpot: Pair<Int, GridItem>? = null
 
 /** The home grid as it shows now, or as saved when it isn't on screen. */
 fun homeShown(): GridShown = IconGrid.home ?: IconGridStore.config.let { c ->
@@ -201,73 +210,76 @@ internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context):
     val actions = buildList {
         if (carried != null) {
             val item = catalog.item(carried.key)
-            val name = item?.title ?: "it"
-            add(MenuAction("paste", "Paste $name", Glyph.Move, Palette.Sky) {
+            val name = item?.title
+            add(MenuAction("paste", if (name != null) Tx.s(R.string.grid_spot_paste, name) else Tx.s(R.string.grid_spot_paste_it), Glyph.Move, Palette.Sky) {
                 if (folder != null) suggestForFirst(ctx, folder, item)
-                GridUndoUi.run("Moved $name") { IconGridStore.place(carried.key, carried.folder, folder, shown, at, item?.default == true) }
+                GridUndoUi.run(if (name != null) Tx.s(R.string.grid_drag_moved, name) else Tx.s(R.string.grid_drag_moved_it)) {
+                    IconGridStore.place(carried.key, carried.folder, folder, shown, at, item?.default == true)
+                }
                 IconGrid.moving = null
                 FocusMemory.remember(route, carried.key)
                 IconGrid.closeMenu()
                 Sounds.confirm()
             })
         }
-        if (GridTree.canHoldFolder(IconGridStore.config, folder)) add(MenuAction("folder", "New folder…", Glyph.Folder, Palette.Butter) {
+        if (GridTree.canHoldFolder(IconGridStore.config, folder)) add(MenuAction("folder", Tx.s(R.string.grid_spot_new_folder), Glyph.Folder, Palette.Butter) {
             IconGrid.closeMenu()
-            TextEntry.ask("Name the folder", "New folder") { name ->
-                val n = name.trim().ifEmpty { "Folder" }
+            TextEntry.ask(Tx.s(R.string.grid_folder_name_title), Tx.s(R.string.grid_folder_default)) { name ->
+                val n = name.trim().ifEmpty { Tx.s(R.string.grid_folder_unnamed) }
                 val grid = shownFor(folder) ?: return@ask
                 val id = IconGridStore.createFolderAt(n, grid, at, IconGridStore.config.folders.size, into = folder)
                 FocusMemory.remember(route, "folder:$id")
                 Nav.focusTick++
                 Sounds.confirm()
-                Toasts.show("Made the folder $n here")
+                Toasts.show(Tx.s(R.string.grid_spot_made_folder, n))
             }
         })
         // A folder that fills itself, made here: inside an arranged system, that system's games of a genre, say.
-        if (GridTree.canHoldFolder(IconGridStore.config, folder)) add(MenuAction("smart", "Smart folder…", Glyph.Sparkle, Palette.Lavender, sub = "Fills itself: a genre, unplayed games…") {
+        if (GridTree.canHoldFolder(IconGridStore.config, folder)) add(MenuAction("smart", Tx.s(R.string.grid_spot_smart_folder), Glyph.Sparkle, Palette.Lavender, sub = Tx.s(R.string.grid_spot_smart_folder_sub)) {
             IconGrid.closeMenu()
             val grid = shownFor(folder) ?: return@MenuAction
             val system = folder?.let { IconGridStore.folder(it)?.system }
             val rule = io.github.zahakj.tandem.data.SmartRule(systems = listOfNotNull(system))
-            val id = IconGridStore.createFolderAt("Smart folder", grid, at, IconGridStore.config.folders.size, into = folder, rule = rule)
+            // The folder's name until the form renames it, saved in the language it was made in.
+            val id = IconGridStore.createFolderAt(Tx.s(R.string.grid_type_smart_folder), grid, at, IconGridStore.config.folders.size, into = folder, rule = rule)
             FocusMemory.remember(route, "folder:$id")
             SmartFolderForm.edit(id)
         })
-        add(MenuAction("game", "Game…", Glyph.Cartridge, Palette.Mint, sub = "One or several, by system") {
+        add(MenuAction("game", Tx.s(R.string.grid_spot_game), Glyph.Cartridge, Palette.Mint, sub = Tx.s(R.string.grid_spot_game_sub)) {
             IconGrid.menu = null
             IconGrid.choosingFolder = false
             FocusMemory.forget("gridpick")
             IconGrid.pickingGames = target
         })
-        add(MenuAction("system", "System…", Glyph.Gamepad, Palette.Sky) { openAdd(target, "system") })
-        add(MenuAction("collection", "Collection or genre…", Glyph.Star, Palette.Peach) { openAdd(target, "collection") })
-        add(MenuAction("app", "App…", Glyph.Grid, Palette.Sky) { openAdd(target, "app") })
-        add(MenuAction("tandem", "Tandem app…", Glyph.Sparkle, Palette.Lavender, sub = "Themes, Journal, Gallery…") { openAdd(target, "tandem") })
-        add(MenuAction("widget", "Widget…", Glyph.Layers, Palette.Butter, sub = "Clock, battery, play stats…") { IconGrid.choosingFolder = true })
-        add(MenuAction("tidy", "Tidy up", Glyph.Sparkle, Palette.Mint, more = true) {
+        add(MenuAction("system", Tx.s(R.string.grid_spot_system), Glyph.Gamepad, Palette.Sky) { openAdd(target, "system") })
+        add(MenuAction("collection", Tx.s(R.string.grid_spot_collection), Glyph.Star, Palette.Peach) { openAdd(target, "collection") })
+        add(MenuAction("app", Tx.s(R.string.grid_spot_app), Glyph.Grid, Palette.Sky) { openAdd(target, "app") })
+        add(MenuAction("tandem", Tx.s(R.string.grid_spot_tandem_app), Glyph.Sparkle, Palette.Lavender, sub = Tx.s(R.string.grid_spot_tandem_app_sub)) { openAdd(target, "tandem") })
+        add(MenuAction("widget", Tx.s(R.string.grid_spot_widget), Glyph.Layers, Palette.Butter, sub = Tx.s(R.string.grid_spot_widget_sub)) { IconGrid.choosingFolder = true })
+        add(MenuAction("tidy", Tx.s(R.string.grid_spot_tidy), Glyph.Sparkle, Palette.Mint, more = true) {
             IconGrid.closeMenu()
             if (folder == null) tidyHome() else tidyFolder(folder)
         })
         folder?.let { IconGridStore.folder(it)?.system }?.let { system ->
-            add(MenuAction("unarrange", "Show as a plain list", Glyph.Sort, Palette.Sky, more = true) { IconGrid.closeMenu(); SystemFolders.unarrange(system) })
+            add(MenuAction("unarrange", Tx.s(R.string.grid_spot_unarrange), Glyph.Sort, Palette.Sky, more = true) { IconGrid.closeMenu(); SystemFolders.unarrange(system) })
         }
         GridUndoUi.action { IconGrid.closeMenu() }?.let { add(it) }
-        add(MenuAction("search", "Search", Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
-        add(MenuAction("swap", "Swap screens", Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) {
+        add(MenuAction("search", Tx.s(R.string.grid_menu_search), Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
+        add(MenuAction("swap", Tx.s(R.string.grid_menu_swap), Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) { // tx-ok: a button letter
             IconGrid.closeMenu(); ScreenRoles.toggle(ctx)
         })
     }
     // Widget…: every kind, added in this spot at its usual size (or the biggest that fits here). In a folder, every spot
     // is one cell: the kinds that come that small.
     val page = if (IconGrid.choosingFolder) MenuPage(
-        "Add a widget",
+        Tx.s(R.string.grid_spot_add_widget),
         WidgetKinds.all.map { kind ->
             val ok = kind.available() && (folder == null || GridWidgets.fitsFolder(kind))
             val android = kind === AppWidgetKind
             MenuAction(
                 "w:${kind.id}", kind.name, color = kind.accent,
                 value = if (!ok) null else if (android) "▸" else if (folder == null) GridWidgets.spanFor(kind.defaultSize).label else "1×1",
-                sub = if (ok) kind.blurb else if (!kind.available()) kind.needs ?: "Not available yet" else "Too big for a folder: home grid only",
+                sub = if (ok) kind.blurb else if (!kind.available()) kind.needs ?: Tx.s(R.string.grid_spot_widget_unavailable) else Tx.s(R.string.grid_spot_widget_too_big),
                 art = { KindSymbol(kind) },
             ) {
                 // An Android widget is picked from the installed apps first (AppWidgets.kt); it lands here once Android has set it up.
@@ -284,15 +296,15 @@ internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context):
         onBack = { IconGrid.choosingFolder = false },
     ) else null
     val where = gridName(folder)
-    return MenuSpec(IconGrid.MENU_ROUTE + ":" + (folder ?: "") + t.key, "Empty spot", where, EmptySpotColor, actions, page) { EmptySpotArt() }
+    return MenuSpec(IconGrid.MENU_ROUTE + ":" + (folder ?: "") + t.key, Tx.s(R.string.grid_spot_title), where, EmptySpotColor, actions, page) { EmptySpotArt() }
 }
 
 /** Tidy up: every tile on the home grid packed to the front, in the same order (widgets whole). */
 fun tidyHome() {
     val h = homeShown()
     val packed = GridSlots.tidy(h.slots, h.present, h.lanes, h.ext, h.page)
-    if (packed == GridSlots.trim(h.slots)) { Toasts.show("Already tidy"); return }
-    GridUndoUi.run("Tidied up") { IconGridStore.setSlots(packed, h.lanes) }
+    if (packed == GridSlots.trim(h.slots)) { Toasts.show(Tx.s(R.string.grid_tidy_already)); return }
+    GridUndoUi.run(Tx.s(R.string.grid_tidy_done)) { IconGridStore.setSlots(packed, h.lanes) }
     Nav.focusTick++
     Sounds.confirm()
 }
@@ -300,10 +312,10 @@ fun tidyHome() {
 /** Tidy up inside a folder. */
 fun tidyFolder(id: String) {
     val f = IconGridStore.folder(id) ?: return
-    if (f.sort != FolderSort.MANUAL) { Toasts.show("Sorted ${FolderSort.label(f.sort)}: always tidy"); return }
+    if (f.sort != FolderSort.MANUAL) { Toasts.show(Tx.s(R.string.grid_tidy_sorted, FolderSort.label(f.sort))); return }
     val packed = GridSlots.tidy(f.items)
-    if (packed == GridSlots.trim(f.items)) { Toasts.show("Already tidy"); return }
-    GridUndoUi.run("Tidied up ${f.name}") { IconGridStore.setFolderItems(id, packed) }
+    if (packed == GridSlots.trim(f.items)) { Toasts.show(Tx.s(R.string.grid_tidy_already)); return }
+    GridUndoUi.run(Tx.s(R.string.grid_tidy_done_folder, f.name)) { IconGridStore.setFolderItems(id, packed) }
     Nav.focusTick++
     Sounds.confirm()
 }
@@ -342,5 +354,5 @@ internal fun carryMove() {
     mv.order.clear()
     mv.order.addAll(mv.original)
     mv.carried = true
-    Toasts.show("Carrying it · A on an empty spot › Paste")
+    Toasts.show(Tx.s(R.string.grid_carrying))
 }

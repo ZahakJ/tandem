@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import android.os.SystemClock
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -277,13 +279,24 @@ object GridDrag {
     }
 
     /** Let go: the drop, as one undoable step. */
+    /** The undo label for moving [name] (a tile's title, or null for "it"). */
+    private fun moved(name: String?) = if (name != null) Tx.s(R.string.grid_drag_moved, name) else Tx.s(R.string.grid_drag_moved_it)
+
+    /** The undo label for moving [name] into the folder [folder] (null: "the folder"). */
+    private fun movedInto(name: String?, folder: String?) = when {
+        name != null && folder != null -> Tx.s(R.string.grid_drag_moved_into, name, folder)
+        name != null -> Tx.s(R.string.grid_drag_moved_into_folder, name)
+        folder != null -> Tx.s(R.string.grid_drag_moved_it_into, folder)
+        else -> Tx.s(R.string.grid_drag_moved_it_into_folder)
+    }
+
     internal fun drop() {
         val d = drag ?: return
         drag = null
         val key = d.target
         val zone = d.zone
         val shown = shownFor(zone)
-        val name = d.item?.title ?: "it"
+        val name = d.item?.title
         val default = d.item?.default == true
         if (key == null || shown == null || !d.fits || key == d.key && zone == d.from) { Sounds.back(); Nav.focusTick++; return }
         val slot = d.slot
@@ -293,10 +306,11 @@ object GridDrag {
         when {
             d.armed && !isGapKey(key) -> {
                 val other = key
-                TextEntry.ask("Name the folder", "New folder") { typed ->
-                    val n = typed.trim().ifEmpty { "Folder" }
+                TextEntry.ask(Tx.s(R.string.grid_folder_name_title), Tx.s(R.string.grid_folder_default)) { typed ->
+                    val n = typed.trim().ifEmpty { Tx.s(R.string.grid_folder_unnamed) }
                     var made = ""
-                    GridUndoUi.run("Made the folder $n") {
+                    // Undo labels are saved with the grid, so they stay in the language they were made in.
+                    GridUndoUi.run(Tx.s(R.string.grid_drag_made_folder, n)) {
                         if (zone != d.from) shownFor(zone)?.let { s -> IconGridStore.place(d.key, d.from, zone, s, s.firstFree(slot), default) }
                         made = IconGridStore.createFolder(n, listOf(other, d.key), zone, homeShown(), IconGridStore.config.folders.size, move = true, fromShown = shownFor(zone))
                     }
@@ -308,10 +322,10 @@ object GridDrag {
                 return
             }
             into && fid != null ->
-                GridUndoUi.run("Moved $name into ${IconGridStore.folder(fid)?.name ?: "the folder"}") { IconGridStore.moveIntoFolder(d.key, d.from, fid) }
+                GridUndoUi.run(movedInto(name, IconGridStore.folder(fid)?.name)) { IconGridStore.moveIntoFolder(d.key, d.from, fid) }
             zone == d.from -> {
                 if (zone != null && IconGridStore.folder(zone)?.sort != FolderSort.MANUAL) { Sounds.back(); return }
-                GridUndoUi.run("Moved $name") {
+                GridUndoUi.run(moved(name)) {
                     val at = shown.slots.indexOf(d.key)
                     when {
                         d.widget -> {
@@ -327,7 +341,7 @@ object GridDrag {
             else -> {
                 // Into another grid: the spot, or the first free one after the tile there.
                 val at = if (isGapKey(key) || key !in shown.present) slot else shown.firstFree(slot)
-                GridUndoUi.run("Moved $name") { IconGridStore.place(d.key, d.from, zone, shown, at, default) }
+                GridUndoUi.run(moved(name)) { IconGridStore.place(d.key, d.from, zone, shown, at, default) }
             }
         }
         // Put in a folder: the folder keeps the highlight; anything else: the tile where it landed.
@@ -464,7 +478,7 @@ internal fun DragGhost() {
         if (armedGlow > 0.01f) Box(
             Modifier.align(Alignment.Center).graphicsLayer { alpha = armedGlow }.clip(RoundedCornerShape(50))
                 .background(Palette.NightDeep.copy(alpha = 0.8f)).padding(horizontal = 8.dp, vertical = 3.dp),
-        ) { Text("+ Folder", style = MaterialTheme.typography.labelMedium, color = Palette.Text, maxLines = 1) }
+        ) { Text(Tx.s(R.string.grid_drag_new_folder), style = MaterialTheme.typography.labelMedium, color = Palette.Text, maxLines = 1) }
     }
 }
 

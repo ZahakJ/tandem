@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -62,7 +64,7 @@ import java.io.File
 /** Choosing a picture in Tandem's Files or Gallery for someone else (an app's icon). */
 object ImagePick {
     /** [accept]: the files A picks (pictures unless said otherwise); [what] names them in the button hint. */
-    class Request(val title: String, val onPick: (File) -> Unit, val accept: (File) -> Boolean = ImagePick::isImage, val what: String = "picture")
+    class Request(val title: String, val onPick: (File) -> Unit, val accept: (File) -> Boolean = ImagePick::isImage, val what: String = Tx.s(R.string.menus_pick_picture))
 
     var request by mutableStateOf<Request?>(null)
         private set
@@ -113,7 +115,7 @@ object AppActions {
         val now = isGame(pkg)
         AppPrefs.update(pkg) { it.copy(game = !now) }
         val label = RunningGames.appLabel(ctx, pkg)
-        Toasts.show(if (now) "Took $label out of Android Games" else "$label is in Android Games now")
+        Toasts.show(if (now) Tx.s(R.string.menus_app_game_off, label) else Tx.s(R.string.menus_app_game_on, label))
         LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
     }
 
@@ -121,23 +123,23 @@ object AppActions {
         val shown = RunningGames.appLabel(ctx, pkg)
         // The app's own name: typing it (or nothing) goes back to it.
         val original = runCatching { ctx.packageManager.let { pm -> pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() } }.getOrDefault(shown)
-        TextEntry.ask("Name for $shown", shown) { typed ->
+        TextEntry.ask(Tx.s(R.string.menus_app_rename_title, shown), shown) { typed ->
             val name = typed.trim().takeIf { it.isNotEmpty() && it != original }
             AppPrefs.update(pkg) { it.copy(name = name) }
-            Toasts.show(if (name == null) "Back to its own name" else "Renamed to $name")
+            Toasts.show(if (name == null) Tx.s(R.string.menus_app_renamed_own) else Tx.s(R.string.menus_app_renamed, name))
             if (gameOf(pkg) != null) LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
         }
     }
 
     fun setArt(ctx: Context, pkg: String, file: File?) {
         AppPrefs.update(pkg) { it.copy(art = file?.path) }
-        Toasts.show(if (file == null) "Back to the app's own icon" else "New icon for ${RunningGames.appLabel(ctx, pkg)}")
+        Toasts.show(if (file == null) Tx.s(R.string.menus_app_icon_own_back) else Tx.s(R.string.menus_app_icon_new, RunningGames.appLabel(ctx, pkg)))
     }
 
     fun uninstall(ctx: Context, pkg: String) {
         runCatching {
             ctx.startActivity(Intent(Intent.ACTION_DELETE, Uri.parse("package:$pkg")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-        }.onFailure { Toasts.show("Android's uninstaller won't open") }
+        }.onFailure { Toasts.show(Tx.s(R.string.menus_app_uninstaller_failed)) }
     }
 
     fun info(ctx: Context, pkg: String) = AndroidApps.openInfo(ctx, pkg)
@@ -156,55 +158,55 @@ fun appMenuActions(
 ): List<MenuAction> = buildList {
     val dual = LaunchDisplay.dualScreen(ctx)
     val bottom = AppActions.opensOnBottom(pkg)
-    add(MenuAction("open", "Open", Glyph.Play, Palette.Mint, value = if (dual) (if (bottom) "Bottom" else "Top") else null,
-        help = if (dual) "The screen it opens on now." else null) { done(); Dock.open(ctx, pkg) })
+    add(MenuAction("open", Tx.s(R.string.menus_app_open), Glyph.Play, Palette.Mint, value = if (dual) Tx.s(if (bottom) R.string.menus_app_open_bottom else R.string.menus_app_open_top) else null,
+        help = if (dual) Tx.s(R.string.menus_app_open_help) else null) { done(); Dock.open(ctx, pkg) })
     val builtIn = Dock.builtIn(pkg) != null
-    if (dual && !builtIn) add(MenuAction("other", if (bottom) "Open on the top screen" else "Open on the bottom screen", Glyph.Screens, Palette.Sky) {
+    if (dual && !builtIn) add(MenuAction("other", Tx.s(if (bottom) R.string.menus_app_open_on_top else R.string.menus_app_open_on_bottom), Glyph.Screens, Palette.Sky) {
         done(); Dock.open(ctx, pkg, bottom = !bottom)
     })
     addAll(extra)
     if (dual && !builtIn) {
         val own = AppPrefs.of(pkg).screen
-        val shown = own?.let(AppScreen::label) ?: if (AppPrefs.data.defaultScreen == AppScreen.AUTO) "Auto" else "Default"
+        val shown = own?.let(AppScreen::label) ?: Tx.s(if (AppPrefs.data.defaultScreen == AppScreen.AUTO) R.string.menus_app_screen_auto else R.string.menus_app_screen_default)
         val order = listOf(null, AppScreen.TOP, AppScreen.BOTTOM)
         fun setScreen(s: String?) = AppPrefs.update(pkg) { it.copy(screen = s) }
-        add(MenuAction("screen", "Always open on", Glyph.Screens, Palette.Butter, value = shown,
-            help = "The screen this app always opens on: Top, Bottom, or the default for every app.",
+        add(MenuAction("screen", Tx.s(R.string.menus_app_screen), Glyph.Screens, Palette.Butter, value = shown,
+            help = Tx.s(R.string.menus_app_screen_help),
             step = { by -> setScreen(order[Math.floorMod(order.indexOf(own) + by, order.size)]) },
             choices = listOf(
-                MenuChoice("Default", own == null, sub = "Like every app: " + AppScreen.label(AppPrefs.data.defaultScreen)) { setScreen(null) },
-                MenuChoice("Top screen", own == AppScreen.TOP) { setScreen(AppScreen.TOP) },
-                MenuChoice("Bottom screen", own == AppScreen.BOTTOM) { setScreen(AppScreen.BOTTOM) },
+                MenuChoice(Tx.s(R.string.menus_app_screen_default), own == null, sub = Tx.s(R.string.menus_app_screen_like_all, AppScreen.label(AppPrefs.data.defaultScreen))) { setScreen(null) },
+                MenuChoice(Tx.s(R.string.menus_app_screen_top), own == AppScreen.TOP) { setScreen(AppScreen.TOP) },
+                MenuChoice(Tx.s(R.string.menus_app_screen_bottom), own == AppScreen.BOTTOM) { setScreen(AppScreen.BOTTOM) },
             )) { setScreen(order[Math.floorMod(order.indexOf(own) + 1, order.size)]) })
     }
     if (IconGrid.enabled) {
         val key = "app:$pkg"
         val onHome = key in IconGridStore.config.added || IconGridStore.inFolders().contains(key)
-        add(MenuAction("home", if (onHome) "Remove from home" else "Add to home", Glyph.Star, Palette.Butter, value = if (onHome) "★" else null) {
+        add(MenuAction("home", Tx.s(if (onHome) R.string.menus_app_home_remove else R.string.menus_app_home_add), Glyph.Star, Palette.Butter, value = if (onHome) "★" else null) {
             if (onHome) IconGridStore.remove(key, default = false) else IconGridStore.add(key, default = false)
-            Toasts.show(if (onHome) "Taken off the home grid" else "On the home grid now ★")
+            Toasts.show(Tx.s(if (onHome) R.string.menus_app_home_removed else R.string.menus_app_home_added))
         })
     }
     val docked = pkg in (HomeStore.settings.dock ?: Dock.pinned(ctx))
-    add(MenuAction("dock", if (docked) "Unpin from dock" else "Pin to dock", Glyph.Home, Palette.Sky, value = if (docked) "✓" else null) {
+    add(MenuAction("dock", Tx.s(if (docked) R.string.menus_app_dock_unpin else R.string.menus_app_dock_pin), Glyph.Home, Palette.Sky, value = if (docked) "✓" else null) {
         Dock.togglePin(ctx, pkg)
     })
     if (builtIn) return@buildList
-    add(MenuAction("rename", "Rename", Glyph.Pencil, Palette.Butter, value = if (AppPrefs.name(pkg) != null) "Yours" else null) {
+    add(MenuAction("rename", Tx.s(R.string.menus_app_rename), Glyph.Pencil, Palette.Butter, value = if (AppPrefs.name(pkg) != null) Tx.s(R.string.menus_app_yours) else null) {
         close(); AppActions.rename(ctx, pkg)
     })
-    add(MenuAction("icon", "Choose icon", Glyph.Image, Palette.Butter, value = if (AppPrefs.art(pkg) != null) "Yours" else null) {
+    add(MenuAction("icon", Tx.s(R.string.menus_app_icon), Glyph.Image, Palette.Butter, value = if (AppPrefs.art(pkg) != null) Tx.s(R.string.menus_app_yours) else null) {
         close(); FocusMemory.forget("appicon:$pkg"); AppActions.iconFor = pkg
     })
     val game = AppActions.isGame(pkg)
-    add(MenuAction("game", "Treat as game", Glyph.Gamepad, Palette.Peach, value = if (game) "✓" else null, more = true) { AppActions.toggleGame(ctx, pkg) })
+    add(MenuAction("game", Tx.s(R.string.menus_app_game), Glyph.Gamepad, Palette.Peach, value = if (game) "✓" else null, more = true) { AppActions.toggleGame(ctx, pkg) })
     val hidden = AppPrefs.of(pkg).hidden
-    add(MenuAction("hide", if (hidden) "Show in the drawer" else "Hide from drawer", Glyph.Eye, Palette.Lavender, more = true) {
+    add(MenuAction("hide", Tx.s(if (hidden) R.string.menus_app_drawer_show else R.string.menus_app_drawer_hide), Glyph.Eye, Palette.Lavender, more = true) {
         AppPrefs.update(pkg) { it.copy(hidden = !hidden) }
-        Toasts.show(if (hidden) "Back in All apps" else "Hidden from All apps. Show hidden apps brings it back")
+        Toasts.show(Tx.s(if (hidden) R.string.menus_app_drawer_shown else R.string.menus_app_drawer_hidden))
     })
-    add(MenuAction("info", "App info", Glyph.Info, Palette.Lavender, more = true) { done(); AppActions.info(ctx, pkg) })
-    add(MenuAction("uninstall", "Uninstall…", Glyph.Trash, Palette.Peach, more = true) { done(); AppActions.uninstall(ctx, pkg) })
+    add(MenuAction("info", Tx.s(R.string.menus_app_info), Glyph.Info, Palette.Lavender, more = true) { done(); AppActions.info(ctx, pkg) })
+    add(MenuAction("uninstall", Tx.s(R.string.menus_app_uninstall), Glyph.Trash, Palette.Peach, more = true) { done(); AppActions.uninstall(ctx, pkg) })
 }
 
 /**
@@ -222,10 +224,10 @@ fun AppActionMenu() {
         // In the dock: its place can change too.
         val dock = HomeStore.settings.dock ?: Dock.pinned(ctx)
         val moves = if (!Panels.apps && pkg in dock) listOf(
-            MenuAction("left", "Move left", Glyph.Back, Palette.Sky, value = "◀") { Dock.move(ctx, pkg, -1) },
-            MenuAction("right", "Move right", Glyph.Play, Palette.Sky, value = "▶") { Dock.move(ctx, pkg, 1) },
+            MenuAction("left", Tx.s(R.string.menus_app_move_left), Glyph.Back, Palette.Sky, value = "◀") { Dock.move(ctx, pkg, -1) },
+            MenuAction("right", Tx.s(R.string.menus_app_move_right), Glyph.Play, Palette.Sky, value = "▶") { Dock.move(ctx, pkg, 1) },
         ) else emptyList()
-        val subtitle = if (Dock.builtIn(pkg) != null) "Tandem" else if (AppActions.isGame(pkg)) "Android game" else "App"
+        val subtitle = if (Dock.builtIn(pkg) != null) Tx.s(R.string.app_name) else Tx.s(if (AppActions.isGame(pkg)) R.string.menus_app_kind_game else R.string.menus_app_kind_app)
         MenuSpec("appmenu:$pkg", RunningGames.appLabel(ctx, pkg), subtitle, Palette.Sky, appMenuActions(ctx, pkg, extra = moves)) { AppTileIcon(pkg, 120.dp) }
     }
 }
@@ -258,18 +260,18 @@ fun AppIconChooser() {
         val pick: (String) -> Unit = { tool ->
             AppActions.iconFor = null
             Panels.close()
-            ImagePick.start(tool, "Pick an icon for $label") { f -> AppActions.setArt(ctx, p, f) }
+            ImagePick.start(tool, Tx.s(R.string.menus_app_icon_pick_title, label)) { f -> AppActions.setArt(ctx, p, f) }
         }
         val own = AppPrefs.art(p) != null
-        val buttons = listOfNotNull("files" to "From Files", "gallery" to "From Gallery", ("own" to "App's own icon").takeIf { own })
+        val buttons = listOfNotNull("files" to Tx.s(R.string.menus_app_icon_files), "gallery" to Tx.s(R.string.menus_app_icon_gallery), ("own" to Tx.s(R.string.menus_app_icon_own)).takeIf { own })
         val keys = buttons.map { "b:${it.first}" } + icons.orEmpty().map { it.file.path }
         val target = rememberFocusTarget(routeKey, keys)
         PanelSurface(Modifier.fillMaxSize()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(12.dp))) { AppIcon(p, Modifier.fillMaxSize()) }
                 Spacer(Modifier.width(12.dp))
-                Text("Icon for $label", Modifier.weight(1f), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                ButtonHint("B", "Close", Palette.Lavender)
+                Text(Tx.s(R.string.menus_app_icon_title, label), Modifier.weight(1f), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
             }
             val grid = rememberLazyGridState()
             LazyVerticalGrid(
@@ -298,7 +300,7 @@ fun AppIconChooser() {
                 val list = icons
                 item("packs", span = { GridItemSpan(maxLineSpan) }) {
                     Text(
-                        when { list == null -> "Looking through your icon packs…"; list.isEmpty() -> "No icon packs found. Theme packs with system icons show theirs here"; else -> "From your icon packs" },
+                        Tx.s(when { list == null -> R.string.menus_app_icon_packs_looking; list.isEmpty() -> R.string.menus_app_icon_packs_none; else -> R.string.menus_app_icon_packs }),
                         style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }

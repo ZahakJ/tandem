@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,12 +59,12 @@ fun rememberQuickFinds(q: String): List<QuickFind> {
         Collections.visible(lib.games).isNotEmpty() &&
             (normalize(lib.platform.name).contains(q) || normalize(lib.platform.shortName).startsWith(q) || normalize(lib.platform.id) == q)
     }.take(3).map { lib ->
-        QuickFind("qf:s:${lib.platform.id}", lib.platform.name, "System", Palette.forName(lib.platform.id), { SystemIcon(lib.platform, 30.dp) }) {
+        QuickFind("qf:s:${lib.platform.id}", lib.platform.name, Tx.s(R.string.home_find_system), Palette.forName(lib.platform.id), { SystemIcon(lib.platform, 30.dp) }) {
             Nav.closeOverlays(); Nav.go(Route.System(lib.platform.id))
         }
     }
     val appHits = apps.filter { a -> normalize(a.label).split(" ").any { it.startsWith(q) } || normalize(a.label).startsWith(q) }.take(2).map { a ->
-        QuickFind("qf:a:${a.pkg}", a.label, "App", Palette.Sky, { AppIcon(a.pkg, Modifier.size(30.dp)) }) { Nav.closeOverlays(); Dock.open(ctx, a.pkg) }
+        QuickFind("qf:a:${a.pkg}", a.label, Tx.s(R.string.home_find_app), Palette.Sky, { AppIcon(a.pkg, Modifier.size(30.dp)) }) { Nav.closeOverlays(); Dock.open(ctx, a.pkg) }
     }
     val settings = matchHits(settingsHits(), q, 3).map { h ->
         QuickFind("qf:set:${h.key}|${h.where}", h.title, h.where.substringBefore(" › More"), h.color, { if (h.icon != null) GlyphChip(h.icon, h.color) else GlyphChip(Glyph.Info, h.color) }) {
@@ -77,14 +79,14 @@ fun rememberQuickFinds(q: String): List<QuickFind> {
 @Composable
 fun QuickFindRow(finds: List<QuickFind>, routeKey: String, active: Boolean, target: String?) {
     Column(Modifier.fillMaxWidth()) {
-        Text("Also found", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+        Text(Tx.s(R.string.home_find_also), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
         Spacer(Modifier.height(6.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             finds.forEach { f ->
                 FocusCard(
                     Modifier.height(48.dp).widthIn(max = 260.dp).takesFocus(routeKey, f.key, active && target == f.key),
                     glow = f.color, shape = RoundedCornerShape(16.dp),
-                    onFocus = { Selection.current = Selected.Setting(f.title, f.kind, null, f.color, "Open") },
+                    onFocus = { Selection.current = Selected.Setting(f.title, f.kind, null, f.color, Tx.s(R.string.home_find_open)) },
                     onClick = f.go,
                 ) {
                     Row(Modifier.padding(horizontal = 10.dp).height(48.dp), verticalAlignment = Alignment.CenterVertically) {

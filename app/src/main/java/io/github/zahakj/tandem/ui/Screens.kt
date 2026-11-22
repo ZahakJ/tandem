@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -55,7 +58,6 @@ import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.launch
 
 private val GameSize = 104.dp
@@ -173,7 +175,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                     Section("empty", null, Palette.Peach) { EmptyLibrary(libs.isNotEmpty(), target) }
                 }
                 "continue" -> item("continue") {
-                    Section("continue", "Continue playing", Palette.Mint) {
+                    Section("continue", Tx.s(R.string.home_shelves_continue), Palette.Mint) {
                         LazyRow(Modifier.fadingEdges(rowStates.getValue("continue"), horizontal = true).focusRow(), state = rowStates.getValue("continue"), contentPadding = rowPadding, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                             items(continuing, key = { it.key }) { g ->
                                 val key = "c:${g.key}"
@@ -188,7 +190,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                     }
                 }
                 "systems" -> item("systems") {
-                    Section("systems", "Systems", Palette.Lavender) {
+                    Section("systems", Tx.s(R.string.home_shelves_systems), Palette.Lavender) {
                         LazyRow(Modifier.fadingEdges(rowStates.getValue("systems"), horizontal = true).focusRow(), state = rowStates.getValue("systems"), contentPadding = rowPadding, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                             items(systems, key = { it.first.platform.id }) { (lib, games) ->
                                 val key = "s:${lib.platform.id}"
@@ -201,7 +203,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                             }
                             item("card:apps") {
                                 ShortcutCard(
-                                    "Apps", "Everything installed", Palette.Mint,
+                                    Tx.s(R.string.home_shelves_apps_card), Tx.s(R.string.home_shelves_apps_card_detail), Palette.Mint,
                                     Modifier.width(170.dp).height(118.dp).takesFocus(route, "apps", "apps" == target),
                                     onFocus = { Selection.current = Selected.Home },
                                     onClick = { Nav.go(Route.Apps) },
@@ -209,7 +211,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                             }
                             item("card:systems") {
                                 ShortcutCard(
-                                    "Systems", "Emulators and folders", Palette.Butter,
+                                    Tx.s(R.string.home_shelves_systems_card), Tx.s(R.string.home_shelves_systems_card_detail), Palette.Butter,
                                     Modifier.width(170.dp).height(118.dp).takesFocus(route, "manage", "manage" == target),
                                     onFocus = { Selection.current = Selected.Home },
                                     onClick = { Nav.go(Route.Systems) },
@@ -219,22 +221,22 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                     }
                 }
                 "collections" -> item("collections") {
-                    Section("collections", "Collections", Palette.Peach) {
+                    Section("collections", Tx.s(R.string.home_shelves_collections), Palette.Peach) {
                         LazyRow(Modifier.fadingEdges(rowStates.getValue("collections"), horizontal = true).focusRow(), state = rowStates.getValue("collections"), contentPadding = rowPadding, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                             items(collections, key = { it.id }) { c ->
                                 val key = "col:${c.id}"
                                 GroupCard(
                                     c.title, c.games, c.color, Modifier.size(GameSize * 1.25f).takesFocus(route, key, key == target),
-                                    onFocus = { Selection.current = Selected.Group(c.title, plural(c.games.size, "game"), c.games, c.color, GroupTarget.Collection(c.id)) },
+                                    onFocus = { Selection.current = Selected.Group(c.title, Tx.p(R.plurals.home_games_count, c.games.size), c.games, c.color, GroupTarget.Collection(c.id)) },
                                     onClick = { openFolder(Route.Collection(c.id)) },
                                     art = ThemePacks.collectionIcon(c.id),
                                 )
                             }
                             if (genres.isNotEmpty()) item("genres") {
                                 GroupCard(
-                                    "Genres", genreGames, Palette.Sky, Modifier.size(GameSize * 1.25f).takesFocus(route, "genres", "genres" == target),
-                                    subtitle = plural(genres.size, "genre"),
-                                    onFocus = { Selection.current = Selected.Group("Genres", plural(genres.size, "genre"), genreGames, Palette.Sky, GroupTarget.Genres) },
+                                    Tx.s(R.string.home_genres), genreGames, Palette.Sky, Modifier.size(GameSize * 1.25f).takesFocus(route, "genres", "genres" == target),
+                                    subtitle = Tx.p(R.plurals.home_genres_subtitle, genres.size),
+                                    onFocus = { Selection.current = Selected.Group(Tx.s(R.string.home_genres), Tx.p(R.plurals.home_genres_subtitle, genres.size), genreGames, Palette.Sky, GroupTarget.Genres) },
                                     onClick = { Nav.go(Route.Genres) },
                                 )
                             }
@@ -245,7 +247,7 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
                     Section("widgets", null, Palette.Butter) { HomeWidgetsRow() }
                 }
                 "apps" -> item("dock") {
-                    Section("apps", "Apps", Palette.Sky) { DockRow(dock, target, rowStates.getValue("apps")) }
+                    Section("apps", Tx.s(R.string.home_shelves_apps), Palette.Sky) { DockRow(dock, target, rowStates.getValue("apps")) }
                 }
             }
         }
@@ -262,19 +264,18 @@ private fun EmptyLibrary(allHidden: Boolean, target: String?) {
         Pip(84.dp, mood = 2)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
-            Text(if (allHidden) "Every game is hidden" else "No games yet", style = MaterialTheme.typography.titleLarge)
+            Text(Tx.s(if (allHidden) R.string.home_empty_hidden else R.string.home_empty_none), style = MaterialTheme.typography.titleLarge)
             Text(
-                if (allHidden) "Turn on Show hidden games in Settings (Start) to see them."
-                else "Pick the folder your games are in, laid out any way: a folder per system, one system's folder, or all together.",
+                Tx.s(if (allHidden) R.string.home_empty_hidden_help else R.string.home_empty_none_help),
                 style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
             )
         }
         Spacer(Modifier.width(14.dp))
         PillButton(
             when {
-                LibraryScan.scanning -> "Looking…"
-                allHidden -> "Rescan"
-                else -> "Pick your games folder"
+                LibraryScan.scanning -> Tx.s(R.string.home_empty_looking)
+                allHidden -> Tx.s(R.string.home_empty_rescan)
+                else -> Tx.s(R.string.home_empty_pick)
             },
             Palette.Mint,
             Modifier.takesFocus(Route.Home.key, "empty:rescan", target == "empty:rescan"),
@@ -293,24 +294,24 @@ data class GroupItem(
  * What a grid says when it has nothing to show, and the one thing to do about it ([action] on a button that takes
  * the focus, so an empty page never leaves nothing highlighted). Without an action the button goes back.
  */
-private class Empty(val title: String, val detail: String, val action: String = "Go back", val run: (android.content.Context) -> Unit = { Nav.back() })
+private class Empty(val title: String, val detail: String, val action: String = Tx.s(R.string.home_none_go_back), val run: (android.content.Context) -> Unit = { Nav.back() })
 
 @Composable
 fun SystemScreen(route: Route.System) {
     val lib = Libraries.byId(route.platformId)
     if (lib == null) {
-        EmptyState(Empty("This system has gone", "Its folder wasn't found on the last scan."))
+        EmptyState(Empty(Tx.s(R.string.home_none_system_gone), Tx.s(R.string.home_none_system_gone_detail)))
         return
     }
     val meta = Store.meta
     val showHidden = Privacy.view
     val sort = Store.settings.sort
-    val folders = remember(lib, meta, showHidden, route.folder) {
+    val folders = remember(lib, meta, showHidden, route.folder, Lang.revision.intValue) {
         if (route.folder != null) emptyList() else lib.groups.mapNotNull { name ->
             val games = Collections.visible(lib.gamesIn(name)).takeIf { it.isNotEmpty() } ?: return@mapNotNull null
             val hidden = HiddenFolders.isHidden(lib.platform.id, name)
             GroupItem(
-                "f:$name", name, "${lib.platform.shortName} · ${if (hidden) "Hidden · " else ""}${plural(games.size, "game")}", games, Palette.forName(name),
+                "f:$name", name, Tx.p(if (hidden) R.plurals.home_folder_subtitle_hidden else R.plurals.home_folder_subtitle, games.size, games.size, lib.platform.shortName), games, Palette.forName(name),
                 Route.System(lib.platform.id, name), GroupTarget.System(lib.platform.id, name), hidden,
             )
         }
@@ -325,9 +326,9 @@ fun SystemScreen(route: Route.System) {
     val nothing = lib.gamesIn(route.folder).isEmpty() && folders.isEmpty()
     GameGrid(
         route.key, folders, games,
-        if (nothing) Empty("Nothing in here", "Copy games into this folder, then rescan.", "Rescan") { LibraryScan.rescan(it) }
-        else if (Privacy.enabled) Empty("Nothing to show here", "Its games are tucked away.")
-        else Empty("Every game here is hidden", "Hidden games stay out of sight until you show them.", "Show hidden games") { toggleShowHidden() },
+        if (nothing) Empty(Tx.s(R.string.home_none_folder), Tx.s(R.string.home_none_folder_detail), Tx.s(R.string.home_none_rescan)) { LibraryScan.rescan(it) }
+        else if (Privacy.enabled) Empty(Tx.s(R.string.home_none_tucked), Tx.s(R.string.home_none_tucked_detail))
+        else Empty(Tx.s(R.string.home_none_hidden), Tx.s(R.string.home_none_hidden_detail), Tx.s(R.string.home_none_show_hidden)) { toggleShowHidden() },
     )
 }
 
@@ -337,23 +338,24 @@ fun CollectionScreen(route: Route.Collection) {
     val showHidden = Privacy.view
     val sort = Store.settings.sort
     val libs = Libraries.all
-    val c = remember(route.id, libs, meta, showHidden) { Collections.byId(route.id) }
+    // The language is a key: a collection of systems' most played makes its title when asked.
+    val c = remember(route.id, libs, meta, showHidden, Lang.revision.intValue) { Collections.byId(route.id) }
     // Play-based collections and smart folders keep their own order; the rest follow the chosen sort.
     val smart = route.id.startsWith(Collections.SMART)
     val ordered = route.id in ORDERED_COLLECTIONS || smart || route.id.startsWith(Collections.PLAYED)
     val games = remember(c, sort) { c?.games.orEmpty().let { if (ordered) it else Library.sorted(it, sort) } }
-    val empty = if (smart) Empty("No games match", "Nothing in your library fits this folder's rules.", "Edit rules") {
+    val empty = if (smart) Empty(Tx.s(R.string.home_none_smart), Tx.s(R.string.home_none_smart_detail), Tx.s(R.string.home_none_smart_edit)) {
         FolderPopup.close(); SmartFolderForm.edit(route.id.removePrefix(Collections.SMART))
     } else when (route.id) {
-        "fav" -> Empty("No favorites yet", "Press Y on a game and pick Add to favorites.")
-        "most", "continue" -> Empty("Nothing played yet", "Games you play show up here.")
-        in PlayedOnSystem -> Empty("Nothing played yet", "Games you play on this system show up here, most played first.")
-        "unplayed" -> Empty("You've played them all!", "Every game has had a go. Impressive.")
-        Collections.PLAYING -> Empty("Nothing on the go", "Games you play for a while show up here by themselves.")
-        Collections.BACKLOG -> Empty("The backlog is clear", "Y › Status › Backlog on a game puts it here.")
-        Collections.BEATEN -> Empty("Nothing finished yet", "Y › Status › Finished when the credits roll.")
-        "added" -> Empty("No games yet", "New games show up here after a rescan.", "Rescan") { LibraryScan.rescan(it) }
-        else -> Empty("Nothing in this genre", "Its games were hidden or removed.")
+        "fav" -> Empty(Tx.s(R.string.home_none_favorites), Tx.s(R.string.home_none_favorites_detail))
+        "most", "continue" -> Empty(Tx.s(R.string.home_none_played), Tx.s(R.string.home_none_played_detail))
+        in PlayedOnSystem -> Empty(Tx.s(R.string.home_none_played), Tx.s(R.string.home_none_played_system_detail))
+        "unplayed" -> Empty(Tx.s(R.string.home_none_unplayed), Tx.s(R.string.home_none_unplayed_detail))
+        Collections.PLAYING -> Empty(Tx.s(R.string.home_none_playing), Tx.s(R.string.home_none_playing_detail))
+        Collections.BACKLOG -> Empty(Tx.s(R.string.home_none_backlog), Tx.s(R.string.home_none_backlog_detail))
+        Collections.BEATEN -> Empty(Tx.s(R.string.home_none_finished), Tx.s(R.string.home_none_finished_detail))
+        "added" -> Empty(Tx.s(R.string.home_none_added), Tx.s(R.string.home_none_added_detail), Tx.s(R.string.home_none_rescan)) { LibraryScan.rescan(it) }
+        else -> Empty(Tx.s(R.string.home_none_genre), Tx.s(R.string.home_none_genre_detail))
     }
     GameGrid(route.key, emptyList(), games, empty)
 }
@@ -366,7 +368,7 @@ fun CollectionScreen(route: Route.Collection) {
 @Composable
 private fun GameShelfView(routeKey: String, folders: List<GroupItem>, games: List<Game>, case: Boolean) {
     val ctx = LocalContext.current
-    val sections = remember(folders, games) {
+    val sections = remember(folders, games, Lang.revision.intValue) {
         val seen = HashSet<String>()
         fun items(list: List<Game>) = list.filter { seen.add(it.key) }.map { g ->
             val color = SystemColors.of(g.platform.id)
@@ -375,7 +377,7 @@ private fun GameShelfView(routeKey: String, folders: List<GroupItem>, games: Lis
                 Selected.GameItem(g), default = false, open = { Launcher.launch(ctx, g) }, game = g,
             )
         }
-        val own = games.map { it.platform.id }.distinct().singleOrNull()?.let { id -> Libraries.byId(id)?.platform?.name } ?: "Games"
+        val own = games.map { it.platform.id }.distinct().singleOrNull()?.let { id -> Libraries.byId(id)?.platform?.name } ?: Tx.s(R.string.home_shelf_games)
         buildList {
             items(games).takeIf { it.isNotEmpty() }?.let { add(ShelfSection("own", own, Palette.Mint, it, "")) }
             for (f in folders) items(f.games).takeIf { it.isNotEmpty() }?.let { add(ShelfSection("f:${f.key}", f.title, f.color, it, "")) }
@@ -401,17 +403,17 @@ fun GenresScreen() {
     val meta = Store.meta
     val showHidden = Privacy.view
     val libs = Libraries.all
-    val folders = remember(libs, meta, showHidden) {
+    val folders = remember(libs, meta, showHidden, Lang.revision.intValue) {
         Collections.genres().map { (name, games) ->
             GroupItem(
-                "g:$name", name, "Genre · ${plural(games.size, "game")}", games, Palette.forName(name),
+                "g:$name", name, Tx.p(R.plurals.home_genre_subtitle, games.size), games, Palette.forName(name),
                 Route.Collection("genre:$name"), GroupTarget.Collection("genre:$name"),
             )
         }
     }
     GameGrid(
         Route.Genres.key, folders, emptyList(),
-        Empty("No genres yet", "Scrape game details, or import a gamelist, and games sort themselves into genres.", "Scrape details") { ScrapeUi.open() },
+        Empty(Tx.s(R.string.home_none_genres), Tx.s(R.string.home_none_genres_detail), Tx.s(R.string.home_none_genres_scrape)) { ScrapeUi.open() },
     )
 }
 
@@ -428,7 +430,7 @@ private fun EmptyState(empty: Empty) {
         // Always something to press, so the highlight never disappears on an empty page.
         PillButton(empty.action, Palette.Mint, Modifier.takesFocus("empty:${Nav.route.key}", "action", true)) { empty.run(ctx) }
         Spacer(Modifier.height(10.dp))
-        ButtonHint("B", "Back", Palette.Lavender)
+        ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
     }
 }
 
@@ -472,7 +474,7 @@ private fun GameGrid(routeKey: String, folders: List<GroupItem>, games: List<Gam
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        if (headings) item("h:folders", span = { GridItemSpan(maxLineSpan) }) { SectionTitle("Folders", Palette.Lavender) }
+        if (headings) item("h:folders", span = { GridItemSpan(maxLineSpan) }) { SectionTitle(Tx.s(R.string.home_grid_folders), Palette.Lavender) }
         items(folders, key = { it.key }, contentType = { "folder" }) { f ->
             GroupCard(
                 f.title, f.games, f.color,
@@ -484,7 +486,7 @@ private fun GameGrid(routeKey: String, folders: List<GroupItem>, games: List<Gam
                 hidden = f.hidden,
             )
         }
-        if (headings) item("h:games", span = { GridItemSpan(maxLineSpan) }) { SectionTitle("Games", Palette.Mint, Modifier.padding(top = 6.dp)) }
+        if (headings) item("h:games", span = { GridItemSpan(maxLineSpan) }) { SectionTitle(Tx.s(R.string.home_grid_games), Palette.Mint, Modifier.padding(top = 6.dp)) }
         items(games, key = { it.key }, contentType = { "game" }) { g ->
             GameCard(
                 g, Modifier.aspectRatio(aspect).takesFocus(routeKey, g.key, g.key == target),

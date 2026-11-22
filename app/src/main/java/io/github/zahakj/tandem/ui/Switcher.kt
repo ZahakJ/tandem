@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.launch
 import androidx.compose.ui.input.key.type
@@ -152,9 +155,9 @@ private fun RunningGame.detail(): String {
     val g = game?.takeIf { Privacy.canShow(it) }
     val played = RunningGames.sessionSeconds(this)
     return when {
-        g == null -> if (game == null) "Opened outside Tandem" else "Running"
-        played != null && played > 0 -> "${g.platform.shortName} · played ${formatPlayTime(played)} this time"
-        else -> "${g.platform.shortName} · $appName"
+        g == null -> Tx.s(if (game == null) R.string.home_running_outside else R.string.home_running_running)
+        played != null && played > 0 -> Tx.s(R.string.home_running_played, g.platform.shortName, formatPlayTime(played))
+        else -> Tx.s(R.string.home_running_app, g.platform.shortName, appName)
     }
 }
 
@@ -193,7 +196,7 @@ private var switcherGen by mutableIntStateOf(0)
 fun closeRunning(ctx: Context, r: RunningGame, onDone: () -> Unit = {}) {
     var ok = false
     inBackground({ ok = RunningGames.close(ctx, r.pkg) }) {
-        Toasts.show(if (ok) "Closed ${r.shownTitle()}" else "Couldn't close it. Is Shizuku running?")
+        Toasts.show(if (ok) Tx.s(R.string.home_running_closed, r.shownTitle()) else Tx.s(R.string.home_running_close_failed))
         onDone()
     }
 }
@@ -202,7 +205,7 @@ fun closeRunning(ctx: Context, r: RunningGame, onDone: () -> Unit = {}) {
 fun switcherCloseFocused(ctx: Context) {
     val list = RunningGames.list
     val r = list.firstOrNull { it.pkg == Panels.focusedRunning } ?: return
-    if (!switcherConfirm.press("one:${r.pkg}", "Press X again to close ${r.shownTitle()}")) return
+    if (!switcherConfirm.press("one:${r.pkg}", Tx.s(R.string.home_running_close_again, r.shownTitle()))) return
     // Land on the neighbour once this card is gone.
     val i = list.indexOf(r)
     val next = (list.getOrNull(i + 1) ?: list.getOrNull(i - 1))?.pkg
@@ -219,10 +222,10 @@ fun switcherCloseFocused(ctx: Context) {
 /** Y in the switcher: close everything (press twice). */
 fun switcherCloseAll(ctx: Context) {
     if (RunningGames.list.isEmpty()) return
-    if (!switcherConfirm.press("all", "Press Y again to close all games")) return
+    if (!switcherConfirm.press("all", Tx.s(R.string.home_running_close_all_again))) return
     var n = 0
     inBackground({ n = RunningGames.closeAll(ctx) }) {
-        Toasts.show(if (n > 0) "Closed $n ${if (n == 1) "game" else "games"}. All tidy!" else "Couldn't close them. Is Shizuku running?")
+        Toasts.show(if (n > 0) Tx.p(R.plurals.home_running_closed_all, n) else Tx.s(R.string.home_running_close_all_failed))
         if (RunningGames.list.isEmpty()) Panels.close()
     }
 }
@@ -238,17 +241,17 @@ fun GameSwitcher() {
         val list = RunningGames.list
         PanelSurface(Modifier.widthIn(min = 420.dp, max = 780.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Running now", style = MaterialTheme.typography.headlineSmall)
+                Text(Tx.s(R.string.home_running_title), style = MaterialTheme.typography.headlineSmall)
                 Spacer(Modifier.width(10.dp))
-                if (list.isNotEmpty()) Pill("${list.size} open", Palette.Mint)
+                if (list.isNotEmpty()) Pill(Tx.p(R.plurals.home_running_open, list.size), Palette.Mint)
             }
             Spacer(Modifier.height(12.dp))
             when {
                 !RunningGames.canSee -> PipNote(
-                    "I can't see other apps yet",
-                    "Start Shizuku and allow Tandem in it, and I'll show every running game here.",
+                    Tx.s(R.string.home_running_no_access),
+                    Tx.s(R.string.home_running_no_access_detail),
                 )
-                list.isEmpty() -> PipNote("Nothing running", "Start a game and it'll wait for you here.", mood = 2)
+                list.isEmpty() -> PipNote(Tx.s(R.string.home_running_nothing), Tx.s(R.string.home_running_nothing_detail), mood = 2)
                 else -> {
                     val gen = switcherGen
                     val routeKey = "switcher:$gen"
@@ -273,7 +276,7 @@ fun GameSwitcher() {
                                 Column(Modifier.fillMaxSize().padding(10.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text("✕", style = MaterialTheme.typography.displaySmall, color = Palette.Peach)
                                     Text(
-                                        if (switcherConfirm.armed == "all") "Again to\nclose all" else "Close all",
+                                        Tx.s(if (switcherConfirm.armed == "all") R.string.home_running_close_all_armed else R.string.home_running_close_all),
                                         style = MaterialTheme.typography.titleSmall,
                                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                     )
@@ -286,14 +289,14 @@ fun GameSwitcher() {
             Spacer(Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 if (list.isNotEmpty()) {
-                    ButtonHint("A", "Resume", Palette.Mint)
-                    ButtonHint("X", "Close", Palette.Peach)
-                    ButtonHint("Y", "Close all", Palette.Butter)
+                    ButtonHint("A", Tx.s(R.string.home_running_hint_resume), Palette.Mint)
+                    ButtonHint("X", Tx.s(R.string.home_running_hint_close), Palette.Peach)
+                    ButtonHint("Y", Tx.s(R.string.home_running_hint_close_all), Palette.Butter)
                 }
-                ButtonHint("B", "Back", Palette.Lavender)
+                ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
             }
             Text(
-                "Closing a game is like turning the console off: save first!",
+                Tx.s(R.string.home_running_save_first),
                 Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
             )
         }
@@ -316,11 +319,11 @@ private fun SwitcherCard(r: RunningGame, modifier: Modifier) {
             onClick = { Panels.close(); RunningGames.resume(ctx, r) },
         ) {
             if (shown != null) GameArt(shown) else AppIcon(r.pkg, Modifier.align(Alignment.Center).size(84.dp))
-            Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopStart).padding(8.dp).darkChip())
+            Pill(Tx.s(R.string.home_running_pill), Palette.Mint, Modifier.align(Alignment.TopStart).padding(8.dp).darkChip())
             if (switcherConfirm.armed == "one:${r.pkg}") {
                 // The card's own colour, deepened, rather than a grey veil over the art.
                 Box(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.lerp(color, Palette.NightDeep, 0.72f).copy(alpha = 0.88f)), contentAlignment = Alignment.Center) {
-                    Text("X again\nto close", style = MaterialTheme.typography.titleMedium, color = Palette.Peach, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    Text(Tx.s(R.string.home_running_close_armed), style = MaterialTheme.typography.titleMedium, color = Palette.Peach, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
             }
         }
@@ -353,7 +356,7 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
     var resumeFocused by remember { mutableStateOf(false) }
     InterceptButtons(resumeFocused) { b -> if (b == Button.Y) { resumePageClose(ctx, r); true } else false }
     Column(Modifier.bringIntoViewRequester(reveal).padding(horizontal = 22.dp)) {
-        SectionTitle("Now playing", Palette.Mint)
+        SectionTitle(Tx.s(R.string.home_now_title), Palette.Mint)
         Row(Modifier.fillMaxWidth().height(112.dp).padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             FocusCard(
                 Modifier.weight(1f).fillMaxHeight().onFocusChanged { resumeFocused = it.hasFocus }.takesFocus(route, "now:resume", target == "now:resume"),
@@ -368,13 +371,13 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
                 Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.fillMaxHeight().aspectRatio(1f).shadow(6.dp, RoundedCornerShape(12.dp)).clip(RoundedCornerShape(12.dp))) { GameArt(game) }
                     Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                        Text("● PAUSED IN ${r.appName.uppercase()}", style = MaterialTheme.typography.labelMedium, color = Palette.Mint, maxLines = 1)
+                        Text(Tx.s(R.string.home_now_paused_in, r.appName).uppercase(Lang.locale), style = MaterialTheme.typography.labelMedium, color = Palette.Mint, maxLines = 1)
                         Text(game.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(r.detail(), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
                     }
                     Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        ButtonHint("A", "Resume", Palette.Mint)
-                        ButtonHint("Y", "Close", Palette.Peach)
+                        ButtonHint("A", Tx.s(R.string.home_running_hint_resume), Palette.Mint)
+                        ButtonHint("Y", Tx.s(R.string.home_running_hint_close), Palette.Peach)
                     }
                     Spacer(Modifier.width(6.dp))
                 }
@@ -388,7 +391,7 @@ fun NowPlayingCard(r: RunningGame, target: String?) {
                 ) {
                     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("+$others", style = MaterialTheme.typography.headlineSmall, color = Palette.Lavender)
-                        Text("more", style = MaterialTheme.typography.labelLarge)
+                        Text(Tx.s(R.string.home_now_more), style = MaterialTheme.typography.labelLarge)
                     }
                 }
             }
@@ -438,11 +441,11 @@ fun NowPlayingBanner(modifier: Modifier = Modifier) {
         ) {
             Box(Modifier.size(34.dp).clip(RoundedCornerShape(50))) { GameArt(game) }
             Column(Modifier.padding(start = 9.dp).widthIn(max = 300.dp)) {
-                Text("● Now playing", style = MaterialTheme.typography.labelSmall, color = Palette.Mint)
+                Text(Tx.s(R.string.home_now_chip), style = MaterialTheme.typography.labelSmall, color = Palette.Mint)
                 Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.width(10.dp))
-            Pill("Tap to resume", Palette.Mint)
+            Pill(Tx.s(R.string.home_now_tap), Palette.Mint)
         }
     }
 }
@@ -452,16 +455,16 @@ fun NowPlayingBanner(modifier: Modifier = Modifier) {
 fun TopBarButtons() {
     val n = RunningGames.list.size
     androidx.compose.runtime.CompositionLocalProvider(LocalTopBar provides true) { Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        if (n > 0) TopChip("▶ $n open", Palette.Mint) { Panels.openSwitcher() }
+        if (n > 0) TopChip(Tx.p(R.plurals.home_top_open, n), Palette.Mint) { Panels.openSwitcher() }
         // On a system or collection opened as a page, how its games show: grid, list, carousel, shelf or case.
         if (Nav.route is Route.System || Nav.route is Route.Collection) {
             val view = Store.settings.look.gameView
-            TopChip("▦ " + (GameViews.firstOrNull { it.first == view }?.second ?: "Grid"), Palette.Sky) {
+            TopChip(Tx.s(R.string.home_top_view, GameViews.firstOrNull { it.first == view }?.second ?: Tx.s(R.string.home_view_grid)), Palette.Sky) {
                 Store.updateSettings { it.copy(look = it.look.copy(gameView = nextGameView(it.look.gameView))) }
             }
         }
-        if (Nav.route != Route.Stats) TopChip("★ Stats", Palette.Butter) { Nav.go(Route.Stats) }
-        TopChip("◐ Quick", Palette.Lavender) { Panels.toggleQuick() }
+        if (Nav.route != Route.Stats) TopChip(Tx.s(R.string.home_top_stats), Palette.Butter) { Nav.go(Route.Stats) }
+        TopChip(Tx.s(R.string.home_top_quick), Palette.Lavender) { Panels.toggleQuick() }
     } }
 }
 

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.data.FolderStyle
@@ -72,13 +74,14 @@ object SystemFolders {
     /** System [platformId] arranged like a folder from now on, and opened as one. */
     fun arrange(platformId: String) {
         val lib = Libraries.byId(platformId) ?: return
-        GridUndoUi.run("Arranged ${lib.platform.name}") {
+        // The undo label is saved with the grid, so it stays in the language it was made in.
+        GridUndoUi.run(Tx.s(R.string.grid_system_arranged_undo, lib.platform.name)) {
             IconGridStore.arrangeSystem(platformId, lib.platform.name, IconGridStore.config.folders.size)
         }
         FolderPopup.close()
         open(platformId)
         Sounds.confirm()
-        Toasts.show("${lib.platform.name} is arranged like a folder now. Y on an empty spot adds folders and widgets", 4500)
+        Toasts.show(Tx.s(R.string.grid_system_arranged, lib.platform.name), 4500)
     }
 
     /** System [platformId] back to its plain list; the folders made inside it go to the home grid. */
@@ -86,8 +89,8 @@ object SystemFolders {
         val f = IconGridStore.systemFolder(platformId) ?: return
         val subs = GridTree.subfolders(IconGridStore.config, f.id).size
         if (IconGrid.openFolder == f.id) IconGrid.openFolder = null
-        GridUndoUi.run("${f.name} as a list") { IconGridStore.unarrangeSystem(platformId, homeShown()) }
+        GridUndoUi.run(Tx.s(R.string.grid_system_list_undo, f.name)) { IconGridStore.unarrangeSystem(platformId, homeShown()) }
         Nav.focusTick++
-        Toasts.show(if (subs == 0) "${f.name} shows as a plain list again" else "${f.name} shows as a list again. Its folders moved to home")
+        Toasts.show(Tx.s(if (subs == 0) R.string.grid_system_list_plain else R.string.grid_system_list_folders_home, f.name))
     }
 }

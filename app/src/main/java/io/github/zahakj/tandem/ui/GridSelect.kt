@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
@@ -42,7 +44,6 @@ import io.github.zahakj.tandem.data.GridTree
 import io.github.zahakj.tandem.data.HomeFolder
 import io.github.zahakj.tandem.data.IconGridStore
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
 
 /*
  * Power editing on the icon grid: marking several tiles (Select, a long A, or Y › Select) and acting on them at once
@@ -72,7 +73,7 @@ object GridSelect {
         if (markable(key)) s.keys.add(key!!)
         IconGrid.selecting = s
         Sounds.toggle(true)
-        Toasts.show("A marks tiles · Y: what to do with them · B: done")
+        Toasts.show(Tx.s(R.string.grid_sel_started))
     }
 
     /** Marks [key] on grid [folder], or unmarks it; starts selecting there when nothing is. */
@@ -107,7 +108,7 @@ internal fun routeFor(folder: String?): String = if (folder == null) Route.Home.
 internal fun folderPath(f: HomeFolder): String = GridTree.trail(IconGridStore.config, f.id).joinToString(" › ") { it.name }.ifEmpty { f.name }
 
 /** Where something sits, for menu subtitles: "Home grid" or the folder's path. */
-internal fun gridName(folder: String?): String = folder?.let { IconGridStore.folder(it) }?.let { folderPath(it) } ?: "Home grid"
+internal fun gridName(folder: String?): String = folder?.let { IconGridStore.folder(it) }?.let { folderPath(it) } ?: Tx.s(R.string.grid_home_grid)
 
 /**
  * The folders [keys] could go into from grid [from], as menu rows, deepest last: never the grid they are on, never a
@@ -120,7 +121,7 @@ internal fun folderChoices(keys: List<String>, from: String?, move: Boolean, onP
         f.id != from && GridTree.folderKey(f.id) !in keys &&
             keys.any { k -> GridTree.canNest(c, k, f.id) && (move || k !in f.items) }
     }.sortedWith(compareBy({ GridTree.depthOf(c, it.id) }, { folderPath(it).lowercase() })).map { f ->
-        MenuAction("f:${f.id}", folderPath(f), Glyph.Folder, folderColor(f.color), value = plural(f.items.count { it.isNotEmpty() }, "item")) { onPick(f) }
+        MenuAction("f:${f.id}", folderPath(f), Glyph.Folder, folderColor(f.color), value = Tx.p(R.plurals.grid_items, f.items.count { it.isNotEmpty() })) { onPick(f) }
     }
 }
 
@@ -139,12 +140,12 @@ object GridUndoUi {
     }
 
     /** The toast after a step: what happened, and Select to undo it. */
-    fun offer(label: String) = Toasts.show(label, TOAST_MS, Toasts.Action("Undo") { undo() })
+    fun offer(label: String) = Toasts.show(label, TOAST_MS, Toasts.Action(Tx.s(R.string.grid_undo)) { undo() })
 
     /** Takes back the last step, if there is one. */
     fun undo() {
         val u = IconGridStore.undo()
-        if (u == null) { Sounds.error(); Toasts.show("Nothing to undo"); return }
+        if (u == null) { Sounds.error(); Toasts.show(Tx.s(R.string.grid_undo_nothing)); return }
         for (s in u.systems) HiddenFolders.unhide(s, null)
         IconGrid.selecting = null
         IconGrid.moving = null
@@ -152,13 +153,14 @@ object GridUndoUi {
         IconGrid.openFolder?.let { if (IconGridStore.folder(it) == null) IconGrid.openFolder = null }
         Nav.focusTick++
         Sounds.undo()
-        Toasts.show("Undone: ${u.label.replaceFirstChar { it.lowercase() }}")
+        // The label was saved with the step, in the language it was made in.
+        Toasts.show(Tx.s(R.string.grid_undone, u.label.replaceFirstChar { it.lowercase() }))
     }
 
     /** "Undo last change" for a menu's More… (or the Start panel), when there is something to undo. */
     fun action(more: Boolean = true, before: () -> Unit = {}): MenuAction? {
         val label = IconGridStore.undoLabel ?: return null
-        return MenuAction("undo", "Undo last change", Glyph.Refresh, Palette.Butter, sub = label, more = more) { before(); undo() }
+        return MenuAction("undo", Tx.s(R.string.grid_undo_last), Glyph.Refresh, Palette.Butter, sub = label, more = more) { before(); undo() }
     }
 }
 
@@ -178,29 +180,30 @@ internal fun selectionMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Con
     val keys = orderedSelection(s, catalog, shown)
     val items = keys.mapNotNull { catalog.item(it) }
     val n = keys.size
-    val what = if (n == 1) items.firstOrNull()?.title ?: "1 tile" else plural(n, "tile")
+    // The one tile's name, or null for a count of tiles: the undo labels below say "Moved Mario" or "Moved 3 tiles".
+    val one = if (n == 1) items.firstOrNull()?.title else null
     val route = routeFor(folder)
     val sorted = folder?.let { IconGridStore.folder(it) }?.let { it.sort != FolderSort.MANUAL } == true
     val at = gapIndex(t.key) ?: shown?.slots?.indexOf(t.key) ?: -1
     val done: () -> Unit = { IconGrid.selecting = null; IconGrid.closeMenu() }
     val actions = buildList {
-        if (n > 0 && shown != null && at >= 0 && !sorted) add(MenuAction("here", "Move here", Glyph.Move, Palette.Sky, value = plural(n, "tile"), sub = "From this spot on, in the order they're in") {
-            GridUndoUi.run("Moved $what") { IconGridStore.moveMany(keys, folder, shown, at) }
+        if (n > 0 && shown != null && at >= 0 && !sorted) add(MenuAction("here", Tx.s(R.string.grid_sel_move_here), Glyph.Move, Palette.Sky, value = Tx.p(R.plurals.grid_tiles, n), sub = Tx.s(R.string.grid_sel_move_here_sub)) {
+            GridUndoUi.run(if (one != null) Tx.s(R.string.grid_drag_moved, one) else Tx.p(R.plurals.grid_sel_moved, n)) { IconGridStore.moveMany(keys, folder, shown, at) }
             FocusMemory.remember(route, keys.first())
             done()
             Sounds.confirm()
         })
         if (n > 0) {
-            add(MenuAction("move", "Move to folder…", Glyph.Folder, Palette.Butter) { IconGrid.folderPage = "move"; IconGrid.choosingFolder = true })
-            if (keys.any { GridTree.folderId(it) == null }) add(MenuAction("also", "Also add to folder…", Glyph.Plus, Palette.Butter, sub = "They stay here too") {
+            add(MenuAction("move", Tx.s(R.string.grid_sel_move_to_folder), Glyph.Folder, Palette.Butter) { IconGrid.folderPage = "move"; IconGrid.choosingFolder = true })
+            if (keys.any { GridTree.folderId(it) == null }) add(MenuAction("also", Tx.s(R.string.grid_sel_also_add), Glyph.Plus, Palette.Butter, sub = Tx.s(R.string.grid_sel_also_add_sub)) {
                 IconGrid.folderPage = "add"; IconGrid.choosingFolder = true
             })
-            add(MenuAction("new", "New folder from selection", Glyph.Folder, Palette.Mint) {
+            add(MenuAction("new", Tx.s(R.string.grid_sel_new_folder), Glyph.Folder, Palette.Mint) {
                 IconGrid.closeMenu()
-                TextEntry.ask("Name the folder", "New folder") { name ->
-                    val nm = name.trim().ifEmpty { "Folder" }
+                TextEntry.ask(Tx.s(R.string.grid_folder_name_title), Tx.s(R.string.grid_folder_default)) { name ->
+                    val nm = name.trim().ifEmpty { Tx.s(R.string.grid_folder_unnamed) }
                     var id = ""
-                    GridUndoUi.run("Made the folder $nm") {
+                    GridUndoUi.run(Tx.s(R.string.grid_drag_made_folder, nm)) {
                         id = IconGridStore.createFolder(nm, keys, folder, homeShown(), IconGridStore.config.folders.size, move = true, fromShown = shown)
                     }
                     IconGrid.selecting = null
@@ -212,9 +215,10 @@ internal fun selectionMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Con
                 }
             })
             val removable = keys.filter { GridTree.folderId(it) == null }
-            if (removable.isNotEmpty()) add(MenuAction("remove", if (folder == null) "Remove from home" else "Remove from folder", Glyph.Close, Palette.Peach, value = plural(removable.size, "tile")) {
+            if (removable.isNotEmpty()) add(MenuAction("remove", Tx.s(if (folder == null) R.string.grid_sel_remove_home else R.string.grid_sel_remove_folder), Glyph.Close, Palette.Peach, value = Tx.p(R.plurals.grid_tiles, removable.size)) {
                 val widgets = removable.mapNotNull { GridWidgets.idOf(it) }
-                val label = if (removable.size == 1) "Removed ${catalog.item(removable[0])?.title ?: "it"}" else "Removed ${plural(removable.size, "tile")}"
+                val label = if (removable.size == 1) catalog.item(removable[0])?.title.let { t -> if (t != null) Tx.s(R.string.grid_sel_removed, t) else Tx.s(R.string.grid_sel_removed_it) }
+                else Tx.p(R.plurals.grid_sel_removed_tiles, removable.size)
                 GridUndoUi.run(label) {
                     IconGridStore.removeMany(removable, folder)
                     if (folder == null) widgets.forEach { Widgets.remove(it) }
@@ -223,25 +227,32 @@ internal fun selectionMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Con
                 Nav.focusTick++
             })
             val hideable = items.filter { it.game != null || it.kind == TileKind.Folder || it.kind == TileKind.System && it.platformId != null }
-            if (hideable.isNotEmpty()) add(MenuAction("hide", "Hide", Glyph.Eye, Palette.Lavender, value = plural(hideable.size, "tile"), sub = "Games, systems and folders") {
+            if (hideable.isNotEmpty()) add(MenuAction("hide", Tx.s(R.string.grid_sel_hide), Glyph.Eye, Palette.Lavender, value = Tx.p(R.plurals.grid_tiles, hideable.size), sub = Tx.s(R.string.grid_sel_hide_sub)) {
                 hideMany(hideable)
                 done()
             })
         }
         val all = shown?.slots.orEmpty().filter { k -> k.isNotEmpty() && k in shown!!.present && GridSelect.markable(k) && catalog.item(k) != null }
-        if (all.size > n) add(MenuAction("all", "Select all", Glyph.Grid, Palette.Sky, value = plural(all.size, "tile")) {
+        if (all.size > n) add(MenuAction("all", Tx.s(R.string.grid_sel_all), Glyph.Grid, Palette.Sky, value = Tx.p(R.plurals.grid_tiles, all.size)) {
             s.keys.clear(); s.keys.addAll(all); IconGrid.closeMenu(); Sounds.toggle(true)
         })
-        add(MenuAction("clear", "Clear selection", Glyph.Back, Palette.Lavender, value = "B") { IconGrid.closeMenu(); GridSelect.clear() })
+        add(MenuAction("clear", Tx.s(R.string.grid_sel_clear), Glyph.Back, Palette.Lavender, value = "B") { IconGrid.closeMenu(); GridSelect.clear() }) // tx-ok: a button letter
         GridUndoUi.action { IconGrid.closeMenu() }?.let { add(it) }
     }
     val page = if (IconGrid.choosingFolder && n > 0) {
         val move = IconGrid.folderPage != "add"
         MenuPage(
-            if (move) "Move to folder" else "Also add to folder",
+            Tx.s(if (move) R.string.grid_sel_move_to_folder_title else R.string.grid_sel_also_add_title),
             folderChoices(keys, folder, move) { f ->
                 val fit = keys.filter { GridTree.canNest(IconGridStore.config, it, f.id) }
-                GridUndoUi.run((if (move) "Moved $what into " else "Added $what to ") + f.name) {
+                GridUndoUi.run(
+                    when {
+                        move && one != null -> Tx.s(R.string.grid_drag_moved_into, one, f.name)
+                        move -> Tx.p(R.plurals.grid_sel_moved_into, n, n, f.name)
+                        one != null -> Tx.s(R.string.grid_sel_added_to, one, f.name)
+                        else -> Tx.p(R.plurals.grid_sel_added_tiles_to, n, n, f.name)
+                    },
+                ) {
                     IconGridStore.putManyInFolder(fit, folder, f.id, move)
                 }
                 done()
@@ -252,7 +263,7 @@ internal fun selectionMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Con
         )
     } else null
     val first = items.firstOrNull()
-    return MenuSpec(IconGrid.MENU_ROUTE + ":sel:" + (folder ?: ""), if (n == 0) "Nothing marked" else "$n selected", gridName(folder), first?.color ?: Palette.Sky, actions, page) {
+    return MenuSpec(IconGrid.MENU_ROUTE + ":sel:" + (folder ?: ""), if (n == 0) Tx.s(R.string.grid_sel_nothing) else Tx.p(R.plurals.grid_sel_count, n), gridName(folder), first?.color ?: Palette.Sky, actions, page) {
         Box(Modifier.fillMaxSize()) {
             if (first != null) LiftedTileArt(first)
             if (n > 0) CountPill(n, Modifier.align(Alignment.BottomEnd).padding(8.dp))
@@ -266,8 +277,8 @@ private fun hideMany(items: List<GridItem>) {
     val systems = items.filter { it.kind == TileKind.System }.mapNotNull { it.platformId }.filter { !HiddenFolders.listed(it, null) }
     val folders = items.filter { it.kind == TileKind.Folder && !it.hidden }.mapNotNull { it.folderId }
     val n = games.size + systems.size + folders.size
-    if (n == 0) { Toasts.show("Already hidden"); return }
-    GridUndoUi.run(if (n == 1) "Hid ${items.first().title}" else "Hid ${plural(n, "tile")}", games, systems) {
+    if (n == 0) { Toasts.show(Tx.s(R.string.grid_sel_already_hidden)); return }
+    GridUndoUi.run(if (n == 1) Tx.s(R.string.grid_sel_hid, items.first().title) else Tx.p(R.plurals.grid_sel_hid_tiles, n), games, systems) {
         for (g in games) Store.update(g) { it.copy(hidden = true) }
         for (s in systems) HiddenFolders.hide(s, null)
         for (f in folders) HiddenFolders.setGridFolderHidden(f, true)
@@ -325,12 +336,12 @@ internal fun SelectPill(folder: String?, modifier: Modifier = Modifier, compact:
         ) {
             CountPill(n)
             if (!compact) {
-                Text("selected", style = MaterialTheme.typography.labelLarge, color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                ButtonHint("A", "Mark", Palette.Mint)
+                Text(Tx.p(R.plurals.grid_sel_selected_word, n), style = MaterialTheme.typography.labelLarge, color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ButtonHint("A", Tx.s(R.string.grid_sel_hint_mark), Palette.Mint)
             }
-            ButtonHint("Y", "Actions", Palette.Butter)
+            ButtonHint("Y", Tx.s(R.string.grid_sel_hint_actions), Palette.Butter)
             // In a folder's header, B is already the back button beside the name.
-            if (!compact) ButtonHint("B", "Done", Palette.Lavender)
+            if (!compact) ButtonHint("B", Tx.s(R.string.grid_sel_hint_done), Palette.Lavender)
         }
     }
 }

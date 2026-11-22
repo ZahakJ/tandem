@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.content.Context
 import java.io.File
 import android.graphics.BitmapFactory
@@ -366,7 +368,8 @@ object ShelfLooks {
     const val WOOD = "wood"
     const val MATTE = "matte"
     const val OPEN = "open"
-    val choices = listOf(WOOD to "Wood", MATTE to "Matte", OPEN to "Open")
+    val choices: List<Pair<String, String>>
+        get() = listOf(WOOD to Tx.s(R.string.home_shelf_look_wood), MATTE to Tx.s(R.string.home_shelf_look_matte), OPEN to Tx.s(R.string.home_shelf_look_open))
     fun current(): String = Store.settings.look.shelfLook.takeIf { it in listOf(WOOD, MATTE, OPEN) } ?: WOOD
 }
 

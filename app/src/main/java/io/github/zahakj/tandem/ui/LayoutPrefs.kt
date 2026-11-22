@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,14 +13,23 @@ import io.github.zahakj.tandem.data.Store
 
 /** Grid size, card shape and the other layout choices from Appearance, in one place for all screens. */
 object Grid {
-    val sizes = listOf(
-        "small" to "Small", "medium" to "Medium", "large" to "Large", "huge" to "Huge",
-        "cols:4" to "4 columns", "cols:5" to "5 columns", "cols:6" to "6 columns", "cols:7" to "7 columns", "cols:8" to "8 columns",
-    )
-    val shapes = listOf(
-        "rounded" to "Rounded", "square" to "Square", "circle" to "Circle", "portrait" to "Box art (tall)", "landscape" to "Wide",
-    )
-    val tileStyles = listOf("pastel" to "Pastel", "solid" to "Solid colour", "glass" to "Glass", "mono" to "Minimal")
+    // Getters, not lists kept: the labels are in the language of the moment.
+    val sizes: List<Pair<String, String>>
+        get() = listOf(
+            "small" to Tx.s(R.string.home_grid_size_small), "medium" to Tx.s(R.string.home_grid_size_medium),
+            "large" to Tx.s(R.string.home_grid_size_large), "huge" to Tx.s(R.string.home_grid_size_huge),
+        ) + (4..8).map { n -> "cols:$n" to Tx.p(R.plurals.home_grid_size_columns, n) }
+    val shapes: List<Pair<String, String>>
+        get() = listOf(
+            "rounded" to Tx.s(R.string.home_card_shape_rounded), "square" to Tx.s(R.string.home_card_shape_square),
+            "circle" to Tx.s(R.string.home_card_shape_circle), "portrait" to Tx.s(R.string.home_card_shape_portrait),
+            "landscape" to Tx.s(R.string.home_card_shape_landscape),
+        )
+    val tileStyles: List<Pair<String, String>>
+        get() = listOf(
+            "pastel" to Tx.s(R.string.home_tile_style_pastel), "solid" to Tx.s(R.string.home_tile_style_solid),
+            "glass" to Tx.s(R.string.home_tile_style_glass), "mono" to Tx.s(R.string.home_tile_style_mono),
+        )
 
     fun label(list: List<Pair<String, String>>, id: String) = list.firstOrNull { it.first == id }?.second ?: id
 

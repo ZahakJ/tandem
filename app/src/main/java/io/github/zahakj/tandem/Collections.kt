@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import io.github.zahakj.tandem.data.GameMeta
 import io.github.zahakj.tandem.data.HomeFolder
@@ -16,7 +17,13 @@ import java.util.concurrent.ConcurrentHashMap
 
 /** A list of games built from play data or metadata rather than from folders. */
 @androidx.compose.runtime.Immutable
-data class GameCollection(val id: String, val title: String, val games: List<Game>, val color: Color)
+data class GameCollection(val id: String, private val name: String, val games: List<Game>, val color: Color, @StringRes private val res: Int = 0) {
+    /**
+     * The name shown: [res] in the language of the moment when there is one (the lists below are kept), else [name]
+     * (a genre, a folder: the user's own words).
+     */
+    val title: String get() = if (res != 0) Tx.s(res) else name
+}
 
 /** True once a game has any play history, from Tandem or imported from another frontend. */
 val GameMeta.everPlayed: Boolean get() = playCount > 0 || playSeconds > 0 || lastPlayed > 0
@@ -47,17 +54,17 @@ object Collections {
         val beaten by lazy { all.filter { it.meta.playStatus?.beaten == true }.sortedByDescending { it.meta.finishedAt } }
         val statusOnes: List<GameCollection> by lazy {
             listOf(
-                GameCollection(PLAYING, "Playing", playing, Palette.Mint),
-                GameCollection(BACKLOG, "Backlog", backlog, Palette.Sky),
-                GameCollection(BEATEN, "Finished", beaten, Palette.Butter),
+                GameCollection(PLAYING, "Playing", playing, Palette.Mint, R.string.home_collection_playing),
+                GameCollection(BACKLOG, "Backlog", backlog, Palette.Sky, R.string.home_collection_backlog),
+                GameCollection(BEATEN, "Finished", beaten, Palette.Butter, R.string.home_collection_finished),
             )
         }
         val everyOne: List<GameCollection> by lazy {
             listOf(
-                GameCollection("fav", "Favorites", favorites, Palette.Peach),
-                GameCollection("most", "Most played", mostPlayed, Palette.Butter),
-                GameCollection("added", "Recently added", recentlyAdded, Palette.Sky),
-                GameCollection("unplayed", "Never played", neverPlayed, Palette.Lavender),
+                GameCollection("fav", "Favorites", favorites, Palette.Peach, R.string.home_collection_favorites),
+                GameCollection("most", "Most played", mostPlayed, Palette.Butter, R.string.home_collection_most_played),
+                GameCollection("added", "Recently added", recentlyAdded, Palette.Sky, R.string.home_collection_recently_added),
+                GameCollection("unplayed", "Never played", neverPlayed, Palette.Lavender, R.string.home_collection_never_played),
             )
         }
         val home: List<GameCollection> by lazy { everyOne.filter { it.games.isNotEmpty() } }
@@ -191,12 +198,14 @@ object Collections {
     /** A collection by id, even when it has become empty (so its screen can say so instead of going blank). */
     fun byId(id: String): GameCollection? = when {
         id.startsWith("genre:") -> id.removePrefix("genre:").let { g -> GameCollection(id, g, genres()[g].orEmpty(), Palette.forName(g)) }
-        id == "continue" -> GameCollection(id, "Continue playing", continuePlaying(), Palette.Mint)
+        id == "continue" -> GameCollection(id, "Continue playing", continuePlaying(), Palette.Mint, R.string.home_collection_continue)
         id.startsWith(PLAYED) -> id.removePrefix(PLAYED).split(',').let { ids ->
             val games = mostPlayed().filter { it.platform.id in ids }
             val p = games.firstOrNull()?.platform ?: Libraries.byId(ids.first())?.platform
-            val name = if (ids.size > 1) "${ids.size} more systems" else p?.shortName ?: ids.first()
-            GameCollection(id, "$name · most played", games, if (ids.size > 1) Palette.Lavender else io.github.zahakj.tandem.ui.SystemColors.of(ids.first()))
+            // A title made now: byId is asked again whenever it's shown.
+            val title = if (ids.size > 1) Tx.p(R.plurals.home_collection_more_systems_most, ids.size)
+            else Tx.s(R.string.home_collection_system_most, p?.shortName ?: ids.first())
+            GameCollection(id, title, games, if (ids.size > 1) Palette.Lavender else io.github.zahakj.tandem.ui.SystemColors.of(ids.first()))
         }
         id.startsWith(SMART) -> IconGridStore.folder(id.removePrefix(SMART))?.takeIf { Privacy.canShowHomeFolder(it) }?.let { f ->
             GameCollection(id, f.name, smart(f), IconGridStore.config.styleOf("folder:${f.id}").color?.let { Color(it) } ?: folderColor(f.color))

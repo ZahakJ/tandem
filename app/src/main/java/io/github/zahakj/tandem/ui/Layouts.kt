@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -59,7 +62,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.GroupTarget
-import io.github.zahakj.tandem.plural
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Launcher
@@ -73,19 +75,24 @@ import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.abs
 
-/** Home layouts offered in Appearance. */
-val HomeLayouts = listOf(
-    "shelves" to "Shelves",
-    "grid" to "Icon grid",
-    "carousel" to "Carousel",
-    "list" to "List",
-    "console" to "Console",
-    "orbit" to "Orbit",
-    "spotlight" to "Spotlight",
-)
+/** Home layouts offered in Appearance (a getter: the names are in the language of the moment). */
+val HomeLayouts: List<Pair<String, String>>
+    get() = listOf(
+        "shelves" to Tx.s(R.string.home_layout_shelves),
+        "grid" to Tx.s(R.string.home_layout_grid),
+        "carousel" to Tx.s(R.string.home_layout_carousel),
+        "list" to Tx.s(R.string.home_layout_list),
+        "console" to Tx.s(R.string.home_layout_console),
+        "orbit" to Tx.s(R.string.home_layout_orbit),
+        "spotlight" to Tx.s(R.string.home_layout_spotlight),
+    )
 
 /** How games show inside a system or collection. */
-val GameViews = listOf("grid" to "Grid", "list" to "List", "carousel" to "Carousel", "shelf" to "Shelf", "case" to "Case")
+val GameViews: List<Pair<String, String>>
+    get() = listOf(
+        "grid" to Tx.s(R.string.home_view_grid), "list" to Tx.s(R.string.home_view_list), "carousel" to Tx.s(R.string.home_view_carousel),
+        "shelf" to Tx.s(R.string.home_view_shelf), "case" to Tx.s(R.string.home_view_case),
+    )
 
 /** The games view after [v], for the view button over a system or collection. */
 fun nextGameView(v: String): String = GameViews[(GameViews.indexOfFirst { it.first == v } + 1).mod(GameViews.size)].first
@@ -142,7 +149,7 @@ fun FolderPopupHost() {
         val (title, color) = when (r) {
             is Route.System -> listOfNotNull(Libraries.byId(r.platformId)?.platform?.name, r.folder).joinToString("  ›  ") to SystemColors.of(r.platformId)
             is Route.Collection -> (Collections.byId(r.id)?.title.orEmpty()) to (Collections.byId(r.id)?.color ?: Palette.Lavender)
-            Route.Genres -> "Genres" to Palette.Sky
+            Route.Genres -> Tx.s(R.string.home_genres) to Palette.Sky
             else -> "" to Palette.Lavender
         }
         val look = Store.settings.look
@@ -170,7 +177,7 @@ fun FolderPopupHost() {
                     Row(Modifier.padding(horizontal = 12.dp).align(Alignment.Center), verticalAlignment = Alignment.CenterVertically) {
                         GlyphIcon(if (look.gameView == "list") Glyph.Sort else Glyph.Grid, Palette.Text, Modifier.size(18.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text(GameViews.firstOrNull { it.first == look.gameView }?.second ?: "Grid", style = MaterialTheme.typography.labelLarge, maxLines = 1)
+                        Text(GameViews.firstOrNull { it.first == look.gameView }?.second ?: Tx.s(R.string.home_view_grid), style = MaterialTheme.typography.labelLarge, maxLines = 1)
                     }
                 }
             }
@@ -221,14 +228,15 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
     // For the empty library's entry. The picker it opens stays the same across recompositions.
     val pick = rememberGameFolderPicker()
     // Hiding or unhiding a game changes counts, art and which systems show, so those are keys too.
-    return remember(libs, continuing, collections, genres.size, look.homeSections, Store.meta, io.github.zahakj.tandem.Privacy.view, LibraryScan.scanning) {
+    // The language is a key too: the entries carry their words.
+    return remember(libs, continuing, collections, genres.size, look.homeSections, Store.meta, io.github.zahakj.tandem.Privacy.view, LibraryScan.scanning, Lang.revision.intValue) {
         buildList {
             for (section in look.homeSections.ifEmpty { listOf("systems") }) when (section) {
                 "continue" -> continuing.firstOrNull()?.let { g ->
                     val lib = Libraries.of(g)
                     add(
                         HomeEntry(
-                            "c:${g.key}", g.title, "Continue · ${g.platform.name}", "▶", Palette.Mint, listOf(g),
+                            "c:${g.key}", g.title, Tx.s(R.string.home_entry_continue, g.platform.name), "▶", Palette.Mint, listOf(g),
                             lib?.let { it.hero(g) ?: it.screenshot(g) }, Selected.GameItem(g), game = g,
                         ) { Launcher.launch(ctx, g) },
                     )
@@ -239,7 +247,7 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
                     if (games.isEmpty()) return@forEach
                     add(
                         HomeEntry(
-                            "s:${lib.platform.id}", lib.platform.name, plural(games.size, "game"), lib.platform.shortName,
+                            "s:${lib.platform.id}", lib.platform.name, Tx.p(R.plurals.home_games_count, games.size), lib.platform.shortName,
                             Palette.forName(lib.platform.id), games, heroOf(games), Selected.System(lib),
                         ) { Nav.go(Route.System(lib.platform.id)) },
                     )
@@ -248,8 +256,8 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
                     collections.forEach { c ->
                         add(
                             HomeEntry(
-                                "col:${c.id}", c.title, plural(c.games.size, "game"), c.title.take(1), c.color, c.games, heroOf(c.games),
-                                Selected.Group(c.title, "Collection", c.games, c.color, GroupTarget.Collection(c.id)),
+                                "col:${c.id}", c.title, Tx.p(R.plurals.home_games_count, c.games.size), c.title.take(1), c.color, c.games, heroOf(c.games),
+                                Selected.Group(c.title, Tx.s(R.string.home_entry_collection), c.games, c.color, GroupTarget.Collection(c.id)),
                             ) { openFolder(Route.Collection(c.id)) },
                         )
                     }
@@ -257,8 +265,8 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
                         val all = genres.values.flatten().distinct()
                         add(
                             HomeEntry(
-                                "genres", "Genres", "${genres.size} genres", "G", Palette.Sky, all, heroOf(all),
-                                Selected.Group("Genres", "${genres.size} genres", all, Palette.Sky, GroupTarget.Genres),
+                                "genres", Tx.s(R.string.home_genres), Tx.p(R.plurals.home_genres_count, genres.size), Tx.s(R.string.home_genres).take(1), Palette.Sky, all, heroOf(all),
+                                Selected.Group(Tx.s(R.string.home_genres), Tx.p(R.plurals.home_genres_count, genres.size), all, Palette.Sky, GroupTarget.Genres),
                             ) { Nav.go(Route.Genres) },
                         )
                     }
@@ -267,12 +275,15 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
             // Nothing to show: one entry that says what to do, so the layout always has something to highlight.
             if (isEmpty()) {
                 val hidden = libs.any { it.games.isNotEmpty() }
-                val title = if (hidden) "Every game is hidden" else "No games yet"
-                val detail = if (hidden) "Settings › Play & system › Privacy & hidden › Show hidden games" else "Pick the folder your games are in with A"
+                val title = Tx.s(if (hidden) R.string.home_empty_hidden else R.string.home_empty_none)
+                val detail = Tx.s(if (hidden) R.string.home_empty_hidden_detail else R.string.home_empty_none_detail)
                 add(
                     HomeEntry(
                         "empty:rescan", title, detail, "?", Palette.Peach, emptyList(), null,
-                        Selected.Setting(title, if (hidden) "Hidden" else "Pick your games folder", detail, Palette.Peach, if (hidden) "Settings" else "Pick"),
+                        Selected.Setting(
+                            title, Tx.s(if (hidden) R.string.home_empty_hidden_kind else R.string.home_empty_none_kind), detail, Palette.Peach,
+                            Tx.s(if (hidden) R.string.home_empty_hidden_action else R.string.home_empty_none_action),
+                        ),
                     ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() },
                 )
             }
@@ -609,9 +620,9 @@ fun GameListView(routeKey: String, folders: List<GroupItem>, games: List<Game>) 
 @Composable
 fun GameCarouselView(routeKey: String, folders: List<GroupItem>, games: List<Game>) {
     val ctx = LocalContext.current
-    val items = remember(folders, games) {
+    val items = remember(folders, games, Lang.revision.intValue) {
         folders.map { f ->
-            FlowItem(f.key, f.title, (if (f.hidden) "Hidden · " else "") + plural(f.games.size, "game"), f.color, Selected.Group(f.title, f.subtitle, f.games, f.color, f.target), games = f.games) { openFolder(f.route) }
+            FlowItem(f.key, f.title, Tx.p(if (f.hidden) R.plurals.home_games_count_hidden else R.plurals.home_games_count, f.games.size), f.color, Selected.Group(f.title, f.subtitle, f.games, f.color, f.target), games = f.games) { openFolder(f.route) }
         } + games.map { g ->
             val m = g.meta
             FlowItem(
@@ -640,7 +651,10 @@ val dockIconShape: Shape
         else -> RoundedCornerShape(14.dp)
     }
 
-val DockStyles = listOf("bar" to "Floating bar", "shelf" to "Shelf", "minimal" to "Icons only")
+val DockStyles: List<Pair<String, String>>
+    get() = listOf(
+        "bar" to Tx.s(R.string.home_dock_style_bar), "shelf" to Tx.s(R.string.home_dock_style_shelf), "minimal" to Tx.s(R.string.home_dock_style_minimal),
+    )
 
 /**
  * The apps dock for the grid, carousel, list and console layouts. Styled from Appearance: a floating bar, a
@@ -708,7 +722,7 @@ fun DockBar(inList: Boolean = false) {
                         GlyphIcon(Glyph.Grid, Palette.Sky, Modifier.padding(iconSize * 0.2f))
                     }
                     AnimatedVisibility(labels) {
-                        Text("All apps", Modifier.width(60.dp).padding(top = 3.dp), style = MaterialTheme.typography.labelSmall, maxLines = 1, textAlign = TextAlign.Center)
+                        Text(Tx.s(R.string.home_dock_all_apps), Modifier.width(60.dp).padding(top = 3.dp), style = MaterialTheme.typography.labelSmall, maxLines = 1, textAlign = TextAlign.Center)
                     }
                 }
             }

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.data
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import kotlinx.serialization.Serializable
 
 /**
@@ -102,19 +104,23 @@ data class SmartRule(
         /** The choices offered for [random]. */
         val RANDOMS = listOf(0, 5, 10, 20, 50)
 
-        fun sortLabel(s: String) = when (s) {
-            SORT_RECENT -> "Recently played"
-            SORT_MOST -> "Most played"
-            SORT_ADDED -> "Date added"
-            SORT_SYSTEM -> "System"
-            else -> "A–Z"
-        }
+        fun sortLabel(s: String) = Tx.s(
+            when (s) {
+                SORT_RECENT -> R.string.grid_sort_recent
+                SORT_MOST -> R.string.grid_sort_most
+                SORT_ADDED -> R.string.grid_sort_added
+                SORT_SYSTEM -> R.string.grid_sort_system
+                else -> R.string.grid_sort_name
+            },
+        )
 
-        fun playedLabel(s: String) = when (s) {
-            PLAYED_YES -> "Played"
-            PLAYED_NO -> "Unplayed"
-            else -> "Any"
-        }
+        fun playedLabel(s: String) = Tx.s(
+            when (s) {
+                PLAYED_YES -> R.string.grid_smart_played_yes
+                PLAYED_NO -> R.string.grid_smart_played_no
+                else -> R.string.grid_smart_played_any
+            },
+        )
 
         /** A stable pseudo-random rank for [key] under [seed] (64-bit FNV-1a, then mixed). */
         fun pickRank(seed: Long, key: String): Long {
@@ -150,5 +156,5 @@ object FolderScreens {
     const val OPEN_BOTTOM = "bottom"
     val ALL = listOf(null, OPEN_TOP, OPEN_BOTTOM)
 
-    fun label(s: String?) = when (s) { OPEN_TOP -> "Top"; OPEN_BOTTOM -> "Bottom"; else -> "Default" }
+    fun label(s: String?) = Tx.s(when (s) { OPEN_TOP -> R.string.grid_screens_top; OPEN_BOTTOM -> R.string.grid_screens_bottom; else -> R.string.grid_screens_default })
 }

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -372,10 +374,10 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
             Pip(18.dp, bounce = false)
             Spacer(Modifier.width(8.dp))
             Text(
-                when { choosing != null -> choosing.label; page != null -> page.title; more -> "More"; else -> "Options" },
+                when { choosing != null -> choosing.label; page != null -> page.title; more -> Tx.s(R.string.menus_action_more_title); else -> Tx.s(R.string.menus_action_options) },
                 style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
             )
-            ButtonHint("B", if (choosing != null || page != null || more) "Back" else "Close", Palette.Lavender)
+            ButtonHint("B", Tx.s(if (choosing != null || page != null || more) R.string.common_back else R.string.common_close), Palette.Lavender)
         }
         AnimatedContent(
             pageKey,
@@ -400,9 +402,9 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
                     }
                 }
                 key.startsWith("page:") && page != null -> page.actions
-                key == "more" -> listOf(MenuAction("back", "Back", Glyph.Back, Palette.Lavender) { setMore(false) }) + moreActions.map(::opening)
+                key == "more" -> listOf(MenuAction("back", Tx.s(R.string.common_back), Glyph.Back, Palette.Lavender) { setMore(false) }) + moreActions.map(::opening)
                 else -> mainActions.map(::opening) + listOfNotNull(
-                    MenuAction("more", "More…", Glyph.More, Palette.Sky, value = "${moreActions.size}") { FocusMemory.forget(s.routeKey + ":more"); setMore(true) }
+                    MenuAction("more", Tx.s(R.string.menus_action_more), Glyph.More, Palette.Sky, value = "${moreActions.size}") { FocusMemory.forget(s.routeKey + ":more"); setMore(true) }
                         .takeIf { moreActions.isNotEmpty() },
                 )
             }

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -70,7 +72,14 @@ internal fun KeyFace(
 private const val ROUTE = "textentry"
 private val LOWER = "abcdefghijklmnopqrstuvwxyz1234567890".map { it.toString() }
 private val SYMBOLS = "-_.@:/!?&'()+=#%*,;~".map { it.toString() }
+// The keys' names are their focus keys too; Space and Done show in the language (keyLabel).
 private val CONTROLS = listOf("⇧", "#+=", "Space", "⌫", "Done")
+
+private fun keyLabel(k: String): String = when (k) {
+    "Space" -> Tx.s(R.string.menus_keyboard_space)
+    "Done" -> Tx.s(R.string.menus_keyboard_done)
+    else -> k
+}
 
 /**
  * The on-screen keyboard used anywhere text is needed (API keys, names). Shift toggles capitals, "#+=" shows
@@ -134,14 +143,14 @@ fun TextEntryOverlay() {
                                 else -> text += k
                             }
                         },
-                    ) { KeyFace(k, on, off) }
+                    ) { KeyFace(keyLabel(k), on, off) }
                 }
             }
             Row(Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("A", "Type", Palette.Mint)
-                ButtonHint("X", "Delete", Palette.Peach)
-                ButtonHint("Start", "Done", Palette.Sky)
-                ButtonHint("B", "Cancel", Palette.Lavender)
+                ButtonHint("A", Tx.s(R.string.menus_keyboard_type), Palette.Mint)
+                ButtonHint("X", Tx.s(R.string.menus_keyboard_delete), Palette.Peach)
+                ButtonHint("Start", Tx.s(R.string.menus_keyboard_done), Palette.Sky)
+                ButtonHint("B", Tx.s(R.string.menus_keyboard_cancel), Palette.Lavender)
             }
         }
     }

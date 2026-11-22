@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterExitState
@@ -232,10 +234,10 @@ internal fun Modifier.sideSteps(step: ((Int) -> Unit)?): Modifier = if (step == 
 
 /** What hiding a game (or folder, or system) says, without giving a hidden game away in private mode. */
 private fun hiddenToast(): String = when {
-    Privacy.enabled -> "Hidden away"
-    Privacy.showHidden -> "Hidden. It still shows while hidden games are shown"
+    Privacy.enabled -> Tx.s(R.string.menus_hidden_away)
+    Privacy.showHidden -> Tx.s(R.string.menus_hidden_still_shows)
     // It is gone from view, so the way back is Undo (Select, or a tap) or Start › Hidden, never a button on it.
-    else -> "Hidden. Start › Hidden lists it"
+    else -> Tx.s(R.string.menus_hidden_listed)
 }
 
 /**
@@ -245,7 +247,7 @@ private fun hiddenToast(): String = when {
 fun hideAction(label: String, hidden: Boolean, undo: (() -> Unit)? = null, run: () -> Unit) = MenuAction("hidefolder", label, Glyph.Eye, Palette.Lavender, more = true) {
     run()
     Sounds.toggle(hidden)
-    val said = if (hidden) "Back in your library" else hiddenToast()
+    val said = if (hidden) Tx.s(R.string.menus_hidden_back) else hiddenToast()
     if (undo != null) Undo.offer(said, undo) else Toasts.show(said)
     Nav.focusTick++
 }
@@ -266,43 +268,43 @@ fun GameMenu() {
         val routeKey = "menu:${g.key}"
         val running = io.github.zahakj.tandem.RunningGames.list.any { it.game?.key == g.key }
         val actions = buildList {
-            add(MenuAction("play", if (running) "Resume" else "Play", Glyph.Play, Palette.Mint) { Nav.closeOverlays(); Launcher.launch(ctx, g) })
-            add(MenuAction("fav", if (meta.favorite) "Unfavorite" else "Favorite", Glyph.Heart, Palette.Peach, value = if (meta.favorite) "♥" else null) { toggleFavorite(g) })
+            add(MenuAction("play", Tx.s(if (running) R.string.menus_game_resume else R.string.menus_game_play), Glyph.Play, Palette.Mint) { Nav.closeOverlays(); Launcher.launch(ctx, g) })
+            add(MenuAction("fav", Tx.s(if (meta.favorite) R.string.menus_game_unfavorite else R.string.menus_game_favorite), Glyph.Heart, Palette.Peach, value = if (meta.favorite) "♥" else null) { toggleFavorite(g) })
             val queued = UpNext.contains(g)
             add(StatusUi.action(g) { StatusUi.focusPage(routeKey, g); StatusUi.pageFor = g.key })
-            add(MenuAction("upnext", if (queued) "Take off Up next" else "Add to Up next", icon = TIcon.UpNext, color = Palette.Sky, value = if (queued) "✓" else null) { UpNext.toggle(g) })
+            add(MenuAction("upnext", Tx.s(if (queued) R.string.menus_game_upnext_remove else R.string.menus_game_upnext_add), icon = TIcon.UpNext, color = Palette.Sky, value = if (queued) "✓" else null) { UpNext.toggle(g) })
             if (IconGrid.enabled) {
                 val pinned = isPinnedToHome(g)
-                add(MenuAction("home", if (pinned) "Unpin from home" else "Pin to home", Glyph.Star, Palette.Butter, value = if (pinned) "★" else null) { togglePinToHome(g) })
+                add(MenuAction("home", Tx.s(if (pinned) R.string.menus_game_unpin_home else R.string.menus_game_pin_home), Glyph.Star, Palette.Butter, value = if (pinned) "★" else null) { togglePinToHome(g) })
             }
             // Peanuts Native can build this Switch game to run natively (once, 5 to 40 minutes on the device).
             val pn = io.github.zahakj.tandem.PeanutsNative
             if (g.platform.id == "switch") pn.refresh()
-            if (pn.buildable(g)) add(MenuAction("native", "Build native version", Glyph.Star, Palette.Mint, help = "Peanuts Native rebuilds it to run without an emulator, once (5 to 40 minutes). Play then starts it natively.") {
+            if (pn.buildable(g)) add(MenuAction("native", Tx.s(R.string.menus_game_native), Glyph.Star, Palette.Mint, help = Tx.s(R.string.menus_game_native_help)) {
                 Nav.closeOverlays(); pn.build(ctx, g)
             })
             pn.building?.takeIf { (name, _) -> name.equals(pn.of(g)?.name, ignoreCase = true) }?.let { (_, how) ->
-                add(MenuAction("native-progress", "Building natively", Glyph.Star, Palette.Mint, value = how) { pn.refresh(0) })
+                add(MenuAction("native-progress", Tx.s(R.string.menus_game_native_building), Glyph.Star, Palette.Mint, value = how) { pn.refresh(0) })
             }
-            add(MenuAction("notes", "Notes", icon = TIcon.Notes, color = Palette.Mint, help = "This game's notes, in ROMs/notes.") {
+            add(MenuAction("notes", Tx.s(R.string.menus_game_notes), icon = TIcon.Notes, color = Palette.Mint, help = Tx.s(R.string.menus_game_notes_help)) {
                 Nav.closeOverlays(); NotesUi.openFor(g)
             })
             // Only when the game has one (ROMs/manuals, or chosen in Edit details): a row that opens nothing helps nobody.
             val manual = remember(g.key, io.github.zahakj.tandem.Manuals.version, meta.manual) { io.github.zahakj.tandem.Manuals.forGame(g) }
-            if (manual != null) add(MenuAction("manual", "Manual", icon = TIcon.Book, color = Palette.Butter, value = io.github.zahakj.tandem.Manuals.kindOf(manual)?.label ?: "Pictures",
-                help = "The game's manual or guide, page by page: " + io.github.zahakj.tandem.Manuals.shortPath(manual)) {
+            if (manual != null) add(MenuAction("manual", Tx.s(R.string.menus_game_manual), icon = TIcon.Book, color = Palette.Butter, value = io.github.zahakj.tandem.Manuals.kindOf(manual)?.label ?: Tx.s(R.string.menus_game_manual_pictures),
+                help = Tx.s(R.string.menus_game_manual_help, io.github.zahakj.tandem.Manuals.shortPath(manual))) {
                 Nav.closeOverlays(); ManualUi.open(g)
             })
             // A Steam game's achievements, once the Steam account is set (SteamUi.kt).
             if (SteamUi.applies(g)) {
                 val steam = io.github.zahakj.tandem.SteamAchievements.cached(g)
-                add(MenuAction("steam", "Achievements", Glyph.Trophy, Palette.Sky, value = steam?.takeIf { it.total > 0 }?.let { "${it.unlocked} / ${it.total}" },
-                    help = "Every Steam achievement of this game, with how rare each one is.") {
+                add(MenuAction("steam", Tx.s(R.string.menus_game_achievements), Glyph.Trophy, Palette.Sky, value = steam?.takeIf { it.total > 0 }?.let { "${it.unlocked} / ${it.total}" },
+                    help = Tx.s(R.string.menus_game_achievements_help)) {
                     Nav.closeOverlays(); SteamUi.openFor(g)
                 })
             }
-            add(MenuAction("edit", "Edit details", Glyph.Pencil, Palette.Butter, value = if (meta.lockedFields.isNotEmpty()) "${meta.lockedFields.size} locked" else null,
-                help = "Locked details stay as you set them: scraping and gamelist imports leave them alone.") {
+            add(MenuAction("edit", Tx.s(R.string.menus_game_edit), Glyph.Pencil, Palette.Butter, value = if (meta.lockedFields.isNotEmpty()) Tx.p(R.plurals.menus_game_edit_locked, meta.lockedFields.size) else null,
+                help = Tx.s(R.string.menus_game_edit_help)) {
                 GameEditor.edit(g); Nav.closeOverlays()
             })
             if (!g.platform.isApps) {
@@ -311,28 +313,28 @@ fun GameMenu() {
                 val natural = players.firstOrNull { pn.ready(g) && it.packageName == pn.appFor(g) } ?: players.firstOrNull()
                 fun setEmulator(next: io.github.zahakj.tandem.LaunchSpec) = Store.update(g.key) { it.copy(emulator = if (next == natural) null else next.name) }
                 fun switchEmulator(by: Int) = setEmulator(players[Math.floorMod(players.indexOf(current) + by, players.size)])
-                add(MenuAction("emu", "Emulator", Glyph.Gamepad, Palette.Sky, value = current?.name ?: "Not installed", more = true,
-                    help = "The emulator this game starts in. A shows every installed one; the first is the system's own choice.",
+                add(MenuAction("emu", Tx.s(R.string.menus_game_emulator), Glyph.Gamepad, Palette.Sky, value = current?.name ?: Tx.s(R.string.menus_game_emulator_none), more = true,
+                    help = Tx.s(R.string.menus_game_emulator_help),
                     step = if (players.size > 1) ::switchEmulator else null,
                     choices = if (players.size > 1) players.map { p ->
                         MenuChoice(
-                            p.name, p == current, sub = if (p == natural) "The system's choice" else null,
+                            p.name, p == current, sub = if (p == natural) Tx.s(R.string.menus_game_emulator_system) else null,
                             art = p.packageName.takeIf { it.isNotBlank() }?.let { pkg -> { AppTileIcon(pkg, 30.dp) } },
                         ) { setEmulator(p) }
                     } else null) {
-                    Toasts.show(if (current == null) "Get an emulator for ${g.platform.name} in Systems" else "Install another emulator to switch")
+                    Toasts.show(if (current == null) Tx.s(R.string.menus_game_emulator_get, g.platform.name) else Tx.s(R.string.menus_game_emulator_switch))
                 })
             }
             if (screenRow) {
                 val bottom = LaunchDisplay.wantsBottom(g)
                 val systemBottom = SystemPrefs.config(g.platform.id).bottomScreen
                 fun setScreen(want: Boolean) = Store.update(g.key) { it.copy(screen = if (want == systemBottom) null else if (want) "bottom" else "top") }
-                val systems = "The system's screen"
-                add(MenuAction("screen", "Start on", Glyph.Screens, Palette.Butter, value = if (bottom) "Bottom screen" else "Top screen", more = true,
-                    help = "The screen this game opens on. Set back to the system's screen, it follows the system again.", step = { setScreen(!bottom) },
+                val systems = Tx.s(R.string.menus_game_screen_system)
+                add(MenuAction("screen", Tx.s(R.string.menus_game_screen), Glyph.Screens, Palette.Butter, value = Tx.s(if (bottom) R.string.menus_game_screen_bottom else R.string.menus_game_screen_top), more = true,
+                    help = Tx.s(R.string.menus_game_screen_help), step = { setScreen(!bottom) },
                     choices = listOf(
-                        MenuChoice("Top screen", !bottom, sub = systems.takeIf { !systemBottom }) { setScreen(false) },
-                        MenuChoice("Bottom screen", bottom, sub = systems.takeIf { systemBottom }) { setScreen(true) },
+                        MenuChoice(Tx.s(R.string.menus_game_screen_top), !bottom, sub = systems.takeIf { !systemBottom }) { setScreen(false) },
+                        MenuChoice(Tx.s(R.string.menus_game_screen_bottom), bottom, sub = systems.takeIf { systemBottom }) { setScreen(true) },
                     )) { setScreen(!bottom) })
                 // What the bottom screen shows while it plays on the top one (GameCompanion.kt).
                 val companion = io.github.zahakj.tandem.GameCompanion.modeFor(g)
@@ -340,47 +342,47 @@ fun GameMenu() {
                 val deck = io.github.zahakj.tandem.DeckGames.suits(g.platform.id, current?.packageName)
                 val inherited = io.github.zahakj.tandem.GameCompanion.systemMode(g.platform)
                 fun setCompanion(next: String) = Store.update(g.key) { it.copy(companion = if (next == inherited) null else next) }
-                add(MenuAction("companion", "Bottom screen while playing", Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
-                    help = "What the bottom screen shows while this game plays on the top one." + if (deck) " The Deck is a keyboard and trackpad for the game." else "",
+                add(MenuAction("companion", Tx.s(R.string.menus_game_companion), Glyph.Screens, Palette.Lavender, value = io.github.zahakj.tandem.GameCompanion.label(companion), more = true,
+                    help = Tx.s(if (deck) R.string.menus_game_companion_help_deck else R.string.menus_game_companion_help),
                     step = { by -> setCompanion(io.github.zahakj.tandem.GameCompanion.next(companion, deck, by)) },
                     choices = io.github.zahakj.tandem.GameCompanion.choices(deck).map { (id, label) ->
-                        MenuChoice(label, id == companion, sub = "The system's choice".takeIf { id == inherited }) { setCompanion(id) }
+                        MenuChoice(label, id == companion, sub = Tx.s(R.string.menus_game_companion_system).takeIf { id == inherited }) { setCompanion(id) }
                     }) { setCompanion(io.github.zahakj.tandem.GameCompanion.next(companion, deck, 1)) })
             }
             // The game's own performance, fan and refresh-rate modes, on an AYN device (Performance.kt).
             addAll(performanceActions(ctx, g))
-            add(MenuAction("art", "Choose artwork", Glyph.Image, Palette.Butter, more = true) { GameEditor.chooseArt(g); Nav.closeOverlays() })
-            add(MenuAction("scrape", "Scrape this game", Glyph.Download, Palette.Butter, more = true) { Nav.closeOverlays(); ScrapeUi.scrapeOne(g) })
+            add(MenuAction("art", Tx.s(R.string.menus_game_art), Glyph.Image, Palette.Butter, more = true) { GameEditor.chooseArt(g); Nav.closeOverlays() })
+            add(MenuAction("scrape", Tx.s(R.string.menus_game_scrape), Glyph.Download, Palette.Butter, more = true) { Nav.closeOverlays(); ScrapeUi.scrapeOne(g) })
             // A game in a hidden folder stays hidden with it, whatever its own switch says.
             val byFolder = HiddenFolders.hides(g)
-            add(MenuAction("hide", if (meta.hidden) "Unhide this game" else "Hide this game", Glyph.Eye, Palette.Lavender, value = if (byFolder) "Folder hidden" else null, more = true,
-                help = if (byFolder) "Its folder is hidden, so it stays hidden with it whatever this says." else null) {
+            add(MenuAction("hide", Tx.s(if (meta.hidden) R.string.menus_game_unhide else R.string.menus_game_hide), Glyph.Eye, Palette.Lavender, value = if (byFolder) Tx.s(R.string.menus_game_folder_hidden) else null, more = true,
+                help = if (byFolder) Tx.s(R.string.menus_game_folder_hidden_help) else null) {
                 val hiding = !meta.hidden
                 Store.update(g.key) { it.copy(hidden = hiding) }
                 Sounds.toggle(!hiding)
-                Undo.offer(if (hiding) hiddenToast() else "Back in your library") { Store.update(g.key) { it.copy(hidden = !hiding) } }
+                Undo.offer(if (hiding) hiddenToast() else Tx.s(R.string.menus_hidden_back)) { Store.update(g.key) { it.copy(hidden = !hiding) } }
                 Nav.closeMenus()
             })
-            if (meta.everPlayed) add(MenuAction("sessions", "Play sessions…", Glyph.Clock, Palette.Sky, more = true) { PlaySessions.openFor(g) })
-            if (meta.everPlayed) add(MenuAction("reset", "Reset play history", Glyph.Refresh, Palette.Peach, value = if (meta.playSeconds >= 60) formatPlayTime(meta.playSeconds) else null, more = true,
-                help = "The play time so far. Resetting forgets it, with the play count and sessions.") {
+            if (meta.everPlayed) add(MenuAction("sessions", Tx.s(R.string.menus_game_sessions), Glyph.Clock, Palette.Sky, more = true) { PlaySessions.openFor(g) })
+            if (meta.everPlayed) add(MenuAction("reset", Tx.s(R.string.menus_game_reset), Glyph.Refresh, Palette.Peach, value = if (meta.playSeconds >= 60) formatPlayTime(meta.playSeconds) else null, more = true,
+                help = Tx.s(R.string.menus_game_reset_help)) {
                 Confirm.hold(
-                    "Reset play history?",
-                    "Play time, play count and sessions for ${g.title} will be forgotten. This can't be undone.",
-                    "Reset",
+                    Tx.s(R.string.menus_game_reset_title),
+                    Tx.s(R.string.menus_game_reset_detail, g.title),
+                    Tx.s(R.string.menus_game_reset_yes),
                 ) {
                     Store.update(g.key) { it.copy(playSeconds = 0, playCount = 0, lastPlayed = 0) }
                     io.github.zahakj.tandem.data.HomeStore.forgetGame(g.key)
-                    Toasts.show("Play history cleared")
+                    Toasts.show(Tx.s(R.string.menus_game_reset_done))
                     FocusMemory.remember("$routeKey:main", "play")
                 }
             })
             // Files, art and Tandem's record, after a popup that lists them (DeleteGame.kt).
-            add(MenuAction("delete", if (g.platform.isApps) "Uninstall app…" else "Delete game…", Glyph.Trash, Palette.Peach, value = if (running) "Running" else null, more = true,
-                help = if (running) "This game is still running." else null) {
+            add(MenuAction("delete", Tx.s(if (g.platform.isApps) R.string.menus_game_uninstall else R.string.menus_game_delete), Glyph.Trash, Palette.Peach, value = if (running) Tx.s(R.string.menus_game_running) else null, more = true,
+                help = if (running) Tx.s(R.string.menus_game_running_help) else null) {
                 DeleteGame.ask(ctx, g)
             })
-            add(MenuAction("view", "View options", Glyph.Sort, Palette.Sky, value = "Sort, titles…", more = true) {
+            add(MenuAction("view", Tx.s(R.string.menus_game_view), Glyph.Sort, Palette.Sky, value = Tx.s(R.string.menus_game_view_value), more = true) {
                 Nav.menuFor = null
                 Nav.openGroupMenu(routeTarget())
             })
@@ -392,10 +394,10 @@ fun GameMenu() {
 
 /** Title for a group menu's target. */
 private fun targetTitle(t: GroupTarget?): String = when (t) {
-    is GroupTarget.System -> listOfNotNull(Libraries.byId(t.platformId)?.platform?.name ?: "Games", t.folder).joinToString(" › ")
-    is GroupTarget.Collection -> Collections.byId(t.id)?.title ?: "Collection"
-    GroupTarget.Genres -> "Genres"
-    null -> "View"
+    is GroupTarget.System -> listOfNotNull(Libraries.byId(t.platformId)?.platform?.name ?: Tx.s(R.string.menus_group_games), t.folder).joinToString(" › ")
+    is GroupTarget.Collection -> Collections.byId(t.id)?.title ?: Tx.s(R.string.menus_group_collection)
+    GroupTarget.Genres -> Tx.s(R.string.menus_group_genres)
+    null -> Tx.s(R.string.menus_group_view)
 }
 
 private fun targetRoute(t: GroupTarget?): Route? = when (t) {
@@ -430,37 +432,40 @@ fun GroupMenu() {
             null -> Palette.Lavender
         }
         val actions = buildList {
-            if (canOpen && route != null) add(MenuAction("open", "Open", Glyph.Play, Palette.Mint) {
+            if (canOpen && route != null) add(MenuAction("open", Tx.s(R.string.menus_group_open), Glyph.Play, Palette.Mint) {
                 Nav.closeMenus()
                 if (route is Route.System || route is Route.Collection) openFolder(route) else Nav.go(route)
             })
-            if (system != null && system.folder == null) add(MenuAction("rescan", "Rescan games", Glyph.Refresh, Palette.Mint, value = if (LibraryScan.scanning) "Looking…" else null) {
+            if (system != null && system.folder == null) add(MenuAction("rescan", Tx.s(R.string.menus_group_rescan), Glyph.Refresh, Palette.Mint, value = if (LibraryScan.scanning) Tx.s(R.string.menus_group_looking) else null) {
                 Nav.closeMenus(); LibraryScan.rescan(ctx)
             })
-            if (system != null) add(MenuAction("scrape", "Scrape these games", Glyph.Download, Palette.Butter) {
+            if (system != null) add(MenuAction("scrape", Tx.s(R.string.menus_group_scrape), Glyph.Download, Palette.Butter) {
                 Nav.closeMenus()
                 ScrapeUi.open(if (system.folder == null) ScrapeScope.System(system.platformId) else ScrapeScope.Folder(system.platformId, system.folder))
             })
             if (system != null && HiddenFolders.canHide(system.platformId, system.folder)) {
                 val listed = HiddenFolders.listed(system.platformId, system.folder)
-                val what = if (system.folder == null) "this system" else "this folder"
                 val undo = { if (listed) HiddenFolders.hide(system.platformId, system.folder) else HiddenFolders.unhide(system.platformId, system.folder) }
-                add(hideAction(if (listed) "Unhide $what" else "Hide $what", listed, undo) {
+                val label = when {
+                    system.folder == null -> if (listed) R.string.menus_group_unhide_system else R.string.menus_group_hide_system
+                    else -> if (listed) R.string.menus_group_unhide_folder else R.string.menus_group_hide_folder
+                }
+                add(hideAction(Tx.s(label), listed, undo) {
                     Nav.closeMenus()
                     if (listed) HiddenFolders.unhide(system.platformId, system.folder) else HiddenFolders.hide(system.platformId, system.folder)
                 })
             }
-            add(MenuAction("sort", "Sort by", Glyph.Sort, Palette.Sky, value = if (ordered) "Own order" else s.sort.label,
-                help = if (ordered) "This list keeps its own order." else "How games are sorted in every system and list. Tap for the next order.") {
-                if (ordered) Toasts.show("This list keeps its own order. Sort applies to systems and other lists")
+            add(MenuAction("sort", Tx.s(R.string.menus_group_sort), Glyph.Sort, Palette.Sky, value = if (ordered) Tx.s(R.string.menus_group_own_order) else s.sort.label,
+                help = Tx.s(if (ordered) R.string.menus_group_own_order_help else R.string.menus_group_sort_help)) {
+                if (ordered) Toasts.show(Tx.s(R.string.menus_group_own_order_toast))
                 else Store.updateSettings { it.copy(sort = SortOrder.entries[(it.sort.ordinal + 1) % SortOrder.entries.size]) }
             })
-            add(MenuAction("titles", "Game titles", Glyph.Text, Palette.Sky, value = onOff(s.showTitles),
-                help = "Names under the game cards, in every grid.") {
+            add(MenuAction("titles", Tx.s(R.string.menus_group_titles), Glyph.Text, Palette.Sky, value = onOff(s.showTitles),
+                help = Tx.s(R.string.menus_group_titles_help)) {
                 Store.updateSettings { it.copy(showTitles = !it.showTitles) }
             })
-            add(MenuAction("hidden", "Show hidden games", Glyph.Eye, Palette.Lavender, value = if (Privacy.enabled) "Private" else onOff(Privacy.showHidden),
-                help = if (Privacy.enabled) "Private mode keeps hidden games out of sight until your PIN shows them." else "Hidden games show, dimmed, while this is on.") {
+            add(MenuAction("hidden", Tx.s(R.string.menus_group_hidden), Glyph.Eye, Palette.Lavender, value = if (Privacy.enabled) Tx.s(R.string.menus_group_private) else onOff(Privacy.showHidden),
+                help = Tx.s(if (Privacy.enabled) R.string.menus_group_private_help else R.string.menus_group_hidden_help)) {
                 toggleShowHidden()
             })
         }
@@ -477,7 +482,7 @@ fun GroupMenu() {
             GroupTarget.Genres -> TileArt.Tandem(TIcon.Genres, color)
             else -> TileArt.Tandem(TIcon.Star, color)
         }
-        MenuSpec("groupmenu", targetTitle(t), "View options", color, actions) { TileArtView(art, 120.dp) }
+        MenuSpec("groupmenu", targetTitle(t), Tx.s(R.string.menus_group_subtitle), color, actions) { TileArtView(art, 120.dp) }
     }
 }
 
@@ -497,7 +502,7 @@ internal fun toggleFavorite(g: Game) {
     val was = Store.get(g.key).favorite
     Store.update(g.key) { it.copy(favorite = !was) }
     if (was) Sounds.toggle(false) else Sounds.favorite()
-    Undo.offer(if (was) "Removed from favorites" else "Added to favorites ♥") { Store.update(g.key) { it.copy(favorite = was) } }
+    Undo.offer(Tx.s(if (was) R.string.menus_fav_removed else R.string.menus_fav_added)) { Store.update(g.key) { it.copy(favorite = was) } }
 }
 
 /** A small "are you sure?" popup for anything that can't be undone. Opens on Cancel, so a stray A is harmless. */
@@ -536,7 +541,7 @@ fun ConfirmOverlay() {
                 Text(r.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(r.detail, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 5, overflow = TextOverflow.Ellipsis)
                 Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    PillButton("Cancel", Palette.Mint, Modifier.takesFocus("confirm", "no", target == "no")) { Confirm.close() }
+                    PillButton(Tx.s(R.string.menus_confirm_cancel), Palette.Mint, Modifier.takesFocus("confirm", "no", target == "no")) { Confirm.close() }
                     if (r.alt != null) PillButton(r.alt, Palette.Lavender, Modifier.takesFocus("confirm", "alt", target == "alt")) {
                         Confirm.close()
                         r.altAction()
@@ -557,7 +562,14 @@ fun ConfirmOverlay() {
 // ---------------------------------------------------------------------------------------------------------------
 // Search
 
+// The keys' names are their focus keys too; Space and Clear show in the language (keyLabel).
 private val KEYS = ("ABCDEFG" + "HIJKLMN" + "OPQRSTU" + "VWXYZ12" + "3456789" + "0").map { it.toString() } + listOf("Space", "⌫", "Clear")
+
+private fun keyLabel(k: String): String = when (k) {
+    "Space" -> Tx.s(R.string.menus_keyboard_space)
+    "Clear" -> Tx.s(R.string.common_clear)
+    else -> k
+}
 
 /** The search text stays between visits; Clear (or X) empties it. */
 object SearchState {
@@ -608,7 +620,7 @@ fun SearchOverlay() {
             Column(Modifier.width(310.dp).onFocusChanged { if (it.hasFocus) SearchState.inResults = false }) {
                 Box(Modifier.padding(horizontal = 8.dp).fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(Palette.NightDeep).padding(12.dp)) {
                     if (query.isEmpty()) {
-                        Text("⌕ Games, apps, settings", style = MaterialTheme.typography.titleLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(Tx.s(R.string.menus_search_prompt), style = MaterialTheme.typography.titleLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     } else {
                         TailText("⌕ $query", Palette.Text)
                     }
@@ -629,14 +641,14 @@ fun SearchOverlay() {
                                 }
                             },
                         ) {
-                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(k, style = MaterialTheme.typography.titleSmall, maxLines = 1) }
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(keyLabel(k), style = MaterialTheme.typography.titleSmall, maxLines = 1) }
                         }
                     }
                 }
                 Row(Modifier.padding(horizontal = 8.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    ButtonHint("X", "Delete", Palette.Peach)
-                    ButtonHint("B", "Close", Palette.Lavender)
-                    if (resultKeys.isNotEmpty()) ButtonHint("◀▶", "Results", Palette.Sky)
+                    ButtonHint("X", Tx.s(R.string.menus_keyboard_delete), Palette.Peach)
+                    ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
+                    if (resultKeys.isNotEmpty()) ButtonHint("◀▶", Tx.s(R.string.menus_search_results), Palette.Sky)
                 }
             }
             Spacer(Modifier.width(14.dp))
@@ -644,8 +656,8 @@ fun SearchOverlay() {
                 if (results.isEmpty() && finds.isEmpty()) {
                     Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                         Pip(70.dp, mood = if (q.isEmpty()) 0 else 2)
-                        Text(if (q.isEmpty()) "Type a few letters" else "No matches for \"${query.trim()}\"", style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        if (q.isNotEmpty()) Text("Accents and punctuation don't matter", style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
+                        Text(if (q.isEmpty()) Tx.s(R.string.menus_search_empty) else Tx.s(R.string.menus_search_none, query.trim()), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        if (q.isNotEmpty()) Text(Tx.s(R.string.menus_search_accents), style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
                     }
                 } else {
                     Column(Modifier.fillMaxSize()) {
@@ -674,11 +686,11 @@ fun SearchOverlay() {
                             KeepInView(grid, if (finds.isEmpty() || at < 0) at else if (at < finds.size) 0 else at - finds.size + 1)
                         }
                         Row(Modifier.padding(horizontal = 18.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Text(plural(results.size, "match", "matches") + if (results.size >= 60) "+" else "", style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
+                            Text(Tx.p(if (results.size >= 60) R.plurals.menus_search_matches_more else R.plurals.menus_search_matches, results.size), style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
                             Spacer(Modifier.weight(1f))
-                            ButtonHint("A", "Play", Palette.Mint)
-                            ButtonHint("Y", "Options", Palette.Butter)
-                            ButtonHint("B", "Keys", Palette.Lavender)
+                            ButtonHint("A", Tx.s(R.string.menus_search_play), Palette.Mint)
+                            ButtonHint("Y", Tx.s(R.string.menus_search_options), Palette.Butter)
+                            ButtonHint("B", Tx.s(R.string.menus_search_keys), Palette.Lavender)
                         }
                     }
                 }
@@ -710,9 +722,9 @@ fun normalize(s: String): String =
 fun formatPlayTime(seconds: Long): String {
     val m = seconds / 60
     return when {
-        m < 1 -> "under 1m"
-        m < 60 -> "${m}m"
-        else -> "${m / 60}h ${m % 60}m"
+        m < 1 -> Tx.s(R.string.menus_time_short_under)
+        m < 60 -> Tx.p(R.plurals.menus_time_short_minutes, m.toInt())
+        else -> (m / 60).toInt().let { h -> Tx.p(R.plurals.menus_time_short_hours, h, h, (m % 60).toInt()) }
     }
 }
 
@@ -720,9 +732,9 @@ fun formatPlayTime(seconds: Long): String {
 fun formatPlayLong(seconds: Long): String {
     val m = seconds / 60
     return when {
-        m < 1 -> "under a minute"
-        m < 60 -> "$m min"
-        m % 60 == 0L -> "${m / 60} h"
-        else -> "${m / 60} h ${m % 60} min"
+        m < 1 -> Tx.s(R.string.menus_time_long_under)
+        m < 60 -> Tx.p(R.plurals.menus_time_long_minutes, m.toInt())
+        m % 60 == 0L -> Tx.p(R.plurals.menus_time_long_hours, (m / 60).toInt())
+        else -> (m / 60).toInt().let { h -> Tx.p(R.plurals.menus_time_long_hours_minutes, h, h, (m % 60).toInt()) }
     }
 }

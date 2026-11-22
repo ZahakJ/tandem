@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menus: Y on a game (the game menu), on a grid or system (view options), on an app; the Confirm popup, X search,
+     the on-screen keyboard, hold-to-confirm and Undo (Overlays.kt, ActionMenu.kt, AppActionMenu.kt, HoldConfirm.kt,
+     TextEntry.kt). Keys start with menus_, then the menu. See docs/TRANSLATING.md. Menu rows sit on one line in a
+     narrow card: keep labels and values as short as the English. -->
+<resources>
+    <!-- After hiding a game, folder or system. Private mode says only this, so a hidden game isn't given away. -->
+    <string name="menus_hidden_away">Hidden away</string>
+    <string name="menus_hidden_still_shows">Hidden. It still shows while hidden games are shown</string>
+    <!-- "Start › Hidden" names a page, as written there. -->
+    <string name="menus_hidden_listed">Hidden. Start › Hidden lists it</string>
+    <!-- After unhiding a game, folder or system. -->
+    <string name="menus_hidden_back">Back in your library</string>
+
+    <!-- Y on a game: the game menu. -->
+    <string name="menus_game_resume">Resume</string>
+    <string name="menus_game_play">Play</string>
+    <string name="menus_game_unfavorite">Unfavorite</string>
+    <string name="menus_game_favorite">Favorite</string>
+    <!-- Up next: the list of games to play next. -->
+    <string name="menus_game_upnext_remove">Take off Up next</string>
+    <string name="menus_game_upnext_add">Add to Up next</string>
+    <!-- Home: the home screen's grid of tiles. -->
+    <string name="menus_game_unpin_home">Unpin from home</string>
+    <string name="menus_game_pin_home">Pin to home</string>
+    <!-- Peanuts Native is a name; it rebuilds a Switch game to run on the device without an emulator. -->
+    <string name="menus_game_native">Build native version</string>
+    <string name="menus_game_native_help">Peanuts Native rebuilds it to run without an emulator, once (5 to 40 minutes). Play then starts it natively.</string>
+    <string name="menus_game_native_building">Building natively</string>
+    <string name="menus_game_notes">Notes</string>
+    <!-- ROMs/notes is a folder name. -->
+    <string name="menus_game_notes_help">This game\'s notes, in ROMs/notes.</string>
+    <string name="menus_game_manual">Manual</string>
+    <!-- The kind of manual, when it's a folder of pictures rather than a PDF. -->
+    <string name="menus_game_manual_pictures">Pictures</string>
+    <!-- %1$s is where the manual is, a short file path. -->
+    <string name="menus_game_manual_help">The game\'s manual or guide, page by page: %1$s</string>
+    <string name="menus_game_achievements">Achievements</string>
+    <string name="menus_game_achievements_help">Every Steam achievement of this game, with how rare each one is.</string>
+    <string name="menus_game_edit">Edit details</string>
+    <!-- Beside Edit details: how many details are locked (kept as the user set them). -->
+    <plurals name="menus_game_edit_locked">
+        <item quantity="one">%1$d locked</item>
+        <item quantity="other">%1$d locked</item>
+    </plurals>
+    <string name="menus_game_edit_help">Locked details stay as you set them: scraping and gamelist imports leave them alone.</string>
+    <string name="menus_game_emulator">Emulator</string>
+    <string name="menus_game_emulator_none">Not installed</string>
+    <string name="menus_game_emulator_help">The emulator this game starts in. A shows every installed one; the first is the system\'s own choice.</string>
+    <!-- Under the emulator the game's system would pick itself. -->
+    <string name="menus_game_emulator_system">The system\'s choice</string>
+    <!-- %1$s is a system's name ("Nintendo Switch"); Systems is a page. -->
+    <string name="menus_game_emulator_get">Get an emulator for %1$s in Systems</string>
+    <string name="menus_game_emulator_switch">Install another emulator to switch</string>
+    <!-- Which screen the game opens on. -->
+    <string name="menus_game_screen">Start on</string>
+    <string name="menus_game_screen_top">Top screen</string>
+    <string name="menus_game_screen_bottom">Bottom screen</string>
+    <!-- Under the screen the game's system opens its games on. -->
+    <string name="menus_game_screen_system">The system\'s screen</string>
+    <string name="menus_game_screen_help">The screen this game opens on. Set back to the system\'s screen, it follows the system again.</string>
+    <string name="menus_game_companion">Bottom screen while playing</string>
+    <string name="menus_game_companion_help">What the bottom screen shows while this game plays on the top one.</string>
+    <!-- The same help for a PC game or stream, which can use the Deck (a name: Tandem's on-screen keyboard and trackpad). -->
+    <string name="menus_game_companion_help_deck">What the bottom screen shows while this game plays on the top one. The Deck is a keyboard and trackpad for the game.</string>
+    <!-- Under the choice the game's system would make itself. -->
+    <string name="menus_game_companion_system">The system\'s choice</string>
+    <string name="menus_game_art">Choose artwork</string>
+    <string name="menus_game_scrape">Scrape this game</string>
+    <string name="menus_game_unhide">Unhide this game</string>
+    <string name="menus_game_hide">Hide this game</string>
+    <string name="menus_game_folder_hidden">Folder hidden</string>
+    <string name="menus_game_folder_hidden_help">Its folder is hidden, so it stays hidden with it whatever this says.</string>
+    <string name="menus_game_sessions">Play sessions…</string>
+    <string name="menus_game_reset">Reset play history</string>
+    <string name="menus_game_reset_help">The play time so far. Resetting forgets it, with the play count and sessions.</string>
+    <string name="menus_game_reset_title">Reset play history?</string>
+    <!-- %1$s is the game's title. -->
+    <string name="menus_game_reset_detail">Play time, play count and sessions for %1$s will be forgotten. This can\'t be undone.</string>
+    <!-- The button that resets, held down to confirm. -->
+    <string name="menus_game_reset_yes">Reset</string>
+    <string name="menus_game_reset_done">Play history cleared</string>
+    <string name="menus_game_uninstall">Uninstall app…</string>
+    <string name="menus_game_delete">Delete game…</string>
+    <!-- Beside Delete game: the game is running now. -->
+    <string name="menus_game_running">Running</string>
+    <string name="menus_game_running_help">This game is still running.</string>
+    <string name="menus_game_view">View options</string>
+    <!-- Beside View options: what's in it. -->
+    <string name="menus_game_view_value">Sort, titles…</string>
+
+    <!-- Favorites, from the game menu or the Favorite button. -->
+    <string name="menus_fav_removed">Removed from favorites</string>
+    <string name="menus_fav_added">Added to favorites ♥</string>
+
+    <!-- Y on a grid, system, folder or collection: view options. The menu's title, when nothing names it. -->
+    <string name="menus_group_games">Games</string>
+    <string name="menus_group_collection">Collection</string>
+    <string name="menus_group_genres">Genres</string>
+    <string name="menus_group_view">View</string>
+    <!-- Under the title. -->
+    <string name="menus_group_subtitle">View options</string>
+    <string name="menus_group_open">Open</string>
+    <string name="menus_group_rescan">Rescan games</string>
+    <!-- Beside Rescan games while it scans. -->
+    <string name="menus_group_looking">Looking…</string>
+    <string name="menus_group_scrape">Scrape these games</string>
+    <string name="menus_group_unhide_system">Unhide this system</string>
+    <string name="menus_group_hide_system">Hide this system</string>
+    <string name="menus_group_unhide_folder">Unhide this folder</string>
+    <string name="menus_group_hide_folder">Hide this folder</string>
+    <string name="menus_group_sort">Sort by</string>
+    <!-- Beside Sort by, for a list in its own order (Up next, say). -->
+    <string name="menus_group_own_order">Own order</string>
+    <string name="menus_group_own_order_help">This list keeps its own order.</string>
+    <string name="menus_group_own_order_toast">This list keeps its own order. Sort applies to systems and other lists</string>
+    <string name="menus_group_sort_help">How games are sorted in every system and list. Tap for the next order.</string>
+    <string name="menus_group_titles">Game titles</string>
+    <string name="menus_group_titles_help">Names under the game cards, in every grid.</string>
+    <string name="menus_group_hidden">Show hidden games</string>
+    <!-- Beside Show hidden games in private mode (a PIN guards hidden games). -->
+    <string name="menus_group_private">Private</string>
+    <string name="menus_group_private_help">Private mode keeps hidden games out of sight until your PIN shows them.</string>
+    <string name="menus_group_hidden_help">Hidden games show, dimmed, while this is on.</string>
+
+    <!-- The menu card's title: the More… page, or the main page. -->
+    <string name="menus_action_more_title">More</string>
+    <string name="menus_action_options">Options</string>
+    <!-- The row that opens the rest of the menu. -->
+    <string name="menus_action_more">More…</string>
+
+    <!-- The Confirm popup's button that backs out. -->
+    <string name="menus_confirm_cancel">Cancel</string>
+
+    <!-- X: search. The box before anything is typed; ⌕ is a magnifier, keep it. -->
+    <string name="menus_search_prompt">⌕ Games, apps, settings</string>
+    <string name="menus_search_results">Results</string>
+    <string name="menus_search_empty">Type a few letters</string>
+    <!-- %1$s is what was typed. -->
+    <string name="menus_search_none">No matches for \"%1$s\"</string>
+    <string name="menus_search_accents">Accents and punctuation don\'t matter</string>
+    <!-- How many games match. -->
+    <plurals name="menus_search_matches">
+        <item quantity="one">%1$d match</item>
+        <item quantity="other">%1$d matches</item>
+    </plurals>
+    <!-- The same when the list stops at 60: "60 matches+" (there may be more). -->
+    <plurals name="menus_search_matches_more">
+        <item quantity="one">%1$d match+</item>
+        <item quantity="other">%1$d matches+</item>
+    </plurals>
+    <!-- Button hints in the results; Keys goes back to the keyboard. -->
+    <string name="menus_search_play">Play</string>
+    <string name="menus_search_options">Options</string>
+    <string name="menus_search_keys">Keys</string>
+
+    <!-- The on-screen keyboards (search and text entry): keys and button hints. Keys are small: keep them short. -->
+    <string name="menus_keyboard_space">Space</string>
+    <string name="menus_keyboard_done">Done</string>
+    <string name="menus_keyboard_type">Type</string>
+    <!-- Deletes the last letter. -->
+    <string name="menus_keyboard_delete">Delete</string>
+    <string name="menus_keyboard_cancel">Cancel</string>
+
+    <!-- Play time, short, in pills and stats: "45m", "2h 5m". -->
+    <string name="menus_time_short_under">under 1m</string>
+    <plurals name="menus_time_short_minutes">
+        <item quantity="one">%1$dm</item>
+        <item quantity="other">%1$dm</item>
+    </plurals>
+    <!-- %1$d hours and %2$d minutes. -->
+    <plurals name="menus_time_short_hours">
+        <item quantity="one">%1$dh %2$dm</item>
+        <item quantity="other">%1$dh %2$dm</item>
+    </plurals>
+    <!-- Play time in words: "45 min", "2 h", "2 h 5 min". -->
+    <string name="menus_time_long_under">under a minute</string>
+    <plurals name="menus_time_long_minutes">
+        <item quantity="one">%1$d min</item>
+        <item quantity="other">%1$d min</item>
+    </plurals>
+    <plurals name="menus_time_long_hours">
+        <item quantity="one">%1$d h</item>
+        <item quantity="other">%1$d h</item>
+    </plurals>
+    <!-- %1$d hours and %2$d minutes. -->
+    <plurals name="menus_time_long_hours_minutes">
+        <item quantity="one">%1$d h %2$d min</item>
+        <item quantity="other">%1$d h %2$d min</item>
+    </plurals>
+
+    <!-- What a quick press on a hold-to-confirm button says. %1$s is the button's own label in lower case
+         ("delete", "reset", "clear them"): word it so any action fits, "Hold A… : %1$s" if need be. -->
+    <string name="menus_hold_hint">Hold A, or press and hold, to %1$s</string>
+    <!-- The action on a toast that undoes what it says, and the toast after. -->
+    <string name="menus_undo">Undo</string>
+    <string name="menus_undone">Undone</string>
+
+    <!-- The Change hint on the bottom screen for a highlighted setting. -->
+    <string name="menus_selected_change">Change</string>
+
+    <!-- Y on an app (the dock, the drawer, Android apps). Android Games is the system holding Android games. -->
+    <string name="menus_app_open">Open</string>
+    <!-- Beside Open: the screen it opens on. -->
+    <string name="menus_app_open_bottom">Bottom</string>
+    <string name="menus_app_open_top">Top</string>
+    <string name="menus_app_open_help">The screen it opens on now.</string>
+    <string name="menus_app_open_on_top">Open on the top screen</string>
+    <string name="menus_app_open_on_bottom">Open on the bottom screen</string>
+    <string name="menus_app_screen">Always open on</string>
+    <!-- Beside Always open on: no choice of its own, so it follows the default (Auto: Tandem decides). -->
+    <string name="menus_app_screen_auto">Auto</string>
+    <string name="menus_app_screen_default">Default</string>
+    <string name="menus_app_screen_help">The screen this app always opens on: Top, Bottom, or the default for every app.</string>
+    <!-- Under Default: %1$s is the default screen for every app ("Top", "Auto"). -->
+    <string name="menus_app_screen_like_all">Like every app: %1$s</string>
+    <string name="menus_app_screen_top">Top screen</string>
+    <string name="menus_app_screen_bottom">Bottom screen</string>
+    <string name="menus_app_home_remove">Remove from home</string>
+    <string name="menus_app_home_add">Add to home</string>
+    <string name="menus_app_home_removed">Taken off the home grid</string>
+    <string name="menus_app_home_added">On the home grid now ★</string>
+    <string name="menus_app_dock_unpin">Unpin from dock</string>
+    <string name="menus_app_dock_pin">Pin to dock</string>
+    <string name="menus_app_rename">Rename</string>
+    <!-- Beside Rename or Choose icon: the user set their own. -->
+    <string name="menus_app_yours">Yours</string>
+    <string name="menus_app_icon">Choose icon</string>
+    <string name="menus_app_game">Treat as game</string>
+    <string name="menus_app_drawer_show">Show in the drawer</string>
+    <string name="menus_app_drawer_hide">Hide from drawer</string>
+    <string name="menus_app_drawer_shown">Back in All apps</string>
+    <!-- "Show hidden apps" names a setting. -->
+    <string name="menus_app_drawer_hidden">Hidden from All apps. Show hidden apps brings it back</string>
+    <string name="menus_app_info">App info</string>
+    <string name="menus_app_uninstall">Uninstall…</string>
+    <!-- The dock's rows: move the app one place. -->
+    <string name="menus_app_move_left">Move left</string>
+    <string name="menus_app_move_right">Move right</string>
+    <!-- Under the app's name. -->
+    <string name="menus_app_kind_game">Android game</string>
+    <string name="menus_app_kind_app">App</string>
+    <!-- %1$s is the app's name. -->
+    <string name="menus_app_game_off">Took %1$s out of Android Games</string>
+    <string name="menus_app_game_on">%1$s is in Android Games now</string>
+    <string name="menus_app_rename_title">Name for %1$s</string>
+    <string name="menus_app_renamed_own">Back to its own name</string>
+    <!-- %1$s is the new name. -->
+    <string name="menus_app_renamed">Renamed to %1$s</string>
+    <string name="menus_app_icon_own_back">Back to the app\'s own icon</string>
+    <string name="menus_app_icon_new">New icon for %1$s</string>
+    <string name="menus_app_uninstaller_failed">Android\'s uninstaller won\'t open</string>
+    <!-- Choose icon. Files and Gallery are Tandem's own apps. -->
+    <string name="menus_app_icon_pick_title">Pick an icon for %1$s</string>
+    <string name="menus_app_icon_title">Icon for %1$s</string>
+    <string name="menus_app_icon_files">From Files</string>
+    <string name="menus_app_icon_gallery">From Gallery</string>
+    <string name="menus_app_icon_own">App\'s own icon</string>
+    <string name="menus_app_icon_packs_looking">Looking through your icon packs…</string>
+    <string name="menus_app_icon_packs_none">No icon packs found. Theme packs with system icons show theirs here</string>
+    <string name="menus_app_icon_packs">From your icon packs</string>
+    <!-- What a pick in Files is for, in its button hint ("Open · use picture"). -->
+    <string name="menus_pick_picture">picture</string>
+</resources>

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -73,7 +75,10 @@ import java.io.File
  */
 
 object FolderDesign {
-    enum class Page(val label: String) { Icon("Icon"), Colour("Colour"), Hero("Hero"), Title("Title") }
+    enum class Page(@androidx.annotation.StringRes private val res: Int) {
+        Icon(R.string.grid_design_icon), Colour(R.string.grid_design_colour), Hero(R.string.grid_design_hero), Title(R.string.grid_design_title);
+        val label: String get() = Tx.s(res)
+    }
 
     /** The tile being designed. */
     var key by mutableStateOf<String?>(null)
@@ -191,7 +196,7 @@ fun FolderDesignHost() {
                     out.takeIf { it.isFile && it.length() > 0 }
                 }.getOrNull()
             }
-            if (file == null) { Toasts.show("Couldn't use that picture"); return@launch }
+            if (file == null) { Toasts.show(Tx.s(R.string.grid_design_picture_failed)); return@launch }
             val s = FolderDesign.saved
             FolderDesign.save(
                 when (slot) {
@@ -201,7 +206,7 @@ fun FolderDesignHost() {
                 },
             )
             FolderDesign.page = null
-            Toasts.show("Saved to ROMs/tandem/art/folders")
+            Toasts.show(Tx.s(R.string.grid_design_picture_saved))
         }
     }
     OverlayPanel(visible, onClose = {
@@ -241,14 +246,14 @@ fun FolderDesignHost() {
 private fun Header(plain: GridItem, preview: GridItem) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
-            Text(FolderDesign.page?.let { "Design · ${it.label}" } ?: "Design folder", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(FolderDesign.page?.let { Tx.s(R.string.grid_design_page, it.label) } ?: Tx.s(R.string.grid_design_title_main), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(listOf(plain.title, plain.type).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             ButtonHint("L1", "", Palette.Muted)
-            ButtonHint("R1", "Pages", Palette.Muted)
-            ButtonHint("A", if (FolderDesign.page == null) "Change" else "Use", Palette.Mint)
-            ButtonHint("B", "Back", Palette.Lavender)
+            ButtonHint("R1", Tx.s(R.string.grid_design_hint_pages), Palette.Muted)
+            ButtonHint("A", Tx.s(if (FolderDesign.page == null) R.string.grid_design_hint_change else R.string.grid_design_hint_use), Palette.Mint)
+            ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
         }
     }
 }
@@ -273,30 +278,33 @@ private fun Rows(key: String, plain: GridItem) {
         items(rows, key = { it }) { r ->
             val m = Modifier.takesFocus(route, r, r == target)
             when (r) {
-                "icon" -> DesignRow("Icon", iconLabel(plain, s), Palette.Mint, m, glyph = Glyph.Image) { open(FolderDesign.Page.Icon, iconId(s)) }
+                "icon" -> DesignRow(FolderDesign.Page.Icon.label, iconLabel(plain, s), Palette.Mint, m, glyph = Glyph.Image) { open(FolderDesign.Page.Icon, iconId(s)) }
                 "colour" -> DesignRow(
-                    "Colour", when { s.color == null -> "Theme"; s.colorFromArt -> "From the art"; else -> "Custom" }, Palette.Peach, m,
+                    FolderDesign.Page.Colour.label,
+                    Tx.s(when { s.color == null -> R.string.grid_design_theme; s.colorFromArt -> R.string.grid_design_from_art; else -> R.string.grid_design_custom }), Palette.Peach, m,
                     swatch = s.color?.let { Color(it) }, glyph = Glyph.Theme,
                 ) { open(FolderDesign.Page.Colour, colourId(s)) }
-                "hero" -> DesignRow("Hero", heroLabel(plain, s), Palette.Sky, m, glyph = Glyph.Layers) { open(FolderDesign.Page.Hero, heroId(s)) }
-                "title" -> DesignRow("Title", titleLabel(plain, s), Palette.Butter, m, glyph = Glyph.Text) { open(FolderDesign.Page.Title, titleId(s)) }
+                "hero" -> DesignRow(FolderDesign.Page.Hero.label, heroLabel(plain, s), Palette.Sky, m, glyph = Glyph.Layers) { open(FolderDesign.Page.Hero, heroId(s)) }
+                "title" -> DesignRow(FolderDesign.Page.Title.label, titleLabel(plain, s), Palette.Butter, m, glyph = Glyph.Text) { open(FolderDesign.Page.Title, titleId(s)) }
                 "shape" -> DesignRow(
-                    "Shape", when (s.shape) { FolderStyle.SHAPE_ROUNDED -> "Rounded square"; FolderStyle.SHAPE_CIRCLE -> "Circle"; else -> "Theme" }, Palette.Lavender, m, glyph = Glyph.Corners,
+                    Tx.s(R.string.grid_design_shape),
+                    Tx.s(when (s.shape) { FolderStyle.SHAPE_ROUNDED -> R.string.grid_design_shape_rounded; FolderStyle.SHAPE_CIRCLE -> R.string.grid_design_shape_circle; else -> R.string.grid_design_theme }),
+                    Palette.Lavender, m, glyph = Glyph.Corners,
                 ) {
                     val next = when (s.shape) { FolderStyle.SHAPE_THEME -> FolderStyle.SHAPE_ROUNDED; FolderStyle.SHAPE_ROUNDED -> FolderStyle.SHAPE_CIRCLE; else -> FolderStyle.SHAPE_THEME }
                     FolderDesign.save(s.copy(shape = next))
                 }
-                "frame" -> DesignRow("Cover frame", if (s.frame) "Theme's frame" else "No frame", Palette.Lavender, m, glyph = Glyph.Highlight) {
+                "frame" -> DesignRow(Tx.s(R.string.grid_design_frame), Tx.s(if (s.frame) R.string.grid_design_frame_theme else R.string.grid_design_frame_none), Palette.Lavender, m, glyph = Glyph.Highlight) {
                     FolderDesign.save(s.copy(frame = !s.frame))
-                    if (s.icon != FolderStyle.ICON_GAME) Toasts.show("Frames show on a game cover icon, when the theme has them")
+                    if (s.icon != FolderStyle.ICON_GAME) Toasts.show(Tx.s(R.string.grid_design_frame_note))
                 }
                 // Undoable, so no question first: the toast offers Undo while the designer is still open.
-                "reset" -> DesignRow("Reset to theme", if (s.isDefault) "Following the theme" else null, Palette.Peach, m, glyph = Glyph.Restore) {
+                "reset" -> DesignRow(Tx.s(R.string.grid_design_reset), if (s.isDefault) Tx.s(R.string.grid_design_reset_following) else null, Palette.Peach, m, glyph = Glyph.Restore) {
                     if (s.isDefault) return@DesignRow
                     val before = s
                     FolderDesign.save(FolderStyle.DEFAULT)
                     Sounds.toggle(false)
-                    Undo.offer("Back to the theme's look") { if (FolderDesign.key == key) FolderDesign.save(before) else IconGridStore.setStyle(key, before) }
+                    Undo.offer(Tx.s(R.string.grid_design_reset_done)) { if (FolderDesign.key == key) FolderDesign.save(before) else IconGridStore.setStyle(key, before) }
                 }
             }
         }
@@ -318,33 +326,34 @@ private fun DesignRow(label: String, value: String?, color: Color, modifier: Mod
 // --- Labels and the id of the current choice on each page --------------------------------------------------------
 
 private fun iconLabel(plain: GridItem, s: FolderStyle): String = when (s.icon) {
-    FolderStyle.ICON_GAME -> if (s.iconRef?.startsWith("app:") == true) "App icon" else FolderLooks.gameOf(plain, s.iconRef)?.title ?: "Game cover"
-    FolderStyle.ICON_MOSAIC -> "Cover mosaic"
-    FolderStyle.ICON_FAN -> "Cover fan"
-    FolderStyle.ICON_GENRE -> "Genre · " + (s.glyph ?: genreIcon(plain.title).name)
-    FolderStyle.ICON_GLYPH -> "Glyph"
-    FolderStyle.ICON_EMOJI -> s.emoji ?: "Emoji"
-    FolderStyle.ICON_FILE -> s.iconFile?.let { File(it).name } ?: "Picture"
-    else -> "Theme"
+    FolderStyle.ICON_GAME -> if (s.iconRef?.startsWith("app:") == true) Tx.s(R.string.grid_design_app_icon) else FolderLooks.gameOf(plain, s.iconRef)?.title ?: Tx.s(R.string.grid_design_game_cover)
+    FolderStyle.ICON_MOSAIC -> Tx.s(R.string.grid_design_cover_mosaic)
+    FolderStyle.ICON_FAN -> Tx.s(R.string.grid_design_cover_fan)
+    // The glyph's own name (Sword, Puzzle…), as Tandem's icons are named.
+    FolderStyle.ICON_GENRE -> Tx.s(R.string.grid_design_genre_glyph, s.glyph ?: genreIcon(plain.title).name)
+    FolderStyle.ICON_GLYPH -> Tx.s(R.string.grid_design_glyph)
+    FolderStyle.ICON_EMOJI -> s.emoji ?: Tx.s(R.string.grid_design_emoji)
+    FolderStyle.ICON_FILE -> s.iconFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
+    else -> Tx.s(R.string.grid_design_theme)
 }
 
 private fun heroLabel(plain: GridItem, s: FolderStyle): String = when (s.hero) {
-    FolderStyle.HERO_SWEEP -> "Colour sweep"
-    FolderStyle.HERO_WALL -> "Cover wall"
-    FolderStyle.HERO_GAME -> FolderLooks.gameOf(plain, s.heroRef)?.title ?: "A game's hero"
-    FolderStyle.HERO_FILE -> s.heroFile?.let { File(it).name } ?: "Picture"
-    else -> "Theme"
+    FolderStyle.HERO_SWEEP -> Tx.s(R.string.grid_design_colour_sweep)
+    FolderStyle.HERO_WALL -> Tx.s(R.string.grid_design_cover_wall)
+    FolderStyle.HERO_GAME -> FolderLooks.gameOf(plain, s.heroRef)?.title ?: Tx.s(R.string.grid_design_game_hero)
+    FolderStyle.HERO_FILE -> s.heroFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
+    else -> Tx.s(R.string.grid_design_theme)
 }
 
 private fun titleLabel(plain: GridItem, s: FolderStyle): String = when (s.logo) {
-    FolderStyle.LOGO_TEXT -> "Text · ${weightName(s.textWeight)} · ${sizeName(s.textSize)}"
-    FolderStyle.LOGO_GAME -> "Logo: " + (FolderLooks.gameOf(plain, s.logoRef)?.title ?: "a game")
-    FolderStyle.LOGO_FILE -> s.logoFile?.let { File(it).name } ?: "Picture"
-    else -> "Theme"
+    FolderStyle.LOGO_TEXT -> Tx.s(R.string.grid_design_text, weightName(s.textWeight), sizeName(s.textSize))
+    FolderStyle.LOGO_GAME -> FolderLooks.gameOf(plain, s.logoRef)?.title?.let { Tx.s(R.string.grid_design_logo, it) } ?: Tx.s(R.string.grid_design_logo_any)
+    FolderStyle.LOGO_FILE -> s.logoFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
+    else -> Tx.s(R.string.grid_design_theme)
 }
 
-private fun weightName(w: Int) = when { w <= 600 -> "Light"; w >= 900 -> "Heavy"; else -> "Bold" }
-private fun sizeName(s: Int) = when (s) { 0 -> "Small"; 2 -> "Large"; else -> "Medium" }
+private fun weightName(w: Int) = Tx.s(when { w <= 600 -> R.string.grid_design_weight_light; w >= 900 -> R.string.grid_design_weight_heavy; else -> R.string.grid_design_weight_bold })
+private fun sizeName(s: Int) = Tx.s(when (s) { 0 -> R.string.grid_design_size_small; 2 -> R.string.grid_design_size_large; else -> R.string.grid_design_size_medium })
 
 private fun iconId(s: FolderStyle) = when (s.icon) {
     FolderStyle.ICON_GAME -> "ref:${s.iconRef}"
@@ -390,7 +399,7 @@ private fun ChoicePage(key: String, page: FolderDesign.Page, plain: GridItem, pi
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val base = FolderDesign.saved
     val wide = page == FolderDesign.Page.Hero || page == FolderDesign.Page.Title
-    val choices = remember(page, plain, base, pictures) { choicesFor(ctx, page, plain, base, pictures, pickFile, scope) }
+    val choices = remember(page, plain, base, pictures, io.github.zahakj.tandem.Lang.revision.intValue) { choicesFor(ctx, page, plain, base, pictures, pickFile, scope) }
     val route = FolderDesign.pageRoute(key, page)
     val target = rememberFocusTarget(route, choices.map { it.id })
     val state = rememberLazyGridState()
@@ -446,25 +455,25 @@ private fun choicesFor(
     pickFile: (FolderDesign.Page) -> Unit, scope: kotlinx.coroutines.CoroutineScope,
 ): List<Choice> {
     val strong = FolderLooks.strongGames(plain.games).take(60)
-    val device = Choice("device", "From this device…", base, action = { pickFile(page) }) { s ->
+    val device = Choice("device", Tx.s(R.string.grid_design_from_device), base, action = { pickFile(page) }) { s ->
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             GlyphIcon(Glyph.Plus, Palette.Mint, Modifier.size(s * 0.3f))
-            Text("Browse", style = MaterialTheme.typography.labelMedium, color = Palette.Mint, maxLines = 1)
+            Text(Tx.s(R.string.grid_design_browse), style = MaterialTheme.typography.labelMedium, color = Palette.Mint, maxLines = 1)
         }
     }
     return when (page) {
         FolderDesign.Page.Icon -> buildList {
             fun icon(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { s -> StyledTile(plain, st, s) })
-            icon(FolderStyle.ICON_AUTO, "Theme", base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null))
+            icon(FolderStyle.ICON_AUTO, Tx.s(R.string.grid_design_theme), base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null))
             if (FolderLooks.sources(plain, 2).size >= 2) {
-                icon(FolderStyle.ICON_MOSAIC, "Mosaic", base.copy(icon = FolderStyle.ICON_MOSAIC))
-                icon(FolderStyle.ICON_FAN, "Fan", base.copy(icon = FolderStyle.ICON_FAN))
+                icon(FolderStyle.ICON_MOSAIC, Tx.s(R.string.grid_design_mosaic), base.copy(icon = FolderStyle.ICON_MOSAIC))
+                icon(FolderStyle.ICON_FAN, Tx.s(R.string.grid_design_fan), base.copy(icon = FolderStyle.ICON_FAN))
                 val g = FolderLooks.glyph(base.glyph) ?: genreIcon(plain.title)
-                icon("genre:${g.name}", "Genre", base.copy(icon = FolderStyle.ICON_GENRE, glyph = g.name))
+                icon("genre:${g.name}", Tx.s(R.string.grid_design_genre), base.copy(icon = FolderStyle.ICON_GENRE, glyph = g.name))
             }
             for (g in strong.filter { Libraries.of(it)?.box(it) != null }.take(18)) icon("ref:game:${g.key}", g.title, base.copy(icon = FolderStyle.ICON_GAME, iconRef = "game:${g.key}"))
             val apps = (plain.art as? TileArt.Folder)?.inside.orEmpty().filterIsInstance<TileArt.App>().take(12)
-            for (a in apps) icon("ref:app:${a.pkg}", "App icon", base.copy(icon = FolderStyle.ICON_GAME, iconRef = "app:${a.pkg}"))
+            for (a in apps) icon("ref:app:${a.pkg}", Tx.s(R.string.grid_design_app_icon), base.copy(icon = FolderStyle.ICON_GAME, iconRef = "app:${a.pkg}"))
             for (t in TIcon.entries) icon("glyph:${t.name}", t.name, base.copy(icon = FolderStyle.ICON_GLYPH, glyph = t.name))
             for (e in Emojis) icon("emoji:$e", e, base.copy(icon = FolderStyle.ICON_EMOJI, emoji = e))
             for (f in pictures) icon("file:${f.path}", f.nameWithoutExtension, base.copy(icon = FolderStyle.ICON_FILE, iconFile = f.path))
@@ -472,13 +481,13 @@ private fun choicesFor(
         }
         FolderDesign.Page.Colour -> buildList {
             fun swatch(id: String, label: String, st: FolderStyle, c: Color) = add(Choice(id, label, st) { s -> Box(Modifier.size(s * 0.62f).clip(CircleShape).background(c)) })
-            swatch("auto", "Theme", base.copy(color = null, colorFromArt = false), FolderLooks.restyle(plain, base.copy(color = null)).color)
-            add(Choice("art", "From the art", base, action = {
+            swatch("auto", Tx.s(R.string.grid_design_theme), base.copy(color = null, colorFromArt = false), FolderLooks.restyle(plain, base.copy(color = null)).color)
+            add(Choice("art", Tx.s(R.string.grid_design_from_art), base, action = {
                 val src = FolderLooks.artSource(FolderLooks.restyle(plain, base))
-                if (src == null) Toasts.show("This icon has no picture to take a colour from")
+                if (src == null) Toasts.show(Tx.s(R.string.grid_design_no_picture))
                 else scope.launch {
                     val col = withContext(Dispatchers.IO) { FolderArtCache.dominant(ctx, src) }
-                    if (col == null) Toasts.show("No clear colour in that art") else { FolderDesign.save(FolderDesign.saved.copy(color = col, colorFromArt = true)); FolderDesign.page = null }
+                    if (col == null) Toasts.show(Tx.s(R.string.grid_design_no_colour)) else { FolderDesign.save(FolderDesign.saved.copy(color = col, colorFromArt = true)); FolderDesign.page = null }
                 }
             }) { s -> StyledTile(plain, base, s * 0.62f) })
             val theme = listOf(Palette.Accent, Palette.Mint, Palette.Peach, Palette.Lavender, Palette.Sky, Palette.Butter)
@@ -489,18 +498,18 @@ private fun choicesFor(
         }
         FolderDesign.Page.Hero -> buildList {
             fun hero(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { _ -> HeroThumb(plain, st) })
-            hero(FolderStyle.HERO_AUTO, "Theme", base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null))
-            hero(FolderStyle.HERO_SWEEP, "Colour sweep", base.copy(hero = FolderStyle.HERO_SWEEP))
-            if (plain.games.size >= 4) hero(FolderStyle.HERO_WALL, "Cover wall", base.copy(hero = FolderStyle.HERO_WALL))
+            hero(FolderStyle.HERO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null))
+            hero(FolderStyle.HERO_SWEEP, Tx.s(R.string.grid_design_colour_sweep), base.copy(hero = FolderStyle.HERO_SWEEP))
+            if (plain.games.size >= 4) hero(FolderStyle.HERO_WALL, Tx.s(R.string.grid_design_cover_wall), base.copy(hero = FolderStyle.HERO_WALL))
             for (g in strong.filter { FolderLooks.gameHero(it) != null }.take(12)) hero("ref:${g.key}", g.title, base.copy(hero = FolderStyle.HERO_GAME, heroRef = g.key))
             for (f in pictures) hero("file:${f.path}", f.nameWithoutExtension, base.copy(hero = FolderStyle.HERO_FILE, heroFile = f.path))
             add(device)
         }
         FolderDesign.Page.Title -> buildList {
             fun title(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { _ -> TitleThumb(plain, st) })
-            title(FolderStyle.LOGO_AUTO, "Theme", base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null))
+            title(FolderStyle.LOGO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null))
             for (size in 0..2) for (w in listOf(600, 800, 900)) {
-                title("text:$w:$size", "${weightName(w)} · ${sizeName(size)}", base.copy(logo = FolderStyle.LOGO_TEXT, textWeight = w, textSize = size))
+                title("text:$w:$size", Tx.s(R.string.grid_design_weight_size, weightName(w), sizeName(size)), base.copy(logo = FolderStyle.LOGO_TEXT, textWeight = w, textSize = size))
             }
             for (g in strong.filter { Libraries.of(it)?.logo(it) != null }.take(12)) title("ref:${g.key}", g.title, base.copy(logo = FolderStyle.LOGO_GAME, logoRef = g.key))
             for (f in pictures) title("file:${f.path}", f.nameWithoutExtension, base.copy(logo = FolderStyle.LOGO_FILE, logoFile = f.path))
@@ -566,7 +575,7 @@ private fun PreviewPane(preview: GridItem, modifier: Modifier) {
             HeroPicture(preview, hero, Modifier.fillMaxSize())
             TitleArt(preview, 0.5f)
         }
-        Text("Other screen", Modifier.padding(top = 4.dp), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+        Text(Tx.s(R.string.grid_design_other_screen), Modifier.padding(top = 4.dp), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
     }
 }
 

@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +48,6 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.GridSlots
 import io.github.zahakj.tandem.data.IconGridStore
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
 
 /*
  * Add here › Game…: every game, grouped by system, to put on the grid at an empty spot. A picks (several at once),
@@ -72,10 +73,10 @@ internal fun GamePickPanel() {
     // With no games at all, the first button picks the folder they are in instead.
     val pickFolder = rememberGameFolderPicker()
     val close: () -> Unit = { IconGrid.pickingGames = null; Nav.focusTick++ }
-    val search: () -> Unit = { TextEntry.ask("Find a game", query, onChange = { query = it }) { query = it } }
+    val search: () -> Unit = { TextEntry.ask(Tx.s(R.string.grid_pick_find), query, onChange = { query = it }) { query = it } }
     val place: () -> Unit = place@{
         val t = shownTarget ?: return@place
-        if (picked.isEmpty()) { Toasts.show("Pick a game with A first"); Sounds.error(); return@place }
+        if (picked.isEmpty()) { Toasts.show(Tx.s(R.string.grid_pick_first)); Sounds.error(); return@place }
         val keys = picked.toList()
         val first = if (t.folder == null) {
             IconGridStore.addAllAt(keys, homeShown(), t.index)
@@ -86,7 +87,7 @@ internal fun GamePickPanel() {
         }
         if (first != null) FocusMemory.remember(if (t.folder == null) Route.Home.key else IconGrid.folderRoute(t.folder), first)
         Sounds.confirm()
-        Toasts.show(if (keys.size == 1) "Added a game here" else "Added ${keys.size} games here")
+        Toasts.show(Tx.p(R.plurals.grid_pick_added, keys.size))
         close()
     }
     InterceptButtons(visible && TextEntry.request == null) { b ->
@@ -120,14 +121,14 @@ internal fun GamePickPanel() {
         val focusTarget = rememberFocusTarget(PICK_ROUTE, keys)
         val grid = rememberLazyGridState()
         FolderSheet(
-            "Add games here",
-            if (picked.isEmpty()) plural(groups.sumOf { it.second.size }, "game") + if (q.isEmpty()) "" else " match \"${query.trim()}\""
-            else plural(picked.size, "game") + " picked",
+            Tx.s(R.string.grid_pick_title),
+            if (picked.isEmpty()) groups.sumOf { it.second.size }.let { n -> if (q.isEmpty()) Tx.p(R.plurals.grid_games, n) else Tx.p(R.plurals.grid_pick_matching, n, n, query.trim()) }
+            else Tx.p(R.plurals.grid_pick_picked, picked.size),
             Palette.Mint, onBack = close, art = TileArt.Symbol(Glyph.Cartridge, Palette.Mint),
             actions = {
-                ButtonHint("A", "Pick", Palette.Mint); Spacer(Modifier.width(10.dp))
-                ButtonHint("X", "Search", Palette.Sky); Spacer(Modifier.width(10.dp))
-                ButtonHint("Start", "Add", Palette.Butter)
+                ButtonHint("A", Tx.s(R.string.grid_pick_hint_pick), Palette.Mint); Spacer(Modifier.width(10.dp))
+                ButtonHint("X", Tx.s(R.string.grid_pick_hint_search), Palette.Sky); Spacer(Modifier.width(10.dp))
+                ButtonHint("Start", Tx.s(R.string.grid_pick_hint_add), Palette.Butter)
             },
         ) {
             PaddedScrolling {
@@ -144,25 +145,28 @@ internal fun GamePickPanel() {
                             val none = Libraries.games.isEmpty()
                             PillButton(
                                 when {
-                                    none -> "Pick your games folder"
-                                    picked.isEmpty() -> "Add here"
-                                    else -> "Add ${plural(picked.size, "game")} here"
+                                    none -> Tx.s(R.string.grid_pick_games_folder)
+                                    picked.isEmpty() -> Tx.s(R.string.grid_pick_add_here)
+                                    else -> Tx.p(R.plurals.grid_pick_add_n_here, picked.size)
                                 },
                                 Palette.Mint, Modifier.takesFocus(PICK_ROUTE, "add", focusTarget == "add"),
                             ) { if (none) pickFolder() else place() }
-                            PillButton(if (q.isEmpty()) "Search…" else "Search: ${query.trim()}", Palette.Sky, Modifier) { search() }
-                            if (q.isNotEmpty()) PillButton("Show all", Palette.Lavender, Modifier) { query = "" }
+                            PillButton(if (q.isEmpty()) Tx.s(R.string.grid_pick_search) else Tx.s(R.string.grid_pick_searching, query.trim()), Palette.Sky, Modifier) { search() }
+                            if (q.isNotEmpty()) PillButton(Tx.s(R.string.grid_pick_show_all), Palette.Lavender, Modifier) { query = "" }
                         }
                     }
                     if (groups.isEmpty()) item("none", span = { GridItemSpan(maxLineSpan) }) {
-                        PipNote(if (q.isEmpty()) "No games yet" else "No matches", if (q.isEmpty()) "Pick the folder your games are in, and they show up here." else "Accents and punctuation don't matter.", mood = 2)
+                        PipNote(
+                            Tx.s(if (q.isEmpty()) R.string.grid_pick_none else R.string.grid_pick_no_matches),
+                            Tx.s(if (q.isEmpty()) R.string.grid_pick_none_help else R.string.grid_pick_no_matches_help), mood = 2,
+                        )
                     }
                     for ((name, games) in groups) {
                         item("h:$name", span = { GridItemSpan(maxLineSpan) }, contentType = "header") {
                             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Text(name, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                                 Spacer(Modifier.width(8.dp))
-                                Text(plural(games.size, "game"), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+                                Text(Tx.p(R.plurals.grid_games, games.size), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
                             }
                         }
                         items(games, key = { gameKey(it) }, contentType = { "game" }) { g ->
@@ -175,7 +179,7 @@ internal fun GamePickPanel() {
                                     onFocus = { Selection.current = Selected.GameItem(g) },
                                     onClick = {
                                         when {
-                                            already -> Toasts.show("${g.title} is already on the grid")
+                                            already -> Toasts.show(Tx.s(R.string.grid_pick_already, g.title))
                                             on -> picked.remove(k)
                                             else -> picked.add(k)
                                         }

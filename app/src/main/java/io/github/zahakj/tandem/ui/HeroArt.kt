@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.os.BatteryManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -66,12 +69,13 @@ import java.util.Calendar
 import java.util.Date
 
 /** Bottom-screen styles, as offered in Appearance. Stored in [io.github.zahakj.tandem.data.Settings.bottomMode]. */
-val BottomModes = listOf(
-    "details" to "Details",
-    "both" to "Art + info",
-    "art" to "Animated art",
-    "clock" to "Clock",
-)
+val BottomModes: List<Pair<String, String>>
+    get() = listOf(
+        "details" to Tx.s(R.string.home_bottom_details),
+        "both" to Tx.s(R.string.home_bottom_both),
+        "art" to Tx.s(R.string.home_bottom_art),
+        "clock" to Tx.s(R.string.home_bottom_clock),
+    )
 
 /** A video snap for [game], if one has been downloaded: `ROMs/downloaded_media/<system>/videos/<game>.mp4`. */
 fun videoSnapFor(game: Game): File? {
@@ -263,7 +267,7 @@ fun ArtOnly(game: Game, resumable: Boolean) {
     Box(Modifier.fillMaxSize()) {
         HeroArt(game, Modifier.fillMaxSize().fadeMask(0.6f to 1f, 1f to 0.25f))
         AnimatedLogo(game, maxWidth = 380.dp, maxHeight = 130.dp, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 34.dp, start = 22.dp, end = 22.dp), textAlign = TextAlign.Center)
-        if (resumable) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopEnd).padding(16.dp).darkChip())
+        if (resumable) Pill(Tx.s(R.string.home_hero_running), Palette.Mint, Modifier.align(Alignment.TopEnd).padding(16.dp).darkChip())
     }
 }
 
@@ -273,7 +277,7 @@ fun ArtWithInfo(game: Game, resumable: Boolean, info: @Composable ColumnScope.()
     Box(Modifier.fillMaxSize()) {
         // The art fades away towards the bottom, so the info below sits on the backdrop, not on a dark band.
         HeroArt(game, Modifier.fillMaxSize().fadeMask(0.3f to 1f, 0.7f to 0.12f, 1f to 0f))
-        if (resumable) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopEnd).padding(16.dp).darkChip())
+        if (resumable) Pill(Tx.s(R.string.home_hero_running), Palette.Mint, Modifier.align(Alignment.TopEnd).padding(16.dp).darkChip())
         Column(
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(16.dp)
                 .padding(horizontal = 18.dp, vertical = 16.dp),
@@ -299,19 +303,19 @@ fun ClockFace() {
         is Selected.System -> s.library.platform.name
         is Selected.Group -> s.title
         is Selected.Setting -> s.title
-        is Selected.App -> if (s.pkg == Dock.ALL_APPS) "All apps" else io.github.zahakj.tandem.RunningGames.appLabel(ctx, s.pkg)
+        is Selected.App -> if (s.pkg == Dock.ALL_APPS) Tx.s(R.string.home_clock_all_apps) else io.github.zahakj.tandem.RunningGames.appLabel(ctx, s.pkg)
         Selected.Home -> null
     }
     Column(Modifier.fillMaxSize().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text(Clock.always(now), style = MaterialTheme.typography.displaySmall.copy(fontSize = 76.sp, lineHeight = 80.sp))
         Text(
-            android.text.format.DateFormat.format("EEEE, d MMMM", now).toString(),
+            java.text.SimpleDateFormat(Tx.s(R.string.home_clock_date), Lang.locale).format(now),
             style = MaterialTheme.typography.titleLarge, color = Palette.Muted,
         )
         Spacer(Modifier.height(22.dp))
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Pip(34.dp, mood = if (hour in 0..5) 2 else 0)
-            if (battery >= 0) Pill("$battery% battery", if (battery <= 20) Palette.Peach else Palette.Mint)
+            if (battery >= 0) Pill(Tx.s(R.string.home_clock_battery, battery), if (battery <= 20) Palette.Peach else Palette.Mint)
         }
         if (selected != null) {
             Spacer(Modifier.height(18.dp))
@@ -328,5 +332,9 @@ object Hero {
     val logoScale: Float
         get() = Store.settings.look.heroLogoScale.let { mine -> if (mine == 0.7f) Themes.live.heroLogoScale ?: mine else mine }.coerceIn(0.3f, 1f)
 
-    val gradients = listOf("fade" to "Soft fade", "strong" to "Strong fade", "vignette" to "Vignette", "none" to "None")
+    val gradients: List<Pair<String, String>>
+        get() = listOf(
+            "fade" to Tx.s(R.string.home_hero_gradient_fade), "strong" to Tx.s(R.string.home_hero_gradient_strong),
+            "vignette" to Tx.s(R.string.home_hero_gradient_vignette), "none" to Tx.s(R.string.home_hero_gradient_none),
+        )
 }

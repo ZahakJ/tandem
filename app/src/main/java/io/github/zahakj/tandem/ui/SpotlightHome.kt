@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -144,8 +147,13 @@ object SpotlightMode {
     const val STAGE = "spotlight"
     const val EMPTY = "spotlight:empty"
 
-    val Rails = listOf("left" to "Left", "right" to "Right")
-    val Backdrops = listOf("art" to "Art", "blur" to "Blurred cover", "dim" to "Dim")
+    val Rails: List<Pair<String, String>>
+        get() = listOf("left" to Tx.s(R.string.home_spotlight_rail_left), "right" to Tx.s(R.string.home_spotlight_rail_right))
+    val Backdrops: List<Pair<String, String>>
+        get() = listOf(
+            "art" to Tx.s(R.string.home_spotlight_backdrop_art), "blur" to Tx.s(R.string.home_spotlight_backdrop_blur),
+            "dim" to Tx.s(R.string.home_spotlight_backdrop_dim),
+        )
 
     internal fun rememberSpot(group: String, item: String) {
         FocusMemory.remember(ROUTE, group)
@@ -194,7 +202,7 @@ private fun buildGroups(catalog: GridCatalog, pinned: List<String>): List<RailGr
         if (!seen.add(item.builtIn ?: item.pkg ?: k)) return@mapNotNull null
         RailEntry(k, item.title, item = item)
     }
-    if (apps.isNotEmpty()) out += RailGroup("apps", "Apps", Palette.Sky, apps)
+    if (apps.isNotEmpty()) out += RailGroup("apps", Tx.s(R.string.home_spotlight_apps), Palette.Sky, apps)
     return out
 }
 
@@ -313,7 +321,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
     val packages = io.github.zahakj.tandem.Emulators.changes
     val pinned = remember(HomeStore.settings.dock, packages) { Dock.pinned(ctx) }
     PrefetchAppLooks(pinned)
-    val groups = remember(catalog, pinned) { buildGroups(catalog, pinned) }
+    val groups = remember(catalog, pinned, Lang.revision.intValue) { buildGroups(catalog, pinned) }
     val noGames = Collections.visibleGames().isEmpty()
     // B comes back here from the top of any other group: Recently played (the last game first), else the first system.
     val home = groups.indexOfFirst { it.key == RECENT }.coerceAtLeast(0)
@@ -402,8 +410,8 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
             val pick = rememberGameFolderPicker()
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 EmptyNote(
-                    if (hidden) "Every game is hidden" else "No games yet. Pick the folder your games are in",
-                    if (hidden) "Show hidden games" else "Pick your games folder",
+                    Tx.s(if (hidden) R.string.home_spotlight_hidden else R.string.home_spotlight_none),
+                    Tx.s(if (hidden) R.string.home_spotlight_show_hidden else R.string.home_spotlight_pick),
                     Modifier.takesFocus(route, SpotlightMode.EMPTY, target == SpotlightMode.EMPTY),
                 ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() }
             }
@@ -856,7 +864,7 @@ private fun GamePanel(st: RailState, game: Game, maxH: Dp) {
                 PlayStats(game)
             }
             Spacer(Modifier.height(14.dp))
-            PanelHints(if (running) "Resume" else "Play", menu = true, story = story != null, expanded = expanded)
+            PanelHints(Tx.s(if (running) R.string.home_spotlight_hint_resume else R.string.home_spotlight_hint_play), menu = true, story = story != null, expanded = expanded)
         }
     }
 }
@@ -936,7 +944,7 @@ private fun FactChips(game: Game, running: Boolean) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         @Composable
         fun chip(text: String, color: Color) = Pill(text, Palette.readable(color), Modifier.darkChip())
-        if (running) chip("● Running", Palette.Mint)
+        if (running) chip(Tx.s(R.string.home_spotlight_running), Palette.Mint)
         chip(game.platform.shortName, SystemColors.of(game.platform.id))
         meta.year?.let { chip("$it", Palette.Butter) }
         meta.developer?.takeIf { it.isNotBlank() }?.let { chip(it.trim(), Palette.Peach) }
@@ -949,8 +957,8 @@ private fun FactChips(game: Game, running: Boolean) {
 private fun playersLabel(m: GameMeta): String? {
     val p = m.players?.trim()?.replace('-', '–')?.takeIf { it.isNotEmpty() } ?: return null
     return when {
-        p == "1" -> "1 player"
-        p.first().isDigit() -> "$p players"
+        p == "1" -> Tx.s(R.string.home_spotlight_one_player)
+        p.first().isDigit() -> Tx.s(R.string.home_spotlight_players, p)
         else -> p
     }
 }
@@ -961,14 +969,14 @@ private fun playersLabel(m: GameMeta): String? {
 private fun PlayStats(game: Game) {
     val meta = game.meta
     val stats = buildList {
-        playProgress(meta)?.let { add(it to "Played") }
-        if (meta.lastPlayed > 0) add(ago(meta.lastPlayed) to "Last played")
-        if (meta.playCount > 0) add("${meta.playCount}" to if (meta.playCount == 1) "Session" else "Sessions")
-        meta.playStatus?.let { add(it.label to "Status") }
-        trophyChip(game)?.removePrefix("🏆 ")?.let { add(it to "Achievements") }
+        playProgress(meta)?.let { add(it to Tx.s(R.string.home_spotlight_played)) }
+        if (meta.lastPlayed > 0) add(ago(meta.lastPlayed) to Tx.s(R.string.home_spotlight_last_played))
+        if (meta.playCount > 0) add("${meta.playCount}" to Tx.p(R.plurals.home_spotlight_sessions, meta.playCount))
+        meta.playStatus?.let { add(it.label to Tx.s(R.string.home_spotlight_status)) }
+        trophyChip(game)?.removePrefix("🏆 ")?.let { add(it to Tx.s(R.string.home_spotlight_achievements)) }
     }
     if (stats.isEmpty()) {
-        Text("Not played yet", style = MaterialTheme.typography.titleSmall.overArt(), color = Palette.Muted, maxLines = 1)
+        Text(Tx.s(R.string.home_spotlight_not_played), style = MaterialTheme.typography.titleSmall.overArt(), color = Palette.Muted, maxLines = 1)
         return
     }
     FlowRow(horizontalArrangement = Arrangement.spacedBy(22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -984,7 +992,7 @@ private fun PlayStats(game: Game) {
 /** "3 minutes ago", "Yesterday", or "Just now". */
 private fun ago(time: Long): String {
     val now = System.currentTimeMillis()
-    return if (now - time < 60_000) "Just now" else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+    return if (now - time < 60_000) Tx.s(R.string.home_spotlight_just_now) else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
 }
 
 /** An app's panel: its name, what it is, and A to open it. */
@@ -998,7 +1006,7 @@ private fun AppPanel(item: GridItem) {
             Text(line, style = MaterialTheme.typography.titleMedium.overArt(), color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis)
         }
         Spacer(Modifier.height(18.dp))
-        PanelHints("Open", menu = item.kind == TileKind.App, story = false, expanded = false)
+        PanelHints(Tx.s(R.string.home_spotlight_hint_open), menu = item.kind == TileKind.App, story = false, expanded = false)
     }
 }
 
@@ -1008,12 +1016,12 @@ private fun AppPanel(item: GridItem) {
 private fun PanelHints(a: String, menu: Boolean, story: Boolean, expanded: Boolean) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ButtonHint("A", a, Palette.Mint)
-        if (menu) ButtonHint("Y", "Menu", Palette.Butter)
-        if (story && SpotlightMode.ownsX) ButtonHint("X", if (expanded) "Less" else "More", Palette.Sky)
+        if (menu) ButtonHint("Y", Tx.s(R.string.home_spotlight_hint_menu), Palette.Butter)
+        if (story && SpotlightMode.ownsX) ButtonHint("X", Tx.s(if (expanded) R.string.home_spotlight_hint_less else R.string.home_spotlight_hint_more), Palette.Sky)
         Row(verticalAlignment = Alignment.CenterVertically) {
             ButtonHint("L1", "", Palette.Lavender)
             Spacer(Modifier.width(4.dp))
-            ButtonHint("R1", "Groups", Palette.Lavender)
+            ButtonHint("R1", Tx.s(R.string.home_spotlight_hint_groups), Palette.Lavender)
         }
     }
 }
@@ -1022,25 +1030,24 @@ private fun PanelHints(a: String, menu: Boolean, story: Boolean, expanded: Boole
 @Composable
 fun spotlightHomeSettings(): SettingSection {
     val look = Store.settings.look
-    return SettingSection(
-        "Spotlight",
-        listOf(
+    return SettingSection(Tx.s(R.string.home_spotlight_settings), en = "Spotlight",
+        rows = listOf(
             choice(
-                "Spotlight rail", Glyph.Home, Palette.Lavender,
-                "Which side the rail of covers runs down. The game's details take the other side.",
-                SpotlightMode.Rails, look.spotlightRail,
+                Tx.s(R.string.home_spotlight_rail), Glyph.Home, Palette.Lavender,
+                Tx.s(R.string.home_spotlight_rail_help),
+                SpotlightMode.Rails, look.spotlightRail, en = "Spotlight rail",
                 look = { v -> LayoutPreview("spotlight", Modifier.fillMaxSize(), rounded = false, look = look.copy(spotlightRail = v)) },
             ) { v -> updateLook { it.copy(spotlightRail = v) } }.copy(keywords = "spotlight rail side left right mirror covers"),
             choice(
-                "Spotlight backdrop", Glyph.Image, Palette.Peach,
-                "What fills the screen behind the highlighted game: its key art, its cover blurred, or just the theme's colour.",
-                SpotlightMode.Backdrops, look.spotlightBackdrop,
+                Tx.s(R.string.home_spotlight_backdrop), Glyph.Image, Palette.Peach,
+                Tx.s(R.string.home_spotlight_backdrop_help),
+                SpotlightMode.Backdrops, look.spotlightBackdrop, en = "Spotlight backdrop",
                 look = { v -> LayoutPreview("spotlight", Modifier.fillMaxSize(), rounded = false, look = look.copy(spotlightBackdrop = v)) },
             ) { v -> updateLook { it.copy(spotlightBackdrop = v) } }.copy(keywords = "spotlight backdrop background art hero blur cover dim wallpaper"),
             toggle(
-                "Spotlight motion", Glyph.Sparkle, Palette.Mint,
-                "The art behind the game drifts and zooms in very slowly. Off with Reduce motion too.",
-                look.spotlightMotion,
+                Tx.s(R.string.home_spotlight_motion), Glyph.Sparkle, Palette.Mint,
+                Tx.s(R.string.home_spotlight_motion_help),
+                look.spotlightMotion, en = "Spotlight motion",
                 look = { on -> SpotlightMotionScene(on) },
             ) { v -> updateLook { it.copy(spotlightMotion = v) } }.copy(keywords = "spotlight motion zoom ken burns drift animation"),
         ),

@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The icon grid and its folders: tiles, the Y menus on tiles and empty spots, moving and selecting, folder design,
+     smart folders and their rules (IconGrid.kt, Grid*.kt, FolderDesign.kt, SmartFolder*.kt, SystemFolders.kt and the
+     grid's data files). Keys start with grid_. See docs/TRANSLATING.md. Menu labels sit on one line in a narrow
+     panel: keep them about as short as the English. -->
+<resources>
+    <!-- Counts shown under a tile's name and in its menu. -->
+    <plurals name="grid_games">
+        <item quantity="one">%1$d game</item>
+        <item quantity="other">%1$d games</item>
+    </plurals>
+    <plurals name="grid_systems">
+        <item quantity="one">%1$d system</item>
+        <item quantity="other">%1$d systems</item>
+    </plurals>
+    <plurals name="grid_genres">
+        <item quantity="one">%1$d genre</item>
+        <item quantity="other">%1$d genres</item>
+    </plurals>
+
+    <plurals name="grid_tiles">
+        <item quantity="one">%1$d tile</item>
+        <item quantity="other">%1$d tiles</item>
+    </plurals>
+    <!-- Things in a folder (games, apps, folders…). -->
+    <plurals name="grid_items">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
+    <!-- Where something sits, when it is not in a folder: the home screen's grid. -->
+    <string name="grid_home_grid">Home grid</string>
+
+    <!-- Undo on the grid. The toast's button (Select or a tap) takes the last change back. -->
+    <string name="grid_undo">Undo</string>
+    <string name="grid_undo_nothing">Nothing to undo</string>
+    <!-- %1$s is what was undone, as its label said it, with a small first letter: "Undone: moved Mario". -->
+    <string name="grid_undone">Undone: %1$s</string>
+    <string name="grid_undo_last">Undo last change</string>
+
+    <!-- Add games here: picking games to put on the grid or in a folder. -->
+    <string name="grid_pick_title">Add games here</string>
+    <string name="grid_pick_find">Find a game</string>
+    <string name="grid_pick_first">Pick a game with A first</string>
+    <plurals name="grid_pick_added">
+        <item quantity="one">Added a game here</item>
+        <item quantity="other">Added %1$d games here</item>
+    </plurals>
+    <!-- How many games match the search; %2$s is what was typed. -->
+    <plurals name="grid_pick_matching">
+        <item quantity="one">%1$d game match \"%2$s\"</item>
+        <item quantity="other">%1$d games match \"%2$s\"</item>
+    </plurals>
+    <plurals name="grid_pick_picked">
+        <item quantity="one">%1$d game picked</item>
+        <item quantity="other">%1$d games picked</item>
+    </plurals>
+    <!-- Button hints. Keep them short. -->
+    <string name="grid_pick_hint_pick">Pick</string>
+    <string name="grid_pick_hint_search">Search</string>
+    <string name="grid_pick_hint_add">Add</string>
+    <string name="grid_pick_games_folder">Pick your games folder</string>
+    <string name="grid_pick_add_here">Add here</string>
+    <plurals name="grid_pick_add_n_here">
+        <item quantity="one">Add %1$d game here</item>
+        <item quantity="other">Add %1$d games here</item>
+    </plurals>
+    <string name="grid_pick_search">Search…</string>
+    <!-- %1$s is what was typed. -->
+    <string name="grid_pick_searching">Search: %1$s</string>
+    <string name="grid_pick_show_all">Show all</string>
+    <string name="grid_pick_none">No games yet</string>
+    <string name="grid_pick_none_help">Pick the folder your games are in, and they show up here.</string>
+    <string name="grid_pick_no_matches">No matches</string>
+    <string name="grid_pick_no_matches_help">Accents and punctuation don\'t matter.</string>
+    <!-- %1$s is a game's name. -->
+    <string name="grid_pick_already">%1$s is already on the grid</string>
+
+    <!-- Selecting several tiles (Y › Select): the toast when it starts, the Y menu and the bar at the bottom. -->
+    <string name="grid_sel_started">A marks tiles · Y: what to do with them · B: done</string>
+    <string name="grid_sel_nothing">Nothing marked</string>
+    <!-- The menu's title. -->
+    <plurals name="grid_sel_count">
+        <item quantity="one">%1$d selected</item>
+        <item quantity="other">%1$d selected</item>
+    </plurals>
+    <!-- The word after the number of marked tiles, which shows in a round badge just before it. -->
+    <plurals name="grid_sel_selected_word">
+        <item quantity="one">selected</item>
+        <item quantity="other">selected</item>
+    </plurals>
+    <string name="grid_sel_hint_mark">Mark</string>
+    <string name="grid_sel_hint_actions">Actions</string>
+    <string name="grid_sel_hint_done">Done</string>
+    <string name="grid_sel_move_here">Move here</string>
+    <string name="grid_sel_move_here_sub">From this spot on, in the order they\'re in</string>
+    <string name="grid_sel_move_to_folder">Move to folder…</string>
+    <string name="grid_sel_move_to_folder_title">Move to folder</string>
+    <string name="grid_sel_also_add">Also add to folder…</string>
+    <string name="grid_sel_also_add_title">Also add to folder</string>
+    <string name="grid_sel_also_add_sub">They stay here too</string>
+    <string name="grid_sel_new_folder">New folder from selection</string>
+    <string name="grid_sel_remove_home">Remove from home</string>
+    <string name="grid_sel_remove_folder">Remove from folder</string>
+    <string name="grid_sel_hide">Hide</string>
+    <string name="grid_sel_hide_sub">Games, systems and folders</string>
+    <string name="grid_sel_all">Select all</string>
+    <string name="grid_sel_clear">Clear selection</string>
+    <string name="grid_sel_already_hidden">Already hidden</string>
+    <!-- Undo labels for marked tiles. %1$d is how many, %2$s a folder's name; for one tile see grid_drag_moved. -->
+    <plurals name="grid_sel_moved">
+        <item quantity="one">Moved %1$d tile</item>
+        <item quantity="other">Moved %1$d tiles</item>
+    </plurals>
+    <plurals name="grid_sel_moved_into">
+        <item quantity="one">Moved %1$d tile into %2$s</item>
+        <item quantity="other">Moved %1$d tiles into %2$s</item>
+    </plurals>
+    <!-- %1$s is a tile's name, %2$s a folder's. -->
+    <string name="grid_sel_added_to">Added %1$s to %2$s</string>
+    <plurals name="grid_sel_added_tiles_to">
+        <item quantity="one">Added %1$d tile to %2$s</item>
+        <item quantity="other">Added %1$d tiles to %2$s</item>
+    </plurals>
+    <!-- %1$s is a tile's name. -->
+    <string name="grid_sel_removed">Removed %1$s</string>
+    <string name="grid_sel_removed_it">Removed it</string>
+    <plurals name="grid_sel_removed_tiles">
+        <item quantity="one">Removed %1$d tile</item>
+        <item quantity="other">Removed %1$d tiles</item>
+    </plurals>
+    <string name="grid_sel_hid">Hid %1$s</string>
+    <plurals name="grid_sel_hid_tiles">
+        <item quantity="one">Hid %1$d tile</item>
+        <item quantity="other">Hid %1$d tiles</item>
+    </plurals>
+
+    <!-- The Y menus' More… rows on the grid. -->
+    <string name="grid_menu_search">Search</string>
+    <string name="grid_menu_swap">Swap screens</string>
+
+    <!-- An empty spot on the grid: its highlight, and its menu ("Add here"). -->
+    <string name="grid_spot_title">Empty spot</string>
+    <string name="grid_spot_type">Free spot</string>
+    <string name="grid_spot_blurb">A adds a folder, game, app or widget here</string>
+    <!-- Putting down a tile carried with Y › Move. %1$s is its name. -->
+    <string name="grid_spot_paste">Paste %1$s</string>
+    <string name="grid_spot_paste_it">Paste it</string>
+    <string name="grid_spot_new_folder">New folder…</string>
+    <!-- %1$s is the folder's name. -->
+    <string name="grid_spot_made_folder">Made the folder %1$s here</string>
+    <string name="grid_spot_smart_folder">Smart folder…</string>
+    <string name="grid_spot_smart_folder_sub">Fills itself: a genre, unplayed games…</string>
+    <string name="grid_spot_game">Game…</string>
+    <string name="grid_spot_game_sub">One or several, by system</string>
+    <string name="grid_spot_system">System…</string>
+    <string name="grid_spot_collection">Collection or genre…</string>
+    <string name="grid_spot_app">App…</string>
+    <!-- Tandem's own apps (Themes, Journal, Gallery…). -->
+    <string name="grid_spot_tandem_app">Tandem app…</string>
+    <string name="grid_spot_tandem_app_sub">Themes, Journal, Gallery…</string>
+    <string name="grid_spot_widget">Widget…</string>
+    <string name="grid_spot_widget_sub">Clock, battery, play stats…</string>
+    <string name="grid_spot_tidy">Tidy up</string>
+    <!-- On a system's tile arranged like a folder: back to the plain list of its games. -->
+    <string name="grid_spot_unarrange">Show as a plain list</string>
+    <string name="grid_spot_add_widget">Add a widget</string>
+    <string name="grid_spot_widget_unavailable">Not available yet</string>
+    <string name="grid_spot_widget_too_big">Too big for a folder: home grid only</string>
+
+    <!-- Tidy up: tiles packed to the front, closing the gaps. -->
+    <string name="grid_tidy_already">Already tidy</string>
+    <!-- Undo labels. %1$s is a folder's name. -->
+    <string name="grid_tidy_done">Tidied up</string>
+    <string name="grid_tidy_done_folder">Tidied up %1$s</string>
+    <!-- A folder kept in an order (%1$s: "A–Z", "Most played"…) has no gaps to close. -->
+    <string name="grid_tidy_sorted">Sorted %1$s: always tidy</string>
+    <string name="grid_carrying">Carrying it · A on an empty spot › Paste</string>
+
+    <!-- Y › Design folder: the folder designer. Its rows (and pages) and what each is set to now. -->
+    <string name="grid_design_title_main">Design folder</string>
+    <!-- The designer's title on one of its pages: "Design · Icon". -->
+    <string name="grid_design_page">Design · %1$s</string>
+    <string name="grid_design_icon">Icon</string>
+    <string name="grid_design_colour">Colour</string>
+    <!-- The big picture behind the folder's games (the hero art). -->
+    <string name="grid_design_hero">Hero</string>
+    <!-- How the folder's name is drawn: text or a logo. -->
+    <string name="grid_design_title">Title</string>
+    <string name="grid_design_shape">Shape</string>
+    <string name="grid_design_frame">Cover frame</string>
+    <string name="grid_design_reset">Reset to theme</string>
+    <!-- Button hints. Keep them short. -->
+    <string name="grid_design_hint_pages">Pages</string>
+    <string name="grid_design_hint_change">Change</string>
+    <string name="grid_design_hint_use">Use</string>
+    <!-- The look the theme gives, for any part. -->
+    <string name="grid_design_theme">Theme</string>
+    <string name="grid_design_from_art">From the art</string>
+    <string name="grid_design_custom">Custom</string>
+    <string name="grid_design_shape_rounded">Rounded square</string>
+    <string name="grid_design_shape_circle">Circle</string>
+    <string name="grid_design_frame_theme">Theme\'s frame</string>
+    <string name="grid_design_frame_none">No frame</string>
+    <string name="grid_design_frame_note">Frames show on a game cover icon, when the theme has them</string>
+    <string name="grid_design_reset_following">Following the theme</string>
+    <!-- Shown with Undo after Reset to theme. -->
+    <string name="grid_design_reset_done">Back to the theme\'s look</string>
+    <string name="grid_design_app_icon">App icon</string>
+    <string name="grid_design_game_cover">Game cover</string>
+    <string name="grid_design_cover_mosaic">Cover mosaic</string>
+    <string name="grid_design_cover_fan">Cover fan</string>
+    <string name="grid_design_mosaic">Mosaic</string>
+    <string name="grid_design_fan">Fan</string>
+    <string name="grid_design_genre">Genre</string>
+    <!-- %1$s is the name of one of Tandem's icons (Sword, Puzzle…), as written in the code. -->
+    <string name="grid_design_genre_glyph">Genre · %1$s</string>
+    <string name="grid_design_glyph">Glyph</string>
+    <string name="grid_design_emoji">Emoji</string>
+    <string name="grid_design_picture">Picture</string>
+    <string name="grid_design_colour_sweep">Colour sweep</string>
+    <string name="grid_design_cover_wall">Cover wall</string>
+    <string name="grid_design_game_hero">A game\'s hero</string>
+    <!-- The title as text: "Text · Bold · Medium". %1$s is the weight, %2$s the size. -->
+    <string name="grid_design_text">Text · %1$s · %2$s</string>
+    <!-- A text style choice: "Bold · Medium". -->
+    <string name="grid_design_weight_size">%1$s · %2$s</string>
+    <!-- %1$s is a game whose logo shows as the title. -->
+    <string name="grid_design_logo">Logo: %1$s</string>
+    <string name="grid_design_logo_any">Logo: a game</string>
+    <string name="grid_design_weight_light">Light</string>
+    <string name="grid_design_weight_bold">Bold</string>
+    <string name="grid_design_weight_heavy">Heavy</string>
+    <string name="grid_design_size_small">Small</string>
+    <string name="grid_design_size_medium">Medium</string>
+    <string name="grid_design_size_large">Large</string>
+    <string name="grid_design_from_device">From this device…</string>
+    <string name="grid_design_browse">Browse</string>
+    <string name="grid_design_no_picture">This icon has no picture to take a colour from</string>
+    <string name="grid_design_no_colour">No clear colour in that art</string>
+    <string name="grid_design_picture_failed">Couldn\'t use that picture</string>
+    <!-- ROMs/tandem/art/folders is a folder on the device; keep it as it is. -->
+    <string name="grid_design_picture_saved">Saved to ROMs/tandem/art/folders</string>
+    <!-- Under the preview of the hero, as it shows on the other screen. -->
+    <string name="grid_design_other_screen">Other screen</string>
+
+    <!-- The smart folder form (New › Smart folder…, or Y › Edit rules on one). -->
+    <string name="grid_form_title_new">New smart folder</string>
+    <string name="grid_form_title_convert">Make a smart folder</string>
+    <string name="grid_form_title_edit">Edit rules</string>
+    <!-- Under the title while a manual folder becomes smart. %1$s is the folder's name. -->
+    <string name="grid_form_convert_sub">%1$s · What\'s inside goes back on the home grid</string>
+    <string name="grid_form_hint_change">Change</string>
+    <string name="grid_form_hint_pick">Pick</string>
+    <string name="grid_form_hint_save">Save</string>
+    <!-- What A does on a row where you type. -->
+    <string name="grid_form_type">Type</string>
+    <!-- The value of a rule that doesn't filter. -->
+    <string name="grid_form_any">Any</string>
+    <string name="grid_form_name">Name</string>
+    <string name="grid_form_name_help">What the folder is called on the grid.</string>
+    <string name="grid_form_systems">Systems</string>
+    <string name="grid_form_systems_help">Only games from these systems. None picked: every system.</string>
+    <string name="grid_form_genres">Genres</string>
+    <string name="grid_form_genres_help">Games with any of these genres (from scraped details, or the subfolder they sit in).</string>
+    <!-- A rule on the game's name: the text it must contain. -->
+    <string name="grid_form_pattern">Title has</string>
+    <string name="grid_form_pattern_anything">Anything</string>
+    <string name="grid_form_pattern_help">Only titles containing this text, in any case. As a regex it is searched anywhere in the title.</string>
+    <string name="grid_form_match">Match as</string>
+    <!-- ^Super|Kart$ is an example regular expression: keep it as it is. -->
+    <string name="grid_form_match_help">Plain text matches the words as typed. Regex reads the pattern as a regular expression, like ^Super|Kart$.</string>
+    <string name="grid_form_match_plain">Plain text</string>
+    <string name="grid_form_match_regex">Regex</string>
+    <string name="grid_form_match_regex_bad">Regex · not valid</string>
+    <string name="grid_form_year_from">From year</string>
+    <string name="grid_form_year_from_help">Released this year or later. Games without a year are left out once a year is set.</string>
+    <string name="grid_form_year_to">To year</string>
+    <string name="grid_form_year_to_help">Released this year or earlier.</string>
+    <string name="grid_form_favorites">Favorites only</string>
+    <string name="grid_form_favorites_help">Only games you\'ve hearted.</string>
+    <string name="grid_form_played">Played</string>
+    <string name="grid_form_played_help">Played: games with any play history. Unplayed: games never started.</string>
+    <string name="grid_form_status">Status</string>
+    <string name="grid_form_status_help">Only games with this status: in the backlog, being played, finished (completed ones too)… None: games without a status.</string>
+    <string name="grid_form_status_none">None</string>
+    <!-- Finished and Completed games together. -->
+    <string name="grid_form_status_finished">Finished</string>
+    <string name="grid_form_random">How many</string>
+    <string name="grid_form_random_help">Random keeps that many of the matches, picked afresh each time Tandem starts.</string>
+    <string name="grid_form_random_all">All</string>
+    <string name="grid_form_emulator">Emulator</string>
+    <string name="grid_form_emulator_help">Only games that start with this emulator.</string>
+    <string name="grid_form_sort">Sort</string>
+    <string name="grid_form_sort_help">The order the games show in.</string>
+    <string name="grid_form_screen_help">The screen games opened from this folder start on. Default: each game\'s own choice. A game\'s own screen setting still wins.</string>
+    <string name="grid_form_make">Make the folder</string>
+    <string name="grid_form_save">Save</string>
+    <string name="grid_form_save_help">Start saves too.</string>
+    <!-- The systems and genres pickers. -->
+    <string name="grid_form_any_system">Any system</string>
+    <string name="grid_form_any_clears">Clears the picks</string>
+    <string name="grid_form_any_genre">Any genre</string>
+    <string name="grid_form_not_in_library">Not in the library now</string>
+    <string name="grid_form_no_systems">No systems with games yet</string>
+    <string name="grid_form_no_genres">No genres yet. Scrape game details and games sort themselves into genres.</string>
+    <!-- Beside the rows and on the other screen: what the rule finds. -->
+    <string name="grid_form_no_games">No games</string>
+    <string name="grid_form_counting">Counting…</string>
+    <string name="grid_form_looking">Looking…</string>
+    <string name="grid_form_bad_pattern">The title pattern isn\'t a valid regular expression</string>
+    <string name="grid_form_bad_pattern_short">Not a valid pattern</string>
+    <plurals name="grid_form_match_count">
+        <item quantity="one">%1$d game match</item>
+        <item quantity="other">%1$d games match</item>
+    </plurals>
+    <!-- After saving. %2$s is the folder's name, %1$d how many games it holds. -->
+    <string name="grid_form_made">Made the smart folder %1$s</string>
+    <plurals name="grid_form_made_count">
+        <item quantity="one">Made the smart folder %2$s · %1$d game</item>
+        <item quantity="other">Made the smart folder %2$s · %1$d games</item>
+    </plurals>
+    <string name="grid_form_saved">Saved %1$s</string>
+    <plurals name="grid_form_saved_count">
+        <item quantity="one">Saved %2$s · %1$d game</item>
+        <item quantity="other">Saved %2$s · %1$d games</item>
+    </plurals>
+    <string name="grid_form_converted">%1$s is a smart folder now. What was inside is back on the home grid</string>
+
+    <!-- L1 / R1 zoom on the grid. %1$s is a folder's name, %2$d how many tiles fit across. -->
+    <string name="grid_zoom_folder">%1$s: %2$d across</string>
+    <!-- %1$s is a size: Small, Medium, Large or Huge. -->
+    <string name="grid_zoom_games">Games: %1$s</string>
+    <plurals name="grid_zoom_rows">
+        <item quantity="one">Icons: %1$d row</item>
+        <item quantity="other">Icons: %1$d rows</item>
+    </plurals>
+    <!-- %1$s is one of the icon sizes below. -->
+    <string name="grid_zoom_icons">Icons: %1$s</string>
+    <string name="grid_size_large">Large</string>
+    <string name="grid_size_largeish">Large-ish</string>
+    <string name="grid_size_medium">Medium</string>
+    <string name="grid_size_smallish">Small-ish</string>
+    <string name="grid_size_small">Small</string>
+
+    <!-- What each collection is, on the other screen. "Y › …" names menu items as they are written there. -->
+    <string name="grid_blurb_fav">Games you\'ve hearted. Y › Add to favorites on any game</string>
+    <string name="grid_blurb_most">Your most played games, by time played</string>
+    <string name="grid_blurb_added">The newest games in your library</string>
+    <string name="grid_blurb_continue">Pick up where you left off</string>
+    <string name="grid_blurb_unplayed">Fresh adventures you haven\'t started yet</string>
+    <string name="grid_blurb_playing">The games you\'re in the middle of</string>
+    <string name="grid_blurb_backlog">Games waiting their turn. Y › Status › Backlog on any game</string>
+    <string name="grid_blurb_beaten">Every game you\'ve finished or completed, the latest first</string>
+    <!-- The collection of recently played games. -->
+    <string name="grid_recently_played">Recently played</string>
+    <string name="grid_all_apps">All apps</string>
+    <string name="grid_all_apps_detail">Everything installed</string>
+    <string name="grid_all_apps_blurb">Every Android app on this device</string>
+    <string name="grid_genres_tile">Genres</string>
+    <!-- %1$s is a genre's name. -->
+    <string name="grid_genre_blurb">Games tagged %1$s</string>
+    <string name="grid_folder_empty_blurb">An empty folder. Y › Move to folder on any tile</string>
+    <!-- Time played, after the time: "3 h 20 min played". -->
+    <string name="grid_played_time">%1$s played</string>
+    <!-- Time played, before the time: "Played 3 h 20 min". -->
+    <string name="grid_played_for">Played %1$s</string>
+
+    <!-- The home grid with nothing on it. -->
+    <string name="grid_empty_title">Your home grid is empty</string>
+    <string name="grid_empty_help">Press Y and pick Add to home, or turn on Show hidden games in Settings.</string>
+    <string name="grid_no_games_help">Pick the folder your games are in, laid out any way.</string>
+    <string name="grid_rescan">Rescan</string>
+    <!-- A small badge on the tile of a game that is running. Keep it short. -->
+    <string name="grid_running_badge">Playing</string>
+
+    <!-- Moving a tile (Y › Move). -->
+    <string name="grid_move_cancelled">Move cancelled: it went back to its spot</string>
+    <string name="grid_move_now_playing">Now playing stays at the front</string>
+    <!-- %1$s is how the folder is sorted ("A–Z"…). -->
+    <string name="grid_move_sorted">Sorted %1$s. Y › Sort › Manual to move things by hand</string>
+    <string name="grid_move_how">Move it with the D-pad · A to drop it · Y to carry it</string>
+    <string name="grid_move_how_widget">Move it with the D-pad · A to drop it · Y to resize it</string>
+    <!-- Undo labels. %1$s is a tile's name. -->
+    <string name="grid_move_resized">Resized %1$s</string>
+    <string name="grid_move_resized_it">Resized it</string>
+    <!-- Button hints while moving: short words, they share the narrow bottom screen. -->
+    <string name="grid_hint_paste">Paste on an empty spot</string>
+    <string name="grid_hint_cancel">Cancel</string>
+    <string name="grid_hint_move">Move</string>
+    <string name="grid_hint_drop">Drop</string>
+    <string name="grid_hint_resize">Resize</string>
+    <string name="grid_hint_carry">Carry</string>
+    <string name="grid_hint_page">Page</string>
+
+    <!-- A tile's Y menu. -->
+    <string name="grid_menu_open">Open</string>
+    <string name="grid_menu_resume">Resume</string>
+    <string name="grid_menu_play">Play</string>
+    <string name="grid_menu_move">Move</string>
+    <string name="grid_menu_select">Select</string>
+    <string name="grid_menu_select_sub">Mark several, then act on them all</string>
+    <string name="grid_menu_also_add_sub">It stays here too</string>
+    <!-- %1$s is the name of the folder one level up. -->
+    <string name="grid_menu_move_up">Move up to %1$s</string>
+    <string name="grid_menu_take_out">Take out of the folder</string>
+    <!-- Undo labels: %1$s is the tile's name, %2$s the folder's. -->
+    <string name="grid_menu_took_out">Took %1$s out of %2$s</string>
+    <string name="grid_menu_took_out_folder">Took %1$s out of the folder</string>
+    <string name="grid_menu_game_options">Game options</string>
+    <string name="grid_menu_sort_view">Sort and view</string>
+    <string name="grid_menu_design">Design folder…</string>
+    <string name="grid_menu_rename">Rename folder</string>
+    <!-- The keyboard's title. -->
+    <string name="grid_menu_rename_title">Rename the folder</string>
+    <string name="grid_menu_sort_inside">Sort inside…</string>
+    <string name="grid_menu_view_as">View as…</string>
+    <string name="grid_menu_view_as_help">A grid of tiles, a bookshelf of spines, a case of cartridges or a carousel of covers. X inside the folder switches too.</string>
+    <string name="grid_menu_delete">Delete folder…</string>
+    <!-- Undo labels. %1$s is the folder's name. -->
+    <string name="grid_menu_deleted">Deleted %1$s</string>
+    <string name="grid_menu_deleted_folder">Deleted the folder</string>
+    <string name="grid_menu_unhide_folder">Unhide this folder</string>
+    <string name="grid_menu_hide_folder">Hide this folder</string>
+    <string name="grid_menu_arrange">Arrange like a folder</string>
+    <string name="grid_menu_arrange_sub">Folders, genres and widgets inside</string>
+    <string name="grid_menu_unhide_system">Unhide this system</string>
+    <string name="grid_menu_hide_system">Hide this system</string>
+    <string name="grid_menu_add_home">Add to home…</string>
+    <string name="grid_menu_sort_folder">Sort this folder…</string>
+
+    <!-- Y › Sort inside: the page's title, with the folder's name. -->
+    <string name="grid_sort_page">Sort %1$s</string>
+    <string name="grid_sort_page_folder">Sort folder</string>
+    <string name="grid_sort_manual_sub">Your own order, kept under every sort</string>
+    <string name="grid_sort_manual_done">Back to your own order</string>
+    <!-- %1$s is the order: "Sorted A–Z", "Sorted Most played". -->
+    <string name="grid_sort_done">Sorted %1$s</string>
+
+    <!-- Y › View as: the page's title, with the folder's name, and what each view is. -->
+    <string name="grid_view_page">Show %1$s as</string>
+    <string name="grid_view_page_folder">Show folder as</string>
+    <string name="grid_view_grid_sub">Tiles, as on the home grid</string>
+    <string name="grid_view_shelf_sub">Spines on wooden shelves, one for each folder inside</string>
+    <string name="grid_view_case_sub">Cartridges and discs in a foam-lined case</string>
+    <string name="grid_view_carousel_sub">One cover at a time, the others turning away</string>
+    <!-- After X in a folder: "Shelf view". %1$s is the view's name. -->
+    <string name="grid_view_switched">%1$s view</string>
+
+    <!-- Y › Delete folder…, when it holds things. %1$s is the folder's name. -->
+    <string name="grid_delete_page">Delete %1$s?</string>
+    <string name="grid_delete_page_folder">Delete folder?</string>
+    <string name="grid_delete_keep">Keep its contents</string>
+    <!-- %1$s is the folder it sits in. -->
+    <string name="grid_delete_keep_sub">They move up to %1$s, into its place</string>
+    <string name="grid_delete_keep_sub_home">They move up to the home grid, into its place</string>
+    <string name="grid_delete_all_subfolders">Delete it and its subfolders</string>
+    <string name="grid_delete_all_shortcuts">Delete it and its shortcuts</string>
+    <string name="grid_delete_all_sub">Games and apps themselves stay</string>
+
+    <!-- An open folder: the start of its breadcrumb (Home › Games › RPGs), its count and its button hints. -->
+    <string name="grid_trail_home">Home</string>
+    <!-- %1$d things inside, %2$s how they are sorted: "12 items · A–Z". -->
+    <plurals name="grid_items_sorted">
+        <item quantity="one">%1$d item · %2$s</item>
+        <item quantity="other">%1$d items · %2$s</item>
+    </plurals>
+    <string name="grid_hint_options">Options</string>
+
+    <!-- Add to home (and an empty spot's Add here › System…, App…). -->
+    <string name="grid_add_system">Add a system here</string>
+    <string name="grid_add_system_none">Every system is already on the grid or in a folder. Systems taken off the grid show up here.</string>
+    <string name="grid_add_collection">Add a collection or genre here</string>
+    <string name="grid_add_collection_none">Every collection and genre is already on the grid or in a folder.</string>
+    <string name="grid_add_app">Add an app here</string>
+    <string name="grid_add_app_none">Every app is already on the grid or in a folder.</string>
+    <string name="grid_add_tandem">Add a Tandem app here</string>
+    <string name="grid_add_tandem_none">Every Tandem app is already on the grid or in a folder.</string>
+    <string name="grid_add_spot">Add to this spot</string>
+    <string name="grid_add_home">Add to home</string>
+    <string name="grid_add_none">Every system, collection and app is on your home grid.</string>
+    <string name="grid_add_gathering">Gathering apps…</string>
+    <plurals name="grid_add_things">
+        <item quantity="one">%1$d thing</item>
+        <item quantity="other">%1$d things</item>
+    </plurals>
+    <string name="grid_add_nothing_left">Nothing left to add</string>
+    <!-- %1$s is what was added. -->
+    <string name="grid_add_done_home">%1$s is on your home grid</string>
+    <string name="grid_add_done_folder">%1$s is in the folder</string>
+    <!-- A game's menu: Pin to home and taking it off again. -->
+    <string name="grid_unpinned">Taken off the home grid</string>
+    <string name="grid_pinned">Pinned to the home grid ★</string>
+
+    <!-- What kind of tile it is, under its name. -->
+    <string name="grid_type_game">Game</string>
+    <string name="grid_type_now_playing">Now playing</string>
+    <string name="grid_type_apps">Apps</string>
+    <string name="grid_type_system">System</string>
+    <string name="grid_type_collection">Collection</string>
+    <string name="grid_type_genre">Genre</string>
+    <string name="grid_type_tandem_app">Tandem app</string>
+    <string name="grid_type_emulator">Emulator</string>
+    <string name="grid_type_app">App</string>
+    <string name="grid_type_widget">Widget</string>
+    <string name="grid_type_folder">Folder</string>
+    <string name="grid_type_smart_folder">Smart folder</string>
+
+    <!-- Naming a new folder: the keyboard's title, the name it starts with, and the name of one left empty. -->
+    <string name="grid_folder_name_title">Name the folder</string>
+    <string name="grid_folder_default">New folder</string>
+    <string name="grid_folder_unnamed">Folder</string>
+
+    <!-- How a folder orders what is inside (Y › Sort inside), also a smart folder's Sort. -->
+    <string name="grid_sort_manual">Manual</string>
+    <string name="grid_sort_name">A–Z</string>
+    <string name="grid_sort_recent">Recently played</string>
+    <string name="grid_sort_most">Most played</string>
+    <string name="grid_sort_added">Date added</string>
+    <string name="grid_sort_system">System</string>
+
+    <!-- How a folder shows what is inside (Y › View as). -->
+    <string name="grid_view_grid">Grid</string>
+    <string name="grid_view_shelf">Shelf</string>
+    <string name="grid_view_case">Case</string>
+    <string name="grid_view_carousel">Carousel</string>
+
+    <!-- Which screen a folder's games start on: the top screen, the bottom screen, or each game's own choice. -->
+    <string name="grid_screens_top">Top</string>
+    <string name="grid_screens_bottom">Bottom</string>
+    <string name="grid_screens_default">Default</string>
+
+    <!-- A system's tile arranged like a folder. %1$s is the system's name. The undo labels show beside Undo. -->
+    <string name="grid_system_arranged_undo">Arranged %1$s</string>
+    <string name="grid_system_arranged">%1$s is arranged like a folder now. Y on an empty spot adds folders and widgets</string>
+    <string name="grid_system_list_undo">%1$s as a list</string>
+    <string name="grid_system_list_plain">%1$s shows as a plain list again</string>
+    <string name="grid_system_list_folders_home">%1$s shows as a list again. Its folders moved to home</string>
+
+    <!-- Smart folders: the rule in a few words, joined with " · " ("3DS · RPG · Unplayed · Random 10"). -->
+    <string name="grid_smart_played_yes">Played</string>
+    <string name="grid_smart_played_no">Unplayed</string>
+    <string name="grid_smart_played_any">Any</string>
+    <!-- Words the game's name must contain, typed by the user. -->
+    <string name="grid_smart_pattern">“%1$s”</string>
+    <string name="grid_smart_favorites">Favorites</string>
+    <!-- A random pick of this many games. -->
+    <string name="grid_smart_random">Random %1$d</string>
+    <string name="grid_smart_every_game">Every game</string>
+    <!-- Release years: "From 1998", "Up to 2004". %1$s is a year. -->
+    <string name="grid_smart_years_from">From %1$s</string>
+    <string name="grid_smart_years_to">Up to %1$s</string>
+    <!-- A folder's Y menu. -->
+    <string name="grid_smart_open_on">Open games on</string>
+    <string name="grid_smart_open_own">Each game\'s own choice</string>
+    <string name="grid_smart_edit_rules">Edit rules…</string>
+    <string name="grid_smart_freeze">Convert to manual folder</string>
+    <string name="grid_smart_make">Make this a smart folder</string>
+    <!-- After Convert to manual folder. %1$d is how many games, %2$s the folder's name. -->
+    <plurals name="grid_smart_frozen">
+        <item quantity="one">%2$s is a manual folder now, with %1$d game</item>
+        <item quantity="other">%2$s is a manual folder now, with %1$d games</item>
+    </plurals>
+    <!-- %1$d games were already in other folders and stayed there. -->
+    <plurals name="grid_smart_frozen_some">
+        <item quantity="one">%2$s is a manual folder now. %1$d game already elsewhere stayed put</item>
+        <item quantity="other">%2$s is a manual folder now. %1$d games already elsewhere stayed put</item>
+    </plurals>
+
+    <!-- Moving tiles by dragging. Undo labels: %1$s is the tile's name, %2$s the folder's. -->
+    <string name="grid_drag_made_folder">Made the folder %1$s</string>
+    <string name="grid_drag_moved">Moved %1$s</string>
+    <string name="grid_drag_moved_it">Moved it</string>
+    <string name="grid_drag_moved_into">Moved %1$s into %2$s</string>
+    <string name="grid_drag_moved_into_folder">Moved %1$s into the folder</string>
+    <string name="grid_drag_moved_it_into">Moved it into %1$s</string>
+    <string name="grid_drag_moved_it_into_folder">Moved it into the folder</string>
+    <!-- On a tile held over another: let go to make a folder of the two. Keep it short. -->
+    <string name="grid_drag_new_folder">+ Folder</string>
+</resources>

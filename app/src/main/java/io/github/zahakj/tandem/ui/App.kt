@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -84,7 +86,6 @@ import io.github.zahakj.tandem.Shell
 import io.github.zahakj.tandem.data.Importer
 import io.github.zahakj.tandem.data.ScanCache
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -358,7 +359,7 @@ object LibraryScan {
     internal fun request(ctx: Context, announce: Boolean, onlyIfChanged: Boolean): kotlinx.coroutines.Job? {
         app = ctx.applicationContext
         val job = runner.request(announce, onlyIfChanged)
-        if (job == null && announce) Toasts.show("Already looking for games…")
+        if (job == null && announce) Toasts.show(Tx.s(R.string.home_scan_already))
         return job
     }
 }
@@ -373,7 +374,7 @@ suspend fun reloadLibrary(ctx: Context, announce: Boolean = false, onlyIfChanged
 }
 
 private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boolean) {
-    if (announce) Toasts.show("Looking for games…")
+    if (announce) Toasts.show(Tx.s(R.string.home_scan_looking))
     // The systems list, loaded once for both passes at startup.
     var platforms: List<io.github.zahakj.tandem.Platform>? = null
     var shown: List<io.github.zahakj.tandem.PlatformLibrary>? = null
@@ -399,13 +400,13 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
         io.github.zahakj.tandem.FileChecks.clear()
         io.github.zahakj.tandem.data.DetailsFill.request()
         io.github.zahakj.tandem.data.SteamArt.request()
-        if (announce) Toasts.show("Found ${plural(Collections.visible(shown.flatMap { it.games }).size, "game")}")
+        if (announce) Toasts.show(Tx.p(R.plurals.home_scan_found, Collections.visible(shown.flatMap { it.games }).size))
         return
     }
     if (!Store.settings.autoImportDone) {
         val result = withContext(Dispatchers.IO) { Importer.importAll(libs, firstTime = true) }
         Store.updateSettings { it.copy(autoImportDone = true) }
-        if (result.games > 0) Toasts.show("Brought over details for ${plural(result.games, "game")} ✨")
+        if (result.games > 0) Toasts.show(Tx.p(R.plurals.home_scan_imported, result.games))
     }
     io.github.zahakj.tandem.FileChecks.clear()
     // A hidden folder that was renamed stays hidden: found again before the new scan is shown.
@@ -414,7 +415,7 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
     // New games (and ones a scrape never reached) get their description from the LaunchBox database on the device.
     io.github.zahakj.tandem.data.DetailsFill.request()
     io.github.zahakj.tandem.data.SteamArt.request()
-    if (announce) Toasts.show("Found ${plural(Collections.visible(libs.flatMap { it.games }).size, "game")}")
+    if (announce) Toasts.show(Tx.p(R.plurals.home_scan_found, Collections.visible(libs.flatMap { it.games }).size))
 }
 
 @Composable
@@ -492,7 +493,7 @@ private fun Main(resumes: Int) {
                 }
                 // Commands with no button until the user binds one (Rebind buttons).
                 Button.Favourite -> (Selection.current as? Selected.GameItem)?.game?.let { toggleFavorite(it) }
-                    ?: run { Sounds.error(); Toasts.show("Highlight a game to favourite it") }
+                    ?: run { Sounds.error(); Toasts.show(Tx.s(R.string.home_favourite_needs_game)) }
                 Button.Screenshot -> Capture.screenshot()
                 Button.Clip -> Capture.clip()
             }
@@ -839,7 +840,7 @@ private fun surpriseMe() {
         Nav.route is Route.System -> Nav.replace(route)
         else -> Nav.go(route)
     }
-    Toasts.show("How about ${pick.title}?")
+    Toasts.show(Tx.s(R.string.home_surprise, pick.title))
 }
 
 @Composable
@@ -852,30 +853,32 @@ private fun TopBar() {
             delay(60_000)
         }
     }
+    // Page names joined with " › " (the arrow needs no translating: it mirrors itself in a right-to-left line).
+    fun path(vararg parts: String?) = parts.filterNotNull().joinToString("  ›  ")
     val crumb = when (val r = Nav.route) {
         Route.Home -> null
-        is Route.System -> listOfNotNull(Libraries.byId(r.platformId)?.platform?.name ?: "Games", r.folder).joinToString("  ›  ")
-        is Route.Collection -> if (r.id.startsWith("genre:")) "Genres  ›  ${r.id.removePrefix("genre:")}" else Collections.byId(r.id)?.title
-        Route.Genres -> "Genres"
-        Route.Settings -> "Settings"
-        Route.Systems -> "Systems"
-        Route.Apps -> "Apps"
-        Route.Appearance -> "Settings  ›  Look & feel"
+        is Route.System -> path(Libraries.byId(r.platformId)?.platform?.name ?: Tx.s(R.string.home_crumb_games), r.folder)
+        is Route.Collection -> if (r.id.startsWith("genre:")) path(Tx.s(R.string.home_crumb_genres), r.id.removePrefix("genre:")) else Collections.byId(r.id)?.title
+        Route.Genres -> Tx.s(R.string.home_crumb_genres)
+        Route.Settings -> Tx.s(R.string.home_crumb_settings)
+        Route.Systems -> Tx.s(R.string.home_crumb_systems)
+        Route.Apps -> Tx.s(R.string.home_crumb_apps)
+        Route.Appearance -> path(Tx.s(R.string.home_crumb_settings), Tx.s(R.string.home_crumb_look))
         // A subpage names its page instead of Settings, as Theme packs does.
-        is Route.SettingsPage -> (SettingsCategories.parentOf(r.id)?.let(SettingsCategories::title) ?: "Settings") + "  ›  ${SettingsCategories.title(r.id)}"
-        Route.ThemePacks -> "Look & feel  ›  Theme packs"
-        Route.GameFolders -> "Library & art  ›  Game folders"
-        Route.Scrape -> "Artwork & details"
-        Route.Stats -> "Play stats"
-        Route.Widgets -> "Widgets"
-        Route.Rebind -> "Controls  ›  Rebind buttons"
+        is Route.SettingsPage -> path(SettingsCategories.parentOf(r.id)?.let(SettingsCategories::title) ?: Tx.s(R.string.home_crumb_settings), SettingsCategories.title(r.id))
+        Route.ThemePacks -> path(Tx.s(R.string.home_crumb_look), Tx.s(R.string.home_crumb_theme_packs))
+        Route.GameFolders -> path(Tx.s(R.string.home_crumb_library), Tx.s(R.string.home_crumb_game_folders))
+        Route.Scrape -> Tx.s(R.string.home_crumb_scrape)
+        Route.Stats -> Tx.s(R.string.home_crumb_stats)
+        Route.Widgets -> Tx.s(R.string.home_crumb_widgets)
+        Route.Rebind -> path(Tx.s(R.string.home_crumb_controls), Tx.s(R.string.home_crumb_rebind))
         is Route.Tool -> BuiltInApps.byId(r.id)?.title
-        is Route.Manual -> Libraries.byKey(r.gameKey)?.title?.let { "$it  ›  Manual" } ?: "Manual"
+        is Route.Manual -> Libraries.byKey(r.gameKey)?.title?.let { path(it, Tx.s(R.string.home_crumb_manual)) } ?: Tx.s(R.string.home_crumb_manual)
     }
     Row(Modifier.fillMaxWidth().height(TopBarHeight).topBarFocus().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
         Pip(26.dp, bounce = false)
         Spacer(Modifier.width(8.dp))
-        Text("Tandem", style = MaterialTheme.typography.headlineSmall, maxLines = 1)
+        Text(Tx.s(R.string.app_name), style = MaterialTheme.typography.headlineSmall, maxLines = 1)
         // The crumb gives way (with an ellipsis) to the clock and buttons on the right.
         Crumb(crumb, Modifier.weight(1f))
         Spacer(Modifier.width(10.dp))
@@ -884,7 +887,7 @@ private fun TopBar() {
         TopBarButtons()
         if (battery >= 0 && Store.settings.look.battery) {
             Spacer(Modifier.width(10.dp))
-            Pill("$battery%", if (battery <= 20) Palette.Peach else Palette.Mint)
+            Pill(Tx.s(R.string.common_percent, battery), if (battery <= 20) Palette.Peach else Palette.Mint)
         }
         Clock.format(now)?.let {
             Spacer(Modifier.width(10.dp))
@@ -911,8 +914,8 @@ private fun Splash() {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Pip(96.dp, mood = 1)
         Spacer(Modifier.height(14.dp))
-        Text("Tandem", style = MaterialTheme.typography.displaySmall)
-        Text("Gathering your games…", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+        Text(Tx.s(R.string.app_name), style = MaterialTheme.typography.displaySmall)
+        Text(Tx.s(R.string.home_splash_gathering), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
     }
 }
 
@@ -986,20 +989,20 @@ private fun SetupScreen(hasFiles: Boolean, hasTree: Boolean, onTree: () -> Unit)
         Column(Modifier.weight(0.8f), horizontalAlignment = Alignment.CenterHorizontally) {
             Pip(130.dp, mood = 1)
             Spacer(Modifier.height(10.dp))
-            Text("Hi, I'm Pip!", style = MaterialTheme.typography.displaySmall)
-            Text("Let's find your games.", style = MaterialTheme.typography.bodyLarge, color = Palette.Muted)
+            Text(Tx.s(R.string.home_setup_hi), style = MaterialTheme.typography.displaySmall)
+            Text(Tx.s(R.string.home_setup_lets_find), style = MaterialTheme.typography.bodyLarge, color = Palette.Muted)
         }
         Column(Modifier.weight(1.2f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            SetupStep(hasFiles, "1  Read your games", "Allow access to all files, so I can look through your games and their artwork.", "files", target) {
+            SetupStep(hasFiles, "1  " + Tx.s(R.string.home_setup_files), Tx.s(R.string.home_setup_files_detail), "files", target) {
                 ctx.startActivity(Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${ctx.packageName}")))
             }
-            SetupStep(hasTree, "2  Pick your games folder", "Pick the folder your games are in, laid out any way, and tap \"Use this folder\". ROMs works too. Some emulators only open games shared this way.", "tree", target) {
-                if (!hasFiles) Toasts.show("Step 1 first, then this one")
+            SetupStep(hasTree, "2  " + Tx.s(R.string.home_setup_tree), Tx.s(R.string.home_setup_tree_detail), "tree", target) {
+                if (!hasFiles) Toasts.show(Tx.s(R.string.home_setup_step_one_first))
                 else pickTree()
             }
             if (shizukuAlive) {
                 val ready = remember(ShizukuWatch.version) { Shell.ready() }
-                SetupStep(ready, "✦  Resume games (optional)", "Allow me in Shizuku, so I can bring a game back right where you left it.", "shizuku", target) {
+                SetupStep(ready, "✦  " + Tx.s(R.string.home_setup_shizuku), Tx.s(R.string.home_setup_shizuku_detail), "shizuku", target) {
                     if (Shizuku.checkSelfPermission() != PackageManager.PERMISSION_GRANTED) Shizuku.requestPermission(1)
                 }
             }
@@ -1016,7 +1019,7 @@ private fun SetupStep(done: Boolean, title: String, detail: String, key: String,
                 Text(detail, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
             }
             Spacer(Modifier.width(10.dp))
-            Pill(if (done) "Done ✓" else "Set up", if (done) Palette.Mint else Palette.Peach)
+            Pill(Tx.s(if (done) R.string.home_setup_done else R.string.home_setup_todo), if (done) Palette.Mint else Palette.Peach)
         }
     }
 }

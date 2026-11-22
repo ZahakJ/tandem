@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.data
 
+import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.R
+
 /**
  * The rules of home folders, on plain configs (IconGridStore applies them; GridTreeTest tests them).
  *
@@ -429,11 +432,15 @@ object FolderSort {
     const val ADDED = "added"
     const val SYSTEM = "system"
 
-    val ALL: List<Pair<String, String>> = listOf(
-        MANUAL to "Manual", NAME to "A–Z", RECENT to "Recently played", MOST to "Most played", ADDED to "Date added", SYSTEM to "System",
+    private val names = listOf(
+        MANUAL to R.string.grid_sort_manual, NAME to R.string.grid_sort_name, RECENT to R.string.grid_sort_recent,
+        MOST to R.string.grid_sort_most, ADDED to R.string.grid_sort_added, SYSTEM to R.string.grid_sort_system,
     )
 
-    fun label(sort: String): String = ALL.firstOrNull { it.first == sort }?.second ?: "Manual"
+    /** Each order and its name, in the language now (made each time, never kept). */
+    val ALL: List<Pair<String, String>> get() = names.map { (s, res) -> s to Tx.s(res) }
+
+    fun label(sort: String): String = Tx.s(names.firstOrNull { it.first == sort }?.second ?: R.string.grid_sort_manual)
 
     /** What sorting needs to know about a tile. [system]: its system's name ("" for things that have none). */
     class Facts(val title: String, val lastPlayed: Long = 0, val played: Long = 0, val added: Long = 0, val system: String = "", val folder: Boolean = false)

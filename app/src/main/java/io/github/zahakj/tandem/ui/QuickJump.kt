@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -55,9 +57,9 @@ object QuickJump {
     /** The label a game is grouped under for jumping, for the current sort. */
     fun labelOf(g: Game, index: Int, sort: SortOrder): String = when (sort) {
         SortOrder.Name -> g.title.trimStart().firstOrNull()?.uppercaseChar()?.let { if (it.isLetter()) it.toString() else "#" } ?: "#"
-        SortOrder.Year -> g.meta.year?.toString() ?: "Unknown year"
-        SortOrder.Rating -> g.meta.rating?.let { "★".repeat((it * 5).toInt().coerceIn(0, 5)).ifEmpty { "Unrated" } } ?: "Unrated"
-        else -> "Page ${index / PAGE + 1}"
+        SortOrder.Year -> g.meta.year?.toString() ?: Tx.s(R.string.home_jump_unknown_year)
+        SortOrder.Rating -> g.meta.rating?.let { "★".repeat((it * 5).toInt().coerceIn(0, 5)).ifEmpty { Tx.s(R.string.home_jump_unrated) } } ?: Tx.s(R.string.home_jump_unrated)
+        else -> Tx.s(R.string.home_jump_page, index / PAGE + 1)
     }
 
     /** Called by the grid showing [games] on [route]. */
@@ -121,7 +123,7 @@ fun QuickJumpBubble() {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(QuickJump.bubble.orEmpty(), style = MaterialTheme.typography.displaySmall.copy(fontSize = 44.sp), color = Palette.Accent, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("L2 · R2 to jump", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                Text(Tx.s(R.string.home_jump_hint), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
             }
         }
     }
