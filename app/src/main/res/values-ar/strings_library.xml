@@ -24,7 +24,7 @@
     <string name="library_systems_search_short">بحث</string>
     <string name="library_systems_no_match">لا منصّات تطابق «%1$s»</string>
     <string name="library_systems_none_off">لا شيء معطّل. المنصّة التي تعطّلها تنتظر هنا، بألعابها كلها</string>
-    <string name="library_systems_none_more">كل منصّة يعرفها Tandem فيها ألعاب أصلًا</string>
+    <string name="library_systems_none_more">كل منصّة يعرفها Tandem فيها ألعاب بالفعل</string>
     <string name="library_systems_none">لا ألعاب بعد. افتح منصّة في «منصّات أخرى» وأضف مجلدها</string>
     <string name="library_systems_badge_off">معطّلة</string>
     <string name="library_systems_badge_no_emulator">بلا محاكي</string>
@@ -66,7 +66,7 @@
     <string name="library_settings_move_help">اضغط رجوع مطوّلًا لحظة والتطبيق مفتوح، فينتقل إلى الشاشة الأخرى ويُفتح عليها من الآن فصاعدًا. اضغطه مطوّلًا مرة أخرى بعدها بقليل للتراجع. «التطبيقات + الألعاب»: اللعبة في المقدّمة تنتقل أيضًا؛ ومع «التطبيقات» تبقى اللعبة مكانها دائمًا. يحتاج Shizuku وخدمة زر Home لذراع التحكّم (التحكّم).</string>
     <string name="library_settings_voice">صوتك في المقاطع</string>
     <string name="library_settings_voice_help">المقطع الذي تسجّله من رفيق اللعبة (مقطع، على الشاشة السفلية) يلتقط صوتك من الميكروفون مع صوت اللعبة. عند التعطيل، تُسجَّل اللعبة وحدها. ولا يُسمع شيء خارج المقطع.</string>
-    <string name="library_settings_launch">حركة الإطلاق</string>
+    <string name="library_settings_launch">حركة التشغيل</string>
     <string name="library_settings_launch_help">صورة اللعبة تكبر بلمسة احتفالية صغيرة بينما يبدأ محاكيها. عند التعطيل، تبدأ الألعاب فورًا.</string>
     <string name="library_start_on">تبدأ على</string>
     <string name="library_bottom_screen">الشاشة السفلية</string>
@@ -78,7 +78,7 @@
     <string name="library_system_emulators_none">لا محاكيات مُدرجة لهذه المنصّة</string>
     <string name="library_system_emulators_none_installed">لا شيء مثبّت بعد: A على أحدها يجلبه</string>
     <string name="library_system_emulators_default">A يجعل أحدها الافتراضي</string>
-    <string name="library_system_already_plays">%1$s يشغّل ألعاب %2$s أصلًا</string>
+    <string name="library_system_already_plays">%1$s يشغّل ألعاب %2$s بالفعل</string>
     <string name="library_system_now_plays">%1$s يشغّل ألعاب %2$s الآن</string>
     <string name="library_system_no_store">تعذّر فتح متجر لـ %1$s</string>
     <string name="library_system_start_on">تبدأ الألعاب على</string>
@@ -118,7 +118,7 @@
     <string name="library_roots_internal">مساحة التخزين الداخلية</string>
 
     <string name="library_folders_took_out">أُخرج %1$s. ألعابه بعيدة عن الأنظار؛ وتفاصيلها محفوظة</string>
-    <string name="library_folders_where">أين تعيش الألعاب</string>
+    <string name="library_folders_where">أين تسكن الألعاب</string>
     <string name="library_folders_roms_detail">مجلد Tandem الخاص · مُضمَّن دائمًا</string>
     <string name="library_folders_roms_help">مجلد Tandem الخاص على مساحة التخزين الداخلية، حيث يحفظ بياناته. ويُبحث فيه عن الألعاب دائمًا أيضًا، ولا يلزم أن يحتوي أيًّا منها.</string>
     <string name="library_folders_options">خيارات</string>
@@ -126,7 +126,7 @@
     <string name="library_folders_not_there">غير موجود حاليًا</string>
     <string name="library_folders_copies_only">نسخ مكرّرة فقط</string>
     <string name="library_folders_help_there">تُكتشف الألعاب من مجلدات منصّاتها (3DS وgba وPlayStation 2…) أو من نوع ملفاتها. والزر Y يُخرجه من جديد.</string>
-    <string name="library_folders_help_gone">البطاقة أو المجلد غير مركّب. ستعود ألعابه وحدها متى رُكّب.</string>
+    <string name="library_folders_help_gone">البطاقة أو المجلد غير متاح. ستعود ألعابه وحدها متى عاد.</string>
     <string name="library_folders_no_games">لم أجد ألعابًا بعد</string>
     <string name="library_folders_pick">اختر مجلد ألعابك</string>
     <string name="library_folders_pick_value">بطاقة SD أو الجهاز</string>
@@ -139,34 +139,34 @@
     <string name="library_folders_roms_tree_internal">صارت المحاكيات تستطيع فتح الألعاب في أي مكان على التخزين الداخلي. اختر مجلد ألعابك أيضًا إن لم يكن ROMs</string>
     <string name="library_folders_roms_tree">مجلد ROMs مُضمَّن دائمًا. وصارت المحاكيات تستطيع فتح ألعابه</string>
     <string name="library_folders_is_roms">هذا مجلد ROMs، وهو مُضمَّن دائمًا</string>
-    <string name="library_folders_inside_roms">%1$s داخل مجلد ROMs، فألعابه مكتشفة أصلًا</string>
+    <string name="library_folders_inside_roms">%1$s داخل مجلد ROMs، فألعابه مكتشفة بالفعل</string>
     <string name="library_folders_above_roms">%1$s يحتوي مجلد ROMs، فستظهر ألعابه مرتين. اختر المجلد الذي فيه ألعابك</string>
-    <string name="library_folders_already">%1$s مُضاف أصلًا</string>
+    <string name="library_folders_already">%1$s مُضاف بالفعل</string>
     <string name="library_folders_no_picker">لا يوجد منتقي مجلدات على هذا الجهاز</string>
     <plurals name="library_folders_copies">
-        <item quantity="zero">لا ألعاب موجودة أصلًا في %2$s</item>
-        <item quantity="one">لعبة واحدة موجودة أصلًا في %2$s</item>
-        <item quantity="two">لعبتان موجودتان أصلًا في %2$s</item>
-        <item quantity="few">%1$d ألعاب موجودة أصلًا في %2$s</item>
-        <item quantity="many">%1$d لعبة موجودة أصلًا في %2$s</item>
-        <item quantity="other">%1$d لعبة موجودة أصلًا في %2$s</item>
+        <item quantity="zero">لا ألعاب موجودة بالفعل في %2$s</item>
+        <item quantity="one">لعبة واحدة موجودة بالفعل في %2$s</item>
+        <item quantity="two">لعبتان موجودتان بالفعل في %2$s</item>
+        <item quantity="few">%1$d ألعاب موجودة بالفعل في %2$s</item>
+        <item quantity="many">%1$d لعبة موجودة بالفعل في %2$s</item>
+        <item quantity="other">%1$d لعبة موجودة بالفعل في %2$s</item>
     </plurals>
     <string name="library_folders_other">مجلدات أخرى</string>
     <string name="library_folders_pick_card">اختر مجلد ألعابك…</string>
     <string name="library_folders_pick_card_detail">على الجهاز أو بطاقة SD، أيًّا كان ترتيبه</string>
     <string name="library_folders_sd_out">بطاقة SD غير موجودة. ألعابها مخفية حتى تعود البطاقة، ثم تعود وحدها.</string>
     <string name="library_folders_gone">المجلد غير موجود حاليًا. ألعابه مخفية حتى يعود.</string>
-    <string name="library_folders_copy_one">اللعبة هنا موجودة أصلًا في %1$s: الملف نفسه، فتُدرج مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخة من أحد المجلدين إن شئت.</string>
+    <string name="library_folders_copy_one">اللعبة هنا موجودة بالفعل في %1$s: الملف نفسه، فتُدرج مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخة من أحد المجلدين إن شئت.</string>
     <plurals name="library_folders_copy_many">
-        <item quantity="zero">الألعاب هنا موجودة أصلًا في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
-        <item quantity="one">اللعبة هنا موجودة أصلًا في %2$s: الملف نفسه، فتُدرج مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخة من أحد المجلدين إن شئت.</item>
-        <item quantity="two">اللعبتان هنا موجودتان أصلًا في %2$s: الملفات نفسها، فتُدرج كل منهما مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
-        <item quantity="few">الألعاب الـ%1$d هنا موجودة أصلًا في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
-        <item quantity="many">الألعاب الـ%1$d هنا موجودة أصلًا في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
-        <item quantity="other">الألعاب الـ%1$d هنا موجودة أصلًا في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
+        <item quantity="zero">الألعاب هنا موجودة بالفعل في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
+        <item quantity="one">اللعبة هنا موجودة بالفعل في %2$s: الملف نفسه، فتُدرج مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخة من أحد المجلدين إن شئت.</item>
+        <item quantity="two">اللعبتان هنا موجودتان بالفعل في %2$s: الملفات نفسها، فتُدرج كل منهما مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
+        <item quantity="few">الألعاب الـ%1$d هنا موجودة بالفعل في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
+        <item quantity="many">الألعاب الـ%1$d هنا موجودة بالفعل في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
+        <item quantity="other">الألعاب الـ%1$d هنا موجودة بالفعل في %2$s: الملفات نفسها، فتُدرج كل لعبة مرة واحدة من هناك. لم يضِع شيء؛ احذف النسخ من أحد المجلدين إن شئت.</item>
     </plurals>
     <string name="library_folders_none_here">لم أجد ألعابًا هنا بعد. تُكتشف الألعاب في المجلدات المسمّاة باسم منصّتها (3DS وGBA وPS2…)، والملفات التي لا تشغّلها إلا منصّة واحدة (.3ds و.nsp و.gba…) تُكتشف في أي مكان.</string>
-    <string name="library_folders_plus_copies">إضافة إلى %1$s، مُدرجة من هناك.</string>
+    <string name="library_folders_plus_copies">وهناك أيضًا %1$s، ومُدرجة من هناك.</string>
     <string name="library_folders_art_note">تُقرأ الصور أولًا من مجلد downloaded_media في هذا المجلد، ثم من ROMs/downloaded_media. والزر Y يُخرج المجلد؛ وتفاصيل ألعابه محفوظة.</string>
     <string name="library_folders_title">مجلدات الألعاب</string>
     <plurals name="library_folders_intro_roms">
@@ -232,7 +232,7 @@
     <string name="library_edit_hint_edit">تعديل</string>
     <string name="library_edit_hint_lock">قفل / فتح</string>
 
-    <string name="library_art_from_picture">حُدّثت %1$s من صورتك</string>
+    <string name="library_art_from_picture">تم تحديث %1$s من صورتك</string>
     <string name="library_art_bad_picture">تعذّر استخدام هذه الصورة</string>
     <string name="library_art_none">لا شيء</string>
     <string name="library_art_title">اختر الصور</string>
@@ -240,12 +240,12 @@
     <string name="library_art_saving">جارٍ الحفظ…</string>
     <string name="library_art_from_device">من هذا الجهاز</string>
     <string name="library_art_automatic">عُد إلى التلقائي</string>
-    <string name="library_art_automatic_again">%1$s تلقائية من جديد</string>
-    <string name="library_art_updated">حُدّثت %1$s ✨</string>
+    <string name="library_art_automatic_again">%1$s: تلقائي من جديد</string>
+    <string name="library_art_updated">تم تحديث %1$s ✨</string>
     <string name="library_art_download_failed">تعذّر تنزيل هذه، جرّب غيرها</string>
     <string name="library_art_looking">أبحث في كل المصادر…</string>
-    <string name="library_art_nothing">لم أجد شيئًا على الإنترنت لهذه اللعبة. إضافة حساب ScreenScraper أو SteamGridDB في الإعدادات تجد المزيد.</string>
-    <string name="library_art_nothing_note">%1$s. لم أجد شيئًا على الإنترنت لهذه اللعبة. إضافة حساب ScreenScraper أو SteamGridDB في الإعدادات تجد المزيد.</string>
+    <string name="library_art_nothing">لم أجد شيئًا على الإنترنت لهذه اللعبة. أضف حساب ScreenScraper أو SteamGridDB في الإعدادات لتجد المزيد.</string>
+    <string name="library_art_nothing_note">%1$s. لم أجد شيئًا على الإنترنت لهذه اللعبة. أضف حساب ScreenScraper أو SteamGridDB في الإعدادات لتجد المزيد.</string>
     <plurals name="library_art_found">
         <item quantity="zero">لا نتائج</item>
         <item quantity="one">نتيجة واحدة</item>
@@ -276,7 +276,7 @@
     <string name="library_extras_title">إضافات</string>
     <string name="library_extras_none">لا شيء</string>
     <string name="library_extras_app_closes">%1$s · يُغلق بعد اللعبة</string>
-    <string name="library_extras_app_keeps">%1$s · يبقى يعمل</string>
+    <string name="library_extras_app_keeps">%1$s · يبقى مفتوحًا</string>
     <string name="library_extras_app">التطبيق المرافق</string>
     <string name="library_extras_choose_app">اختر تطبيقًا</string>
     <string name="library_extras_change">تغيير</string>
@@ -301,11 +301,11 @@
     <string name="library_ra_automatic">تلقائي</string>
     <string name="library_ra_ask">معرّف اللعبة في RetroAchievements (الرقم في عنوان صفحتها)</string>
     <string name="library_ra_not_id">هذا ليس معرّف لعبة: إنه عدد صحيح، مثل 1234</string>
-    <string name="library_ra_matched_id">طوبقت مع اللعبة #%1$d</string>
+    <string name="library_ra_matched_id">رُبطت باللعبة #%1$d</string>
     <string name="library_ra_hidden">الألعاب المخفية لا يُبحث عنها أبدًا. اكتب معرّفًا أو اختر «بلا إنجازات».</string>
     <string name="library_ra_signed_out">سجّل الدخول إلى RetroAchievements (الإعدادات › المكتبة والصور › الحسابات) لترى الاقتراحات. ويمكنك كتابة معرّف على أي حال.</string>
     <string name="library_ra_unsupported">ليست لدى RetroAchievements قائمة لـ %1$s يعرفها Tandem.</string>
-    <string name="library_ra_not_matched">لم تُطابق بعد.</string>
+    <string name="library_ra_not_matched">لم تُربط بعد.</string>
     <string name="library_ra_currently_none">حاليًا: بلا إنجازات.</string>
     <string name="library_ra_currently">حاليًا: %1$s · #%2$d</string>
     <string name="library_ra_game">لعبة</string>
@@ -313,7 +313,7 @@
     <string name="library_ra_auto_from_now">تُكتشف تلقائيًا من الآن</string>
     <string name="library_ra_looking">أبحث في القائمة…</string>
     <string name="library_ra_no_close">لا عناوين قريبة في القائمة.</string>
-    <string name="library_ra_matched">طوبقت مع %1$s</string>
+    <string name="library_ra_matched">رُبطت بـ %1$s</string>
     <string name="library_ra_same_file">الملف نفسه</string>
     <string name="library_ra_current">الحالية</string>
     <string name="library_manual_copying">جارٍ النسخ…</string>
@@ -387,7 +387,7 @@
         <item quantity="other">و%1$d ملف آخر</item>
     </plurals>
     <string name="library_delete_shortcut">هذا مجرد اختصار في Tandem. اللعبة نفسها مثبّتة في %1$s: ألغِ تثبيتها هناك لتحرير مساحتها.</string>
-    <string name="library_delete_kept">مُبقاة، تستخدمها لعبة أخرى: %1$s</string>
+    <string name="library_delete_kept">تُركت لأن لعبة أخرى تستخدمها: %1$s</string>
     <string name="library_delete_art">الصور المنزّلة (%1$d)</string>
     <string name="library_delete_art_delete">حذف · %1$s</string>
     <string name="library_delete_art_keep">إبقاء</string>
@@ -404,7 +404,7 @@
     <string name="library_delete_deleting">جارٍ الحذف…</string>
     <string name="library_delete_delete">حذف</string>
     <string name="library_delete_hold">احذفها</string>
-    <string name="library_app_just_now">الآن</string>
+    <string name="library_app_just_now">للتو</string>
     <string name="library_app_all_apps">كل التطبيقات</string>
     <string name="library_app_kind_tandem">تطبيق من Tandem</string>
     <string name="library_app_kind_drawer">درج التطبيقات</string>
@@ -430,12 +430,12 @@
         <item quantity="other">%1$d مرة</item>
     </plurals>
     <string name="library_app_not_yet">ليس بعد</string>
-    <string name="library_app_last_played">آخر لعب</string>
+    <string name="library_app_last_played">آخر مرة</string>
     <string name="library_app_games_played">ألعاب لُعبت</string>
     <string name="library_app_none_yet">لا شيء بعد</string>
     <string name="library_app_time_played">وقت اللعب</string>
     <string name="library_app_last_used">آخر استخدام</string>
-    <string name="library_app_installed">التثبيت</string>
+    <string name="library_app_installed">تاريخ التثبيت</string>
     <string name="library_app_hint_open">فتح</string>
     <string name="library_app_hint_pin">ثبّت في الشريط</string>
     <string name="library_app_hint_options">خيارات</string>
@@ -465,7 +465,7 @@
     <string name="library_cocoon_import">استورد إعداداتي من Cocoon</string>
     <string name="library_cocoon_reading">أقرأ…</string>
     <string name="library_cocoon_no_backup_value">لا نسخة احتياطية</string>
-    <string name="library_cocoon_backup_of">نسخة %1$s</string>
+    <string name="library_cocoon_backup_of">نسخة بتاريخ %1$s</string>
     <string name="library_cocoon_import_help">رئيسيتك من Cocoon داخل Tandem: المربعات والمجلدات نفسها بالترتيب نفسه، وصفوف Cocoon، وحزمة سمتك بخلفيتي الفيديو والأيقونات والصور البارزة والشعارات. يقرأ أحدث نسخة احتياطية في ROMs/backups. ويمكنك التراجع.</string>
     <string name="library_cocoon_import_action">استيراد</string>
     <string name="library_cocoon_undo_row">التراجع عن استيراد Cocoon</string>

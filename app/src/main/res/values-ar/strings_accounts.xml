@@ -47,7 +47,7 @@
     <string name="accounts_pin_new_in">يمكنك اختيار رمز PIN جديد بعد %1$s</string>
     <string name="accounts_pin_checking">أتحقّق…</string>
     <string name="accounts_pin_too_many">محاولات خاطئة كثيرة. انتظر %1$s</string>
-    <string name="accounts_pin_new_possible">رمز PIN جديد ممكن بعد %1$s</string>
+    <string name="accounts_pin_new_possible">رمز PIN جديد متاح بعد %1$s</string>
     <string name="accounts_pin_enter">أدخل رمز PIN</string>
     <string name="accounts_pin_digits">من %1$d إلى %2$d أرقام</string>
     <string name="accounts_pin_delete">حذف</string>
@@ -94,7 +94,7 @@
     <string name="accounts_discord_connect">اتصال</string>
     <string name="accounts_discord_status_help">أثناء اللعب، تعرض حالتك على Discord اللعبة ومنصّتها والمدة التي لعبتها. لا يحدث هذا أبدًا مع الألعاب المخفية، ولا شيء ما دام الوضع الخاص مفعّلًا.</string>
     <string name="accounts_discord_connected_toast">تم الاتصال. «قطع الاتصال بـ Discord» في الصف التالي</string>
-    <string name="accounts_discord_ask_title">تعرض ما تلعبه على Discord؟</string>
+    <string name="accounts_discord_ask_title">هل تعرض ما تلعبه على Discord؟</string>
     <string name="accounts_discord_ask_text">يُفتح Discord ويطلب منك السماح لـ Tandem. بعدها تعرض حالتك اللعبة التي تلعبها أثناء اللعب. ويمكنك قطع الاتصال من هنا متى شئت.</string>
     <string name="accounts_discord_disconnect">قطع الاتصال بـ Discord</string>
     <string name="accounts_discord_disconnect_help">أوقف عرض ما تلعبه، وانسَ الربط بحسابك على Discord في هذا الجهاز.</string>
@@ -122,7 +122,7 @@
         <item quantity="many">%1$d لعبة مطابَقة</item>
         <item quantity="other">%1$d لعبة مطابَقة</item>
     </plurals>
-    <string name="accounts_ra_rematch_help">انسَ أي لعبة في RetroAchievements طوبقت مع كل لعبة لديك، وطابقها من جديد أثناء التصفّح. مفيد بعد استبدال ملفات ROM.</string>
+    <string name="accounts_ra_rematch_help">انسَ مطابقات RetroAchievements لألعابك، وطابقها من جديد أثناء التصفّح. مفيد بعد استبدال ملفات ROM.</string>
     <string name="accounts_ra_rematch_toast">سأطابق ألعابك من جديد أثناء التصفّح</string>
     <string name="accounts_ra_sign_out">تسجيل الخروج</string>
     <string name="accounts_ra_sign_out_help">انسَ حسابك في RetroAchievements على هذا الجهاز.</string>
@@ -171,7 +171,7 @@
     <string name="accounts_achievements_loading">أجلب جوائزك…</string>
     <string name="accounts_achievements_loading_text">لحظة واحدة.</string>
     <string name="accounts_achievements_none">لا جديد هذا الشهر</string>
-    <string name="accounts_achievements_none_text">إنجازك القادم سيلمع هنا تمامًا.</string>
+    <string name="accounts_achievements_none_text">إنجازك القادم سيلمع هنا.</string>
     <string name="accounts_steam_games">ألعاب Steam</string>
     <string name="accounts_achievements_mastered">أتقنتها ✨</string>
     <string name="accounts_steam_key">مفتاح Steam Web API</string>
@@ -223,7 +223,7 @@
         <item quantity="many">%1$d إنجازًا</item>
         <item quantity="other">%1$d إنجاز</item>
     </plurals>
-    <string name="accounts_steam_looked_up">بحثت في %1$s: %2$s مفتوحة</string>
+    <string name="accounts_steam_looked_up">بحثت في %1$s: فُتح منها %2$s</string>
     <plurals name="accounts_steam_looked_up_failed">
         <item quantity="zero">%1$s</item>
         <item quantity="one">%1$s · تعذّر البحث عن لعبة واحدة</item>
@@ -254,8 +254,8 @@
     <string name="accounts_steam_app">تطبيق Steam %1$d</string>
     <string name="accounts_steam_looking_games">أبحث عن ألعابك…</string>
     <string name="accounts_steam_no_achievements">لا ألعاب Steam فيها إنجازات بعد. A يبحث عنها</string>
-    <string name="accounts_steam_across">%1$d من %2$d إنجازًا في %3$s. A يبحث مجددًا</string>
-    <string name="accounts_steam_across_perfect">%1$d من %2$d إنجازًا في %3$s · %4$s بنسبة 100%%. A يبحث مجددًا</string>
+    <string name="accounts_steam_across">الإنجازات: %1$d من %2$d في %3$s. A يبحث مجددًا</string>
+    <string name="accounts_steam_across_perfect">الإنجازات: %1$d من %2$d في %3$s · %4$s بنسبة 100%%. A يبحث مجددًا</string>
     <plurals name="accounts_steam_unlocked_pill">
         <item quantity="zero">🏆 لا شيء مفتوح</item>
         <item quantity="one">🏆 واحد مفتوح</item>

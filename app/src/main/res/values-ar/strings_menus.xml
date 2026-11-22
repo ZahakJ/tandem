@@ -3,7 +3,7 @@
      Undo. See docs/i18n/glossary-ar.md. -->
 <resources>
     <string name="menus_hidden_away">في المخبأ</string>
-    <string name="menus_hidden_still_shows">أُخفيت. وستبقى ظاهرة ما دامت الألعاب المخفية ظاهرة</string>
+    <string name="menus_hidden_still_shows">أُخفيت، لكنها تظهر ما دام «إظهار الألعاب المخفية» مفعّلًا</string>
     <string name="menus_hidden_listed">أُخفيت. تجدها في Start › المخفية</string>
     <string name="menus_hidden_back">عادت إلى مكتبتك</string>
 
@@ -58,9 +58,9 @@
     <string name="menus_game_folder_hidden_help">مجلدها مخفي، فتبقى مخفية معه أيًّا كان ما يقوله هذا الخيار.</string>
     <string name="menus_game_sessions">جلسات اللعب…</string>
     <string name="menus_game_reset">مسح سجل اللعب</string>
-    <string name="menus_game_reset_help">وقت اللعب حتى الآن. المسح يُنسيه، مع عدد مرات اللعب والجلسات.</string>
+    <string name="menus_game_reset_help">وقت اللعب حتى الآن. والمسح يمحوه مع عدد مرات اللعب والجلسات.</string>
     <string name="menus_game_reset_title">مسح سجل اللعب؟</string>
-    <string name="menus_game_reset_detail">سيُنسى وقت اللعب وعدد مرات اللعب والجلسات في %1$s. ولا رجعة في ذلك.</string>
+    <string name="menus_game_reset_detail">سيُمحى وقت اللعب وعدد مرات اللعب والجلسات الخاصة بـ %1$s. ولا رجعة في ذلك.</string>
     <string name="menus_game_reset_yes">مسح</string>
     <string name="menus_game_reset_done">مُسح سجل اللعب</string>
     <string name="menus_game_uninstall">إلغاء تثبيت التطبيق…</string>
@@ -127,7 +127,7 @@
     </plurals>
     <string name="menus_search_play">العب</string>
     <string name="menus_search_options">خيارات</string>
-    <string name="menus_search_keys">المفاتيح</string>
+    <string name="menus_search_keys">لوحة المفاتيح</string>
 
     <string name="menus_keyboard_space">مسافة</string>
     <string name="menus_keyboard_done">تم</string>
@@ -206,15 +206,15 @@
     <string name="menus_app_rename">إعادة التسمية</string>
     <string name="menus_app_yours">من اختيارك</string>
     <string name="menus_app_icon">اختر أيقونة</string>
-    <string name="menus_app_game">عامِله كلعبة</string>
+    <string name="menus_app_game">اعتبره لعبة</string>
     <string name="menus_app_drawer_show">أظهر في درج التطبيقات</string>
     <string name="menus_app_drawer_hide">أخفِ من درج التطبيقات</string>
     <string name="menus_app_drawer_shown">عاد إلى «كل التطبيقات»</string>
     <string name="menus_app_drawer_hidden">أُخفي من «كل التطبيقات». و«إظهار التطبيقات المخفية» يعيده</string>
     <string name="menus_app_info">معلومات التطبيق</string>
     <string name="menus_app_uninstall">إلغاء التثبيت…</string>
-    <string name="menus_app_move_left">انقل يسارًا</string>
-    <string name="menus_app_move_right">انقل يمينًا</string>
+    <string name="menus_app_move_left">قدّمه خطوة</string>
+    <string name="menus_app_move_right">أخّره خطوة</string>
     <string name="menus_app_kind_game">لعبة Android</string>
     <string name="menus_app_kind_app">تطبيق</string>
     <string name="menus_app_game_off">أُخرج %1$s من ألعاب Android</string>

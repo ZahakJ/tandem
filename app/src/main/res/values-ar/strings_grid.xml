@@ -97,7 +97,7 @@
     <string name="grid_pick_none_help">اختر المجلد الذي فيه ألعابك، وستظهر هنا.</string>
     <string name="grid_pick_no_matches">لا نتائج</string>
     <string name="grid_pick_no_matches_help">علامات التشكيل والترقيم لا تهمّ.</string>
-    <string name="grid_pick_already">%1$s على الشبكة أصلًا</string>
+    <string name="grid_pick_already">%1$s على الشبكة بالفعل</string>
 
     <string name="grid_sel_started">A يحدّد المربعات · Y: ماذا تفعل بها · B: تم</string>
     <string name="grid_sel_nothing">لم تحدّد شيئًا</string>
@@ -134,7 +134,7 @@
     <string name="grid_sel_hide_sub">الألعاب والمنصّات والمجلدات</string>
     <string name="grid_sel_all">تحديد الكل</string>
     <string name="grid_sel_clear">إلغاء التحديد</string>
-    <string name="grid_sel_already_hidden">مخفية أصلًا</string>
+    <string name="grid_sel_already_hidden">مخفية بالفعل</string>
     <plurals name="grid_sel_moved">
         <item quantity="zero">لم يُنقل شيء</item>
         <item quantity="one">نُقل مربع واحد</item>
@@ -189,7 +189,7 @@
     <string name="grid_spot_paste">ضع %1$s هنا</string>
     <string name="grid_spot_paste_it">ضعه هنا</string>
     <string name="grid_spot_new_folder">مجلد جديد…</string>
-    <string name="grid_spot_made_folder">صار المجلد %1$s هنا</string>
+    <string name="grid_spot_made_folder">أُنشئ المجلد %1$s هنا</string>
     <string name="grid_spot_smart_folder">مجلد ذكي…</string>
     <string name="grid_spot_smart_folder_sub">يملأ نفسه بنفسه: نوع ما، ألعاب لم تُلعب…</string>
     <string name="grid_spot_game">لعبة…</string>
@@ -207,7 +207,7 @@
     <string name="grid_spot_widget_unavailable">غير متاحة بعد</string>
     <string name="grid_spot_widget_too_big">أكبر من المجلد: لشبكة الرئيسية فقط</string>
 
-    <string name="grid_tidy_already">لا فراغات أصلًا</string>
+    <string name="grid_tidy_already">مرتّبة بالفعل</string>
     <string name="grid_tidy_done">سُدّت الفراغات</string>
     <string name="grid_tidy_done_folder">سُدّت فراغات %1$s</string>
     <string name="grid_tidy_sorted">الترتيب: %1$s، فلا فراغات أبدًا</string>
@@ -275,7 +275,7 @@
     <string name="grid_form_hint_pick">اختيار</string>
     <string name="grid_form_hint_save">حفظ</string>
     <string name="grid_form_type">اكتب</string>
-    <string name="grid_form_any">أيّ</string>
+    <string name="grid_form_any">الكل</string>
     <string name="grid_form_name">الاسم</string>
     <string name="grid_form_name_help">اسم المجلد على الشبكة.</string>
     <string name="grid_form_systems">المنصّات</string>
@@ -296,11 +296,11 @@
     <string name="grid_form_year_to_help">صدرت في هذه السنة أو قبلها.</string>
     <string name="grid_form_favorites">المفضّلة فقط</string>
     <string name="grid_form_favorites_help">الألعاب التي منحتها قلبًا فقط.</string>
-    <string name="grid_form_played">اللعب</string>
+    <string name="grid_form_played">لُعبت؟</string>
     <string name="grid_form_played_help">لُعبت: ألعاب لها أي سجل لعب. لم تُلعب: ألعاب لم تبدأها قط.</string>
     <string name="grid_form_status">الحالة</string>
-    <string name="grid_form_status_help">الألعاب بهذه الحالة فقط: في قائمة الانتظار، أو قيد اللعب، أو أنهيتها (والمكتملة معها)… «بلا»: ألعاب بلا حالة.</string>
-    <string name="grid_form_status_none">بلا</string>
+    <string name="grid_form_status_help">الألعاب بهذه الحالة فقط: في قائمة الانتظار، أو قيد اللعب، أو أنهيتها (والمكتملة معها)… «بلا حالة»: ألعاب لم تُعطَ حالة.</string>
+    <string name="grid_form_status_none">بلا حالة</string>
     <string name="grid_form_status_finished">أنهيتها</string>
     <string name="grid_form_random">كم لعبة</string>
     <string name="grid_form_random_help">«عشوائي» يُبقي هذا العدد من النتائج، ويختارها من جديد كلما بدأ Tandem.</string>
@@ -355,7 +355,7 @@
     <string name="grid_zoom_folder">%1$s: %2$d في الصف</string>
     <string name="grid_zoom_games">الألعاب: %1$s</string>
     <plurals name="grid_zoom_rows">
-        <item quantity="zero">الأيقونات: %1$d صف</item>
+        <item quantity="zero">الأيقونات: لا صفوف</item>
         <item quantity="one">الأيقونات: صف واحد</item>
         <item quantity="two">الأيقونات: صفّان</item>
         <item quantity="few">الأيقونات: %1$d صفوف</item>
@@ -403,9 +403,9 @@
     <string name="grid_hint_paste">ضعه في مكان فارغ</string>
     <string name="grid_hint_cancel">إلغاء</string>
     <string name="grid_hint_move">تحريك</string>
-    <string name="grid_hint_drop">وضع</string>
+    <string name="grid_hint_drop">ضعه</string>
     <string name="grid_hint_resize">الحجم</string>
-    <string name="grid_hint_carry">حمل</string>
+    <string name="grid_hint_carry">احمله</string>
     <string name="grid_hint_page">الصفحة</string>
 
     <string name="grid_menu_open">فتح</string>
@@ -456,8 +456,8 @@
     <string name="grid_delete_page">حذف %1$s؟</string>
     <string name="grid_delete_page_folder">حذف المجلد؟</string>
     <string name="grid_delete_keep">احتفظ بمحتواه</string>
-    <string name="grid_delete_keep_sub">ينتقل إلى %1$s، في مكانه</string>
-    <string name="grid_delete_keep_sub_home">ينتقل إلى شبكة الرئيسية، في مكانه</string>
+    <string name="grid_delete_keep_sub">ينتقل محتواه إلى %1$s، في مكانه</string>
+    <string name="grid_delete_keep_sub_home">ينتقل محتواه إلى شبكة الرئيسية، في مكانه</string>
     <string name="grid_delete_all_subfolders">احذفه مع مجلداته الفرعية</string>
     <string name="grid_delete_all_shortcuts">احذفه مع اختصاراته</string>
     <string name="grid_delete_all_sub">الألعاب والتطبيقات نفسها تبقى</string>
@@ -474,13 +474,13 @@
     <string name="grid_hint_options">خيارات</string>
 
     <string name="grid_add_system">أضف منصّة هنا</string>
-    <string name="grid_add_system_none">كل منصّة على الشبكة أو في مجلد أصلًا. المنصّات التي تُزال من الشبكة تظهر هنا.</string>
+    <string name="grid_add_system_none">كل منصّة على الشبكة أو في مجلد بالفعل. المنصّات التي تُزال من الشبكة تظهر هنا.</string>
     <string name="grid_add_collection">أضف مجموعة أو نوعًا هنا</string>
-    <string name="grid_add_collection_none">كل مجموعة ونوع على الشبكة أو في مجلد أصلًا.</string>
+    <string name="grid_add_collection_none">كل مجموعة ونوع على الشبكة أو في مجلد بالفعل.</string>
     <string name="grid_add_app">أضف تطبيقًا هنا</string>
-    <string name="grid_add_app_none">كل تطبيق على الشبكة أو في مجلد أصلًا.</string>
+    <string name="grid_add_app_none">كل تطبيق على الشبكة أو في مجلد بالفعل.</string>
     <string name="grid_add_tandem">أضف تطبيقًا من Tandem هنا</string>
-    <string name="grid_add_tandem_none">كل تطبيقات Tandem على الشبكة أو في مجلد أصلًا.</string>
+    <string name="grid_add_tandem_none">كل تطبيقات Tandem على الشبكة أو في مجلد بالفعل.</string>
     <string name="grid_add_spot">أضف إلى هذا المكان</string>
     <string name="grid_add_home">أضف إلى الرئيسية</string>
     <string name="grid_add_none">كل المنصّات والمجموعات والتطبيقات على شبكة الرئيسية.</string>
@@ -540,7 +540,7 @@
 
     <string name="grid_smart_played_yes">لُعبت</string>
     <string name="grid_smart_played_no">لم تُلعب</string>
-    <string name="grid_smart_played_any">أيّ</string>
+    <string name="grid_smart_played_any">الكل</string>
     <string name="grid_smart_pattern">«%1$s»</string>
     <string name="grid_smart_favorites">المفضّلة</string>
     <string name="grid_smart_random">%1$d عشوائيًا</string>
@@ -569,7 +569,7 @@
         <item quantity="other">صار %2$s مجلدًا عاديًا. و%1$d لعبة كانت في مكان آخر بقيت حيث هي</item>
     </plurals>
 
-    <string name="grid_drag_made_folder">صار المجلد %1$s</string>
+    <string name="grid_drag_made_folder">أُنشئ المجلد %1$s</string>
     <string name="grid_drag_moved">نُقل %1$s</string>
     <string name="grid_drag_moved_it">نُقل</string>
     <string name="grid_drag_moved_into">نُقل %1$s إلى %2$s</string>

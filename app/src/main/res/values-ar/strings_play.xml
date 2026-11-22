@@ -19,8 +19,8 @@
     <string name="play_perf_ayn_only_help">على أجهزة AYN المحمولة، يستطيع Tandem ضبط وضع الأداء ووضع المروحة ومعدّل التحديث أثناء اللعب، لكل لعبة أو لها كلها. هذا الجهاز ليس فيه أوضاع AYN، فلا شيء لضبطه هنا.</string>
     <string name="play_perf_ayn_only_toast">هذا الجهاز ليس فيه أوضاع الأداء من AYN</string>
     <string name="play_perf_needs_shizuku">يحتاج Shizuku</string>
-    <string name="play_perf_needs_shizuku_help">اضبط وضع الأداء ووضع المروحة ومعدّل التحديث أثناء اللعب، وأعِدها بعده. يغيّرها Tandem كما يفعل مركز التحكّم في AYN؛ ولا يسمح Android بكتابة هذه المفاتيح إلا للـ shell، لذا يحتاج هذا Shizuku يعمل مع السماح لـ Tandem.</string>
-    <string name="play_perf_needs_shizuku_toast">هذا يحتاج Shizuku يعمل، مع السماح لـ Tandem</string>
+    <string name="play_perf_needs_shizuku_help">اضبط وضع الأداء ووضع المروحة ومعدّل التحديث أثناء اللعب، وأعِدها بعده. يغيّرها Tandem كما يفعل مركز التحكّم في AYN؛ ولا يسمح Android بكتابة هذه المفاتيح إلا للـ shell، لذا يحتاج هذا إلى تشغيل Shizuku والسماح فيه لـ Tandem.</string>
+    <string name="play_perf_needs_shizuku_toast">يحتاج هذا إلى تشغيل Shizuku والسماح فيه لـ Tandem</string>
     <string name="play_perf_mode">وضع الأداء</string>
     <string name="play_perf_mode_help">وضع الأداء في AYN أثناء اللعب: قياسي، أو أداء، أو أداء عالٍ. «إبقاء» يترك ما هو مضبوط. ويعود كما كان حين ترجع إلى Tandem؛ واختيار اللعبة الخاص (Y على اللعبة) هو الغالب.</string>
     <string name="play_perf_fan">وضع المروحة</string>
@@ -38,7 +38,7 @@
     <string name="play_shot_failed">تعذّر التقاط الشاشة</string>
     <string name="play_no_game">ابدأ لعبة أولًا: هذا يلتقط اللعبة على الشاشة الأخرى</string>
     <string name="play_clip_needs_shizuku">المقاطع تحتاج Shizuku</string>
-    <string name="play_clip_busy">أسجّل مقطعًا أصلًا</string>
+    <string name="play_clip_busy">أسجّل مقطعًا بالفعل</string>
     <string name="play_clip_failed">تعذّر تسجيل المقطع</string>
     <string name="play_clip_not_saved">تعذّر حفظ المقطع</string>
     <string name="play_clip_saved">حُفظ المقطع في «المعرض»</string>
@@ -61,8 +61,8 @@
     <string name="play_problem_no_emulator">لا محاكي لـ %1$s بعد</string>
     <string name="play_problem_no_emulator_text">أضف واحدًا في ROMs/tandem/platforms.json، أو ضع ملف منصّات من Cocoon في ROMs/platforms.</string>
     <string name="play_problem_wont_open">لم يُفتح %1$s</string>
-    <string name="play_problem_wont_open_text">إنه مثبّت، لكنه لم يقبل %1$s. ربما يحتاج تحديثًا، أو ربما يعمل محاكي آخر أفضل.</string>
-    <string name="play_problem_wont_open_detail">إنه مثبّت، لكنه لم يقبل %1$s. ربما يحتاج تحديثًا، أو ربما يعمل محاكي آخر أفضل.\n(%2$s)</string>
+    <string name="play_problem_wont_open_text">إنه مثبّت، لكنه لم يفتح %1$s. ربما يحتاج تحديثًا، أو ربما يعمل محاكي آخر أفضل.</string>
+    <string name="play_problem_wont_open_detail">إنه مثبّت، لكنه لم يفتح %1$s. ربما يحتاج تحديثًا، أو ربما يعمل محاكي آخر أفضل.\n(%2$s)</string>
     <string name="play_problem_missing">لا أجد هذه اللعبة</string>
     <string name="play_problem_missing_text">نُقل %1$s أو حُذف. إعادة البحث ترتّب القائمة.</string>
     <string name="play_problem_shortcut">هذا الاختصار يحتاج معرّف لعبة</string>
@@ -107,12 +107,12 @@
     <string name="play_close_resume">استأنف %1$s</string>
     <string name="play_move_needs_shizuku">نقل التطبيقات بين الشاشتين يحتاج Shizuku</string>
     <string name="play_move_refused">لم يقبل Android نقل هذا التطبيق</string>
-    <string name="play_move_back">أُعيد. %1$s يُفتح كما كان</string>
+    <string name="play_move_back">أُعيد إلى مكانه. %1$s يُفتح كما في السابق</string>
     <string name="play_move_to_bottom">نُقل إلى الشاشة السفلية. %1$s يُفتح هناك من الآن (اضغط رجوع مطوّلًا مجددًا للتراجع)</string>
     <string name="play_move_to_top">نُقل إلى الشاشة العلوية. %1$s يُفتح هناك من الآن (اضغط رجوع مطوّلًا مجددًا للتراجع)</string>
     <string name="play_move_not_open">%1$s ليس مفتوحًا</string>
     <string name="play_move_bottom_from_now">%1$s يُفتح على الشاشة السفلية من الآن</string>
-    <string name="play_peanuts_building">أبني %1$s بنسخة أصلية. يستغرق هذا من 5 إلى 40 دقيقة؛ ويمكنك مواصلة اللعب في الأثناء</string>
+    <string name="play_peanuts_building">أبني %1$s بنسخة أصلية. يستغرق هذا من 5 إلى 40 دقيقة؛ ويمكنك مواصلة اللعب في هذه الأثناء</string>
     <string name="play_peanuts_cant">لا يستطيع Peanuts Native بناء هذه النسخة: %1$s</string>
     <string name="play_peanuts_see_app">راجع تطبيقه</string>
     <string name="play_save_failed">تعذّر نقل ملف الحفظ: %1$s. الملفان كما كانا</string>

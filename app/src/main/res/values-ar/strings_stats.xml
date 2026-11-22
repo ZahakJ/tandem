@@ -14,7 +14,7 @@
 
     <string name="stats_tile_total">إجمالي اللعب</string>
     <plurals name="stats_tile_total_across">
-        <item quantity="zero">في لا ألعاب</item>
+        <item quantity="zero">لا ألعاب بعد</item>
         <item quantity="one">في لعبة واحدة</item>
         <item quantity="two">في لعبتين</item>
         <item quantity="few">في %1$d ألعاب</item>
@@ -41,12 +41,12 @@
         <item quantity="other">%1$d يوم</item>
     </plurals>
     <plurals name="stats_tile_streak_best">
-        <item quantity="zero">الأفضل %1$d يوم</item>
-        <item quantity="one">الأفضل يوم واحد</item>
-        <item quantity="two">الأفضل يومان</item>
-        <item quantity="few">الأفضل %1$d أيام</item>
-        <item quantity="many">الأفضل %1$d يومًا</item>
-        <item quantity="other">الأفضل %1$d يوم</item>
+        <item quantity="zero">الأفضل: %1$d يوم</item>
+        <item quantity="one">الأفضل: يوم واحد</item>
+        <item quantity="two">الأفضل: يومان</item>
+        <item quantity="few">الأفضل: %1$d أيام</item>
+        <item quantity="many">الأفضل: %1$d يومًا</item>
+        <item quantity="other">الأفضل: %1$d يوم</item>
     </plurals>
     <string name="stats_tile_history_starts">السجل يبدأ اليوم</string>
     <string name="stats_tile_sessions">الجلسات</string>
@@ -67,7 +67,7 @@
     <string name="stats_mosaic_share">%1$d%% من لعبك</string>
 
     <string name="stats_fact_morning">أنت من طيور الصباح: معظم لعبك في الصباح.</string>
-    <string name="stats_fact_afternoon">مغامر العصاري: هذا وقتك المفضّل للعب.</string>
+    <string name="stats_fact_afternoon">مغامر وقت العصر: هذا وقتك المفضّل للعب.</string>
     <string name="stats_fact_evening">المساء وقت ألعابك. ما أدفأ ذلك!</string>
     <string name="stats_fact_night">بومة ليل أصيلة. معظم لعبك بعد الحادية عشرة ليلًا.</string>
     <string name="stats_fact_private">إحصاءاتك لا تغادر هذا الجهاز أبدًا</string>
@@ -124,7 +124,7 @@
     <string name="stats_export_saved">حُفظ play-stats.csv وplay-sessions.csv في ROMs/tandem</string>
     <string name="stats_export_failed">تعذّرت الكتابة في ROMs/tandem</string>
 
-    <string name="stats_library_empty">Y › الحالة على أي لعبة يضعها في قائمة الانتظار، أو يعلّمها كمُنهاة. وهنا تترتّب مكتبتك وحدها</string>
+    <string name="stats_library_empty">Y › الحالة على أي لعبة يضعها في قائمة الانتظار، أو يعلّمها «أنهيتها». وهنا تترتّب مكتبتك وحدها</string>
     <string name="stats_library_playing">قيد اللعب</string>
     <string name="stats_library_playing_latest">الأحدث: %1$s</string>
     <string name="stats_library_playing_none">لا شيء جارٍ</string>
@@ -224,7 +224,7 @@
     </plurals>
     <string name="stats_sorter_title">رتّب الألعاب التي لعبتها</string>
     <string name="stats_sorter_set">تعيين</string>
-    <string name="stats_sorter_stop">توقف الآن</string>
+    <string name="stats_sorter_stop">يكفي الآن</string>
     <string name="stats_sorter_progress">%1$d من %2$d</string>
     <string name="stats_sorter_skip">تخطَّ هذه</string>
 
@@ -275,8 +275,8 @@
     <string name="stats_trophy_ten_hours_how">العب 10 ساعات إجمالًا</string>
     <string name="stats_trophy_hundred_hours">صاحب المئة</string>
     <string name="stats_trophy_hundred_hours_how">العب 100 ساعة إجمالًا</string>
-    <string name="stats_trophy_thousand_hours">مدى الحياة</string>
-    <string name="stats_trophy_thousand_hours_how">العب 1,000 ساعة إجمالًا</string>
+    <string name="stats_trophy_thousand_hours">رفيق العمر</string>
+    <string name="stats_trophy_thousand_hours_how">العب 1000 ساعة إجمالًا</string>
     <string name="stats_trophy_marathon">ماراثون</string>
     <string name="stats_trophy_marathon_how">العب 3 ساعات في جلسة واحدة</string>
     <string name="stats_trophy_devoted">وفيّ</string>
@@ -349,18 +349,18 @@
     <string name="stats_session_moved">نُقلت إلى %1$s، %2$s</string>
     <plurals name="stats_sessions_clear_detail">
         <item quantity="zero">لا جلسات لإزالتها (%2$s). وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="one">ستُزال جلسة واحدة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="two">ستُزال جلستان (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="few">ستُزال %1$d جلسات (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="many">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="other">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="one">ستُزال جلسة واحدة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="two">ستُزال جلستان (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="few">ستُزال %1$d جلسات (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="many">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="other">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
     </plurals>
     <plurals name="stats_sessions_clear_detail_of">
         <item quantity="zero">لا جلسات لـ %3$s لإزالتها (%2$s). وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="one">ستُزال جلسة واحدة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="two">ستُزال جلستان (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="few">ستُزال %1$d جلسات (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="many">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
-        <item quantity="other">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="one">ستُزال جلسة واحدة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="two">ستُزال جلستان (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="few">ستُزال %1$d جلسات (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="many">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="other">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وتاريخ آخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
     </plurals>
 </resources>

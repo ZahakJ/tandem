@@ -83,7 +83,7 @@
     <string name="settings_sub_games">عرض الألعاب</string>
     <string name="settings_sub_games_help">كيف تظهر الألعاب داخل المنصّة أو المجموعة: طريقة العرض وحجمها، وشكل البطاقة، وخزانة الرفوف والعناوين.</string>
     <string name="settings_sub_dock">الشريط والأدوات</string>
-    <string name="settings_sub_dock_help">شريط التطبيقات على الشاشة الرئيسية، والأدوات عليها.</string>
+    <string name="settings_sub_dock_help">شريط التطبيقات على الرئيسية، والأدوات التي يحملها.</string>
     <string name="settings_sub_art">الصور والفيديو</string>
     <string name="settings_sub_art_help">الصور على الشاشة الأخرى: لقطات الفيديو، والصور المتحرّكة، وحجم الشعار، وطريقة تلاشي الصورة.</string>
     <string name="settings_sub_pads">أذرع التحكّم المتصلة</string>
@@ -131,7 +131,7 @@
     <string name="settings_group_language">اللغة</string>
     <string name="settings_group_start_over">بداية جديدة</string>
     <string name="settings_group_home_screen">الشاشة الرئيسية</string>
-    <string name="settings_group_around_home">حول الرئيسية</string>
+    <string name="settings_group_around_home">من حول الرئيسية</string>
     <string name="settings_group_screens">الشاشات</string>
     <string name="settings_group_other_screen">الشاشة الأخرى</string>
     <string name="settings_group_while_playing">أثناء اللعب</string>
@@ -169,7 +169,7 @@
     <string name="settings_buttons_none">لا زر</string>
 
     <string name="settings_resume_page">صفحة الاستئناف</string>
-    <string name="settings_resume_page_help">اللعبة التي ما زالت تعمل تحصل على صفحة استئناف يسار الشبكة، على بُعد ضغطة من إكمالها. «تُفتح أولًا»: حين تعود إلى Tandem واللعبة تعمل، تأخذك مباشرة إلى تلك الصفحة. وعند التعطيل، لا صفحة خاصة للعبة التي تعمل.</string>
+    <string name="settings_resume_page_help">اللعبة التي ما زالت تعمل تحصل على صفحة استئناف قبل الشبكة، على بُعد ضغطة من إكمالها. «تُفتح أولًا»: حين تعود إلى Tandem واللعبة تعمل، تأخذك مباشرة إلى تلك الصفحة. وعند التعطيل، لا صفحة خاصة للعبة التي تعمل.</string>
     <string name="settings_resume_page_land">تُفتح أولًا</string>
 
     <string name="settings_a_switch">تبديل</string>
@@ -252,7 +252,7 @@
     <string name="settings_slider_theme">السمة</string>
     <string name="settings_picker_now">الحالي: %1$s</string>
 
-    <string name="settings_showcase_in_use">مستخدم</string>
+    <string name="settings_showcase_in_use">قيد الاستخدام</string>
     <string name="settings_showcase_play">العب</string>
     <string name="settings_showcase_options">خيارات</string>
     <string name="settings_showcase_menu">القائمة</string>
@@ -271,7 +271,7 @@
     <string name="settings_search_delete">حذف</string>
     <string name="settings_search_results">النتائج</string>
     <string name="settings_search_go">اذهب إليه</string>
-    <string name="settings_search_keys">المفاتيح</string>
+    <string name="settings_search_keys">لوحة المفاتيح</string>
     <string name="settings_search_popular">الأكثر طلبًا</string>
     <plurals name="settings_search_found">
         <item quantity="zero">لا نتائج</item>

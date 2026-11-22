@@ -76,7 +76,7 @@
     <string name="widgets_opt_mood_happy">سعيد</string>
     <string name="widgets_opt_mood_excited">متحمّس</string>
     <string name="widgets_opt_mood_sleepy">نعسان</string>
-    <string name="widgets_opt_played">الألعاب الملعوبة</string>
+    <string name="widgets_opt_played">الألعاب التي لعبتها</string>
     <string name="widgets_opt_played_show">أظهرها مع ✓</string>
     <string name="widgets_opt_played_hide">أخفِها</string>
     <string name="widgets_opt_uptime">مدة التشغيل</string>
@@ -86,7 +86,7 @@
     <string name="widgets_act_pick_another">اختر غيرها</string>
     <string name="widgets_act_check_again">تحقّق مجددًا</string>
     <string name="widgets_act_add_upnext">أضف لعبة أو ملاحظة…</string>
-    <string name="widgets_act_clear_played">أزل الألعاب الملعوبة</string>
+    <string name="widgets_act_clear_played">أزل ما لعبته</string>
     <plurals name="widgets_cleared_played">
         <item quantity="zero">لم تُزل أي لعبة</item>
         <item quantity="one">أُزيلت لعبة واحدة</item>
@@ -103,10 +103,10 @@
     <string name="widgets_upnext_removed">أُزيلت من «على الدور»</string>
     <string name="widgets_upnext_added">أُضيفت إلى «على الدور» ✓</string>
     <string name="widgets_upnext_ask">أضف إلى «على الدور»: اسم لعبة أو ملاحظة</string>
-    <string name="widgets_upnext_already">%1$s في القائمة أصلًا</string>
+    <string name="widgets_upnext_already">%1$s في القائمة بالفعل</string>
     <string name="widgets_upnext_added_game">أُضيفت %1$s ✓</string>
     <string name="widgets_upnext_added_note">أُضيفت ملاحظة إلى «على الدور» ✓</string>
-    <string name="widgets_upnext_edit_note">عدّل الملاحظة (تركها فارغة يزيلها)</string>
+    <string name="widgets_upnext_edit_note">عدّل الملاحظة (اتركها فارغة لإزالتها)</string>
     <string name="widgets_title">الأدوات</string>
     <string name="widgets_settings">الأدوات</string>
     <string name="widgets_customize">تخصيص الأدوات</string>
@@ -123,7 +123,7 @@
     <string name="widgets_none_yet">لا شيء بعد</string>
     <string name="widgets_home_help">اعرض أدواتك أعلى الشاشة الرئيسية.</string>
     <string name="widgets_grid">الأدوات على الشبكة</string>
-    <string name="widgets_grid_help">أين يضع «أضف هنا › أداة…» على شبكة الأيقونات الأداة الجديدة: في مكان خاص بها، من خلية إلى خليتين في كل اتجاه، أو في صف الأدوات. والأدوات الموضوعة أصلًا تبقى مكانها.</string>
+    <string name="widgets_grid_help">أين يضع «أضف هنا › أداة…» على شبكة الأيقونات الأداة الجديدة: في مكان خاص بها، من خلية إلى خليتين في كل اتجاه، أو في صف الأدوات. والأدوات الموضوعة من قبل تبقى مكانها.</string>
     <string name="widgets_grid_cells">في خلايا</string>
     <string name="widgets_grid_row">في صف</string>
     <string name="widgets_bottom">الشاشة السفلية حين تكون خاملة</string>
@@ -277,7 +277,7 @@
         <item quantity="many">%1$d لعبة</item>
         <item quantity="other">%1$d لعبة</item>
     </plurals>
-    <string name="widgets_last_played">آخر لعب</string>
+    <string name="widgets_last_played">آخر ما لعبته</string>
 
     <string name="widgets_not_available">غير متاحة بعد</string>
     <string name="widgets_grid_too_big">%1$s تحتاج مساحة أكبر من مكان واحد. تتسع لها شبكة الرئيسية</string>
@@ -310,7 +310,7 @@
     <string name="widgets_ed_show_home">أظهرها في الرئيسية</string>
     <string name="widgets_ed_rows">الصفوف</string>
     <string name="widgets_ed_rows_auto">تلقائي</string>
-    <string name="widgets_ed_rows_one">صف</string>
+    <string name="widgets_ed_rows_one">صف واحد</string>
     <string name="widgets_ed_rows_two">صفّان</string>
     <string name="widgets_ed_reset_again">اضغط مجددًا لإعادة الضبط</string>
     <string name="widgets_ed_reset">عُد إلى المجموعة الافتراضية</string>

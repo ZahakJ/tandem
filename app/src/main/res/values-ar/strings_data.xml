@@ -29,8 +29,8 @@
     <string name="data_sort_rating">التقييم</string>
     <string name="data_sort_added">أُضيفت مؤخرًا</string>
 
-    <string name="data_time_minutes">%1$d دقيقة</string>
-    <string name="data_time_hours">%1$s ساعة</string>
+    <string name="data_time_minutes">%1$dد</string>
+    <string name="data_time_hours">%1$sس</string>
 
     <string name="data_screen_auto">تلقائي</string>
     <string name="data_screen_top">العلوية</string>
@@ -119,7 +119,7 @@
     <string name="data_backup_not_in">ليس في هذه النسخة</string>
     <string name="data_backup_has_keys">تتضمّن مفاتيح الحسابات.</string>
     <string name="data_backup_no_keys">مفاتيح الحسابات على هذا الجهاز تبقى كما هي.</string>
-    <string name="data_backup_just_now">الآن</string>
+    <string name="data_backup_just_now">للتو</string>
     <string name="data_backup_minute_ago">قبل دقيقة</string>
     <plurals name="data_backup_minutes_ago">
         <item quantity="zero">قبل %1$d دقيقة</item>

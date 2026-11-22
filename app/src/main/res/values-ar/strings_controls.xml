@@ -29,7 +29,7 @@
     <string name="controls_link_builtin">المدمج</string>
     <string name="controls_link_auto">استخدم دائمًا الذراع المتصل</string>
     <string name="controls_link_auto_help">استخدم دائمًا ذراع التحكّم المتصل: الذراع الذي يتصل يلعب بدل المدمج فورًا، دون سؤال. اتركه معطّلًا للعب بلاعبَين: يبقى الذراع حينها ذراعًا مستقلًا، ويحتاج المحاكي إلى تعيينه كاللاعب 2.</string>
-    <string name="controls_link_in_use">المستخدم: %1$s</string>
+    <string name="controls_link_in_use">قيد الاستخدام: %1$s</string>
 
     <string name="controls_binding_hold">%1$s مطوّلًا</string>
     <string name="controls_binding_none">بلا زر</string>
@@ -103,7 +103,7 @@
     <string name="controls_rebind_reset">إعادة الضبط</string>
     <string name="controls_rebind_rebind">إعادة التعيين</string>
     <string name="controls_rebind_none_hint">بلا زر</string>
-    <string name="controls_rebind_already_default">كل الأزرار على وضعها الافتراضي أصلًا</string>
+    <string name="controls_rebind_already_default">كل الأزرار على وضعها الافتراضي بالفعل</string>
     <string name="controls_rebind_reset_done">عادت كل الأزرار إلى وضعها الافتراضي</string>
     <string name="controls_rebind_commands">الأوامر</string>
     <string name="controls_rebind_changed">مُعدّل</string>
@@ -111,7 +111,7 @@
     <string name="controls_rebind_set">%1$s: %2$s</string>
     <string name="controls_rebind_set_none">%1$s: بلا زر</string>
     <string name="controls_rebind_set_swapped">%1$s: %2$s، بالتبادل</string>
-    <string name="controls_rebind_same">«%1$s» على هذا الزر أصلًا</string>
+    <string name="controls_rebind_same">«%1$s» على هذا الزر بالفعل</string>
     <string name="controls_rebind_nothing_pressed">لم تضغط شيئًا: «%1$s» يبقى كما كان</string>
     <string name="controls_rebind_listen_title">إعادة تعيين «%1$s»</string>
     <string name="controls_rebind_listen_how">اضغط الزر الجديد، أو عدة أزرار معًا لتركيبة. واضغط زرًا واحدًا مطوّلًا لضغطة مطوّلة.</string>
@@ -148,7 +148,7 @@
     <string name="controls_deck_haptics">اهتزاز المفاتيح</string>
     <string name="controls_deck_haptics_help">اهتزازة خفيفة لكل مفتاح ولمسة على لوحة اللمس.</string>
 
-    <string name="controls_padlink_offer">تلعب بـ %1$s؟</string>
+    <string name="controls_padlink_offer">هل تلعب بـ %1$s؟</string>
     <string name="controls_padlink_offer_how">اضغط A أو Start فيه. سيتولّى مكان الأزرار المدمجة في هذه اللعبة.</string>
     <string name="controls_padlink_accept">العب به</string>
     <string name="controls_padlink_decline">ليس الآن</string>
@@ -159,6 +159,6 @@
     <string name="controls_padlink_needs_shizuku">يحتاج Shizuku أو صلاحيات الجذر: اللعبة لا تقرأ إلا الذراع المدمج، وهما وحدهما يستطيعان تغذيته.</string>
     <string name="controls_padlink_builtin">عدت إلى الأزرار المدمجة</string>
     <string name="controls_padlink_playing">تلعب بـ %1$s</string>
-    <string name="controls_padlink_failed">تعذّر تولّي %1$s</string>
-    <string name="controls_padlink_failed_unknown">تعذّر تولّي ذراع التحكّم</string>
+    <string name="controls_padlink_failed">تعذّر استخدام %1$s</string>
+    <string name="controls_padlink_failed_unknown">تعذّر استخدام ذراع التحكّم</string>
 </resources>

@@ -15,6 +15,10 @@ The words Tandem uses in Arabic, chosen once and used everywhere. Read this befo
   second person.
 - **Punctuation:** Arabic comma ، semicolon ؛ question mark ؟. Quotes «…» for names and terms. The path arrow ›
   and the dot · stay as they are. Western digits (0–9), as Android shows them in apps like this.
+- **"Already"** is بالفعل (or من قبل). أصلًا in that sense is dialect; keep it only for "at all" ("بلا ساعة أصلًا").
+- **No bare بلا / أيّ as a value:** an option reads as a whole phrase ("بلا تأثير"، "بلا حالة"، "الكل").
+- **Directions:** the layout is mirrored for Arabic, so help text says where things are by order, not by side
+  ("قبل الشبكة"، "بجانب الأغلفة"), never يسار/يمين. D-pad Left/Right (the buttons) are fine.
 - **Search examples** stay in English inside «…» (the search keyboard types Latin letters only, and search matches
   the English names): «bigger icons»، «nintendo».
 - **Numbers and plurals:** all six forms (zero, one, two, few, many, other). zero/one/two usually drop the number:
@@ -163,7 +167,7 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Y › Sort inside › Manual | Y › ترتيب المحتوى › يدوي | |
 | Genre | نوع (أنواع) | |
 | Pin / Unpin (home, dock) | ثبّت في / أزل من | |
-| Paste (a carried tile) | ضع هنا | |
+| Paste (a carried tile) | ضع هنا | Also the A hint on an empty spot |
 | Tidy up (close the gaps) | سدّ الفراغات | |
 | Regex / Plain text | تعبير نمطي / نص عادي | |
 | A–Z (sort) | أبجديًا | |
@@ -191,6 +195,16 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Scrape modes: Missing basics, Missing selected, Force all | الأساسيات الناقصة، الناقص المختار، الكل من جديد | |
 | Fanart | فن المعجبين | |
 | Play time units, long | 45 دقيقة، ساعتان، 3 ساعات و5 د | |
+| In use (theme, controller) | قيد الاستخدام | Not مستخدم, which reads as "used / second-hand" |
+| Just now | للتو | |
+| Last played (label next to a date) | آخر مرة | Widget heading: آخر ما لعبته |
+| Launch animation / launch sound | حركة التشغيل / صوت التشغيل | إطلاق sounds like a rocket |
+| Matte (shelf look) | غير لامع | مطفأ means switched off |
+| Drop / Carry (grid move hints) | ضعه / احمله | Bare وضع / حمل read as "mode" / "pregnancy" |
+| Move left / Move right (dock order) | قدّمه خطوة / أخّره خطوة | Order, not side: right in a mirrored layout |
+| Keys (B on the search keyboard) | لوحة المفاتيح | |
+| Needs Shizuku running | يحتاج إلى تشغيل Shizuku (والسماح فيه لـ Tandem) | Short tag stays يحتاج Shizuku |
+| Any (filter value) | الكل | |
 | Dual screen assistant (AYN's app) | مساعد الشاشة المزدوجة | Check against AYN's own Arabic name if it has one |
 
 ## Names of things inside Tandem

@@ -96,7 +96,7 @@
     <string name="apps_journal_with_notes">بملاحظات</string>
     <string name="apps_journal_note_for">ملاحظة لـ %1$s (%2$s)</string>
     <string name="apps_journal_note_about">ملاحظة عن %1$s</string>
-    <string name="apps_journal_logged">%1$s مسجّلة</string>
+    <string name="apps_journal_logged">سُجّل %1$s</string>
     <string name="apps_journal_note">ملاحظة</string>
     <string name="apps_journal_game_note">ملاحظة اللعبة</string>
     <string name="apps_journal_empty">العب شيئًا وستظهر كل جلسة هنا، جاهزة لملاحظة</string>

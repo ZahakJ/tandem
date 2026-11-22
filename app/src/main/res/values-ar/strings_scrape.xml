@@ -29,7 +29,7 @@
     <string name="scrape_meta_time_detail">القصة الرئيسية، والإضافات، و100% (HowLongToBeat)</string>
 
     <string name="scrape_mode_basics">الأساسيات الناقصة</string>
-    <string name="scrape_mode_basics_detail">الألعاب التي ينقصها الغلاف أو الوصف فقط، وهذان فقط</string>
+    <string name="scrape_mode_basics_detail">الألعاب التي ينقصها غلاف أو وصف فقط، ولا يُجلب سواهما</string>
     <string name="scrape_mode_missing">الناقص المختار</string>
     <string name="scrape_mode_missing_detail">أكمل ما اخترته مما لا تملكه اللعبة بعد</string>
     <string name="scrape_mode_refresh">الكل من جديد</string>
@@ -55,7 +55,7 @@
 
     <string name="scrape_hidden_never_sent">الألعاب المخفية لا تُرسل إلى أي مكان أبدًا</string>
     <string name="scrape_offline">الوضع الخاص يُبقي Tandem بلا إنترنت: لا جلب ولا بحث عن صور</string>
-    <string name="scrape_busy">بيب مشغول بالجلب أصلًا. حاول مجددًا حين ينتهي</string>
+    <string name="scrape_busy">بيب مشغول بالجلب الآن. حاول مجددًا حين ينتهي</string>
     <string name="scrape_looking_for">أبحث عن %1$s…</string>
     <string name="scrape_cant_start">تعذّر البدء، هل هناك عملية جلب جارية؟</string>
     <string name="scrape_lb_ask_title">تنزيل قاعدة بيانات LaunchBox؟</string>
@@ -124,7 +124,7 @@
         <item quantity="many">%1$d لعبة للفحص</item>
         <item quantity="other">%1$d لعبة للفحص</item>
     </plurals>
-    <string name="scrape_setup_all_complete">كلها لها غلاف ووصف أصلًا</string>
+    <string name="scrape_setup_all_complete">كلها لها غلاف ووصف بالفعل</string>
     <string name="scrape_setup_all_have_box">كلها لها غلاف · %1$s</string>
     <plurals name="scrape_setup_no_box_yet">
         <item quantity="zero">لا ألعاب بلا غلاف بعد</item>
@@ -205,12 +205,12 @@
         <item quantity="other">%1$d لعبة حصلت على تفاصيل</item>
     </plurals>
     <plurals name="scrape_run_complete">
-        <item quantity="zero">لا ألعاب مكتملة أصلًا</item>
-        <item quantity="one">لعبة واحدة مكتملة أصلًا</item>
-        <item quantity="two">لعبتان مكتملتان أصلًا</item>
-        <item quantity="few">%1$d ألعاب مكتملة أصلًا</item>
-        <item quantity="many">%1$d لعبة مكتملة أصلًا</item>
-        <item quantity="other">%1$d لعبة مكتملة أصلًا</item>
+        <item quantity="zero">لا ألعاب مكتملة بالفعل</item>
+        <item quantity="one">لعبة واحدة مكتملة بالفعل</item>
+        <item quantity="two">لعبتان مكتملتان بالفعل</item>
+        <item quantity="few">%1$d ألعاب مكتملة بالفعل</item>
+        <item quantity="many">%1$d لعبة مكتملة بالفعل</item>
+        <item quantity="other">%1$d لعبة مكتملة بالفعل</item>
     </plurals>
     <plurals name="scrape_run_not_found">
         <item quantity="zero">لم يغب شيء</item>
@@ -286,44 +286,44 @@
     <string name="scrape_pill_count">✦ جارٍ الجلب %1$d/%2$d</string>
     <string name="scrape_card_last_found">آخر ما وُجد: %1$s</string>
     <plurals name="scrape_card_found">
-        <item quantity="zero">%1$d وُجدت</item>
-        <item quantity="one">%1$d وُجدت</item>
-        <item quantity="two">%1$d وُجدتا</item>
-        <item quantity="few">%1$d وُجدت</item>
-        <item quantity="many">%1$d وُجدت</item>
-        <item quantity="other">%1$d وُجدت</item>
+        <item quantity="zero">وُجدت: %1$d</item>
+        <item quantity="one">وُجدت: %1$d</item>
+        <item quantity="two">وُجدت: %1$d</item>
+        <item quantity="few">وُجدت: %1$d</item>
+        <item quantity="many">وُجدت: %1$d</item>
+        <item quantity="other">وُجدت: %1$d</item>
     </plurals>
     <plurals name="scrape_card_details">
-        <item quantity="zero">%1$d بتفاصيل</item>
-        <item quantity="one">%1$d بتفاصيل</item>
-        <item quantity="two">%1$d بتفاصيل</item>
-        <item quantity="few">%1$d بتفاصيل</item>
-        <item quantity="many">%1$d بتفاصيل</item>
-        <item quantity="other">%1$d بتفاصيل</item>
+        <item quantity="zero">بتفاصيل: %1$d</item>
+        <item quantity="one">بتفاصيل: %1$d</item>
+        <item quantity="two">بتفاصيل: %1$d</item>
+        <item quantity="few">بتفاصيل: %1$d</item>
+        <item quantity="many">بتفاصيل: %1$d</item>
+        <item quantity="other">بتفاصيل: %1$d</item>
     </plurals>
     <plurals name="scrape_card_missing">
-        <item quantity="zero">%1$d مفقودة</item>
-        <item quantity="one">%1$d مفقودة</item>
-        <item quantity="two">%1$d مفقودتان</item>
-        <item quantity="few">%1$d مفقودة</item>
-        <item quantity="many">%1$d مفقودة</item>
-        <item quantity="other">%1$d مفقودة</item>
+        <item quantity="zero">مفقودة: %1$d</item>
+        <item quantity="one">مفقودة: %1$d</item>
+        <item quantity="two">مفقودة: %1$d</item>
+        <item quantity="few">مفقودة: %1$d</item>
+        <item quantity="many">مفقودة: %1$d</item>
+        <item quantity="other">مفقودة: %1$d</item>
     </plurals>
     <plurals name="scrape_card_failed">
-        <item quantity="zero">%1$d فشلت</item>
-        <item quantity="one">%1$d فشلت</item>
-        <item quantity="two">%1$d فشلتا</item>
-        <item quantity="few">%1$d فشلت</item>
-        <item quantity="many">%1$d فشلت</item>
-        <item quantity="other">%1$d فشلت</item>
+        <item quantity="zero">فشلت: %1$d</item>
+        <item quantity="one">فشلت: %1$d</item>
+        <item quantity="two">فشلت: %1$d</item>
+        <item quantity="few">فشلت: %1$d</item>
+        <item quantity="many">فشلت: %1$d</item>
+        <item quantity="other">فشلت: %1$d</item>
     </plurals>
     <plurals name="scrape_card_complete">
-        <item quantity="zero">%1$d مكتملة</item>
-        <item quantity="one">%1$d مكتملة</item>
-        <item quantity="two">%1$d مكتملتان</item>
-        <item quantity="few">%1$d مكتملة</item>
-        <item quantity="many">%1$d مكتملة</item>
-        <item quantity="other">%1$d مكتملة</item>
+        <item quantity="zero">مكتملة: %1$d</item>
+        <item quantity="one">مكتملة: %1$d</item>
+        <item quantity="two">مكتملة: %1$d</item>
+        <item quantity="few">مكتملة: %1$d</item>
+        <item quantity="many">مكتملة: %1$d</item>
+        <item quantity="other">مكتملة: %1$d</item>
     </plurals>
     <string name="scrape_card_cancel">إلغاء</string>
     <string name="scrape_one_that_game">هذه اللعبة</string>
@@ -360,7 +360,7 @@
     <string name="scrape_settings_wait">انتظر حتى ينتهي الجلب أولًا</string>
     <string name="scrape_settings_nothing">لم يُنزّل شيء بعد</string>
 
-    <string name="scrape_lb_already">جارٍ التنزيل أصلًا</string>
+    <string name="scrape_lb_already">التنزيل جارٍ بالفعل</string>
     <string name="scrape_lb_none_of_yours">لا توجد أي من منصّاتك في قاعدة بيانات LaunchBox</string>
     <string name="scrape_lb_download_title">تنزيل قاعدة بيانات LaunchBox؟</string>
     <plurals name="scrape_lb_download_text">
@@ -431,7 +431,7 @@
     <string name="scrape_setup_title">إعداد الصور والتفاصيل</string>
     <string name="scrape_setup_intro">يسأل الجلب هذه المصادر بالترتيب، كلًّا منها عمّا بقي ناقصًا فقط. LaunchBox وlibretro لا يحتاجان إلى حساب.</string>
     <string name="scrape_setup_hint_set_up">إعداد</string>
-    <string name="scrape_setup_hint_order">أبكر / لاحقًا</string>
+    <string name="scrape_setup_hint_order">قدّم / أخّر</string>
     <string name="scrape_setup_hint_done">تم</string>
 
     <string name="scrape_key_dev_id">معرّف المطوّر</string>
@@ -532,7 +532,7 @@
     <string name="scrape_test_ss_needs">يحتاج معرّف مطوّر وكلمة مرور المطوّر</string>
     <string name="scrape_test_nothing_signed_in">سُجّل الدخول، لكن البحث لم يجد شيئًا</string>
     <string name="scrape_test_found">وجدت %1$s</string>
-    <string name="scrape_test_found_as">وجدت %1$s، مسجّلًا الدخول باسم %2$s</string>
+    <string name="scrape_test_found_as">وجدت %1$s (مسجّل الدخول باسم %2$s)</string>
     <string name="scrape_test_igdb_needs">يحتاج معرّف عميل Twitch وسر العميل</string>
     <plurals name="scrape_test_igdb_found">
         <item quantity="zero">وجدت %1$s بلا صور</item>

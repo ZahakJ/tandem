@@ -7,7 +7,7 @@
     <string name="home_grid_size_large">كبيرة</string>
     <string name="home_grid_size_huge">ضخمة</string>
     <plurals name="home_grid_size_columns">
-        <item quantity="zero">%1$d عمود</item>
+        <item quantity="zero">لا أعمدة</item>
         <item quantity="one">عمود واحد</item>
         <item quantity="two">عمودان</item>
         <item quantity="few">%1$d أعمدة</item>
@@ -31,7 +31,7 @@
     <string name="home_hero_gradient_fade">تلاشٍ ناعم</string>
     <string name="home_hero_gradient_strong">تلاشٍ قوي</string>
     <string name="home_hero_gradient_vignette">إطار معتم</string>
-    <string name="home_hero_gradient_none">بلا</string>
+    <string name="home_hero_gradient_none">بلا تأثير</string>
     <string name="home_hero_running">● تعمل</string>
     <string name="home_clock_all_apps">كل التطبيقات</string>
     <string name="home_clock_date">EEEE، d MMMM</string>
@@ -202,7 +202,7 @@
     <string name="home_spot_empty_paste">A يضع هنا المربع الذي تحمله</string>
     <string name="home_spot_empty_add">A يضيف هنا مجلدًا أو لعبة أو تطبيقًا أو أداة</string>
     <string name="home_spot_running">● تعمل</string>
-    <string name="home_spot_hint_paste">وضع</string>
+    <string name="home_spot_hint_paste">ضع هنا</string>
     <string name="home_spot_hint_add">أضف هنا</string>
     <string name="home_spot_hint_options">خيارات</string>
     <string name="home_spot_hint_swap">تبديل</string>
@@ -219,7 +219,7 @@
     <string name="home_spotlight_one_player">لاعب واحد</string>
     <string name="home_spotlight_players">اللاعبون: %1$s</string>
     <string name="home_spotlight_played">وقت اللعب</string>
-    <string name="home_spotlight_last_played">آخر لعب</string>
+    <string name="home_spotlight_last_played">آخر مرة</string>
     <plurals name="home_spotlight_sessions">
         <item quantity="zero">جلسة</item>
         <item quantity="one">جلسة</item>
@@ -231,7 +231,7 @@
     <string name="home_spotlight_status">الحالة</string>
     <string name="home_spotlight_achievements">الإنجازات</string>
     <string name="home_spotlight_not_played">لم تُلعب بعد</string>
-    <string name="home_spotlight_just_now">الآن</string>
+    <string name="home_spotlight_just_now">للتو</string>
     <string name="home_spotlight_hint_resume">استئناف</string>
     <string name="home_spotlight_hint_play">العب</string>
     <string name="home_spotlight_hint_open">فتح</string>
@@ -253,7 +253,7 @@
     <string name="home_spotlight_motion_help">الصورة خلف اللعبة تنساب وتقترب ببطء شديد. وتسكن مع «تقليل الحركة» أيضًا.</string>
 
     <string name="home_shelf_look_wood">خشب</string>
-    <string name="home_shelf_look_matte">مطفأ</string>
+    <string name="home_shelf_look_matte">غير لامع</string>
     <string name="home_shelf_look_open">مفتوح</string>
 
     <string name="home_running_outside">فُتحت خارج Tandem</string>
@@ -311,7 +311,7 @@
     <string name="home_top_stats">★ الإحصاءات</string>
     <string name="home_top_quick">◐ سريعة</string>
 
-    <string name="home_scan_already">أبحث عن الألعاب أصلًا…</string>
+    <string name="home_scan_already">ما زلت أبحث عن الألعاب…</string>
     <string name="home_scan_looking">أبحث عن الألعاب…</string>
     <plurals name="home_scan_found">
         <item quantity="zero">لم أجد ألعابًا</item>
@@ -350,7 +350,7 @@
     <string name="home_splash_gathering">أجمع ألعابك…</string>
 
     <string name="home_setup_hi">أهلًا، أنا بيب!</string>
-    <string name="home_setup_lets_find">هيا نجد ألعابك.</string>
+    <string name="home_setup_lets_find">هيا نبحث عن ألعابك.</string>
     <string name="home_setup_files">الوصول إلى ألعابك</string>
     <string name="home_setup_files_detail">اسمح بالوصول إلى كل الملفات، لأبحث في ألعابك وصورها.</string>
     <string name="home_setup_tree">اختر مجلد ألعابك</string>
@@ -378,11 +378,11 @@
     <string name="home_apps_all">كل التطبيقات</string>
     <string name="home_apps_none">لا تطبيقات لعرضها</string>
     <string name="home_apps_no_match">لا تطبيقات تطابق «%1$s»</string>
-    <string name="home_apps_hidden_match">واحد أخفيته من الدرج يطابق البحث.</string>
+    <string name="home_apps_hidden_match">تطبيق أخفيته من الدرج يطابق البحث.</string>
     <string name="home_apps_try_other">جرّب أحرفًا أقل، أو اسمًا آخر.</string>
     <string name="home_apps_clear_search">امسح البحث</string>
     <string name="home_apps_stock_home">الرئيسية في Android (مشغّل النظام)</string>
-    <string name="home_apps_stock_home_value">Home يعود إلى هنا</string>
+    <string name="home_apps_stock_home_value">زر Home يعيدك إلى هنا</string>
     <string name="home_apps_stock_home_failed">الشاشة الرئيسية الأصلية في Android لا تُفتح</string>
 
     <string name="home_explainer_done">صار Tandem شاشتك الرئيسية ✨</string>
@@ -390,7 +390,7 @@
     <string name="home_explainer_body">اضغط Home من أي مكان لتعود إلى هنا، ولعبتك الجارية على بُعد زر واحد. تطبيقاتك الأخرى تبقى في الشريط وفي «كل التطبيقات». ويمكنك التراجع متى شئت.</string>
     <string name="home_explainer_is_home">Tandem هو شاشتك الرئيسية</string>
     <string name="home_explainer_on">مفعّل ✓</string>
-    <string name="home_explainer_other">استخدم تطبيق رئيسية آخر</string>
+    <string name="home_explainer_other">استخدم تطبيق شاشة رئيسية آخر</string>
     <string name="home_explainer_make">اجعل Tandem شاشتي الرئيسية</string>
     <string name="home_explainer_settings">افتح إعدادات تطبيق الرئيسية في Android</string>
     <string name="home_explainer_not_now">ليس الآن</string>
@@ -399,7 +399,7 @@
     <string name="home_play_use_home">Tandem شاشةً رئيسية</string>
     <string name="home_play_use_home_help">اجعل زر Home يعيدك إلى Tandem، كما في أجهزة الألعاب. ويمكنك العودة إلى المشغّل المعتاد متى شئت.</string>
     <string name="home_play_needs_shizuku">يحتاج Shizuku</string>
-    <string name="home_play_needs_shizuku_toast">هذا يحتاج Shizuku يعمل، مع السماح لـ Tandem</string>
+    <string name="home_play_needs_shizuku_toast">يحتاج هذا إلى تشغيل Shizuku والسماح فيه لـ Tandem</string>
     <string name="home_play_close_previous">أغلق اللعبة السابقة</string>
     <string name="home_play_close_previous_help">حين تبدأ لعبة أخرى، تُغلق أولًا اللعبة التي ما زالت تعمل في الخلفية، فلا تستهلك الذاكرة أو البطارية. يحتاج Shizuku.</string>
     <string name="home_play_ask_closing">اسأل قبل إغلاق لعبة</string>
@@ -419,7 +419,7 @@
         <item quantity="many">%1$d تطبيقًا</item>
         <item quantity="other">%1$d تطبيق</item>
     </plurals>
-    <string name="home_play_dock_help">اختر التطبيقات التي تجلس على الشريط وبأي ترتيب.</string>
+    <string name="home_play_dock_help">اختر التطبيقات التي تظهر على الشريط، وترتيبها.</string>
     <string name="home_play_screensaver">شاشة التوقف</string>
     <string name="home_play_screensaver_help">بعد مدة بلا ضغط أي زر، تسبح أغلفتك ببطء في سماء الليل بينما يغفو بيب، كي لا يحترق شيء في الشاشة. أي زر يوقظها.</string>
     <plurals name="home_play_screensaver_after">
@@ -432,8 +432,8 @@
     </plurals>
     <string name="home_play_freeze">إيقاف الألعاب أثناء السكون</string>
     <string name="home_play_needs_root">يحتاج Shizuku بصلاحيات الجذر</string>
-    <string name="home_play_freeze_help">بعد دقيقة من انطفاء الشاشة، تتوقف الألعاب المفتوحة مؤقتًا، فينام الجهاز فعلًا بدل أن يستنزف البطارية على صوت محاكي. وتكمل من حيث كانت تمامًا حين توقظه. يحتاج Shizuku يعمل بصلاحيات الجذر.</string>
-    <string name="home_play_needs_root_toast">هذا يحتاج Shizuku يعمل بصلاحيات الجذر</string>
+    <string name="home_play_freeze_help">بعد دقيقة من انطفاء الشاشة، تتوقف الألعاب المفتوحة مؤقتًا، فينام الجهاز فعلًا بدل أن يستنزف البطارية على صوت محاكي. وتكمل من حيث كانت تمامًا حين توقظه. يحتاج إلى تشغيل Shizuku بصلاحيات الجذر.</string>
+    <string name="home_play_needs_root_toast">يحتاج هذا إلى تشغيل Shizuku بصلاحيات الجذر</string>
     <string name="home_play_private">الوضع الخاص</string>
     <string name="home_play_private_help">الألعاب والمجلدات والمنصّات المخفية تبقى مخفية حتى يُظهرها %1$s مع رمز PIN، ويبقى Tandem بلا إنترنت. تعطيله يطلب رمز PIN. وحين يكون معطّلًا، %1$s يفعّله فورًا.</string>
     <string name="home_play_offline">بلا إنترنت للألعاب المخفية</string>
@@ -501,5 +501,5 @@
     <string name="home_orbit_holds_games">منصّات ومجموعات</string>
     <string name="home_orbit_holds_systems">المنصّات فقط</string>
     <string name="home_orbit_continue_card">بطاقة «تابِع»</string>
-    <string name="home_orbit_continue_card_help">آخر لعبة لعبتها، كبطاقة واقفة يسار الأغلفة. الزر A يعيدك إليها («استئناف» ما دامت تعمل).</string>
+    <string name="home_orbit_continue_card_help">آخر لعبة لعبتها، كبطاقة واقفة بجانب الأغلفة. الزر A يعيدك إليها («استئناف» ما دامت تعمل).</string>
 </resources>
