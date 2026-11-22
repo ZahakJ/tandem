@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Words used all over Tandem. See docs/TRANSLATING.md and docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="common_back">رجوع</string>
+    <string name="common_close">إغلاق</string>
+    <string name="common_choose">اختيار</string>
+    <string name="common_on">مفعّل</string>
+    <string name="common_off">معطّل</string>
+    <string name="common_clear">مسح</string>
+    <string name="common_size_free">%1$s متاحة</string>
+    <string name="common_percent">%1$d%%</string>
+
+    <string name="common_language">اللغة</string>
+    <string name="common_language_system">لغة النظام</string>
+    <string name="common_language_help">اللغة التي يتحدّث بها Tandem. «لغة النظام» تتبع لغة Android، وما لم يُترجم بعد يظهر بالإنجليزية.</string>
+</resources>

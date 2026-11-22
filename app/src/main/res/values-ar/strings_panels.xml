@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. The panels: Start, the quick settings and the side panel. See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="panels_start_hint_unhide">إظهار</string>
+    <string name="panels_start_hint_hide_again">إخفاء مجددًا</string>
+    <string name="panels_start_hint_show_here">اعرضها هنا</string>
+
+    <string name="panels_start_switch_games">بدّل اللعبة</string>
+    <string name="panels_start_all_apps">كل التطبيقات</string>
+    <string name="panels_start_search">بحث</string>
+    <string name="panels_start_stats">الإحصاءات والجوائز</string>
+    <string name="panels_start_new">جديد</string>
+    <string name="panels_start_sort">ترتيب</string>
+    <string name="panels_start_edit_grid">تعديل الشبكة</string>
+    <string name="panels_start_undo">تراجع</string>
+    <string name="panels_start_edit_widgets">تعديل الأدوات</string>
+    <string name="panels_start_hidden">المخفية</string>
+    <string name="panels_start_settings">الإعدادات</string>
+    <string name="panels_start_update">صدر Tandem %1$s</string>
+    <plurals name="panels_start_trophies">
+        <item quantity="zero">لا جوائز بعد</item>
+        <item quantity="one">جائزة واحدة</item>
+        <item quantity="two">جائزتان</item>
+        <item quantity="few">%1$d جوائز</item>
+        <item quantity="many">%1$d جائزة</item>
+        <item quantity="other">%1$d جائزة</item>
+    </plurals>
+    <plurals name="panels_start_playing">
+        <item quantity="zero">لا شيء قيد اللعب</item>
+        <item quantity="one">لعبة قيد اللعب</item>
+        <item quantity="two">لعبتان قيد اللعب</item>
+        <item quantity="few">%1$d ألعاب قيد اللعب</item>
+        <item quantity="many">%1$d لعبة قيد اللعب</item>
+        <item quantity="other">%1$d لعبة قيد اللعب</item>
+    </plurals>
+
+    <string name="panels_start_new_folder">مجلد جديد…</string>
+    <string name="panels_start_new_smart_folder">مجلد ذكي…</string>
+    <string name="panels_start_new_add_home">أضف إلى الرئيسية…</string>
+    <string name="panels_start_new_widget">أداة…</string>
+    <string name="panels_start_name_folder">سمِّ المجلد</string>
+    <string name="panels_start_folder_default">مجلد جديد</string>
+    <string name="panels_start_folder_unnamed">مجلد</string>
+    <string name="panels_start_folder_made">صار عندك المجلد %1$s. ضع فيه أي مربع من Y › نقل إلى مجلد</string>
+
+    <string name="panels_start_sort_tidy">الرئيسية: سدّ الفراغات</string>
+    <string name="panels_start_sort_home_name">الرئيسية: أبجديًا</string>
+    <string name="panels_start_sort_home_recent">الرئيسية: الأحدث لعبًا</string>
+    <string name="panels_start_sort_home_most">الرئيسية: الأكثر لعبًا</string>
+    <string name="panels_start_sort_home_kind">الرئيسية: المنصّات أولًا</string>
+    <string name="panels_start_sort_games">الألعاب: %1$s</string>
+    <string name="panels_start_sorted_games">رُتّبت الألعاب: %1$s</string>
+    <string name="panels_start_sorted_home_name">رُتّبت الرئيسية أبجديًا</string>
+    <string name="panels_start_sorted_home_recent">رُتّبت الرئيسية حسب الأحدث لعبًا</string>
+    <string name="panels_start_sorted_home_most">رُتّبت الرئيسية حسب الأكثر لعبًا</string>
+    <string name="panels_start_sorted_home_kind">المنصّات أولًا</string>
+    <string name="panels_start_edit_grid_pick">اختر مربعًا، ثم Start › تعديل الشبكة</string>
+
+    <string name="panels_start_hidden_tuck">خبّئها</string>
+    <string name="panels_start_hidden_show_all">أظهر كل المخفي</string>
+    <string name="panels_start_hidden_showing">ظاهرة</string>
+    <string name="panels_start_hidden_some_showing">بعضها ظاهر</string>
+    <string name="panels_start_hidden_tucked">الألعاب المخفية في مخبئها</string>
+    <string name="panels_start_hidden_shown">الألعاب المخفية ظاهرة الآن</string>
+    <string name="panels_start_hidden_none_left">%1$s. لم يبقَ شيء مخفي</string>
+    <string name="panels_start_hidden_all_showing">كل المخفي ظاهر أصلًا</string>
+    <string name="panels_start_hidden_peek">ظاهرة إلى أن تخبّئ الألعاب المخفية</string>
+    <string name="panels_start_hidden_again">عادت إلى مخبئها</string>
+
+    <string name="panels_quick_title">الإعدادات السريعة</string>
+    <string name="panels_quick_brightness">السطوع</string>
+    <string name="panels_quick_brightness_auto">تلقائي</string>
+    <string name="panels_quick_volume">مستوى الصوت</string>
+    <string name="panels_quick_muted">صامت</string>
+    <string name="panels_quick_wifi">Wi-Fi</string>
+    <string name="panels_quick_bluetooth">بلوتوث</string>
+    <string name="panels_quick_airplane">وضع الطيران</string>
+    <string name="panels_quick_controller">ذراع التحكّم</string>
+    <string name="panels_quick_controller_builtin">المدمج</string>
+    <string name="panels_quick_discord_showing">ظاهرة</string>
+    <string name="panels_quick_discord_paused">متوقفة مؤقتًا</string>
+    <string name="panels_quick_battery_saver">توفير شحن البطارية</string>
+    <string name="panels_quick_private">الوضع الخاص</string>
+    <string name="panels_quick_screensaver">شاشة التوقف</string>
+    <string name="panels_quick_screensaver_start">ابدأ الآن</string>
+    <string name="panels_quick_android">Android</string>
+    <string name="panels_quick_android_settings">الإعدادات</string>
+    <string name="panels_quick_shizuku_note">مع Shizuku، تتحكّم في Wi-Fi والبلوتوث ووضع الطيران من هنا مباشرة.</string>
+    <string name="panels_quick_allow_write">اسمح لـ Tandem بتغيير إعدادات النظام، ثم عُد إلى هنا</string>
+    <string name="panels_quick_saver_on">توفير شحن البطارية مفعّل: خلفيات ثابتة وبلا موسيقى</string>
+    <string name="panels_quick_saver_off">توفير شحن البطارية معطّل</string>
+
+    <string name="panels_side_morning">صباح الخير!</string>
+    <string name="panels_side_afternoon">نهارك سعيد!</string>
+    <string name="panels_side_evening">مساء الخير!</string>
+    <string name="panels_side_late">سهران؟ وأنا كذلك.</string>
+    <string name="panels_side_all_quiet">%1$s كل شيء هادئ.</string>
+    <plurals name="panels_side_things">
+        <item quantity="zero">لا جديد لك.</item>
+        <item quantity="one">عندي شيء واحد لك.</item>
+        <item quantity="two">عندي شيئان لك.</item>
+        <item quantity="few">عندي %1$d أشياء لك.</item>
+        <item quantity="many">عندي %1$d شيئًا لك.</item>
+        <item quantity="other">عندي %1$d شيء لك.</item>
+    </plurals>
+    <string name="panels_side_notifications">الإشعارات</string>
+    <string name="panels_side_clear_all">مسح الكل</string>
+    <string name="panels_side_allow_title">دع بيب يعرض إشعاراتك</string>
+    <string name="panels_side_allow_detail">تبقى على هذا الجهاز، وTandem يعرضها هنا فقط.</string>
+    <string name="panels_side_nothing_new">لا جديد.</string>
+    <string name="panels_side_on_device">على الجهاز</string>
+    <string name="panels_side_status">حالة</string>
+    <string name="panels_side_cant_clear">هذا الإشعار لا يُمسح</string>
+    <string name="panels_side_allow_access">فعّل Tandem هنا، ثم عُد</string>
+    <string name="panels_side_private">مخفي في الوضع الخاص</string>
+</resources>

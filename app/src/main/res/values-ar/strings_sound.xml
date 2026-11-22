@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Sound and music. Song titles and the soundtracks' names (Calm, Meadow Tales) stay as they are.
+     See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="sound_group">الصوت والموسيقى</string>
+    <string name="sound_group_theme_pack">حزمة السمة</string>
+
+    <string name="sound_pack_music">موسيقى حزمة السمة</string>
+    <plurals name="sound_pack_music_help">
+        <item quantity="zero">لدى %1$s %2$d أغنية خاصة بها. عند التفعيل، تُعزف ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+        <item quantity="one">لدى %1$s أغنية خاصة بها. عند التفعيل، تُعزف ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+        <item quantity="two">لدى %1$s أغنيتان خاصتان بها. عند التفعيل، تُعزفان ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+        <item quantity="few">لدى %1$s %2$d أغانٍ خاصة بها. عند التفعيل، تُعزف ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+        <item quantity="many">لدى %1$s %2$d أغنية خاصة بها. عند التفعيل، تُعزف ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+        <item quantity="other">لدى %1$s %2$d أغنية خاصة بها. عند التفعيل، تُعزف ما دامت سمتك بدل الموسيقى المختارة أدناه.</item>
+    </plurals>
+    <string name="sound_pack_sounds">أصوات حزمة السمة</string>
+    <string name="sound_pack_sounds_help">لدى %1$s أصوات واجهة مسجّلة خاصة بها. عند التفعيل، تُسمع ما دامت سمتك بدل حزمة الأصوات المختارة أدناه (وما ينقصها من أصوات يأتي من تلك الحزمة).</string>
+    <string name="sound_fallback">%1$s يُستخدم حين تُعطّل أصوات حزمة السمة أعلاه.</string>
+
+    <string name="sound_ui">أصوات الواجهة</string>
+    <string name="sound_ui_help">نقرات ورنّات وصوت الإطلاق وأنت تتنقّل. %1$s</string>
+    <string name="sound_ui_off_help">عند التعطيل، يلتزم Tandem الصمت.</string>
+    <string name="sound_ui_custom_help">مخصّصة: أصوات مسجّلة عندك، من حزم أصوات Cocoon أو من حزمة سمة. اخترها أدناه.</string>
+    <string name="sound_ui_custom">مخصّصة</string>
+    <string name="sound_custom">أصوات مخصّصة</string>
+    <string name="sound_custom_help">%1$s. وما ينقصها من أصوات يأتي من «%2$s».</string>
+    <string name="sound_volume">مستوى الأصوات</string>
+    <string name="sound_volume_help">مدى ارتفاع أصوات الواجهة مقارنةً بمستوى صوت النظام.</string>
+    <string name="sound_pip_voice">صوت بيب</string>
+    <string name="sound_pip_voice_help">يثرثر بيب قليلًا حين يكون لديه ما يخبرك به.</string>
+    <string name="sound_pip_hello">أهلًا! أنا بيب!</string>
+
+    <string name="sound_music">الموسيقى</string>
+    <string name="sound_music_folder">موسيقاي</string>
+    <string name="sound_music_help_empty">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ المجلد فارغ الآن، لذا تُعزف الموسيقى المدمجة (%1$s). موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</string>
+    <plurals name="sound_music_help_found">
+        <item quantity="zero">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ لم أجد أي أغنية بعد. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="one">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنية واحدة. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="two">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنيتين. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="few">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغانٍ. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="many">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="other">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+    </plurals>
+    <string name="sound_music_folder_empty">أضف أغاني إلى ROMs/tandem/music أولًا</string>
+    <string name="sound_shuffle">تشغيل موسيقاي عشوائيًا</string>
+    <string name="sound_shuffle_help">شغّل مجلد الموسيقى بترتيب عشوائي.</string>
+    <string name="sound_music_volume">مستوى الموسيقى</string>
+    <string name="sound_music_volume_help">مدى ارتفاع صوت الموسيقى.</string>
+    <string name="sound_next">الأغنية التالية</string>
+    <string name="sound_next_none">لا شيء بعد</string>
+    <string name="sound_next_help">انتقل إلى أغنية أخرى. %1$s.</string>
+    <string name="sound_music_off">شغّل الموسيقى أولًا</string>
+    <string name="sound_bottom_muted">مستوى صوت الشاشة السفلية في جهازك على الصفر، وهذا يكتم Tandem أيضًا: ارفعه من «مساعد الشاشة المزدوجة» (الشاشة السفلية › مستوى الصوت).</string>
+
+    <string name="sound_source_pack">من %1$s، حزمة السمة</string>
+    <string name="sound_source_folder">من مجلد موسيقاك</string>
+    <string name="sound_source_builtin">الموسيقى المدمجة</string>
+
+    <string name="sound_now_your_music">موسيقاك</string>
+    <string name="sound_now_playing">يُعزف</string>
+    <string name="sound_now_paused">متوقف مؤقتًا</string>
+
+    <string name="sound_pack_modern">عصري</string>
+    <string name="sound_pack_modern_blurb">نقرات ناعمة ونغمات لطيفة، قصيرة وهادئة، كأجهزة الألعاب الحديثة. صوت Tandem الأصلي.</string>
+    <string name="sound_pack_playful">مرِح</string>
+    <string name="sound_pack_playful_blurb">نقرات ماريمبا زجاجية ورنّات دافئة: مجموعة Tandem الأولى المبهجة.</string>
+    <string name="sound_pack_chiptune">8-بت</string>
+    <string name="sound_pack_chiptune_blurb">صفّارات الموجة المربعة وأنغام جمع العملات، كأجهزة الـ8-بت القديمة.</string>
+    <string name="sound_pack_bubbly">فقاقيع</string>
+    <string name="sound_pack_bubbly_blurb">قطرات ماء مستديرة تقرقر، وفوران يتلألأ.</string>
+    <string name="sound_pack_minimal">همس</string>
+    <string name="sound_pack_minimal_blurb">هادئة وقصيرة وخفيفة. بالكاد تُسمع.</string>
+    <string name="sound_pack_studio">استوديو</string>
+    <string name="sound_pack_studio_blurb">لبّاد وخشب: نقرات منخفضة دافئة مع خبطة ناعمة، كلوحة مفاتيح متقنة الصنع.</string>
+    <string name="sound_pack_glass">كريستال</string>
+    <string name="sound_pack_glass_blurb">نغمات كريستالية صافية مشرقة يطول رنينها قليلًا. أنيقة ومصقولة.</string>
+    <string name="sound_pack_air">نسيم</string>
+    <string name="sound_pack_air_blurb">أنفاس ناعمة ونغمات نقية مستديرة. هادئة ورحبة.</string>
+
+    <string name="sound_mood_still_water">بيانو ناعم على بحيرة ساكنة عند الغروب</string>
+    <string name="sound_mood_soft_morning">هارب وسيليستا مع أول خيوط الضوء</string>
+    <string name="sound_mood_hillside_breeze">ناي وبيانو على تلّة مشمسة تهبّ عليها الريح</string>
+    <string name="sound_mood_lantern_town">فالس على الأكورديون في بلدة صغيرة تضيئها الفوانيس</string>
+    <string name="sound_mood_seaside_train">قطار صغير على طول الساحل، والأمواج خلف النافذة</string>
+    <string name="sound_mood_forest_spirits">أرواح صغيرة ترقص بين الأشجار العتيقة</string>
+    <string name="sound_mood_summer_rain">بيانو ومطر خفيف في عصرية صيف كسولة</string>
+    <string name="sound_mood_flying_home">تحليق فوق الحقول في الطريق إلى البيت</string>
+</resources>

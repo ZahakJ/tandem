@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Look & feel: themes, theme packs, colours, wallpapers, icons and motion, and the first-run welcome.
+     See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="look_theme_pastel_night">ليلة الباستيل</string>
+    <string name="look_theme_pastel_night_tagline">سماء ليل ناعمة بألوان الحلوى</string>
+    <string name="look_theme_oled">أسود OLED</string>
+    <string name="look_theme_oled_tagline">أسود حقيقي يوفّر البطارية</string>
+    <string name="look_theme_paper">ورق</string>
+    <string name="look_theme_paper_tagline">مشرقة وهادئة، صديقة لضوء النهار</string>
+    <string name="look_theme_built_in">مدمجة</string>
+
+    <string name="look_pack_format_tandem">حزمة Tandem</string>
+    <string name="look_pack_format_cocoon">حزمة Cocoon</string>
+    <string name="look_pack_tandem">حزمة سمة</string>
+    <string name="look_pack_cocoon">سمة Cocoon</string>
+    <string name="look_pack_sounds_name">%1$s (السمة)</string>
+    <string name="look_pack_credit">%1$s من صنع %2$s</string>
+    <string name="look_pack_has_colours">ألوان</string>
+    <plurals name="look_pack_has_icons">
+        <item quantity="zero">لا أيقونات منصّات</item>
+        <item quantity="one">أيقونة منصّة واحدة</item>
+        <item quantity="two">أيقونتان للمنصّات</item>
+        <item quantity="few">%1$d أيقونات منصّات</item>
+        <item quantity="many">%1$d أيقونة منصّة</item>
+        <item quantity="other">%1$d أيقونة منصّة</item>
+    </plurals>
+    <plurals name="look_pack_has_heroes">
+        <item quantity="zero">لا صور بارزة</item>
+        <item quantity="one">صورة بارزة واحدة</item>
+        <item quantity="two">صورتان بارزتان</item>
+        <item quantity="few">%1$d صور بارزة</item>
+        <item quantity="many">%1$d صورة بارزة</item>
+        <item quantity="other">%1$d صورة بارزة</item>
+    </plurals>
+    <plurals name="look_pack_has_collection_icons">
+        <item quantity="zero">لا أيقونات مجموعات</item>
+        <item quantity="one">أيقونة مجموعة واحدة</item>
+        <item quantity="two">أيقونتان للمجموعات</item>
+        <item quantity="few">%1$d أيقونات مجموعات</item>
+        <item quantity="many">%1$d أيقونة مجموعة</item>
+        <item quantity="other">%1$d أيقونة مجموعة</item>
+    </plurals>
+    <plurals name="look_pack_has_frames">
+        <item quantity="zero">لا إطارات أغلفة</item>
+        <item quantity="one">إطار غلاف واحد</item>
+        <item quantity="two">إطاران للأغلفة</item>
+        <item quantity="few">%1$d إطارات أغلفة</item>
+        <item quantity="many">%1$d إطار غلاف</item>
+        <item quantity="other">%1$d إطار غلاف</item>
+    </plurals>
+    <string name="look_pack_has_two_wallpapers">خلفيتان</string>
+    <string name="look_pack_has_wallpaper">خلفية</string>
+    <plurals name="look_pack_has_songs">
+        <item quantity="zero">لا أغاني</item>
+        <item quantity="one">أغنية واحدة</item>
+        <item quantity="two">أغنيتان</item>
+        <item quantity="few">%1$d أغانٍ</item>
+        <item quantity="many">%1$d أغنية</item>
+        <item quantity="other">%1$d أغنية</item>
+    </plurals>
+
+    <string name="look_swatch_mint">نعناع</string>
+    <string name="look_swatch_peach">خوخ</string>
+    <string name="look_swatch_lavender">لافندر</string>
+    <string name="look_swatch_sky">سماء</string>
+    <string name="look_swatch_butter">زبدة</string>
+    <string name="look_swatch_sakura">ساكورا</string>
+    <string name="look_swatch_coral">مرجان</string>
+    <string name="look_swatch_hot_pink">وردي فاقع</string>
+    <string name="look_swatch_grape">عنب</string>
+    <string name="look_swatch_ocean">محيط</string>
+    <string name="look_swatch_teal">فيروزي</string>
+    <string name="look_swatch_lime">ليمون أخضر</string>
+    <string name="look_swatch_gold">ذهبي</string>
+    <string name="look_swatch_snow">ثلج</string>
+
+    <string name="look_highlight_glow">توهّج</string>
+    <string name="look_highlight_outline">إطار</string>
+    <string name="look_highlight_lift">ارتفاع</string>
+    <string name="look_highlight_pulse">نبض</string>
+
+    <string name="look_surface_solid">مصمت</string>
+    <string name="look_surface_frosted">زجاج مُغبَّش</string>
+    <string name="look_surface_outlined">بإطار</string>
+
+    <string name="look_motion_bouncy">نطّاط</string>
+    <string name="look_motion_smooth">انسيابي</string>
+    <string name="look_motion_minimal">خفيف</string>
+    <string name="look_motion_off">بلا حركة</string>
+
+    <string name="look_backdrop_blobs">بقع الباستيل</string>
+    <string name="look_backdrop_starfield">سماء النجوم</string>
+    <string name="look_backdrop_waves">أمواج</string>
+    <string name="look_backdrop_synthwave">سينثويف</string>
+    <string name="look_backdrop_bubbles">فقاعات</string>
+    <string name="look_backdrop_petals">بتلات</string>
+    <string name="look_backdrop_fireflies">يراعات</string>
+    <string name="look_backdrop_pixels">مساء 8-بت</string>
+    <string name="look_backdrop_lcd">LCD الجيب</string>
+    <string name="look_backdrop_cubes">مكعبات طائرة</string>
+    <string name="look_backdrop_towers">أبراج الإقلاع</string>
+    <string name="look_backdrop_marquee">لافتة نيون</string>
+    <string name="look_backdrop_shell">هيكل شفاف</string>
+    <string name="look_backdrop_disc">قرص يدور</string>
+    <string name="look_backdrop_visor">شبكة حمراء</string>
+    <string name="look_backdrop_road">طريق الغروب</string>
+    <string name="look_backdrop_shooter">حرب الفضاء</string>
+    <string name="look_backdrop_farm">حقول دافئة</string>
+    <string name="look_backdrop_meadow">العشب الطويل</string>
+    <string name="look_backdrop_torch">جدار المشاعل</string>
+    <string name="look_backdrop_rainbow">طريق قوس قزح</string>
+    <string name="look_backdrop_plain">سادة</string>
+
+    <string name="look_icon_style_bubble">فقاعة لامعة</string>
+    <string name="look_icon_style_neon">خطوط نيون</string>
+    <string name="look_icon_style_pixel">بكسل</string>
+    <string name="look_icon_style_flat">مسطّح</string>
+    <string name="look_icon_style_plastic">بلاستيك شفاف</string>
+    <string name="look_icon_style_chrome">كروم</string>
+    <string name="look_icon_style_lcd">LCD</string>
+    <string name="look_icon_style_sticker">ملصق</string>
+    <string name="look_icon_style_rune">منقوش</string>
+
+    <string name="look_group_colour">اللون والتحديد</string>
+    <string name="look_group_icons">أيقونات المنصّات</string>
+    <string name="look_group_motion">الحركة</string>
+    <string name="look_group_wallpaper">الخلفية</string>
+    <string name="look_group_layout">التخطيط</string>
+    <string name="look_group_icon_grid">شبكة الأيقونات</string>
+    <string name="look_group_dock">شريط التطبيقات</string>
+    <string name="look_group_bottom">الشاشة السفلية</string>
+    <string name="look_group_top_bar">الشريط العلوي</string>
+    <string name="look_group_controls">التحكّم</string>
+    <string name="look_group_screens">الشاشات</string>
+    <string name="look_group_extras">إضافات</string>
+
+    <string name="look_theme_decides">السمة · %1$s</string>
+
+    <string name="look_accent">لون التمييز</string>
+    <string name="look_accent_help">لون تمييز خاص بك لمفاتيح التبديل والتحديد. جرّب الألوان باليمين واليسار؛ والزر A يعرضها كلها، و«اكتب لونًا…» يقبل أي لون، مثل #FF7AB6.</string>
+    <string name="look_accent_theme">السمة</string>
+    <string name="look_accent_type">اكتب لونًا…</string>
+    <string name="look_accent_hex">لون التمييز (hex)</string>
+    <string name="look_accent_bad">هذا لا يبدو لونًا</string>
+    <string name="look_highlight">شكل التحديد</string>
+    <string name="look_highlight_help">كيف تتميّز البطاقة المحدّدة: توهّج ناعم، أو إطار حادّ، أو ارتفاع بظل كبير، أو حلقة تنبض بلطف.</string>
+    <string name="look_surface">الملمس</string>
+    <string name="look_surface_help">مِمَّ صُنعت البطاقات: مصمتة، أو زجاج مُغبَّش يتسلّل منه ضوء الخلفية، أو إطارات خفيفة.</string>
+
+    <string name="look_icon_style">شكل الأيقونات</string>
+    <string name="look_icon_style_help">كيف يرسم Tandem أيقونات المنصّات حين لا تأتي حزمة السمة بأيقوناتها: جهاز صغير من النوع الصحيح عليه اسم المنصّة، على هيئة فقاعات لامعة، أو أنابيب نيون، أو بكسلات، أو LCD، أو كروم، وغيرها.</string>
+    <string name="look_icons_from">مصدر الأيقونات</string>
+    <string name="look_icons_from_help">استخدم أيقونات المنصّات والصور البارزة والشعارات من حزمة ما مع أي سمة، أو ارسمها دائمًا. «تلقائي» يستخدم صور حزمة السمة نفسها؛ ومع سمة مدمجة يستعير أول حزمة مجلدات ذكية من Cocoon في ROMs/assets/smart_folders. و«يرسمها Tandem» يعرض شكل أيقونات السمة.</string>
+    <string name="look_icons_from_auto">تلقائي</string>
+    <string name="look_icons_from_drawn">يرسمها Tandem</string>
+
+    <string name="look_animation">أسلوب الحركة</string>
+    <string name="look_animation_help">«نطّاط» مرِح، و«انسيابي» ينزلق بلا ارتداد، و«خفيف» سريع وهادئ، و«بلا حركة» يغيّر كل شيء في لحظة.</string>
+    <string name="look_reduce_motion">تقليل الحركة</string>
+    <string name="look_reduce_motion_help">يوقف الخلفيات المتحرّكة والصور المنسابة والحركات النطّاطة في كل مكان. وتوفير شحن البطارية يفعل الشيء نفسه مع الخلفيات.</string>
+
+    <string name="look_wall_theme">خلفية السمة</string>
+    <string name="look_wall_hero">صورة اللعبة (مموّهة)</string>
+    <string name="look_wall_top">الشاشة العلوية</string>
+    <string name="look_wall_top_help">خلفية متحرّكة، أو صورة اللعبة المحدّدة، أو صورتك أو الفيديو الخاص بك: انسخ الصور (PNG وJPG وWebP) أو الفيديوهات (MP4 وWebM) إلى ROMs/tandem/wallpapers وستظهر هنا.</string>
+    <string name="look_wall_bottom">الشاشة السفلية</string>
+    <string name="look_wall_bottom_help">الخيارات نفسها للشاشة الثانية. صور الألعاب والفيديوهات تبدو رائعة هناك في الأسفل.</string>
+    <string name="look_wall_dim">تعتيم الصور</string>
+    <string name="look_wall_dim_help">يعتّم خلفيات الصور والفيديو ليبقى النص فوقها سهل القراءة.</string>
+
+    <string name="look_games_view">عرض الألعاب</string>
+    <string name="look_games_view_help">كيف تظهر الألعاب داخل المنصّة أو المجموعة: شبكة بطاقات، أو قائمة بالتفاصيل (رائعة للمكتبات الكبيرة)، أو عرض دوّار، أو كعوب على رف، أو خراطيش في علبة.</string>
+    <string name="look_games_grid_size">حجم الشبكة</string>
+    <string name="look_games_grid_size_help">حجم بطاقات الألعاب داخل المنصّة، أو عدد ثابت من الأعمدة.</string>
+    <string name="look_games_card_shape">شكل البطاقة</string>
+    <string name="look_games_card_shape_help">مستديرة الزوايا، أو مربعة، أو دائرية، أو طويلة بحجم الغلاف، أو عريضة للقطات الشاشة واللافتات.</string>
+    <string name="look_games_shelf_look">شكل الرف</string>
+    <string name="look_games_shelf_look_help">خزانة الرفوف خلف عرض «الرف» في المجلد: خشب دافئ، أو ألواح مطفأة بألوان السمة، أو مفتوحة تقف فيها العلب على خلفيتك مع خط رف رفيع فقط.</string>
+    <string name="look_games_titles">أسماء الألعاب</string>
+    <string name="look_games_titles_help">اكتب اسم كل لعبة تحت بطاقتها.</string>
+    <string name="look_home_system_tiles">مربعات المنصّات</string>
+    <string name="look_home_system_tiles_help">شكل مربعات المنصّات على الشاشة الرئيسية.</string>
+    <string name="look_home_rows">صفوف الرئيسية</string>
+    <string name="look_home_rows_help">الصفوف التي تعرضها الشاشة الرئيسية، وبأي ترتيب.</string>
+    <string name="look_home_open_folders">فتح المجلدات</string>
+    <string name="look_home_open_folders_help">كصفحة، أو كصفحة بملء الشاشة (ينزلق الشريط العلوي بعيدًا لتأخذ الشبكة الشاشة كلها)، أو كنافذة منبثقة فوق الشاشة التي أنت فيها.</string>
+    <string name="look_home_open_folders_page">صفحة</string>
+    <string name="look_home_open_folders_fullscreen">ملء الشاشة</string>
+    <string name="look_home_open_folders_popup">منبثقة</string>
+    <string name="look_home_now_playing">قيد اللعب الآن</string>
+    <string name="look_home_now_playing_help">حين تعمل لعبة في الخلفية، اعرضها أعلى الشاشة الرئيسية لتعود إليها بضغطة.</string>
+    <string name="look_corner_hints">تلميحات الزاوية</string>
+    <string name="look_corner_hints_help">تذكير صغير بالأزرار في زاوية الشاشة العلوية.</string>
+
+    <string name="look_dock_apps">شريط التطبيقات</string>
+    <string name="look_dock_apps_help">تطبيقات Android المفضّلة لديك على الشاشة الرئيسية. اضغط Y على أحدها لنقله أو إزالته.</string>
+    <string name="look_dock_style">شكل الشريط</string>
+    <string name="look_dock_style_help">شريط عائم، أو رف بعرض الشاشة، أو الأيقونات وحدها. يسري على كل التخطيطات ما عدا «الرفوف».</string>
+    <string name="look_dock_top">الشريط في الأعلى</string>
+    <string name="look_dock_top_help">ضع الشريط فوق المربعات بدل أسفلها.</string>
+    <string name="look_dock_auto_hide">إخفاء الشريط تلقائيًا</string>
+    <string name="look_dock_auto_hide_help">يبقى الشريط صغيرًا باهتًا حتى تنتقل إليه.</string>
+
+    <string name="look_bottom_style">النمط</string>
+    <string name="look_bottom_style_help">«التفاصيل» تعرض صورة اللعبة تذوب في معلوماتها. و«صورة + معلومات» تدع الصورة المتحرّكة تملأ الشاشة والمعلومات فوقها. و«صورة متحرّكة» متعة للعين فقط. و«الساعة» تُبقي الأجواء هادئة.</string>
+    <string name="look_bottom_logo_size">حجم الشعار</string>
+    <string name="look_bottom_logo_size_help">حجم شعار اللعبة فوق صورتها.</string>
+    <string name="look_bottom_art_fade">تلاشي الصورة</string>
+    <string name="look_bottom_art_fade_help">كيف تذوب الصورة في الخلفية تحتها.</string>
+    <string name="look_bottom_video_snaps">لقطات الفيديو</string>
+    <string name="look_bottom_video_snaps_help">يشغّل فيديو اللعبة (من ROMs/downloaded_media/&lt;system&gt;/videos) بعد أن تتوقف عندها. «سريع» يبدأ أبكر؛ و«موفّر» ينتظر أطول كي لا يُفكّ أي فيديو وأنت تمرّ بسرعة. صامت دائمًا، ويتوقف وأنت تلعب.</string>
+    <string name="look_bottom_video_snaps_fast">سريع</string>
+    <string name="look_bottom_video_snaps_balanced">متوازن</string>
+    <string name="look_bottom_video_snaps_saver">موفّر</string>
+    <string name="look_bottom_moving_art">صور متحرّكة</string>
+    <string name="look_bottom_moving_art_help">صورة اللعبة تنساب وتقترب ببطء، كملصق ينبض بالحياة.</string>
+
+    <string name="look_top_battery">البطارية</string>
+    <string name="look_top_battery_help">اعرض نسبة البطارية بجانب الساعة.</string>
+    <string name="look_top_clock">الساعة</string>
+    <string name="look_top_clock_help">نظام 12 ساعة، أو 24 ساعة، أو ما يستخدمه النظام، أو بلا ساعة أصلًا.</string>
+    <string name="look_top_clock_system">النظام</string>
+    <string name="look_top_clock_12">12 ساعة</string>
+    <string name="look_top_clock_24">24 ساعة</string>
+    <string name="look_top_clock_hidden">مخفية</string>
+
+    <string name="look_controls_prompts">رموز الأزرار</string>
+    <string name="look_controls_prompts_help">كيف تُرسم الأزرار في التلميحات: بألوان Tandem الباستيلية، أو على طريقة Xbox أو PlayStation أو Nintendo.</string>
+    <string name="look_controls_swap_ab">تبديل A وB</string>
+    <string name="look_controls_swap_ab_help">التأكيد بالزر B والرجوع بالزر A، كما في أجهزة Nintendo. والتلميحات تتبعك.</string>
+    <string name="look_controls_swap_xy">تبديل X وY</string>
+    <string name="look_controls_swap_xy_help">البحث بالزر Y، والخيارات بالزر X.</string>
+    <string name="look_controls_does_open">فتح</string>
+    <string name="look_controls_does_search">بحث</string>
+    <string name="look_controls_does_options">خيارات</string>
+    <string name="look_controls_rebind">إعادة تعيين الأزرار</string>
+    <string name="look_controls_rebind_help">أعطِ أي أمر من أوامر Tandem زرًا آخر، أو تركيبة أزرار تُضغط معًا، أو ضغطة مطوّلة: الفتح، والرجوع، وقائمة الخيارات، وStart، والإعدادات السريعة، ومبدّل الألعاب، واللوحة الجانبية، وتقليب الصفحات، والألعاب المخفية، وزرًا للمفضّلة ولقطة الشاشة والمقطع. والتلميحات في كل مكان تتبعك.</string>
+    <string name="look_controls_rebind_defaults">الافتراضي</string>
+    <plurals name="look_controls_rebind_changes">
+        <item quantity="zero">لا تغييرات</item>
+        <item quantity="one">تغيير واحد</item>
+        <item quantity="two">تغييران</item>
+        <item quantity="few">%1$d تغييرات</item>
+        <item quantity="many">%1$d تغييرًا</item>
+        <item quantity="other">%1$d تغيير</item>
+    </plurals>
+
+    <string name="look_screens_swap">تبديل الشاشتين</string>
+    <string name="look_screens_swap_help">تنتقل المكتبة إلى الشاشة السفلية (اللمسية) وتصعد التفاصيل إلى الأعلى، في لحظة. والزر X يفعل ذلك على شبكة الأيقونات. وتبقى الألعاب تُفتح على الشاشة العلوية.</string>
+    <string name="look_screens_rotation">إبقاء التدوير التلقائي معطّلًا</string>
+    <string name="look_screens_rotation_help">جهاز Thor يعيد تفعيل التدوير التلقائي من تلقاء نفسه بين حين وآخر، وTandem يعطّله من جديد كلما عدت إليه. عطّل هذا الخيار لتقرّر بنفسك.</string>
+
+    <string name="look_reset">إعادة ضبط المظهر</string>
+    <string name="look_reset_help">العودة إلى مظهر Tandem الأصلي: السمة، والتخطيط، والخلفيات، والأيقونات، والحركة. أزرارك وشاشاتك وأصواتك وموسيقاك ومكتبتك ومفضّلتك ووقت لعبك لا يمسّها شيء.</string>
+    <string name="look_reset_ask">إعادة ضبط المظهر كله؟</string>
+    <string name="look_reset_ask_body">تعود السمة والتخطيط والخلفيات والأيقونات والحركة إلى ما كانت عليه أول مرة. الأزرار والشاشات والصوت والألعاب تبقى كما هي.</string>
+    <string name="look_reset_ask_do">إعادة الضبط</string>
+    <string name="look_reset_done">عدنا إلى %1$s</string>
+
+    <string name="look_grid_icon_size">حجم الأيقونات</string>
+    <string name="look_grid_icon_size_help">كم أيقونة تتسع لها الشاشة في الصف، مثل تكبير قائمة HOME في 3DS. والزران L1 وR1 يغيّرانه على الشبكة أيضًا.</string>
+    <string name="look_grid_icon_size_option">%1$s · %2$d في الصف</string>
+    <string name="look_grid_rows">صفوف الأيقونات</string>
+    <string name="look_grid_rows_help">ثبّت عدد الصفوف وستكبر الأيقونات لتملأ الشاشة. صف واحد يشبه قائمة HOME في 3DS مكبّرة إلى أقصاها: أيقونات كبيرة وفوقها تفاصيل العنصر المحدّد. «تلقائي» يتبع حجم الأيقونات. والزران L1 وR1 يغيّران الصفوف على الشبكة (L1 مع الأيقونات الكبيرة يواصل إلى صفوف أقل).</string>
+    <string name="look_grid_rows_auto">تلقائي</string>
+    <plurals name="look_grid_rows_n">
+        <item quantity="zero">لا صفوف</item>
+        <item quantity="one">صف واحد</item>
+        <item quantity="two">صفّان</item>
+        <item quantity="few">%1$d صفوف</item>
+        <item quantity="many">%1$d صفًا</item>
+        <item quantity="other">%1$d صف</item>
+    </plurals>
+    <string name="look_grid_scrolling">التمرير</string>
+    <string name="look_grid_scrolling_help">جانبيًا مع لمحة مما يليه، أو صفحة صفحة (كما في 3DS)، أو صعودًا ونزولًا.</string>
+    <string name="look_grid_scrolling_sideways">جانبي</string>
+    <string name="look_grid_scrolling_pages">صفحات</string>
+    <string name="look_grid_scrolling_vertical">عمودي</string>
+    <string name="look_grid_roundness">استدارة الأيقونات</string>
+    <string name="look_grid_roundness_help">من الزوايا المربعة إلى الدوائر.</string>
+    <string name="look_grid_gap">المسافة بين الأيقونات</string>
+    <string name="look_grid_gap_help">الفراغ بين الأيقونات، نسبةً إلى حجم الأيقونة.</string>
+    <string name="look_grid_hero_split">صورة فوق الشبكة</string>
+    <string name="look_grid_hero_split_help">صورة الأيقونة المحدّدة فوق الشبكة. «بلا صورة» (الافتراضي) يمنح الأيقونات الشاشة كلها.</string>
+    <string name="look_grid_hero_split_none">بلا صورة</string>
+    <string name="look_grid_other_screen">الشاشة الأخرى</string>
+    <string name="look_grid_other_screen_help">«تحت الأضواء» يعرض الأيقونة المحدّدة كبيرة فوق لونها (أو صورة حزمة أيقوناتها) والألعاب بملء الشاشة. و«كلاسيكي» يعرض تفاصيل Tandem.</string>
+    <string name="look_grid_other_screen_spotlight">تحت الأضواء</string>
+    <string name="look_grid_other_screen_classic">كلاسيكي</string>
+    <string name="look_grid_folders">فتح المجلدات</string>
+    <string name="look_grid_folders_help">كلوحة كبيرة مستديرة فوق الشبكة، أو كصفحة كاملة.</string>
+    <string name="look_grid_folders_popup">فوق الشبكة</string>
+    <string name="look_grid_folders_page">صفحة كاملة</string>
+    <string name="look_grid_x_button">الزر X</string>
+    <string name="look_grid_x_button_help">بدّل الشاشتين بالزر X على شبكة الأيقونات و«المدار» (البحث في لوحة Start وفي قائمة Y للشبكة)، أو في كل مكان، أو أبقِ X للبحث.</string>
+    <string name="look_grid_x_button_swap_grid">تبديل في الشبكة والمدار</string>
+    <string name="look_grid_x_button_swap">تبديل في كل مكان</string>
+    <string name="look_grid_x_button_search">بحث</string>
+    <string name="look_grid_swap_animation">حركة التبديل</string>
+    <string name="look_grid_swap_animation_help">كيف تتبادل الشاشتان مكانيهما عند X. «تناثر»: تتطاير الأيقونات وتهبط على الشاشة الأخرى. «دفع»: ينزلق الجديد على كل شاشة من جهة المفصل. «قلب»: تنقلب الشاشتان كأوراق اللعب. «عمق»: يغوص القديم إلى الخلف ويتقدّم الجديد.</string>
+    <string name="look_swap_scatter">تناثر</string>
+    <string name="look_swap_push">دفع</string>
+    <string name="look_swap_flip">قلب</string>
+    <string name="look_swap_depth">عمق</string>
+    <string name="look_swap_fade">تلاشٍ</string>
+    <string name="look_swap_instant">فوري</string>
+
+    <string name="look_home_rows_continue">تابِع اللعب</string>
+    <string name="look_home_rows_systems">المنصّات</string>
+    <string name="look_home_rows_collections">المجموعات</string>
+
+    <string name="look_gallery_themes">السمات</string>
+    <string name="look_gallery_themes_note">A للاستخدام · الحزم في الأسفل</string>
+    <string name="look_gallery_packs">حزم السمات</string>
+    <string name="look_gallery_layouts">تخطيط الرئيسية</string>
+    <string name="look_gallery_layouts_note">A للتبديل</string>
+    <string name="look_gallery_layout_kind">تخطيط</string>
+    <string name="look_in_use">مستخدم</string>
+    <string name="look_theme_uses_hint">%1$s. اضغط A لاستخدامها.</string>
+
+    <string name="look_packs_none">لا شيء بعد</string>
+    <plurals name="look_packs_installed">
+        <item quantity="zero">لا شيء مثبّت</item>
+        <item quantity="one">واحدة مثبّتة</item>
+        <item quantity="two">اثنتان مثبّتتان</item>
+        <item quantity="few">%1$d مثبّتة</item>
+        <item quantity="many">%1$d مثبّتة</item>
+        <item quantity="other">%1$d مثبّتة</item>
+    </plurals>
+    <string name="look_packs_manage_help">استورد حزم Tandem أو حزم Cocoon من مجلد أو ملف .zip: ألوان، وخلفيات، وأيقونات منصّات، وصور بارزة، وشعارات. والحزم التي نزّلها Cocoon إلى ROMs/themes تظهر وحدها. اختر أي أجزاء الحزمة تستخدم، أو أزلها.</string>
+    <string name="look_pack_by_sentence">من صنع %1$s.</string>
+    <string name="look_pack_contents_sentence">%1$s.</string>
+    <string name="look_pack_art">الصور: %1$s</string>
+    <string name="look_pack_uses_hint">اضغط A لاستخدامها؛ ومدير الحزم يختار أي أجزائها.</string>
+
+    <string name="look_layout_shelves_help">صفوف تمرّ عليها: تابِع اللعب، والمنصّات، والمجموعات، وتطبيقاتك. الرئيسية الكلاسيكية في Tandem.</string>
+    <string name="look_layout_grid_help">كل منصّة ومجلد وتطبيق ولعبة كأيقونة مربعة على شبكة واحدة كثيفة تمرّ جانبيًا، مع شريط تطبيقات على شكل كبسولة. الشاشة الأخرى تعرض الأيقونة المحدّدة كبيرة، والزر X يبدّل الشاشتين.</string>
+    <string name="look_layout_carousel_help">عرض دوّار: البطاقة المحدّدة كبيرة في المنتصف والبقية تلتفّ نحو الجانبين.</string>
+    <string name="look_layout_list_help">صفوف مدمجة بجانبها معاينة كبيرة. سريعة التصفّح، ورائعة للمكتبات الضخمة.</string>
+    <string name="look_layout_console_help">واجهة على طريقة أجهزة الألعاب المنزلية: صورة العنصر المحدّد تملأ الشاشة، وصف واحد من المربعات الكبيرة في الأسفل.</string>
+    <string name="look_layout_orbit_help">من ابتكار Tandem: منصّاتك ومجموعاتك وتطبيقاتك تدور في مدار من الأيقونات المستديرة، والمحدّدة منها كبيرة في المقدّمة. وفوقها تنفتح أحدث ألعابها كأوراق لعب في اليد، تحت شريط «تابِع اللعب». اليمين واليسار يديرانه، وL1 وR1 يقفزان بين المجموعات، والزر X يبدّل الشاشتين.</string>
+    <string name="look_layout_spotlight_help">اللعبة أولًا: صورة اللعبة المحدّدة تملأ الشاشة، وسلسلة من الأغلفة تمتد على أحد الجانبين، وشعارها وقصتها ووقت لعبها على الجانب الآخر. الأعلى والأسفل يحرّكان السلسلة، وL1 وR1 يغيّران المنصّة أو المجموعة، والزر X يقرأ القصة كاملة.</string>
+
+    <string name="look_hints_play">العب</string>
+    <string name="look_hints_open">فتح</string>
+    <string name="look_hints_options">خيارات</string>
+    <string name="look_hints_search">بحث</string>
+    <string name="look_hints_menu">القائمة</string>
+
+    <string name="look_packs_import_folder">استيراد مجلد</string>
+    <string name="look_packs_import_folder_detail">مجلد حزمة</string>
+    <string name="look_packs_import_zip">استيراد .zip</string>
+    <string name="look_packs_import_zip_detail">حزمة مضغوطة</string>
+    <string name="look_packs_reload">ابحث مجددًا</string>
+    <string name="look_packs_reload_detail">حزم جديدة؟</string>
+    <string name="look_packs_no_picker">لا يوجد منتقي ملفات على هذا الجهاز</string>
+    <string name="look_packs_importing">جارٍ الاستيراد…</string>
+    <string name="look_packs_added">أُضيفت %1$s. اضغط A عليها لاستخدامها</string>
+    <string name="look_packs_found_none">لم أجد أي حزمة سمات</string>
+    <plurals name="look_packs_found">
+        <item quantity="zero">لم أجد أي حزمة سمات</item>
+        <item quantity="one">وجدت حزمة سمة واحدة</item>
+        <item quantity="two">وجدت حزمتَي سمات</item>
+        <item quantity="few">وجدت %1$d حزم سمات</item>
+        <item quantity="many">وجدت %1$d حزمة سمات</item>
+        <item quantity="other">وجدت %1$d حزمة سمات</item>
+    </plurals>
+    <string name="look_packs_none_yet">لا حزم بعد</string>
+    <plurals name="look_packs_installed_heading">
+        <item quantity="zero">المثبّتة · %1$d</item>
+        <item quantity="one">المثبّتة · %1$d</item>
+        <item quantity="two">المثبّتة · %1$d</item>
+        <item quantity="few">المثبّتة · %1$d</item>
+        <item quantity="many">المثبّتة · %1$d</item>
+        <item quantity="other">المثبّتة · %1$d</item>
+    </plurals>
+    <string name="look_packs_empty">حزم Cocoon التي نزّلتها من قبل تظهر هنا وحدها. أو استورد واحدة من الأعلى؛ تُنسخ إلى ROMs/tandem/themes.</string>
+    <string name="look_packs_its_icons">أيقوناتها</string>
+    <string name="look_packs_by">من صنع %1$s</string>
+    <string name="look_packs_by_version">من صنع %1$s · v%2$s</string>
+    <string name="look_packs_stored">محفوظة في ROMs/tandem/themes/%1$s</string>
+    <string name="look_packs_stored_cocoon">ثبّتها Cocoon في ROMs/themes/%1$s. وTandem يقرؤها فقط.</string>
+    <string name="look_packs_help">الحزم تأتي بالألوان والخلفيات والصور لكل منصّة. يقرأ Tandem حزمه الخاصة والحزم بصيغة Cocoon. وتحتفظ الحزم بحقوق أصحابها؛ شاركها كما يطلب صانعوها، من فضلك.</string>
+
+    <string name="look_packs_use">استخدم هذه السمة</string>
+    <string name="look_packs_icons_stop">أوقف استخدام أيقوناتها</string>
+    <string name="look_packs_icons_lend">أيقوناتها مع سمتي</string>
+    <string name="look_packs_brings">ما تأتي به</string>
+    <string name="look_packs_part_colours">الألوان</string>
+    <string name="look_packs_part_wallpaper">الخلفية</string>
+    <string name="look_packs_part_icons">أيقونات المنصّات</string>
+    <string name="look_packs_part_heroes">صور بارزة وشعارات</string>
+    <string name="look_packs_part_frames">إطارات الأغلفة</string>
+    <plurals name="look_packs_part_music">
+        <item quantity="zero">الموسيقى (%1$d)</item>
+        <item quantity="one">الموسيقى (%1$d)</item>
+        <item quantity="two">الموسيقى (%1$d)</item>
+        <item quantity="few">الموسيقى (%1$d)</item>
+        <item quantity="many">الموسيقى (%1$d)</item>
+        <item quantity="other">الموسيقى (%1$d)</item>
+    </plurals>
+    <string name="look_packs_part_sounds">الأصوات</string>
+    <string name="look_packs_remove">إزالة الحزمة</string>
+    <string name="look_packs_remove_ask">إزالة %1$s؟</string>
+    <string name="look_packs_remove_ask_body">سيُحذف ROMs/tandem/themes/%1$s. يمكنك استيرادها من جديد لاحقًا.</string>
+    <string name="look_packs_remove_do">إزالة</string>
+    <string name="look_packs_removed">أُزيلت %1$s</string>
+    <string name="look_packs_remove_failed">تعذّرت إزالة هذه الحزمة</string>
+    <string name="look_packs_add">أضف حزم سمات</string>
+    <string name="look_packs_add_detail">استورد مجلدًا أو .zip</string>
+    <string name="look_packs_manage">إدارة الحزم</string>
+
+    <string name="look_import_cant_open">تعذّر فتح هذا الملف</string>
+    <string name="look_import_too_big">هذا أكبر من أن يكون حزمة سمة</string>
+    <string name="look_import_too_many">فيه ملفات أكثر مما تحتمله حزمة سمة</string>
+    <string name="look_import_no_pack">لا يوجد فيه theme.json ولا مجلدات أيقونات</string>
+    <string name="look_import_failed">تعذّر استيراد هذا</string>
+    <string name="look_import_icons_description">أيقونات</string>
+
+    <string name="look_flair_group">الحركة والرئيسية</string>
+    <string name="look_flair_floating">عناوين طائرة</string>
+    <string name="look_flair_floating_help">الشعارات والأيقونات والعناوين تطفو بلطف وتصعد حين تتغيّر، والصور البارزة تنساب. وتسكن مع «تقليل الحركة» أو «بلا حركة» أو توفير شحن البطارية.</string>
+    <string name="look_flair_intensity">قوة الحركة</string>
+    <string name="look_flair_intensity_help">إلى أي حدّ تطفو الأشياء وتنطّ.</string>
+    <string name="look_flair_subtle">هادئة</string>
+    <string name="look_flair_normal">عادية</string>
+    <string name="look_flair_lively">حيوية</string>
+    <string name="look_flair_recent">شريط لُعبت مؤخرًا</string>
+    <string name="look_flair_recent_help">على شبكة الأيقونات، شريط بآخر ألعابك في الأعلى. الزر L2 يُظهره ويُخفيه، والزر A يستأنف اللعبة.</string>
+    <string name="look_flair_recent_button">على L2</string>
+    <string name="look_flair_recent_always">دائمًا</string>
+    <string name="look_flair_icon_names">أسماء الأيقونات</string>
+    <string name="look_flair_icon_names_help">الأسماء تحت مربعات شبكة الأيقونات: دائمًا، أو للأيقونة المحدّدة فقط، أو أبدًا.</string>
+    <string name="look_flair_icon_names_always">دائمًا</string>
+    <string name="look_flair_icon_names_focus">المحدّدة</string>
+
+    <string name="look_dev">للمطوّرين</string>
+    <string name="look_dev_frames">عدّاد الإطارات</string>
+    <string name="look_dev_frames_help">يعدّ الإطارات البطيئة وأنت تستخدم Tandem ويعرض المجموع في الزاوية. وكل إطار بطيء يُكتب أيضًا في سجل النظام (الوسم TandemJank) مع الشاشة التي حدث فيها، لقياس السلاسة.</string>
+    <string name="look_dev_tour">جولة على كل السمات</string>
+    <string name="look_dev_tour_stop">إيقاف</string>
+    <string name="look_dev_tour_count">%1$d + المستوردة</string>
+    <string name="look_dev_tour_help">يعرض كل سمة مدمجة وأحدث حزمة مستوردة بضع ثوانٍ، لتفحص الألوان والنصوص. وسمتك تبقى كما هي.</string>
+    <string name="look_dev_tour_toast">السمة %1$d من %2$d: %3$s</string>
+
+    <plurals name="look_start_found">
+        <item quantity="zero">أبحث عن ألعابك…</item>
+        <item quantity="one">وجدت لعبة واحدة…</item>
+        <item quantity="two">وجدت لعبتين…</item>
+        <item quantity="few">وجدت %1$d ألعاب…</item>
+        <item quantity="many">وجدت %1$d لعبة…</item>
+        <item quantity="other">وجدت %1$d لعبة…</item>
+    </plurals>
+    <string name="look_start_gathering">أجمع ألعابك…</string>
+
+    <string name="look_welcome_skip_all">تخطَّ الكل</string>
+    <string name="look_welcome_next">التالي</string>
+    <string name="look_welcome_skip_now">تخطَّ الآن</string>
+    <string name="look_welcome_not_now">ليس الآن</string>
+    <string name="look_welcome_language">بأي لغة نتحدّث؟</string>
+    <string name="look_welcome_language_detail">يتحدّث بها Tandem على الشاشتين. ويمكنك تغييرها متى شئت من الإعدادات › المظهر والأجواء › اللغة.</string>
+    <string name="look_welcome_home">أهلًا! أي رئيسية تشبهك؟</string>
+    <string name="look_welcome_home_cocoon">وجدت ملفات Cocoon على هذا الجهاز، لذا وضعت شبكة الأيقونات أولًا. ويمكنك تغيير ذلك متى شئت من الإعدادات.</string>
+    <string name="look_welcome_home_detail">اختر واحدة لتبدأ بها. وفي الإعدادات › الرئيسية والتخطيط المزيد، متى شئت.</string>
+    <string name="look_welcome_cocoon">وجدت أغراضك من Cocoon</string>
+    <string name="look_welcome_cocoon_detail">لا حاجة إلى النسخ: يقرؤها Tandem حيث يحفظها Cocoon، ولا يغيّرها أبدًا.</string>
+    <string name="look_welcome_cocoon_backup">نسختك الاحتياطية من Cocoon بتاريخ %1$s: الرئيسية نفسها والشريط نفسه والسمة نفسها بضغطة واحدة</string>
+    <plurals name="look_welcome_cocoon_themes">
+        <item quantity="zero">لا حزم سمات: %2$s</item>
+        <item quantity="one">حزمة سمة واحدة: %2$s</item>
+        <item quantity="two">حزمتا سمات: %2$s</item>
+        <item quantity="few">%1$d حزم سمات: %2$s</item>
+        <item quantity="many">%1$d حزمة سمات: %2$s</item>
+        <item quantity="other">%1$d حزمة سمات: %2$s</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_icons">
+        <item quantity="zero">لا حزم أيقونات للمنصّات والمجموعات</item>
+        <item quantity="one">حزمة أيقونات واحدة للمنصّات والمجموعات، تُستخدم تلقائيًا</item>
+        <item quantity="two">حزمتا أيقونات للمنصّات والمجموعات، تُستخدمان تلقائيًا</item>
+        <item quantity="few">%1$d حزم أيقونات للمنصّات والمجموعات، تُستخدم تلقائيًا</item>
+        <item quantity="many">%1$d حزمة أيقونات للمنصّات والمجموعات، تُستخدم تلقائيًا</item>
+        <item quantity="other">%1$d حزمة أيقونات للمنصّات والمجموعات، تُستخدم تلقائيًا</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_platforms">
+        <item quantity="zero">لا ملفات منصّات</item>
+        <item quantity="one">ملف منصّات واحد: محاكياته جاهزة في «المنصّات»</item>
+        <item quantity="two">ملفا منصّات: محاكياتهما جاهزة في «المنصّات»</item>
+        <item quantity="few">%1$d ملفات منصّات: محاكياتها جاهزة في «المنصّات»</item>
+        <item quantity="many">%1$d ملف منصّات: محاكياتها جاهزة في «المنصّات»</item>
+        <item quantity="other">%1$d ملف منصّات: محاكياتها جاهزة في «المنصّات»</item>
+    </plurals>
+    <string name="look_welcome_cocoon_gamelists">أسماء الألعاب وأوصافها وصورها من قوائم Cocoon تنتقل وحدها</string>
+    <string name="look_welcome_cocoon_bring">انقل إعداداتي من Cocoon</string>
+    <string name="look_welcome_cocoon_bringing">جارٍ النقل…</string>
+    <string name="look_welcome_cocoon_wear">ارتدِ %1$s</string>
+    <string name="look_welcome_cocoon_keep">أبقِ هذه السمة</string>
+    <string name="look_welcome_art">الصور والتفاصيل</string>
+    <string name="look_welcome_art_detail">LaunchBox وlibretro لا يحتاجان إلى حساب. وIGDB وSteamGridDB وScreenScraper تضيف المزيد بمفتاح مجاني: اختر أحدها لترى الطريقة.</string>
+    <string name="look_welcome_art_launchbox">نزّل LaunchBox (%1$d MB، عبر Wi-Fi)</string>
+    <string name="look_welcome_resume">أكمل من حيث توقفت تمامًا</string>
+    <string name="look_welcome_resume_ready">الاستئناف جاهز</string>
+    <string name="look_welcome_resume_ready_detail">اختيار لعبة ما زالت مفتوحة يعيدها كما هي بدل أن يبدأها من جديد.</string>
+    <string name="look_welcome_resume_allow_detail">اسمح لـ Tandem في Shizuku، وستعود اللعبة التي ما زالت تعمل كما تركتها، مع مبدّل الألعاب (Select مطوّلًا) للتنقّل بينها.</string>
+    <string name="look_welcome_resume_start_detail">حين يعمل تطبيق Shizuku، يستطيع Tandem إعادة لعبة ما زالت مفتوحة بدل أن يبدأها من جديد. شغّل Shizuku، ثم اسمح لـ Tandem.</string>
+    <string name="look_welcome_resume_allow">اسمح في Shizuku</string>
+    <string name="look_welcome_resume_how">كيف أشغّل Shizuku؟</string>
+    <string name="look_welcome_homescreen">هل تجعل Tandem شاشتك الرئيسية؟</string>
+    <string name="look_welcome_homescreen_is">Tandem هو شاشتك الرئيسية</string>
+    <string name="look_welcome_homescreen_detail">اضغط Home من أي مكان لتعود إلى هنا، ولعبتك الجارية على بُعد زر واحد. تطبيقاتك تبقى في الشريط. ويمكنك التراجع متى شئت من الإعدادات.</string>
+    <string name="look_welcome_homescreen_make">اجعله شاشتي الرئيسية</string>
+    <string name="look_welcome_home_set">صار Tandem شاشتك الرئيسية ✨</string>
+    <string name="look_welcome_done">كل شيء جاهز. هيا نلعب!</string>
+    <string name="look_welcome_done_detail">أربعة أزرار تستحق أن تعرفها، أينما كنت:</string>
+    <string name="look_welcome_done_y">خيارات لأي شيء</string>
+    <string name="look_welcome_done_x_swap">يبدّل الشاشتين في الرئيسية، ويبحث في غيرها</string>
+    <string name="look_welcome_done_start">لوحة Start والإعدادات داخلها (مطوّلًا: الإعدادات السريعة)</string>
+    <string name="look_welcome_done_select">فاجئني (مطوّلًا: مبدّل الألعاب)</string>
+    <string name="look_welcome_play">هيا نلعب</string>
+
+    <string name="look_preset_on">«%1$s» مفعّلة. اضغط A عليها مرة أخرى للتراجع</string>
+    <string name="look_preset_undone">عاد كل شيء كما كان</string>
+    <string name="look_preset_cozy">رفوف دافئة</string>
+    <string name="look_preset_cozy_blurb">رئيسية Tandem الأصلية: صفوف من الألعاب الأخيرة والمنصّات والمجموعات، مع التفاصيل والصور على الشاشة السفلية.</string>
+    <string name="look_preset_cozy_1">رئيسية الرفوف</string>
+    <string name="look_preset_cozy_2">شبكة ألعاب داخل المنصّات</string>
+    <string name="look_preset_cozy_3">التفاصيل على الشاشة السفلية</string>
+    <string name="look_preset_cozy_4">شريط تطبيقات عائم</string>
+    <string name="look_preset_cozy_5">المكتبة على الشاشة العلوية</string>
+    <string name="look_preset_grid">إطلالة الشبكة</string>
+    <string name="look_preset_grid_blurb">شبكة واحدة كثيفة من الأيقونات تمرّ جانبيًا، والأيقونة المحدّدة كبيرة على الشاشة الأخرى، والزر X يبدّل الشاشتين.</string>
+    <string name="look_preset_grid_1">رئيسية شبكة الأيقونات، 7 في الصف، جانبية</string>
+    <string name="look_preset_grid_2">«تحت الأضواء» على الشاشة الأخرى</string>
+    <string name="look_preset_grid_3">X يبدّل الشاشتين على الشبكة</string>
+    <string name="look_preset_grid_4">المجلدات تُفتح فوق الشبكة</string>
+    <string name="look_preset_grid_5">شريط كبسولة بتطبيقاتك</string>
+    <string name="look_preset_grid_6">حزمة سمة Cocoon الخاصة بك، إن كانت مثبّتة</string>
+    <string name="look_preset_grid_7">مع نسخة Cocoon احتياطية: رئيسيتك وشريطك وسمتك تمامًا</string>
+    <string name="look_preset_orbit">المدار</string>
+    <string name="look_preset_orbit_blurb">رئيسية من ابتكار Tandem: منصّاتك ومجموعاتك وتطبيقاتك في مدار من الأيقونات المستديرة، وألعاب المحدّدة منها منفتحة فوقه.</string>
+    <string name="look_preset_orbit_1">رئيسية المدار بالمنصّات والمجموعات والتطبيقات</string>
+    <string name="look_preset_orbit_2">شريط «تابِع اللعب» فوق الأضواء</string>
+    <string name="look_preset_orbit_3">شريط مستدير تحت المدار</string>
+    <string name="look_preset_orbit_4">التفاصيل على الشاشة السفلية</string>
+    <string name="look_preset_orbit_5">X يبدّل الشاشتين في المدار</string>
+    <string name="look_preset_minimal">بسيط</string>
+    <string name="look_preset_minimal_blurb">هادئ وسريع: قائمة مدمجة، وإطارات حادّة بدل التوهّج، وحركات قصيرة، وبلا موسيقى، وإضافات أقل.</string>
+    <string name="look_preset_minimal_1">رئيسية بقائمة وقائمة ألعاب</string>
+    <string name="look_preset_minimal_2">تحديد بإطار، وحركة خفيفة</string>
+    <string name="look_preset_minimal_3">بلا موسيقى</string>
+    <string name="look_preset_minimal_4">شريط أيقونات فقط يختفي</string>
+    <string name="look_preset_minimal_5">بلا صف أدوات وبلا شاشة افتتاحية</string>
+</resources>
