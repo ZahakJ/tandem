@@ -166,7 +166,16 @@ Two exceptions where Japan has its own word: **OLED** is 有機EL (what every Ja
 | Deck (keyboard + trackpad on the bottom screen) | デッキ | Kept as Tandem's name for it, in katakana |
 | Connected controllers | 接続中のコントローラー | |
 | Controller (Built-in) | コントローラー（本体） | |
-| Companion (bottom screen while playing) | おとも画面 | お供, the Japanese word for a sidekick (Monster Hunter's オトモ) |
+| Companion (bottom screen while playing) | おとも画面 (chip: おとも) | お供, the Japanese word for a sidekick (Monster Hunter's オトモ) |
+| Companion app (started with a game) | おともアプリ | |
+| Leave to emulator (bottom screen) | エミュレーターまかせ | |
+| Single screen | 1画面モード | |
+| Surprise me | おまかせ | |
+| Time to beat (HowLongToBeat) | クリアまでの目安 (メイン / やりこみ / 100%) | |
+| Lock / unlock (edited details) | ロック / ロック解除 | |
+| Match (RetroAchievements) | 照合 | |
+| Regions | 北米 / 欧州 / 日本 / 世界 | |
+| Screenshot chip on the companion | スクショ | Short, what Japanese players say |
 | Trophy | トロフィー | PlayStation's word |
 | Bronze / Silver / Gold / Platinum | ブロンズ / シルバー / ゴールド / プラチナ | PlayStation's words |
 | Achievement | 実績 | Xbox and Steam Japan |

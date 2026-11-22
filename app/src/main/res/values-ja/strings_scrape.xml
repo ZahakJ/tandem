@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scraping (情報を取得): the Scrape library screen, the Artwork & details setup and what the sources say.
+     Japanese. See docs/i18n/glossary-ja.md. Source names are brands and stay as they are. -->
+<resources>
+    <string name="scrape_kind_box">パッケージ</string>
+    <string name="scrape_kind_hero">キービジュアル／ファンアート</string>
+    <string name="scrape_kind_logo">ロゴ</string>
+    <string name="scrape_kind_title">タイトル画面</string>
+    <string name="scrape_kind_gameplay">プレイ画面</string>
+    <string name="scrape_kind_video">プレビュー動画</string>
+    <string name="scrape_kind_front">パッケージ表面（実物）</string>
+    <string name="scrape_kind_spine">パッケージの背</string>
+
+    <string name="scrape_meta_name">名前</string>
+    <string name="scrape_meta_name_detail">ファイル名ではなく、ゲームの正式な名前</string>
+    <string name="scrape_meta_description">説明</string>
+    <string name="scrape_meta_description_detail">ゲームについての数段落の紹介</string>
+    <string name="scrape_meta_genres">ジャンル</string>
+    <string name="scrape_meta_genres_detail">ゲームをジャンル別のリストに分けます</string>
+    <string name="scrape_meta_credits">開発と発売元</string>
+    <string name="scrape_meta_credits_detail">作った会社と出した会社</string>
+    <string name="scrape_meta_year">発売年</string>
+    <string name="scrape_meta_year_detail">年順の並べ替えに</string>
+    <string name="scrape_meta_players">プレイ人数</string>
+    <string name="scrape_meta_players_detail">同時に何人で遊べるか</string>
+    <string name="scrape_meta_rating">評価</string>
+    <string name="scrape_meta_rating_detail">みんなの評価を星で</string>
+    <string name="scrape_meta_time">クリアまでの目安</string>
+    <string name="scrape_meta_time_detail">メイン、やりこみ、100%（HowLongToBeat）</string>
+
+    <string name="scrape_mode_basics">基本だけ</string>
+    <string name="scrape_mode_basics_detail">パッケージか説明がないゲームだけ、その2つだけを取得</string>
+    <string name="scrape_mode_missing">足りない分</string>
+    <string name="scrape_mode_missing_detail">選んだもののうち、ゲームにまだないものを取得</string>
+    <string name="scrape_mode_refresh">全部取り直し</string>
+    <string name="scrape_mode_refresh_detail">選んだものをすべてもう一度取得して置き換え</string>
+    <string name="scrape_mode_line">%1$s：%2$s</string>
+
+    <string name="scrape_source_libretro">libretroのサムネイル</string>
+    <string name="scrape_source_ss_gives">ファイルそのものと照合：パッケージ、ロゴ、ファンアート、スクリーンショット、動画、ゲーム情報</string>
+    <string name="scrape_source_lb_gives">この端末に置く大きな無料ゲームデータベース：パッケージ、ロゴ、ファンアート、スクリーンショット、ゲーム情報</string>
+    <string name="scrape_source_igdb_gives">Twitchのゲームデータベース：パッケージ、アートワーク、スクリーンショット、ゲーム情報。新しめのゲームに強い</string>
+    <string name="scrape_source_sgdb_gives">コミュニティ製のパッケージ、キービジュアル、ロゴ。PCとSwitchのゲームならここがいちばん</string>
+    <string name="scrape_source_libretro_gives">クラシック機種のパッケージ（実物のスキャン）、タイトル画面、スクリーンショット</string>
+    <string name="scrape_source_hltb_gives">クリアまでの時間：メイン、メイン＋やりこみ、100%</string>
+
+    <string name="scrape_region_us">北米</string>
+    <string name="scrape_region_eu">欧州</string>
+    <string name="scrape_region_jp">日本</string>
+    <string name="scrape_region_world">世界</string>
+
+    <string name="scrape_size_kb">%1$d KB</string>
+    <string name="scrape_size_mb">%1$s MB</string>
+    <string name="scrape_size_gb">%1$s GB</string>
+
+    <string name="scrape_hidden_never_sent">非表示のゲームはどこにも送りません</string>
+    <string name="scrape_offline">プライベートモード中はTandemはオフラインです。情報の取得もアートの検索もしません</string>
+    <string name="scrape_busy">ピップはもう情報を取得中です。終わったらもう一度どうぞ</string>
+    <string name="scrape_looking_for">「%1$s」を探しています…</string>
+    <string name="scrape_cant_start">開始できませんでした。もう取得中ではありませんか？</string>
+    <string name="scrape_lb_ask_title">LaunchBoxのゲームデータベースをダウンロードしますか？</string>
+    <string name="scrape_lb_ask_text">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB）、あなたの機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
+    <string name="scrape_lb_ask_text_metered">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB。今は従量制の接続です）、あなたの機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
+    <string name="scrape_lb_ask_yes">ダウンロードして取得</string>
+    <string name="scrape_lb_ask_skip">LaunchBoxは使わない</string>
+    <string name="scrape_background_top">バックグラウンドで取得中：進み具合は上画面に出ます</string>
+    <string name="scrape_background_bottom">バックグラウンドで取得中：進み具合は下画面に出ます</string>
+
+    <string name="scrape_scope_all">すべての機種</string>
+    <string name="scrape_scope_one">1本だけ</string>
+
+    <string name="scrape_tile_hero">キービジュアル</string>
+    <string name="scrape_tile_gameplay">プレイ画面</string>
+    <string name="scrape_tile_video">動画</string>
+    <string name="scrape_tile_physical">実物パッケージ</string>
+    <string name="scrape_tile_box_detail">すべてのカードの表紙</string>
+    <string name="scrape_tile_hero_detail">下画面用の横長アート</string>
+    <string name="scrape_tile_logo_detail">キービジュアルに重ねる名前</string>
+    <string name="scrape_tile_title_detail">ゲームのタイトル画面</string>
+    <string name="scrape_tile_gameplay_detail">プレイ中のひとコマ</string>
+    <string name="scrape_tile_video_detail">短い動画、1本あたり3 MB</string>
+    <string name="scrape_tile_physical_detail">本棚用の表面と背</string>
+    <string name="scrape_tile_video_size">合計約%1$s</string>
+
+    <string name="scrape_where_box">パッケージ：すべてのゲームカード、棚、ゲームの詳細に出る表紙。どのレイアウトでも使う唯一の画像です。</string>
+    <string name="scrape_where_hero">キービジュアル：横長のメインアート。下画面のゲーム詳細の後ろ、スポットライトの背景、選択中のゲームの後ろいっぱいに広がります。</string>
+    <string name="scrape_where_logo">ロゴ：ゲームの名前をデザインした画像。下画面やスポットライトで、ただの文字の代わりにキービジュアルの上に重なります。</string>
+    <string name="scrape_where_title">タイトル画面：キービジュアルがないゲームの後ろに出ます。下画面が選ぶ画像の一つでもあります。</string>
+    <string name="scrape_where_gameplay">プレイ画面：プレイ中の静止画。キービジュアルもタイトル画面もないゲームの後ろに出ます。下画面が選ぶ画像の一つでもあります。動きません。動くのは「動画」です。</string>
+    <string name="scrape_where_video">動画：見た目と雰囲気 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です。</string>
+    <string name="scrape_where_video_off">動画：見た目と雰囲気 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です（今はオフです）。</string>
+    <string name="scrape_where_physical">実物パッケージ：パッケージの表面と背の実物スキャン。本棚表示とパッケージ型のカードに使います。</string>
+
+    <string name="scrape_setup_what">取得するもの</string>
+    <string name="scrape_setup_games">ゲーム</string>
+    <string name="scrape_setup_games_all">ゲームのあるすべての機種</string>
+    <string name="scrape_setup_games_one">1つの機種</string>
+    <string name="scrape_setup_folder">フォルダ</string>
+    <string name="scrape_setup_folder_detail">その中の1つのフォルダだけ</string>
+    <string name="scrape_setup_all_folders">すべてのフォルダ</string>
+    <string name="scrape_setup_mode">モード</string>
+    <string name="scrape_setup_locked">ロックした項目も置き換え</string>
+    <string name="scrape_setup_locked_on">自分で編集したり選んだりしたものも置き換えます</string>
+    <string name="scrape_setup_locked_off">自分で編集したり選んだりしたものはそのまま</string>
+    <string name="scrape_setup_artwork">アートワーク</string>
+    <string name="scrape_setup_details">情報</string>
+    <string name="scrape_setup_game_details">ゲーム情報</string>
+    <string name="scrape_setup_game_details_detail">名前、説明、ジャンル、発売年、プレイ人数…</string>
+    <string name="scrape_setup_game_details_needs">取得元が必要です：下でLaunchBox、ScreenScraper、IGDBのどれかをオンに</string>
+    <string name="scrape_setup_needs_hltb">HowLongToBeatが必要</string>
+    <string name="scrape_setup_region_language">地域と言語</string>
+    <string name="scrape_setup_region">地域</string>
+    <string name="scrape_setup_region_detail">優先するパッケージ</string>
+    <string name="scrape_setup_language">言語</string>
+    <string name="scrape_setup_language_detail">説明とジャンル用</string>
+    <string name="scrape_setup_sources">取得元</string>
+    <string name="scrape_setup_counting">ゲームを数えています…</string>
+    <string name="scrape_setup_none">ここには取得するゲームがありません</string>
+    <plurals name="scrape_setup_to_check">
+        <item quantity="other">確認するゲーム：%1$d本</item>
+    </plurals>
+    <string name="scrape_setup_all_complete">どのゲームにもパッケージと説明がそろっています</string>
+    <string name="scrape_setup_all_have_box">パッケージは全部あり · %1$s</string>
+    <plurals name="scrape_setup_no_box_yet">
+        <item quantity="other">パッケージなし%1$d本</item>
+    </plurals>
+    <plurals name="scrape_setup_no_box">
+        <item quantity="other">パッケージなし%1$d本</item>
+    </plurals>
+    <plurals name="scrape_setup_no_text">
+        <item quantity="other">説明なし%1$d本</item>
+    </plurals>
+    <string name="scrape_setup_no_both">%1$s · %2$s</string>
+    <plurals name="scrape_setup_hidden_skipped">
+        <item quantity="other">非表示のゲーム%1$d本はスキップ。どこにも送りません</item>
+    </plurals>
+    <string name="scrape_setup_want_something">アートワークか情報を1つ以上オンにしてください</string>
+    <string name="scrape_setup_want_source">「取得元」で1つ以上オンにしてください</string>
+    <string name="scrape_setup_start">取得を開始</string>
+    <string name="scrape_setup_leave_card">バックグラウンドで作業して、進み具合をもう一方の画面に出しますね。ゲーム中はひと休みします。</string>
+    <string name="scrape_setup_leave">この画面を離れても大丈夫。続けておきますね。ゲーム中はひと休みします。</string>
+    <plurals name="scrape_games">
+        <item quantity="other">%1$d本</item>
+    </plurals>
+    <string name="scrape_pick_scope_title">どのゲーム？</string>
+    <string name="scrape_pick_scope_detail">すべての機種か、1つの機種だけか</string>
+    <string name="scrape_pick_folder_title">どのフォルダ？</string>
+    <string name="scrape_pick_language_detail">ScreenScraperにあれば、説明とジャンルをこの言語で</string>
+    <string name="scrape_sources_order">ゲームごとに、オンになっている最初の取得元から聞き、次は足りない分だけを聞きます</string>
+    <string name="scrape_sources_set_up">取得元の設定</string>
+
+    <string name="scrape_run_lb_ready">LaunchBoxを準備中：%1$d%%</string>
+    <plurals name="scrape_run_done_of">
+        <item quantity="other">%2$d本中%1$d本</item>
+    </plurals>
+    <plurals name="scrape_run_got_art">
+        <item quantity="other">%1$d本に新しいアートワーク</item>
+    </plurals>
+    <plurals name="scrape_run_got_details">
+        <item quantity="other">%1$d本に情報</item>
+    </plurals>
+    <plurals name="scrape_run_complete">
+        <item quantity="other">%1$d本はそろい済み</item>
+    </plurals>
+    <plurals name="scrape_run_not_found">
+        <item quantity="other">%1$d本は見つからず</item>
+    </plurals>
+    <plurals name="scrape_run_failed">
+        <item quantity="other">%1$d本はダウンロード失敗。あとでもう一度どうぞ</item>
+    </plurals>
+    <string name="scrape_run_stop">停止</string>
+    <string name="scrape_run_resume">再開</string>
+    <string name="scrape_run_pause">一時停止</string>
+    <string name="scrape_run_keep_browsing">ほかを見る</string>
+    <string name="scrape_run_done">完了</string>
+    <string name="scrape_run_new">新しく取得</string>
+    <string name="scrape_run_covers">パッケージ</string>
+    <string name="scrape_run_missed">見つからず</string>
+    <string name="scrape_run_missed_title">見つからず：手でアートを選んでください</string>
+    <string name="scrape_run_new_artwork">新しいアートワーク</string>
+    <string name="scrape_run_just_found">今見つけた</string>
+    <string name="scrape_run_nothing_new">今回は新しいものなし</string>
+    <string name="scrape_run_covers_soon">見つけたパッケージがここにポンポン出てきます</string>
+    <string name="scrape_run_getting_ready">準備中…</string>
+    <string name="scrape_run_finding">アートを探しています…</string>
+    <string name="scrape_run_paused">一時停止中</string>
+    <string name="scrape_run_paused_play">ゲーム中なので一時停止</string>
+    <string name="scrape_run_all_done">全部終わりました！</string>
+    <string name="scrape_run_stopped">停止しました</string>
+    <string name="scrape_run_eta_under_minute">残り1分未満</string>
+    <string name="scrape_run_eta_minute">残り約1分</string>
+    <plurals name="scrape_run_eta_minutes">
+        <item quantity="other">残り約%1$d分</item>
+    </plurals>
+    <plurals name="scrape_run_summary_art">
+        <item quantity="other">%1$d本に新しいアート</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details_too">
+        <item quantity="other">%1$d本に情報</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details">
+        <item quantity="other">%1$d本に新しい情報</item>
+    </plurals>
+    <string name="scrape_pill_paused">⏸ 取得を一時停止中</string>
+    <string name="scrape_pill_one">✦ 取得中…</string>
+    <string name="scrape_pill_count">✦ 取得中 %1$d/%2$d</string>
+    <string name="scrape_card_last_found">最後に見つけたもの：%1$s</string>
+    <plurals name="scrape_card_found">
+        <item quantity="other">%1$d本発見</item>
+    </plurals>
+    <plurals name="scrape_card_details">
+        <item quantity="other">情報%1$d本</item>
+    </plurals>
+    <plurals name="scrape_card_missing">
+        <item quantity="other">%1$d本見つからず</item>
+    </plurals>
+    <plurals name="scrape_card_failed">
+        <item quantity="other">%1$d本失敗</item>
+    </plurals>
+    <plurals name="scrape_card_complete">
+        <item quantity="other">%1$d本そろい済み</item>
+    </plurals>
+    <string name="scrape_card_cancel">キャンセル</string>
+    <string name="scrape_one_that_game">そのゲーム</string>
+    <string name="scrape_one_art_details">「%1$s」に新しいアートと情報 ✨</string>
+    <string name="scrape_one_art">「%1$s」に新しいアート ✨</string>
+    <string name="scrape_one_details">「%1$s」に新しい情報 ✨</string>
+    <string name="scrape_one_nothing">「%1$s」の新しいものは見つかりませんでした</string>
+    <plurals name="scrape_done_toast">
+        <item quantity="other">取得完了：%1$d本に新しいアート ✨</item>
+    </plurals>
+
+    <string name="scrape_settings_title">アートワークと情報</string>
+    <string name="scrape_settings_scrape">ライブラリの情報を取得</string>
+    <string name="scrape_settings_scrape_value">アートと情報</string>
+    <string name="scrape_settings_scrape_help">ゲームのパッケージ、ロゴ、キービジュアル、動画、説明を、LaunchBoxとlibretro（アカウント不要）、ScreenScraper、IGDB、SteamGridDB、HowLongToBeatからダウンロードします。</string>
+    <string name="scrape_settings_sources_value">%2$d個中%1$d個オン</string>
+    <string name="scrape_settings_sources_help">アートワークと情報の設定：それぞれの取得元から何が手に入るか、アカウントが必要なのはどれか、無料のキーの入手先、それぞれのテストボタン。聞く順番もここで変えられます。</string>
+    <string name="scrape_settings_clear">ダウンロードしたメディアを消去</string>
+    <string name="scrape_settings_clear_none">まだなし</string>
+    <plurals name="scrape_settings_clear_files">
+        <item quantity="other">%1$dファイル · %2$s</item>
+    </plurals>
+    <string name="scrape_settings_clear_help">取得でダウンロードしたものを、1つの機種またはすべての機種について削除して容量を空けます。先に確認します。</string>
+    <string name="scrape_settings_wait">先に取得が終わるのを待ってください</string>
+    <string name="scrape_settings_nothing">まだ何もダウンロードしていません</string>
+
+    <string name="scrape_lb_already">もうダウンロード中です</string>
+    <string name="scrape_lb_none_of_yours">あなたの機種はLaunchBoxのデータベースにありません</string>
+    <string name="scrape_lb_download_title">LaunchBoxのデータベースをダウンロードしますか？</string>
+    <plurals name="scrape_lb_download_text">
+        <item quantity="other">約%1$d MBです。Tandemはあなたの%2$d機種の分だけ残して、この端末の中でゲームを調べます。</item>
+    </plurals>
+    <plurals name="scrape_lb_download_text_metered">
+        <item quantity="other">約%1$d MBで、今は従量制の接続です。Wi-Fiのほうがおすすめです。Tandemはあなたの%2$d機種の分だけ残して、この端末の中でゲームを調べます。</item>
+    </plurals>
+    <string name="scrape_lb_download">ダウンロード</string>
+    <string name="scrape_lb_downloading">LaunchBoxのデータベースをダウンロード中…</string>
+    <string name="scrape_lb_ready">LaunchBoxの準備ができました：%1$s本 ✨</string>
+    <string name="scrape_lb_failed">LaunchBoxのデータベースをダウンロードできませんでした。Wi-Fiでもう一度どうぞ</string>
+
+    <string name="scrape_guide_no_account">アカウント不要</string>
+    <string name="scrape_guide_lb_1">TandemがLaunchBoxの無料ゲームデータベースを一度だけダウンロードし（約%1$d MB、Wi-Fi推奨）、あなたの機種の分だけ残します。</string>
+    <string name="scrape_guide_lb_2">ゲームはこの端末の中で調べます。Wi-Fiで取得したときに、月に一度更新します。</string>
+    <string name="scrape_guide_lb_sends">ゲームについては何も送りません。画像はimages.launchbox-app.comから取得します。</string>
+    <string name="scrape_guide_ss_account">無料アカウント＋開発者ID</string>
+    <string name="scrape_guide_ss_1">screenscraper.frで無料アカウントを作ります。</string>
+    <string name="scrape_guide_ss_2">フォーラム（「Demande d\'accès à l\'API」）でAPIアクセスを申請して、開発者IDとパスワードをもらいます。Tandemに同梱することはできません。</string>
+    <string name="scrape_guide_ss_3">下に両方を入力します。自分のログインは任意ですが、1日の上限が増えます。</string>
+    <string name="scrape_guide_ss_sends">あなたのログイン、開発者ID、各ゲームのファイル名・サイズ・機種・チェックサム。</string>
+    <string name="scrape_guide_igdb_account">無料のTwitchアカウント</string>
+    <string name="scrape_guide_igdb_1">dev.twitch.tv/console/appsにログインします（Twitchが先に2段階認証を求めます）。</string>
+    <string name="scrape_guide_igdb_2">「Register Your Application」：名前は自由、リダイレクトURLはhttp://localhost、カテゴリは「Application Integration」、クライアントの種類は「Confidential」。</string>
+    <string name="scrape_guide_igdb_3">Client IDをコピーし、「New Secret」を押してClient Secretをコピーします。</string>
+    <string name="scrape_guide_igdb_sends">クライアントIDとシークレット（Twitchへ）、各ゲームのタイトル。</string>
+    <string name="scrape_guide_sgdb_account">無料アカウント</string>
+    <string name="scrape_guide_sgdb_1">steamgriddb.comにログインします（Steamアカウントで）。</string>
+    <string name="scrape_guide_sgdb_2">steamgriddb.com/profile/preferences/apiを開きます。</string>
+    <string name="scrape_guide_sgdb_3">APIキーを生成して、下に入力します。</string>
+    <string name="scrape_guide_sgdb_sends">APIキーと各ゲームのタイトル。</string>
+    <string name="scrape_guide_libretro_1">いつでも使えます。クラシック機種に強く、Switch、Wii U、PCのゲームはありません。</string>
+    <string name="scrape_guide_libretro_sends">各ゲームのファイル名かタイトルから作った画像名。</string>
+    <string name="scrape_guide_hltb_1">howlongtobeat.comのサイトと同じ検索を使います。公式のAPIではないので、サイトが変わると使えなくなることがあります。そのときは取得で飛ばすだけです。</string>
+    <string name="scrape_guide_hltb_2">時間は下画面に出ます。</string>
+    <string name="scrape_guide_hltb_sends">各ゲームのタイトル。</string>
+
+    <string name="scrape_status_testing">テスト中…</string>
+    <string name="scrape_status_downloading">ダウンロード中 %1$d%%</string>
+    <string name="scrape_status_off">オフ</string>
+    <string name="scrape_status_needs_key">キーが必要</string>
+    <string name="scrape_status_not_downloaded">未ダウンロード</string>
+    <string name="scrape_status_failed">✗ テスト失敗</string>
+    <string name="scrape_status_works">✓ OK</string>
+    <string name="scrape_status_ready">準備OK</string>
+    <string name="scrape_needs_none">アカウント不要</string>
+    <string name="scrape_needs_ss">アカウント＋開発者ID</string>
+    <string name="scrape_needs_igdb">無料のTwitchキー</string>
+    <string name="scrape_needs_key">無料のキー</string>
+    <string name="scrape_tagline_ss">ファイルそのものと照合：アート、動画、ゲーム情報</string>
+    <string name="scrape_tagline_lb">パッケージ、ロゴ、ファンアート、ゲーム情報を端末内に</string>
+    <string name="scrape_tagline_igdb">パッケージ、アートワーク、ゲーム情報。新しめのゲームに強い</string>
+    <string name="scrape_tagline_sgdb">コミュニティ製のパッケージ、キービジュアル、ロゴ。PCとSwitch向け</string>
+    <string name="scrape_tagline_libretro">クラシック機種の実物パッケージとタイトル画面</string>
+    <string name="scrape_tagline_hltb">クリアまでの時間：メイン、やりこみ、100%</string>
+
+    <string name="scrape_setup_title">アートワークと情報の設定</string>
+    <string name="scrape_setup_intro">取得は左から順に、足りない分だけを聞いていきます。LaunchBoxとlibretroはアカウント不要です。</string>
+    <string name="scrape_setup_hint_set_up">設定</string>
+    <string name="scrape_setup_hint_order">先に／後に聞く</string>
+    <string name="scrape_setup_hint_done">完了</string>
+
+    <string name="scrape_key_dev_id">開発者ID</string>
+    <string name="scrape_key_dev_id_ask">ScreenScraperの開発者ID</string>
+    <string name="scrape_key_dev_pw">開発者パスワード</string>
+    <string name="scrape_key_dev_pw_ask">ScreenScraperの開発者パスワード</string>
+    <string name="scrape_key_login">あなたのログイン</string>
+    <string name="scrape_key_login_ask">ScreenScraperのユーザー名（任意）</string>
+    <string name="scrape_key_pw">あなたのパスワード</string>
+    <string name="scrape_key_pw_ask">ScreenScraperのパスワード</string>
+    <string name="scrape_key_client_id">クライアントID</string>
+    <string name="scrape_key_client_id_ask">TwitchのClient ID（dev.twitch.tv/console/apps）</string>
+    <string name="scrape_key_secret">クライアントシークレット</string>
+    <string name="scrape_key_secret_ask">TwitchのClient Secret</string>
+    <string name="scrape_key_api">APIキー</string>
+    <string name="scrape_key_api_ask">SteamGridDBのAPIキー（steamgriddb.com › Preferences › API）</string>
+    <string name="scrape_key_optional">任意</string>
+    <string name="scrape_key_not_set">未設定</string>
+    <string name="scrape_key_saved">保存済み ✓</string>
+    <string name="scrape_card_turn_off">オフにする</string>
+    <string name="scrape_card_turn_on">オンにする</string>
+    <string name="scrape_card_download">ダウンロード（%1$d MB）</string>
+    <string name="scrape_card_download_again">もう一度ダウンロード</string>
+    <string name="scrape_card_test">テスト</string>
+    <string name="scrape_card_gives">手に入るもの</string>
+    <string name="scrape_card_gives_text">%1$s。</string>
+    <string name="scrape_card_sends">送るもの</string>
+    <string name="scrape_card_on_device">この端末に</string>
+    <string name="scrape_card_downloading">ダウンロード中… %1$d%%</string>
+    <string name="scrape_card_not_downloaded">まだダウンロードしていません。</string>
+    <plurals name="scrape_card_lb_info">
+        <item quantity="other">%2$d機種のゲーム%1$s本（%3$s時点）。</item>
+    </plurals>
+
+    <string name="scrape_note_stopped_early">問題が起きたので、途中で止めました</string>
+    <string name="scrape_now_ss_sign_in">ScreenScraperにログイン中…</string>
+    <string name="scrape_note_ss_unavailable">ScreenScraperは利用できません</string>
+    <string name="scrape_note_ss_unreachable">ScreenScraperにつながらないので、ほかの取得元を使います</string>
+    <string name="scrape_now_igdb_sign_in">IGDBにログイン中…</string>
+    <string name="scrape_note_igdb_unavailable">IGDBは利用できません</string>
+    <string name="scrape_note_igdb_unreachable">IGDBにつながらないので、ほかの取得元を使います</string>
+    <string name="scrape_note_details_need">ゲーム情報にはLaunchBox、ScreenScraper、IGDBのどれかをオンにする必要があります</string>
+    <string name="scrape_now_lb_downloading">LaunchBoxのデータベースをダウンロード中…</string>
+    <string name="scrape_now_lb_refreshing">LaunchBoxのデータベースを更新中…</string>
+    <string name="scrape_now_lb_progress">LaunchBoxデータベース：%1$d%%</string>
+    <string name="scrape_note_lb_offline">インターネットにつながっていません。LaunchBoxのデータベースをダウンロードするにはWi-Fiにつないでください</string>
+    <string name="scrape_note_lb_failed">LaunchBoxのデータベースをダウンロードできませんでした</string>
+    <string name="scrape_note_lb_refresh_failed">LaunchBoxのデータベースを更新できなかったので、手元のものを使います</string>
+    <string name="scrape_note_lb_needs">LaunchBoxにはデータベースが必要です：設定 › ライブラリとアート › 取得元の設定 › LaunchBox</string>
+    <string name="scrape_note_lb_missing_systems">LaunchBoxのダウンロードにまだ入っていない機種があります。もう一度ダウンロードすると追加されます</string>
+    <string name="scrape_now_lb_looking">LaunchBoxでゲームを調べています…</string>
+    <string name="scrape_note_lb_unreadable">LaunchBoxのデータベースを読めませんでした</string>
+    <string name="scrape_note_igdb_short">IGDBにつながりませんでした</string>
+    <string name="scrape_note_ss_short">ScreenScraperにつながりませんでした</string>
+    <string name="scrape_note_sgdb_short">SteamGridDBにつながりませんでした</string>
+
+    <string name="scrape_down_twitch_pass">TwitchがIGDBの通行証を出してくれませんでした</string>
+    <string name="scrape_down_twitch_keys">TwitchがIGDBのクライアントIDかシークレットを受け付けませんでした</string>
+    <string name="scrape_down_igdb_refused">IGDBがリクエストを断りました。クライアントIDとシークレットを確認してください</string>
+    <string name="scrape_down_hltb_slow">HowLongToBeatにペースを落とすよう言われたので、今は飛ばします</string>
+    <string name="scrape_down_hltb_changed">HowLongToBeatの検索のしくみが変わったので、飛ばしました</string>
+    <string name="scrape_down_ss_login">ScreenScraperがログインを受け付けませんでした</string>
+    <string name="scrape_down_ss_quota">ScreenScraperのアカウントの1日の上限に達しました</string>
+    <string name="scrape_down_ss_unknown">ScreenScraperが検索を一時停止しました：今日は不明なゲームが多すぎます</string>
+    <string name="scrape_down_ss_closed">ScreenScraperは今、閉鎖中か混雑しています</string>
+    <string name="scrape_down_ss_dev">ScreenScraperが開発者IDかログインを受け付けませんでした</string>
+    <string name="scrape_down_ss_version">ScreenScraperがこのアプリのバージョンをブロックしました</string>
+    <string name="scrape_down_sgdb_key">SteamGridDBがAPIキーを受け付けませんでした</string>
+
+    <string name="scrape_test_said_no">断られました</string>
+    <string name="scrape_test_timeout">時間内に応答がありません。Wi-Fiを確認してもう一度どうぞ</string>
+    <string name="scrape_test_http">エラーが返ってきました（%1$d）</string>
+    <string name="scrape_test_unreachable">つながりませんでした。Wi-Fiを確認してもう一度どうぞ</string>
+    <string name="scrape_test_lb_not_downloaded">まだダウンロードしていません：「ダウンロード」を押してください</string>
+    <string name="scrape_test_lb_no_systems">ダウンロードにあなたの機種が入っていません。もう一度ダウンロードしてください</string>
+    <string name="scrape_test_lb_not_found">ダウンロードの中に「%1$s」が見つかりませんでした</string>
+    <plurals name="scrape_test_lb_found">
+        <item quantity="other">「%1$s」（%2$s）を画像%3$d枚つきで発見（この端末内）</item>
+    </plurals>
+    <plurals name="scrape_test_lb_games">
+        <item quantity="other">あなたの機種のゲーム%1$s本（この端末内）</item>
+    </plurals>
+    <string name="scrape_test_ss_needs">開発者IDと開発者パスワードが必要です</string>
+    <string name="scrape_test_nothing_signed_in">ログインはできましたが、検索では何も見つかりませんでした</string>
+    <string name="scrape_test_found">「%1$s」を発見</string>
+    <string name="scrape_test_found_as">「%1$s」を発見、%2$sとしてログイン中</string>
+    <string name="scrape_test_igdb_needs">TwitchのクライアントIDとクライアントシークレットが必要です</string>
+    <plurals name="scrape_test_igdb_found">
+        <item quantity="other">「%1$s」を画像%2$d枚つきで発見</item>
+    </plurals>
+    <plurals name="scrape_test_igdb_found_year">
+        <item quantity="other">「%1$s」（%2$s）を画像%3$d枚つきで発見</item>
+    </plurals>
+    <string name="scrape_test_sgdb_needs">APIキーが必要です</string>
+    <string name="scrape_test_sgdb_nothing">キーは使えますが、検索では何も見つかりませんでした</string>
+    <plurals name="scrape_test_sgdb_found">
+        <item quantity="other">「%1$s」をキービジュアル%2$d枚つきで発見</item>
+    </plurals>
+    <string name="scrape_test_libretro_found">Super Mario Worldのパッケージを発見</string>
+    <string name="scrape_test_libretro_failed">サムネイルの一覧を読めませんでした</string>
+    <string name="scrape_test_nothing">検索では何も見つかりませんでした</string>
+    <string name="scrape_test_hltb_found">%1$s：メイン%2$s、100%%で%3$s</string>
+</resources>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Controls: controllers, button prompts, the clock, button bindings, the Deck and playing with a controller.
+     Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="controls_group_home_button">コントローラーのHOMEボタン</string>
+    <string name="controls_group_controllers">ゲームコントローラー</string>
+    <string name="controls_group_pad_link">コントローラーで遊ぶ</string>
+
+    <string name="controls_home_button">コントローラーのHOMEボタン</string>
+    <string name="controls_home_button_help">X-inputモードのコントローラーの多くは、HOME（ガイド）ボタンをAndroidが無視するボタンとして送ってきます。Tandemの中ではいつでもHomeとして働きます。ゲームやほかのアプリでも使うには、Androidのユーザー補助設定で「Tandem: Controller Home button」をオンにしてください（Aで開きます。グレーで選べないときは、先にTandemのアプリ情報で制限付き設定を許可してください）。Tandemが見るのは外部コントローラーのそのボタンだけで、本体の操作には一切さわりません。</string>
+    <string name="controls_open">開く</string>
+    <string name="controls_hold_home">HOMEボタン長押し</string>
+    <string name="controls_hold_home_help">コントローラーのHOMEボタンを長押ししたときの動作：Tandemのゲーム切り替え、またはAndroidの最近のアプリ（「コントローラーのHOMEボタン」をオンにする必要があります。オフならゲーム切り替え）。</string>
+    <string name="controls_hold_home_switcher">ゲーム切り替え</string>
+    <string name="controls_hold_home_recents">最近のアプリ</string>
+
+    <string name="controls_pad_nintendo_help">Nintendo配置のボタン表記：このコントローラーだけA/BとX/Yを入れ替え、Aと印字されたボタンで決定できるようにします。X-inputモードのSwitch風コントローラー向けです。Tandemの中で働き、本体の操作やほかのコントローラーには影響しません。上の「AとBを入れ替え」もこれに重ねて効きます。エミュレーターにはそれぞれ、コントローラーごとのボタン設定があります。</string>
+    <string name="controls_pad_unnamed">コントローラー</string>
+    <string name="controls_pad_numbered">%1$s %2$d</string>
+    <string name="controls_no_pads">ほかのコントローラーはありません</string>
+    <string name="controls_no_pads_value">接続してください</string>
+    <string name="controls_no_pads_help">Bluetoothコントローラーをペアリングするか、つなぐとここに出てきます。それぞれにNintendo配置のスイッチがつきます（そのコントローラーだけA/BとX/Yを入れ替え）。本体の操作は上の「AとBを入れ替え」に従います。</string>
+    <string name="controls_no_pads_toast">コントローラーをペアリングするかつなぐと、ここに出てきます</string>
+    <string name="controls_pads_note">オン：Nintendo表記</string>
+
+    <string name="controls_link">ゲームで使うコントローラー</string>
+    <string name="controls_link_unavailable">使用不可</string>
+    <string name="controls_link_help">どのコントローラーを本体の代わりに使うか。どのエミュレーターでも、ゲームの途中でも切り替えられます。ゲームは本体の操作を聞き続け、Tandemが選んだコントローラーのボタンとスティックをそこへ流しこみます。本体の操作もそのまま使えます（クイック設定でも選べます）。ゲーム中にコントローラーをつなぐと下画面に案内が出るので、そのコントローラーのAかStartを押してください。接続が切れると本体の操作に戻ります。</string>
+    <string name="controls_link_builtin">本体</string>
+    <string name="controls_link_auto">接続したコントローラーを常に使う</string>
+    <string name="controls_link_auto_help">接続したコントローラーをいつも使います。つないだ瞬間に、確認なしで本体の代わりになります。2人で遊ぶならオフのままに。コントローラーは別のコントローラーのままなので、エミュレーターで2Pとして設定してください。</string>
+    <string name="controls_link_in_use">使用中：%1$s</string>
+
+    <string name="controls_binding_hold">%1$s長押し</string>
+    <string name="controls_binding_none">ボタンなし</string>
+    <string name="controls_binding_none_value">ボタンなし</string>
+
+    <string name="controls_clock_system">システムに合わせる</string>
+    <string name="controls_clock_12">12時間</string>
+    <string name="controls_clock_24">24時間</string>
+    <string name="controls_clock_off">非表示</string>
+
+    <string name="controls_command_open">開く／決定</string>
+    <string name="controls_command_open_help">選択中のものを開くか、ゲームを遊びます。ボタンや項目ではA。</string>
+    <string name="controls_command_back">戻る</string>
+    <string name="controls_command_back_help">前に戻るか、メニューやパネルを閉じます。</string>
+    <string name="controls_command_options">ゲームのオプション</string>
+    <string name="controls_command_options_help">選択中のゲーム、機種、フォルダ、アプリのオプションメニュー。タッチ画面では長押し。</string>
+    <string name="controls_command_action">画面入れ替え／検索</string>
+    <string name="controls_command_action_help">「Xボタン」の設定に従って、検索するか、アイコングリッドで2つの画面を入れ替えます。キーボードでは1文字削除します。</string>
+    <string name="controls_command_start">Startメニュー</string>
+    <string name="controls_command_start_help">Startパネル。設定の中では設定を閉じ、入力フォームでは決定します。</string>
+    <string name="controls_command_quick">クイック設定</string>
+    <string name="controls_command_quick_help">明るさ、音量、Wi-Fi、バッテリーセーバーなどのクイックタイル。</string>
+    <string name="controls_command_switcher">起動中のゲーム</string>
+    <string name="controls_command_switcher_help">開いているゲームをすべて表示して、再開や終了ができます。</string>
+    <string name="controls_command_switcher_chord">起動中のゲーム（同時押し）</string>
+    <string name="controls_command_switcher_chord_help">同時押しでもゲーム切り替えを開きます。変えなければSelectとStartです。</string>
+    <string name="controls_command_surprise">おまかせ</string>
+    <string name="controls_command_surprise_help">まだ遊んだことのないゲームにランダムでジャンプします。メッセージでは「元に戻す」、アプリではSelectとしても働きます。</string>
+    <string name="controls_command_hidden">非表示のゲーム</string>
+    <string name="controls_command_hidden_help">プライベートモードがオフなら、すぐにオンにします。オンなら、PINのあとで非表示のゲームを出すか、こっそりしまいます。</string>
+    <string name="controls_command_previous">前のタブ／ページ</string>
+    <string name="controls_command_previous_help">前の機種、コレクション、設定ページ、記録のタブ。グリッドではアイコンを大きくします。</string>
+    <string name="controls_command_next">次のタブ／ページ</string>
+    <string name="controls_command_next_help">次の機種、コレクション、設定ページ、記録のタブ。グリッドではアイコンを小さくします。</string>
+    <string name="controls_command_page_up">前のページ</string>
+    <string name="controls_command_page_up_help">ゲームのリストでは前の頭文字（または年、評価）、ほかでは1ページ上へ。グリッドでは最近遊んだゲームのバー。</string>
+    <string name="controls_command_page_down">次のページ</string>
+    <string name="controls_command_page_down_help">ゲームのリストでは次の頭文字（または年、評価）、ほかでは1ページ下へ。</string>
+    <string name="controls_command_side_panel">サイドパネル</string>
+    <string name="controls_command_side_panel_help">ホーム画面で：ピップ、クイック設定、通知。変えなければ「次のページ」と同じボタンです。</string>
+    <string name="controls_command_favourite">お気に入り</string>
+    <string name="controls_command_favourite_help">選択中のゲームをお気に入りに追加、またはお気に入りから外します。ボタンを割り当てるまではボタンなしです。</string>
+    <string name="controls_command_screenshot">スクリーンショット</string>
+    <string name="controls_command_screenshot_help">もう一方の画面で遊んでいるゲームのスクリーンショットをROMs/screenshotsに保存します。おとも画面の「スクショ」と同じです。Tandemが前面にあるときに使えます。</string>
+    <string name="controls_command_clip">クリップ</string>
+    <string name="controls_command_clip_help">もう一方の画面で遊んでいるゲームを15秒のクリップにするか、録画中のクリップを止めます。おとも画面の「クリップ」と同じです。Tandemが前面にあるときに使えます。</string>
+    <string name="controls_command_home">コントローラーのHOME</string>
+    <string name="controls_command_home_help">Tandemの中でのコントローラーのHOME（ガイド）ボタン：押すとHome、長押しは「HOMEボタン長押し」の設定どおりに動きます。</string>
+
+    <string name="controls_refused_hold_chord">長押しは1つのボタンだけです</string>
+    <string name="controls_refused_single">「%1$s」には1つのボタンが必要です。同時押しや長押しは使えません</string>
+    <string name="controls_refused_part_of">%1$sは「%2$s」（%3$s）の一部です</string>
+    <string name="controls_refused_is_pass">%1$sは「%2$s」なので、同時押しや長押しには使えません</string>
+    <string name="controls_refused_overlaps">%1$sは「%2$s」（%3$s）と重なります</string>
+    <string name="controls_refused_essential">「%1$s」にはいつもボタンが必要です</string>
+    <string name="controls_refused_essential_swap">%1$sは「%2$s」で、これにはいつもボタンが必要です。先に「%2$s」に別のボタンを割り当ててください</string>
+    <string name="controls_refused_exchange">「%1$s」は代わりに%2$sを受け取れません：%3$s</string>
+
+    <string name="controls_rebind_title">ボタン割り当て</string>
+    <plurals name="controls_rebind_changes">
+        <item quantity="other">%1$d個変更</item>
+    </plurals>
+    <string name="controls_rebind_reset_all">すべてリセット</string>
+    <string name="controls_rebind_reset_all_help">すべての操作を最初のボタンに戻します。</string>
+    <string name="controls_rebind_reset_all_detail">「AとBを入れ替え」「XとYを入れ替え」も含めて、すべての操作が最初のボタンに戻ります。「元に戻す」で今のボタンに戻せます。</string>
+    <string name="controls_rebind_reset">リセット</string>
+    <string name="controls_rebind_rebind">割り当て</string>
+    <string name="controls_rebind_none_hint">ボタンなし</string>
+    <string name="controls_rebind_already_default">すべてのボタンはもうデフォルトです</string>
+    <string name="controls_rebind_reset_done">すべてのボタンをデフォルトに戻しました</string>
+    <string name="controls_rebind_commands">操作</string>
+    <string name="controls_rebind_changed">変更済み</string>
+    <string name="controls_rebind_default">デフォルト：%1$s</string>
+    <string name="controls_rebind_set">%1$s：%2$s</string>
+    <string name="controls_rebind_set_none">%1$s：ボタンなし</string>
+    <string name="controls_rebind_set_swapped">%1$s：%2$s（入れ替え）</string>
+    <string name="controls_rebind_same">「%1$s」はもうそのボタンです</string>
+    <string name="controls_rebind_nothing_pressed">何も押されなかったので、「%1$s」はそのままです</string>
+    <string name="controls_rebind_listen_title">「%1$s」を割り当て</string>
+    <string name="controls_rebind_listen_how">新しいボタンを押してください。いくつか同時に押すと同時押し、1つを押し続けると長押しになります。</string>
+    <string name="controls_rebind_waiting">待っています…</string>
+    <string name="controls_rebind_seconds">%1$d秒</string>
+    <string name="controls_rebind_cancel">キャンセル</string>
+    <string name="controls_rebind_and">「%1$s」と「%2$s」</string>
+    <string name="controls_rebind_swap_title">%1$sと入れ替えますか？</string>
+    <string name="controls_rebind_swap_moves">%1$sは%2$sに割り当て済みです。入れ替えると、「%3$s」がそれを使い、%2$sは%4$sに移ります。</string>
+    <string name="controls_rebind_swap_none">%1$sは%2$sに割り当て済みです。入れ替えると、「%3$s」がそれを使い、%2$sはボタンなしになります。</string>
+    <string name="controls_rebind_swap">入れ替える</string>
+
+    <string name="controls_deck">デッキ</string>
+    <string name="controls_deck_game_art">ゲームのアート</string>
+    <string name="controls_deck_companion">おとも</string>
+    <string name="controls_deck_game_below">デッキは上画面のゲームに入力します。このゲームは下画面で動いているので、ここでできることはありません。</string>
+    <string name="controls_deck_sticky">Shift、Ctrl、Altはタップで次のキーに効き、長押しで固定</string>
+    <string name="controls_deck_layout_full">フルキーボード</string>
+    <string name="controls_deck_layout_game">ゲーム用キー</string>
+    <string name="controls_deck_direct">ダイレクト</string>
+    <string name="controls_deck_shell">シェル</string>
+    <string name="controls_deck_no_shizuku">Shizukuが必要</string>
+    <string name="controls_deck_connecting">接続中…</string>
+    <string name="controls_deck_direct_said">キーとポインターは、Androidの入力サービスへ数ミリ秒で直接届きます</string>
+    <string name="controls_deck_shell_said">AndroidがTandemに入力サービスを使わせてくれなかったので、キーごとに入力コマンドを実行しています。少し時間がかかり、クリックはトラックパッドのカーソルの位置に届きます</string>
+    <string name="controls_deck_no_shizuku_said">Shizukuを起動してTandemを許可してから、もう一度デッキを開いてください</string>
+    <string name="controls_deck_connecting_said">Shizukuに確認しています…</string>
+    <string name="controls_deck_trackpad_hint">ドラッグで移動 · タップでクリック · 2本指で右クリックやスクロール</string>
+    <string name="controls_deck_sensitivity">トラックパッドの感度</string>
+    <string name="controls_deck_sensitivity_help">デッキのトラックパッドで指を動かしたとき、ゲームのポインターがどれだけ動くか。素早くなぞると、ゆっくり丁寧に動かすより遠くまで動きます。</string>
+    <string name="controls_deck_default_layout">最初のレイアウト</string>
+    <string name="controls_deck_default_layout_help">デッキを開いたときのキーボード：フルキーボード、またはWASDとマウスボタンのコンパクトなもの。デッキのチップでいつでも切り替えられます。</string>
+    <string name="controls_deck_sounds">キーの音</string>
+    <string name="controls_deck_sounds_help">デッキのキーやタップごとに、やわらかいクリック音を鳴らします。</string>
+    <string name="controls_deck_haptics">キーの振動</string>
+    <string name="controls_deck_haptics_help">デッキのキーやタップごとに、小さくブルッと振動します。</string>
+
+    <string name="controls_padlink_offer">%1$sで遊びますか？</string>
+    <string name="controls_padlink_offer_how">そのコントローラーのAかStartを押してください。このゲームで本体の操作の代わりになります。</string>
+    <string name="controls_padlink_accept">これで遊ぶ</string>
+    <string name="controls_padlink_decline">あとで</string>
+    <string name="controls_padlink_offer_toast">%1$sで遊ぶには、そのAかStartを押してください</string>
+    <string name="controls_padlink_no_pads">先にコントローラーをつないでください</string>
+    <string name="controls_padlink_no_helper">このTandemのビルドにはコントローラーのヘルパーが入っていません。</string>
+    <string name="controls_padlink_no_builtin">この端末には、代わりをする本体のコントローラーがありません。</string>
+    <string name="controls_padlink_needs_shizuku">Shizukuかrootが必要です。ゲームは本体のコントローラーしか読まず、そこに入力を送れるのはこの2つだけです。</string>
+    <string name="controls_padlink_builtin">本体の操作に戻しました</string>
+    <string name="controls_padlink_playing">%1$sで遊んでいます</string>
+    <string name="controls_padlink_failed">%1$sを使えませんでした</string>
+    <string name="controls_padlink_failed_unknown">コントローラーを使えませんでした</string>
+</resources>

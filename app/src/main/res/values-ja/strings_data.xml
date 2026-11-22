@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What Tandem keeps: backups, statuses, sort orders. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="data_logo_auto">自動</string>
+    <string name="data_logo_left">左</string>
+    <string name="data_logo_centre">中央</string>
+    <string name="data_logo_right">右</string>
+    <string name="data_logo_top">上</string>
+    <string name="data_logo_bottom">下</string>
+
+    <string name="data_status_backlog">積みゲー</string>
+    <string name="data_status_backlog_blurb">いつか遊ぶ</string>
+    <string name="data_status_playing">プレイ中</string>
+    <string name="data_status_playing_blurb">今遊んでいる</string>
+    <string name="data_status_finished">クリア済み</string>
+    <string name="data_status_finished_blurb">エンディングを見た</string>
+    <string name="data_status_completed">コンプリート</string>
+    <string name="data_status_completed_blurb">やりこみ完了、100%</string>
+    <string name="data_status_shelved">中断中</string>
+    <string name="data_status_shelved_blurb">ひとまずお休み</string>
+    <string name="data_status_endless">エンドレス</string>
+    <string name="data_status_endless_blurb">終わりなし：楽しむために遊ぶ</string>
+
+    <string name="data_sort_name">名前順</string>
+    <string name="data_sort_recent">最近遊んだ順</string>
+    <string name="data_sort_most">よく遊ぶ順</string>
+    <string name="data_sort_year">発売年順</string>
+    <string name="data_sort_rating">評価順</string>
+    <string name="data_sort_added">追加した順</string>
+
+    <string name="data_time_minutes">%1$d分</string>
+    <string name="data_time_hours">%1$s時間</string>
+
+    <string name="data_screen_auto">自動</string>
+    <string name="data_screen_top">上画面</string>
+    <string name="data_screen_bottom">下画面</string>
+
+    <string name="data_backup_games">ゲームのデータ</string>
+    <string name="data_backup_games_blurb">お気に入り、ゲーム情報、プレイ時間、プレイ履歴、日記、非表示のフォルダ</string>
+    <string name="data_backup_look">見た目</string>
+    <string name="data_backup_look_blurb">テーマ、色、壁紙、サウンド、動き</string>
+    <string name="data_backup_layout">レイアウトとフォルダ</string>
+    <string name="data_backup_layout_blurb">アイコングリッド、フォルダ、ドック、ウィジェット</string>
+    <string name="data_backup_systems">機種とエミュレーター</string>
+    <string name="data_backup_systems_blurb">エミュレーターの選択、機種のフォルダ、コントローラー、情報取得の設定</string>
+    <string name="data_backup_restored">%1$sを復元しました</string>
+    <string name="data_backup_failed">%1$sは失敗：%2$s</string>
+    <string name="data_backup_missing">%1$sはこのバックアップにありません</string>
+    <string name="data_backup_nothing">復元するものはありません</string>
+    <string name="data_backup_cant_write_to">%1$sに書きこめませんでした</string>
+    <string name="data_backup_cant_finish">バックアップを完了できませんでした</string>
+    <string name="data_backup_cant_read">%1$sを読めませんでした</string>
+    <string name="data_backup_cant_restore">復元できませんでした</string>
+    <string name="data_backup_cant_write">%1$sを書きこめませんでした</string>
+    <plurals name="data_backup_count_games">
+        <item quantity="other">ゲーム%1$s本</item>
+    </plurals>
+    <plurals name="data_backup_count_tiles">
+        <item quantity="other">タイル%1$s個</item>
+    </plurals>
+    <plurals name="data_backup_count_folders">
+        <item quantity="other">フォルダ%1$s個</item>
+    </plurals>
+    <plurals name="data_backup_count_widgets">
+        <item quantity="other">ウィジェット%1$s個</item>
+    </plurals>
+    <string name="data_backup_pick_one">バックアップするものを1つ以上選んでください</string>
+    <string name="data_backup_backing_up">バックアップ中…</string>
+    <string name="data_backup_backed_up">ROMs/tandem/backup/%1$sにバックアップしました</string>
+    <string name="data_backup_pick_restore">復元するものを1つ以上選んでください</string>
+    <string name="data_backup_restore_ask">%1$sを復元しますか？</string>
+    <string name="data_backup_restore_text">この項目の今の内容は置き換わります。先に、今の状態を自動でバックアップしておきます。</string>
+    <string name="data_backup_restore">復元</string>
+    <string name="data_backup_restoring">復元中…</string>
+    <string name="data_backup_reason_restoring">復元</string>
+    <string name="data_backup_delete_ask">このバックアップを削除しますか？</string>
+    <string name="data_backup_delete_text">%1$s · %2$s。元に戻せません。</string>
+    <string name="data_backup_delete">削除</string>
+    <string name="data_backup_deleted">バックアップを削除しました</string>
+    <string name="data_backup_delete_failed">バックアップを削除できませんでした</string>
+    <string name="data_backup_older_title">古いバックアップ</string>
+    <string name="data_backup_older">古い形式</string>
+    <string name="data_backup_automatic">自動</string>
+    <string name="data_backup_manual">手動</string>
+    <string name="data_backup_before">%1$sの前</string>
+    <string name="data_backup_back_up">バックアップ</string>
+    <string name="data_backup_back_up_detail">この端末のROMs/tandem/backupに新しいバックアップを作ります。古いものも残ります。</string>
+    <string name="data_backup_keys">アカウントのキーとログイン</string>
+    <string name="data_backup_keys_detail">情報取得、RetroAchievements、Steam。バックアップのフォルダはほかのアプリからも読めます。</string>
+    <string name="data_backup_cancel">キャンセル</string>
+    <string name="data_backup_restore_detail">バックアップを選んでから、戻す内容を選んでください。</string>
+    <string name="data_backup_looking">ROMs/tandem/backupを確認しています…</string>
+    <string name="data_backup_none">バックアップはまだありません</string>
+    <string name="data_backup_none_detail">「バックアップ」でROMs/tandem/backupに保存できます。</string>
+    <string name="data_backup_now">今すぐバックアップ</string>
+    <string name="data_backup_put_back">このバックアップから戻す</string>
+    <string name="data_backup_keep_here">今の内容のまま</string>
+    <string name="data_backup_not_in">このバックアップにはありません</string>
+    <string name="data_backup_has_keys">アカウントのキーも入っています。</string>
+    <string name="data_backup_no_keys">この端末のアカウントのキーはそのままです。</string>
+    <string name="data_backup_just_now">たった今</string>
+    <string name="data_backup_minute_ago">1分前</string>
+    <plurals name="data_backup_minutes_ago">
+        <item quantity="other">%1$d分前</item>
+    </plurals>
+    <string name="data_backup_hour_ago">1時間前</string>
+    <plurals name="data_backup_hours_ago">
+        <item quantity="other">%1$d時間前</item>
+    </plurals>
+    <string name="data_backup_yesterday">昨日</string>
+    <plurals name="data_backup_days_ago">
+        <item quantity="other">%1$d日前</item>
+    </plurals>
+</resources>

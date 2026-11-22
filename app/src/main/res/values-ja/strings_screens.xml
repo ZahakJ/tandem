@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The two screens: the bottom screen, the companion (おとも画面), the second home. Japanese.
+     See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="screens_companion_art">ゲームのアート</string>
+    <string name="screens_companion_tandem">おとも画面</string>
+    <string name="screens_companion_dark">画面オフ</string>
+    <string name="screens_companion_off">エミュレーターまかせ</string>
+    <string name="screens_companion_deck">デッキ：キーボードとトラックパッド</string>
+    <string name="screens_off_group">画面オフ</string>
+    <string name="screens_off_while_playing">プレイ中の下画面</string>
+    <string name="screens_off_while_playing_help">上画面でゲームを遊んでいる間、下画面に何を映すか：ゲームのアート、Tandemのおとも画面、画面オフ（タップするまで真っ黒で止まったまま。この画面でいちばん電池が長持ちします）、または自分で下画面に描くエミュレーター向けに何もしない。3DSとDSのエミュレーターは、この設定にかかわらず自分の画面を使います。機種やゲームでYを押すと、それだけ個別に選べます。</string>
+    <string name="screens_off_after">オフまでの時間</string>
+    <string name="screens_off_after_help">ゲーム中、下画面に何分さわらないと暗くなるか（何を映していても、タップするまで）。「しない」なら、暗めのアートやおとも画面がゲーム中ずっと表示されたままです。画面オフのときは、タップで画面が点いている時間にもなります。</string>
+    <string name="screens_off_never">しない</string>
+    <plurals name="screens_off_after_minutes">
+        <item quantity="other">%1$d分後</item>
+    </plurals>
+    <string name="screens_running">● 起動中</string>
+    <string name="screens_ttb_complete">100%%まで%1$s</string>
+    <string name="screens_ttb_chip">⏱ %1$s</string>
+    <string name="screens_favorite">♥ お気に入り</string>
+    <string name="screens_hint_resume">再開</string>
+    <string name="screens_hint_play">遊ぶ</string>
+    <string name="screens_hint_options">オプション</string>
+    <string name="screens_hint_more">その他</string>
+    <string name="screens_hint_search">検索</string>
+    <string name="screens_hint_open">開く</string>
+    <string name="screens_switch_systems">機種</string>
+    <string name="screens_switch_genres">ジャンル</string>
+    <string name="screens_switch_lists">リスト</string>
+    <string name="screens_switch_groups">グループ</string>
+    <string name="screens_switch_rows">列</string>
+    <string name="screens_fact_times_played">プレイ回数</string>
+    <string name="screens_fact_not_yet">まだ</string>
+    <string name="screens_fact_play_time">プレイ時間</string>
+    <string name="screens_fact_time_to_beat">クリアまでの目安</string>
+    <string name="screens_ttb_main">メイン%1$s</string>
+    <string name="screens_ttb_extras">やりこみ%1$s</string>
+    <string name="screens_ttb_100">100%%：%1$s</string>
+    <string name="screens_fact_last_played">最後に遊んだ日</string>
+    <string name="screens_fact_added">追加日</string>
+    <string name="screens_fact_folder">フォルダ</string>
+    <string name="screens_fact_file">ファイル</string>
+    <string name="screens_players_one">1人用</string>
+    <string name="screens_players">%1$s人用</string>
+    <string name="screens_just_now">たった今</string>
+    <string name="screens_not_played">まだ遊んでいません。新しい冒険が待っています！</string>
+    <string name="screens_played_time">プレイ時間：%1$s</string>
+    <plurals name="screens_played_times">
+        <item quantity="other">%1$d回プレイ</item>
+    </plurals>
+    <string name="screens_played">プレイ済み</string>
+    <string name="screens_played_when">%1$s · %2$s</string>
+    <string name="screens_played_in_here">ここで%1$sプレイ</string>
+    <plurals name="screens_games">
+        <item quantity="other">%1$d本</item>
+    </plurals>
+    <string name="screens_good_morning">おはようございます！</string>
+    <string name="screens_good_afternoon">こんにちは！</string>
+    <string name="screens_good_evening">こんばんは！</string>
+    <string name="screens_up_late">夜ふかし？ぼくもです。</string>
+    <string name="screens_no_games">ゲームを探しましょう</string>
+    <plurals name="screens_games_ready">
+        <item quantity="other">%1$d本のゲームが遊べます</item>
+    </plurals>
+    <string name="screens_comp_just_started">始めたばかり</string>
+    <string name="screens_comp_playing">プレイ中：%1$s</string>
+    <string name="screens_comp_in_total">合計%1$s</string>
+    <string name="screens_comp_first_time">はじめてのプレイ</string>
+    <string name="screens_comp_back">Tandemに戻る</string>
+    <string name="screens_comp_screenshot">スクショ</string>
+    <string name="screens_comp_notes">メモ</string>
+    <string name="screens_comp_companion">おとも</string>
+    <string name="screens_comp_game_screen">ゲーム画面</string>
+    <string name="screens_comp_manual">説明書</string>
+    <string name="screens_comp_clip">クリップ</string>
+    <string name="screens_comp_stop_clip">録画停止 · %1$d秒</string>
+    <plurals name="screens_comp_legendary">
+        <item quantity="other">%1$d時間！伝説のプレイです</item>
+    </plurals>
+    <plurals name="screens_comp_stretch">
+        <item quantity="other">%1$d時間経過。お水を飲んで、ストレッチでもどうですか？</item>
+    </plurals>
+    <string name="screens_comp_hour">もう1時間！楽しんでますか？</string>
+    <string name="screens_comp_half_hour">30分経過。いい調子です！</string>
+    <string name="screens_comp_charging">充電中%1$d%%</string>
+    <string name="screens_comp_game_art">ゲームのアート</string>
+    <string name="screens_comp_tap_to_close">タップで閉じる</string>
+    <string name="screens_comp_close_game">ゲームを終了</string>
+    <string name="screens_comp_light">明るさ</string>
+    <string name="screens_comp_volume">音量</string>
+    <string name="screens_comp_wifi_on">Wi-Fi オン</string>
+    <string name="screens_comp_wifi_off">Wi-Fi オフ</string>
+    <string name="screens_home_android_apps">Androidアプリ</string>
+    <string name="screens_home_open_on_top">上画面で開く</string>
+    <string name="screens_home_home_brings_back">HomeでTandemに戻ります</string>
+    <string name="screens_home_moving">移動中…</string>
+    <string name="screens_home_move_here">「%1$s」をここへ移動</string>
+    <string name="screens_swap_single">1画面モードなので、入れ替える画面がありません</string>
+    <string name="screens_swap_no_second">入れ替える2つ目の画面がありません</string>
+    <string name="screens_swap_busy">下画面が今いそがしいようです。少ししてからもう一度どうぞ</string>
+    <string name="screens_swap_failed">下画面が操作を受け取れなかったので、画面はそのままです</string>
+    <string name="screens_status_cleared">ステータスを消しました</string>
+    <string name="screens_status_finished">「%1$s」クリア！🎉</string>
+    <string name="screens_status_completed">「%1$s」コンプリート、100%% ★</string>
+    <string name="screens_status_set">%1$s：%2$s</string>
+    <string name="screens_status">ステータス</string>
+    <string name="screens_status_none">なし</string>
+    <string name="screens_status_help">積みゲー、プレイ中、クリア済み…積みゲーのゲームは、しばらく遊ぶと自動でプレイ中になります。</string>
+    <string name="screens_status_no_status">ステータスなし</string>
+    <string name="screens_status_progress">%1$s / 約%2$s</string>
+</resources>
