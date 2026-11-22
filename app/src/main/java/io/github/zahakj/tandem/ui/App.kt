@@ -113,6 +113,9 @@ sealed interface Route {
     data object Apps : Route { override val key = "apps"; override val depth = 1 }
     data object Appearance : Route { override val key = "appearance"; override val depth = 2 }
     data object ThemePacks : Route { override val key = "themepacks"; override val depth = 3 }
+    /** Settings › Look & feel › Share my look, and Get a look with the community gallery (LookScreens.kt). */
+    data object ShareLook : Route { override val key = "sharelook"; override val depth = 3 }
+    data object GetLook : Route { override val key = "getlook"; override val depth = 3 }
     /** Settings › Library & art › Game folders (GameFoldersScreen.kt). */
     data object GameFolders : Route { override val key = "gamefolders"; override val depth = 3 }
     data object Scrape : Route { override val key = "scrape"; override val depth = 2 }
@@ -774,6 +777,8 @@ private fun RouteContent(route: Route, libs: List<io.github.zahakj.tandem.Platfo
         Route.Apps -> AppsScreen()
         Route.Appearance -> AppearanceScreen()
         Route.ThemePacks -> ThemePacksScreen()
+        Route.ShareLook -> ShareLookScreen()
+        Route.GetLook -> GetLookScreen()
         Route.GameFolders -> GameFoldersScreen()
         Route.Scrape -> ScrapeScreen()
         Route.Stats -> StatsScreen()
@@ -879,6 +884,8 @@ private fun TopBar() {
         // A subpage names its page instead of Settings, as Theme packs does.
         is Route.SettingsPage -> path(SettingsCategories.parentOf(r.id)?.let(SettingsCategories::title) ?: Tx.s(R.string.home_crumb_settings), SettingsCategories.title(r.id))
         Route.ThemePacks -> path(Tx.s(R.string.home_crumb_look), Tx.s(R.string.home_crumb_theme_packs))
+        Route.ShareLook -> path(Tx.s(R.string.home_crumb_look), Tx.s(R.string.share_title))
+        Route.GetLook -> path(Tx.s(R.string.home_crumb_look), Tx.s(R.string.share_get_title))
         Route.GameFolders -> path(Tx.s(R.string.home_crumb_library), Tx.s(R.string.home_crumb_game_folders))
         Route.Scrape -> Tx.s(R.string.home_crumb_scrape)
         Route.Stats -> Tx.s(R.string.home_crumb_stats)

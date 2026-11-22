@@ -51,6 +51,7 @@ class HardcodedTextTest {
         "ui/SettingsCatalog.kt", "ui/Settings.kt", "ui/SettingsSearch.kt", "ui/SettingsHome.kt", "ui/Choices.kt", "ui/Showcase.kt",
         "ui/SoundSettings.kt", "ui/Sound.kt", "audio/Sfx.kt", "audio/Calm.kt", "audio/Meadow.kt", "audio/Tracks.kt", "audio/Song.kt",
         "ui/Appearance.kt", "ui/Theme.kt", "ui/ThemeGallery.kt", "ui/ThemePacks.kt", "ui/ThemePacksScreen.kt", "ui/PackImport.kt",
+        "ui/LookShare.kt", "ui/LookScreens.kt", "data/LookFile.kt", "data/LookGallery.kt",
         "ui/Flair.kt", "ui/Presets.kt", "ui/Perf.kt", "ui/StartFlow.kt", "ui/Welcome.kt",
         "ui/SystemFolders.kt",
         "data/GridTree.kt",

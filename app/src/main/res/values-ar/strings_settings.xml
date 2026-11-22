@@ -124,6 +124,7 @@
 
     <string name="settings_group_colour">اللون</string>
     <string name="settings_group_wallpaper_icons">الخلفية والأيقونات والحركة</string>
+    <string name="settings_group_share">مشاركة</string>
     <string name="settings_group_language">اللغة</string>
     <string name="settings_group_start_over">بداية جديدة</string>
     <string name="settings_group_home_screen">الشاشة الرئيسية</string>

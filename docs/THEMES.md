@@ -149,8 +149,39 @@ my-pack/
 | `icon_style` | `bubble`, `neon`, `pixel`, `flat`, `plastic`, `chrome`, `lcd`, `sticker` or `rune` (carved) |
 | `wallpaper.top` / `wallpaper.bottom` | A picture (PNG, JPG, WebP) or video (MP4, WebM, MKV) in the pack folder |
 | `music` | Optional list of audio files in the pack, in play order. Without it, every file in `music/` plays, by name |
+| `icon_scale` | Grid size multiplier, 0.6 to 1.6 (1 by default) |
+| `hero_logo_scale` | Logo width over a system's hero, as a share of it (0.2 to 1) |
+| `hero_gradient` | `fade`, `strong`, `vignette` or `none` |
 
 To publish a pack, zip the folder. Use only art you made or may share, and put your name in `author`.
+
+## Shared looks (`.tandem`)
+
+**Share my look** (Settings › Look & feel) writes the whole look as one `.tandem` file: a pack zip in the format above
+with a `look.json` beside `theme.json`, so **Import a .zip** still installs it as a theme. **Get a look** installs it
+as a pack and also applies `look.json`. The code is `data/LookFile.kt` (the format and its checks, unit tested in
+`LookFileTest`) and `ui/LookShare.kt` (making one from the current look, applying one).
+
+```
+look.json                          {"format": "tandem-look", "version": 1, "name", "author", "description",
+                                    "created": "YYYY-MM-DD", "app", "parts": [...], "look": {...}}
+theme.json                         the theme, as above (colours, shape, motion, backdrop, wallpaper names)
+preview.png                        640×360, drawn from the look for galleries
+wallpapers/top.webp, bottom.webp   wallpaper pictures, re-encoded (no metadata); videos are left out
+systems/<id>/icon.png, hero.webp, logo.png       the art in use (Icons from), re-encoded
+collections/<kind>/icon.png, hero.webp           favorites, most_played, newly_added, recent
+```
+
+`look.look` holds only the fields of `SharedLook`, an allow-list of look settings (accent, highlight, surface, icon
+style, motion, wallpaper choice as `theme`/`hero`/a backdrop id, home layout and its options, the dock's look, the
+other screen's art style, a built-in sound pack and soundtrack); every value is checked against Tandem's own ids and
+ranges on import, and an unknown one is ignored. Nothing else from the settings ever goes in: no theme or pack ids,
+no paths, no games, play data, hidden games, PIN, accounts or keys.
+
+Limits on import: 24 MB per file, 48 MB unpacked, 1200 files, JSON under 256 KB, pictures under 8 MB and at most
+4096 × 4096, real PNG, JPEG or WebP whose kind matches the extension (read from the header, then by Android's decoder);
+only the paths above, nothing with `..`, `\` or a leading `/`. A `look.json` with a newer `version` is refused with
+"needs a newer Tandem".
 
 ## Wallpapers without a theme
 

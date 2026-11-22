@@ -107,6 +107,8 @@ class MainActivity : ComponentActivity() {
         io.github.zahakj.tandem.ui.StartFlow.begin(this, cached = io.github.zahakj.tandem.ui.LibraryScan.startEarly(this))
         Dreaming.addEndListener(dreamEnded)
         openRequested(intent)
+        // A tandem://look link (a shared look's QR code or web page): Get a look asks about it.
+        io.github.zahakj.tandem.ui.LookShare.openLink(intent)
         // Home that made Android start this activity afresh in place of the open one (leaving a game, say) is a Home
         // press like any other: back to the home grid with folders closed, and the controller on this screen. Without
         // it the folder open before the game stayed up, and B went to the bottom screen's window, which held the focus.
@@ -496,6 +498,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: android.content.Intent) {
         super.onNewIntent(intent)
+        if (io.github.zahakj.tandem.ui.LookShare.openLink(intent)) return
         // Tandem bringing itself forward (frontIntent) isn't a Home press, though it may carry the Home category.
         val self = intent.getBooleanExtra(EXTRA_SELF, false)
         val home = intent.hasCategory(android.content.Intent.CATEGORY_HOME)

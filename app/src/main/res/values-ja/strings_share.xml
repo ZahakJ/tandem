@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Share my look and Get a look. See strings_share.xml in values/ and docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="share_group">スタイルをシェア</string>
+    <string name="share_title">わたしのスタイルをシェア</string>
+    <string name="share_row_help">テーマ、色、壁紙、アイコン、レイアウト、サウンドをまるごと1つのファイルに。ゲームやアカウントは入りません。</string>
+    <string name="share_get_title">スタイルをもらう</string>
+    <string name="share_get_row_help">ほかの人のスタイルを試せます。ファイル、リンク、コミュニティギャラリーから。</string>
+
+    <string name="share_about_heading">あなたのスタイル</string>
+    <string name="share_about_note">名前をつけて、よければサインも</string>
+    <string name="share_name">名前</string>
+    <string name="share_author">作った人</string>
+    <string name="share_author_ask">名前（任意）</string>
+    <string name="share_author_none">まだなし</string>
+    <string name="share_description">説明</string>
+    <string name="share_description_none">なし</string>
+
+    <string name="share_send_heading">送る</string>
+    <string name="share_send_note">.tandemファイル1つ、オフラインでもOK</string>
+    <string name="share_save">マイスタイルに保存</string>
+    <string name="share_save_as">ほかの場所に保存…</string>
+    <string name="share_qr_show">もう一方の画面にQRを表示</string>
+    <string name="share_qr_hide">QRを隠す</string>
+    <string name="share_gallery">ギャラリーにシェア</string>
+    <string name="share_making">スタイルを詰めています…</string>
+    <string name="share_saved">%1$sに保存しました</string>
+    <string name="share_saved_there">スタイルを保存しました</string>
+    <string name="share_video_left_out">保存しました。動画の壁紙はこの本体に残るので、その画面はテーマの背景になります。</string>
+    <string name="share_heroes_left_out">保存しました。ヒーロー画像はファイルが大きくなりすぎるので入れていません。</string>
+    <string name="share_qr_help">もう一方の画面にQRコードを表示します。スマホのカメラで読み取ると、スタイルが開きます。</string>
+    <string name="share_gallery_help">GitHubのシェア用フォームをブラウザで開きます。スタイルの名前は入力済みです。ファイルはそこで添付してください。GitHubアカウントが必要なのはシェアするときだけです。</string>
+    <string name="share_privacy">入るのはTandemの見た目だけ。ゲーム、プレイ時間、セーブデータ、非表示のゲーム、PIN、アカウント、キー、フォルダは入りません。</string>
+    <string name="share_goes_in">入るもの</string>
+    <string name="share_part_theme">テーマ「%1$s」とその色</string>
+    <string name="share_part_wallpaper">壁紙の画像</string>
+    <string name="share_part_icons">機種とコレクションのアイコン</string>
+    <string name="share_part_layout">「%1$s」レイアウト</string>
+    <string name="share_part_sounds">「%1$s」サウンド</string>
+    <string name="share_part_motion">動きとハイライト</string>
+
+    <string name="share_qr_no_link">リンクがまだありません</string>
+    <string name="share_qr_no_link_body">QRコードには行き先のリンクが必要です。先にスタイルをギャラリーにシェアしてください。掲載されたら、QRがそのページを指します。それまでは.tandemファイルを直接送ってください。</string>
+    <string name="share_qr_scan">スマホのカメラで読み取ってこのスタイルを開く</string>
+    <string name="share_form_qr_title">シェア用フォーム</string>
+
+    <string name="share_gallery_ask">ギャラリーにシェアしますか？</string>
+    <string name="share_gallery_ask_body">TandemがスタイルをROMs/tandem/looksに保存し、GitHubのシェア用フォームをブラウザで開きます。ファイルはそこで添付してください。使えるのはオリジナルか正しくライセンスされた絵だけ。市販ゲームの絵はNG、みんなが楽しめる内容でお願いします。</string>
+    <string name="share_gallery_go">フォームを開く</string>
+    <string name="share_form_attach">%1$sをフォームに添付してください</string>
+    <string name="share_no_browser">ブラウザがありません。もう一方の画面のコードを読み取ってフォームを開いてください</string>
+    <string name="share_error_cant_save">スタイルを保存できませんでした</string>
+
+    <string name="share_from_file">ファイルから</string>
+    <string name="share_from_file_detail">手元の.tandemファイル</string>
+    <string name="share_from_link">リンクから</string>
+    <string name="share_from_link_detail">ウェブのアドレス</string>
+    <string name="share_from_link_ask">スタイルのリンク</string>
+    <string name="share_search">検索</string>
+    <string name="share_search_detail">名前、作った人、タグ</string>
+    <string name="share_search_clear">検索をクリア</string>
+    <string name="share_tag_all">すべて</string>
+    <string name="share_undo">前のスタイルに戻す</string>
+    <string name="share_undone">前のスタイルに戻しました</string>
+    <string name="share_get_help">スタイルを選ぶと、まず見た目を確認できます。OKするまで何も変わらず、前のスタイルにもいつでも戻せます。</string>
+
+    <string name="share_gallery_heading">コミュニティギャラリー</string>
+    <string name="share_gallery_note">Tandemプレイヤーがシェアしたスタイル</string>
+    <string name="share_gallery_loading">ギャラリーに問い合わせ中…</string>
+    <string name="share_gallery_empty">ギャラリーはまだからっぽです。最初のスタイルをシェアしてみませんか？</string>
+    <string name="share_gallery_no_match">一致するスタイルはありません</string>
+    <plurals name="share_gallery_count">
+        <item quantity="other">スタイル%1$d件</item>
+    </plurals>
+    <string name="share_needs_update">要アップデート</string>
+    <string name="share_preview_open">プレビュー</string>
+    <string name="share_getting">スタイルを取得中…</string>
+
+    <string name="share_link_ask">このスタイルをもらいますか？</string>
+    <string name="share_link_ask_gallery">Tandemがコミュニティギャラリーから「%1$s」をダウンロードして、まずお見せします。</string>
+    <string name="share_link_ask_web">Tandemが%1$sからスタイルをダウンロードして、まずお見せします。</string>
+    <string name="share_link_get">もらう</string>
+
+    <string name="share_untitled">スタイル</string>
+    <string name="share_from_a_file">ファイルから</string>
+    <string name="share_from_site">%1$sから</string>
+    <string name="share_from_gallery">コミュニティギャラリーから</string>
+    <string name="share_preview_changes">変わるもの</string>
+    <string name="share_change_collections">コレクションのアイコン</string>
+    <string name="share_change_layout">「%1$s」レイアウト</string>
+    <string name="share_change_sounds">「%1$s」サウンド</string>
+    <string name="share_change_motion">動き</string>
+    <string name="share_preview_keeps">ゲーム、ボタン、アカウントはそのままです。</string>
+    <string name="share_preview_use">このスタイルにする</string>
+    <string name="share_preview_cancel">やめておく</string>
+    <string name="share_applied">「%1$s」に着替えました</string>
+
+    <string name="share_error_not_a_look">Tandemのスタイルではありません</string>
+    <string name="share_error_newer">このスタイルには新しいTandemが必要です。先にアップデートしてください</string>
+    <string name="share_error_too_big">このスタイルは大きすぎて安全ではありません</string>
+    <string name="share_error_bad_file">スタイルに入るはずのないファイルが含まれています</string>
+    <string name="share_error_bad_picture">画像のひとつが本物の画像ではありません</string>
+    <string name="share_error_big_picture">画像のひとつが大きすぎます</string>
+    <string name="share_error_unreadable">スタイルを読み込めませんでした</string>
+    <string name="share_error_mismatch">ダウンロードがギャラリーのものと一致しないため、使いませんでした</string>
+    <string name="share_error_not_found">ギャラリーがまだないか、そのスタイルは削除されました</string>
+    <string name="share_error_offline">接続できませんでした。オンラインですか？</string>
+    <string name="share_error_https">https://のリンクだけです</string>
+</resources>

@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Tandem itself
+    url: https://github.com/ZahakJ/tandem/issues
+    about: Bugs and ideas for the Tandem app go to its own repository.

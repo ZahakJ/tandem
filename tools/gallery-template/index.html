@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Tandem look gallery</title>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<!-- Every look in index.json, newest first. Loads nothing from other sites; no cookies, no analytics. -->
+<main>
+  <h1>Tandem look gallery</h1>
+  <p class="muted">Looks shared by Tandem players: a theme, colours, wallpaper, icons, layout and sounds in one file.
+    In Tandem, open <b>Settings › Look &amp; feel › Get a look</b> to browse them on your handheld.
+    To share yours, use <b>Share my look › Share to the gallery</b>; see the <a href="https://github.com/ZahakJ/tandem-gallery#readme">README</a>.</p>
+  <ul id="looks" class="grid"></ul>
+  <p id="empty" class="muted" hidden>No looks yet. Be the first to share one!</p>
+</main>
+<script>
+(async () => {
+  let index = { looks: [] };
+  try { index = await (await fetch("index.json", { cache: "no-cache" })).json(); } catch (e) {}
+  const list = document.getElementById("looks");
+  for (const look of index.looks || []) {
+    if (!/^[a-z0-9][a-z0-9-]{0,47}$/.test(look.id)) continue;
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = "look/?id=" + encodeURIComponent(look.id);
+    if (/^looks\/[a-z0-9-]+\/[a-z0-9._-]+\.(png|jpg|jpeg|webp)$/.test(look.preview || "")) {
+      const img = document.createElement("img");
+      img.src = look.preview; img.alt = ""; img.loading = "lazy";
+      a.append(img);
+    }
+    const name = document.createElement("strong");
+    name.textContent = look.name;
+    const by = document.createElement("span");
+    by.className = "muted";
+    by.textContent = look.author ? `by ${look.author}` : "";
+    a.append(name, by);
+    li.append(a);
+    list.append(li);
+  }
+  document.getElementById("empty").hidden = list.children.length > 0;
+})();
+</script>
+</body>
+</html>

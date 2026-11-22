@@ -1,0 +1,66 @@
+# A "Share a look" issue: download its attached file, check it the way Tandem does, and open a pull request that adds
+# it under looks/<id>/. A maintainer reviews the pull request (the rules: original or licensed art, nothing from
+# commercial games, family-friendly) and merges it; index.yml then puts it in index.json.
+#
+# The issue's text is untrusted: it only ever reaches the scripts as a file or an environment variable, never inside
+# a ${{ }} in a run: line.
+name: Look submission
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: look-issue-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  intake:
+    if: contains(github.event.issue.labels.*.name, 'look') && github.event.issue.state == 'open'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the look
+        id: check
+        env:
+          BODY: ${{ github.event.issue.body }}
+          ISSUE: ${{ github.event.issue.number }}
+          SUBMITTER: ${{ github.event.issue.user.login }}
+        run: |
+          printf '%s' "$BODY" > "$RUNNER_TEMP/body.md"
+          python3 scripts/gallery.py intake --body "$RUNNER_TEMP/body.md" --issue "$ISSUE" --submitter "$SUBMITTER" --report "$RUNNER_TEMP/report.md"
+
+      - name: Open a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          LOOK_ID: ${{ steps.check.outputs.id }}
+          LOOK_NAME: ${{ steps.check.outputs.name }}
+        run: |
+          branch="look/issue-$ISSUE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add looks
+          git commit -m "looks: add $LOOK_ID (#$ISSUE)"
+          git push --force origin "$branch"
+          body="Adds **$LOOK_NAME** from #$ISSUE. Checked by the intake workflow. Before merging, look at its pictures: original or properly licensed art only, nothing from commercial games, family-friendly. Closes #$ISSUE."
+          gh pr create --head "$branch" --title "Add look: $LOOK_NAME" --body "$body" || gh pr edit "$branch" --title "Add look: $LOOK_NAME" --body "$body"
+
+      - name: Reply on the issue
+        if: always() && steps.check.conclusion != 'skipped'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          if [ -f "$RUNNER_TEMP/report.md" ]; then gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/report.md"; fi

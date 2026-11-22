@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ZahakJ/tandem-gallery/schema/index.schema.json",
+  "title": "Tandem look gallery index",
+  "description": "index.json at the root of the gallery: every look Tandem can browse and install. Written by scripts/gallery.py index; read by Tandem (data/LookGallery.kt), which leaves out any entry that doesn't fit.",
+  "type": "object",
+  "required": ["format", "version", "looks"],
+  "properties": {
+    "format": { "const": "tandem-gallery" },
+    "version": { "const": 1, "description": "Tandem refuses an index with a version newer than it knows." },
+    "looks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "file", "sha256", "size"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,47}$", "description": "The look's folder in looks/, and its link: tandem://look?id=<id>." },
+          "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+          "author": { "type": "string", "maxLength": 40 },
+          "description": { "type": "string", "maxLength": 300 },
+          "version": { "type": "integer", "minimum": 1, "description": "The look.json version of its file; Tandem marks newer ones as needing an update." },
+          "preview": { "type": "string", "pattern": "^looks/[a-z0-9][a-z0-9-]{0,47}/[a-z0-9][a-z0-9._-]{0,63}\\.(png|jpg|jpeg|webp)$", "description": "Its preview picture, in its own folder; at most 1 MB and 2048 pixels a side." },
+          "file": { "type": "string", "pattern": "^looks/[a-z0-9][a-z0-9-]{0,47}/[a-z0-9][a-z0-9._-]{0,63}\\.tandem$", "description": "Its .tandem file, in its own folder." },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Of the .tandem file. Tandem checks it before installing." },
+          "size": { "type": "integer", "minimum": 1, "maximum": 25165824, "description": "Of the .tandem file, in bytes; at most 24 MB." },
+          "tags": { "type": "array", "maxItems": 8, "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,23}$" } },
+          "license": { "enum": ["CC BY 4.0", "CC BY-SA 4.0", "CC0 1.0", ""] },
+          "added": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

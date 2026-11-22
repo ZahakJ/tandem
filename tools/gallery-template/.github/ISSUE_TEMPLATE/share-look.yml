@@ -1,0 +1,66 @@
+name: Share a look
+description: Add your Tandem look to the community gallery.
+title: "Look: "
+labels: ["look"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing! Make the file in Tandem with **Settings › Look & feel › Share my look › Share to the gallery**:
+        Tandem saves it as `ROMs/tandem/looks/<name>.tandem.zip` and opens this form with the name filled in.
+
+        A bot checks the file as soon as you submit (or edit) this issue and replies here. When it passes, a maintainer
+        looks at it and adds it to the gallery.
+  - type: input
+    id: name
+    attributes:
+      label: Look name
+      description: What it's called in the gallery. At most 60 characters.
+      placeholder: Mint midnight
+    validations:
+      required: true
+  - type: input
+    id: author
+    attributes:
+      label: Made by
+      description: The name to credit. Leave it empty to stay anonymous (your GitHub name is still on this issue).
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A sentence or two about it. At most 300 characters.
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: A few words, separated by commas.
+      placeholder: dark, pastel, retro
+  - type: dropdown
+    id: license
+    attributes:
+      label: License
+      description: How others may use your look and its pictures.
+      options:
+        - CC BY 4.0
+        - CC BY-SA 4.0
+        - CC0 1.0
+    validations:
+      required: true
+  - type: textarea
+    id: file
+    attributes:
+      label: The look file
+      description: Drag the `.tandem.zip` file into this box (GitHub doesn't take `.tandem`, so Tandem adds `.zip`). At most 24 MB.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rules
+    attributes:
+      label: Rules
+      options:
+        - label: Every picture in it is my own work, or licensed so I may share it under the license above.
+          required: true
+        - label: It has no art taken from commercial games (box art, logos, screenshots, characters).
+          required: true
+        - label: It is family-friendly.
+          required: true

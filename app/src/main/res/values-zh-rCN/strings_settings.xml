@@ -93,6 +93,7 @@
 
     <string name="settings_group_colour">颜色</string>
     <string name="settings_group_wallpaper_icons">壁纸、图标与动态</string>
+    <string name="settings_group_share">分享</string>
     <string name="settings_group_language">语言</string>
     <string name="settings_group_start_over">从头再来</string>
     <string name="settings_group_home_screen">主页</string>

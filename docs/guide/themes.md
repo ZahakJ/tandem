@@ -1,6 +1,6 @@
 # Themes
 
-How to change Tandem's look: themes, home layouts, the icon grid, theme packs, wallpapers, and sounds and music. You'll find it all in the **Themes** app on the home grid and in **Settings › Look & feel**, **Settings › Home & layout** and **Settings › Sound & music**. Every change applies at once, with a short cross-fade.
+How to change Tandem's look: themes, home layouts, the icon grid, theme packs, sharing looks, wallpapers, and sounds and music. You'll find it all in the **Themes** app on the home grid and in **Settings › Look & feel**, **Settings › Home & layout** and **Settings › Sound & music**. Every change applies at once, with a short cross-fade.
 
 ## Built-in themes
 
@@ -179,9 +179,61 @@ A theme pack is a folder with a `theme.json` and, if it likes, wallpapers and ar
 A Cocoon theme brings the music and sound packs it links to in `ROMs/assets/music` and `ROMs/assets/sounds` (its `asset_refs`), so those play with it too.
 
 > [!NOTE]
-> Tandem never downloads packs. Packs belong to their authors: keep their names and credits, and share them the way the author asks.
+> Tandem downloads nothing for Manage packs; only [Get a look](#sharing-looks) reads the community gallery. Packs belong to their authors: keep their names and credits, and share them the way the author asks.
 
 Making your own pack? [The theme format](../THEMES.md) documents every key in `theme.json` and the folder layout.
+
+## Sharing looks
+
+Your look is everything above together: the theme and its colours, your accent and highlight, the wallpaper pictures,
+the system and collection icons, the home layout, motion and the sound pack. **Settings › Look & feel › Share looks**
+packs it into one `.tandem` file anyone can use, and gets other people's.
+
+**Share my look.** Give it a **Name** and, if you like, **Made by** and a **Description**. Then:
+
+- **Save to my looks** writes `ROMs/tandem/looks/<name>.tandem`; **Save somewhere else…** picks a place with the file
+  picker. Send the file however you like: it works offline.
+- **Show QR on the other screen** puts a QR code on the bottom screen. A phone's camera opens the look's page, which has
+  **Open in Tandem**. A QR code needs a link, so it works for looks in the gallery; for your own look, share it to the
+  gallery first.
+- **Share to the gallery** saves the file and opens the gallery's share form in the browser, with the name filled in.
+  Attach the file there. You need a GitHub account only for this.
+
+What goes in is only how Tandem looks. **Never** your games or their names, play time, saves, hidden games, your PIN,
+accounts and keys, or folder paths. Pictures are re-encoded, which drops their hidden details (like where a photo was
+taken). Video wallpapers stay on your handheld, and so do your own music and recorded sounds.
+
+**Get a look.** Three tiles come first: **From a file** (a `.tandem` file you have), **From a link** (a web address)
+and **Search**. Below them is the **Community gallery**: looks shared by other players, as cards with tags to filter
+by. <kbd>A</kbd> on a look shows a preview card: its picture, name, who made it, its colours and what it changes.
+Nothing changes until **Use this look**. Then:
+
+- the look installs as a theme pack (it shows up in **Manage packs**) and its settings go on; your games, buttons,
+  accounts and screens stay as they are;
+- the message that says so has **Undo** (<kbd>Select</kbd>), and **Put my old look back** stays at the top of Get a
+  look until Tandem restarts;
+- Tandem makes an automatic backup first, so **Settings › Play & system › Your data › Restore** can bring back the
+  look from before, too.
+
+Opening **Get a look** is the only time Tandem reads the gallery, and private mode keeps it offline (a file you pick
+still works). See [Privacy](privacy.md).
+
+<details>
+<summary>The gallery, and the checks every look goes through</summary>
+
+The gallery is a public GitHub repository, [ZahakJ/tandem-gallery](https://github.com/ZahakJ/tandem-gallery): no
+account is needed to browse or download. Every look there was checked by a bot and looked at by a maintainer:
+original or properly licensed art only, nothing from commercial games, family-friendly. Tandem checks each download
+against the gallery's checksum before using it.
+
+Whatever its source, a look file is checked before its preview shows: at most 24 MB, only the files a look can have
+(no programs, nothing that tries to write outside its folder), and real pictures of a sane size. A file made by a newer
+Tandem says so and asks you to update. Nothing in a look is ever run.
+
+A `.tandem` file is a theme pack zip, so **Manage packs › Import a .zip** installs one as a plain theme too. The
+format is in [the theme format](../THEMES.md#shared-looks-tandem).
+
+</details>
 
 ## Wallpapers
 

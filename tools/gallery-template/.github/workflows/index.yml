@@ -1,0 +1,43 @@
+# Checks every look in looks/ the way Tandem does, and on main writes index.json from them (with each file's sha256
+# and size, which Tandem verifies before installing a look).
+name: Gallery index
+
+on:
+  push:
+    branches: [main]
+    paths: ["looks/**", "scripts/**", ".github/workflows/index.yml"]
+  pull_request:
+    paths: ["looks/**", "scripts/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-index-${{ github.ref }}
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check every look
+        run: python3 scripts/gallery.py check-all
+
+      - name: Write index.json
+        run: python3 scripts/gallery.py index
+
+      - name: Commit index.json
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- index.json; then echo "index.json is up to date"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.json
+          git commit -m "index: update"
+          git push

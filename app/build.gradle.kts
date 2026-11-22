@@ -181,6 +181,8 @@ dependencies {
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")
     // Frame timing overlay (Settings › Data & about › Developer): logs janky frames with the current screen.
     implementation("androidx.metrics:metrics-performance:1.0.0-beta01")
+    // QR codes for Share my look's Show QR (LookScreens.kt): ZXing's encoder only, Apache-2.0 (GPL-3.0 compatible).
+    implementation("com.google.zxing:core:3.5.3")
 
     if (withDiscord) {
         implementation(files(discordAar!!))

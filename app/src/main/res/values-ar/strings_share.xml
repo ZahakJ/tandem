@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Share my look and Get a look. See strings_share.xml in values/ and docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="share_group">شارك إطلالتك</string>
+    <string name="share_title">شارك إطلالتي</string>
+    <string name="share_row_help">ضع إطلالتك كلها في ملف واحد: السمة والألوان والخلفية والأيقونات والتخطيط والأصوات. لا ألعابك ولا حساباتك أبدًا.</string>
+    <string name="share_get_title">جرّب إطلالة</string>
+    <string name="share_get_row_help">جرّب إطلالة غيرك: من ملف أو رابط أو من معرض المجتمع.</string>
+
+    <string name="share_about_heading">إطلالتك</string>
+    <string name="share_about_note">سمِّها، ووقّعها إن شئت</string>
+    <string name="share_name">الاسم</string>
+    <string name="share_author">من تصميم</string>
+    <string name="share_author_ask">اسمك (اختياري)</string>
+    <string name="share_author_none">لا أحد بعد</string>
+    <string name="share_description">الوصف</string>
+    <string name="share_description_none">بلا وصف</string>
+
+    <string name="share_send_heading">أرسِلها</string>
+    <string name="share_send_note">ملف ‎.tandem واحد، يعمل دون إنترنت</string>
+    <string name="share_save">احفظ في إطلالاتي</string>
+    <string name="share_save_as">احفظ في مكان آخر…</string>
+    <string name="share_qr_show">اعرض رمز QR على الشاشة الأخرى</string>
+    <string name="share_qr_hide">أخفِ رمز QR</string>
+    <string name="share_gallery">شارك في المعرض</string>
+    <string name="share_making">نجهّز إطلالتك…</string>
+    <string name="share_saved">حُفظت في %1$s</string>
+    <string name="share_saved_there">حُفظت الإطلالة</string>
+    <string name="share_video_left_out">حُفظت. خلفيات الفيديو تبقى على هذا الجهاز، فتأخذ تلك الشاشة خلفية السمة المتحركة.</string>
+    <string name="share_heroes_left_out">حُفظت. صور الواجهة كبّرت الملف كثيرًا، فبقيت هنا.</string>
+    <string name="share_qr_help">يضع رمز QR على الشاشة الأخرى. امسحه بكاميرا الهاتف لتفتح الإطلالة.</string>
+    <string name="share_gallery_help">يفتح نموذج المشاركة في GitHub داخل المتصفح واسم إطلالتك مكتوب فيه. أرفق الملف هناك؛ حساب GitHub مطلوب للمشاركة فقط.</string>
+    <string name="share_privacy">لا يدخل الملف إلا شكل Tandem. أبدًا لا ألعابك ولا وقت لعبك ولا حفظاتك ولا الألعاب المخفية ولا رمز PIN ولا الحسابات ولا المفاتيح ولا المجلدات.</string>
+    <string name="share_goes_in">ما يدخل الملف</string>
+    <string name="share_part_theme">سمة «%1$s» وألوانها</string>
+    <string name="share_part_wallpaper">صور الخلفية</string>
+    <string name="share_part_icons">أيقونات الأنظمة والمجموعات</string>
+    <string name="share_part_layout">تخطيط «%1$s»</string>
+    <string name="share_part_sounds">أصوات «%1$s»</string>
+    <string name="share_part_motion">الحركة والتمييز</string>
+
+    <string name="share_qr_no_link">لا رابط بعد</string>
+    <string name="share_qr_no_link_body">رمز QR يحتاج رابطًا يشير إليه. شارك إطلالتك في المعرض أولًا؛ وحين تُضاف، يشير رمز QR إلى صفحتها. وحتى ذلك الحين، أرسل ملف ‎.tandem نفسه.</string>
+    <string name="share_qr_scan">امسحه بكاميرا الهاتف لتفتح هذه الإطلالة</string>
+    <string name="share_form_qr_title">نموذج المشاركة</string>
+
+    <string name="share_gallery_ask">تشاركها في المعرض؟</string>
+    <string name="share_gallery_ask_body">يحفظ Tandem إطلالتك في ROMs/tandem/looks ويفتح نموذج المشاركة في GitHub داخل المتصفح. أرفق الملف هناك. فقط رسوم أصلية أو مرخّصة كما يجب، بلا رسوم من ألعاب تجارية، ولتكن مناسبة للعائلة.</string>
+    <string name="share_gallery_go">افتح النموذج</string>
+    <string name="share_form_attach">أرفق %1$s بالنموذج</string>
+    <string name="share_no_browser">لا متصفح هنا: امسح الرمز على الشاشة الأخرى لتفتح النموذج</string>
+    <string name="share_error_cant_save">تعذّر حفظ الإطلالة</string>
+
+    <string name="share_from_file">من ملف</string>
+    <string name="share_from_file_detail">ملف ‎.tandem لديك</string>
+    <string name="share_from_link">من رابط</string>
+    <string name="share_from_link_detail">عنوان ويب</string>
+    <string name="share_from_link_ask">رابط الإطلالة</string>
+    <string name="share_search">بحث</string>
+    <string name="share_search_detail">أسماء، مصمّمون، وسوم</string>
+    <string name="share_search_clear">امسح البحث</string>
+    <string name="share_tag_all">الكل</string>
+    <string name="share_undo">أعِد إطلالتي القديمة</string>
+    <string name="share_undone">عادت إطلالتك القديمة</string>
+    <string name="share_get_help">اختر إطلالة لتراها أولًا. لا شيء يتغيّر قبل أن توافق، وإطلالتك القديمة تعود متى شئت.</string>
+
+    <string name="share_gallery_heading">معرض المجتمع</string>
+    <string name="share_gallery_note">إطلالات شاركها لاعبو Tandem</string>
+    <string name="share_gallery_loading">نسأل المعرض…</string>
+    <string name="share_gallery_empty">المعرض فارغ الآن. كن أول من يشارك إطلالة!</string>
+    <string name="share_gallery_no_match">لا إطلالة تطابق ذلك</string>
+    <plurals name="share_gallery_count">
+        <item quantity="zero">لا إطلالات</item>
+        <item quantity="one">إطلالة واحدة</item>
+        <item quantity="two">إطلالتان</item>
+        <item quantity="few">%1$d إطلالات</item>
+        <item quantity="many">%1$d إطلالة</item>
+        <item quantity="other">%1$d إطلالة</item>
+    </plurals>
+    <string name="share_needs_update">تحتاج تحديثًا</string>
+    <string name="share_preview_open">معاينة</string>
+    <string name="share_getting">نجلب الإطلالة…</string>
+
+    <string name="share_link_ask">تجلب هذه الإطلالة؟</string>
+    <string name="share_link_ask_gallery">سينزّل Tandem «%1$s» من معرض المجتمع ويعرضها عليك أولًا.</string>
+    <string name="share_link_ask_web">سينزّل Tandem الإطلالة من %1$s ويعرضها عليك أولًا.</string>
+    <string name="share_link_get">هاتها</string>
+
+    <string name="share_untitled">إطلالة</string>
+    <string name="share_from_a_file">من ملف</string>
+    <string name="share_from_site">من %1$s</string>
+    <string name="share_from_gallery">من معرض المجتمع</string>
+    <string name="share_preview_changes">ما تغيّره</string>
+    <string name="share_change_collections">أيقونات المجموعات</string>
+    <string name="share_change_layout">تخطيط «%1$s»</string>
+    <string name="share_change_sounds">أصوات «%1$s»</string>
+    <string name="share_change_motion">الحركة</string>
+    <string name="share_preview_keeps">ألعابك وأزرارك وحساباتك تبقى كما هي.</string>
+    <string name="share_preview_use">استخدم هذه الإطلالة</string>
+    <string name="share_preview_cancel">ليس الآن</string>
+    <string name="share_applied">«%1$s» تزيّن Tandem الآن</string>
+
+    <string name="share_error_not_a_look">هذه ليست إطلالة Tandem</string>
+    <string name="share_error_newer">هذه الإطلالة تحتاج Tandem أحدث: حدّثه أولًا</string>
+    <string name="share_error_too_big">هذه الإطلالة أكبر من أن تكون آمنة</string>
+    <string name="share_error_bad_file">في هذه الإطلالة ملفات لا مكان لها في إطلالة</string>
+    <string name="share_error_bad_picture">إحدى صورها ليست صورة حقيقية</string>
+    <string name="share_error_big_picture">إحدى صورها كبيرة جدًا</string>
+    <string name="share_error_unreadable">تعذّرت قراءة هذه الإطلالة</string>
+    <string name="share_error_mismatch">التنزيل لا يطابق نسخة المعرض، فلم نستخدمه</string>
+    <string name="share_error_not_found">المعرض غير موجود بعد، أو أُزيلت هذه الإطلالة</string>
+    <string name="share_error_offline">تعذّر الوصول. هل أنت متصل بالإنترنت؟</string>
+    <string name="share_error_https">روابط https://‎ فقط</string>
+</resources>

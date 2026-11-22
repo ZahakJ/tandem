@@ -574,6 +574,18 @@ fun appearanceSections(): List<SettingSection> {
             ) { on -> io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(keepRotationOff = on) } },
         )),
         soundSettings(trackCount),
+        SettingSection(Tx.s(R.string.share_group), en = "Share looks", rows = listOf(
+            SettingRow(
+                Tx.s(R.string.share_title), "", Palette.Mint, Glyph.Sparkle, Tx.s(R.string.share_row_help),
+                opens = true, keywords = "share export send qr code file theme gallery community upload",
+                en = "Share my look",
+            ) { Nav.go(Route.ShareLook) },
+            SettingRow(
+                Tx.s(R.string.share_get_title), "", Palette.Sky, Glyph.Download, Tx.s(R.string.share_get_row_help),
+                opens = true, keywords = "import download gallery community themes browse link qr file",
+                en = "Get a look",
+            ) { Nav.go(Route.GetLook) },
+        )),
         SettingSection(Tx.s(R.string.look_group_extras), en = "Extras", rows = listOf(
             SettingRow(
                 Tx.s(R.string.look_reset), BuiltInThemes.PastelNight.name, Palette.Peach, Glyph.Restore, Tx.s(R.string.look_reset_help),

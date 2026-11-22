@@ -93,6 +93,7 @@
 
     <string name="settings_group_colour">色</string>
     <string name="settings_group_wallpaper_icons">壁紙・アイコン・動き</string>
+    <string name="settings_group_share">シェア</string>
     <string name="settings_group_language">言語</string>
     <string name="settings_group_start_over">最初からやり直す</string>
     <string name="settings_group_home_screen">ホーム画面</string>

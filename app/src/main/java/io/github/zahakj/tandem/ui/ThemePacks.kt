@@ -133,6 +133,12 @@ class PackArt(
     /** Every system icon in the pack, as (folder name, picture). Reads folders: call it off the main thread. */
     fun icons(): List<Pair<String, File>> = systems.values.mapNotNull { d -> image(d, "icon")?.let { d.name to it } }
 
+    /** Every system folder, as (normalised name, folder), for Share my look. Reads folders: off the main thread. */
+    fun systemFolders(): List<Pair<String, File>> = systems.entries.map { it.key to it.value }
+
+    /** The picture of [kind] ("icon", "hero", "logo") in one of the pack's folders. */
+    fun picture(dir: File, kind: String): File? = image(dir, kind)
+
     private fun image(dir: File, kind: String): File? =
         IMAGE_EXT.asSequence().map { File(dir, "$kind.$it") }.firstOrNull { it.isFile }
 
@@ -540,6 +546,10 @@ object ThemePacks {
                 "none" -> ScreenOverlay.None
                 else -> b.overlay
             },
+            // Written by Share my look, so a shared Cocoon look keeps its sizes.
+            iconScale = o.optDouble("icon_scale", b.iconScale.toDouble()).toFloat().coerceIn(0.6f, 1.6f),
+            heroLogoScale = o.optDouble("hero_logo_scale", Double.NaN).takeIf { !it.isNaN() }?.toFloat()?.coerceIn(0.2f, 1f) ?: b.heroLogoScale,
+            heroGradient = o.optString("hero_gradient").takeIf { it in setOf("fade", "strong", "vignette", "none") } ?: b.heroGradient,
             wallpaperTop = media(dir, wall.optString("top")),
             wallpaperBottom = media(dir, wall.optString("bottom")),
         )

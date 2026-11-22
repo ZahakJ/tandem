@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>A Tandem look</title>
+<link rel="stylesheet" href="../site.css">
+</head>
+<body>
+<!-- What a look's QR code opens: the look, a button that opens it in Tandem (tandem://look?id=…) and its file.
+     Reads ../index.json; loads nothing from other sites; no cookies, no analytics. -->
+<main>
+  <p class="back"><a href="../">Tandem look gallery</a></p>
+  <article id="look" hidden>
+    <img id="preview" alt="">
+    <h1 id="name"></h1>
+    <p id="author" class="muted"></p>
+    <p id="description"></p>
+    <p id="tags" class="tags"></p>
+    <p class="actions">
+      <a id="open" class="button">Open in Tandem</a>
+      <a id="download" class="button quiet" download>Download the file</a>
+    </p>
+    <p class="muted small">On a handheld with Tandem, <b>Open in Tandem</b> shows the look first; nothing changes until you choose
+      <b>Use this look</b>. Or download the file and pick it in <b>Settings › Look &amp; feel › Get a look › From a file</b>.</p>
+    <p id="license" class="muted small"></p>
+  </article>
+  <p id="missing" hidden>That look isn't in the gallery (yet). <a href="../">See every look</a>.</p>
+</main>
+<script>
+(async () => {
+  const id = new URLSearchParams(location.search).get("id") || "";
+  const show = (el, on = true) => { document.getElementById(el).hidden = !on; };
+  if (!/^[a-z0-9][a-z0-9-]{0,47}$/.test(id)) { show("missing"); return; }
+  let index;
+  try { index = await (await fetch("../index.json", { cache: "no-cache" })).json(); } catch (e) { show("missing"); return; }
+  const look = (index.looks || []).find(l => l.id === id);
+  if (!look) { show("missing"); return; }
+  const text = (el, value) => { document.getElementById(el).textContent = value || ""; };
+  document.title = `${look.name} · Tandem look`;
+  text("name", look.name);
+  text("author", look.author ? `by ${look.author}` : "");
+  text("description", look.description);
+  text("tags", (look.tags || []).join(" · "));
+  text("license", look.license ? `License: ${look.license}` : "");
+  if (/^looks\/[a-z0-9-]+\/[a-z0-9._-]+\.(png|jpg|jpeg|webp)$/.test(look.preview || "")) document.getElementById("preview").src = "../" + look.preview;
+  document.getElementById("open").href = "tandem://look?id=" + encodeURIComponent(look.id);
+  if (/^looks\/[a-z0-9-]+\/[a-z0-9._-]+\.tandem$/.test(look.file)) document.getElementById("download").href = "../" + look.file;
+  show("look");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Share my look and Get a look. See strings_share.xml in values/ and docs/i18n/glossary-fr.md. -->
+<resources>
+    <string name="share_group">Partager des looks</string>
+    <string name="share_title">Partager mon look</string>
+    <string name="share_row_help">Emballe tout ton look dans un seul fichier : thème, couleurs, fond d’écran, icônes, disposition et sons. Jamais tes jeux ni tes comptes.</string>
+    <string name="share_get_title">Trouver un look</string>
+    <string name="share_get_row_help">Essaie le look de quelqu’un d’autre : depuis un fichier, un lien ou la galerie de la communauté.</string>
+
+    <string name="share_about_heading">Ton look</string>
+    <string name="share_about_note">Donne-lui un nom, signe-le si tu veux</string>
+    <string name="share_name">Nom</string>
+    <string name="share_author">Créé par</string>
+    <string name="share_author_ask">Ton nom (facultatif)</string>
+    <string name="share_author_none">Personne pour l’instant</string>
+    <string name="share_description">Description</string>
+    <string name="share_description_none">Aucune</string>
+
+    <string name="share_send_heading">L’envoyer</string>
+    <string name="share_send_note">Un seul fichier .tandem, marche hors ligne</string>
+    <string name="share_save">Enregistrer dans mes looks</string>
+    <string name="share_save_as">Enregistrer ailleurs…</string>
+    <string name="share_qr_show">Afficher un QR sur l’autre écran</string>
+    <string name="share_qr_hide">Masquer le QR</string>
+    <string name="share_gallery">Partager dans la galerie</string>
+    <string name="share_making">J’emballe ton look…</string>
+    <string name="share_saved">Enregistré dans %1$s</string>
+    <string name="share_saved_there">Look enregistré</string>
+    <string name="share_video_left_out">Enregistré. Les fonds vidéo restent sur cette console, cet écran prend donc le décor du thème.</string>
+    <string name="share_heroes_left_out">Enregistré. Les bannières rendaient le fichier trop lourd, elles sont restées ici.</string>
+    <string name="share_qr_help">Affiche un QR code sur l’autre écran. Scanne-le avec l’appareil photo d’un téléphone pour ouvrir le look.</string>
+    <string name="share_gallery_help">Ouvre le formulaire de partage GitHub dans le navigateur, avec le nom de ton look déjà rempli. Tu y joins le fichier ; un compte GitHub n’est utile que pour partager.</string>
+    <string name="share_privacy">Seule l’apparence de Tandem y va. Jamais tes jeux, ton temps de jeu, tes sauvegardes, tes jeux masqués, ton code PIN, tes comptes, tes clés ni tes dossiers.</string>
+    <string name="share_goes_in">Ce qui y va</string>
+    <string name="share_part_theme">le thème %1$s et ses couleurs</string>
+    <string name="share_part_wallpaper">les images de fond</string>
+    <string name="share_part_icons">les icônes des systèmes et des collections</string>
+    <string name="share_part_layout">la disposition %1$s</string>
+    <string name="share_part_sounds">les sons %1$s</string>
+    <string name="share_part_motion">les animations et la surbrillance</string>
+
+    <string name="share_qr_no_link">Pas encore de lien</string>
+    <string name="share_qr_no_link_body">Un QR code a besoin d’un lien vers lequel pointer. Partage d’abord ton look dans la galerie ; une fois dedans, le QR pointe vers sa page. D’ici là, envoie directement le fichier .tandem.</string>
+    <string name="share_qr_scan">Scanne avec l’appareil photo d’un téléphone pour ouvrir ce look</string>
+    <string name="share_form_qr_title">Formulaire de partage</string>
+
+    <string name="share_gallery_ask">Partager dans la galerie ?</string>
+    <string name="share_gallery_ask_body">Tandem enregistre ton look dans ROMs/tandem/looks et ouvre le formulaire de partage GitHub dans le navigateur. Joins-y le fichier. Uniquement des images originales ou sous licence en règle, pas d’images de jeux du commerce, et ça reste tout public.</string>
+    <string name="share_gallery_go">Ouvrir le formulaire</string>
+    <string name="share_form_attach">Joins %1$s au formulaire</string>
+    <string name="share_no_browser">Pas de navigateur ici : scanne le code sur l’autre écran pour ouvrir le formulaire</string>
+    <string name="share_error_cant_save">Impossible d’enregistrer le look</string>
+
+    <string name="share_from_file">Depuis un fichier</string>
+    <string name="share_from_file_detail">Un fichier .tandem que tu as</string>
+    <string name="share_from_link">Depuis un lien</string>
+    <string name="share_from_link_detail">Une adresse web</string>
+    <string name="share_from_link_ask">Lien vers un look</string>
+    <string name="share_search">Rechercher</string>
+    <string name="share_search_detail">Noms, créateurs, tags</string>
+    <string name="share_search_clear">Effacer la recherche</string>
+    <string name="share_tag_all">Tous</string>
+    <string name="share_undo">Remettre mon ancien look</string>
+    <string name="share_undone">Ton ancien look est de retour</string>
+    <string name="share_get_help">Choisis un look pour le voir d’abord. Rien ne change tant que tu ne dis pas oui, et ton ancien look peut revenir.</string>
+
+    <string name="share_gallery_heading">Galerie de la communauté</string>
+    <string name="share_gallery_note">Des looks partagés par des joueurs de Tandem</string>
+    <string name="share_gallery_loading">Je demande à la galerie…</string>
+    <string name="share_gallery_empty">La galerie est vide pour l’instant. Sois le premier à partager un look !</string>
+    <string name="share_gallery_no_match">Aucun look ne correspond</string>
+    <plurals name="share_gallery_count">
+        <item quantity="one">%1$d look</item>
+        <item quantity="other">%1$d looks</item>
+    </plurals>
+    <string name="share_needs_update">Mise à jour requise</string>
+    <string name="share_preview_open">Aperçu</string>
+    <string name="share_getting">Je récupère le look…</string>
+
+    <string name="share_link_ask">Récupérer ce look ?</string>
+    <string name="share_link_ask_gallery">Tandem va télécharger « %1$s » depuis la galerie de la communauté et te le montrer d’abord.</string>
+    <string name="share_link_ask_web">Tandem va télécharger le look depuis %1$s et te le montrer d’abord.</string>
+    <string name="share_link_get">Je le veux</string>
+
+    <string name="share_untitled">Un look</string>
+    <string name="share_from_a_file">Depuis un fichier</string>
+    <string name="share_from_site">Depuis %1$s</string>
+    <string name="share_from_gallery">Depuis la galerie de la communauté</string>
+    <string name="share_preview_changes">Ce qui change</string>
+    <string name="share_change_collections">les icônes des collections</string>
+    <string name="share_change_layout">la disposition %1$s</string>
+    <string name="share_change_sounds">les sons %1$s</string>
+    <string name="share_change_motion">les animations</string>
+    <string name="share_preview_keeps">Tes jeux, tes boutons et tes comptes restent comme ils sont.</string>
+    <string name="share_preview_use">Adopter ce look</string>
+    <string name="share_preview_cancel">Pas maintenant</string>
+    <string name="share_applied">Tandem porte %1$s</string>
+
+    <string name="share_error_not_a_look">Ce n’est pas un look Tandem</string>
+    <string name="share_error_newer">Ce look demande un Tandem plus récent : fais la mise à jour d’abord</string>
+    <string name="share_error_too_big">Ce look est trop lourd pour être sûr</string>
+    <string name="share_error_bad_file">Ce look contient des fichiers qu’un look ne peut pas avoir</string>
+    <string name="share_error_bad_picture">Une de ses images n’en est pas vraiment une</string>
+    <string name="share_error_big_picture">Une de ses images est bien trop grande</string>
+    <string name="share_error_unreadable">Impossible de lire ce look</string>
+    <string name="share_error_mismatch">Le téléchargement ne correspond pas à la copie de la galerie, il n’a pas été utilisé</string>
+    <string name="share_error_not_found">La galerie n’existe pas encore, ou ce look a disparu</string>
+    <string name="share_error_offline">Impossible de l’atteindre. Tu es en ligne ?</string>
+    <string name="share_error_https">Uniquement des liens https://</string>
+</resources>

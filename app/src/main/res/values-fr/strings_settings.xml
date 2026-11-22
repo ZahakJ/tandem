@@ -124,6 +124,7 @@
     <!-- Group headings on the pages, shown in capitals. -->
     <string name="settings_group_colour">Couleur</string>
     <string name="settings_group_wallpaper_icons">Fond, icônes et animations</string>
+    <string name="settings_group_share">Partager</string>
     <string name="settings_group_language">Langue</string>
     <string name="settings_group_start_over">Repartir de zéro</string>
     <string name="settings_group_home_screen">Écran d’accueil</string>

@@ -57,7 +57,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 
 | Tile | Summary shows | Groups (› opens a subpage) |
 |---|---|---|
-| Look & feel | own accent, still (nothing otherwise: the theme's name is on the side panel) | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Language; Start over |
+| Look & feel | own accent, still (nothing otherwise: the theme's name is on the side panel) | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Share; Language; Start over |
 | Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included); Home screen (the rows for the layout in use, Grid shape › on the icon grid); Around the home (How games show ›, Dock & widgets ›, top bar, screensaver) |
 | Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
 | Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
@@ -86,6 +86,8 @@ A "›" step after a page is its subpage.
 | `Look.swapStyle` | Look & feel › Motion › Swap animation | choice |
 | (language, own preferences + LocaleManager on Android 13+) | Look & feel › Language › Language (System default or English, العربية, 日本語, 简体中文, Français; see TRANSLATING.md) | choice |
 | (calendar, own preferences; `Dates.choice`) | Look & feel › Language › Calendar (Gregorian, Hijri, Chinese, Gregorian + Hijri, Gregorian + Chinese; every date shown goes through `Dates`, see TRANSLATING.md) | choice |
+| (share, `look_share` app preferences for the name, author and description) | Look & feel › Share › Share my look (its own page: save, Show QR, share to the gallery; ShareLookScreen) | link |
+| (get) | Look & feel › Share › Get a look (its own page: a file, a link, the community gallery; GetLookScreen) | link |
 | (reset) | Look & feel › Start over › Reset look (keeps buttons, screens, sounds and music) | action |
 | `Look.homeLayout` | Home & layout › Layout gallery | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |

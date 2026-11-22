@@ -1,0 +1,15 @@
+:root { color-scheme: dark; --bg: #1b1830; --card: #2a2547; --text: #f4efff; --muted: #b7aed6; --accent: #7ee0c3; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 system-ui, sans-serif; }
+main { max-width: 960px; margin: 0 auto; padding: 24px 18px 48px; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.back { margin: 0 0 12px; }
+img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 14px; background: var(--card); }
+.grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.grid a { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 18px; background: var(--card); text-decoration: none; color: var(--text); }
+.tags { color: #c9b6ff; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+.button { display: inline-block; padding: 12px 20px; border-radius: 999px; background: var(--accent); color: #14121f; font-weight: 700; text-decoration: none; }
+.button.quiet { background: var(--card); color: var(--text); }

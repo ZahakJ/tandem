@@ -346,7 +346,10 @@ fun BottomContent() {
 
 @Composable
 private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill: (androidx.compose.ui.unit.Dp) -> Unit) {
-    if (SmartFolderForm.folderId != null) {
+    if (LookQr.link != null) {
+        // Share my look › Show QR: a code for a phone's camera.
+        LookQrScreen()
+    } else if (SmartFolderForm.folderId != null) {
         // The smart folder editor's live preview (SmartFolderForm.kt).
         SmartPreview()
     } else if (mode == "clock") {

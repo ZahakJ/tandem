@@ -27,6 +27,15 @@ press **Update** does it download that release's APK and `SHA256SUMS` from githu
 with **Check automatically** (next to Updates); it is blocked in private mode, and builds made with
 `-PselfUpdate=false` (for F-Droid) have no update check at all.
 
+**Get a look** (Settings › Look & feel) reads the community gallery when you open it: `index.json` from
+`raw.githubusercontent.com/ZahakJ/tandem-gallery/main/` (asked again only when it changed, by its ETag), the preview
+pictures of the looks it shows, and a look's `.tandem` file when you pick one (its SHA-256 and size are checked against
+the index before anything is installed). **From a link**, and a `tandem://look?url=…` link Tandem is opened with, download
+one https file, after you say yes. Nothing about you or your library is sent; GitHub sees your IP address. Sharing a
+look to the gallery opens GitHub's form in your browser; Tandem itself uploads nothing. A `.tandem` file holds only
+look settings and pictures, from an allow-list (`SharedLook` in `data/LookFile.kt`): never games, play data, hidden
+games, the PIN, accounts, keys, folder paths or device ids, and its pictures are re-encoded, which drops their metadata.
+
 RetroAchievements is contacted only after you sign in, to show your profile and progress, and when you open
 **Find match** in a game's Edit details (never for a hidden game).
 
@@ -43,8 +52,8 @@ game whose cover address isn't known yet, the Discord status looks one up once (
 SteamGridDB if you entered a key; only sources that are on, never for a hidden game or in private mode).
 
 While private mode is on, none of the above happens: every request Tandem makes stops before it leaves the device
-(`NetGate` in `Offline.kt`: scraping and its downloads, the LaunchBox database, RetroAchievements, cover lookups and
-remote pictures, which then come only from the picture cache), a scrape under way is stopped, and nothing is kept to
+(`NetGate` in `Offline.kt`: scraping and its downloads, the LaunchBox database, RetroAchievements, cover lookups, the
+look gallery and remote pictures, which then come only from the picture cache), a scrape under way is stopped, and nothing is kept to
 send later. With **Offline for hidden games** (off by default, needs Shizuku), starting a hidden game also
 turns on airplane mode (and Wi-Fi off, if Android keeps it on in airplane mode) until the game's session ends; airplane
 mode the user turned on is never turned off. Emulators' own network features are outside Tandem's control except

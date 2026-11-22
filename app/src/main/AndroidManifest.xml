@@ -74,6 +74,14 @@
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- Share my look: tandem://look?id=… (a gallery look) or ?url=https://… (a .tandem file), from a look's
+                 QR code or its gallery page. Get a look asks before downloading anything (LookShare.openLink). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tandem" android:host="look" />
+            </intent-filter>
         </activity>
 
         <!-- The bottom screen while a game plays on the top one (GameCompanion.kt): its own task, out of Recents,

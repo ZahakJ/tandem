@@ -1,6 +1,6 @@
 # Privacy and scraping
 
-Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, and the Discord status if you connect it. The two exceptions are a daily check for a new version of Tandem, and art for Steam shortcuts, both below.
+Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, the Discord status if you connect it, and the look gallery when you open it. The two exceptions are a daily check for a new version of Tandem, and art for Steam shortcuts, both below.
 
 ## When Tandem uses the network
 
@@ -13,6 +13,7 @@ Here is every moment Tandem talks to the internet. Almost all of them start with
 - **RetroAchievements**, only after you sign in with your username and web API key, and for **Find match** in a game's Edit details when you open it (never for a hidden game).
 - **Steam achievements**, only after you enter your own Steam Web API key and account: when you sign in, when you choose **Look up achievements**, when a Steam game is highlighted (at most every ten minutes), and once when you come back from playing one (never for a hidden game).
 - **Discord status**, only after you connect your Discord account, and only while a game plays (see [Discord status](#discord-status)).
+- **Get a look** (**Settings › Look & feel › Get a look**): opening it reads the community gallery's list from GitHub, then the preview pictures of the looks it shows, and a look's file when you pick one. **From a link**, or a `tandem://look` link from a QR code, downloads one file, after you say yes. No account, and nothing about you or your games is sent. See [Sharing looks](themes.md#sharing-looks).
 - **The update check**, the first exception: once a day while Tandem is open (and when you press <kbd>A</kbd> on **Settings › Play & system › Updates**), Tandem asks GitHub for the number of its latest release. Nothing about you is sent beyond what any download carries (your IP address). The new APK is downloaded only when you press **Update**. **Check automatically** (there too) turns it off, private mode skips it, and builds made without self-update (for F-Droid) have none. See [Software updates](getting-started.md#software-updates).
 - **Steam shortcuts' art**, the second exception: after a library scan, a Windows game that is a `.steam` shortcut and has no box art, hero or logo yet gets them from Steam's public store pictures, by its app id. No account, no key, nothing else sent, never for a hidden game, and never in private mode. To avoid it, put the pictures in place yourself ([Windows and Steam art](library.md#windows-and-steam-games)).
 
@@ -24,7 +25,7 @@ Tandem never scrapes on its own or on a schedule. Peanuts Native and the Switch 
 <details>
 <summary>The permissions behind it</summary>
 
-Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements, Steam achievements, the Discord status and its own update check only; there are no crash reports. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code. `ACCESS_NETWORK_STATE` only lets it warn you before a big download on mobile data.
+Tandem declares Android's `INTERNET` permission for scraping, RetroAchievements, Steam achievements, the Discord status, the look gallery and its own update check only; there are no crash reports. See the [manifest](../../app/src/main/AndroidManifest.xml) and the code. `ACCESS_NETWORK_STATE` only lets it warn you before a big download on mobile data.
 
 </details>
 
@@ -44,6 +45,7 @@ This is exactly what each service receives. Each source can be switched off in *
 | Steam store pictures | After a scan, for `.steam` shortcuts missing art | The app id in the shortcut, as part of the picture's address. |
 | Steam Web API | Only with your own key and account | Your key and your SteamID64 (or the profile name you typed, once, to find it), and the app id of each Steam game in your library, to read its achievements and their names and icons. The share of players who have each one is asked for with the app id alone. |
 | Discord | Only after you connect your account, in builds that include it | While a game plays: its title, its cover and when you started. The connection to Discord stays open only while you play and for a minute after. |
+| The look gallery (GitHub) | When you open **Get a look**, and when you pick a look or a link | Nothing about you: requests for the gallery's list, its preview pictures and the look you pick. The list is asked for again only when it changed. |
 
 > [!IMPORTANT]
 > **Hidden games are never sent anywhere**, and neither is any game in a hidden folder or system. They are left out of every scrape and achievement lookup, **Choose artwork** won't run for them, and they never show as your Discord status.
@@ -101,6 +103,7 @@ While private mode is on, Tandem itself sends nothing online:
 - No RetroAchievements: no progress, profile, game lists or sign-in.
 - No Steam achievements: no lookups, no sign-in; what was fetched before still shows.
 - No Discord status, and no cover lookups for it.
+- No look gallery and no look downloads; a `.tandem` file you pick still imports.
 - No pictures from the web: only those already in Tandem's picture cache show.
 
 Nothing is kept to send later. Turning private mode off only makes the next lookup you start possible again.
@@ -139,6 +142,7 @@ Everything Tandem knows lives on your device. Here is each piece, where it sits 
 | Downloaded artwork, logos and video snaps | `ROMs/downloaded_media/<system>/…` | So they are yours to keep, in the layout other frontends read. **Clear downloaded media** removes only what Tandem downloaded |
 | Switch saves replaced by the save sync | `ROMs/tandem/save-sync/backups/<title ID>/<app>/` | So a save that was overwritten can be put back. The newest 20 per game and app are kept. See [Switch games](switch.md#backups) |
 | Game manuals and guides, and the page each was left at | `ROMs/manuals/<system>/` (your files, and copies of the ones you pick in Edit details); `manual-pages.json` in Tandem's private storage | Read on either screen. Never sent anywhere, never deleted by Tandem. See [Manuals and guides](library.md#manuals-and-guides) |
+| Looks you save, and looks you get | `ROMs/tandem/looks/` (files you save with **Share my look**); `ROMs/tandem/themes/<name>/` (each look you use, as a theme pack); the name, author and description you typed, in Android app preferences; the gallery's list and previews in Tandem's cache | To share and use looks. A look file holds only look settings and pictures, never anything about your games or accounts |
 | The `ROMs` folder, if you picked it | Android app preferences | To share game files with emulators |
 | The last game started in each emulator, and when the current session began | Android app preferences | Resume and play time |
 
@@ -158,7 +162,7 @@ Every permission Tandem asks for, and the one thing each is for. The optional on
 | Permission | Used for |
 | --- | --- |
 | All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs, play stats exports, Switch save-sync backups), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
-| Internet | Scraping, RetroAchievements, Steam achievements and the Discord status, only when you start or connect them, and the daily update check (see above). |
+| Internet | Scraping, RetroAchievements, Steam achievements, the Discord status and the look gallery, only when you start or connect them, and the daily update check (see above). |
 | Install apps, and uninstall apps | Installing a new Tandem when you press **Update**; opening Android's uninstall screen for **Uninstall app…** on an Android game. |
 | Do Not Disturb access | **Immersion mode**: Do Not Disturb while a game plays. |
 | Eden Duo's companion control | Showing a Switch game's own second screen through Eden Duo (**Game screen**). |

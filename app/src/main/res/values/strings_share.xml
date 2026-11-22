@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Share my look and Get a look (LookScreens.kt, LookShare.kt): a whole look as one .tandem file, a QR code on the
+     bottom screen, and the community gallery. Keys start with share_. See docs/TRANSLATING.md. "Look" means the whole
+     outfit Tandem wears: theme, colours, wallpaper, icons, layout, sounds. -->
+<resources>
+    <!-- The Settings group on Look & feel, and its two rows. -->
+    <string name="share_group">Share looks</string>
+    <string name="share_title">Share my look</string>
+    <string name="share_row_help">Pack your whole look into one file: theme, colours, wallpaper, icons, layout and sounds. Never your games or accounts.</string>
+    <string name="share_get_title">Get a look</string>
+    <string name="share_get_row_help">Try someone else\'s look: from a file, a link, or the community gallery.</string>
+
+    <!-- Share my look: the first group of rows, what the look is called. -->
+    <string name="share_about_heading">Your look</string>
+    <string name="share_about_note">Name it, sign it if you like</string>
+    <string name="share_name">Name</string>
+    <string name="share_author">Made by</string>
+    <!-- The title of the keyboard that asks for the author's name. -->
+    <string name="share_author_ask">Your name (optional)</string>
+    <!-- The value of Made by while it is empty. -->
+    <string name="share_author_none">Nobody yet</string>
+    <string name="share_description">Description</string>
+    <!-- The value of Description while it is empty. -->
+    <string name="share_description_none">None</string>
+
+    <!-- Share my look: the second group, ways to send it. -->
+    <string name="share_send_heading">Send it</string>
+    <string name="share_send_note">One .tandem file, works offline</string>
+    <string name="share_save">Save to my looks</string>
+    <string name="share_save_as">Save somewhere else…</string>
+    <string name="share_qr_show">Show QR on the other screen</string>
+    <string name="share_qr_hide">Hide the QR</string>
+    <string name="share_gallery">Share to the gallery</string>
+    <!-- Toasts while the file is made and when it is saved. %1$s is a path like ROMs/tandem/looks/Mint.tandem. -->
+    <string name="share_making">Packing your look…</string>
+    <string name="share_saved">Saved to %1$s</string>
+    <string name="share_saved_there">Look saved</string>
+    <string name="share_video_left_out">Saved. Video wallpapers stay on this handheld, so that screen gets the theme\'s backdrop.</string>
+    <string name="share_heroes_left_out">Saved. The heroes made the file too big, so they stayed home.</string>
+    <!-- The bottom screen help for the rows. -->
+    <string name="share_qr_help">Puts a QR code on the other screen. Scan it with a phone\'s camera to open the look.</string>
+    <string name="share_gallery_help">Opens GitHub\'s share form in the browser with your look\'s name filled in. You attach the file there; a GitHub account is needed only to share.</string>
+    <!-- What never goes in a shared look (side panel and help). -->
+    <string name="share_privacy">Only how Tandem looks goes in. Never your games, play time, saves, hidden games, PIN, accounts, keys or folders.</string>
+    <!-- The side panel: what the file holds. %1$s is the theme's name, then the layout's, then the sound pack's. -->
+    <string name="share_goes_in">What goes in</string>
+    <string name="share_part_theme">the %1$s theme and its colours</string>
+    <string name="share_part_wallpaper">wallpaper pictures</string>
+    <string name="share_part_icons">system and collection icons</string>
+    <string name="share_part_layout">the %1$s layout</string>
+    <string name="share_part_sounds">%1$s sounds</string>
+    <string name="share_part_motion">motion and highlight</string>
+
+    <!-- Show QR when the look isn't in the gallery yet. -->
+    <string name="share_qr_no_link">No link yet</string>
+    <string name="share_qr_no_link_body">A QR code needs a link to point at. Share your look to the gallery first; once it\'s in, Show QR points at its page. Until then, send the .tandem file itself.</string>
+    <!-- Under the QR code. -->
+    <string name="share_qr_scan">Scan with a phone camera to open this look</string>
+    <!-- The title over a QR code for GitHub's share form, when no browser could open it here. -->
+    <string name="share_form_qr_title">Share form</string>
+
+    <!-- Share to the gallery. -->
+    <string name="share_gallery_ask">Share to the gallery?</string>
+    <string name="share_gallery_ask_body">Tandem saves your look to ROMs/tandem/looks and opens GitHub\'s share form in the browser. Attach the file there. Only original or properly licensed art, no art from commercial games, and keep it family-friendly.</string>
+    <string name="share_gallery_go">Open the form</string>
+    <!-- %1$s is the saved file's path. -->
+    <string name="share_form_attach">Attach %1$s to the form</string>
+    <string name="share_no_browser">No browser here: scan the code on the other screen to open the form</string>
+    <string name="share_error_cant_save">Couldn\'t save the look</string>
+
+    <!-- Get a look: the three tiles at the top. -->
+    <string name="share_from_file">From a file</string>
+    <string name="share_from_file_detail">A .tandem file you have</string>
+    <string name="share_from_link">From a link</string>
+    <string name="share_from_link_detail">A web address</string>
+    <string name="share_from_link_ask">Link to a look</string>
+    <string name="share_search">Search</string>
+    <string name="share_search_detail">Names, makers, tags</string>
+    <string name="share_search_clear">Clear search</string>
+    <!-- The chip that shows every tag. -->
+    <string name="share_tag_all">All</string>
+    <string name="share_undo">Put my old look back</string>
+    <string name="share_undone">Your old look is back</string>
+    <string name="share_get_help">Pick a look to see it first. Nothing changes until you say so, and your old look can come back.</string>
+
+    <!-- The gallery. -->
+    <string name="share_gallery_heading">Community gallery</string>
+    <string name="share_gallery_note">Looks shared by Tandem players</string>
+    <string name="share_gallery_loading">Asking the gallery…</string>
+    <string name="share_gallery_empty">The gallery is empty for now. Be the first to share a look!</string>
+    <string name="share_gallery_no_match">No look matches that</string>
+    <plurals name="share_gallery_count">
+        <item quantity="one">%1$d look</item>
+        <item quantity="other">%1$d looks</item>
+    </plurals>
+    <!-- A gallery look made for a newer Tandem than this one. -->
+    <string name="share_needs_update">Needs an update</string>
+    <!-- The A hint on the bottom screen for a gallery look. -->
+    <string name="share_preview_open">Preview</string>
+    <string name="share_getting">Getting the look…</string>
+
+    <!-- Opened from a link (a QR code, a web page). %1$s is the look's id, or the web site's address. -->
+    <string name="share_link_ask">Get this look?</string>
+    <string name="share_link_ask_gallery">Tandem will download “%1$s” from the community gallery and show it to you first.</string>
+    <string name="share_link_ask_web">Tandem will download the look from %1$s and show it to you first.</string>
+    <string name="share_link_get">Get it</string>
+
+    <!-- The preview card. -->
+    <string name="share_untitled">A look</string>
+    <string name="share_from_a_file">From a file</string>
+    <!-- %1$s is a web site's address, like example.org. -->
+    <string name="share_from_site">From %1$s</string>
+    <string name="share_from_gallery">From the community gallery</string>
+    <string name="share_preview_changes">It changes</string>
+    <string name="share_change_collections">collection icons</string>
+    <!-- %1$s is a home layout's name (Icon grid, Orbit…). -->
+    <string name="share_change_layout">%1$s layout</string>
+    <!-- %1$s is a sound pack's name (Chiptune, Glass…). -->
+    <string name="share_change_sounds">%1$s sounds</string>
+    <string name="share_change_motion">motion</string>
+    <string name="share_preview_keeps">Your games, buttons and accounts stay as they are.</string>
+    <string name="share_preview_use">Use this look</string>
+    <string name="share_preview_cancel">Not now</string>
+    <!-- Toast after a look is applied, with Undo. %1$s is the look's name. -->
+    <string name="share_applied">%1$s is on</string>
+
+    <!-- Why a look couldn't be used. -->
+    <string name="share_error_not_a_look">That isn\'t a Tandem look</string>
+    <string name="share_error_newer">This look needs a newer Tandem: update first</string>
+    <string name="share_error_too_big">That look is too big to be safe</string>
+    <string name="share_error_bad_file">That look has files a look can\'t have</string>
+    <string name="share_error_bad_picture">One of its pictures isn\'t a real picture</string>
+    <string name="share_error_big_picture">One of its pictures is far too big</string>
+    <string name="share_error_unreadable">Couldn\'t read that look</string>
+    <string name="share_error_mismatch">The download doesn\'t match the gallery\'s copy, so it wasn\'t used</string>
+    <string name="share_error_not_found">The gallery isn\'t there yet, or that look is gone</string>
+    <string name="share_error_offline">Couldn\'t reach it. Are you online?</string>
+    <string name="share_error_https">Only https:// links</string>
+</resources>
