@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stats & trophies (Stats.kt, StatsLibrary.kt, Trophies.kt, PlaySessions.kt) and the trophies themselves
+     (data/Trophies.kt). Keys start with stats_, then the tab or feature. See docs/TRANSLATING.md. Play times
+     ("3h 20m") are made elsewhere and passed in as %1$s. -->
+<resources>
+    <!-- The tabs along the top of Stats; L1 and R1 switch between them. Keep them short. -->
+    <string name="stats_tab_overview">Résumé</string>
+    <string name="stats_tab_library">Bibliothèque</string>
+    <string name="stats_tab_trophies">Trophées</string>
+    <string name="stats_tab_sessions">Sessions</string>
+    <string name="stats_tab_achievements">Succès</string>
+    <!-- The R1 button hint beside the tabs. -->
+    <string name="stats_hint_switch_tab">Onglet suivant</string>
+
+    <!-- Overview, with nothing played yet. The button under it goes back. -->
+    <string name="stats_overview_empty">Lance un jeu et je compte tout ici, sans que rien ne quitte la console</string>
+    <string name="stats_overview_go_back">Revenir</string>
+
+    <!-- Overview: the four tiles along the top. Each has a label, a big value and a small line under it. -->
+    <string name="stats_tile_total">Temps de jeu</string>
+    <!-- Under Total play: how many games the time is spread over. -->
+    <plurals name="stats_tile_total_across">
+        <item quantity="one">sur %1$d jeu</item>
+        <item quantity="other">sur %1$d jeux</item>
+    </plurals>
+    <string name="stats_tile_games">Jeux lancés</string>
+    <!-- Under Games played: the size of the library. -->
+    <plurals name="stats_tile_games_of">
+        <item quantity="one">sur %1$d dans ta bibliothèque</item>
+        <item quantity="other">sur %1$d dans ta bibliothèque</item>
+    </plurals>
+    <string name="stats_tile_streak">Série</string>
+    <!-- The Streak tile's value before any play is recorded in Tandem. -->
+    <string name="stats_tile_streak_new">Nouveau</string>
+    <!-- The Streak tile's value: days in a row with play. -->
+    <plurals name="stats_tile_streak_days">
+        <item quantity="one">%1$d jour</item>
+        <item quantity="other">%1$d jours</item>
+    </plurals>
+    <!-- Under Streak: the longest streak so far. -->
+    <plurals name="stats_tile_streak_best">
+        <item quantity="one">record : %1$d jour</item>
+        <item quantity="other">record : %1$d jours</item>
+    </plurals>
+    <!-- Under Streak and Sessions when play time was imported but no session is recorded in Tandem yet. -->
+    <string name="stats_tile_history_starts">l’historique commence aujourd’hui</string>
+    <string name="stats_tile_sessions">Sessions</string>
+    <!-- Under Sessions when the average session is under a minute. -->
+    <string name="stats_tile_sessions_short">courtes mais intenses</string>
+    <!-- Under Sessions: the average session's length, like "about 45m each". -->
+    <string name="stats_tile_sessions_average">environ %1$s chacune</string>
+    <!-- Shown when a tile is pressed: its label, value and line, like "Total play: 12h 5m · across 8 games". -->
+    <string name="stats_tile_said">%1$s : %2$s · %3$s</string>
+
+    <string name="stats_by_system">Par système</string>
+    <string name="stats_most_played">Les plus joués</string>
+    <!-- The box that holds the systems too small for a box of their own: "3 more". -->
+    <plurals name="stats_mosaic_more">
+        <item quantity="one">%1$d autre</item>
+        <item quantity="other">%1$d autres</item>
+    </plurals>
+    <!-- In a system's box: its share of all play time, like "42% of your play". -->
+    <string name="stats_mosaic_share">%1$d %% de ton temps de jeu</string>
+
+    <!-- Overview: Pip's one-line fact about when you play the most. -->
+    <string name="stats_fact_morning">Toi, tu es du matin : c’est là que tu joues le plus.</string>
+    <string name="stats_fact_afternoon">Aventurier de l’après-midi : c’est ton créneau préféré.</string>
+    <string name="stats_fact_evening">Le soir, c’est l’heure du jeu. Bien au chaud !</string>
+    <string name="stats_fact_night">Un vrai oiseau de nuit. Tu joues surtout après 23 h.</string>
+    <!-- Pressing the fact. -->
+    <string name="stats_fact_private">Tes stats ne quittent jamais la console</string>
+
+    <!-- Overview: the chart of the last 30 days. -->
+    <string name="stats_chart_title">30 derniers jours</string>
+    <string name="stats_chart_empty_new">Ton historique commence aujourd’hui. Joue un peu et les jours se remplissent ici.</string>
+    <string name="stats_chart_empty">Rien joué ces 30 derniers jours. Ta prochaine session s’affichera ici.</string>
+    <string name="stats_chart_nothing">Rien pour l’instant</string>
+    <!-- The chart's total: "12h 5m in total". -->
+    <string name="stats_chart_total">%1$s au total</string>
+    <!-- The picked day and its play: "Today · 1h 5m". %1$s is the day. -->
+    <string name="stats_chart_day">%1$s · %2$s</string>
+    <!-- The picked day with nothing played: "Today · no play". -->
+    <string name="stats_chart_day_none">%1$s · pas joué</string>
+    <string name="stats_today">Aujourd’hui</string>
+    <string name="stats_yesterday">Hier</string>
+    <!-- A date pattern (java.time DateTimeFormatter letters, not words): a short day in the chart, "Sat 21 Nov".
+         Reorder it the way your language writes dates; put literal words in single quotes. -->
+    <string name="stats_date_short">EEE d MMM</string>
+    <!-- A date pattern (as above): a day heading in Sessions, "Saturday 21 November". -->
+    <string name="stats_date_long">EEEE d MMMM</string>
+
+    <!-- Sessions. %1$s is a game's title. -->
+    <string name="stats_sessions_none_for">Aucune session pour %1$s : son temps de jeu vient peut-être d’un import</string>
+    <string name="stats_sessions_show_all_long">Voir toutes les sessions</string>
+    <string name="stats_sessions_empty">Chaque fois que tu joues, une session apparaît ici</string>
+    <string name="stats_sessions_see_overview">Voir le résumé</string>
+    <string name="stats_sessions_show_all">Tout voir</string>
+    <string name="stats_sessions_clear_these">Effacer ces sessions</string>
+    <string name="stats_sessions_clear_all">Effacer toutes les sessions</string>
+    <!-- Hold to confirm. %1$s is a game's title. -->
+    <string name="stats_sessions_clear_these_ask">Effacer les sessions de %1$s ?</string>
+    <string name="stats_sessions_clear_all_ask">Effacer toutes les sessions ?</string>
+    <plurals name="stats_sessions_cleared">
+        <item quantity="one">%1$d session effacée</item>
+        <item quantity="other">%1$d sessions effacées</item>
+    </plurals>
+    <!-- How many sessions are listed. -->
+    <plurals name="stats_sessions_count">
+        <item quantity="one">%1$d session</item>
+        <item quantity="other">%1$d sessions</item>
+    </plurals>
+    <!-- One game's sessions: "Celeste · 4 sessions". -->
+    <plurals name="stats_sessions_count_for">
+        <item quantity="one">%2$s · %1$d session</item>
+        <item quantity="other">%2$s · %1$d sessions</item>
+    </plurals>
+    <!-- The Y button hint on a session. -->
+    <string name="stats_sessions_hint_edit">Modifier</string>
+    <!-- A day heading with that day's play: "Today · 1h 5m". -->
+    <string name="stats_sessions_day">%1$s · %2$s</string>
+    <string name="stats_sessions_game_gone">Ce jeu n’est plus dans ta bibliothèque</string>
+
+    <!-- Exporting the stats as spreadsheet files (the file and folder names stay as they are). -->
+    <string name="stats_export_saved">play-stats.csv et play-sessions.csv enregistrés dans ROMs/tandem</string>
+    <string name="stats_export_failed">Impossible d’écrire dans ROMs/tandem</string>
+
+    <!-- Stats › Library, with no game given a status yet. -->
+    <string name="stats_library_empty">Y › Statut sur n’importe quel jeu le met dans ta pile À jouer, ou le marque Terminé. Ta bibliothèque se range toute seule ici</string>
+    <!-- Stats › Library: the four tiles. Under each a short line. -->
+    <string name="stats_library_playing">En cours</string>
+    <!-- Under Playing: the game most recently played. %1$s is its title. -->
+    <string name="stats_library_playing_latest">dernier : %1$s</string>
+    <string name="stats_library_playing_none">rien sur le feu</string>
+    <string name="stats_library_backlog">À jouer</string>
+    <!-- Under Backlog: how long the backlog takes to beat, like "about 40h to clear". -->
+    <string name="stats_library_backlog_left">environ %1$s pour en venir à bout</string>
+    <!-- The same when some backlog games have no time known: "about 40h to clear+". -->
+    <string name="stats_library_backlog_left_more">environ %1$s et plus pour en venir à bout</string>
+    <string name="stats_library_backlog_none">jeux en attente</string>
+    <string name="stats_library_finished">Terminé</string>
+    <!-- Under Finished: games finished this calendar year. -->
+    <plurals name="stats_library_finished_year">
+        <item quantity="one">%1$d cette année</item>
+        <item quantity="other">%1$d cette année</item>
+    </plurals>
+    <string name="stats_library_completed">Complété</string>
+    <!-- Under Completed before anything is finished. -->
+    <string name="stats_library_completed_none">les parties à 100 %</string>
+    <!-- Under Completed: the share of finished games also completed, like "40% of finished games". -->
+    <string name="stats_library_completed_share">%1$d %% des jeux terminés</string>
+    <!-- A card under the tiles; pressing A starts sorting them. -->
+    <plurals name="stats_library_untracked">
+        <item quantity="one">%1$d jeu auquel tu as joué n’a pas encore de statut. A les trie un par un, les plus joués d’abord.</item>
+        <item quantity="other">%1$d jeux auxquels tu as joué n’ont pas encore de statut. A les trie un par un, les plus joués d’abord.</item>
+    </plurals>
+    <!-- The shelves, one per status, titled "Playing · 4". -->
+    <string name="stats_library_shelf">%1$s · %2$d</string>
+    <string name="stats_library_shelf_playing">En cours</string>
+    <string name="stats_library_shelf_backlog">À jouer</string>
+    <string name="stats_library_shelf_beaten">Terminés et complétés</string>
+    <string name="stats_library_shelf_shelved">En pause</string>
+    <string name="stats_library_shelf_endless">Sans fin</string>
+    <!-- Under a game on the Playing shelf with no progress known. -->
+    <string name="stats_library_just_started">tout juste commencé</string>
+    <!-- When a game was finished, under it on its shelf. -->
+    <string name="stats_ago_today">aujourd’hui</string>
+    <string name="stats_ago_yesterday">hier</string>
+    <plurals name="stats_ago_days">
+        <item quantity="one">il y a %1$d jour</item>
+        <item quantity="other">il y a %1$d jours</item>
+    </plurals>
+    <plurals name="stats_ago_months">
+        <item quantity="one">il y a %1$d mois</item>
+        <item quantity="other">il y a %1$d mois</item>
+    </plurals>
+    <plurals name="stats_ago_years">
+        <item quantity="one">il y a %1$d an</item>
+        <item quantity="other">il y a %1$d ans</item>
+    </plurals>
+    <!-- How long a game has waited in the backlog, under it on its shelf. -->
+    <string name="stats_waiting">en attente</string>
+    <string name="stats_waiting_today">en attente depuis aujourd’hui</string>
+    <string name="stats_waiting_yesterday">en attente depuis hier</string>
+    <plurals name="stats_waiting_days">
+        <item quantity="one">attend depuis %1$d jour</item>
+        <item quantity="other">attend depuis %1$d jours</item>
+    </plurals>
+    <plurals name="stats_waiting_months">
+        <item quantity="one">attend depuis %1$d mois</item>
+        <item quantity="other">attend depuis %1$d mois</item>
+    </plurals>
+    <plurals name="stats_waiting_years">
+        <item quantity="one">attend depuis %1$d an</item>
+        <item quantity="other">attend depuis %1$d ans</item>
+    </plurals>
+
+    <!-- Sorting played games with no status, one at a time. -->
+    <string name="stats_sorter_none">Tous les jeux auxquels tu as joué ont un statut</string>
+    <plurals name="stats_sorter_done">
+        <item quantity="one">Tout est rangé ! %1$d jeu trié</item>
+        <item quantity="other">Tout est rangé ! %1$d jeux triés</item>
+    </plurals>
+    <string name="stats_sorter_title">Trie tes jeux joués</string>
+    <!-- Button hints: A sets the highlighted status, B stops. -->
+    <string name="stats_sorter_set">Valider</string>
+    <string name="stats_sorter_stop">Pause</string>
+    <!-- Where you are: "3 of 12". -->
+    <string name="stats_sorter_progress">%1$d sur %2$d</string>
+    <string name="stats_sorter_skip">Passer celui-ci</string>
+
+    <!-- Trophy tiers, like medals. -->
+    <string name="stats_tier_bronze">Bronze</string>
+    <string name="stats_tier_silver">Argent</string>
+    <string name="stats_tier_gold">Or</string>
+    <string name="stats_tier_platinum">Platine</string>
+
+    <!-- A new trophy, shown for a few seconds: "🏆 Gold trophy: Centurion · Play for 100 hours in all".
+         %1$s is the tier, %2$s the trophy, %3$s how it was earned. -->
+    <string name="stats_trophy_new">🏆 Trophée %1$s : %2$s · %3$s</string>
+    <!-- Several new trophies at once, the best named: "🏆 Gold trophy: Centurion (and 2 more)".
+         %1$d is how many more, %2$s the tier, %3$s the trophy. -->
+    <plurals name="stats_trophy_new_more">
+        <item quantity="one">🏆 Trophée %2$s : %3$s (et %1$d autre)</item>
+        <item quantity="other">🏆 Trophée %2$s : %3$s (et %1$d autres)</item>
+    </plurals>
+    <!-- Stats › Trophies: pressing the summary. -->
+    <string name="stats_trophies_about">Les trophées viennent de tes parties et des statuts de tes jeux, sur tous les systèmes</string>
+    <!-- The summary: "7 of 26 trophies". %1$d is earned, %2$d all of them (the count the plural follows). -->
+    <plurals name="stats_trophies_earned">
+        <item quantity="one">%1$d trophée sur %2$d</item>
+        <item quantity="other">%1$d trophées sur %2$d</item>
+    </plurals>
+    <plurals name="stats_trophies_finished">
+        <item quantity="one">%1$d jeu terminé</item>
+        <item quantity="other">%1$d jeux terminés</item>
+    </plurals>
+    <string name="stats_trophies_cabinet">La vitrine : les jeux que tu as terminés</string>
+    <!-- A date pattern (java.time DateTimeFormatter letters): the month a game was finished, "Nov 2026". -->
+    <string name="stats_date_month">MMM yyyy</string>
+    <!-- A date pattern (as above): the day a trophy was earned, "21 Nov 2026". -->
+    <string name="stats_date_earned">d MMM yyyy</string>
+    <!-- Pressing an earned trophy: "Centurion: Play for 100 hours in all". -->
+    <string name="stats_trophy_said">%1$s : %2$s</string>
+    <!-- Pressing a trophy not earned yet: "Play for 100 hours in all. 12 h / 100 h so far". -->
+    <string name="stats_trophy_progress_said">%1$s. Pour l’instant : %2$s</string>
+    <!-- Under an earned trophy: its tier and the day: "Gold · 21 Nov 2026". -->
+    <string name="stats_trophy_earned_on">%1$s · %2$s</string>
+    <!-- Progress on a time trophy: "12 h / 100 h". -->
+    <string name="stats_trophy_hours">%1$d h / %2$d h</string>
+
+    <!-- Tandem's own trophies (data/Trophies.kt): each a name, then how to earn it. The names are playful; keep them short. -->
+    <string name="stats_trophy_first_play">Appuie sur Start</string>
+    <string name="stats_trophy_first_play_how">Lance ton premier jeu dans Tandem</string>
+    <string name="stats_trophy_hour">Encore un niveau</string>
+    <string name="stats_trophy_hour_how">Joue une heure au total</string>
+    <string name="stats_trophy_ten_hours">On s’installe</string>
+    <string name="stats_trophy_ten_hours_how">Joue 10 heures au total</string>
+    <string name="stats_trophy_hundred_hours">Centurion</string>
+    <string name="stats_trophy_hundred_hours_how">Joue 100 heures au total</string>
+    <string name="stats_trophy_thousand_hours">À vie</string>
+    <string name="stats_trophy_thousand_hours_how">Joue 1 000 heures au total</string>
+    <string name="stats_trophy_marathon">Marathon</string>
+    <string name="stats_trophy_marathon_how">Joue 3 heures d’affilée</string>
+    <string name="stats_trophy_devoted">Fidèle</string>
+    <string name="stats_trophy_devoted_how">Passe 25 heures sur un même jeu</string>
+    <string name="stats_trophy_second_home">Résidence secondaire</string>
+    <string name="stats_trophy_second_home_how">Passe 100 heures sur un même jeu</string>
+    <string name="stats_trophy_week">Semaine pleine</string>
+    <string name="stats_trophy_week_how">Joue 7 jours d’affilée</string>
+    <string name="stats_trophy_month">Inarrêtable</string>
+    <string name="stats_trophy_month_how">Joue 30 jours d’affilée</string>
+    <string name="stats_trophy_regular">Habitué</string>
+    <string name="stats_trophy_regular_how">Joue 100 sessions</string>
+    <string name="stats_trophy_night_owl">Oiseau de nuit</string>
+    <string name="stats_trophy_night_owl_how">Lance un jeu entre 2 h et 5 h du matin</string>
+    <string name="stats_trophy_early_bird">Lève-tôt</string>
+    <string name="stats_trophy_early_bird_how">Lance un jeu avant 7 h du matin</string>
+    <string name="stats_trophy_travelled">Grand voyageur</string>
+    <string name="stats_trophy_travelled_how">Joue sur 3 systèmes</string>
+    <string name="stats_trophy_globetrotter">Globe-trotteur</string>
+    <string name="stats_trophy_globetrotter_how">Joue sur 8 systèmes</string>
+    <string name="stats_trophy_sampler">Touche-à-tout</string>
+    <string name="stats_trophy_sampler_how">Joue à 25 jeux différents</string>
+    <string name="stats_trophy_plans">Grands projets</string>
+    <string name="stats_trophy_plans_how">Mets 5 jeux dans ta pile À jouer</string>
+    <string name="stats_trophy_credits">Générique de fin</string>
+    <string name="stats_trophy_credits_how">Termine un jeu</string>
+    <string name="stats_trophy_closer">Finisseur</string>
+    <string name="stats_trophy_closer_how">Termine 5 jeux</string>
+    <string name="stats_trophy_finisher">Rouleau compresseur</string>
+    <string name="stats_trophy_finisher_how">Termine 25 jeux</string>
+    <string name="stats_trophy_completionist">Complétionniste</string>
+    <string name="stats_trophy_completionist_how">Complète un jeu à 100 %</string>
+    <string name="stats_trophy_perfectionist">Perfectionniste</string>
+    <string name="stats_trophy_perfectionist_how">Complète 10 jeux à 100 %</string>
+    <string name="stats_trophy_monthly">Un jeu par mois</string>
+    <string name="stats_trophy_monthly_how">Termine 12 jeux en une année</string>
+    <string name="stats_trophy_collector">Collectionneur</string>
+    <string name="stats_trophy_collector_how">Aie 100 jeux dans ta bibliothèque</string>
+    <string name="stats_trophy_archivist">Archiviste</string>
+    <string name="stats_trophy_archivist_how">Aie 500 jeux dans ta bibliothèque</string>
+    <string name="stats_trophy_master">Maître Tandem</string>
+    <string name="stats_trophy_master_how">Décroche tous les autres trophées</string>
+
+    <!-- A play session's popups (Stats › Sessions, Y on a session). -->
+    <!-- A date pattern (java.time DateTimeFormatter letters): a session's day, "Sat 21 Nov 2026". -->
+    <string name="stats_date_session">EEE d MMM yyyy</string>
+    <!-- A date pattern (as above): the day and month only, "21 Nov". -->
+    <string name="stats_date_day_month">d MMM</string>
+    <!-- A date pattern (as above): a short weekday over each day of the week strip, "Sat". -->
+    <string name="stats_date_weekday">EEE</string>
+    <!-- Under the game's title: the session's day, start time and length: "Sat 21 Nov 2026 · 21:05 · 1 h 5 min". -->
+    <string name="stats_session_header">%1$s · %2$s · %3$s</string>
+    <string name="stats_session_edit_length">Modifier la durée</string>
+    <string name="stats_session_change_date">Changer la date et l’heure</string>
+    <!-- A day and a time: "21 Nov, 21:05". -->
+    <string name="stats_session_when">%1$s, %2$s</string>
+    <string name="stats_session_merge">Fusionner avec la suivante</string>
+    <!-- Beside Merge with next: the next session's length, "+ 20 min". -->
+    <string name="stats_session_merge_adds">+ %1$s</string>
+    <!-- %1$s is the new length, "1 h 25 min". -->
+    <string name="stats_session_merged">Fusionnées en une session de %1$s</string>
+    <string name="stats_session_only_game">Seulement ce jeu</string>
+    <string name="stats_session_delete">Supprimer</string>
+    <string name="stats_session_deleted">Session supprimée</string>
+    <!-- Edit length: the row, the ends of its slider and the button hints (left/right a minute, R1 ten minutes). -->
+    <string name="stats_session_length">Durée</string>
+    <string name="stats_session_one_min">1 min</string>
+    <string name="stats_session_one_day">24 h</string>
+    <string name="stats_session_ten_min">10 min</string>
+    <string name="stats_session_cancel">Annuler</string>
+    <string name="stats_session_save">Enregistrer</string>
+    <string name="stats_session_length_set">Durée réglée sur %1$s</string>
+    <!-- Change date and time: the two rows, the ends of the time slider, and the button hints. -->
+    <string name="stats_session_day">Jour</string>
+    <string name="stats_session_time">Heure</string>
+    <string name="stats_session_midnight">Minuit</string>
+    <string name="stats_session_change">Changer</string>
+    <string name="stats_session_a_week">Une semaine</string>
+    <string name="stats_session_an_hour">Une heure</string>
+    <!-- %1$s is the day, %2$s the time: "Moved to Sat 21 Nov 2026, 21:05". -->
+    <string name="stats_session_moved">Déplacée au %1$s, %2$s</string>
+    <!-- Clearing sessions, under "Clear all sessions?": %1$d sessions, %2$s their play time ("3 h 10 min"). -->
+    <plurals name="stats_sessions_clear_detail">
+        <item quantity="one">%1$d session (%2$s) sera supprimée ; le temps de jeu, le nombre de parties et la dernière partie seront recalculés à partir du reste. Le temps de jeu importé d’un autre frontend reste. Impossible de revenir en arrière.</item>
+        <item quantity="other">%1$d sessions (%2$s) seront supprimées ; le temps de jeu, le nombre de parties et la dernière partie seront recalculés à partir du reste. Le temps de jeu importé d’un autre frontend reste. Impossible de revenir en arrière.</item>
+    </plurals>
+    <!-- The same for one game's sessions; %3$s is its title. -->
+    <plurals name="stats_sessions_clear_detail_of">
+        <item quantity="one">%1$d session (%2$s) de %3$s sera supprimée ; le temps de jeu, le nombre de parties et la dernière partie seront recalculés à partir du reste. Le temps de jeu importé d’un autre frontend reste. Impossible de revenir en arrière.</item>
+        <item quantity="other">%1$d sessions (%2$s) de %3$s seront supprimées ; le temps de jeu, le nombre de parties et la dernière partie seront recalculés à partir du reste. Le temps de jeu importé d’un autre frontend reste. Impossible de revenir en arrière.</item>
+    </plurals>
+</resources>

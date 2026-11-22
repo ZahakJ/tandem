@@ -179,7 +179,7 @@ website menus are quoted the way Steam France writes them.
 | Private mode | Mode privé | |
 | PIN | Code PIN | |
 | Favorite / Unfavorite / Favorites | Ajouter aux favoris / Retirer des favoris / Favoris | « ♥ » kept where English has it |
-| Up next | À suivre | |
+| Up next (app, widget, list) | Prochains jeux (« Ajouter aux prochains jeux » / « Retirer des prochains jeux ») | « À suivre » made the menu items read « Ajouter à À suivre » |
 | Pin / Unpin (home, dock) | Épingler / Retirer | « Épingler à l’accueil » |
 | Button prompts | Icônes des boutons | The button marks drawn on screen |
 | Button hints (bottom row) | Aide des boutons | |

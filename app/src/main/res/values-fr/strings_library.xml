@@ -24,7 +24,7 @@
     <!-- The search field on a narrow screen. -->
     <string name="library_systems_search_short">Rechercher</string>
     <!-- %1$s is what was typed. -->
-    <string name="library_systems_no_match">Aucun système ne correspond à «  %1$s  »</string>
+    <string name="library_systems_no_match">Aucun système ne correspond à « %1$s »</string>
     <string name="library_systems_none_off">Rien n’est désactivé. Un système que tu désactives t’attend ici, jeux compris</string>
     <string name="library_systems_none_more">Tous les systèmes que Tandem connaît ont déjà des jeux</string>
     <string name="library_systems_none">Pas encore de jeux. Ouvre un système dans Autres systèmes et ajoute son dossier</string>
@@ -399,7 +399,7 @@
     <string name="library_delete_ask">Supprimer %1$s ?</string>
     <!-- A size: "1.2 GB freed". -->
     <string name="library_delete_freed">%1$s libérés</string>
-    <string name="library_delete_app_note">Android supprime l’appli et tout ce qu’elle garde, sauvegardes comprises, après une dernière confirmation. Tandem l’oublie ensuite : favori, À suivre, grille de l’accueil et listes de masqués.</string>
+    <string name="library_delete_app_note">Android supprime l’appli et tout ce qu’elle garde, sauvegardes comprises, après une dernière confirmation. Tandem l’oublie ensuite : favori, prochains jeux, grille de l’accueil et listes de masqués.</string>
     <string name="library_delete_looking">J’examine ses fichiers…</string>
     <!-- %1$s is why it can't be deleted. -->
     <string name="library_delete_refused">%1$s. Rien ne sera supprimé.</string>
@@ -420,7 +420,7 @@
     <string name="library_delete_art_shared">Les visuels téléchargés restent : un autre jeu du même nom s’en sert.</string>
     <string name="library_delete_no_art">Aucun visuel téléchargé.</string>
     <string name="library_delete_saves">Les sauvegardes restent dans l’émulateur : Tandem ne sait pas où chacun les range.</string>
-    <string name="library_delete_forgets">Tandem oublie le jeu : favori, À suivre, grille de l’accueil, collections et listes de masqués.</string>
+    <string name="library_delete_forgets">Tandem oublie le jeu : favori, prochains jeux, grille de l’accueil, collections et listes de masqués.</string>
     <string name="library_delete_keep_stats">Garder les stats de jeu</string>
     <string name="library_delete_android_asks">Android demande confirmation avant de désinstaller.</string>
     <string name="library_delete_cant_undo">Impossible de revenir en arrière.</string>
@@ -478,7 +478,7 @@
     <string name="library_apps_all">Toutes les applis</string>
     <string name="library_apps_games">Jeux</string>
     <!-- %1$s is what was typed. -->
-    <string name="library_apps_no_match">Aucune appli ne correspond à «  %1$s  »</string>
+    <string name="library_apps_no_match">Aucune appli ne correspond à « %1$s »</string>
     <string name="library_apps_no_games">Aucun jeu marqué pour l’instant. Passe sur Toutes les applis et appuie sur Y sur un jeu pour l’ajouter</string>
     <string name="library_apps_none">Aucune appli trouvée</string>
     <string name="library_apps_game">Jeu Android</string>

@@ -141,7 +141,7 @@
     <string name="screens_status_set">%1$s : %2$s</string>
     <string name="screens_status">Statut</string>
     <string name="screens_status_none">Aucun</string>
-    <string name="screens_status_help">À jouer, En cours, Terminé… Un jeu «  À jouer  » passe tout seul à «  En cours  » une fois que tu y as joué un moment.</string>
+    <string name="screens_status_help">À jouer, En cours, Terminé… Un jeu « À jouer » passe tout seul à « En cours » une fois que tu y as joué un moment.</string>
     <string name="screens_status_no_status">Sans statut</string>
     <!-- Play time against HowLongToBeat: "12 h of ~40 h". %1$s and %2$s are times. -->
     <string name="screens_status_progress">%1$s sur ~%2$s</string>

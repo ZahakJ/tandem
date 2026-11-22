@@ -101,7 +101,7 @@
     <string name="accounts_discord_connect">Connecter</string>
     <string name="accounts_discord_status_help">Pendant que tu joues, ton statut Discord affiche le jeu, son système et depuis combien de temps tu y joues. Jamais pour les jeux masqués, et rien du tout quand le mode privé est activé.</string>
     <!-- "Disconnect Discord" names the row below it. -->
-    <string name="accounts_discord_connected_toast">Connecté. «  Déconnecter Discord  » est juste en dessous</string>
+    <string name="accounts_discord_connected_toast">Connecté. « Déconnecter Discord » est juste en dessous</string>
     <string name="accounts_discord_ask_title">Montrer à quoi tu joues sur Discord ?</string>
     <string name="accounts_discord_ask_text">Discord s’ouvre et te demande d’autoriser Tandem. Ensuite, ton statut affiche le jeu auquel tu joues, le temps de la partie. Tu peux te déconnecter ici quand tu veux.</string>
     <string name="accounts_discord_disconnect">Déconnecter Discord</string>
@@ -197,7 +197,7 @@
     <string name="accounts_steam_not_account">Ça ne ressemble pas à un compte Steam. Essaie ton SteamID64 ou l’adresse de ton profil</string>
     <string name="accounts_steam_asking">Je demande à Steam…</string>
     <!-- %1$s the profile name typed. -->
-    <string name="accounts_steam_no_profile">Steam ne connaît aucun profil nommé «  %1$s  ». Essaie ton SteamID64</string>
+    <string name="accounts_steam_no_profile">Steam ne connaît aucun profil nommé « %1$s ». Essaie ton SteamID64</string>
     <string name="accounts_steam_unreachable_key">Impossible de joindre Steam. Vérifie la clé et ta connexion</string>
     <string name="accounts_steam_refused">Steam a refusé la clé ou le compte. Vérifie les deux et réessaie</string>
     <!-- %1$s the Steam name. -->
@@ -276,10 +276,10 @@
     <string name="accounts_steam_under_1">moins de 1 %</string>
     <string name="accounts_steam_percent">%1$s %%</string>
     <!-- Pip's toasts for new achievements. %1$s the achievement's name, %2$s a share like "2.3 %", %3$s the game. -->
-    <string name="accounts_steam_got_rare">Tu as eu «  %1$s  » ! Seulement %2$s des joueurs l’ont !</string>
-    <string name="accounts_steam_got">Tu as eu «  %1$s  » ! %2$s des joueurs l’ont.</string>
-    <string name="accounts_steam_got_in">Tu as eu «  %1$s  » ! Dans %2$s.</string>
-    <string name="accounts_steam_got_plain">Tu as eu «  %1$s  » !</string>
+    <string name="accounts_steam_got_rare">Tu as eu « %1$s » ! Seulement %2$s des joueurs l’ont !</string>
+    <string name="accounts_steam_got">Tu as eu « %1$s » ! %2$s des joueurs l’ont.</string>
+    <string name="accounts_steam_got_in">Tu as eu « %1$s » ! Dans %2$s.</string>
+    <string name="accounts_steam_got_plain">Tu as eu « %1$s » !</string>
     <plurals name="accounts_steam_more_in">
         <item quantity="one">…et %1$d autre succès dans %2$s. Quelle session !</item>
         <item quantity="other">…et %1$d autres succès dans %2$s. Quelle session !</item>

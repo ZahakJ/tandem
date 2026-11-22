@@ -85,7 +85,7 @@
     <string name="sound_pack_chiptune">Chiptune</string>
     <string name="sound_pack_chiptune_blurb">Bips en signal carré et fanfares de bloc à pièces, comme sur une console 8 bits.</string>
     <string name="sound_pack_bubbly">Pétillant</string>
-    <string name="sound_pack_bubbly_blurb">Des «  bloups  » ronds comme des gouttes d’eau et des étincelles pétillantes.</string>
+    <string name="sound_pack_bubbly_blurb">Des « bloups » ronds comme des gouttes d’eau et des étincelles pétillantes.</string>
     <string name="sound_pack_minimal">Minimal</string>
     <string name="sound_pack_minimal_blurb">Discret, bref et subtil. À peine là.</string>
     <string name="sound_pack_studio">Studio</string>

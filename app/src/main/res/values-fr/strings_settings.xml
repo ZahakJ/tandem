@@ -284,8 +284,8 @@
 
     <!-- The first Settings screen: the search bar over the page tiles. -->
     <string name="settings_home_search">Rechercher un paramètre</string>
-    <string name="settings_home_search_help">Trouve n’importe quel paramètre par son nom ou par ce qu’il fait : «  bigger icons  », «  nintendo buttons  », «  music  ».</string>
-    <string name="settings_home_search_panel">Tape quelques lettres d’un paramètre, ou ce que tu cherches : «  bigger icons  », «  nintendo  », «  quiet  », «  cocoon  ». Un résultat t’y emmène direct et montre où il se trouve. X lance la recherche depuis n’importe quelle page des Paramètres.</string>
+    <string name="settings_home_search_help">Trouve n’importe quel paramètre par son nom ou par ce qu’il fait : « bigger icons », « nintendo buttons », « music ».</string>
+    <string name="settings_home_search_panel">Tape quelques lettres d’un paramètre, ou ce que tu cherches : « bigger icons », « nintendo », « quiet », « cocoon ». Un résultat t’y emmène direct et montre où il se trouve. X lance la recherche depuis n’importe quelle page des Paramètres.</string>
     <!-- Hint on a page: L1 and R1 step through the pages. -->
     <string name="settings_home_pages">Pages</string>
 
@@ -311,8 +311,8 @@
         <item quantity="other">%1$d+ résultats</item>
     </plurals>
     <!-- %1$s is what was typed. -->
-    <string name="settings_search_nothing">Rien ne s’appelle «  %1$s  »</string>
-    <string name="settings_search_try">Essaie ce que ça fait : «  bigger  », «  quiet  », «  buttons  »</string>
+    <string name="settings_search_nothing">Rien ne s’appelle « %1$s »</string>
+    <string name="settings_search_try">Essaie ce que ça fait : « bigger », « quiet », « buttons »</string>
     <!-- Where a result lives, under its name. -->
     <string name="settings_search_where_settings">Paramètres</string>
     <!-- A place inside another: "Home & layout › Dock & widgets", %1$s the outer, %2$s the inner. -->

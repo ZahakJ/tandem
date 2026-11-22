@@ -47,8 +47,8 @@
     </plurals>
     <!-- How many games match the search; %2$s is what was typed. -->
     <plurals name="grid_pick_matching">
-        <item quantity="one">%1$d jeu pour «  %2$s  »</item>
-        <item quantity="other">%1$d jeux pour «  %2$s  »</item>
+        <item quantity="one">%1$d jeu pour « %2$s »</item>
+        <item quantity="other">%1$d jeux pour « %2$s »</item>
     </plurals>
     <plurals name="grid_pick_picked">
         <item quantity="one">%1$d jeu choisi</item>
@@ -375,7 +375,7 @@
 
     <!-- Moving a tile (Y › Move). -->
     <string name="grid_move_cancelled">Déplacement annulé : retour à sa place</string>
-    <string name="grid_move_now_playing">«  En jeu  » reste toujours en tête</string>
+    <string name="grid_move_now_playing">« En jeu » reste toujours en tête</string>
     <!-- %1$s is how the folder is sorted ("A–Z"…). -->
     <string name="grid_move_sorted">Trié : %1$s. Y › Trier le contenu › Manuel pour ranger à la main</string>
     <string name="grid_move_how">Déplace avec la croix · A pour poser · Y pour transporter</string>
@@ -541,7 +541,7 @@
     <string name="grid_smart_played_no">Jamais lancés</string>
     <string name="grid_smart_played_any">Tous</string>
     <!-- Words the game's name must contain, typed by the user. -->
-    <string name="grid_smart_pattern">«  %1$s  »</string>
+    <string name="grid_smart_pattern">« %1$s »</string>
     <string name="grid_smart_favorites">Favoris</string>
     <!-- A random pick of this many games. -->
     <string name="grid_smart_random">%1$d au hasard</string>

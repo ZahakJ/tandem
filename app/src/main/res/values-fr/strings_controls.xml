@@ -11,7 +11,7 @@
     <!-- Settings › Controls › Controller Home button. -->
     <string name="controls_home_button">Bouton Home des manettes</string>
     <!-- "Tandem: Controller Home button" is the name Android shows in its Accessibility settings (strings.xml). -->
-    <string name="controls_home_button_help">En mode X-input, beaucoup de manettes envoient leur bouton Home (guide) comme un bouton qu’Android ignore. Dans Tandem, il fait toujours office de Home. Pour qu’il marche aussi dans les jeux et les autres applis, active «  Tandem: Controller Home button  » dans les paramètres d’accessibilité d’Android (A les ouvre ; si l’option est grisée, autorise d’abord les paramètres restreints dans les infos sur l’appli de Tandem). Tandem ne regarde alors que ce bouton-là, et seulement sur les manettes externes : les commandes intégrées ne sont jamais touchées.</string>
+    <string name="controls_home_button_help">En mode X-input, beaucoup de manettes envoient leur bouton Home (guide) comme un bouton qu’Android ignore. Dans Tandem, il fait toujours office de Home. Pour qu’il marche aussi dans les jeux et les autres applis, active « Tandem: Controller Home button » dans les paramètres d’accessibilité d’Android (A les ouvre ; si l’option est grisée, autorise d’abord les paramètres restreints dans les infos sur l’appli de Tandem). Tandem ne regarde alors que ce bouton-là, et seulement sur les manettes externes : les commandes intégrées ne sont jamais touchées.</string>
     <!-- What A does on a row that opens another screen. Short. -->
     <string name="controls_open">Ouvrir</string>
     <string name="controls_hold_home">Maintenir le bouton Home</string>
@@ -20,14 +20,14 @@
     <string name="controls_hold_home_recents">Applis récentes</string>
 
     <!-- Settings › Controls › Game controllers: one switch per connected controller, named after it. -->
-    <string name="controls_pad_nintendo_help">Disposition Nintendo : inverse A/B et X/Y pour cette manette seulement, pour que le bouton marqué A valide. Idéal pour les manettes façon Switch en mode X-input. Ça s’applique dans Tandem ; les commandes intégrées et les autres manettes ne changent pas, et «  Inverser A et B  » plus haut s’ajoute par-dessus. Les émulateurs ont leur propre configuration des boutons par manette dans leurs paramètres.</string>
+    <string name="controls_pad_nintendo_help">Disposition Nintendo : inverse A/B et X/Y pour cette manette seulement, pour que le bouton marqué A valide. Idéal pour les manettes façon Switch en mode X-input. Ça s’applique dans Tandem ; les commandes intégrées et les autres manettes ne changent pas, et « Inverser A et B » plus haut s’ajoute par-dessus. Les émulateurs ont leur propre configuration des boutons par manette dans leurs paramètres.</string>
     <!-- The name of a controller that doesn't give one. -->
     <string name="controls_pad_unnamed">Manette</string>
     <!-- Two controllers with the same name are numbered: "Xbox Wireless Controller 2". -->
     <string name="controls_pad_numbered">%1$s %2$d</string>
     <string name="controls_no_pads">Aucune autre manette</string>
     <string name="controls_no_pads_value">Branches-en une</string>
-    <string name="controls_no_pads_help">Associe une manette Bluetooth ou branche-la, et elle apparaît ici, avec son propre interrupteur de disposition Nintendo (A/B et X/Y inversés pour cette manette seulement). Les commandes intégrées suivent «  Inverser A et B  » plus haut.</string>
+    <string name="controls_no_pads_help">Associe une manette Bluetooth ou branche-la, et elle apparaît ici, avec son propre interrupteur de disposition Nintendo (A/B et X/Y inversés pour cette manette seulement). Les commandes intégrées suivent « Inverser A et B » plus haut.</string>
     <string name="controls_no_pads_toast">Associe ou branche une manette, elle apparaîtra ici</string>
     <!-- Beside the Game controllers title: what a switch being on means. -->
     <string name="controls_pads_note">Activé : disposition Nintendo</string>
@@ -95,7 +95,7 @@
     <string name="controls_command_clip">Clip</string>
     <string name="controls_command_clip_help">Un clip de 15 secondes du jeu en cours sur l’autre écran, ou arrête celui qui s’enregistre, comme le bouton Clip de l’acolyte. Marche quand Tandem est au premier plan.</string>
     <string name="controls_command_home">Home de la manette</string>
-    <string name="controls_command_home_help">Le bouton Home (guide) d’une manette dans Tandem : un appui, c’est Home ; un appui long fait ce que dit «  Maintenir le bouton Home  ».</string>
+    <string name="controls_command_home_help">Le bouton Home (guide) d’une manette dans Tandem : un appui, c’est Home ; un appui long fait ce que dit « Maintenir le bouton Home ».</string>
 
     <!-- Why a button can't be given to a command. %1$s is always a command's name above; bindings are like "L1+R1"
          or "Hold Start"; a button is like "L1". -->
@@ -122,7 +122,7 @@
     </plurals>
     <string name="controls_rebind_reset_all">Tout réinitialiser</string>
     <string name="controls_rebind_reset_all_help">Chaque commande revient sur son bouton d’origine.</string>
-    <string name="controls_rebind_reset_all_detail">Chaque commande revient sur son bouton d’origine, «  Inverser A et B  » et «  Inverser X et Y  » compris. Annuler te rend tes boutons.</string>
+    <string name="controls_rebind_reset_all_detail">Chaque commande revient sur son bouton d’origine, « Inverser A et B » et « Inverser X et Y » compris. Annuler te rend tes boutons.</string>
     <!-- What A, X and Y do. Short. -->
     <string name="controls_rebind_reset">Réinitialiser</string>
     <string name="controls_rebind_rebind">Réassigner</string>

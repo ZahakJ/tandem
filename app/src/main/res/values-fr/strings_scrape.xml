@@ -332,7 +332,7 @@
     <string name="scrape_guide_ss_account">Compte gratuit + ID développeur</string>
     <string name="scrape_guide_ss_1">Crée un compte gratuit sur screenscraper.fr.</string>
     <!-- "Demande d'accès à l'API" is the name of a forum section on the French site: keep it in French. -->
-    <string name="scrape_guide_ss_2">Demande un accès à l’API sur leur forum («   Demande d’accès à l’API   ») pour obtenir un ID et un mot de passe développeur. Tandem ne peut pas en fournir.</string>
+    <string name="scrape_guide_ss_2">Demande un accès à l’API sur leur forum (« Demande d’accès à l’API ») pour obtenir un ID et un mot de passe développeur. Tandem ne peut pas en fournir.</string>
     <string name="scrape_guide_ss_3">Saisis-les tous les deux ci-dessous. Ton propre identifiant est facultatif, mais il t’offre un plus gros quota par jour.</string>
     <string name="scrape_guide_ss_sends">Ton identifiant, l’ID développeur, et pour chaque jeu le nom du fichier, sa taille, son système et sa somme de contrôle.</string>
     <string name="scrape_guide_igdb_account">Compte Twitch gratuit</string>

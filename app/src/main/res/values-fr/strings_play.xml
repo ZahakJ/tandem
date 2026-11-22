@@ -84,7 +84,7 @@
     <string name="play_problem_missing_text">%1$s a été déplacé ou supprimé. Une nouvelle analyse remettra la liste au propre.</string>
     <string name="play_problem_shortcut">Ce raccourci a besoin d’un identifiant de jeu</string>
     <!-- %1$s a file name, %2$s what is wrong with it. The quoted line is an example of the file's contents. -->
-    <string name="play_problem_shortcut_text">%1$s : %2$s. Les fichiers Vita .dpt ont besoin d’une ligne comme «   [vita_game_id] PCSA00011   » ; les fichiers Windows .pcgame contiennent l’identifiant d’appli GameNative.</string>
+    <string name="play_problem_shortcut_text">%1$s : %2$s. Les fichiers Vita .dpt ont besoin d’une ligne comme « [vita_game_id] PCSA00011 » ; les fichiers Windows .pcgame contiennent l’identifiant d’appli GameNative.</string>
     <!-- %1$s a game (an Android app). -->
     <string name="play_problem_app_missing">%1$s n’est plus installé</string>
     <string name="play_problem_app_missing_text">Réinstalle-le depuis sa boutique, ou masque-le des jeux Android.</string>
@@ -144,7 +144,7 @@
     <string name="play_cant_see_running">Impossible de repérer les jeux lancés sans Shizuku</string>
     <!-- What is wrong with a shortcut file, after its name in the problem above ("game.dpt: game.dpt is empty."). -->
     <!-- %1$s a template key, like file.id. -->
-    <string name="play_shortcut_key_empty">«   %1$s   » est vide</string>
+    <string name="play_shortcut_key_empty">« %1$s » est vide</string>
     <!-- %1$s a file name. -->
     <string name="play_shortcut_empty">%1$s est vide</string>
     <string name="play_shortcut_no_id">%1$s ne contient aucun identifiant de jeu</string>

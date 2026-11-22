@@ -376,7 +376,7 @@
     <string name="home_setup_files_detail">Autorise l’accès à tous les fichiers pour que je puisse parcourir tes jeux et leurs visuels.</string>
     <string name="home_setup_tree">Choisis ton dossier de jeux</string>
     <!-- "Use this folder" is the button in Android's folder picker: write it as Android does in your language. -->
-    <string name="home_setup_tree_detail">Choisis le dossier où sont tes jeux, rangés comme tu veux, puis touche «  Utiliser ce dossier  ». ROMs marche aussi. Certains émulateurs n’ouvrent que les jeux partagés de cette façon.</string>
+    <string name="home_setup_tree_detail">Choisis le dossier où sont tes jeux, rangés comme tu veux, puis touche « Utiliser ce dossier ». ROMs marche aussi. Certains émulateurs n’ouvrent que les jeux partagés de cette façon.</string>
     <string name="home_setup_step_one_first">D’abord l’étape 1, puis celle-ci</string>
     <string name="home_setup_shizuku">Reprendre les jeux (facultatif)</string>
     <string name="home_setup_shizuku_detail">Autorise-moi dans Shizuku, et je ramènerai un jeu pile là où tu l’avais laissé.</string>
@@ -404,7 +404,7 @@
     <string name="home_apps_all">Toutes les applis</string>
     <string name="home_apps_none">Aucune appli à afficher</string>
     <!-- %1$s is what was typed in the search. -->
-    <string name="home_apps_no_match">Aucune appli pour «  %1$s  »</string>
+    <string name="home_apps_no_match">Aucune appli pour « %1$s »</string>
     <string name="home_apps_hidden_match">Une appli masquée du tiroir correspond.</string>
     <string name="home_apps_try_other">Essaie avec moins de lettres, ou un autre nom.</string>
     <string name="home_apps_clear_search">Effacer la recherche</string>

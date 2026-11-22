@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widgets: the kinds (WidgetKinds.kt), the widget areas and menus (Widgets.kt), the editor (WidgetEditor.kt),
+     widgets on the icon grid (GridWidgets.kt) and Android's own widgets hosted in Tandem (AppWidgets.kt). Keys start
+     with widgets_. See docs/TRANSLATING.md. Widgets are small: keep the words as short as the English. -->
+<resources>
+    <!-- Widget sizes. -->
+    <string name="widgets_size_small">Petit</string>
+    <string name="widgets_size_medium">Moyen</string>
+    <string name="widgets_size_wide">Large</string>
+    <string name="widgets_size_tall">Haut</string>
+    <!-- Where a widget lives. -->
+    <string name="widgets_place_home">Accueil</string>
+    <string name="widgets_place_bottom">Écran du bas</string>
+    <string name="widgets_place_both">Les deux écrans</string>
+    <string name="widgets_place_grid">Grille d’accueil</string>
+
+    <!-- Each kind of widget: its name and one line about it in the gallery. -->
+    <string name="widgets_storage">Stockage</string>
+    <string name="widgets_storage_blurb">L’espace libre, les plus gros systèmes et dossiers. A pour remesurer.</string>
+    <string name="widgets_battery">Batterie</string>
+    <string name="widgets_battery_blurb">Charge, température et autonomie. A ouvre les réglages rapides.</string>
+    <string name="widgets_clock">Horloge</string>
+    <string name="widgets_clock_blurb">Numérique, à aiguilles ou en gros et sympa. A change de style.</string>
+    <string name="widgets_nowplaying">En jeu</string>
+    <string name="widgets_nowplaying_blurb">Le jeu qui t’attend en arrière-plan. A pour le reprendre.</string>
+    <string name="widgets_continue">Continuer à jouer</string>
+    <string name="widgets_continue_blurb">Tes derniers jeux, à portée de pouce.</string>
+    <string name="widgets_favorites">Favoris</string>
+    <string name="widgets_favorites_blurb">Les jeux que tu ♥.</string>
+    <string name="widgets_random">Surprends-moi</string>
+    <string name="widgets_random_blurb">Un jeu au hasard, et on relance si besoin.</string>
+    <string name="widgets_recent">Ajoutés récemment</string>
+    <string name="widgets_recent_blurb">Les petits nouveaux de ta bibliothèque.</string>
+    <string name="widgets_stats">Stats de jeu</string>
+    <string name="widgets_stats_blurb">Aujourd’hui, cette semaine, ta série et un petit graphique. A ouvre les stats.</string>
+    <string name="widgets_achievements">Succès</string>
+    <string name="widgets_achievements_blurb">Tes derniers succès RetroAchievements débloqués.</string>
+    <string name="widgets_achievements_needs">Connecte-toi d’abord à RetroAchievements dans les Paramètres</string>
+    <!-- Pip is the mascot's name: keep it. -->
+    <string name="widgets_pip">Pip</string>
+    <string name="widgets_pip_blurb">Ton petit compagnon. Pip remarque l’heure et ta série.</string>
+    <string name="widgets_upnext">Prochains jeux</string>
+    <string name="widgets_upnext_blurb">Ta liste des jeux à lancer bientôt. Y sur un jeu › Ajouter aux prochains jeux.</string>
+    <string name="widgets_sysmon">Moniteur système</string>
+    <string name="widgets_sysmon_blurb">Mémoire libre, température du CPU (quand Android la donne) et temps d’activité.</string>
+    <string name="widgets_apps">Raccourcis d’applis</string>
+    <string name="widgets_apps_blurb">Les applis de ton dock, en mini-dock.</string>
+    <string name="widgets_greeting">Salut de Pip</string>
+    <string name="widgets_greeting_blurb">Pip te dit bonjour, avec l’heure et ton dernier jeu. A pour le lancer.</string>
+    <string name="widgets_android">Widget Android</string>
+    <string name="widgets_android_blurb">Un widget d’une de tes applis : météo, agenda, musique et plus.</string>
+
+    <!-- Widget settings (in its menu), each with its choices. -->
+    <string name="widgets_opt_list">Liste</string>
+    <string name="widgets_opt_list_systems">Plus gros systèmes</string>
+    <string name="widgets_opt_list_folders">Plus gros dossiers</string>
+    <string name="widgets_opt_list_none">Juste les anneaux</string>
+    <string name="widgets_opt_extras">Visuels et cache</string>
+    <string name="widgets_opt_temp">Température</string>
+    <string name="widgets_opt_estimate">Autonomie</string>
+    <string name="widgets_opt_style">Style</string>
+    <string name="widgets_opt_style_digital">Numérique</string>
+    <string name="widgets_opt_style_analog">Aiguilles</string>
+    <string name="widgets_opt_style_big">Gros et sympa</string>
+    <string name="widgets_opt_hours">Heures</string>
+    <string name="widgets_opt_hours_system">Comme Android</string>
+    <string name="widgets_opt_hours_12">12 h</string>
+    <string name="widgets_opt_hours_24">24 h</string>
+    <string name="widgets_opt_seconds">Secondes</string>
+    <string name="widgets_opt_date">Date</string>
+    <string name="widgets_opt_order">Ordre</string>
+    <string name="widgets_opt_order_name">A à Z</string>
+    <string name="widgets_opt_order_recent">Joués récemment</string>
+    <string name="widgets_opt_order_most">Les plus joués</string>
+    <string name="widgets_opt_pool">Piocher dans</string>
+    <string name="widgets_opt_pool_unplayed">Jamais lancés</string>
+    <string name="widgets_opt_pool_any">Tout</string>
+    <string name="widgets_opt_pool_favorites">Favoris</string>
+    <string name="widgets_opt_talk">Bulle de texte</string>
+    <string name="widgets_opt_mood">Humeur</string>
+    <string name="widgets_opt_mood_auto">Auto</string>
+    <string name="widgets_opt_mood_happy">Content</string>
+    <string name="widgets_opt_mood_excited">Surexcité</string>
+    <string name="widgets_opt_mood_sleepy">Endormi</string>
+    <string name="widgets_opt_played">Jeux joués</string>
+    <string name="widgets_opt_played_show">Avec ✓</string>
+    <string name="widgets_opt_played_hide">Masquer</string>
+    <string name="widgets_opt_uptime">Temps d’activité</string>
+
+    <!-- Extra rows in a widget's menu. -->
+    <string name="widgets_act_measure">Remesurer</string>
+    <string name="widgets_measuring">Je mesure tes dossiers…</string>
+    <string name="widgets_act_pick_another">Un autre !</string>
+    <string name="widgets_act_check_again">Revérifier</string>
+    <string name="widgets_act_add_upnext">Ajouter un jeu ou une note…</string>
+    <string name="widgets_act_clear_played">Retirer les jeux joués</string>
+    <plurals name="widgets_cleared_played">
+        <item quantity="one">%1$d jeu retiré</item>
+        <item quantity="other">%1$d jeux retirés</item>
+    </plurals>
+    <!-- %1$s is a game or a note on the Up next list. -->
+    <string name="widgets_act_remove">Retirer %1$s</string>
+    <string name="widgets_act_choose_dock">Choisir les applis du dock</string>
+
+    <!-- Moving a widget. -->
+    <string name="widgets_move_hint">Déplace-le avec la croix, puis appuie sur A</string>
+    <string name="widgets_moved">Déplacé ✓</string>
+    <!-- Up next (Y on a game › Add to Up next). Shown with Undo. -->
+    <string name="widgets_upnext_removed">Retiré des prochains jeux</string>
+    <string name="widgets_upnext_added">Ajouté aux prochains jeux ✓</string>
+    <!-- The keyboard's title. -->
+    <string name="widgets_upnext_ask">Ajouter aux prochains jeux : un nom de jeu ou une note</string>
+    <!-- %1$s is a game. -->
+    <string name="widgets_upnext_already">%1$s est déjà dans la liste</string>
+    <string name="widgets_upnext_added_game">%1$s ajouté ✓</string>
+    <string name="widgets_upnext_added_note">Note ajoutée aux prochains jeux ✓</string>
+    <string name="widgets_upnext_edit_note">Modifier la note (vide pour la retirer)</string>
+    <!-- The title over the widget row on the home screen. -->
+    <string name="widgets_title">Widgets</string>
+    <!-- Settings › Widgets. -->
+    <string name="widgets_settings">Widgets</string>
+    <string name="widgets_customize">Personnaliser les widgets</string>
+    <plurals name="widgets_count">
+        <item quantity="one">%1$d widget</item>
+        <item quantity="other">%1$d widgets</item>
+    </plurals>
+    <string name="widgets_customize_help">Ajoute, déplace, redimensionne et retire des widgets : horloge, batterie, temps de jeu, stockage, prochains jeux et plus.</string>
+    <string name="widgets_home">Widgets sur l’accueil</string>
+    <string name="widgets_none_yet">Aucun pour l’instant</string>
+    <string name="widgets_home_help">Affiche tes widgets en haut de l’écran d’accueil.</string>
+    <string name="widgets_grid">Widgets sur la grille</string>
+    <!-- "Add here › Widget…" names a menu item, as written there. -->
+    <string name="widgets_grid_help">Où Ajouter ici › Widget… place un nouveau widget sur la grille d’icônes : dans sa propre case, de 1 à 2 cellules dans chaque sens, ou dans la rangée de widgets. Les widgets déjà placés restent où ils sont.</string>
+    <string name="widgets_grid_cells">En cases</string>
+    <string name="widgets_grid_row">En rangée</string>
+    <string name="widgets_bottom">Écran du bas au repos</string>
+    <!-- The value of Bottom screen when idle with no widgets: Pip's greeting shows. -->
+    <string name="widgets_bottom_greeting">Salut de Pip</string>
+    <string name="widgets_bottom_help">Ce que montre l’écran du bas quand rien n’est sélectionné : le salut de Pip, ou les widgets de ton choix.</string>
+
+    <!-- Lengths of time in widgets: "45m", "2h 5m". -->
+    <string name="widgets_minutes">%1$d min</string>
+    <string name="widgets_hours_minutes">%1$d h %2$d</string>
+    <string name="widgets_under_minute">moins d’1 min</string>
+
+    <!-- The storage widget. -->
+    <string name="widgets_storage_checking">Je vérifie le stockage…</string>
+    <!-- Free space: "12 GB free". -->
+    <string name="widgets_free">%1$s libres</string>
+    <!-- Beside the ring, under the size: the word "free" alone. -->
+    <string name="widgets_free_word">libres</string>
+    <string name="widgets_storage_measuring">mesure…</string>
+    <!-- The SD card's line: "SD card · 40 GB free". -->
+    <string name="widgets_volume_free">%1$s · %2$s libres</string>
+    <!-- Box art and videos, and Tandem's cache: "Art 2.1 GB · Cache 300 MB". -->
+    <string name="widgets_art_cache">Visuels %1$s · Cache %2$s</string>
+    <string name="widgets_extra_games">Jeux</string>
+    <string name="widgets_extra_art">Visuels et vidéos</string>
+    <string name="widgets_extra_cache">Cache</string>
+    <string name="widgets_measuring_folders">Je mesure les dossiers…</string>
+    <string name="widgets_nothing_to_measure">Rien à mesurer</string>
+
+    <!-- The battery widget. -->
+    <string name="widgets_checking">Vérification…</string>
+    <string name="widgets_battery_full">Chargée à bloc</string>
+    <string name="widgets_battery_charging">En charge</string>
+    <string name="widgets_battery_plugged">Branchée</string>
+    <string name="widgets_battery_low">Presque vide</string>
+    <string name="widgets_battery_on">Sur batterie</string>
+    <!-- Short words for narrow cells. -->
+    <string name="widgets_battery_charged_short">Chargée</string>
+    <string name="widgets_battery_low_short">Faible</string>
+    <!-- %1$s is a time, "1h 20m". -->
+    <string name="widgets_battery_full_in">Pleine dans %1$s</string>
+    <string name="widgets_battery_left">Encore %1$s environ</string>
+    <!-- A temperature that is high: "43°C · warm". -->
+    <string name="widgets_battery_warm">%1$s · chaude</string>
+
+    <!-- The clock widget. Date patterns use java.time DateTimeFormatter letters: reorder them as your language writes dates. -->
+    <string name="widgets_date_short">EEE d MMM</string>
+    <string name="widgets_date_day_month">d MMMM</string>
+    <!-- %1$s is the style's name. -->
+    <string name="widgets_clock_style">Style d’horloge : %1$s</string>
+
+    <!-- The Now playing widget. -->
+    <string name="widgets_np_start">Lance un jeu, il t’attendra ici</string>
+    <string name="widgets_np_shizuku">Autorise Tandem dans Shizuku pour voir les jeux lancés</string>
+    <string name="widgets_np_nothing">Rien de lancé</string>
+    <string name="widgets_np_cant_see">Jeux invisibles</string>
+    <string name="widgets_np_wait">Les jeux laissés ouverts t’attendent ici</string>
+    <string name="widgets_np_needs">Requiert Shizuku</string>
+    <string name="widgets_np_running">● Lancé</string>
+    <!-- "SNES · 25m this time". -->
+    <string name="widgets_np_this_time">%1$s · %2$s cette fois</string>
+    <!-- "SNES · RetroArch": the system and the emulator. -->
+    <string name="widgets_np_in_app">%1$s · %2$s</string>
+    <string name="widgets_np_now_playing">● EN JEU</string>
+    <string name="widgets_np_resume">▶ Reprendre</string>
+    <!-- %1$s is the emulator's name, already in capitals. -->
+    <string name="widgets_np_paused_in">● EN PAUSE DANS %1$s</string>
+    <!-- More games left running: "+2 more". -->
+    <string name="widgets_np_more">+%1$d autres</string>
+
+    <!-- Game strips (Continue playing, Favorites, Recently added, Up next). -->
+    <string name="widgets_strip_add_upnext">Ajouter aux prochains jeux</string>
+    <string name="widgets_strip_add_first">+ Ajoute ton premier jeu</string>
+    <string name="widgets_strip_add">+ Ajouter</string>
+    <string name="widgets_continue_empty">Rien de joué pour l’instant</string>
+    <string name="widgets_continue_empty_detail">Tes derniers jeux atterrissent ici</string>
+    <string name="widgets_favorites_empty">Pas encore de favoris</string>
+    <string name="widgets_favorites_empty_detail">Y sur un jeu › Ajouter aux favoris</string>
+    <!-- The badge on a game added this week. -->
+    <string name="widgets_recent_new">Nouveau</string>
+    <string name="widgets_no_games">Pas encore de jeux</string>
+    <string name="widgets_recent_empty_detail">Choisis ton dossier de jeux dans Paramètres › Bibliothèque et visuels › Dossiers de jeux</string>
+    <string name="widgets_upnext_empty">Rien de prévu</string>
+    <string name="widgets_upnext_empty_detail">Y sur un jeu › Ajouter aux prochains jeux</string>
+
+    <!-- Surprise me. -->
+    <string name="widgets_random_none">Rien où piocher pour l’instant</string>
+    <string name="widgets_random_nothing">Rien où piocher</string>
+    <string name="widgets_random_how_about">🎲 Et pourquoi pas…</string>
+
+    <!-- Play stats. -->
+    <string name="widgets_stats_no_streak">Pas encore de série</string>
+    <!-- Days in a row with play. -->
+    <plurals name="widgets_stats_streak">
+        <item quantity="one">🔥 %1$d jour</item>
+        <item quantity="other">🔥 %1$d jours</item>
+    </plurals>
+    <!-- "3h 20m this week". -->
+    <string name="widgets_stats_week">%1$s cette semaine</string>
+    <string name="widgets_stats_today_star">★ Aujourd’hui</string>
+    <string name="widgets_stats_today">Aujourd’hui</string>
+    <string name="widgets_stats_play_time">Temps de jeu</string>
+    <!-- A date pattern (as above): one letter per weekday under the bars, "S". -->
+    <string name="widgets_date_day_letter">EEEEE</string>
+
+    <!-- Achievements. -->
+    <string name="widgets_ach_none">Aucun succès ce mois-ci</string>
+    <string name="widgets_ach_next">Ton prochain s’affichera ici</string>
+    <string name="widgets_ach_latest_all">Derniers succès</string>
+    <string name="widgets_ach_latest">🏆 Dernier succès</string>
+
+    <!-- What Pip says: one line at a time, A for the next. -->
+    <string name="widgets_pip_late">Encore debout ? Moi aussi.</string>
+    <string name="widgets_pip_bed">Encore un niveau, et au lit ?</string>
+    <string name="widgets_pip_morning">Bonjour ! Une petite partie avant de commencer la journée ?</string>
+    <string name="widgets_pip_afternoon">Pause de l’aprèm ? Je te garde ta place au chaud.</string>
+    <string name="widgets_pip_evening">Soirée cocooning. On joue à quoi ?</string>
+    <plurals name="widgets_pip_streak">
+        <item quantity="one">%1$d jour d’affilée ! Quelle forme.</item>
+        <item quantity="other">%1$d jours d’affilée ! Quelle forme.</item>
+    </plurals>
+    <plurals name="widgets_pip_keep_streak">
+        <item quantity="one">Joue aujourd’hui pour garder ta série de %1$d jour !</item>
+        <item quantity="other">Joue aujourd’hui pour garder ta série de %1$d jours !</item>
+    </plurals>
+    <!-- %1$s is today's play time, "45m". -->
+    <string name="widgets_pip_today">%1$s aujourd’hui. Bien joué !</string>
+    <string name="widgets_pip_missed">Tu m’as manqué. On joue ?</string>
+    <plurals name="widgets_pip_untried">
+        <item quantity="one">%1$d jeu que tu n’as pas encore essayé 👀</item>
+        <item quantity="other">%1$d jeux que tu n’as pas encore essayés 👀</item>
+    </plurals>
+    <!-- %1$s is the buttons for it, like "Hold Select". -->
+    <string name="widgets_pip_surprise">Psst… %1$s et je te choisis un jeu.</string>
+    <string name="widgets_pip_switcher">%1$s pour voir ce qui tourne.</string>
+    <string name="widgets_pip_here">J’aime bien quand tu es là.</string>
+
+    <!-- System monitor. "Up 2h 5m": how long since the handheld started. -->
+    <string name="widgets_sys_uptime">Allumée depuis %1$s</string>
+    <string name="widgets_sys_title">Système</string>
+    <string name="widgets_sys_ram">RAM</string>
+    <string name="widgets_sys_cpu">CPU %1$s</string>
+    <!-- The memory's total: "of 12 GB". -->
+    <string name="widgets_sys_of">sur %1$s</string>
+    <string name="widgets_sys_memory">Mémoire</string>
+
+    <!-- App shortcuts. -->
+    <string name="widgets_apps_all">Toutes les applis</string>
+    <string name="widgets_apps_title">Applis</string>
+
+    <!-- Greeting. -->
+    <string name="widgets_hello_morning">Bonjour !</string>
+    <string name="widgets_hello_afternoon">Bon après-midi !</string>
+    <string name="widgets_hello_evening">Bonsoir !</string>
+    <!-- How many games, and a shorter form for narrow cells: "120 games ready to play", "120 games". -->
+    <plurals name="widgets_greeting_ready">
+        <item quantity="one">%1$d jeu prêt à jouer</item>
+        <item quantity="other">%1$d jeux prêts à jouer</item>
+    </plurals>
+    <plurals name="widgets_greeting_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <string name="widgets_last_played">Dernière partie</string>
+
+    <!-- Widgets on the icon grid. %1$s is a widget's name, %2$s a size like "2×2". -->
+    <string name="widgets_not_available">Pas encore disponible</string>
+    <string name="widgets_grid_too_big">%1$s a besoin de plus d’une case. Il tient sur la grille d’accueil</string>
+    <string name="widgets_added">Ajouté : %1$s</string>
+    <string name="widgets_added_row">%1$s ajouté à la rangée de widgets</string>
+    <!-- "Y › Resize" names a menu item, as written there. -->
+    <string name="widgets_added_at">%1$s ajouté en %2$s : Y › Redimensionner quand il y a de la place</string>
+    <string name="widgets_one_size">%1$s n’existe qu’en une taille</string>
+    <string name="widgets_no_room_for">Pas de place pour %1$s ici</string>
+    <string name="widgets_no_room">Pas de place pour une autre taille ici</string>
+    <!-- Kept with Undo. -->
+    <string name="widgets_resized">%1$s passé en %2$s</string>
+    <!-- After resizing: "Clock: 2×1". -->
+    <string name="widgets_sized">%1$s : %2$s</string>
+    <!-- Used in "Removed widget" when the widget has no name. -->
+    <string name="widgets_a_widget">widget</string>
+    <string name="widgets_removed">Retiré : %1$s</string>
+    <!-- A grid widget's Y menu. -->
+    <string name="widgets_menu_options">Options du widget…</string>
+    <string name="widgets_menu_move">Déplacer</string>
+    <string name="widgets_menu_resize">Redimensionner</string>
+    <string name="widgets_menu_remove">Retirer le widget</string>
+    <string name="widgets_menu_select">Sélectionner</string>
+    <string name="widgets_menu_select_sub">Coches-en plusieurs, puis agis sur tous</string>
+    <string name="widgets_menu_tidy">Ranger</string>
+    <string name="widgets_menu_search">Rechercher</string>
+    <string name="widgets_menu_swap">Inverser les écrans</string>
+    <!-- Under the widget's name in its menu: "Widget · 2×2". -->
+    <string name="widgets_menu_kind">Widget · %1$s</string>
+
+    <!-- The widget editor (Settings › Widgets › Customize widgets). -->
+    <string name="widgets_ed_top">Écran du haut</string>
+    <string name="widgets_ed_bottom">Écran du bas</string>
+    <string name="widgets_ed_top_about">Une rangée de widgets sur l’accueil, sous Continuer à jouer.</string>
+    <string name="widgets_ed_bottom_about">Affichés sur l’écran du bas quand rien n’est sélectionné. Sans widget, c’est le salut de Pip.</string>
+    <string name="widgets_ed_add">+ Ajouter un widget</string>
+    <string name="widgets_ed_show_home">Sur l’accueil</string>
+    <string name="widgets_ed_rows">Rangées</string>
+    <string name="widgets_ed_rows_auto">Auto</string>
+    <string name="widgets_ed_rows_one">Une</string>
+    <string name="widgets_ed_rows_two">Deux</string>
+    <string name="widgets_ed_reset_again">Appuie encore pour réinitialiser</string>
+    <string name="widgets_ed_reset">Revenir aux widgets par défaut</string>
+    <string name="widgets_ed_reset_done">Les widgets par défaut sont de retour</string>
+    <string name="widgets_ed_customize">Personnaliser</string>
+    <string name="widgets_ed_options">Options</string>
+    <string name="widgets_ed_switch">Changer d’écran</string>
+    <string name="widgets_ed_home">Écran d’accueil</string>
+    <string name="widgets_ed_row_off">La rangée de widgets est désactivée. Active Sur l’accueil pour la voir.</string>
+    <string name="widgets_ed_none">Pas encore de widgets ici</string>
+    <string name="widgets_ed_none_detail">Ajoute une horloge, ton stockage, tes stats de jeu et plus.</string>
+    <string name="widgets_ed_greeting">Le salut de Pip s’affiche ici.</string>
+    <string name="widgets_ed_add_tile">Ajouter un widget</string>
+    <!-- On a widget being moved: left and right move it, A when done. -->
+    <string name="widgets_ed_moving">◀ ▶  A : OK</string>
+    <string name="widgets_ed_choose">Choisir</string>
+    <string name="widgets_ed_done">OK</string>
+    <!-- A widget's menu. -->
+    <string name="widgets_ed_size">Taille</string>
+    <string name="widgets_ed_size_help">Les cases qu’il occupe sur la grille</string>
+    <string name="widgets_ed_show_on">Afficher sur</string>
+    <string name="widgets_ed_move">Déplacer</string>
+    <string name="widgets_ed_all">Tous les widgets…</string>
+    <string name="widgets_ed_remove">Retirer le widget</string>
+    <!-- The gallery of widgets to add. -->
+    <string name="widgets_ed_add_title">Ajouter un widget</string>
+    <string name="widgets_ed_add_hint">Ajouter</string>
+    <string name="widgets_ed_added">%1$s ajouté ✓</string>
+    <string name="widgets_ed_needs_sign_in">Connexion requise</string>
+
+    <!-- Android's own widgets, hosted. %1$s is a widget's name. -->
+    <string name="widgets_app_gone">%1$s n’est plus disponible, il a donc été retiré</string>
+    <string name="widgets_app_unavailable">Les widgets Android ne sont pas disponibles pour l’instant</string>
+    <string name="widgets_app_no_ask">Android n’a pas voulu demander pour ce widget</string>
+    <string name="widgets_app_not_allowed">Android n’a pas autorisé le widget</string>
+    <string name="widgets_app_set_up">Configurer…</string>
+    <string name="widgets_app_set_up_failed">Son écran de configuration ne s’ouvre pas</string>
+    <string name="widgets_app_not_available">Indisponible</string>
+    <string name="widgets_app_from_apps">Un widget d’une de tes applis</string>
+    <string name="widgets_app_add_title">Ajouter un widget Android</string>
+    <string name="widgets_app_in_folder">Dans le dossier</string>
+    <string name="widgets_app_looking">Je fouille dans tes applis…</string>
+    <string name="widgets_app_looking_detail">Les widgets qu’elles proposent s’afficheront ici.</string>
+    <string name="widgets_app_none">Aucune de tes applis ne propose de widget pour l’instant</string>
+    <string name="widgets_app_go_back">Revenir</string>
+    <string name="widgets_app_cant_add">Ce widget ne peut pas être ajouté pour l’instant</string>
+    <string name="widgets_app_asks">Pose quelques questions d’abord</string>
+    <string name="widgets_app_ready">Prêt à l’emploi</string>
+
+    <!-- Storage volumes, in the storage widget. -->
+    <string name="widgets_volume_internal">Interne</string>
+    <string name="widgets_volume_sd">Carte SD</string>
+</resources>

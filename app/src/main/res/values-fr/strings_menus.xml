@@ -18,8 +18,8 @@
     <string name="menus_game_unfavorite">Retirer des favoris</string>
     <string name="menus_game_favorite">Ajouter aux favoris</string>
     <!-- Up next: the list of games to play next. -->
-    <string name="menus_game_upnext_remove">Retirer de À suivre</string>
-    <string name="menus_game_upnext_add">Ajouter à À suivre</string>
+    <string name="menus_game_upnext_remove">Retirer des prochains jeux</string>
+    <string name="menus_game_upnext_add">Ajouter aux prochains jeux</string>
     <!-- Home: the home screen's grid of tiles. -->
     <string name="menus_game_unpin_home">Retirer de l’accueil</string>
     <string name="menus_game_pin_home">Épingler à l’accueil</string>
@@ -137,7 +137,7 @@
     <string name="menus_search_results">Résultats</string>
     <string name="menus_search_empty">Tape quelques lettres</string>
     <!-- %1$s is what was typed. -->
-    <string name="menus_search_none">Rien pour «  %1$s  »</string>
+    <string name="menus_search_none">Rien pour « %1$s »</string>
     <string name="menus_search_accents">Accents et ponctuation ne comptent pas</string>
     <!-- How many games match. -->
     <plurals name="menus_search_matches">
