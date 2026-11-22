@@ -87,7 +87,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
+import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Launcher
+import io.github.zahakj.tandem.Libraries
+import androidx.compose.ui.layout.ContentScale
 import io.github.zahakj.tandem.PlatformLibrary
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
@@ -382,9 +385,12 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         val side = if (w < 600.dp) 3 else 4
         st.side = side
         val orbD = min(96.dp, h * 0.22f)
-        val dockH = if (dockKeys.isNotEmpty()) 56.dp else 10.dp
-        val captionH = 58.dp
-        val baseY = h - dockH - captionH - orbD / 2 - 2.dp
+        // From the bottom: the dock (its 50 dp tray 8 dp up) and clear room over it, then the caption (a title and a
+        // line, 56 dp) a little under the front orb. The caption never reaches the tray.
+        val dockH = if (dockKeys.isNotEmpty()) 58.dp + 14.dp else 10.dp
+        val captionH = 56.dp
+        val captionGap = 8.dp
+        val baseY = h - dockH - captionH - captionGap - orbD / 2
         val rise = min(h * 0.17f, baseY * 0.3f)
         val stageTop = (baseY - rise - orbD * 0.6f).coerceAtLeast(0.dp)
         val stageBottom = baseY + orbD * 0.6f
@@ -455,7 +461,7 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
             )
             OrbitCaption(
                 st, part,
-                Modifier.offset(y = baseY + orbD / 2 + 8.dp).align(Alignment.TopCenter).widthIn(max = w * 0.56f).height(captionH),
+                Modifier.offset(y = baseY + orbD / 2 + captionGap).align(Alignment.TopCenter).widthIn(max = w * 0.56f).height(captionH),
             )
         }
 
@@ -812,6 +818,10 @@ private fun SpotFan(
         val game = card.game
         val pkg = card.pkg
         val glow = game?.let { SystemColors.of(it.platform.id) } ?: Palette.Sky
+        // A cover fades in once its picture has arrived: an empty card in the row (only its surface) is a grey slab.
+        val box = remember(game?.key, game?.meta?.box) { game?.let { Libraries.of(it)?.box(it) } }
+        val ready = remember(card.key, box) { mutableStateOf(box == null) }
+        val shown = animateFloatAsState(if (ready.value) 1f else 0f, Motion.fade(180), label = "cover-shown")
         FocusCard(
             Modifier
                 .offset { IntOffset(p.x.roundToInt(), 0) }
@@ -826,7 +836,8 @@ private fun SpotFan(
                     rotationY = p.turn * e
                     cameraDistance = 16f * density
                     translationX = -p.x * (1f - e) * 0.7f
-                    alpha = e.coerceIn(0f, 1f)
+                    // Faded as one picture (not ModulateAlpha): the card's surface must not show through the art.
+                    alpha = e.coerceIn(0f, 1f) * shown.value
                 }
                 .floorShadow()
                 .then(if (rank == 0) Modifier.focusRequester(middle) else Modifier)
@@ -841,7 +852,8 @@ private fun SpotFan(
             },
             onClick = { if (game != null) Launcher.launch(ctx, game) else if (pkg != null) Dock.open(ctx, pkg) },
         ) { focused ->
-            if (game != null) GameBoxArt(game, cardW)
+            if (game != null && box != null) CoverArt(game, box, cardW) { ready.value = true }
+            else if (game != null) GameBoxArt(game, cardW)
             else if (pkg != null) Column(
                 Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(lerp(Palette.Card, Palette.Sky, 0.2f), Palette.Card))).padding(8.dp),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
@@ -857,6 +869,15 @@ private fun SpotFan(
             Box(Modifier.fillMaxSize().coverGlass { shade.value })
         }
     }
+}
+
+/** A cover's picture from [box], decoded at its drawn size; [onReady] once it is in (or failed, so it never stays hidden). */
+@Composable
+private fun CoverArt(game: Game, box: java.io.File, size: Dp, onReady: () -> Unit) {
+    AsyncImage(
+        rememberSizedRequest(box, tilePx(size)), game.title, Modifier.fillMaxSize(), contentScale = ContentScale.Crop,
+        onSuccess = { onReady() }, onError = { onReady() },
+    )
 }
 
 /** The spotlight for an orb with nothing to fan out (one of Tandem's apps): its art big, and what it is. */
