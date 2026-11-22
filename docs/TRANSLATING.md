@@ -8,6 +8,7 @@ for laying screens out right to left in Arabic. Paths are relative to `app/src/m
 - [Extracting a file, step by step](#extracting-a-file-step-by-step)
 - [Files and keys](#files-and-keys)
 - [Reading text in code](#reading-text-in-code)
+- [Dates and calendars](#dates-and-calendars)
 - [Arguments and plurals](#arguments-and-plurals)
 - [Writing the XML](#writing-the-xml)
 - [Settings rows, choices and enums](#settings-rows-choices-and-enums)
@@ -91,8 +92,9 @@ to copy.
 | A sentence with values | `Tx.s(R.string.panels_start_folder_made, name)` for `Made the folder %1$s. …` |
 | A count | `Tx.p(R.plurals.panels_start_trophies, n)` (`%1$d` is `n`) |
 | A count with more arguments | `Tx.p(R.plurals.home_x, n, n, name)` (pass `n` yourself among the arguments) |
-| Android formatters | `DateUtils.formatDateTime(Tx.context, …)`, `Formatter.formatShortFileSize(Tx.context, …)` |
-| Dates and numbers you format | `Lang.locale` (`DateTimeFormatter.ofPattern(…, Lang.locale)`, `String.format(Lang.locale, …)`) |
+| A date shown to the user | `Dates.text(ms, DateKind.ShortDay)` (or `Dates.lines`, `Dates.main`, `Dates.relative`): see [Dates and calendars](#dates-and-calendars) |
+| Android formatters | `Formatter.formatShortFileSize(Tx.context, …)`; for dates, a `DateKind` that calls them (`DateKind.Added`) |
+| Numbers and times you format | `Lang.locale` (`String.format(Lang.locale, …)`, `DateTimeFormatter.ofPattern("HH:mm", Lang.locale)`) |
 | A row's stable name, search | `Tx.en(R.string.x)`: the English text in every language (never shown) |
 
 Rules:
@@ -112,6 +114,29 @@ Rules:
   with arguments lets a translator move them.
 - Don't split a sentence over several resources to style part of it; ask before adding markup.
 - Long English texts written as `"…" + "…"` across lines in Kotlin become **one** string in the XML.
+
+## Dates and calendars
+
+Settings › Look & feel › Calendar shows dates in Gregorian (the default), Hijri (Umm al-Qura), Chinese (lunar), or
+Gregorian with Hijri or Chinese beside it. Every date a person sees goes through **`Dates`** (`java/.../Dates.kt`):
+
+- A **`DateKind`** says how much a place shows (weekday short or full, the year always, never or only when it isn't
+  this year, a month alone, a time after it) and how it writes the Gregorian date there: its own translated pattern
+  (`stats_date_short`, `home_clock_date`…, unchanged), an Android skeleton, or Android's own formatter. Use one of
+  `DateKind`'s (`ShortDay`, `LongDay`, `DayMonth`, `Date`, `SessionDay`, `MonthYear`, `JournalDay`, `Clock`,
+  `Today`, `Added`, `Installed`…) or make one beside the place that needs it.
+- `Dates.text(ms, kind)`: one line; with two calendars "Gregorian · second". `Dates.lines(ms, kind)`: the second
+  date apart, for a smaller line under the first where room is short (clocks, the side panel, the bottom screen).
+  `Dates.main(ms, kind)`: the main calendar only, for a place with room for one date (a plaque under a card).
+  `Dates.relative(time)`: Android's "5 minutes ago", and past a week the date in the chosen calendar.
+  `Dates.dayNumber(date)`: a day's number in the main calendar (a week strip).
+- The Hijri and Chinese dates are built by `CalendarText` from `strings_calendar.xml`: the month names, the zodiac
+  years and a template per shape (`calendar_hijri_date`: "%1$s %2$s %3$s AH", `calendar_lunar_day`…), so translators
+  order them. Chinese writes a lunar day the way its calendars do (初一, 十三, 廿一) and puts the year's stem and branch
+  before its animal (丙午马年); Japanese its stem (丙午年). Arabic keeps Western digits. `CalendarTextTest` builds
+  every language's dates from the real files.
+- Display only: what is saved, file names, CSV exports and logs stay Gregorian (ISO), and so do a game's release year
+  and the weekday names. A weekday alone ("Sat") is the same in every calendar and stays a plain pattern.
 
 ## Arguments and plurals
 

@@ -344,3 +344,15 @@ Rainbow road is Route arc-en-ciel, Mario Kart's French name; Tall grass is Haute
 | Replace locked fields (scrape) | Ignorer les verrous | |
 | Rows (icon grid) | Rangées | Everywhere on the icon grid, zoom toast included; « Rayons » is the Shelves home |
 | Undo labels (grid) | Nouns: « Déplacement de… », « Retrait de la vignette » | They also follow « Annulé : » with the first letter lowered, so they never start with a name |
+
+## Calendars (Settings › Look & feel › Calendar, `strings_calendar.xml`)
+
+| English | French | Note |
+| --- | --- | --- |
+| Calendar | Calendrier | The setting |
+| Gregorian / Hijri / Chinese | Grégorien / Hégirien / Chinois | Options; "Gregorian + Hijri" is « Grégorien + hégirien » |
+| AH (after a Hijri year) | de l’hégire | « 11 joumada ath-thania 1448 de l’hégire » |
+| Hijri months | mouharram, safar, rabia al-awal, rabia ath-thani, joumada al-oula, joumada ath-thania, rajab, chaabane, ramadan, chawwal, dhou al-qi’da, dhou al-hijja | Lower case, like French month names |
+| Lunar months | premier mois … douzième mois | A lunar day: « 13 du dixième mois » |
+| Leap month | … intercalaire | « sixième mois intercalaire » |
+| Year of the Horse… | année du Cheval | Rat, Buffle, Tigre, Lapin, Dragon, Serpent, Cheval, Chèvre (année de la Chèvre), Singe, Coq, Chien, Cochon |

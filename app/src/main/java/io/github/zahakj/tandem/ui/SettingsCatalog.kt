@@ -161,7 +161,7 @@ object SettingsPlan {
         "look" to listOf(
             Group("Colour", R.string.settings_group_colour, p("Colour & highlight", "Accent colour", "Highlight style", "Surface")),
             Group("Wallpaper, icons & motion", R.string.settings_group_wallpaper_icons, link("look/wallpaper") + p("System icons", "Icon style", "Icons from") + link("look/motion")),
-            Group("Language", R.string.settings_group_language, p("Language", "Language")),
+            Group("Language", R.string.settings_group_language, p("Language", "Language", "Calendar")),
             Group("Start over", R.string.settings_group_start_over, p("Extras", "Reset look")),
         ),
         "home" to listOf(

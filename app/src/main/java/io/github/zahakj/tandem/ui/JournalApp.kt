@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
@@ -48,7 +50,7 @@ private fun dayLabel(time: Long): String {
         DateUtils.isToday(time) -> Tx.s(R.string.apps_journal_today)
         DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS) -> Tx.s(R.string.apps_journal_yesterday)
         now - time < 6 * DateUtils.DAY_IN_MILLIS -> DateFormat.format(Tx.s(R.string.apps_journal_date_weekday), time).toString()
-        else -> DateFormat.format(Tx.s(R.string.apps_journal_date_long), time).toString()
+        else -> Dates.text(time, DateKind.JournalDay)
     }
 }
 

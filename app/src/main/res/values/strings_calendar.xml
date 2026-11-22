@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings › Look &amp; feel › Calendar, and the words of the Hijri and Chinese calendars that dates are written with. Keys start with calendar_. See docs/TRANSLATING.md. -->
+<resources>
+    <!-- Settings › Look &amp; feel, next to Language: the calendar dates are shown in. -->
+    <string name="calendar_setting">Calendar</string>
+    <string name="calendar_setting_help">The calendar dates are shown in, everywhere in Tandem. With two, the second one goes beside the Gregorian date, or under it where there\'s little room. Saved dates and exported files stay Gregorian.</string>
+    <!-- The options. Short: they label cards in a picker. Use the names your language's phones give these calendars. -->
+    <string name="calendar_option_gregorian">Gregorian</string>
+    <string name="calendar_option_hijri">Hijri</string>
+    <string name="calendar_option_chinese">Chinese</string>
+    <string name="calendar_option_gregorian_hijri">Gregorian + Hijri</string>
+    <string name="calendar_option_gregorian_chinese">Gregorian + Chinese</string>
+
+    <!-- The Hijri (Islamic, Umm al-Qura) months, Muharram first, as a date writes them. -->
+    <string name="calendar_hijri_month_1">Muharram</string>
+    <string name="calendar_hijri_month_2">Safar</string>
+    <string name="calendar_hijri_month_3">Rabi al-Awwal</string>
+    <string name="calendar_hijri_month_4">Rabi al-Thani</string>
+    <string name="calendar_hijri_month_5">Jumada al-Ula</string>
+    <string name="calendar_hijri_month_6">Jumada al-Akhirah</string>
+    <string name="calendar_hijri_month_7">Rajab</string>
+    <string name="calendar_hijri_month_8">Sha\'ban</string>
+    <string name="calendar_hijri_month_9">Ramadan</string>
+    <string name="calendar_hijri_month_10">Shawwal</string>
+    <string name="calendar_hijri_month_11">Dhu al-Qadah</string>
+    <string name="calendar_hijri_month_12">Dhu al-Hijjah</string>
+    <!-- A Hijri day: %1$s the day (a number), %2$s the month's name. "11 Jumada al-Akhirah". -->
+    <string name="calendar_hijri_day">%1$s %2$s</string>
+    <!-- A Hijri day with its year: %1$s day, %2$s month, %3$s year (a number). "11 Jumada al-Akhirah 1448 AH". -->
+    <string name="calendar_hijri_date">%1$s %2$s %3$s AH</string>
+    <!-- A Hijri month and year: %1$s month, %2$s year. "Jumada al-Akhirah 1448 AH". -->
+    <string name="calendar_hijri_month_year">%1$s %2$s AH</string>
+
+    <!-- The months of the Chinese lunar calendar, first to twelfth. -->
+    <string name="calendar_lunar_month_1">First Month</string>
+    <string name="calendar_lunar_month_2">Second Month</string>
+    <string name="calendar_lunar_month_3">Third Month</string>
+    <string name="calendar_lunar_month_4">Fourth Month</string>
+    <string name="calendar_lunar_month_5">Fifth Month</string>
+    <string name="calendar_lunar_month_6">Sixth Month</string>
+    <string name="calendar_lunar_month_7">Seventh Month</string>
+    <string name="calendar_lunar_month_8">Eighth Month</string>
+    <string name="calendar_lunar_month_9">Ninth Month</string>
+    <string name="calendar_lunar_month_10">Tenth Month</string>
+    <string name="calendar_lunar_month_11">Eleventh Month</string>
+    <string name="calendar_lunar_month_12">Twelfth Month</string>
+    <!-- A leap month, added some years, which repeats the month before it: %1$s is that month's name. "Leap Sixth Month". -->
+    <string name="calendar_lunar_leap">Leap %1$s</string>
+    <!-- The Chinese calendar's years by their zodiac animal, Rat first: Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, Pig. Chinese puts the year's stem and branch (丙午) in front by itself, Japanese its stem. -->
+    <string name="calendar_lunar_year_1">Year of the Rat</string>
+    <string name="calendar_lunar_year_2">Year of the Ox</string>
+    <string name="calendar_lunar_year_3">Year of the Tiger</string>
+    <string name="calendar_lunar_year_4">Year of the Rabbit</string>
+    <string name="calendar_lunar_year_5">Year of the Dragon</string>
+    <string name="calendar_lunar_year_6">Year of the Snake</string>
+    <string name="calendar_lunar_year_7">Year of the Horse</string>
+    <string name="calendar_lunar_year_8">Year of the Goat</string>
+    <string name="calendar_lunar_year_9">Year of the Monkey</string>
+    <string name="calendar_lunar_year_10">Year of the Rooster</string>
+    <string name="calendar_lunar_year_11">Year of the Dog</string>
+    <string name="calendar_lunar_year_12">Year of the Pig</string>
+    <!-- A lunar day: %1$s the month's name, %2$s the day (a number; 初一, 十三… in Chinese). "Tenth Month 13". -->
+    <string name="calendar_lunar_day">%1$s %2$s</string>
+    <!-- A lunar day with its year: %1$s month, %2$s day, %3$s the year's name. "Tenth Month 13, Year of the Horse". -->
+    <string name="calendar_lunar_date">%1$s %2$s, %3$s</string>
+    <!-- A lunar month and its year: %1$s month, %2$s the year's name. "Tenth Month, Year of the Horse". -->
+    <string name="calendar_lunar_month_year">%1$s, %2$s</string>
+
+    <!-- A weekday before a Hijri or lunar date: %1$s the weekday ("Sat" or "Saturday"), %2$s the date. "Sat 11 Jumada al-Akhirah". -->
+    <string name="calendar_weekday_date">%1$s %2$s</string>
+    <!-- A Hijri or lunar date with a time of day: %1$s the date, %2$s the time. "Sat 11 Jumada al-Akhirah, 21:05". -->
+    <string name="calendar_date_time">%1$s, %2$s</string>
+</resources>

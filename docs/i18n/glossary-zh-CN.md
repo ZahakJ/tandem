@@ -255,3 +255,15 @@ Pocket LCD is 掌机液晶, 8-bit evening is 8 位黄昏, Synthwave is 合成器
 
 Animation styles: Bouncy Q 弹, Smooth 顺滑, Minimal 简约. Sound packs: Modern 现代, Playful 欢快, Chiptune 芯片音乐,
 Bubbly 泡泡, Minimal 极简, Studio 录音棚, Glass 玻璃, Air 空气.
+
+## Calendars (Settings › Look & feel › Calendar, `strings_calendar.xml`)
+
+| English | Chinese | Note |
+| --- | --- | --- |
+| Calendar | 历法 | The setting (日历 is the app) |
+| Gregorian / Hijri / Chinese | 公历 / 伊斯兰历 / 农历 | Options; "Gregorian + Chinese" is 公历 + 农历 |
+| A Hijri date | 伊斯兰历1448年主马达·阿色尼月11日 | Months: 穆哈兰姆月, 色法尔月, 赖比尔·敖外鲁月, 赖比尔·阿色尼月, 主马达·敖外鲁月, 主马达·阿色尼月, 赖哲卜月, 舍尔邦月, 赖买丹月, 闪瓦鲁月, 都尔喀尔德月, 都尔黑哲月 |
+| Lunar months | 正月, 二月 … 十月, 冬月, 腊月 | |
+| Lunar days | 初一 … 初十, 十一 … 二十, 廿一 … 廿九, 三十 | Written in code (`CalendarText.chineseDay`): 十月十三 |
+| Leap month | 闰六月 | |
+| The year | 丙午马年 | The stem and branch (丙午) are put before the animal year (马年) in code |

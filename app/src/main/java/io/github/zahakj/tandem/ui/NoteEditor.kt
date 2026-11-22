@@ -1,6 +1,5 @@
 package io.github.zahakj.tandem.ui
 
-import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.NoteStore
 import io.github.zahakj.tandem.OpenNote
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.NoteDoc
@@ -131,7 +131,7 @@ fun NoteScreen(note: OpenNote) {
                     NoteItem.Title -> BlockCard(focus, app.color, onClick = { renameNote(note) }) {
                         Text(note.title, style = MaterialTheme.typography.headlineSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(
-                            Tx.s(R.string.apps_note_edited, DateUtils.getRelativeTimeSpanString(note.file.lastModified()).toString()),
+                            Tx.s(R.string.apps_note_edited, Dates.relative(note.file.lastModified())),
                             style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1,
                         )
                     }

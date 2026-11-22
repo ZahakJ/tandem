@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French. Settings › Look &amp; feel › Calendar and the words of the Hijri and Chinese calendars. See docs/TRANSLATING.md and docs/i18n/glossary-fr.md. -->
+<resources>
+    <string name="calendar_setting">Calendrier</string>
+    <string name="calendar_setting_help">Le calendrier dans lequel Tandem affiche les dates, partout. Avec deux, le second s’affiche à côté de la date grégorienne, ou en dessous quand la place manque. Les dates enregistrées et les fichiers exportés restent en grégorien.</string>
+    <string name="calendar_option_gregorian">Grégorien</string>
+    <string name="calendar_option_hijri">Hégirien</string>
+    <string name="calendar_option_chinese">Chinois</string>
+    <string name="calendar_option_gregorian_hijri">Grégorien + hégirien</string>
+    <string name="calendar_option_gregorian_chinese">Grégorien + chinois</string>
+    <string name="calendar_hijri_month_1">mouharram</string>
+    <string name="calendar_hijri_month_2">safar</string>
+    <string name="calendar_hijri_month_3">rabia al-awal</string>
+    <string name="calendar_hijri_month_4">rabia ath-thani</string>
+    <string name="calendar_hijri_month_5">joumada al-oula</string>
+    <string name="calendar_hijri_month_6">joumada ath-thania</string>
+    <string name="calendar_hijri_month_7">rajab</string>
+    <string name="calendar_hijri_month_8">chaabane</string>
+    <string name="calendar_hijri_month_9">ramadan</string>
+    <string name="calendar_hijri_month_10">chawwal</string>
+    <string name="calendar_hijri_month_11">dhou al-qi’da</string>
+    <string name="calendar_hijri_month_12">dhou al-hijja</string>
+    <string name="calendar_hijri_day">%1$s %2$s</string>
+    <string name="calendar_hijri_date">%1$s %2$s %3$s de l’hégire</string>
+    <string name="calendar_hijri_month_year">%1$s %2$s de l’hégire</string>
+    <string name="calendar_lunar_month_1">premier mois</string>
+    <string name="calendar_lunar_month_2">deuxième mois</string>
+    <string name="calendar_lunar_month_3">troisième mois</string>
+    <string name="calendar_lunar_month_4">quatrième mois</string>
+    <string name="calendar_lunar_month_5">cinquième mois</string>
+    <string name="calendar_lunar_month_6">sixième mois</string>
+    <string name="calendar_lunar_month_7">septième mois</string>
+    <string name="calendar_lunar_month_8">huitième mois</string>
+    <string name="calendar_lunar_month_9">neuvième mois</string>
+    <string name="calendar_lunar_month_10">dixième mois</string>
+    <string name="calendar_lunar_month_11">onzième mois</string>
+    <string name="calendar_lunar_month_12">douzième mois</string>
+    <string name="calendar_lunar_leap">%1$s intercalaire</string>
+    <string name="calendar_lunar_year_1">année du Rat</string>
+    <string name="calendar_lunar_year_2">année du Buffle</string>
+    <string name="calendar_lunar_year_3">année du Tigre</string>
+    <string name="calendar_lunar_year_4">année du Lapin</string>
+    <string name="calendar_lunar_year_5">année du Dragon</string>
+    <string name="calendar_lunar_year_6">année du Serpent</string>
+    <string name="calendar_lunar_year_7">année du Cheval</string>
+    <string name="calendar_lunar_year_8">année de la Chèvre</string>
+    <string name="calendar_lunar_year_9">année du Singe</string>
+    <string name="calendar_lunar_year_10">année du Coq</string>
+    <string name="calendar_lunar_year_11">année du Chien</string>
+    <string name="calendar_lunar_year_12">année du Cochon</string>
+    <string name="calendar_lunar_day">%2$s du %1$s</string>
+    <string name="calendar_lunar_date">%2$s du %1$s, %3$s</string>
+    <string name="calendar_lunar_month_year">%1$s, %2$s</string>
+    <string name="calendar_weekday_date">%1$s %2$s</string>
+    <string name="calendar_date_time">%1$s, %2$s</string>
+</resources>

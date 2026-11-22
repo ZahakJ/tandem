@@ -263,3 +263,14 @@ Animation styles: Bouncy ぽよん, Smooth なめらか, Minimal ひかえめ. S
 Playful ポップ, Air そよかぜ.
 
 Avoid モザイク for "mosaic" (in Japanese it means a censoring blur): Cover mosaic is パッケージのコラージュ.
+
+## Calendars (Settings › Look & feel › Calendar, `strings_calendar.xml`)
+
+| English | Japanese | Note |
+| --- | --- | --- |
+| Calendar | 暦法 | The setting (カレンダー is the app) |
+| Gregorian / Hijri / Chinese | 西暦 / ヒジュラ暦 / 中国暦 | Options; "Gregorian + Hijri" is 西暦 + ヒジュラ暦 |
+| A Hijri date | ヒジュラ暦1448年ジュマーダー・アル＝アーヒラ11日 | Month names in katakana: ムハッラム, サファル, ラビーウ・アル＝アウワル, ラビーウ・アッ＝サーニー, ジュマーダー・アル＝ウーラー, ジュマーダー・アル＝アーヒラ, ラジャブ, シャアバーン, ラマダーン, シャウワール, ズー・アル＝カアダ, ズー・アル＝ヒッジャ |
+| Lunar months | 正月, 二月 … 十二月 | A lunar day: 十月13日 |
+| Leap month | 閏六月 | |
+| The year | 丙午年 | Its stem (丙) is put before the branch year (午年) in code |

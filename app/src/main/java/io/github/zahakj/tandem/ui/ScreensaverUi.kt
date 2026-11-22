@@ -129,7 +129,7 @@ private fun Clock(modifier: Modifier, phase: () -> Float) {
             color = Palette.Text,
         )
         Text(
-            java.text.SimpleDateFormat(android.text.format.DateFormat.getBestDateTimePattern(io.github.zahakj.tandem.Lang.locale, "EEEEMMMMd"), io.github.zahakj.tandem.Lang.locale).format(now),
+            io.github.zahakj.tandem.Dates.text(now.time, io.github.zahakj.tandem.DateKind.Today),
             style = MaterialTheme.typography.titleLarge.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Center),
             color = accent,
         )

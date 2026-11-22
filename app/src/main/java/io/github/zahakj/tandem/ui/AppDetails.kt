@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
-import android.text.format.DateUtils
 import android.util.LruCache
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -64,6 +63,8 @@ import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.everPlayed
 import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.Dates
+import io.github.zahakj.tandem.DateKind
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
@@ -198,7 +199,7 @@ fun appTint(pkg: String): Color = Dock.builtIn(pkg)?.color ?: AppLooks.cached(pk
 /** "3 minutes ago", "Yesterday", or "just now". */
 private fun ago(time: Long): String {
     val now = System.currentTimeMillis()
-    return if (now - time < 60_000) Tx.s(R.string.library_app_just_now) else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+    return if (now - time < 60_000) Tx.s(R.string.library_app_just_now) else Dates.relative(time, now)
 }
 
 /** The height of the button hints, so the content stays clear of them. */
@@ -312,7 +313,7 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
                 }
                 // A system app's install date is just when the system was built: not worth a line.
                 l?.installed?.takeIf { it > 0 && !l.system }?.let {
-                    add(Tx.s(R.string.library_app_installed) to DateUtils.formatDateTime(Tx.context, it, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_SHOW_YEAR))
+                    add(Tx.s(R.string.library_app_installed) to Dates.text(it, DateKind.Installed))
                 }
             }
             if (facts.isNotEmpty()) {

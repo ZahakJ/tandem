@@ -1,6 +1,7 @@
 package io.github.zahakj.tandem.ui
 
-import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import android.os.BatteryManager
@@ -309,7 +310,7 @@ fun ClockFace() {
     Column(Modifier.fillMaxSize().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text(Clock.always(now), style = MaterialTheme.typography.displaySmall.copy(fontSize = 76.sp, lineHeight = 80.sp))
         Text(
-            java.text.SimpleDateFormat(Tx.s(R.string.home_clock_date), Lang.locale).format(now),
+            Dates.text(now.time, DateKind.Clock),
             style = MaterialTheme.typography.titleLarge, color = Palette.Muted,
         )
         Spacer(Modifier.height(22.dp))

@@ -69,6 +69,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Collections
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.DeviceInfo
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Lang
@@ -707,7 +709,8 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
     val ampm = if (is24) null else now.format(DateTimeFormatter.ofPattern("a", Lang.locale))
     val secs = if (seconds) now.format(DateTimeFormatter.ofPattern(":ss", Lang.locale)) else null
     val showDate = s.on("date")
-    val date = now.format(DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_short), Lang.locale))
+    // With two calendars the second date goes on a smaller line of its own, when there is room for it.
+    val (date, date2) = Dates.lines(nowMs, DateKind.WidgetDay)
     val style = s.opt("style")
     WidgetCard(s, m, onClick = {
         val i = CLOCK_STYLES.indexOfFirst { it.first == style }
@@ -729,8 +732,8 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                         AnalogFace(now, seconds, Modifier.size(min(w, h)))
                     } else if (h > w * 1.2f || (h > 150.dp && w < 220.dp)) {
                         // The face over the time and date, each line only when the face keeps most of the room.
-                        val kept = fitting(listOf(lh.title + 10.dp, lh.title), h, keep = min(w, h * 0.55f)).let { k -> if (showDate) k else k - 1 }
-                        val faceH = h - (if (0 in kept) lh.title + 10.dp else 0.dp) - (if (1 in kept) lh.title else 0.dp)
+                        val kept = fitting(listOfNotNull(lh.title + 10.dp, lh.title, lh.small.takeIf { date2 != null }), h, keep = min(w, h * 0.55f)).let { k -> if (showDate) k else k - 1 - 2 }
+                        val faceH = h - (if (0 in kept) lh.title + 10.dp else 0.dp) - (if (1 in kept) lh.title else 0.dp) - (if (2 in kept && date2 != null) lh.small else 0.dp)
                         Column(Modifier.width(w), horizontalAlignment = Alignment.CenterHorizontally) {
                             AnalogFace(now, seconds, Modifier.size(min(w, faceH)))
                             if (0 in kept) {
@@ -738,19 +741,23 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                                 FitLine(timeLine, MaterialTheme.typography.titleMedium, Modifier.width(w), alignment = Alignment.Center)
                             }
                             if (1 in kept) FitLine(date, MaterialTheme.typography.labelLarge, Modifier.width(w), Palette.Lavender, Alignment.Center)
+                            if (1 in kept && 2 in kept && date2 != null) FitLine(date2, MaterialTheme.typography.labelSmall, Modifier.width(w), Palette.Muted, Alignment.Center)
                         }
                     } else {
                         val face = min(h, w / 2)
                         val textW = w - face - 14.dp
                         // The day, the date and the time beside the face, dropping the date, then the time, when low.
-                        val kept = fitting(listOf(lh.large, lh.title, lh.title), h).let { k -> if (showDate) k else k - 1 }
+                        val (dayMonth, dayMonth2) = Dates.lines(nowMs, DateKind.WidgetDayMonth)
+                        // The second calendar's date last, under the time.
+                        val kept = fitting(listOfNotNull(lh.large, lh.title, lh.title, lh.small.takeIf { dayMonth2 != null }), h).let { k -> if (showDate) k else k - 1 - 3 }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             AnalogFace(now, seconds, Modifier.size(face))
                             Spacer(Modifier.width(14.dp))
                             Column(Modifier.width(textW)) {
                                 FitLine(now.format(DateTimeFormatter.ofPattern("EEEE", Lang.locale)), MaterialTheme.typography.titleLarge, Modifier.width(textW))
-                                if (1 in kept) FitLine(now.format(DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_day_month), Lang.locale)), MaterialTheme.typography.titleSmall, Modifier.width(textW), Palette.Lavender)
+                                if (1 in kept) FitLine(dayMonth, MaterialTheme.typography.titleSmall, Modifier.width(textW), Palette.Lavender)
                                 if (2 in kept) FitLine(timeLine, MaterialTheme.typography.labelLarge, Modifier.width(textW), Palette.Muted)
+                                if (3 in kept && dayMonth2 != null) FitLine(dayMonth2, MaterialTheme.typography.labelSmall, Modifier.width(textW), Palette.Muted)
                             }
                         }
                     }
@@ -789,17 +796,20 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                     }
                     // The date goes first, then the seconds and AM / PM, when the time would otherwise get small.
                     val dated = showDate && h >= lh.title + 26.dp
+                    // The second calendar only where the time keeps most of the height.
+                    val dated2 = dated && date2 != null && h >= lh.title + lh.small + 40.dp
                     val roomy = w >= 96.dp
                     val tail = if (roomy) listOfNotNull(secs, ampm?.let { " $it" }).joinToString("") else ""
                     // Never wider than the card: Nunito digits are about 0.6 em wide.
                     val tailEm = if (tail.isEmpty()) 0f else (if (secs != null) 1.2f else 0f) + (if (ampm != null) 1.1f else 0f)
-                    val main = minOf(wanted, w.value / (time.length * 0.6f + tailEm + 0.3f), (h - if (dated) lh.title else 0.dp).value * 0.95f).sp
+                    val main = minOf(wanted, w.value / (time.length * 0.6f + tailEm + 0.3f), (h - (if (dated) lh.title else 0.dp) - (if (dated2) lh.small else 0.dp)).value * 0.95f).sp
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.Bottom) {
                             Text(time, style = MaterialTheme.typography.displaySmall.copy(fontSize = main, lineHeight = main), maxLines = 1, softWrap = false)
                             if (tail.isNotEmpty()) Text(tail, Modifier.padding(bottom = 4.dp, start = 2.dp), style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1, softWrap = false)
                         }
                         if (dated) FitLine(date, MaterialTheme.typography.labelLarge, Modifier.widthIn(max = w), Palette.Lavender, Alignment.Center)
+                        if (dated2 && date2 != null) FitLine(date2, MaterialTheme.typography.labelSmall, Modifier.widthIn(max = w), Palette.Muted, Alignment.Center)
                     }
                 }
             }

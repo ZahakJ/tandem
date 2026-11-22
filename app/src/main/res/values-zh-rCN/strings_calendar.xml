@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simplified Chinese. Settings › Look &amp; feel › Calendar and the words of the Hijri and Chinese calendars. See docs/TRANSLATING.md and docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="calendar_setting">历法</string>
+    <string name="calendar_setting_help">Tandem 各处显示日期所用的历法。选两种时，第二种显示在公历日期旁边，空间不够时显示在下方。保存的日期和导出的文件仍使用公历。</string>
+    <string name="calendar_option_gregorian">公历</string>
+    <string name="calendar_option_hijri">伊斯兰历</string>
+    <string name="calendar_option_chinese">农历</string>
+    <string name="calendar_option_gregorian_hijri">公历 + 伊斯兰历</string>
+    <string name="calendar_option_gregorian_chinese">公历 + 农历</string>
+    <string name="calendar_hijri_month_1">穆哈兰姆月</string>
+    <string name="calendar_hijri_month_2">色法尔月</string>
+    <string name="calendar_hijri_month_3">赖比尔·敖外鲁月</string>
+    <string name="calendar_hijri_month_4">赖比尔·阿色尼月</string>
+    <string name="calendar_hijri_month_5">主马达·敖外鲁月</string>
+    <string name="calendar_hijri_month_6">主马达·阿色尼月</string>
+    <string name="calendar_hijri_month_7">赖哲卜月</string>
+    <string name="calendar_hijri_month_8">舍尔邦月</string>
+    <string name="calendar_hijri_month_9">赖买丹月</string>
+    <string name="calendar_hijri_month_10">闪瓦鲁月</string>
+    <string name="calendar_hijri_month_11">都尔喀尔德月</string>
+    <string name="calendar_hijri_month_12">都尔黑哲月</string>
+    <string name="calendar_hijri_day">%2$s%1$s日</string>
+    <string name="calendar_hijri_date">伊斯兰历%3$s年%2$s%1$s日</string>
+    <string name="calendar_hijri_month_year">伊斯兰历%2$s年%1$s</string>
+    <string name="calendar_lunar_month_1">正月</string>
+    <string name="calendar_lunar_month_2">二月</string>
+    <string name="calendar_lunar_month_3">三月</string>
+    <string name="calendar_lunar_month_4">四月</string>
+    <string name="calendar_lunar_month_5">五月</string>
+    <string name="calendar_lunar_month_6">六月</string>
+    <string name="calendar_lunar_month_7">七月</string>
+    <string name="calendar_lunar_month_8">八月</string>
+    <string name="calendar_lunar_month_9">九月</string>
+    <string name="calendar_lunar_month_10">十月</string>
+    <string name="calendar_lunar_month_11">冬月</string>
+    <string name="calendar_lunar_month_12">腊月</string>
+    <string name="calendar_lunar_leap">闰%1$s</string>
+    <string name="calendar_lunar_year_1">鼠年</string>
+    <string name="calendar_lunar_year_2">牛年</string>
+    <string name="calendar_lunar_year_3">虎年</string>
+    <string name="calendar_lunar_year_4">兔年</string>
+    <string name="calendar_lunar_year_5">龙年</string>
+    <string name="calendar_lunar_year_6">蛇年</string>
+    <string name="calendar_lunar_year_7">马年</string>
+    <string name="calendar_lunar_year_8">羊年</string>
+    <string name="calendar_lunar_year_9">猴年</string>
+    <string name="calendar_lunar_year_10">鸡年</string>
+    <string name="calendar_lunar_year_11">狗年</string>
+    <string name="calendar_lunar_year_12">猪年</string>
+    <string name="calendar_lunar_day">%1$s%2$s</string>
+    <string name="calendar_lunar_date">%3$s%1$s%2$s</string>
+    <string name="calendar_lunar_month_year">%2$s%1$s</string>
+    <string name="calendar_weekday_date">%2$s %1$s</string>
+    <string name="calendar_date_time">%1$s %2$s</string>
+</resources>

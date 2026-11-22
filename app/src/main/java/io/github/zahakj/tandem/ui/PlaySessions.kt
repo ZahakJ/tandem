@@ -42,6 +42,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
@@ -172,7 +174,6 @@ internal fun SessionArt(key: String, game: Game?) {
 private val zone: ZoneId get() = ZoneId.systemDefault()
 private fun at(ms: Long): ZonedDateTime = Instant.ofEpochMilli(ms).atZone(zone)
 // Made when used, in the language of the moment.
-private val dayFormat get() = DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_session), Lang.locale)
 private val timeFormat get() = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Lang.locale)
 
 /** The session popups, drawn over the Stats screen. */
@@ -190,10 +191,13 @@ private fun SessionHeader(s: PlaySession, game: Game?) {
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(sessionTitle(s.k, game), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            // A second calendar's date on a smaller line of its own: the first is full with the time and length.
+            val (day, day2) = Dates.lines(s.s, DateKind.SessionDay)
             Text(
-                Tx.s(R.string.stats_session_header, at(s.s).format(dayFormat), at(s.s).format(timeFormat), formatPlayLong(s.d)),
+                Tx.s(R.string.stats_session_header, day, at(s.s).format(timeFormat), formatPlayLong(s.d)),
                 style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
+            if (day2 != null) Text(day2, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -223,7 +227,7 @@ private fun SessionMenu() {
                 MenuRow(Tx.s(R.string.stats_session_edit_length), formatPlayLong(cur.d), "length", r, target, color) {
                     PlaySessions.menuFor = null; FocusMemory.forget(LENGTH); PlaySessions.lengthFor = cur
                 }
-                MenuRow(Tx.s(R.string.stats_session_change_date), Tx.s(R.string.stats_session_when, at(cur.s).format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_day_month), Lang.locale)), at(cur.s).format(timeFormat)), "date", r, target, Palette.Sky) {
+                MenuRow(Tx.s(R.string.stats_session_change_date), Tx.s(R.string.stats_session_when, Dates.main(cur.s, DateKind.DayMonth), at(cur.s).format(timeFormat)), "date", r, target, Palette.Sky) {
                     PlaySessions.menuFor = null; FocusMemory.forget(DATE); PlaySessions.dateFor = cur
                 }
                 if (merge != null) MenuRow(Tx.s(R.string.stats_session_merge), Tx.s(R.string.stats_session_merge_adds, formatPlayLong(merge.d)), "merge", r, target, Palette.Butter) {
@@ -333,7 +337,10 @@ private fun DateEditor() {
                 Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 4.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                StepCard(Tx.s(R.string.stats_session_day), t.format(dayFormat), Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }, { row = "day" }) {
+                val (day, day2) = Dates.lines(start, DateKind.SessionDay)
+                StepCard(Tx.s(R.string.stats_session_day), day, Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }, { row = "day" }) {
+                    // The second calendar's date over the week, where the value has no room for it.
+                    if (day2 != null) Text(day2, Modifier.fillMaxWidth().padding(bottom = 4.dp), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
                     WeekStrip(t, Palette.Sky)
                 }
                 StepCard(Tx.s(R.string.stats_session_time), t.format(timeFormat), Palette.Mint, Modifier.takesFocus(DATE, "time", target == "time"), { step("time", it, false) }, { row = "time" }) {
@@ -350,7 +357,7 @@ private fun DateEditor() {
                 PillButton(Tx.s(R.string.stats_session_save), Palette.Mint, Modifier.takesFocus(DATE, "save", target == "save")) {
                     if (start != cur.s) {
                         PlaySessions.moveTo(cur, start)
-                        Toasts.show(Tx.s(R.string.stats_session_moved, at(start).format(dayFormat), at(start).format(timeFormat)))
+                        Toasts.show(Tx.s(R.string.stats_session_moved, Dates.text(start, DateKind.SessionDay), at(start).format(timeFormat)))
                     }
                     PlaySessions.close()
                 }
@@ -409,7 +416,7 @@ private fun WeekStrip(t: ZonedDateTime, color: Color) {
             ) {
                 val ink = if (on) Palette.OnAccent else Palette.Text
                 Text(d.format(weekdayFormat), style = MaterialTheme.typography.labelSmall, color = ink.copy(alpha = 0.8f), maxLines = 1)
-                Text("${d.dayOfMonth}", style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1)
+                Text(Dates.dayNumber(d), style = MaterialTheme.typography.labelLarge, color = ink, maxLines = 1)
             }
         }
     }

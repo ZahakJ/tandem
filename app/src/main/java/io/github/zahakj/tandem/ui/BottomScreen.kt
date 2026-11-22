@@ -3,7 +3,6 @@ package io.github.zahakj.tandem.ui
 import android.app.Presentation
 import android.hardware.display.DisplayManager
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.Display
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -71,6 +70,8 @@ import androidx.compose.runtime.remember
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.Dates
+import io.github.zahakj.tandem.DateKind
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Tx
@@ -538,7 +539,7 @@ private fun GameFacts(game: Game, modifier: Modifier) {
             add(Tx.s(R.string.screens_fact_time_to_beat) to parts.joinParts())
         }
         if (meta.lastPlayed > 0) add(Tx.s(R.string.screens_fact_last_played) to relative(meta.lastPlayed))
-        if (meta.firstSeen > 0) add(Tx.s(R.string.screens_fact_added) to DateUtils.formatDateTime(Tx.context, meta.firstSeen, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH))
+        if (meta.firstSeen > 0) add(Tx.s(R.string.screens_fact_added) to Dates.text(meta.firstSeen, DateKind.Added))
         game.group?.let { add(Tx.s(R.string.screens_fact_folder) to it) }
         add(Tx.s(R.string.screens_fact_file) to game.file.name)
     }
@@ -581,7 +582,7 @@ internal fun creditsLine(m: io.github.zahakj.tandem.data.GameMeta): String? {
 /** "3 minutes ago", "Yesterday", or "just now". */
 private fun relative(time: Long): String {
     val now = System.currentTimeMillis()
-    return if (now - time < 60_000) Tx.s(R.string.screens_just_now) else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+    return if (now - time < 60_000) Tx.s(R.string.screens_just_now) else Dates.relative(time, now)
 }
 
 /** "Played 1 min · 1 minute ago". Imported history (a time or a date with no count) counts as played. */

@@ -40,7 +40,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.time.format.TextStyle
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
+import io.github.zahakj.tandem.YearShown
 import io.github.zahakj.tandem.Note
 import io.github.zahakj.tandem.Notes
 import io.github.zahakj.tandem.Privacy
@@ -62,6 +66,11 @@ import kotlinx.coroutines.withContext
  */
 
 private const val KEY = "side"
+
+/** The date and time under Pip, "Sat, Nov 21, 9:05 PM", as Android writes it in Gregorian. */
+private val PanelDate = DateKind(TextStyle.SHORT, YearShown.Never, time = true) {
+    DateUtils.formatDateTime(Tx.context, it.toInstant().toEpochMilli(), DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+}
 
 @Composable
 fun SidePanelHost() {
@@ -122,10 +131,10 @@ fun SidePanelHost() {
                             Spacer(Modifier.width(12.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(pipLine(notes.size, allowed), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                                Text(
-                                    DateUtils.formatDateTime(Tx.context, now, DateUtils.FORMAT_SHOW_WEEKDAY or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL),
-                                    style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1,
-                                )
+                                // A second calendar on a smaller line under the first.
+                                val (date, date2) = Dates.lines(now, PanelDate)
+                                Text(date, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                                if (date2 != null) Text(date2, style = MaterialTheme.typography.labelSmall, color = Palette.Muted.copy(alpha = 0.8f), maxLines = 1)
                             }
                             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Pill(batteryText(battery, charging), if (battery <= 20 && !charging) Palette.Peach else Palette.Mint)
@@ -268,7 +277,7 @@ private fun NoteCard(n: Note, private: Boolean, now: Long, showApp: Boolean, foc
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(if (showApp) app else "", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                     Text(
-                        DateUtils.getRelativeTimeSpanString(n.time, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE).toString(),
+                        Dates.relative(n.time, now, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE),
                         style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1,
                     )
                     // What Y does, on the card it does it to.

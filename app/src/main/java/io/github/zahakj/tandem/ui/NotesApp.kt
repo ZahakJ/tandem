@@ -1,7 +1,6 @@
 package io.github.zahakj.tandem.ui
 
 import android.text.format.DateFormat
-import android.text.format.DateUtils
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +33,7 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.NoteStore
 import io.github.zahakj.tandem.OpenNote
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Selected
@@ -150,7 +150,7 @@ private fun bookTitle(b: Notebook): String =
 
 private fun bookColor(b: Notebook, fallback: Color): Color = NoteStore.gameOf(b)?.let { SystemColors.of(it.platform.id) } ?: fallback
 
-private fun ago(time: Long): String = DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString()
+private fun ago(time: Long): String = Dates.relative(time)
 
 /** One line about a note: how far its checklist is, its first words, or what it holds. */
 fun noteLine(e: NoteEntry): String {

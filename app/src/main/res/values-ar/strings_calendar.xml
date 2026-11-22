@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Settings › Look &amp; feel › Calendar and the words of the Hijri and Chinese calendars. See docs/TRANSLATING.md and docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="calendar_setting">التقويم</string>
+    <string name="calendar_setting_help">التقويم الذي تظهر به التواريخ في كل أنحاء Tandem. مع تقويمين يأتي الثاني بجانب التاريخ الميلادي، أو تحته حيث تضيق المساحة. التواريخ المحفوظة والملفات المصدَّرة تبقى بالميلادي.</string>
+    <string name="calendar_option_gregorian">ميلادي</string>
+    <string name="calendar_option_hijri">هجري</string>
+    <string name="calendar_option_chinese">صيني</string>
+    <string name="calendar_option_gregorian_hijri">ميلادي + هجري</string>
+    <string name="calendar_option_gregorian_chinese">ميلادي + صيني</string>
+    <string name="calendar_hijri_month_1">محرم</string>
+    <string name="calendar_hijri_month_2">صفر</string>
+    <string name="calendar_hijri_month_3">ربيع الأول</string>
+    <string name="calendar_hijri_month_4">ربيع الآخر</string>
+    <string name="calendar_hijri_month_5">جمادى الأولى</string>
+    <string name="calendar_hijri_month_6">جمادى الآخرة</string>
+    <string name="calendar_hijri_month_7">رجب</string>
+    <string name="calendar_hijri_month_8">شعبان</string>
+    <string name="calendar_hijri_month_9">رمضان</string>
+    <string name="calendar_hijri_month_10">شوال</string>
+    <string name="calendar_hijri_month_11">ذو القعدة</string>
+    <string name="calendar_hijri_month_12">ذو الحجة</string>
+    <string name="calendar_hijri_day">%1$s %2$s</string>
+    <string name="calendar_hijri_date">%1$s %2$s %3$s هـ</string>
+    <string name="calendar_hijri_month_year">%1$s %2$s هـ</string>
+    <string name="calendar_lunar_month_1">الشهر الأول</string>
+    <string name="calendar_lunar_month_2">الشهر الثاني</string>
+    <string name="calendar_lunar_month_3">الشهر الثالث</string>
+    <string name="calendar_lunar_month_4">الشهر الرابع</string>
+    <string name="calendar_lunar_month_5">الشهر الخامس</string>
+    <string name="calendar_lunar_month_6">الشهر السادس</string>
+    <string name="calendar_lunar_month_7">الشهر السابع</string>
+    <string name="calendar_lunar_month_8">الشهر الثامن</string>
+    <string name="calendar_lunar_month_9">الشهر التاسع</string>
+    <string name="calendar_lunar_month_10">الشهر العاشر</string>
+    <string name="calendar_lunar_month_11">الشهر الحادي عشر</string>
+    <string name="calendar_lunar_month_12">الشهر الثاني عشر</string>
+    <string name="calendar_lunar_leap">%1$s الكبيس</string>
+    <string name="calendar_lunar_year_1">عام الفأر</string>
+    <string name="calendar_lunar_year_2">عام الثور</string>
+    <string name="calendar_lunar_year_3">عام النمر</string>
+    <string name="calendar_lunar_year_4">عام الأرنب</string>
+    <string name="calendar_lunar_year_5">عام التنين</string>
+    <string name="calendar_lunar_year_6">عام الأفعى</string>
+    <string name="calendar_lunar_year_7">عام الحصان</string>
+    <string name="calendar_lunar_year_8">عام الماعز</string>
+    <string name="calendar_lunar_year_9">عام القرد</string>
+    <string name="calendar_lunar_year_10">عام الديك</string>
+    <string name="calendar_lunar_year_11">عام الكلب</string>
+    <string name="calendar_lunar_year_12">عام الخنزير</string>
+    <string name="calendar_lunar_day">%2$s من %1$s</string>
+    <string name="calendar_lunar_date">%2$s من %1$s، %3$s</string>
+    <string name="calendar_lunar_month_year">%1$s، %2$s</string>
+    <string name="calendar_weekday_date">%1$s %2$s</string>
+    <string name="calendar_date_time">%1$s، %2$s</string>
+</resources>

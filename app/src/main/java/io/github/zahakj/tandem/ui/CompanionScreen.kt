@@ -550,10 +550,10 @@ private fun CompanionFace(
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(Clock.always(Date(now)), style = MaterialTheme.typography.displaySmall.copy(fontSize = 40.sp, lineHeight = 44.sp), maxLines = 1)
-                Text(
-                    java.text.SimpleDateFormat(android.text.format.DateFormat.getBestDateTimePattern(io.github.zahakj.tandem.Lang.locale, "EEEEdMMMM"), io.github.zahakj.tandem.Lang.locale).format(Date(now)),
-                    style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                )
+                // A second calendar on a smaller line of its own: there is little room beside the battery.
+                val (date, date2) = io.github.zahakj.tandem.Dates.lines(now, io.github.zahakj.tandem.DateKind.Today)
+                Text(date, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (date2 != null) Text(date2, style = MaterialTheme.typography.labelSmall, color = Palette.Muted.copy(alpha = 0.8f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             val (level, charging) = battery
             if (level >= 0) Pill(Tx.s(if (charging) R.string.screens_comp_charging else R.string.common_percent, level), if (level <= 20 && !charging) Palette.Peach else Palette.Mint)

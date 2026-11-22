@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.LaunchBoxDb
@@ -546,7 +547,7 @@ private fun Facts(s: ScrapeSource, g: SourceGuide, modifier: Modifier) {
                     info == null -> Tx.s(R.string.scrape_card_not_downloaded)
                     else -> Tx.p(
                         R.plurals.scrape_card_lb_info, info.platforms.size, String.format(Lang.locale, "%,d", info.games), info.platforms.size,
-                        android.text.format.DateUtils.getRelativeTimeSpanString(info.built).toString().lowercase(Lang.locale),
+                        Dates.relative(info.built).lowercase(Lang.locale),
                     )
                 },
                 Glyph.Save, Palette.Sky,

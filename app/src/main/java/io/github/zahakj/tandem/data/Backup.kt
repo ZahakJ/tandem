@@ -1,9 +1,12 @@
 package io.github.zahakj.tandem.data
 
 import android.content.Context
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.YearShown
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -342,12 +345,14 @@ object BackupFiles {
             min < 24 * 60 -> (min / 60).let { if (it == 1L) words(R.string.data_backup_hour_ago, "an hour ago") else words(R.plurals.data_backup_hours_ago, it.toInt(), "$it hours ago", it.toInt()) }
             min < 2 * 24 * 60 -> words(R.string.data_backup_yesterday, "yesterday")
             min < 30 * 24 * 60 -> (min / (24 * 60)).toInt().let { words(R.plurals.data_backup_days_ago, it, "$it days ago", it) }
-            else -> SimpleDateFormat("d MMM yyyy", Lang.locale).format(Date(then))
+            else -> if (Tx.ready) Dates.text(then, DateKind.Date) else SimpleDateFormat("d MMM yyyy", Lang.locale).format(Date(then))
         }
     }
 
-    /** "24 Oct 2026, 14:03". */
-    fun date(m: BackupManifest): String = SimpleDateFormat("d MMM yyyy, HH:mm", Lang.locale).format(Date(m.created))
+    /** "24 Oct 2026, 14:03", in the chosen calendar. */
+    fun date(m: BackupManifest): String = Dates.text(m.created, BackupDate)
+
+    private val BackupDate = DateKind(null, YearShown.Always, time = true) { SimpleDateFormat("d MMM yyyy, HH:mm", Lang.locale).format(Date(it.toInstant().toEpochMilli())) }
 }
 
 /**

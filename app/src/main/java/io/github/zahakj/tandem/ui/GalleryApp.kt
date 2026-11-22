@@ -1,7 +1,6 @@
 package io.github.zahakj.tandem.ui
 
 import android.os.Environment
-import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +41,7 @@ import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
@@ -269,7 +269,7 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
                     horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        listOfNotNull(s.game?.title, s.source, DateUtils.getRelativeTimeSpanString(s.time).toString()).joinParts(),
+                        listOfNotNull(s.game?.title, s.source, Dates.relative(s.time)).joinParts(),
                         style = MaterialTheme.typography.labelLarge, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false),
                     )

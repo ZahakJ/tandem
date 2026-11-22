@@ -43,7 +43,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Game
-import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.NetGate
 import io.github.zahakj.tandem.Privacy
@@ -63,9 +64,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 /*
  * Steam achievements on screen: the Steam group in Settings (key, account, look up, sign out), Pip's unlock toasts
@@ -80,8 +78,8 @@ var steamVersion by mutableIntStateOf(0)
 private val SteamColor get() = Palette.Sky
 
 private val greyscale = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
-/** "3 Nov 2026", with the month in Tandem's language. */
-private fun dateOf(ms: Long): String = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMM yyyy", Lang.locale))
+/** "3 Nov 2026", in Tandem's language and calendar. */
+private fun dateOf(ms: Long): String = Dates.text(ms, DateKind.Date)
 
 /** Pip's toasts for new unlocks, one after another, with the achievement's icon beside Pip. */
 object SteamUnlocks {

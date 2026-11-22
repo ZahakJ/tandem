@@ -44,7 +44,8 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
-import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ExtrasStore
@@ -56,9 +57,6 @@ import io.github.zahakj.tandem.data.TrophyFacts
 import io.github.zahakj.tandem.data.TrophyList
 import io.github.zahakj.tandem.data.TrophyTier
 import io.github.zahakj.tandem.data.playStatus
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 /*
  * Tandem's trophies on screen: the check that notices new ones (after a session or a change of status) and
@@ -144,8 +142,6 @@ fun TrophyCup(tier: TrophyTier, earned: Boolean, size: Dp, modifier: Modifier = 
     }
 }
 
-private fun earnedFormat() = DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_earned), Lang.locale)
-
 /** The Trophies tab: a summary, the cabinet of finished games, then every trophy, earned ones first. */
 @Composable
 fun TrophiesTab() {
@@ -222,7 +218,7 @@ fun TrophiesTab() {
                             Row(Modifier.padding(top = 4.dp).clip(RoundedCornerShape(6.dp)).background(Palette.CardHigh).padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                                 TrophyCup(if (s == GameStatus.Completed) TrophyTier.Platinum else TrophyTier.Gold, true, 14.dp)
                                 Text(
-                                    " " + (g.meta.finishedAt.takeIf { it > 0 }?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_month), Lang.locale)) } ?: s?.label.orEmpty()),
+                                    " " + (g.meta.finishedAt.takeIf { it > 0 }?.let { Dates.main(it, DateKind.MonthYear) } ?: s?.label.orEmpty()),
                                     style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1,
                                 )
                             }
@@ -271,8 +267,9 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
                 Text(t.detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(4.dp))
                 if (earned) {
+                    // The main calendar only: a third line on a small card has no room for two dates.
                     Text(
-                        at?.let { Tx.s(R.string.stats_trophy_earned_on, t.tier.label, Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(earnedFormat())) } ?: t.tier.label,
+                        at?.let { Tx.s(R.string.stats_trophy_earned_on, t.tier.label, Dates.main(it, DateKind.Date)) } ?: t.tier.label,
                         style = MaterialTheme.typography.labelSmall, color = color, maxLines = 1,
                     )
                 } else {

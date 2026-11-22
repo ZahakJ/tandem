@@ -54,6 +54,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Collections
+import io.github.zahakj.tandem.DateKind
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Libraries
@@ -68,6 +70,7 @@ import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.YearShown
 import io.github.zahakj.tandem.everPlayed
 import java.io.File
 import java.time.Instant
@@ -331,6 +334,9 @@ internal fun StatTile(label: String, value: String, detail: String, color: Color
     }
 }
 
+/** The chart's first day, under its start: "21 Oct 2026" as the language writes a medium date. */
+private val ChartStart = DateKind(null, YearShown.Always) { it.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Lang.locale)) }
+
 /** The last 30 days as soft rounded bars that grow in; left and right pick a day. */
 @Composable
 private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
@@ -343,7 +349,7 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
     val dayName = when (selected) {
         29 -> Tx.s(R.string.stats_today)
         28 -> Tx.s(R.string.stats_yesterday)
-        else -> day.format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_short), Lang.locale))
+        else -> Dates.text(day, DateKind.ShortDay)
     }
     if (monthTotal == 0L) {
         // Nothing to chart: a friendly line instead of a row of empty dots.
@@ -422,7 +428,7 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
                 }
             }
             Row {
-                Text(stats.today.minusDays(29).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Lang.locale)), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, modifier = Modifier.weight(1f))
+                Text(Dates.text(stats.today.minusDays(29), ChartStart), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, modifier = Modifier.weight(1f))
                 Text(Tx.s(R.string.stats_today), style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
             }
         }
@@ -501,7 +507,7 @@ private fun SessionsList() {
                 val label = when (ChronoUnit.DAYS.between(date, today)) {
                     0L -> Tx.s(R.string.stats_today)
                     1L -> Tx.s(R.string.stats_yesterday)
-                    else -> date.format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_long), Lang.locale))
+                    else -> Dates.text(date, DateKind.LongDay)
                 }
                 SectionTitle(Tx.s(R.string.stats_sessions_day, label, formatPlayTime(list.sumOf { it.d })), Palette.Sky, Modifier.padding(top = 6.dp))
             }

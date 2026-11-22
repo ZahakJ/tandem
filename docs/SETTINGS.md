@@ -85,6 +85,7 @@ A "›" step after a page is its subpage.
 | `ExtrasSettings.floating`, `intensity` | Look & feel › Motion › Floating titles / Motion intensity | toggle / choice |
 | `Look.swapStyle` | Look & feel › Motion › Swap animation | choice |
 | (language, own preferences + LocaleManager on Android 13+) | Look & feel › Language › Language (System default or English, العربية, 日本語, 简体中文, Français; see TRANSLATING.md) | choice |
+| (calendar, own preferences; `Dates.choice`) | Look & feel › Language › Calendar (Gregorian, Hijri, Chinese, Gregorian + Hijri, Gregorian + Chinese; every date shown goes through `Dates`, see TRANSLATING.md) | choice |
 | (reset) | Look & feel › Start over › Reset look (keeps buttons, screens, sounds and music) | action |
 | `Look.homeLayout` | Home & layout › Layout gallery | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |

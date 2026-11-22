@@ -221,3 +221,17 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Highlight: Glow, Outline, Lift, Pulse | توهّج، إطار، ارتفاع، نبض |
 | Animation: Bouncy, Smooth, Minimal | نطّاط، انسيابي، خفيف |
 | Swap animations: Scatter, Push, Flip, Depth, Fade, Instant | تناثر، دفع، قلب، عمق، تلاشٍ، فوري |
+
+## Calendars (Settings › Look & feel › Calendar, `strings_calendar.xml`)
+
+| English | Arabic | Note |
+| --- | --- | --- |
+| Calendar | التقويم | The setting |
+| Gregorian / Hijri / Chinese | ميلادي / هجري / صيني | Options; "Gregorian + Hijri" is ميلادي + هجري |
+| AH (after a Hijri year) | هـ | "11 جمادى الآخرة 1448 هـ" |
+| Hijri months | محرم، صفر، ربيع الأول، ربيع الآخر، جمادى الأولى، جمادى الآخرة، رجب، شعبان، رمضان، شوال، ذو القعدة، ذو الحجة | As Umm al-Qura calendars write them |
+| Lunar months (Chinese calendar) | الشهر الأول … الشهر الثاني عشر | A lunar day: "13 من الشهر العاشر" |
+| Leap month | الشهر … الكبيس | "الشهر السادس الكبيس" |
+| Year of the Horse… | عام الحصان | Rat الفأر، Ox الثور، Tiger النمر، Rabbit الأرنب، Dragon التنين، Snake الأفعى، Horse الحصان، Goat الماعز، Monkey القرد، Rooster الديك، Dog الكلب، Pig الخنزير |
+
+Dates keep Western digits like every number.

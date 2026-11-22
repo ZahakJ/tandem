@@ -1,9 +1,9 @@
 package io.github.zahakj.tandem.ui
 
 import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.Dates
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
-import android.text.format.DateUtils
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
@@ -995,7 +995,7 @@ private fun PlayStats(game: Game) {
 /** "3 minutes ago", "Yesterday", or "Just now". */
 private fun ago(time: Long): String {
     val now = System.currentTimeMillis()
-    return if (now - time < 60_000) Tx.s(R.string.home_spotlight_just_now) else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+    return if (now - time < 60_000) Tx.s(R.string.home_spotlight_just_now) else Dates.relative(time, now)
 }
 
 /** An app's panel: its name, what it is, and A to open it. */
