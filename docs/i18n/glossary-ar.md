@@ -157,6 +157,26 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Y › Move to folder | Y › نقل إلى مجلد | Menu item, quoted in other strings |
 | Y › Edit details › Manual | Y › تعديل التفاصيل › الكتيّب | Menu path, quoted in other strings |
 | Surprise me (Select) | فاجئني | |
+| Up next (list) | «على الدور» | Playful "next in line"; quoted as a list name |
+| Favorite / Unfavorite (menu) | أضف إلى المفضّلة / أزل من المفضّلة | Other strings quote "Y › أضف إلى المفضّلة" |
+| Y › Status › Backlog / Finished | Y › الحالة › قائمة الانتظار / أنهيتها | |
+| Y › Sort inside › Manual | Y › ترتيب المحتوى › يدوي | |
+| Genre | نوع (أنواع) | |
+| Pin / Unpin (home, dock) | ثبّت في / أزل من | |
+| Paste (a carried tile) | ضع هنا | |
+| Tidy up (close the gaps) | سدّ الفراغات | |
+| Regex / Plain text | تعبير نمطي / نص عادي | |
+| A–Z (sort) | أبجديًا | |
+| Home layouts: Shelves, Icon grid, Carousel, List, Console, Orbit, Spotlight | الرفوف، شبكة الأيقونات، الدوّار، القائمة، الكونسول، المدار، تحت الأضواء | |
+| Games views: Grid, List, Carousel, Shelf, Case | شبكة، قائمة، دوّار، رف، علبة | |
+| Spotlight rail | سلسلة الأغلفة | |
+| Running (a game) | تعمل / ● تعمل | |
+| All apps (drawer) | كل التطبيقات / درج التطبيقات | |
+| Immersion mode | وضع الانغماس | |
+| Do Not Disturb | عدم الإزعاج | Android |
+| Root (Shizuku as root) | بصلاحيات الجذر | Android |
+| Play time units, short | 45د، 2س 5د | |
+| Play time units, long | 45 دقيقة، ساعتان، 3 ساعات و5 د | |
 | Dual screen assistant (AYN's app) | مساعد الشاشة المزدوجة | Check against AYN's own Arabic name if it has one |
 
 ## Names of things inside Tandem

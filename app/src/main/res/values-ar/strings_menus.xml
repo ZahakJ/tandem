@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. The menus: Y on a game, a grid or system, an app; Confirm, X search, the keyboards, hold-to-confirm and
+     Undo. See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="menus_hidden_away">في المخبأ</string>
+    <string name="menus_hidden_still_shows">أُخفيت. وستبقى ظاهرة ما دامت الألعاب المخفية ظاهرة</string>
+    <string name="menus_hidden_listed">أُخفيت. تجدها في Start › المخفية</string>
+    <string name="menus_hidden_back">عادت إلى مكتبتك</string>
+
+    <string name="menus_game_resume">استئناف</string>
+    <string name="menus_game_play">العب</string>
+    <string name="menus_game_unfavorite">أزل من المفضّلة</string>
+    <string name="menus_game_favorite">أضف إلى المفضّلة</string>
+    <string name="menus_game_upnext_remove">أزل من «على الدور»</string>
+    <string name="menus_game_upnext_add">أضف إلى «على الدور»</string>
+    <string name="menus_game_unpin_home">أزل من الرئيسية</string>
+    <string name="menus_game_pin_home">ثبّت في الرئيسية</string>
+    <string name="menus_game_native">ابنِ نسخة أصلية</string>
+    <string name="menus_game_native_help">يعيد Peanuts Native بناءها لتعمل بلا محاكي، مرة واحدة فقط (من 5 إلى 40 دقيقة). بعدها يشغّلها «العب» تشغيلًا أصليًا.</string>
+    <string name="menus_game_native_building">جارٍ البناء الأصلي</string>
+    <string name="menus_game_notes">الملاحظات</string>
+    <string name="menus_game_notes_help">ملاحظات هذه اللعبة، في ROMs/notes.</string>
+    <string name="menus_game_manual">الكتيّب</string>
+    <string name="menus_game_manual_pictures">صور</string>
+    <string name="menus_game_manual_help">كتيّب اللعبة أو دليلها، صفحة صفحة: %1$s</string>
+    <string name="menus_game_achievements">الإنجازات</string>
+    <string name="menus_game_achievements_help">كل إنجازات Steam في هذه اللعبة، ومدى ندرة كل منها.</string>
+    <string name="menus_game_edit">تعديل التفاصيل</string>
+    <plurals name="menus_game_edit_locked">
+        <item quantity="zero">لا شيء مقفل</item>
+        <item quantity="one">خانة مقفلة</item>
+        <item quantity="two">خانتان مقفلتان</item>
+        <item quantity="few">%1$d خانات مقفلة</item>
+        <item quantity="many">%1$d خانة مقفلة</item>
+        <item quantity="other">%1$d خانة مقفلة</item>
+    </plurals>
+    <string name="menus_game_edit_help">التفاصيل المقفلة تبقى كما ضبطتها: لا يلمسها الجلب ولا استيراد gamelist.</string>
+    <string name="menus_game_emulator">المحاكي</string>
+    <string name="menus_game_emulator_none">غير مثبّت</string>
+    <string name="menus_game_emulator_help">المحاكي الذي تبدأ فيه هذه اللعبة. الزر A يعرض كل المحاكيات المثبّتة؛ أولها اختيار المنصّة نفسها.</string>
+    <string name="menus_game_emulator_system">اختيار المنصّة</string>
+    <string name="menus_game_emulator_get">ثبّت محاكيًا لـ %1$s من «المنصّات»</string>
+    <string name="menus_game_emulator_switch">ثبّت محاكيًا آخر لتبدّل إليه</string>
+    <string name="menus_game_screen">تبدأ على</string>
+    <string name="menus_game_screen_top">الشاشة العلوية</string>
+    <string name="menus_game_screen_bottom">الشاشة السفلية</string>
+    <string name="menus_game_screen_system">شاشة المنصّة</string>
+    <string name="menus_game_screen_help">الشاشة التي تُفتح عليها هذه اللعبة. أعِدها إلى شاشة المنصّة لتتبع المنصّة من جديد.</string>
+    <string name="menus_game_companion">الشاشة السفلية أثناء اللعب</string>
+    <string name="menus_game_companion_help">ما تعرضه الشاشة السفلية بينما تُلعب هذه اللعبة على العلوية.</string>
+    <string name="menus_game_companion_help_deck">ما تعرضه الشاشة السفلية بينما تُلعب هذه اللعبة على العلوية. «لوحة اللمس» لوحة مفاتيح ولوحة تتبّع للعبة.</string>
+    <string name="menus_game_companion_system">اختيار المنصّة</string>
+    <string name="menus_game_art">اختر الصور</string>
+    <string name="menus_game_scrape">اجلب صور هذه اللعبة</string>
+    <string name="menus_game_unhide">أظهر هذه اللعبة</string>
+    <string name="menus_game_hide">أخفِ هذه اللعبة</string>
+    <string name="menus_game_folder_hidden">مجلدها مخفي</string>
+    <string name="menus_game_folder_hidden_help">مجلدها مخفي، فتبقى مخفية معه أيًّا كان ما يقوله هذا الخيار.</string>
+    <string name="menus_game_sessions">جلسات اللعب…</string>
+    <string name="menus_game_reset">مسح سجل اللعب</string>
+    <string name="menus_game_reset_help">وقت اللعب حتى الآن. المسح يُنسيه، مع عدد مرات اللعب والجلسات.</string>
+    <string name="menus_game_reset_title">مسح سجل اللعب؟</string>
+    <string name="menus_game_reset_detail">سيُنسى وقت اللعب وعدد مرات اللعب والجلسات في %1$s. ولا رجعة في ذلك.</string>
+    <string name="menus_game_reset_yes">مسح</string>
+    <string name="menus_game_reset_done">مُسح سجل اللعب</string>
+    <string name="menus_game_uninstall">إلغاء تثبيت التطبيق…</string>
+    <string name="menus_game_delete">حذف اللعبة…</string>
+    <string name="menus_game_running">تعمل</string>
+    <string name="menus_game_running_help">هذه اللعبة ما زالت تعمل.</string>
+    <string name="menus_game_view">خيارات العرض</string>
+    <string name="menus_game_view_value">الترتيب، الأسماء…</string>
+
+    <string name="menus_fav_removed">أُزيلت من المفضّلة</string>
+    <string name="menus_fav_added">أُضيفت إلى المفضّلة ♥</string>
+
+    <string name="menus_group_games">الألعاب</string>
+    <string name="menus_group_collection">مجموعة</string>
+    <string name="menus_group_genres">الأنواع</string>
+    <string name="menus_group_view">العرض</string>
+    <string name="menus_group_subtitle">خيارات العرض</string>
+    <string name="menus_group_open">فتح</string>
+    <string name="menus_group_rescan">إعادة البحث عن الألعاب</string>
+    <string name="menus_group_looking">أبحث…</string>
+    <string name="menus_group_scrape">اجلب صور هذه الألعاب</string>
+    <string name="menus_group_unhide_system">أظهر هذه المنصّة</string>
+    <string name="menus_group_hide_system">أخفِ هذه المنصّة</string>
+    <string name="menus_group_unhide_folder">أظهر هذا المجلد</string>
+    <string name="menus_group_hide_folder">أخفِ هذا المجلد</string>
+    <string name="menus_group_sort">الترتيب حسب</string>
+    <string name="menus_group_own_order">ترتيبها الخاص</string>
+    <string name="menus_group_own_order_help">هذه القائمة تحتفظ بترتيبها الخاص.</string>
+    <string name="menus_group_own_order_toast">هذه القائمة تحتفظ بترتيبها الخاص. الترتيب يسري على المنصّات والقوائم الأخرى</string>
+    <string name="menus_group_sort_help">كيف تُرتّب الألعاب في كل منصّة وقائمة. المس للترتيب التالي.</string>
+    <string name="menus_group_titles">أسماء الألعاب</string>
+    <string name="menus_group_titles_help">الأسماء تحت بطاقات الألعاب، في كل شبكة.</string>
+    <string name="menus_group_hidden">إظهار الألعاب المخفية</string>
+    <string name="menus_group_private">خاص</string>
+    <string name="menus_group_private_help">الوضع الخاص يُبقي الألعاب المخفية بعيدة عن الأنظار حتى يُظهرها رمز PIN الخاص بك.</string>
+    <string name="menus_group_hidden_help">تظهر الألعاب المخفية باهتة ما دام هذا مفعّلًا.</string>
+
+    <string name="menus_action_more_title">المزيد</string>
+    <string name="menus_action_options">خيارات</string>
+    <string name="menus_action_more">المزيد…</string>
+
+    <string name="menus_confirm_cancel">إلغاء</string>
+
+    <string name="menus_search_prompt">⌕ ألعاب، تطبيقات، إعدادات</string>
+    <string name="menus_search_results">النتائج</string>
+    <string name="menus_search_empty">اكتب بضعة أحرف</string>
+    <string name="menus_search_none">لا نتائج لـ «%1$s»</string>
+    <string name="menus_search_accents">علامات التشكيل والترقيم لا تهمّ</string>
+    <plurals name="menus_search_matches">
+        <item quantity="zero">لا نتائج</item>
+        <item quantity="one">نتيجة واحدة</item>
+        <item quantity="two">نتيجتان</item>
+        <item quantity="few">%1$d نتائج</item>
+        <item quantity="many">%1$d نتيجة</item>
+        <item quantity="other">%1$d نتيجة</item>
+    </plurals>
+    <plurals name="menus_search_matches_more">
+        <item quantity="zero">لا نتائج</item>
+        <item quantity="one">نتيجة واحدة أو أكثر</item>
+        <item quantity="two">نتيجتان أو أكثر</item>
+        <item quantity="few">%1$d نتائج أو أكثر</item>
+        <item quantity="many">%1$d نتيجة أو أكثر</item>
+        <item quantity="other">%1$d نتيجة أو أكثر</item>
+    </plurals>
+    <string name="menus_search_play">العب</string>
+    <string name="menus_search_options">خيارات</string>
+    <string name="menus_search_keys">المفاتيح</string>
+
+    <string name="menus_keyboard_space">مسافة</string>
+    <string name="menus_keyboard_done">تم</string>
+    <string name="menus_keyboard_type">اكتب</string>
+    <string name="menus_keyboard_delete">حذف</string>
+    <string name="menus_keyboard_cancel">إلغاء</string>
+
+    <string name="menus_time_short_under">أقل من 1د</string>
+    <plurals name="menus_time_short_minutes">
+        <item quantity="zero">%1$dد</item>
+        <item quantity="one">%1$dد</item>
+        <item quantity="two">%1$dد</item>
+        <item quantity="few">%1$dد</item>
+        <item quantity="many">%1$dد</item>
+        <item quantity="other">%1$dد</item>
+    </plurals>
+    <plurals name="menus_time_short_hours">
+        <item quantity="zero">%1$dس %2$dد</item>
+        <item quantity="one">%1$dس %2$dد</item>
+        <item quantity="two">%1$dس %2$dد</item>
+        <item quantity="few">%1$dس %2$dد</item>
+        <item quantity="many">%1$dس %2$dد</item>
+        <item quantity="other">%1$dس %2$dد</item>
+    </plurals>
+    <string name="menus_time_long_under">أقل من دقيقة</string>
+    <plurals name="menus_time_long_minutes">
+        <item quantity="zero">%1$d دقيقة</item>
+        <item quantity="one">دقيقة</item>
+        <item quantity="two">دقيقتان</item>
+        <item quantity="few">%1$d دقائق</item>
+        <item quantity="many">%1$d دقيقة</item>
+        <item quantity="other">%1$d دقيقة</item>
+    </plurals>
+    <plurals name="menus_time_long_hours">
+        <item quantity="zero">%1$d ساعة</item>
+        <item quantity="one">ساعة</item>
+        <item quantity="two">ساعتان</item>
+        <item quantity="few">%1$d ساعات</item>
+        <item quantity="many">%1$d ساعة</item>
+        <item quantity="other">%1$d ساعة</item>
+    </plurals>
+    <plurals name="menus_time_long_hours_minutes">
+        <item quantity="zero">%1$d ساعة و%2$d د</item>
+        <item quantity="one">ساعة و%2$d د</item>
+        <item quantity="two">ساعتان و%2$d د</item>
+        <item quantity="few">%1$d ساعات و%2$d د</item>
+        <item quantity="many">%1$d ساعة و%2$d د</item>
+        <item quantity="other">%1$d ساعة و%2$d د</item>
+    </plurals>
+
+    <string name="menus_hold_hint">اضغط A مطوّلًا، أو المس مطوّلًا: %1$s</string>
+    <string name="menus_undo">تراجع</string>
+    <string name="menus_undone">تمّ التراجع</string>
+
+    <string name="menus_selected_change">تغيير</string>
+
+    <string name="menus_app_open">فتح</string>
+    <string name="menus_app_open_bottom">السفلية</string>
+    <string name="menus_app_open_top">العلوية</string>
+    <string name="menus_app_open_help">الشاشة التي يُفتح عليها الآن.</string>
+    <string name="menus_app_open_on_top">افتح على الشاشة العلوية</string>
+    <string name="menus_app_open_on_bottom">افتح على الشاشة السفلية</string>
+    <string name="menus_app_screen">يُفتح دائمًا على</string>
+    <string name="menus_app_screen_auto">تلقائي</string>
+    <string name="menus_app_screen_default">الافتراضي</string>
+    <string name="menus_app_screen_help">الشاشة التي يُفتح عليها هذا التطبيق دائمًا: العلوية، أو السفلية، أو الافتراضي لكل التطبيقات.</string>
+    <string name="menus_app_screen_like_all">مثل كل التطبيقات: %1$s</string>
+    <string name="menus_app_screen_top">الشاشة العلوية</string>
+    <string name="menus_app_screen_bottom">الشاشة السفلية</string>
+    <string name="menus_app_home_remove">أزل من الرئيسية</string>
+    <string name="menus_app_home_add">أضف إلى الرئيسية</string>
+    <string name="menus_app_home_removed">أُزيل من شبكة الرئيسية</string>
+    <string name="menus_app_home_added">صار على شبكة الرئيسية ★</string>
+    <string name="menus_app_dock_unpin">أزل من الشريط</string>
+    <string name="menus_app_dock_pin">ثبّت في الشريط</string>
+    <string name="menus_app_rename">إعادة التسمية</string>
+    <string name="menus_app_yours">من اختيارك</string>
+    <string name="menus_app_icon">اختر أيقونة</string>
+    <string name="menus_app_game">عامِله كلعبة</string>
+    <string name="menus_app_drawer_show">أظهر في درج التطبيقات</string>
+    <string name="menus_app_drawer_hide">أخفِ من درج التطبيقات</string>
+    <string name="menus_app_drawer_shown">عاد إلى «كل التطبيقات»</string>
+    <string name="menus_app_drawer_hidden">أُخفي من «كل التطبيقات». و«إظهار التطبيقات المخفية» يعيده</string>
+    <string name="menus_app_info">معلومات التطبيق</string>
+    <string name="menus_app_uninstall">إلغاء التثبيت…</string>
+    <string name="menus_app_move_left">انقل يسارًا</string>
+    <string name="menus_app_move_right">انقل يمينًا</string>
+    <string name="menus_app_kind_game">لعبة Android</string>
+    <string name="menus_app_kind_app">تطبيق</string>
+    <string name="menus_app_game_off">أُخرج %1$s من ألعاب Android</string>
+    <string name="menus_app_game_on">صار %1$s ضمن ألعاب Android</string>
+    <string name="menus_app_rename_title">اسم %1$s</string>
+    <string name="menus_app_renamed_own">عاد إلى اسمه الأصلي</string>
+    <string name="menus_app_renamed">صار اسمه %1$s</string>
+    <string name="menus_app_icon_own_back">عاد إلى أيقونته الأصلية</string>
+    <string name="menus_app_icon_new">أيقونة جديدة لـ %1$s</string>
+    <string name="menus_app_uninstaller_failed">أداة إلغاء التثبيت في Android لا تُفتح</string>
+    <string name="menus_app_icon_pick_title">اختر أيقونة لـ %1$s</string>
+    <string name="menus_app_icon_title">أيقونة %1$s</string>
+    <string name="menus_app_icon_files">من «الملفات»</string>
+    <string name="menus_app_icon_gallery">من «المعرض»</string>
+    <string name="menus_app_icon_own">أيقونة التطبيق الأصلية</string>
+    <string name="menus_app_icon_packs_looking">أبحث في حزم أيقوناتك…</string>
+    <string name="menus_app_icon_packs_none">لا توجد حزم أيقونات. وحزم السمات التي فيها أيقونات منصّات تعرضها هنا</string>
+    <string name="menus_app_icon_packs">من حزم أيقوناتك</string>
+    <string name="menus_pick_picture">الصورة</string>
+</resources>
