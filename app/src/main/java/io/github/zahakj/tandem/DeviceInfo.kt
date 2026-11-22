@@ -193,12 +193,23 @@ object DeviceInfo {
         return BatteryState(level, charging, full, plugged, temp, minutes)
     }
 
+    /**
+     * Free memory as the kernel's MemAvailable: what apps can have without anything being pushed out, cache Android
+     * hands back at once included. ActivityManager's availMem leaves a safety margin and some of that cache out, so
+     * it read several GB short of Android's own "Free RAM" (7 GB against 10 on the Thor with nothing open).
+     */
     fun memory(ctx: Context): MemoryState {
         val am = ctx.getSystemService(ActivityManager::class.java)
         val info = ActivityManager.MemoryInfo()
         am?.getMemoryInfo(info)
-        return MemoryState(info.availMem, info.totalMem)
+        val available = runCatching { memAvailable(File("/proc/meminfo").readText()) }.getOrNull()
+        return MemoryState(available?.coerceIn(0L, info.totalMem.takeIf { it > 0 } ?: Long.MAX_VALUE) ?: info.availMem, info.totalMem)
     }
+
+    /** MemAvailable from the text of /proc/meminfo, in bytes, or null when it isn't there (kernels before 3.14). */
+    fun memAvailable(meminfo: String): Long? = meminfo.lineSequence()
+        .firstOrNull { it.startsWith("MemAvailable:") }
+        ?.split(Regex("\\s+"))?.getOrNull(1)?.toLongOrNull()?.times(1024)
 
     private var tempFile: File? = null
     private var searched = false
