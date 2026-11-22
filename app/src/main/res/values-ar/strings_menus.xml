@@ -8,6 +8,8 @@
     <string name="menus_hidden_back">عادت إلى مكتبتك</string>
 
     <string name="menus_game_resume">استئناف</string>
+    <string name="menus_game_close">أغلق اللعبة</string>
+    <string name="menus_game_close_help">يُغلق محاكيها، وما لم تحفظه داخل اللعبة يضيع.</string>
     <string name="menus_game_play">العب</string>
     <string name="menus_game_unfavorite">أزل من المفضّلة</string>
     <string name="menus_game_favorite">أضف إلى المفضّلة</string>

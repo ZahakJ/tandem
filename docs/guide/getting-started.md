@@ -156,7 +156,7 @@ A quick tour of the two screens and the buttons you'll use most.
 
 The top screen is your library. How the home screen looks depends on the layout you picked (see [Home layouts](themes.md#home-layouts)); the Shelves home has up to three rows:
 
-- **Continue playing**, the games you played most recently.
+- **Continue playing**, the games you played most recently (a game still running comes first).
 - **Systems**, one card per system that has at least one game.
 - **Collections**: Favorites, Most played, Recently added, Never played and Genres. A collection appears once it has something in it.
 

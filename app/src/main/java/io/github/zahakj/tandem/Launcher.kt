@@ -282,16 +282,22 @@ object Launcher {
 object Sessions {
     private const val PREFS = "session"
     private const val MAX_SESSION_MS = 6 * 60 * 60 * 1000L
+    /** Shorter is a failed start or an accidental tap, not play: no play time, count or session. */
+    const val MIN_PLAY_MS = 10_000L
 
     /**
-     * Notes that [game] started. Nothing is counted yet: a launch only becomes a play (count, "last played",
-     * Continue playing) once it lasted a little while, see [finish]. Which game is open in which emulator, for
-     * resuming, is kept separately by the launcher.
+     * Notes that [game] started. From now on it is the last game played ([opened]): Continue and "last played" follow
+     * the launch itself. They used to wait for the return to Tandem and its 10 seconds, so a game opened and closed
+     * quickly, or one whose return never came through the library (Tandem restarted while it ran, Home handing the
+     * game back), left Continue on the game before. Play time, the play count and the session still wait until it
+     * lasted a little while, see [finish]. Which game is open in which emulator, for resuming, is kept separately by
+     * the launcher.
      */
     fun start(ctx: Context, game: Game, newPlay: Boolean) {
         val now = System.currentTimeMillis()
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("key", game.key).putLong("start", now).putBoolean("new", newPlay).apply()
+        io.github.zahakj.tandem.data.Store.update(game.key) { opened(it, now) }
         Offline.started()
         Immersion.started(ctx)
         Performance.started(ctx, game)
@@ -322,8 +328,8 @@ object Sessions {
         val now = System.currentTimeMillis()
         val elapsed = (now - start).coerceIn(0, MAX_SESSION_MS)
         prefs.edit().clear().apply()
-        // Under 10 seconds is a failed start or an accidental tap, not play: no play time, count or "last played".
-        if (elapsed < 10_000) return null
+        // A failed start or an accidental tap: no play time, count or session ("last played" came with the launch).
+        if (elapsed < MIN_PLAY_MS) return null
         // A Steam game may have unlocked something: looked up in the background, announced when it has.
         SteamAchievements.afterSession(key)
         return {
@@ -336,6 +342,10 @@ object Sessions {
             io.github.zahakj.tandem.ui.Trophies.check()
         }
     }
+
+    /** [m] once its game was opened at [now]: the last played, never moved back (a clock set back). Plain, for tests. */
+    fun opened(m: io.github.zahakj.tandem.data.GameMeta, now: Long): io.github.zahakj.tandem.data.GameMeta =
+        if (m.lastPlayed >= now) m else m.copy(lastPlayed = now)
 }
 
 object Shell {

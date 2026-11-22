@@ -271,9 +271,12 @@ fun GameMenu() {
         val players = g.platform.playersFor(g.file.name)
         val current = g.platform.playerFor(g)
         val routeKey = "menu:${g.key}"
-        val running = io.github.zahakj.tandem.RunningGames.list.any { it.game?.key == g.key }
+        val runningIn = runningOf(g)
+        val running = runningIn != null
         val actions = buildList {
             add(MenuAction("play", Tx.s(if (running) R.string.menus_game_resume else R.string.menus_game_play), Glyph.Play, Palette.Mint) { Nav.closeOverlays(); Launcher.launch(ctx, g) })
+            // Still open: closing it sits right under Resume, wherever the menu was opened from.
+            if (runningIn != null) add(closeGameAction(ctx, runningIn) { Nav.closeMenus() })
             add(MenuAction("fav", Tx.s(if (meta.favorite) R.string.menus_game_unfavorite else R.string.menus_game_favorite), Glyph.Heart, Palette.Peach, value = if (meta.favorite) "♥" else null) { toggleFavorite(g) })
             val queued = UpNext.contains(g)
             add(StatusUi.action(g) { StatusUi.focusPage(routeKey, g); StatusUi.pageFor = g.key })

@@ -7,6 +7,8 @@
     <string name="menus_hidden_back">已回到你的游戏库</string>
 
     <string name="menus_game_resume">继续</string>
+    <string name="menus_game_close">关闭游戏</string>
+    <string name="menus_game_close_help">关掉它的模拟器。游戏里还没存档的进度会丢失。</string>
     <string name="menus_game_play">开玩</string>
     <string name="menus_game_unfavorite">取消收藏</string>
     <string name="menus_game_favorite">收藏</string>

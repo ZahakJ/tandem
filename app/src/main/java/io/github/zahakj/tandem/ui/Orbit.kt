@@ -330,7 +330,8 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
             else -> fanGames(spotOrb).map { FanCard(it.key, game = it) }
         }
     }
-    val last = if (look.orbitContinue) Collections.continuePlaying().firstOrNull() else null
+    // The game open right now when there is one (Resume), else the last played: it changes as games start and close.
+    val last = if (look.orbitContinue) continueGame() else null
 
     val keys = buildList {
         if (orbs.isNotEmpty()) add(Orbit.STAGE)
@@ -716,7 +717,8 @@ private val CaptionShadow = Shadow(Color.Black.copy(alpha = 0.55f), Offset(0f, 2
 /**
  * The name of what is highlighted, under the front orb: the orb's, or the game (or app) of the highlighted cover or
  * Continue card, with one line about it after a dot of its colour. On the dock it steps aside: the highlighted icon
- * names itself there, and the orb's name under the orbit would only say something else.
+ * names itself there, and the orb's name under the orbit would only say something else. A game still running says
+ * Resume, with Y's Close beside it ([closes]), on the Continue card and among the covers alike.
  */
 @Composable
 private fun OrbitCaption(st: OrbitState, part: OrbitPart, modifier: Modifier) {
@@ -724,23 +726,25 @@ private fun OrbitCaption(st: OrbitState, part: OrbitPart, modifier: Modifier) {
     val sel = Selection.current
     val orb = st.orbs.firstOrNull { it.item.key == st.spot } ?: st.front ?: return
     val off = !st.focused
-    val (title, detail, color) = when {
-        off && part == OrbitPart.Continue && sel is Selected.GameItem -> {
-            val running = RunningGames.list.any { it.game?.key == sel.game.key }
-            Triple(sel.game.title, Tx.s(if (running) R.string.home_orbit_caption_resume else R.string.home_orbit_caption_continue, sel.game.platform.name), Palette.Mint)
-        }
-        off && part == OrbitPart.Fan && sel is Selected.GameItem -> Triple(sel.game.title, sel.game.platform.name, SystemColors.of(sel.game.platform.id))
+    val running = off && part != OrbitPart.Dock && sel is Selected.GameItem && runningOf(sel.game) != null
+    val caption = when {
+        off && part == OrbitPart.Continue && sel is Selected.GameItem ->
+            Caption(sel.game.title, Tx.s(if (running) R.string.home_orbit_caption_resume else R.string.home_orbit_caption_continue, sel.game.platform.name), Palette.Mint, running)
+        off && part == OrbitPart.Fan && sel is Selected.GameItem -> Caption(
+            sel.game.title, if (running) Tx.s(R.string.home_orbit_caption_resume, sel.game.platform.name) else sel.game.platform.name,
+            SystemColors.of(sel.game.platform.id), running,
+        )
         off && part == OrbitPart.Fan && sel is Selected.App ->
-            Triple(
+            Caption(
                 if (sel.pkg == Dock.ALL_APPS) Tx.s(R.string.home_orbit_all_apps) else remember(sel.pkg) { RunningGames.appLabel(ctx, sel.pkg) },
                 Tx.s(R.string.home_orbit_app), Palette.Sky,
             )
-        else -> Triple(orb.item.title, orb.detail, orb.item.color)
+        else -> Caption(orb.item.title, orb.detail, orb.item.color)
     }
     val shown = animateFloatAsState(if (off && part == OrbitPart.Dock) 0f else 1f, Motion.soft(), label = "orbit-caption-shown")
     val deep = Palette.NightDeep
     AnimatedContent(
-        Triple(title, detail, color),
+        caption,
         modifier
             .graphicsLayer { alpha = shown.value; compositingStrategy = CompositingStrategy.ModulateAlpha }
             .drawWithCache {
@@ -752,7 +756,7 @@ private fun OrbitCaption(st: OrbitState, part: OrbitPart, modifier: Modifier) {
             },
         transitionSpec = { fadeIn(Motion.fade(180)) togetherWith fadeOut(Motion.fade(110)) },
         contentAlignment = Alignment.TopCenter, label = "orbit-caption",
-    ) { (t, d, c) ->
+    ) { (t, d, c, closes) ->
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 t, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, shadow = CaptionShadow),
@@ -762,13 +766,21 @@ private fun OrbitCaption(st: OrbitState, part: OrbitPart, modifier: Modifier) {
                 Box(Modifier.size(7.dp).clip(CircleShape).background(c))
                 Spacer(Modifier.width(7.dp))
                 Text(
-                    d, style = MaterialTheme.typography.titleSmall.copy(shadow = CaptionShadow), color = Palette.Text.copy(alpha = 0.82f),
-                    maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    d, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleSmall.copy(shadow = CaptionShadow),
+                    color = Palette.Text.copy(alpha = 0.82f), maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
+                // Y on a running game closes it (press twice), as on the icon grid's Resume page.
+                if (closes) {
+                    Spacer(Modifier.width(12.dp))
+                    ButtonHint("Y", Tx.s(R.string.home_running_hint_close), Palette.Peach)
+                }
             }
         }
     }
 }
+
+/** What [OrbitCaption] says: a name, a line about it in [color]'s dot, and whether Y closes the game ([closes]). */
+private data class Caption(val title: String, val detail: String, val color: Color, val closes: Boolean = false)
 
 /** A soft shadow on the floor under a cover, so it stands on the stage rather than floating over it. */
 private fun Modifier.floorShadow(): Modifier = drawWithCache {
@@ -913,13 +925,15 @@ private fun OrbNote(orb: Orb, entry: Animatable<Float, AnimationVector1D>, width
 }
 
 /**
- * The last game played anywhere, as a cover standing on the same floor as the carousel, apart to its left, under
- * a "Continue" (or "Resume", while it runs) label and with a play badge. A picks it up again.
+ * The game running now, else the last game played anywhere ([continueGame]), as a cover standing on the same floor
+ * as the carousel, apart to its left, under a "Resume" (or "Continue") label and with a play badge. A picks it up
+ * again, bringing a running game back where it is; Y closes a running one (press twice, App.kt), and a long press
+ * opens the game menu, as on the icon grid's Resume page.
  */
 @Composable
 private fun ContinueCard(game: Game, x: Float, cardW: Dp, cardH: Dp, modifier: Modifier, onFocus: () -> Unit) {
     val ctx = LocalContext.current
-    val running = RunningGames.list.any { it.game?.key == game.key }
+    val running = runningOf(game) != null
     val w = cardW * Fan.CONTINUE
     val mint = Palette.Mint
     Column(Modifier.offset { IntOffset(x.roundToInt(), 0) }.width(w), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -935,8 +949,12 @@ private fun ContinueCard(game: Game, x: Float, cardW: Dp, cardH: Dp, modifier: M
         FocusCard(
             modifier.size(w, cardH * Fan.CONTINUE).floorShadow(), glow = mint, shape = RoundedCornerShape(12.dp), entry = true,
             onFocus = { onFocus(); Selection.current = Selected.GameItem(game) },
+            onLongPress = { Nav.openMenu(game) },
             onClick = { Launcher.launch(ctx, game) },
-        ) {
+        ) { focused ->
+            // The card keeps the highlight while its game changes (the running one closed, another found running) and
+            // onFocus only runs when the highlight arrives: say the new game, so the caption and Y act on it.
+            LaunchedEffect(focused, game.key) { if (focused) Selection.current = Selected.GameItem(game) }
             GameBoxArt(game, w)
             Box(Modifier.fillMaxSize().coverGlass { 0f })
             Box(

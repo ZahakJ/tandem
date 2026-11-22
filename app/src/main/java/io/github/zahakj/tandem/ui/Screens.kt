@@ -74,7 +74,13 @@ fun HomeScreen(libs: List<PlatformLibrary>) {
     // Worked out once per change of the library, its details or what's shown, not on every recomposition.
     val meta = Store.meta
     val showHidden = Privacy.view
-    val continuing = remember(libs, meta, showHidden) { Collections.continuePlaying() }
+    // Continue playing starts with the game running now, as the other layouts' Continue place does.
+    val runningKey = nowPlaying()?.game?.key
+    val continuing = remember(libs, meta, showHidden, runningKey) {
+        val recent = Collections.continuePlaying()
+        val now = nowPlaying()?.game
+        if (now == null || recent.firstOrNull()?.key == now.key) recent else listOf(now) + recent.filter { it.key != now.key }
+    }
     val collections = remember(libs, meta, showHidden) { Collections.home() }
     val genres = remember(libs, meta, showHidden) { Collections.genres() }
     val genreGames = remember(genres) { genres.values.flatten().distinct() }

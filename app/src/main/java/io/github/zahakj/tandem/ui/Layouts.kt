@@ -39,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -208,6 +209,9 @@ data class HomeEntry(
     val open: () -> Unit,
 )
 
+/** The Continue entry's key, whichever game it holds. */
+private const val CONTINUE_ENTRY = "c:continue"
+
 private fun heroOf(games: List<Game>): File? {
     // Prefer the most recently played game's art, then any game with a hero or screenshot.
     val ordered = games.sortedByDescending { it.meta.lastPlayed }
@@ -222,21 +226,24 @@ private fun heroOf(games: List<Game>): File? {
 private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
     val ctx = LocalContext.current
     val look = Store.settings.look
-    val continuing = Collections.continuePlaying()
+    // The game running now (Resume) when there is one, else the last played: it follows games starting and closing.
+    val continuing = continueGame()
+    val running = runningOf(continuing) != null
     val collections = Collections.home()
     val genres = Collections.genres()
     // For the empty library's entry. The picker it opens stays the same across recompositions.
     val pick = rememberGameFolderPicker()
     // Hiding or unhiding a game changes counts, art and which systems show, so those are keys too.
     // The language is a key too: the entries carry their words.
-    return remember(libs, continuing, collections, genres.size, look.homeSections, Store.meta, io.github.zahakj.tandem.Privacy.view, LibraryScan.scanning, Lang.revision.intValue) {
+    return remember(libs, continuing, running, collections, genres.size, look.homeSections, Store.meta, io.github.zahakj.tandem.Privacy.view, LibraryScan.scanning, Lang.revision.intValue) {
         buildList {
             for (section in look.homeSections.ifEmpty { listOf("systems") }) when (section) {
-                "continue" -> continuing.firstOrNull()?.let { g ->
+                "continue" -> continuing?.let { g ->
                     val lib = Libraries.of(g)
                     add(
                         HomeEntry(
-                            "c:${g.key}", g.title, Tx.s(R.string.home_entry_continue, g.platform.name), "▶", Palette.Mint, listOf(g),
+                            // One key whichever game it holds, so the highlight stays on it when the game changes.
+                            CONTINUE_ENTRY, g.title, Tx.s(if (running) R.string.home_entry_resume else R.string.home_entry_continue, g.platform.name), "▶", Palette.Mint, listOf(g),
                             lib?.let { it.hero(g) ?: it.screenshot(g) }, Selected.GameItem(g), game = g,
                         ) { Launcher.launch(ctx, g) },
                     )
@@ -299,6 +306,14 @@ fun HomeLayout(libs: List<PlatformLibrary>) {
     if (Store.settings.look.homeLayout == "orbit") return OrbitHome(libs)
     if (Store.settings.look.homeLayout == "spotlight") return SpotlightHome(libs)
     val entries = homeEntries(libs)
+    // The Continue entry can keep the highlight while its game changes (the running one closed, say), and its card only
+    // says what it holds when the highlight arrives: say the new game, so the other screen and Y act on it.
+    val continuing = entries.firstOrNull { it.key == CONTINUE_ENTRY }
+    LaunchedEffect(continuing?.game?.key) {
+        if (continuing != null && FocusMemory.get(Route.Home.key) == CONTINUE_ENTRY && Nav.route == Route.Home && !Nav.overlayOpen &&
+            io.github.zahakj.tandem.Selection.current is Selected.GameItem
+        ) io.github.zahakj.tandem.Selection.current = continuing.selected
+    }
     when (Store.settings.look.homeLayout) {
         "carousel" -> HomeCarousel(entries)
         "list" -> HomeList(entries)

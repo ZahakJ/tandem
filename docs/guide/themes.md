@@ -69,16 +69,16 @@ Orbit is Tandem's own home: your systems, then your collections, then Tandem's a
 
 - **The orbit.** The orbs ride a softly glowing ring seen in perspective. The highlighted orb sits at the front, lowest and biggest, with its name and a line about it underneath ("132 games · 3 playing"); the others get smaller and darker as they go round towards the back, and the ring takes the highlighted orb's colour. Holding <kbd>◀</kbd> or <kbd>▶</kbd> spins it in one smooth glide.
 - **The covers.** Inside the ring, the highlighted system's or collection's games stand as a row of covers on a lit floor: the one you played last in the middle and biggest, then the most recently and most played, smaller and turned slightly away. The name under the orbit follows the highlight, so on a cover it names that game. The **All apps** orb shows your dock apps, and Tandem's own apps (Gallery, Journal…) show what they are.
-- **The Continue card**, apart to the left of the covers, holds the last game you played anywhere (**Resume** while it is still running).
+- **The Continue card**, apart to the left of the covers, holds the game running right now, labelled **Resume** (it changes as soon as a game starts or closes), or else the last game you played anywhere.
 - **The dock**, a quiet row of round app icons under the orbit, lights up when you go down to it; the highlighted icon shows its name.
 
 | Press | On the orbit | On the covers, the Continue card or the dock |
 | --- | --- | --- |
 | <kbd>◀</kbd> / <kbd>▶</kbd> (or the left stick) | Spin the orbit; hold to skim through it | Move along (<kbd>◀</kbd> from the leftmost cover reaches the Continue card) |
 | <kbd>▲</kbd> / <kbd>▼</kbd> | <kbd>▲</kbd> to the covers (or the Continue card), <kbd>▼</kbd> to the dock | Back to the orbit |
-| <kbd>A</kbd> | Open the system, collection or app | Play the game, open the app |
+| <kbd>A</kbd> | Open the system, collection or app | Play the game (a running one comes back where it is), open the app |
 | <kbd>B</kbd> | Back round to the first orb | Back to the orbit |
-| <kbd>Y</kbd> | The system's or collection's view menu | The game menu, or the app's options |
+| <kbd>Y</kbd> | The system's or collection's view menu | The game menu, or the app's options. On a game still running, press it twice to close the game (a long press on the Continue card opens the game menu) |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Jump to the first system, collection or app | The same, and back to the orbit |
 | <kbd>X</kbd> | Swap the two screens (as on the icon grid; **Settings › Controls › X button** changes it) | |
 

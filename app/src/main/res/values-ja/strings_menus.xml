@@ -8,6 +8,8 @@
     <string name="menus_hidden_back">ライブラリに戻りました</string>
 
     <string name="menus_game_resume">再開</string>
+    <string name="menus_game_close">ゲームを終了</string>
+    <string name="menus_game_close_help">エミュレーターを終了します。ゲーム内でセーブしていない進行は消えます。</string>
     <string name="menus_game_play">遊ぶ</string>
     <string name="menus_game_unfavorite">お気に入りから外す</string>
     <string name="menus_game_favorite">お気に入りに追加</string>

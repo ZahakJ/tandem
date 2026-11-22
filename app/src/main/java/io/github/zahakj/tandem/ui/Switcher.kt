@@ -148,6 +148,15 @@ object Panels {
 /** The most recent running game that may be shown (private games stay out of sight), for Now Playing. */
 fun nowPlaying(): RunningGame? = RunningGames.list.firstOrNull { r -> r.game != null && Privacy.canShow(r.game) }
 
+/** What [game] is running in, or null when it isn't running. */
+fun runningOf(game: io.github.zahakj.tandem.Game?): RunningGame? = game?.let { g -> RunningGames.list.firstOrNull { it.game?.key == g.key } }
+
+/**
+ * The game a home's Continue place shows: the one running now, else the last one played. Reads [RunningGames.list],
+ * so the place changes as soon as a game is found running or is closed.
+ */
+fun continueGame(): io.github.zahakj.tandem.Game? = nowPlaying()?.game ?: io.github.zahakj.tandem.Collections.continuePlaying().firstOrNull()
+
 /** How a running game is named on screen: hidden games show only their emulator while private. */
 private fun RunningGame.shownTitle(): String = game?.takeIf { Privacy.canShow(it) }?.title ?: appName
 
@@ -200,6 +209,16 @@ fun closeRunning(ctx: Context, r: RunningGame, onDone: () -> Unit = {}) {
         onDone()
     }
 }
+
+/**
+ * Close for a running game in its menus (the game menu, the icon grid's tile menu), under Resume: held to confirm,
+ * since closing loses what isn't saved, as Y twice does on the Resume page. [done] puts the menu away first.
+ */
+fun closeGameAction(ctx: Context, r: RunningGame, done: () -> Unit): MenuAction =
+    MenuAction("closegame", Tx.s(R.string.menus_game_close), Glyph.Close, Palette.Peach, hold = true, help = Tx.s(R.string.menus_game_close_help)) {
+        done()
+        closeRunning(ctx, r) { Nav.focusTick++ }
+    }
 
 /** X in the switcher: close the highlighted game (press twice). */
 fun switcherCloseFocused(ctx: Context) {

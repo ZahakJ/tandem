@@ -196,7 +196,7 @@ Collections are lists Tandem builds from what it knows, without moving any files
 
 | Collection | What is in it |
 | --- | --- |
-| Continue playing | The 15 games you played most recently, newest first. Shown as its own row at the top of home. |
+| Continue playing | The 15 games you played most recently, newest first (a game counts as played as soon as you start it). Shown as its own row at the top of home, with a game still running first. |
 | Favorites | Games you marked with <kbd>Y</kbd> › **Add to favorites**. |
 | Most played | Games with recorded play time, most first. |
 | Recently added | The 30 newest games, by when Tandem first saw them. |
@@ -351,7 +351,7 @@ Tandem records how long you play each game, from the moment it starts a game unt
 For each game you get the total time played, the number of times you started it, and when you last played. The bottom screen shows them, and folders show the total for everything inside. To clear a game's history, <kbd>Y</kbd> › **Reset play history**. The **Journal** keeps a timeline of sessions with your own notes.
 
 > [!NOTE]
-> A session shorter than ten seconds is treated as a false start and not counted, and a single session counts for at most six hours, in case the device went to sleep with a game open.
+> A session shorter than ten seconds is treated as a false start and not counted (the game still becomes your last played, so Continue shows it), and a single session counts for at most six hours, in case the device went to sleep with a game open.
 
 ### Stats
 

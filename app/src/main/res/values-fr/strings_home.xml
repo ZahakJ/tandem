@@ -111,6 +111,7 @@
     </plurals>
     <!-- Under a game to play again: "Continue · Super Nintendo". -->
     <string name="home_entry_continue">Continuer · %1$s</string>
+    <string name="home_entry_resume">Reprendre · %1$s</string>
     <!-- What a collection is, under its name. -->
     <string name="home_entry_collection">Collection</string>
     <!-- The home screen with nothing to show. -->
@@ -527,5 +528,5 @@
     <string name="home_orbit_holds_games">Systèmes et collections</string>
     <string name="home_orbit_holds_systems">Systèmes seulement</string>
     <string name="home_orbit_continue_card">Carte Continuer</string>
-    <string name="home_orbit_continue_card_help">Ton dernier jeu, en carte posée à gauche des jaquettes. A le relance (Reprendre s’il tourne encore).</string>
+    <string name="home_orbit_continue_card_help">Le jeu lancé en ce moment, sinon ton dernier jeu, en carte posée à gauche des jaquettes. A le relance (Reprendre s’il tourne encore, et Y le ferme).</string>
 </resources>

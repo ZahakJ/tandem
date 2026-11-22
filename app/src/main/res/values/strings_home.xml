@@ -111,6 +111,8 @@
     </plurals>
     <!-- Under a game to play again: "Continue · Super Nintendo". -->
     <string name="home_entry_continue">Continue · %1$s</string>
+    <!-- The same entry while its game is still running. %1$s: the system. -->
+    <string name="home_entry_resume">Resume · %1$s</string>
     <!-- What a collection is, under its name. -->
     <string name="home_entry_collection">Collection</string>
     <!-- The home screen with nothing to show. -->
@@ -527,5 +529,5 @@
     <string name="home_orbit_holds_games">Systems and collections</string>
     <string name="home_orbit_holds_systems">Systems only</string>
     <string name="home_orbit_continue_card">Continue card</string>
-    <string name="home_orbit_continue_card_help">The last game you played, as a card standing left of the covers. A picks it up again (Resume while it still runs).</string>
+    <string name="home_orbit_continue_card_help">The game running now, else the last one you played, as a card standing left of the covers. A picks it up again (Resume while it runs, and Y closes it).</string>
 </resources>

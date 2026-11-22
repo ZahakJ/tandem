@@ -76,6 +76,7 @@
         <item quantity="other">非表示 · %1$d本</item>
     </plurals>
     <string name="home_entry_continue">つづきから · %1$s</string>
+    <string name="home_entry_resume">再開 · %1$s</string>
     <string name="home_entry_collection">コレクション</string>
     <string name="home_empty_hidden">ゲームはすべて非表示です</string>
     <string name="home_empty_none">ゲームはまだありません</string>
@@ -405,5 +406,5 @@
     <string name="home_orbit_holds_games">機種とコレクション</string>
     <string name="home_orbit_holds_systems">機種のみ</string>
     <string name="home_orbit_continue_card">「つづきから」カード</string>
-    <string name="home_orbit_continue_card_help">最後に遊んだゲームを、パッケージの列の左に立つカードとして表示します。Aでつづきから遊べます（起動中なら再開）。</string>
+    <string name="home_orbit_continue_card_help">起動中のゲーム（なければ最後に遊んだゲーム）を、パッケージの列の左に立つカードとして表示します。Aでつづきから遊べます（起動中なら再開、Yで終了）。</string>
 </resources>

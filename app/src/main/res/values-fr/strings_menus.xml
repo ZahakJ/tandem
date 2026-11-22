@@ -14,6 +14,8 @@
 
     <!-- Y on a game: the game menu. -->
     <string name="menus_game_resume">Reprendre</string>
+    <string name="menus_game_close">Fermer le jeu</string>
+    <string name="menus_game_close_help">Ferme son émulateur. Tout ce que tu n’as pas sauvegardé dans le jeu est perdu.</string>
     <string name="menus_game_play">Jouer</string>
     <string name="menus_game_unfavorite">Retirer des favoris</string>
     <string name="menus_game_favorite">Ajouter aux favoris</string>

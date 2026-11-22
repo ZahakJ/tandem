@@ -2064,6 +2064,8 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
         val pkg = item.pkg?.takeIf { item.kind == TileKind.App }
         if (pkg != null) addAll(appMenuActions(ctx, pkg, done = { IconGrid.closeMenu() }, close = { IconGrid.closeMenu() }).filter { it.id != "home" })
         else             add(MenuAction("open", Tx.s(when { item.kind != TileKind.Game -> R.string.grid_menu_open; RunningGames.list.any { it.game?.key == item.game?.key } -> R.string.grid_menu_resume; else -> R.string.grid_menu_play }), Glyph.Play, Palette.Mint) { IconGrid.closeMenu(); IconGrid.openedFrom = t.key.takeIf { inFolder == null }; item.open() })
+        // A game still open can be closed from here too, as from its game menu.
+        runningOf(item.game?.takeIf { item.kind == TileKind.Game || item.kind == TileKind.Now })?.let { r -> add(closeGameAction(ctx, r) { IconGrid.closeMenu() }) }
         item.game?.takeIf { item.kind == TileKind.Game }?.let { g -> add(StatusUi.action(g) { IconGrid.menuPage("status"); StatusUi.focusPage(IconGrid.MENU_ROUTE + ":" + t.key, g) }) }
         if (item.kind != TileKind.Now) {
             if (!sorted) add(MenuAction("move", Tx.s(R.string.grid_menu_move), Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(t.key, inFolder, siblings) })

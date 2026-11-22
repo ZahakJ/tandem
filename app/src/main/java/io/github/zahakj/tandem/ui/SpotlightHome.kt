@@ -867,7 +867,7 @@ private fun GamePanel(st: RailState, game: Game, maxH: Dp) {
                 PlayStats(game)
             }
             Spacer(Modifier.height(14.dp))
-            PanelHints(Tx.s(if (running) R.string.home_spotlight_hint_resume else R.string.home_spotlight_hint_play), menu = true, story = story != null, expanded = expanded)
+            PanelHints(Tx.s(if (running) R.string.home_spotlight_hint_resume else R.string.home_spotlight_hint_play), menu = true, story = story != null, expanded = expanded, closes = running)
         }
     }
 }
@@ -1016,10 +1016,12 @@ private fun AppPanel(item: GridItem) {
 /** The button line under the panel. Each hint can be tapped. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun PanelHints(a: String, menu: Boolean, story: Boolean, expanded: Boolean) {
+private fun PanelHints(a: String, menu: Boolean, story: Boolean, expanded: Boolean, closes: Boolean = false) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ButtonHint("A", a, Palette.Mint)
-        if (menu) ButtonHint("Y", Tx.s(R.string.home_spotlight_hint_menu), Palette.Butter)
+        // A game still running: Y closes it (press twice), as everywhere on the home screen.
+        if (closes) ButtonHint("Y", Tx.s(R.string.home_running_hint_close), Palette.Peach)
+        else if (menu) ButtonHint("Y", Tx.s(R.string.home_spotlight_hint_menu), Palette.Butter)
         if (story && SpotlightMode.ownsX) ButtonHint("X", Tx.s(if (expanded) R.string.home_spotlight_hint_less else R.string.home_spotlight_hint_more), Palette.Sky)
         Row(verticalAlignment = Alignment.CenterVertically) {
             ButtonHint("L1", "", Palette.Lavender)

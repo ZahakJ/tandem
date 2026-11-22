@@ -76,6 +76,7 @@
         <item quantity="other">已隐藏 · %1$d 款游戏</item>
     </plurals>
     <string name="home_entry_continue">继续 · %1$s</string>
+    <string name="home_entry_resume">继续游戏 · %1$s</string>
     <string name="home_entry_collection">合集</string>
     <string name="home_empty_hidden">所有游戏都隐藏了</string>
     <string name="home_empty_none">还没有游戏</string>
@@ -405,5 +406,5 @@
     <string name="home_orbit_holds_games">平台和合集</string>
     <string name="home_orbit_holds_systems">仅平台</string>
     <string name="home_orbit_continue_card">“继续游玩”卡片</string>
-    <string name="home_orbit_continue_card_help">你上次玩的游戏，化作一张卡片立在封面左边。按 A 接着玩（游戏还在运行时就是“继续游戏”）。</string>
+    <string name="home_orbit_continue_card_help">正在运行的游戏（没有就是你上次玩的那款），化作一张卡片立在封面左边。按 A 接着玩（游戏还在运行时就是“继续游戏”，按 Y 关闭它）。</string>
 </resources>

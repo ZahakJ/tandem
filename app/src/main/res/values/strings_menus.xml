@@ -14,6 +14,9 @@
 
     <!-- Y on a game: the game menu. -->
     <string name="menus_game_resume">Resume</string>
+    <!-- A running game's menu row; held to confirm. -->
+    <string name="menus_game_close">Close game</string>
+    <string name="menus_game_close_help">Closes its emulator. Anything you haven\'t saved in the game is lost.</string>
     <string name="menus_game_play">Play</string>
     <string name="menus_game_unfavorite">Unfavorite</string>
     <string name="menus_game_favorite">Favorite</string>

@@ -70,7 +70,7 @@ What the home screen is made of, and how games show inside a system. The page op
 | Home screen (icon grid) | Resume page | Opens first | A game still running gets a Resume page left of the grid. **Opens first**: coming back to Tandem while it runs brings you to that page; **On**: the page is there but Home goes to the grid; **Off**: no Resume page. |
 | Home screen (icon grid) | Grid shape › | | Opens **Grid shape** (below). |
 | Home screen (Orbit) | Orbit holds | Systems, collections, apps | What rides the orbit: all three, Systems and collections, or Systems only. |
-| Home screen (Orbit) | Continue card | On | The last game you played, as a card beside the covers. |
+| Home screen (Orbit) | Continue card | On | The game running now, else the last game you played, as a card beside the covers. |
 | Home screen (Spotlight) | Spotlight rail | Left | Which side the rail of covers runs down; the whole layout mirrors. |
 | Home screen (Spotlight) | Spotlight backdrop | Art | Behind the game: its Art, its Blurred cover, or Dim (the theme's colour). |
 | Home screen (Spotlight) | Spotlight motion | On | The art drifts and zooms in very slowly (never with Reduce motion). |

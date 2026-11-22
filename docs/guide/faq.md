@@ -160,7 +160,7 @@ Leave Tandem with <kbd>Home</kbd> and come back; it claims the second screen eac
 
 ### My play time looks wrong
 
-Sessions shorter than ten seconds don't count, and a session counts for at most six hours. Play time is only recorded for games started from Tandem. To start a game's history over, <kbd>Y</kbd> › **Reset play history**.
+Sessions shorter than ten seconds don't count (the game still becomes your last played), and a session counts for at most six hours. Play time is only recorded for games started from Tandem. To start a game's history over, <kbd>Y</kbd> › **Reset play history**.
 
 ### Reporting a bug
 
