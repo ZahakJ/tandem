@@ -27,13 +27,25 @@ import java.nio.file.attribute.BasicFileAttributes
 /** One thing on storage a delete removes: a file, or a folder game with everything in it. */
 data class DeleteFile(val file: File, val bytes: Long, val isDir: Boolean = false)
 
-/** What deleting a game's files would remove, or why it can't be done ([refused]). [kept] are parts another game still uses. */
-class FilePlan(val files: List<DeleteFile>, val kept: List<File> = emptyList(), val refused: String? = null) {
+/**
+ * Why a delete is refused: a string resource, with the name of the file it is about when it needs one. Kept as an
+ * id so the rules stay free of Android's resources; [text] is read when shown.
+ */
+class Refusal(@androidx.annotation.StringRes val res: Int, val name: String? = null) {
+    val text: String get() = if (name == null) Tx.s(res) else Tx.s(res, name)
+    override fun toString() = "Refusal($res, $name)"
+}
+
+/** What deleting a game's files would remove, or why it can't be done ([refusal]). [kept] are parts another game still uses. */
+class FilePlan(val files: List<DeleteFile>, val kept: List<File> = emptyList(), val refusal: Refusal? = null) {
     val bytes: Long get() = files.sumOf { it.bytes }
-    val ok: Boolean get() = refused == null
+    val ok: Boolean get() = refusal == null
+
+    /** Why it can't be done, in words; null when it can. */
+    val refused: String? get() = refusal?.text
 
     companion object {
-        fun refuse(why: String) = FilePlan(emptyList(), refused = why)
+        fun refuse(why: Refusal) = FilePlan(emptyList(), refusal = why)
     }
 }
 
@@ -57,38 +69,38 @@ object DeletePlanner {
      */
     fun gameFiles(target: File, roots: List<File>, protectedDirs: List<File>, otherGames: Collection<File>): FilePlan {
         val rootsC = roots.mapNotNull { canon(it) }.distinct()
-        if (rootsC.isEmpty()) return FilePlan.refuse("Tandem doesn't know your game folders yet")
-        if (!exists(target)) return FilePlan.refuse("The game's file isn't there any more")
-        val at = located(target) ?: return FilePlan.refuse("Tandem couldn't work out where the game is")
-        if (!inside(at, rootsC)) return FilePlan.refuse("It isn't inside your game folders, so Tandem leaves it alone")
+        if (rootsC.isEmpty()) return FilePlan.refuse(Refusal(R.string.library_delete_no_roots))
+        if (!exists(target)) return FilePlan.refuse(Refusal(R.string.library_delete_gone))
+        val at = located(target) ?: return FilePlan.refuse(Refusal(R.string.library_delete_where))
+        if (!inside(at, rootsC)) return FilePlan.refuse(Refusal(R.string.library_delete_outside))
         if (isLink(target)) {
             val to = canon(target)
-            if (to == null || !inside(to, rootsC)) return FilePlan.refuse("It's a link to a place outside your game folders, so Tandem leaves it alone")
+            if (to == null || !inside(to, rootsC)) return FilePlan.refuse(Refusal(R.string.library_delete_link_outside))
         }
         val guarded = (protectedDirs.mapNotNull { located(it) } + protectedDirs.mapNotNull { canon(it) } + rootsC).toSet()
 
         if (isRealDir(target)) {
-            if (guarded.any { it == at || isUnder(it, at) }) return FilePlan.refuse("That's a whole system folder, so Tandem won't delete it")
+            if (guarded.any { it == at || isUnder(it, at) }) return FilePlan.refuse(Refusal(R.string.library_delete_system_folder))
             val others = otherGames.mapNotNull { located(it) }.filter { it != at && isUnder(it, at) }
-            if (others.isNotEmpty()) return FilePlan.refuse("Its folder holds other games too, so Tandem won't delete it")
+            if (others.isNotEmpty()) return FilePlan.refuse(Refusal(R.string.library_delete_other_games))
             val (bytes, outside) = walkDir(target, rootsC)
-            if (outside != null) return FilePlan.refuse("${outside.name} inside it links to a place outside your game folders, so Tandem leaves it alone")
+            if (outside != null) return FilePlan.refuse(Refusal(R.string.library_delete_inner_link, outside.name))
             return FilePlan(listOf(DeleteFile(target.absoluteFile, bytes, isDir = true)))
         }
 
         // A file game, with whatever its sheets list.
         val found = LinkedHashMap<File, DeleteFile>()
         found[at] = DeleteFile(target.absoluteFile, sizeOf(target))
-        var refused: String? = null
+        var refused: Refusal? = null
         fun visit(sheet: File, depth: Int) {
             if (depth > MAX_DEPTH || refused != null) return
             for (part in partsOf(sheet)) {
                 if (!exists(part) || isRealDir(part)) continue
                 val loc = located(part) ?: continue
                 if (loc in found) continue
-                if (!inside(loc, rootsC)) { refused = "${part.name} is outside your game folders, so Tandem leaves it alone"; return }
+                if (!inside(loc, rootsC)) { refused = Refusal(R.string.library_delete_part_outside, part.name); return }
                 if (isLink(part) && canon(part)?.let { inside(it, rootsC) } != true) {
-                    refused = "${part.name} links to a place outside your game folders, so Tandem leaves it alone"; return
+                    refused = Refusal(R.string.library_delete_part_link, part.name); return
                 }
                 found[loc] = DeleteFile(part.absoluteFile, sizeOf(part))
                 if (part.extension.lowercase() in SHEETS) visit(part, depth + 1)

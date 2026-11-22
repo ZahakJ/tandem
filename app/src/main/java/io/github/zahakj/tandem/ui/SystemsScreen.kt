@@ -49,7 +49,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.CocoonPlatforms
 import io.github.zahakj.tandem.Emulators
 import io.github.zahakj.tandem.Game
@@ -78,8 +79,13 @@ internal class SystemEntry(val platform: Platform, val games: List<Game>, val ic
 }
 
 /** The Systems screen's tabs, instead of three long sections one under the other. */
-internal enum class SystemsTab(val label: String, val short: String) {
-    Library("In your library", "Library"), Off("Turned off", "Off"), More("More systems", "More");
+internal enum class SystemsTab(@androidx.annotation.StringRes private val labelRes: Int, @androidx.annotation.StringRes private val shortRes: Int) {
+    Library(R.string.library_systems_tab_library, R.string.library_systems_tab_library_short),
+    Off(R.string.library_systems_tab_off, R.string.library_systems_tab_off_short),
+    More(R.string.library_systems_tab_more, R.string.library_systems_tab_more_short);
+
+    val label: String get() = Tx.s(labelRes)
+    val short: String get() = Tx.s(shortRes)
 
     val color: Color get() = when (this) { Library -> Palette.Mint; Off -> Palette.Lavender; More -> Palette.Sky }
 
@@ -152,13 +158,13 @@ fun SystemsScreen() {
         if (uri == null || id == null) return@rememberLauncherForActivityResult
         val path = treePath(uri)
         if (path == null) {
-            Toasts.show("That folder can't be used, try one on the device or SD card")
+            Toasts.show(Tx.s(R.string.library_folder_unusable))
             return@rememberLauncherForActivityResult
         }
         runCatching { ctx.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION) }
         SystemPrefs.update { it.copy(trees = it.trees + (path to uri.toString())) }
         SystemPrefs.updateSystem(id) { it.copy(enabled = true, folders = (it.folders + path).distinct()) }
-        Toasts.show("Added ${File(path).name}, looking for games…")
+        Toasts.show(Tx.s(R.string.library_folder_added, File(path).name))
         changed()
     }
 
@@ -166,7 +172,7 @@ fun SystemsScreen() {
     if (list == null) {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Pip(80.dp, mood = 1)
-            Text("Checking your systems…", style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
+            Text(Tx.s(R.string.library_systems_checking), style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
         }
         return
     }
@@ -185,7 +191,7 @@ fun SystemsScreen() {
         // From the grid, the highlight goes to the new tab's grid (or its tab, when it's empty).
         if (moveFocus) Nav.focusTick++
     }
-    val search = { TextEntry.ask("Search systems or makers", query, onChange = { query = it }) { query = it } }
+    val search = { TextEntry.ask(Tx.s(R.string.library_systems_search), query, onChange = { query = it }) { query = it } }
     // A search with nothing on this tab shows the tab that has some.
     LaunchedEffect(q) {
         if (q.isNotEmpty() && found[tab].isNullOrEmpty()) SystemsTab.entries.firstOrNull { found[it].orEmpty().isNotEmpty() }?.let { SystemsMemory.tab = it }
@@ -232,7 +238,7 @@ fun SystemsScreen() {
             val wide = maxWidth >= 760.dp
             Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                 SearchField(
-                    query, if (wide) "Search systems or makers" else "Search", Modifier.weight(1f).takesFocus(routeKey, "search", headerWant == "search"),
+                    query, Tx.s(if (wide) R.string.library_systems_search else R.string.library_systems_search_short), Modifier.weight(1f).takesFocus(routeKey, "search", headerWant == "search"),
                     onFocus = header, onClick = search,
                 )
                 SystemsTab.entries.forEach { t ->
@@ -249,10 +255,10 @@ fun SystemsScreen() {
                 Spacer(Modifier.height(10.dp))
                 Text(
                     when {
-                        q.isNotEmpty() -> "No systems match \"$q\""
-                        tab == SystemsTab.Off -> "Nothing is turned off. A system you turn off waits here, games and all"
-                        tab == SystemsTab.More -> "Every system Tandem knows has games already"
-                        else -> "No games yet. Open a system in More systems and add its folder"
+                        q.isNotEmpty() -> Tx.s(R.string.library_systems_no_match, q)
+                        tab == SystemsTab.Off -> Tx.s(R.string.library_systems_none_off)
+                        tab == SystemsTab.More -> Tx.s(R.string.library_systems_none_more)
+                        else -> Tx.s(R.string.library_systems_none)
                     },
                     style = MaterialTheme.typography.titleMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
@@ -283,7 +289,7 @@ fun SystemsScreen() {
                             e, art, Modifier.height(art + TilePad * 2 + TileText).takesFocus(gridRoute, e.id, inGrid && e.id == target),
                             onFocus = {
                                 FocusMemory.remember(routeKey, GRID)
-                                Selection.current = Selected.Group(e.platform.name, plural(e.games.size, "game"), e.games, e.color)
+                                Selection.current = Selected.Group(e.platform.name, Tx.p(R.plurals.library_games, e.games.size), e.games, e.color)
                             },
                         ) { open = e.id }
                     }
@@ -323,10 +329,10 @@ private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () 
                 SystemArt(e, art, Modifier.graphicsLayer { alpha = if (off) 0.4f else 1f })
                 Column(Modifier.align(Alignment.TopStart).padding(5.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     when {
-                        off -> ArtBadge("Off", Palette.Muted)
-                        !p.isApps && default == null -> ArtBadge("No emulator", Palette.Peach)
+                        off -> ArtBadge(Tx.s(R.string.library_systems_badge_off), Palette.Muted)
+                        !p.isApps && default == null -> ArtBadge(Tx.s(R.string.library_systems_badge_no_emulator), Palette.Peach)
                     }
-                    if (config.bottomScreen) ArtBadge("Bottom", Palette.Sky, Glyph.Screens)
+                    if (config.bottomScreen) ArtBadge(Tx.s(R.string.library_systems_badge_bottom), Palette.Sky, Glyph.Screens)
                 }
             }
             Spacer(Modifier.height(7.dp))
@@ -339,7 +345,7 @@ private fun SystemTile(e: SystemEntry, art: Dp, modifier: Modifier, onFocus: () 
                     Spacer(Modifier.width(5.dp))
                 }
                 Text(
-                    if (e.games.isEmpty()) default?.name ?: "No games yet" else plural(e.games.size, "game"),
+                    if (e.games.isEmpty()) default?.name ?: Tx.s(R.string.library_systems_no_games) else Tx.p(R.plurals.library_games, e.games.size),
                     Modifier.weight(1f, fill = false),
                     style = MaterialTheme.typography.labelMedium, color = if (e.games.isEmpty()) Palette.Muted else Palette.Text.copy(alpha = 0.85f),
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
@@ -396,78 +402,89 @@ fun systemsSettings(): SettingSection {
     val prefs = SystemPrefs.data
     val hasSecond = Facts.run { ensure(ctx); hasSecondScreen }
     val cocoonFiles = Facts.cocoonPlatformFiles
-    return SettingSection(
-        "Systems & launching",
-        listOf(
+    return SettingSection(en = "Systems & launching",
+        title = Tx.s(R.string.library_settings_systems_title),
+        rows = listOf(
             SettingRow(
-                "Systems and emulators", "${io.github.zahakj.tandem.Libraries.all.orEmpty().size} systems", Palette.Sky, Glyph.Gamepad,
-                "Turn systems on or off, pick each system's emulator and which screen its games start on, and add extra folders.",
-                opens = true, keywords = "platforms consoles emulator core default player folders",
+                Tx.s(R.string.library_settings_systems), io.github.zahakj.tandem.Libraries.all.orEmpty().size.let { Tx.p(R.plurals.library_settings_systems_value, it) },
+                Palette.Sky, Glyph.Gamepad,
+                Tx.s(R.string.library_settings_systems_help),
+                opens = true, keywords = "platforms consoles emulator core default player folders", en = "Systems and emulators",
             ) { Nav.go(Route.Systems) },
             SettingRow(
-                "Android apps", "Games & apps", Palette.Sky, Glyph.Grid,
-                "Every app on the device. Mark the ones that are games so they show up in the Android Games system.",
-                opens = true, keywords = "android games applications",
+                Tx.s(R.string.library_settings_apps), Tx.s(R.string.library_settings_apps_value), Palette.Sky, Glyph.Grid,
+                Tx.s(R.string.library_settings_apps_help),
+                opens = true, keywords = "android games applications", en = "Android apps",
             ) { Nav.go(Route.Apps) },
             SettingRow(
-                "Single screen", if (!hasSecond) "On · one screen" else onOff(prefs.singleScreen), Palette.Lavender, Glyph.Screens,
-                "Leave the second screen alone (or turned off) and use only the top one. Games always start on the top screen too.",
+                Tx.s(R.string.library_settings_single), if (!hasSecond) Tx.s(R.string.library_settings_single_one) else onOff(prefs.singleScreen), Palette.Lavender, Glyph.Screens,
+                Tx.s(R.string.library_settings_single_help),
                 toggle = if (!hasSecond) null else prefs.singleScreen, keywords = "one screen dual bottom off",
                 preview = { ToggleShowcase(prefs.singleScreen, Palette.Lavender) { on -> DeviceScene(Shows.Library, if (on) Shows.Off else Shows.Details) } },
+                en = "Single screen",
             ) {
                 if (!hasSecond) {
-                    Toasts.show("Only one screen found, so games always start on it")
+                    Toasts.show(Tx.s(R.string.library_settings_single_only_one))
                 } else {
                     SystemPrefs.update { it.copy(singleScreen = !it.singleScreen) }
                     // The same switch as Appearance › Single screen; the bottom panel follows straight away.
                     (ctx as? io.github.zahakj.tandem.MainActivity)?.showDetails()
-                    Toasts.show(if (prefs.singleScreen) "Using both screens" else "Only the top screen now; games start there too")
+                    Toasts.show(Tx.s(if (prefs.singleScreen) R.string.library_settings_single_off else R.string.library_settings_single_on))
                 }
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
-                val help = "Where an app opens unless it has a screen of its own (Y › Always open on). Auto: the screen you start it from. A touch on the bottom screen opens it there; with the controller it opens where the library is. Games keep their own screen."
+                val help = Tx.s(R.string.library_settings_apps_open_help)
                 val keywords = "apps launch screen top bottom main second display open on discord browser"
-                if (!hasSecond) SettingRow("Apps open on", "Top · one screen", Palette.Lavender, Glyph.Screens, help, keywords = keywords) {
-                    Toasts.show("Only one screen found, so apps open on it")
+                if (!hasSecond) SettingRow(
+                    Tx.s(R.string.library_settings_apps_open), Tx.s(R.string.library_settings_apps_open_one), Palette.Lavender, Glyph.Screens, help,
+                    keywords = keywords, en = "Apps open on",
+                ) {
+                    Toasts.show(Tx.s(R.string.library_settings_apps_open_only_one))
                 } else choice(
-                    "Apps open on", Glyph.Screens, Palette.Lavender, help,
+                    Tx.s(R.string.library_settings_apps_open), Glyph.Screens, Palette.Lavender, help,
                     io.github.zahakj.tandem.data.AppScreen.ALL.map { it to io.github.zahakj.tandem.data.AppScreen.label(it) }, apps.defaultScreen,
-                    look = { v -> AppScreenScene(v) },
+                    look = { v -> AppScreenScene(v) }, en = "Apps open on",
                 ) { v -> io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(defaultScreen = v) } }.copy(keywords = keywords)
             },
             run {
                 val apps = io.github.zahakj.tandem.data.AppPrefs.data
-                // It only works with both, so the row says which one is missing instead of claiming On.
+                // It only works with both, so the row says which one is missing instead of claiming On (and the toast
+                // says what it needs).
                 val needs = when {
-                    !io.github.zahakj.tandem.Shell.ready() -> "Needs Shizuku"
-                    io.github.zahakj.tandem.ControllerHomeService.instance == null -> "Needs the Home button service"
+                    !io.github.zahakj.tandem.Shell.ready() -> R.string.library_settings_move_needs_shizuku to R.string.library_settings_move_shizuku_toast
+                    io.github.zahakj.tandem.ControllerHomeService.instance == null -> R.string.library_settings_move_needs_home to R.string.library_settings_move_home_toast
                     else -> null
                 }
                 // Moving apps, and games too, as one choice: games only ever move along with apps.
-                val options = listOf("off" to "Off", "apps" to "Apps", "games" to "Apps + games")
+                val options = listOf(
+                    "off" to Tx.s(R.string.library_settings_move_off), "apps" to Tx.s(R.string.library_settings_move_apps),
+                    "games" to Tx.s(R.string.library_settings_move_games),
+                )
                 val now = if (!apps.holdBackMoves) "off" else if (apps.moveGames) "games" else "apps"
-                val help = "Hold Back for a moment while an app is open and it moves to the other screen, then opens there from then on. Hold it again soon after to undo. " +
-                    "Apps and games: a game in front moves too; with Apps, a game always stays where it is. Needs Shizuku and the Controller Home button service (Controls)."
+                val help = Tx.s(R.string.library_settings_move_help)
                 val keywords = "move app other screen swap display back button hold shizuku move games too"
-                if (needs != null) SettingRow("Hold Back to move", needs, Palette.Lavender, Glyph.Swap, help, keywords = keywords) {
-                    Toasts.show(needs.replaceFirst("Needs", "This needs"))
-                } else choice("Hold Back to move", Glyph.Swap, Palette.Lavender, help, options, now) { v ->
+                if (needs != null) SettingRow(
+                    Tx.s(R.string.library_settings_move), Tx.s(needs.first), Palette.Lavender, Glyph.Swap, help, keywords = keywords, en = "Hold Back to move",
+                ) {
+                    Toasts.show(Tx.s(needs.second))
+                } else choice(Tx.s(R.string.library_settings_move), Glyph.Swap, Palette.Lavender, help, options, now, en = "Hold Back to move") { v ->
                     io.github.zahakj.tandem.data.AppPrefs.updateAll { it.copy(holdBackMoves = v != "off", moveGames = if (v == "off") it.moveGames else v == "games") }
                 }.copy(keywords = keywords)
             },
             SettingRow(
-                "Voice in clips", onOff(prefs.clipVoice), Palette.Lavender, Glyph.Volume,
-                "A clip from the game's companion (Clip, on the bottom screen) takes your voice from the microphone along with the game's sound. Off records the game alone. Nothing is heard outside a clip.",
-                toggle = prefs.clipVoice, keywords = "clip record video microphone mic voice sound audio",
+                Tx.s(R.string.library_settings_voice), onOff(prefs.clipVoice), Palette.Lavender, Glyph.Volume,
+                Tx.s(R.string.library_settings_voice_help),
+                toggle = prefs.clipVoice, keywords = "clip record video microphone mic voice sound audio", en = "Voice in clips",
             ) {
                 SystemPrefs.update { it.copy(clipVoice = !it.clipVoice) }
             },
             SettingRow(
-                "Launch animation", onOff(prefs.launchAnimation), Palette.Lavender, Glyph.Sparkle,
-                "The game's art zooms up with a little flourish while its emulator starts. Off starts games straight away.",
+                Tx.s(R.string.library_settings_launch), onOff(prefs.launchAnimation), Palette.Lavender, Glyph.Sparkle,
+                Tx.s(R.string.library_settings_launch_help),
                 toggle = prefs.launchAnimation, keywords = "start transition zoom",
                 preview = { ToggleShowcase(prefs.launchAnimation, Palette.Lavender) { on -> LaunchScene(on) } },
+                en = "Launch animation",
             ) {
                 SystemPrefs.update { it.copy(launchAnimation = !it.launchAnimation) }
             },
@@ -483,7 +500,7 @@ fun LaunchScreenRow(game: Game, routeKey: String) {
     if (!hasSecond || SystemPrefs.data.singleScreen) return
     val bottom = LaunchDisplay.wantsBottom(game)
     val systemBottom = SystemPrefs.config(game.platform.id).bottomScreen
-    MenuRow("Start on", if (bottom) "Bottom screen" else "Top screen", "screen", false, routeKey, Palette.Butter) {
+    MenuRow(Tx.s(R.string.library_start_on), Tx.s(if (bottom) R.string.library_bottom_screen else R.string.library_top_screen), "screen", false, routeKey, Palette.Butter) {
         val want = !bottom
         Store.update(game.key) { it.copy(screen = if (want == systemBottom) null else if (want) "bottom" else "top") }
     }

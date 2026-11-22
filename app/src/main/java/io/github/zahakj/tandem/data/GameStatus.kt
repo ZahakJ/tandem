@@ -1,18 +1,25 @@
 package io.github.zahakj.tandem.data
 
+import androidx.annotation.StringRes
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
+
 /**
  * Where a game stands with you: in the backlog, being played, finished, completed, set aside, or one that never ends.
  * Kept in [GameMeta.status] with when it was set; null is no status at all. A game in the backlog (or with none)
  * becomes Playing by itself after a real session ([afterSession]); everything else is the user's to say.
  */
-enum class GameStatus(val id: String, val label: String, val blurb: String) {
-    Backlog("backlog", "Backlog", "To play some day"),
-    Playing("playing", "Playing", "On the go now"),
-    Finished("finished", "Finished", "Saw the credits"),
-    Completed("completed", "Completed", "Everything done, 100%"),
-    Shelved("shelved", "Shelved", "Set aside for now"),
-    Endless("endless", "Endless", "No ending: played for fun"),
+enum class GameStatus(val id: String, @StringRes private val labelRes: Int, @StringRes private val blurbRes: Int) {
+    Backlog("backlog", R.string.data_status_backlog, R.string.data_status_backlog_blurb),
+    Playing("playing", R.string.data_status_playing, R.string.data_status_playing_blurb),
+    Finished("finished", R.string.data_status_finished, R.string.data_status_finished_blurb),
+    Completed("completed", R.string.data_status_completed, R.string.data_status_completed_blurb),
+    Shelved("shelved", R.string.data_status_shelved, R.string.data_status_shelved_blurb),
+    Endless("endless", R.string.data_status_endless, R.string.data_status_endless_blurb),
     ;
+
+    val label: String get() = Tx.s(labelRes)
+    val blurb: String get() = Tx.s(blurbRes)
 
     /** Finished or better: the game counts as beaten. */
     val beaten: Boolean get() = this == Finished || this == Completed

@@ -24,7 +24,7 @@ sealed class HiddenItem(val id: String) {
     class Folder(val entry: HiddenFolder, val lib: PlatformLibrary?) :
         HiddenItem("f:" + Peeks.folderKey(entry.system, entry.folder)) {
         val isSystem: Boolean get() = entry.folder == null
-        val name: String get() = (lib?.platform?.name ?: entry.system).let { if (entry.folder == null) it else "$it › ${entry.folder}" }
+        val name: String get() = (lib?.platform?.name ?: entry.system).let { if (entry.folder == null) it else "$it › ${entry.folder}" } // tx-ok: names
         val games: List<Game> get() = lib?.games.orEmpty().let { all -> if (entry.folder == null) all else all.filter { it.group.equals(entry.folder, ignoreCase = true) } }
     }
 
@@ -85,9 +85,12 @@ object HiddenItems {
 
     /** "System", "Folder · 12 games", for a row's second line. */
     fun kind(item: HiddenItem): String = when (item) {
-        is HiddenItem.Folder -> (if (item.isSystem) "System" else "Folder") + " · " + if (item.lib == null) "not found" else plural(item.games.size, "game")
-        is HiddenItem.HomeFolderItem -> "Home folder · ${plural(item.folder.items.count { it.isNotEmpty() }, "item")}"
-        is HiddenItem.GameItem -> "Game · ${item.game.platform.name}"
+        is HiddenItem.Folder -> when {
+            item.lib == null -> Tx.s(if (item.isSystem) R.string.library_hidden_system_gone else R.string.library_hidden_folder_gone)
+            else -> Tx.p(if (item.isSystem) R.plurals.library_hidden_system else R.plurals.library_hidden_folder, item.games.size)
+        }
+        is HiddenItem.HomeFolderItem -> item.folder.items.count { it.isNotEmpty() }.let { Tx.p(R.plurals.library_hidden_home_folder, it) }
+        is HiddenItem.GameItem -> Tx.s(R.string.library_hidden_game, item.game.platform.name)
     }
 
     /** Frees [item]: it is back where it was, for good. Returns a toast that names nothing. */
@@ -97,7 +100,7 @@ object HiddenItems {
             is HiddenItem.HomeFolderItem -> HiddenFolders.setGridFolderHidden(item.folder.id, false)
             is HiddenItem.GameItem -> Store.update(item.game.key) { it.copy(hidden = false) }
         }
-        return if (item is HiddenItem.HomeFolderItem) "Back on your home grid" else "Back in your library"
+        return Tx.s(if (item is HiddenItem.HomeFolderItem) R.string.library_hidden_back_home else R.string.library_hidden_back_library)
     }
 
     /** Takes back an [unhide] (the Undo in its toast). */

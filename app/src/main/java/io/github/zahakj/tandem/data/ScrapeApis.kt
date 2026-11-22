@@ -1,6 +1,8 @@
 package io.github.zahakj.tandem.data
 
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -43,9 +45,9 @@ class Igdb(private val clientId: String, private val secret: String) {
         val body = "client_id=${Net.enc(clientId)}&client_secret=${Net.enc(secret)}&grant_type=client_credentials"
         try {
             val o = JSONObject(Net.post("https://id.twitch.tv/oauth2/token", body, contentType = "application/x-www-form-urlencoded"))
-            token = o.optString("access_token").takeIf { it.isNotBlank() } ?: throw SourceDown("Twitch didn't hand out an IGDB pass")
+            token = o.optString("access_token").takeIf { it.isNotBlank() } ?: throw SourceDown(Tx.s(R.string.scrape_down_twitch_pass))
         } catch (e: HttpError) {
-            if (e.code in 400..403) throw SourceDown("Twitch didn't accept the IGDB client ID or secret") else throw e
+            if (e.code in 400..403) throw SourceDown(Tx.s(R.string.scrape_down_twitch_keys)) else throw e
         } catch (e: JSONException) {
             throw IOException("Twitch sent something unexpected")
         }
@@ -62,7 +64,7 @@ class Igdb(private val clientId: String, private val secret: String) {
                 when {
                     e.code == 401 && !retried -> { token = null; retried = true }
                     e.code == 429 && !retried -> { Thread.sleep(1200); retried = true }
-                    e.code == 401 || e.code == 403 -> throw SourceDown("IGDB turned the request away; check the client ID and secret")
+                    e.code == 401 || e.code == 403 -> throw SourceDown(Tx.s(R.string.scrape_down_igdb_refused))
                     else -> throw e
                 }
             } catch (e: JSONException) {
@@ -194,14 +196,14 @@ class Hltb {
             } catch (e: HttpError) {
                 token = null
                 when {
-                    e.code == 429 -> throw SourceDown("HowLongToBeat asked Tandem to slow down; skipping it for now")
+                    e.code == 429 -> throw SourceDown(Tx.s(R.string.scrape_down_hltb_slow))
                     attempt < 2 && e.code == 403 -> Unit
                     attempt < 3 && e.code == 404 && discover() -> Unit
-                    else -> throw SourceDown("HowLongToBeat changed how its search works, so I skipped it")
+                    else -> throw SourceDown(Tx.s(R.string.scrape_down_hltb_changed))
                 }
             } catch (e: JSONException) {
                 token = null
-                if (attempt >= 2 || !discover()) throw SourceDown("HowLongToBeat changed how its search works, so I skipped it")
+                if (attempt >= 2 || !discover()) throw SourceDown(Tx.s(R.string.scrape_down_hltb_changed))
             } catch (e: IOException) {
                 if (attempt >= 2) throw e
                 token = null

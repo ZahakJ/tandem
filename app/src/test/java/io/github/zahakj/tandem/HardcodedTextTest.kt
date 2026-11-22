@@ -56,6 +56,15 @@ class HardcodedTextTest {
         "ui/Bookshelf.kt",
         "ui/Switcher.kt",
         "ui/App.kt",
+        "ui/ScrapeScreen.kt", "ui/ArtSetup.kt", "data/ScrapeConfig.kt", "data/Scraper.kt", "data/ScrapeSources.kt", "data/ScrapeApis.kt",
+        "data/SourceTests.kt", "data/LaunchBoxDb.kt",
+        "ui/SystemsScreen.kt", "ui/SystemPage.kt", "ui/SystemDetails.kt", "ui/SystemMakers.kt",
+        "ui/GameFoldersScreen.kt", "LibraryRoots.kt", "ui/GameEditor.kt",
+        "ui/GameExtrasEditor.kt", "data/GameExtras.kt", "Manuals.kt",
+        "ui/DeleteGame.kt", "GameDelete.kt", "ui/AppDetails.kt", "ui/AppsScreen.kt",
+        "ui/CocoonSetup.kt", "ui/BackupScreen.kt", "data/Backup.kt",
+        "data/GameStatus.kt", "data/Store.kt", "data/AppPrefs.kt", "data/Importer.kt", "HiddenItems.kt", "GameFinder.kt",
+        "AndroidApps.kt", "Library.kt",
     )
 
     /** Calls that show their string arguments, and how many leading arguments are ids, not text. */

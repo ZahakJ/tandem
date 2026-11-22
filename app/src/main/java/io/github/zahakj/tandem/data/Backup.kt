@@ -1,6 +1,9 @@
 package io.github.zahakj.tandem.data
 
 import android.content.Context
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -28,16 +31,24 @@ import java.util.concurrent.Executors
  * [BackupFiles] is plain file work (tested in BackupTest); [Backups] connects it to the stores.
  */
 
-enum class BackupCategory(val id: String, val label: String, val blurb: String) {
-    Games("games", "Game data", "Favourites, details, play time, sessions, journal and hidden folders"),
-    Look("look", "Look", "Theme, colours, wallpapers, sounds and motion"),
-    Layout("layout", "Layout & folders", "Icon grid, folders, dock and widgets"),
-    Systems("systems", "Systems & emulators", "Emulator choices, system folders, controllers and scraping"),
+/** [label] and [blurb] come from strings_data.xml; the English beside each is what the unit tests (no resources) see. */
+enum class BackupCategory(
+    val id: String,
+    @androidx.annotation.StringRes private val labelRes: Int, private val labelEn: String,
+    @androidx.annotation.StringRes private val blurbRes: Int, private val blurbEn: String,
+) {
+    Games("games", R.string.data_backup_games, "Game data", R.string.data_backup_games_blurb, "Favourites, details, play time, sessions, journal and hidden folders"),
+    Look("look", R.string.data_backup_look, "Look", R.string.data_backup_look_blurb, "Theme, colours, wallpapers, sounds and motion"),
+    Layout("layout", R.string.data_backup_layout, "Layout & folders", R.string.data_backup_layout_blurb, "Icon grid, folders, dock and widgets"),
+    Systems("systems", R.string.data_backup_systems, "Systems & emulators", R.string.data_backup_systems_blurb, "Emulator choices, system folders, controllers and scraping"),
     ;
 
     companion object {
         fun of(id: String): BackupCategory? = entries.firstOrNull { it.id == id }
     }
+
+    val label: String get() = words(labelRes, labelEn)
+    val blurb: String get() = words(blurbRes, blurbEn)
 }
 
 @Serializable
@@ -85,10 +96,10 @@ class RestoreResult(val outcomes: Map<BackupCategory, RestoreOutcome>) {
     /** One line for a toast. */
     fun message(): String {
         val parts = ArrayList<String>()
-        if (restored.isNotEmpty()) parts += "Restored " + restored.joinToString(", ") { it.label }
-        failed.forEach { (c, why) -> parts += "${c.label} failed: $why" }
-        if (missing.isNotEmpty()) parts += missing.joinToString(", ") { it.label } + " not in this backup"
-        return parts.joinToString(" · ").ifEmpty { "Nothing to restore" }
+        if (restored.isNotEmpty()) restored.joinToString(", ") { it.label }.let { parts += words(R.string.data_backup_restored, "Restored $it", it) }
+        failed.forEach { (c, why) -> parts += words(R.string.data_backup_failed, "${c.label} failed: $why", c.label, why) }
+        if (missing.isNotEmpty()) missing.joinToString(", ") { it.label }.let { parts += words(R.string.data_backup_missing, "$it not in this backup", it) }
+        return parts.joinToString(" · ").ifEmpty { words(R.string.data_backup_nothing, "Nothing to restore") }
     }
 }
 
@@ -150,7 +161,7 @@ object BackupFiles {
         val name = freeName(root, nameFormat.format(Date(now)))
         val temp = File(root, ".$name.partial")
         temp.deleteRecursively()
-        if (!temp.mkdirs()) error("Couldn't write to ${root.name}")
+        if (!temp.mkdirs()) error(words(R.string.data_backup_cant_write_to, "Couldn't write to ${root.name}", root.name))
         try {
             val texts = LinkedHashMap<String, String>()
             for (file in allFiles) {
@@ -167,7 +178,7 @@ object BackupFiles {
             )
             atomicWrite(File(temp, MANIFEST), json.encodeToString(manifest))
             val dir = File(root, name)
-            if (!temp.renameTo(dir)) error("Couldn't finish the backup")
+            if (!temp.renameTo(dir)) error(words(R.string.data_backup_cant_finish, "Couldn't finish the backup"))
             return BackupSnapshot(dir, manifest)
         } catch (e: Exception) {
             temp.deleteRecursively()
@@ -266,26 +277,26 @@ object BackupFiles {
                 val texts = present.map { p ->
                     val text = File(s.dir, p.file).readText()
                     val merged = merge(p, text, File(filesDir, p.file))
-                    runCatching { check(p.file, merged) }.getOrElse { throw IllegalStateException("couldn't read ${p.file}") }
+                    runCatching { check(p.file, merged) }.getOrElse { throw IllegalStateException(words(R.string.data_backup_cant_read, "couldn't read ${p.file}", p.file)) }
                     p.file to merged
                 }
                 filesDir.mkdirs()
                 texts.forEach { (file, text) -> atomicWrite(File(filesDir, file), text) }
                 reload(cat)
                 RestoreOutcome.Restored
-            }.getOrElse { RestoreOutcome.Failed(it.message?.takeIf { m -> m.isNotBlank() } ?: "couldn't restore") }
+            }.getOrElse { RestoreOutcome.Failed(it.message?.takeIf { m -> m.isNotBlank() } ?: words(R.string.data_backup_cant_restore, "couldn't restore")) }
         }
         return RestoreResult(out)
     }
 
     /** The text to put in place for [p]: the snapshot's, with the device's keys kept and private mode left on. */
     private fun merge(p: Part, text: String, current: File): String {
-        val backup = runCatching { json.parseToJsonElement(text) }.getOrElse { throw IllegalStateException("couldn't read ${p.file}") }
+        val backup = runCatching { json.parseToJsonElement(text) }.getOrElse { throw IllegalStateException(words(R.string.data_backup_cant_read, "couldn't read ${p.file}", p.file)) }
         val keys = secrets[p.file]
         val guard = p.file == "home.json"
         if (p.fields == null && keys == null && !guard) return text
         val now = runCatching { json.parseToJsonElement(current.readText()).jsonObject }.getOrNull() ?: JsonObject(emptyMap())
-        val from = backup as? JsonObject ?: throw IllegalStateException("couldn't read ${p.file}")
+        val from = backup as? JsonObject ?: throw IllegalStateException(words(R.string.data_backup_cant_read, "couldn't read ${p.file}", p.file))
         val result = LinkedHashMap<String, JsonElement>()
         if (p.fields != null) {
             // Only these fields come from the snapshot; a field it doesn't have was at its default then.
@@ -304,7 +315,7 @@ object BackupFiles {
         tmp.writeText(text)
         if (!tmp.renameTo(file)) {
             tmp.delete()
-            error("Couldn't write ${file.name}")
+            error(words(R.string.data_backup_cant_write, "Couldn't write ${file.name}", file.name))
         }
     }
 
@@ -314,21 +325,23 @@ object BackupFiles {
     fun summary(m: BackupManifest, now: Long = System.currentTimeMillis()): String {
         val c = m.counts
         return listOfNotNull(
-            count(c.games, "game"), count(c.tiles, "tile"), count(c.folders, "folder"), count(c.widgets, "widget"), ago(m.created, now),
+            count(c.games, R.plurals.data_backup_count_games, "game"), count(c.tiles, R.plurals.data_backup_count_tiles, "tile"),
+            count(c.folders, R.plurals.data_backup_count_folders, "folder"), count(c.widgets, R.plurals.data_backup_count_widgets, "widget"), ago(m.created, now),
         ).joinToString(" · ")
     }
 
-    private fun count(n: Int, word: String): String? = if (n <= 0) null else "%,d %s".format(Locale.US, n, if (n == 1) word else word + "s")
+    private fun count(n: Int, @androidx.annotation.PluralsRes id: Int, word: String): String? = if (n <= 0) null else
+        "%,d".format(if (Tx.ready) Lang.locale else Locale.US, n).let { num -> words(id, n, "$num ${if (n == 1) word else word + "s"}", num) }
 
     /** "just now", "5 minutes ago", "3 hours ago", "yesterday", "2 days ago", then the date. */
     fun ago(then: Long, now: Long): String {
         val min = (now - then).coerceAtLeast(0) / 60_000
         return when {
-            min < 1 -> "just now"
-            min < 60 -> if (min == 1L) "a minute ago" else "$min minutes ago"
-            min < 24 * 60 -> (min / 60).let { if (it == 1L) "an hour ago" else "$it hours ago" }
-            min < 2 * 24 * 60 -> "yesterday"
-            min < 30 * 24 * 60 -> "${min / (24 * 60)} days ago"
+            min < 1 -> words(R.string.data_backup_just_now, "just now")
+            min < 60 -> if (min == 1L) words(R.string.data_backup_minute_ago, "a minute ago") else words(R.plurals.data_backup_minutes_ago, min.toInt(), "$min minutes ago", min.toInt())
+            min < 24 * 60 -> (min / 60).let { if (it == 1L) words(R.string.data_backup_hour_ago, "an hour ago") else words(R.plurals.data_backup_hours_ago, it.toInt(), "$it hours ago", it.toInt()) }
+            min < 2 * 24 * 60 -> words(R.string.data_backup_yesterday, "yesterday")
+            min < 30 * 24 * 60 -> (min / (24 * 60)).toInt().let { words(R.plurals.data_backup_days_ago, it, "$it days ago", it) }
             else -> SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(Date(then))
         }
     }
@@ -449,3 +462,14 @@ object Backups {
         }
     }
 }
+
+/**
+ * Text in Tandem's language; [english] (the same words) where there are no resources, as in BackupTest, which
+ * checks the file work here without Android.
+ */
+private fun words(@androidx.annotation.StringRes id: Int, english: String, vararg args: Any): String =
+    if (Tx.ready) Tx.s(id, *args) else english
+
+/** A count's words, the same way. */
+private fun words(@androidx.annotation.PluralsRes id: Int, n: Int, english: String, vararg args: Any): String =
+    if (Tx.ready) Tx.p(id, n, *args) else english

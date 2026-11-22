@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Platform
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 
 /**
  * The bottom screen for a highlighted system when the theme pack has a hero for it: the hero fading into the
@@ -49,8 +50,8 @@ fun SystemHeroDetails(platform: Platform, games: List<Game>, played: Long, hints
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
         ) {
             Text(platform.name, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Text(plural(games.size, "game"), style = MaterialTheme.typography.titleMedium, color = color, textAlign = TextAlign.Center, maxLines = 1)
-            if (played >= 60) Text("${formatPlayLong(played)} played in here", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
+            Text(Tx.p(R.plurals.library_games, games.size), style = MaterialTheme.typography.titleMedium, color = color, textAlign = TextAlign.Center, maxLines = 1)
+            if (played >= 60) Text(Tx.s(R.string.library_system_played_in, formatPlayLong(played)), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
             Spacer(Modifier.height(14.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) { hints() }
         }

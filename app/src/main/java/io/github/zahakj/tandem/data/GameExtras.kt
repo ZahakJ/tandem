@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.data
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.serialization.Serializable
 import java.io.File
 
@@ -25,11 +27,13 @@ data class LogoFit(val scale: Int = 100, val anchor: String = AUTO, val dx: Int 
         const val NUDGE_SHARE = 0.025f
         const val AUTO = "auto"
 
+        /** Each anchor's id (saved) and its name's resource (shown). */
         val ANCHORS = listOf(
-            AUTO to "Auto", "left" to "Left", "center" to "Centre", "right" to "Right", "top" to "Top", "bottom" to "Bottom",
+            AUTO to R.string.data_logo_auto, "left" to R.string.data_logo_left, "center" to R.string.data_logo_centre,
+            "right" to R.string.data_logo_right, "top" to R.string.data_logo_top, "bottom" to R.string.data_logo_bottom,
         )
 
-        fun label(anchor: String): String = ANCHORS.firstOrNull { it.first == anchor }?.second ?: "Auto"
+        fun label(anchor: String): String = Tx.s(ANCHORS.firstOrNull { it.first == anchor }?.second ?: R.string.data_logo_auto)
 
         /** The anchor after [anchor], for a row that cycles. */
         fun nextAnchor(anchor: String): String = ANCHORS[(ANCHORS.indexOfFirst { it.first == anchor } + 1) % ANCHORS.size].first

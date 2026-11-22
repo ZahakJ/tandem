@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,7 +19,7 @@ object AppScreen {
     const val BOTTOM = "bottom"
     val ALL = listOf(AUTO, TOP, BOTTOM)
 
-    fun label(screen: String): String = when (screen) { TOP -> "Top"; BOTTOM -> "Bottom"; else -> "Auto" }
+    fun label(screen: String): String = Tx.s(when (screen) { TOP -> R.string.data_screen_top; BOTTOM -> R.string.data_screen_bottom; else -> R.string.data_screen_auto })
 
     /** The next choice after [screen], for a row that A steps through. */
     fun next(screen: String): String = ALL[(ALL.indexOf(screen).coerceAtLeast(0) + 1) % ALL.size]

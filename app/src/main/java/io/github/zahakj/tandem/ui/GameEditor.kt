@@ -49,7 +49,10 @@ import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
 import io.github.zahakj.tandem.FileChecks
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Candidate
 import io.github.zahakj.tandem.data.Gallery
 import io.github.zahakj.tandem.data.GameMeta
@@ -81,7 +84,7 @@ object GameEditor {
     fun edit(g: Game) { FocusMemory.forget("edit:${g.key}"); artFor = null; editing = g }
 
     fun chooseArt(g: Game) {
-        if (Privacy.isHidden(g)) { Toasts.show("Hidden games are never sent anywhere. Unhide it to look for art"); return }
+        if (Privacy.isHidden(g)) { Toasts.show(Tx.s(R.string.library_edit_hidden_art)); return }
         editing = null; artFor = g
     }
 
@@ -106,29 +109,36 @@ fun GameEditorOverlays() {
 // ---------------------------------------------------------------------------------------------------------------
 // Edit details
 
+/** A field to edit. Its words are resource ids, read when shown (FIELDS lives as long as the app). */
 private class Field(
     val id: String,
-    val label: String,
+    @androidx.annotation.StringRes private val labelRes: Int,
     val show: (GameMeta, Game) -> String?,
-    val prompt: String,
+    @androidx.annotation.StringRes private val promptRes: Int,
     val initial: (GameMeta, Game) -> String,
     /** Applies typed text; null text means "cleared". Returns null when the text isn't valid. */
     val apply: (GameMeta, String?) -> GameMeta?,
-)
+) {
+    val label: String get() = Tx.s(labelRes)
+    val prompt: String get() = Tx.s(promptRes)
+}
 
 private val FIELDS = listOf(
-    Field(MetaField.TITLE, "Title", { m, g -> m.title ?: g.fileTitle }, "Title", { _, g -> g.title }, { m, v -> m.copy(title = v) }),
-    Field(MetaField.YEAR, "Year", { m, _ -> m.year?.toString() }, "Release year (e.g. 1998)", { m, _ -> m.year?.toString().orEmpty() }) { m, v ->
+    Field(MetaField.TITLE, R.string.library_edit_title_field, { m, g -> m.title ?: g.fileTitle }, R.string.library_edit_title_field, { _, g -> g.title }, { m, v -> m.copy(title = v) }),
+    Field(MetaField.YEAR, R.string.library_edit_year, { m, _ -> m.year?.toString() }, R.string.library_edit_year_ask, { m, _ -> m.year?.toString().orEmpty() }) { m, v ->
         if (v == null) m.copy(year = null) else v.toIntOrNull()?.takeIf { it in 1950..2100 }?.let { m.copy(year = it) }
     },
-    Field(MetaField.GENRES, "Genres", { m, _ -> m.genres.joinToString(", ").ifEmpty { null } }, "Genres, separated by commas", { m, _ -> m.genres.joinToString(", ") }) { m, v ->
+    Field(MetaField.GENRES, R.string.library_edit_genres, { m, _ -> m.genres.joinToString(", ").ifEmpty { null } }, R.string.library_edit_genres_ask, { m, _ -> m.genres.joinToString(", ") }) { m, v ->
         m.copy(genres = v?.split(',', ';')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty())
     },
-    Field(MetaField.DEVELOPER, "Developer", { m, _ -> m.developer }, "Developer", { m, _ -> m.developer.orEmpty() }, { m, v -> m.copy(developer = v) }),
-    Field(MetaField.PUBLISHER, "Publisher", { m, _ -> m.publisher }, "Publisher", { m, _ -> m.publisher.orEmpty() }, { m, v -> m.copy(publisher = v) }),
-    Field(MetaField.PLAYERS, "Players", { m, _ -> m.players }, "Players (e.g. 1-4)", { m, _ -> m.players.orEmpty() }, { m, v -> m.copy(players = v) }),
-    Field(MetaField.DESCRIPTION, "Description", { m, _ -> m.description }, "Description", { m, _ -> m.description.orEmpty() }, { m, v -> m.copy(description = v) }),
+    Field(MetaField.DEVELOPER, R.string.library_edit_developer, { m, _ -> m.developer }, R.string.library_edit_developer, { m, _ -> m.developer.orEmpty() }, { m, v -> m.copy(developer = v) }),
+    Field(MetaField.PUBLISHER, R.string.library_edit_publisher, { m, _ -> m.publisher }, R.string.library_edit_publisher, { m, _ -> m.publisher.orEmpty() }, { m, v -> m.copy(publisher = v) }),
+    Field(MetaField.PLAYERS, R.string.library_edit_players, { m, _ -> m.players }, R.string.library_edit_players_ask, { m, _ -> m.players.orEmpty() }, { m, v -> m.copy(players = v) }),
+    Field(MetaField.DESCRIPTION, R.string.library_edit_description, { m, _ -> m.description }, R.string.library_edit_description, { m, _ -> m.description.orEmpty() }, { m, v -> m.copy(description = v) }),
 )
+
+/** A kind of art on the chooser's tabs, short ("Hero", not "Hero / fanart"). */
+private fun chooserLabel(k: MediaKind): String = if (k == MediaKind.Hero) Tx.s(R.string.scrape_tile_hero) else k.label
 
 @Composable
 private fun EditDetailsPanel() {
@@ -144,7 +154,7 @@ private fun EditDetailsPanel() {
             val id = focused?.takeIf { f -> FIELDS.any { it.id == f } } ?: return@collect
             val locked = id in game.meta.lockedFields
             Store.update(game.key) { it.copy(lockedFields = if (locked) it.lockedFields - id else it.lockedFields + id) }
-            Toasts.show(if (locked) "Unlocked: scraping may update it" else "Locked: scraping won't touch it")
+            Toasts.show(Tx.s(if (locked) R.string.library_edit_unlocked else R.string.library_edit_locked))
         }
     }
     OverlayPanel(game != null, onClose = { if (page != EditPage.Main) { page = EditPage.Main; Nav.focusTick++ } else GameEditor.close() }) {
@@ -160,7 +170,7 @@ private fun EditDetailsPanel() {
                 Box(Modifier.size(48.dp).clip(RoundedCornerShape(12.dp))) { GameArt(g) }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    val heading = when (page) { EditPage.Main -> "Edit details"; EditPage.Apps -> "Companion app"; EditPage.Achievements -> "RetroAchievements match" }
+                    val heading = Tx.s(when (page) { EditPage.Main -> R.string.library_edit_heading; EditPage.Apps -> R.string.library_edit_heading_app; EditPage.Achievements -> R.string.library_edit_heading_ra })
                     Text(heading, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text("${g.platform.name} · ${g.file.name}", style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
@@ -190,13 +200,13 @@ private fun EditDetailsPanel() {
                                 val text = typed.trim().ifEmpty { null }
                                 val updated = f.apply(Store.get(g.key), text)
                                 if (updated == null) {
-                                    Toasts.show("That doesn't look right for ${f.label.lowercase()}")
+                                    Toasts.show(Tx.s(R.string.library_edit_invalid, f.label.lowercase(Lang.locale)))
                                 } else {
                                     // Typing something locks it; clearing it hands the field back to scraping.
                                     Store.update(g.key) { cur ->
                                         (f.apply(cur, text) ?: cur).copy(lockedFields = if (text == null) cur.lockedFields - f.id else cur.lockedFields + f.id)
                                     }
-                                    Toasts.show(if (text == null) "${f.label} cleared" else "${f.label} saved and locked")
+                                    Toasts.show(Tx.s(if (text == null) R.string.library_edit_cleared else R.string.library_edit_saved, f.label))
                                 }
                             }
                         },
@@ -204,11 +214,11 @@ private fun EditDetailsPanel() {
                         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text(f.label, Modifier.width(96.dp), style = MaterialTheme.typography.titleSmall)
                             Text(
-                                value ?: "Not set", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
+                                value ?: Tx.s(R.string.library_edit_not_set), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium,
                                 color = if (value == null) Palette.Muted else Palette.Text,
                                 maxLines = if (f.id == MetaField.DESCRIPTION) 2 else 1, overflow = TextOverflow.Ellipsis,
                             )
-                            if (locked) { Spacer(Modifier.width(8.dp)); Pill("Locked", Palette.Butter) }
+                            if (locked) { Spacer(Modifier.width(8.dp)); Pill(Tx.s(R.string.library_edit_locked_pill), Palette.Butter) }
                         }
                     }
                 }
@@ -219,21 +229,21 @@ private fun EditDetailsPanel() {
                         onFocus = { focused = "unlock"; FocusMemory.remember(routeKey, "unlock") },
                         onClick = {
                             Store.update(g.key) { it.copy(lockedFields = emptySet()) }
-                            Toasts.show("Everything unlocked")
+                            Toasts.show(Tx.s(R.string.library_edit_everything_unlocked))
                         },
                     ) {
                         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text("Unlock everything", Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
-                            Pill("${meta.lockedFields.size} locked", Palette.Lavender)
+                            Text(Tx.s(R.string.library_edit_unlock_all), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                            Pill(Tx.p(R.plurals.library_edit_locked_count, meta.lockedFields.size), Palette.Lavender)
                         }
                     }
                 }
                 gameExtrasItems(g, routeKey, focus = { focused = it }, open = { page = it })
             }
             Row(Modifier.padding(horizontal = 34.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                ButtonHint("A", if (page == EditPage.Main) "Edit" else "Choose", Palette.Mint)
-                if (page == EditPage.Main) ButtonHint("X", "Lock / unlock", Palette.Butter)
-                ButtonHint("B", if (page == EditPage.Main) "Close" else "Back", Palette.Peach)
+                ButtonHint("A", Tx.s(if (page == EditPage.Main) R.string.library_edit_hint_edit else R.string.common_choose), Palette.Mint)
+                if (page == EditPage.Main) ButtonHint("X", Tx.s(R.string.library_edit_hint_lock), Palette.Butter)
+                ButtonHint("B", Tx.s(if (page == EditPage.Main) R.string.common_close else R.string.common_back), Palette.Peach)
             }
         }
     }
@@ -284,7 +294,7 @@ private fun ArtChooserPanel() {
                 }.getOrDefault(false)
             }
             saving = false
-            Toasts.show(if (ok) "${k.label} updated from your picture" else "Couldn't use that picture")
+            Toasts.show(if (ok) Tx.s(R.string.library_art_from_picture, k.label) else Tx.s(R.string.library_art_bad_picture))
         }
     }
 
@@ -305,14 +315,14 @@ private fun ArtChooserPanel() {
                     contentAlignment = Alignment.Center,
                 ) {
                     if (current != null) AsyncImage(current, null, Modifier.fillMaxSize(), contentScale = if (kind == MediaKind.Logo) ContentScale.Fit else ContentScale.Crop)
-                    else Text("None", style = MaterialTheme.typography.labelMedium, color = Palette.Muted)
+                    else Text(Tx.s(R.string.library_art_none), style = MaterialTheme.typography.labelMedium, color = Palette.Muted)
                 }
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Choose artwork", style = MaterialTheme.typography.titleLarge)
-                    Text(g.title + if (locked) " · your pick is locked" else "", style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(Tx.s(R.string.library_art_title), style = MaterialTheme.typography.titleLarge)
+                    Text(if (locked) Tx.s(R.string.library_art_locked, g.title) else g.title, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
-                if (saving) Pill("Saving…", Palette.Butter, Modifier.padding(end = 10.dp))
+                if (saving) Pill(Tx.s(R.string.library_art_saving), Palette.Butter, Modifier.padding(end = 10.dp))
                 ButtonHint("L1", "", Palette.Lavender)
                 Spacer(Modifier.width(6.dp))
                 CHOOSER_KINDS.forEach { k ->
@@ -322,7 +332,7 @@ private fun ArtChooserPanel() {
                         onClick = { kind = k },
                     ) {
                         Box(Modifier.fillMaxSize().background(if (on) Palette.Lavender else Palette.CardHigh).padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
-                            Text(k.label.substringBefore(" /"), style = MaterialTheme.typography.titleSmall, color = if (on) Palette.NightDeep else Palette.Text)
+                            Text(chooserLabel(k), style = MaterialTheme.typography.titleSmall, color = if (on) Palette.NightDeep else Palette.Text)
                         }
                     }
                 }
@@ -342,14 +352,14 @@ private fun ArtChooserPanel() {
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 item(key = "device:${kind.name}") {
-                    ActionTile("＋", "From this device", kind, Palette.Mint, Modifier.remembersFocus(routeKey, "device", true)) {
+                    ActionTile("＋", Tx.s(R.string.library_art_from_device), kind, Palette.Mint, Modifier.remembersFocus(routeKey, "device", true)) {
                         if (!saving) pick.launch("image/*")
                     }
                 }
                 if (locked) item(key = "auto:${kind.name}") {
-                    ActionTile("↺", "Back to automatic", kind, Palette.Lavender, Modifier) {
+                    ActionTile("↺", Tx.s(R.string.library_art_automatic), kind, Palette.Lavender, Modifier) {
                         Scraper.resetArt(g, kind)
-                        Toasts.show("${kind.label} is automatic again")
+                        Toasts.show(Tx.s(R.string.library_art_automatic_again, kind.label))
                     }
                 }
                 items(candidates, key = { "${kind.name}:${it.url}" }) { c ->
@@ -359,7 +369,7 @@ private fun ArtChooserPanel() {
                         scope.launch {
                             val ok = Scraper.use(g, c)
                             saving = false
-                            Toasts.show(if (ok) "${c.kind.label} updated ✨" else "Couldn't download that one, try another")
+                            Toasts.show(if (ok) Tx.s(R.string.library_art_updated, c.kind.label) else Tx.s(R.string.library_art_download_failed))
                         }
                     }
                 }
@@ -370,18 +380,18 @@ private fun ArtChooserPanel() {
                     gal == null -> Row(verticalAlignment = Alignment.CenterVertically) {
                         Pip(30.dp, mood = 1)
                         Spacer(Modifier.width(8.dp))
-                        Text("Looking through every source…", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+                        Text(Tx.s(R.string.library_art_looking), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
                     }
                     candidates.isEmpty() -> Row(verticalAlignment = Alignment.CenterVertically) {
                         Pip(30.dp, mood = 2)
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            (gal.notes.firstOrNull()?.let { "$it. " } ?: "") + "Nothing found online for this one. Adding a ScreenScraper or SteamGridDB account in Settings finds more.",
+                            gal.notes.firstOrNull()?.let { Tx.s(R.string.library_art_nothing_note, it) } ?: Tx.s(R.string.library_art_nothing),
                             style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 2,
                         )
                     }
                     else -> Text(
-                        "${candidates.size} found" + (gal.notes.takeIf { it.isNotEmpty() }?.joinToString(prefix = " · ") ?: "") + " · your pick is locked so scraping keeps it",
+                        Tx.s(R.string.library_art_found_line, Tx.p(R.plurals.library_art_found, candidates.size) + (gal.notes.takeIf { it.isNotEmpty() }?.joinToString(prefix = " · ") ?: "")),
                         style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -440,16 +450,15 @@ private fun ClearMediaPanel() {
             horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Pip(64.dp, mood = 2)
-            Text("Clear downloaded media?", style = MaterialTheme.typography.titleLarge)
+            Text(Tx.s(R.string.library_clear_title), style = MaterialTheme.typography.titleLarge)
             Text(
-                "This deletes the $n pictures and clips Tandem downloaded (${"%.1f".format(bytes / 1048576.0)} MB). " +
-                    "Art you picked by hand and art from other apps stays.",
+                Tx.p(R.plurals.library_clear_text, n, n, String.format(Lang.locale, "%.1f", bytes / 1048576.0)),
                 style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(6.dp))
             Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                PillButton("Keep them", Palette.Mint, Modifier.remembersFocus("clearmedia", "keep", true)) { if (!busy) GameEditor.close() }
-                HoldButton(if (busy) "Clearing…" else "Clear", Palette.Peach, Modifier.remembersFocus("clearmedia", "clear", false), hint = holdHint("clear them")) {
+                PillButton(Tx.s(R.string.library_clear_keep), Palette.Mint, Modifier.remembersFocus("clearmedia", "keep", true)) { if (!busy) GameEditor.close() }
+                HoldButton(Tx.s(if (busy) R.string.library_clear_clearing else R.string.library_clear_clear), Palette.Peach, Modifier.remembersFocus("clearmedia", "clear", false), hint = holdHint(Tx.s(R.string.library_clear_hold))) {
                     if (busy) return@HoldButton
                     busy = true
                     scope.launch {
@@ -457,7 +466,7 @@ private fun ClearMediaPanel() {
                         busy = false
                         GameEditor.clearCount++
                         GameEditor.close()
-                        Toasts.show("Cleared $count files, ${"%.1f".format(freed / 1048576.0)} MB freed")
+                        Toasts.show(Tx.p(R.plurals.library_clear_done, count, count, String.format(Lang.locale, "%.1f", freed / 1048576.0)))
                     }
                 }
             }

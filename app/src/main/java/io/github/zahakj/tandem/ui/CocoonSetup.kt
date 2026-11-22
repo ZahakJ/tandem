@@ -9,6 +9,8 @@ import androidx.compose.ui.platform.LocalContext
 import io.github.zahakj.tandem.Emulators
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.LaunchSpec
 import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.RunningGames
@@ -156,7 +158,7 @@ object CocoonSetup {
         // A folder: a tile key (system, collection) or a Tandem folder made from it, or null.
         fun folder(id: Long, depth: Int): Any? {
             val f = folders[id] ?: return null
-            val name = f.optString("name").ifBlank { "Folder" }
+            val name = f.optString("name").ifBlank { Tx.s(R.string.library_cocoon_folder) }
             val color = FolderTints[f.optString("icon_type").lowercase()] ?: 0
             if (f.optBoolean("is_smart_folder")) {
                 val query = str(f, "smart_folder_query")
@@ -286,16 +288,16 @@ object CocoonSetup {
             }.getOrNull()
             busy = false
             if (plan == null) {
-                if (!auto) Toasts.show("I couldn't find a Cocoon backup in ROMs/backups. Make one in Cocoon's settings first")
+                if (!auto) Toasts.show(Tx.s(R.string.library_cocoon_no_backup))
                 done(false)
                 return@launch
             }
-            io.github.zahakj.tandem.data.Backups.auto(ctx, "Cocoon import")
+            io.github.zahakj.tandem.data.Backups.auto(ctx, Tx.s(R.string.library_cocoon_backup_reason))
             apply(ctx, plan)
-            if (auto) Toasts.show("Your Cocoon setup is here ✨ Settings › Play & system › Your data › Undo Cocoon import puts it back")
+            if (auto) Toasts.show(Tx.s(R.string.library_cocoon_here))
             else Toasts.show(
-                "Your Cocoon home and theme are in ✨" + if (plan.skipped.isNotEmpty()) " (no twin for ${plan.skipped.joinToString(", ")})" else "",
-                6000, Toasts.Action("Undo") { GridUndoUi.undo() },
+                if (plan.skipped.isNotEmpty()) Tx.s(R.string.library_cocoon_in_skipped, plan.skipped.joinToString(", ")) else Tx.s(R.string.library_cocoon_in),
+                6000, Toasts.Action(Tx.s(R.string.library_cocoon_undo)) { GridUndoUi.undo() },
             )
             done(true)
         }
@@ -330,7 +332,7 @@ object CocoonSetup {
             else CocoonUndo(IconGridStore.config, Store.settings.look, HomeStore.settings.dock, HomeStore.settings.showDock, grid),
         )
         // One step the grid's Undo can take back (the arrangement; Undo Cocoon import in Settings puts the look back too).
-        IconGridStore.undoable("Imported the Cocoon home") { IconGridStore.update { grid } }
+        IconGridStore.undoable(Tx.s(R.string.library_cocoon_undo_label)) { IconGridStore.update { grid } }
 
         val prefs = plan.prefs
         val pack = packFor(prefs)
@@ -366,7 +368,7 @@ object CocoonSetup {
 
     /** Puts back the arrangement, look and dock from before the first import. */
     fun undo(ctx: Context) {
-        val u = readUndo(ctx) ?: run { Toasts.show("There's no Cocoon import to undo"); return }
+        val u = readUndo(ctx) ?: run { Toasts.show(Tx.s(R.string.library_cocoon_nothing_to_undo)); return }
         IconGridStore.update { u.grid }
         Store.updateSettings { it.copy(look = u.look) }
         HomeStore.updateSettings { it.copy(dock = u.dock, showDock = u.showDock) }
@@ -374,7 +376,7 @@ object CocoonSetup {
         canUndo = false
         (ctx as? MainActivity)?.applyScreenRoles()
         Nav.focusTick++
-        Toasts.show("Back to how it was before the Cocoon import")
+        Toasts.show(Tx.s(R.string.library_cocoon_undone))
     }
 
     private fun readUndo(ctx: Context): CocoonUndo? =
@@ -394,21 +396,21 @@ fun cocoonSetupSettings(): SettingSection {
     val rows = buildList {
         add(
             SettingRow(
-                "Import my Cocoon setup",
-                when { CocoonSetup.busy -> "Reading…"; backup == null -> "No backup found"; else -> "Backup of " + CocoonSetup.backupDate(backup) },
+                Tx.s(R.string.library_cocoon_import),
+                when { CocoonSetup.busy -> Tx.s(R.string.library_cocoon_reading); backup == null -> Tx.s(R.string.library_cocoon_no_backup_value); else -> Tx.s(R.string.library_cocoon_backup_of, CocoonSetup.backupDate(backup)) },
                 Palette.Sky, Glyph.Download,
-                "Your Cocoon home in Tandem: the same tiles and folders in the same order, Cocoon's rows, and your theme pack with both video wallpapers, icons, heroes and logos. Reads the newest backup in ROMs/backups. You can undo it.",
+                Tx.s(R.string.library_cocoon_import_help),
                 keywords = "cocoon backup import layout grid dock theme restore bring over",
-                action = "Import",
+                action = Tx.s(R.string.library_cocoon_import_action), en = "Import my Cocoon setup",
             ) { CocoonSetup.run(ctx) },
         )
         if (CocoonSetup.canUndo) add(
             SettingRow(
-                "Undo Cocoon import", "", Palette.Peach, Glyph.Restore,
-                "Puts back the home grid, look and dock you had before importing your Cocoon setup.",
-                keywords = "cocoon undo revert", action = "Undo",
+                Tx.s(R.string.library_cocoon_undo_row), "", Palette.Peach, Glyph.Restore,
+                Tx.s(R.string.library_cocoon_undo_help),
+                keywords = "cocoon undo revert", action = Tx.s(R.string.library_cocoon_undo), en = "Undo Cocoon import",
             ) { CocoonSetup.undo(ctx) },
         )
     }
-    return SettingSection("From Cocoon", rows, Glyph.Download)
+    return SettingSection(en = "From Cocoon", title = Tx.s(R.string.library_cocoon_title), rows = rows, icon = Glyph.Download)
 }

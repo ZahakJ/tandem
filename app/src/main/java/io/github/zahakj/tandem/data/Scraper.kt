@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -221,7 +223,7 @@ object Scraper {
             } catch (e: Exception) {
                 rethrowCancel(e)
                 android.util.Log.w("Tandem", "Scrape stopped", e)
-                withContext(Dispatchers.Main) { r.notes = r.notes + "Something went wrong, so I stopped early"; r.state = RunState.Done }
+                withContext(Dispatchers.Main) { r.notes = r.notes + Tx.s(R.string.scrape_note_stopped_early); r.state = RunState.Done }
             }
         }
         return true
@@ -304,32 +306,32 @@ object Scraper {
                 var ss: ScreenScraper? = null
                 var ssThreads = 1
                 if (ScrapeSource.ScreenScraper in src && cfg.hasScreenScraper) {
-                    p.current = "Signing in to ScreenScraper…"
+                    p.current = Tx.s(R.string.scrape_now_ss_sign_in)
                     try {
                         val s = ScreenScraper(cfg)
                         ssThreads = runInterruptible { s.signIn() }
                         ss = s
                         ScrapeConfig.update { it.copy(ssVerifiedUser = it.ssUser, ssThreads = ssThreads) }
                     } catch (e: SourceDown) {
-                        p.note(e.message ?: "ScreenScraper is unavailable")
+                        p.note(e.message ?: Tx.s(R.string.scrape_note_ss_unavailable))
                     } catch (e: Exception) { rethrowCancel(e)
-                        p.note("Couldn't reach ScreenScraper, using the other sources")
+                        p.note(Tx.s(R.string.scrape_note_ss_unreachable))
                     }
                 }
                 var igdb: Igdb? = null
                 if (ScrapeSource.Igdb in src && cfg.hasIgdb) {
-                    p.current = "Signing in to IGDB…"
+                    p.current = Tx.s(R.string.scrape_now_igdb_sign_in)
                     try {
                         igdb = Igdb(cfg.igdbClientId, cfg.igdbSecret).also { runInterruptible { it.signIn() } }
                     } catch (e: SourceDown) {
-                        p.note(e.message ?: "IGDB is unavailable")
+                        p.note(e.message ?: Tx.s(R.string.scrape_note_igdb_unavailable))
                     } catch (e: Exception) { rethrowCancel(e)
-                        p.note("Couldn't reach IGDB, using the other sources")
+                        p.note(Tx.s(R.string.scrape_note_igdb_unreachable))
                     }
                 }
                 val launchBox = prepareLaunchBox(ctx, r, p, games)
                 if (o.types.isNotEmpty() && src.none { s -> o.types.any { it in s.details } }) {
-                    p.note("Details need LaunchBox, ScreenScraper or IGDB turned on")
+                    p.note(Tx.s(R.string.scrape_note_details_need))
                 }
                 val sources = RunSources(
                     order = src, options = o, libretro = libretro, ss = ss, ssThreads = ssThreads, launchBox = launchBox,
@@ -377,11 +379,11 @@ object Scraper {
         val info = LaunchBoxDb.info
         val refresh = info != null && info.stale && !LaunchBoxDb.metered(ctx)
         if (r.options.downloadLaunchBox || refresh) {
-            p.current = if (info == null) "Downloading the LaunchBox database…" else "Refreshing the LaunchBox database…"
+            p.current = Tx.s(if (info == null) R.string.scrape_now_lb_downloading else R.string.scrape_now_lb_refreshing)
             try {
                 runInterruptible {
                     LaunchBoxDb.download(LaunchBoxDb.wantedPlatforms() + wanted) { f ->
-                        p.current = "LaunchBox database: ${(f * 100).toInt()}%"
+                        p.current = Tx.s(R.string.scrape_now_lb_progress, (f * 100).toInt())
                         p.prep = f
                     }
                 }
@@ -389,30 +391,30 @@ object Scraper {
                 rethrowCancel(e)
                 if (e is java.io.InterruptedIOException) throw CancellationException("cancelled")
                 android.util.Log.w("Tandem", "LaunchBox download failed", e)
-                p.note(when {
-                    !LaunchBoxDb.online(ctx) -> "No internet connection: connect to Wi-Fi to download the LaunchBox database"
-                    LaunchBoxDb.info == null -> "Couldn't download the LaunchBox database"
-                    else -> "Couldn't refresh the LaunchBox database, using the one I have"
-                })
+                p.note(Tx.s(when {
+                    !LaunchBoxDb.online(ctx) -> R.string.scrape_note_lb_offline
+                    LaunchBoxDb.info == null -> R.string.scrape_note_lb_failed
+                    else -> R.string.scrape_note_lb_refresh_failed
+                }))
             } finally {
                 p.prep = null
             }
         }
         val index = LaunchBoxDb.index()
         if (index == null) {
-            p.note("LaunchBox needs its database: Settings › Library & art › Set up sources › LaunchBox")
+            p.note(Tx.s(R.string.scrape_note_lb_needs))
             return emptyMap()
         }
         if (wanted.any { !index.has(it) } && LaunchBoxDb.info?.platforms?.containsAll(wanted) != true) {
-            p.note("Some systems aren't in the LaunchBox download yet; download it again to add them")
+            p.note(Tx.s(R.string.scrape_note_lb_missing_systems))
         }
-        p.current = "Looking games up in LaunchBox…"
+        p.current = Tx.s(R.string.scrape_now_lb_looking)
         return try {
             runInterruptible { index.find(RunSources.launchBoxQueries(games)) }
         } catch (e: Exception) {
             rethrowCancel(e)
             android.util.Log.w("Tandem", "LaunchBox lookup failed", e)
-            p.note("Couldn't read the LaunchBox database")
+            p.note(Tx.s(R.string.scrape_note_lb_unreadable))
             emptyMap()
         }
     }
@@ -586,7 +588,7 @@ object Scraper {
 
     /** Every candidate picture from every configured source, for the art chooser. Never for hidden games. */
     suspend fun gallery(game: Game): Gallery = withContext(Dispatchers.IO) {
-        if (Privacy.isHidden(game)) return@withContext Gallery(emptyMap(), listOf("Hidden games are never sent anywhere"))
+        if (Privacy.isHidden(game)) return@withContext Gallery(emptyMap(), listOf(Tx.s(R.string.scrape_hidden_never_sent)))
         if (io.github.zahakj.tandem.NetGate.closed) return@withContext Gallery(emptyMap(), listOf(OFFLINE_NOTE))
         val ctx = appContext ?: return@withContext Gallery(emptyMap(), emptyList())
         val cfg = ScrapeConfig.settings
@@ -613,7 +615,7 @@ object Scraper {
             } catch (e: SourceDown) {
                 notes += e.message.orEmpty()
             } catch (e: Exception) { rethrowCancel(e)
-                notes += "Couldn't reach IGDB"
+                notes += Tx.s(R.string.scrape_note_igdb_short)
             }
         }
         if (ScrapeSource.ScreenScraper in on) {
@@ -623,7 +625,7 @@ object Scraper {
             } catch (e: SourceDown) {
                 notes += e.message.orEmpty()
             } catch (e: Exception) { rethrowCancel(e)
-                notes += "Couldn't reach ScreenScraper"
+                notes += Tx.s(R.string.scrape_note_ss_short)
             }
         }
         val lr = Libretro(ctx.cacheDir)
@@ -641,7 +643,7 @@ object Scraper {
             } catch (e: SourceDown) {
                 notes += e.message.orEmpty()
             } catch (e: Exception) { rethrowCancel(e)
-                notes += "Couldn't reach SteamGridDB"
+                notes += Tx.s(R.string.scrape_note_sgdb_short)
             }
         }
         Gallery(out.mapValues { (_, v) -> v.distinctBy { it.url } }, notes)
@@ -701,6 +703,6 @@ object Scraper {
 
 /** Lets cancellation through when catching everything else. */
 /** What a scrape or artwork search says in private mode. */
-const val OFFLINE_NOTE = "Private mode keeps Tandem offline: no scraping or art lookups"
+val OFFLINE_NOTE: String get() = Tx.s(R.string.scrape_offline)
 
 internal fun rethrowCancel(e: Exception) { if (e is CancellationException) throw e }

@@ -58,7 +58,8 @@ import io.github.zahakj.tandem.GameCompanion
 import io.github.zahakj.tandem.LaunchSpec
 import io.github.zahakj.tandem.Library
 import io.github.zahakj.tandem.data.SystemPrefs
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -120,7 +121,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
             ShowSwitch(config.enabled, Modifier.focusAs("show")) {
                 SystemPrefs.updateSystem(p.id) { it.copy(enabled = !it.enabled) }
                 Sounds.toggle(!config.enabled)
-                Toasts.show(if (config.enabled) "${p.shortName} is hidden from your library. It waits under Turned off" else "${p.shortName} is back in your library")
+                Toasts.show(Tx.s(if (config.enabled) R.string.library_system_hidden else R.string.library_system_back, p.shortName))
                 onChanged()
             }
         }
@@ -132,11 +133,11 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
         ) {
             if (!p.isApps) {
                 Section(
-                    "Emulators", Palette.Butter,
+                    Tx.s(R.string.library_system_emulators), Palette.Butter,
                     when {
-                        emus.isEmpty() -> "None listed for this system"
-                        default == null -> "None installed yet: A on one gets it"
-                        else -> "A makes one the default"
+                        emus.isEmpty() -> Tx.s(R.string.library_system_emulators_none)
+                        default == null -> Tx.s(R.string.library_system_emulators_none_installed)
+                        else -> Tx.s(R.string.library_system_emulators_default)
                     },
                 ) {
                     CardGrid(columns) { cell ->
@@ -144,13 +145,13 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                             key(i) {
                                 EmulatorCard(spec, installed = spec in players, isDefault = spec == default, Modifier.width(cell).focusAs("emu:$i")) {
                                     when {
-                                        spec == default -> Toasts.show("${spec.name} already plays ${p.shortName} games")
+                                        spec == default -> Toasts.show(Tx.s(R.string.library_system_already_plays, spec.name, p.shortName))
                                         spec in players -> {
                                             SystemPrefs.updateSystem(p.id) { it.copy(player = spec.name) }
                                             Sounds.confirm()
-                                            Toasts.show("${spec.name} now plays ${p.shortName} games")
+                                            Toasts.show(Tx.s(R.string.library_system_now_plays, spec.name, p.shortName))
                                         }
-                                        else -> if (!Emulators.openStore(ctx, spec)) Toasts.show("Couldn't open a store for ${spec.name}")
+                                        else -> if (!Emulators.openStore(ctx, spec)) Toasts.show(Tx.s(R.string.library_system_no_store, spec.name))
                                     }
                                 }
                             }
@@ -160,7 +161,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
             }
             if (hasSecond) {
                 val single = SystemPrefs.data.singleScreen
-                Section("Start games on", Palette.Sky, if (single) "Single screen mode is on, so games stay on top for now" else "A game's own Start on (Y › More) wins") {
+                Section(Tx.s(R.string.library_system_start_on), Palette.Sky, Tx.s(if (single) R.string.library_system_start_single else R.string.library_system_start_note)) {
                     Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(Gap)) {
                         for (bottom in listOf(false, true)) {
                             ScreenCard(bottom, chosen = config.bottomScreen == bottom, Modifier.weight(1f).focusAs(if (bottom) "screen:bottom" else "screen:top")) {
@@ -172,7 +173,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                         }
                     }
                 }
-                Section("Bottom screen while playing", Palette.Lavender, "For this system's games; a game can still have its own") {
+                Section(Tx.s(R.string.library_system_bottom), Palette.Lavender, Tx.s(R.string.library_system_bottom_note)) {
                     Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(Gap)) {
                         modes.forEach { (m, label) ->
                             ModeCard(m, label, chosen = m == mode, Modifier.weight(1f).focusAs("mode:$m")) {
@@ -186,22 +187,22 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                 }
             }
             if (!p.isApps) {
-                Section("Folders", Palette.Mint, "Where ${p.shortName} games are read from, besides your game folders") {
+                Section(Tx.s(R.string.library_system_folders), Palette.Mint, Tx.s(R.string.library_system_folders_note, p.shortName)) {
                     CardGrid(columns) { cell ->
                         present.forEach { folder ->
                             key(folder) {
                                 val dir = Library.folder(folder)
                                 val added = folder in config.folders
                                 FolderCard(
-                                    dir.name, shortPath(dir), if (added) "Added · A takes it out" else "Built in", if (added) Palette.Peach else Palette.Mint,
+                                    dir.name, shortPath(dir), Tx.s(if (added) R.string.library_system_folder_added else R.string.library_system_folder_built_in), if (added) Palette.Peach else Palette.Mint,
                                     Glyph.Folder, Modifier.width(cell).focusAs("f:$folder"),
                                 ) {
                                     if (!added) {
-                                        Toasts.show("Games in ${shortPath(dir)} show up here")
+                                        Toasts.show(Tx.s(R.string.library_system_folder_games, shortPath(dir)))
                                     } else {
                                         SystemPrefs.updateSystem(p.id) { it.copy(folders = it.folders - folder) }
                                         onChanged()
-                                        Undo.offer("Took out ${dir.name}") {
+                                        Undo.offer(Tx.s(R.string.library_system_folder_took_out, dir.name)) {
                                             SystemPrefs.updateSystem(p.id) { it.copy(folders = (it.folders + folder).distinct()) }
                                             onChanged()
                                         }
@@ -213,12 +214,12 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                             // The usual names that aren't there, as one card: listing each made a wall of "Not there yet".
                             val names = absent.map { Library.folder(it).name }
                             FolderCard(
-                                "Also looks in", names.joinToString(", "), "Not there yet", Palette.Muted, Glyph.Search,
+                                Tx.s(R.string.library_system_also_looks), names.joinToString(", "), Tx.s(R.string.library_system_not_there), Palette.Muted, Glyph.Search,
                                 Modifier.width(cell).focusAs("absent"),
-                            ) { Toasts.show("Make ${shortPath(Library.folder(absent.first()))} and put ${p.shortName} games in it") }
+                            ) { Toasts.show(Tx.s(R.string.library_system_make_folder, shortPath(Library.folder(absent.first())), p.shortName)) }
                         }
                         FolderCard(
-                            "Add a folder…", "Just this system's games", "Pick", Palette.Mint, Glyph.Plus,
+                            Tx.s(R.string.library_system_add_folder), Tx.s(R.string.library_system_add_folder_detail), Tx.s(R.string.library_system_add_folder_pick), Palette.Mint, Glyph.Plus,
                             Modifier.width(cell).focusAs("add"), onClick = onAddFolder,
                         )
                     }
@@ -272,7 +273,7 @@ private fun Hero(e: SystemEntry, modifier: Modifier, end: @Composable () -> Unit
             Column(Modifier.weight(1f)) {
                 Text(p.name, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    listOfNotNull(e.maker, plural(e.games.size, "game")).joinToString("  ·  "),
+                    listOfNotNull(e.maker, Tx.p(R.plurals.library_games, e.games.size)).joinToString("  ·  "),
                     style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -288,8 +289,8 @@ private fun ShowSwitch(on: Boolean, modifier: Modifier, onClick: () -> Unit) {
     FocusCard(modifier.width(210.dp).height(58.dp), glow = Palette.Mint, shape = RoundedCornerShape(18.dp), lifts = false, onClick = onClick) {
         Row(Modifier.fillMaxSize().background(Palette.NightDeep.copy(alpha = 0.55f)).padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
-                Text("Show in library", style = MaterialTheme.typography.titleSmall, maxLines = 1)
-                Text(if (on) "On" else "Off · under Turned off", style = MaterialTheme.typography.labelMedium, color = if (on) Palette.Mint else Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(Tx.s(R.string.library_system_show), style = MaterialTheme.typography.titleSmall, maxLines = 1)
+                Text(if (on) Tx.s(R.string.common_on) else Tx.s(R.string.library_system_show_off), style = MaterialTheme.typography.labelMedium, color = if (on) Palette.Mint else Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.width(8.dp))
             Toggle(on, Palette.Mint)
@@ -326,9 +327,9 @@ private fun ScreenCard(bottom: Boolean, chosen: Boolean, modifier: Modifier, onC
             TwoScreens(lit = if (bottom) 1 else 0, color = if (chosen) color else Palette.Muted, Modifier.size(width = 40.dp, height = 46.dp))
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(if (bottom) "Bottom screen" else "Top screen", style = MaterialTheme.typography.titleSmall, maxLines = 1)
+                Text(Tx.s(if (bottom) R.string.library_bottom_screen else R.string.library_top_screen), style = MaterialTheme.typography.titleSmall, maxLines = 1)
                 Text(
-                    if (bottom) "Handy for touch games" else "The big screen",
+                    Tx.s(if (bottom) R.string.library_system_bottom_detail else R.string.library_system_top_detail),
                     style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -359,11 +360,11 @@ private fun TwoScreens(lit: Int, color: Color, modifier: Modifier) {
 private fun ModeCard(mode: String, label: String, chosen: Boolean, modifier: Modifier, onClick: () -> Unit) {
     val color = Palette.Lavender
     val (glyph, note) = when (mode) {
-        GameCompanion.ART -> Glyph.Image to "Its art and details"
-        GameCompanion.TANDEM -> Glyph.Sparkle to "Clock and quick toggles"
-        GameCompanion.DARK -> Glyph.Battery to "Black until tapped"
-        GameCompanion.DECK -> Glyph.Text to "Keyboard and trackpad"
-        else -> Glyph.Screens to "The emulator uses both"
+        GameCompanion.ART -> Glyph.Image to Tx.s(R.string.library_system_mode_art)
+        GameCompanion.TANDEM -> Glyph.Sparkle to Tx.s(R.string.library_system_mode_tandem)
+        GameCompanion.DARK -> Glyph.Battery to Tx.s(R.string.library_system_mode_dark)
+        GameCompanion.DECK -> Glyph.Text to Tx.s(R.string.library_system_mode_deck)
+        else -> Glyph.Screens to Tx.s(R.string.library_system_mode_emulator)
     }
     ChoiceCard(color, chosen, modifier.height(104.dp), onClick) {
         Column(Modifier.fillMaxSize().padding(10.dp)) {
@@ -397,10 +398,10 @@ private fun EmulatorCard(spec: LaunchSpec, installed: Boolean, isDefault: Boolea
                 Text(spec.name, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
                     when {
-                        isDefault -> "Default"
+                        isDefault -> Tx.s(R.string.library_system_emu_default)
                         // Quiet until highlighted: a loud "Make default" on every card drowned out the one in use.
-                        installed -> if (focused) "A: make default" else "Installed"
-                        else -> "Get it" + (spec.origin?.let { " · $it" } ?: "")
+                        installed -> Tx.s(if (focused) R.string.library_system_emu_make_default else R.string.library_system_emu_installed)
+                        else -> spec.origin?.let { Tx.s(R.string.library_system_emu_get_from, it) } ?: Tx.s(R.string.library_system_emu_get)
                     },
                     style = MaterialTheme.typography.labelMedium, color = if (installed && !isDefault && !focused) Palette.Muted else color,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,

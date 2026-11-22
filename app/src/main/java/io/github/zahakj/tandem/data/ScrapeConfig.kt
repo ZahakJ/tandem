@@ -1,9 +1,12 @@
 package io.github.zahakj.tandem.data
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -15,21 +18,23 @@ import java.util.concurrent.Executors
  * A kind of downloaded picture or clip. [dir] is the folder under ROMs/downloaded_media/<system>/ (the layout
  * [io.github.zahakj.tandem.ArtIndex] reads), [maxPx] the longest side it is scaled down to before saving.
  */
-enum class MediaKind(val field: String, val dir: String, val label: String, val maxPx: Int) {
-    Box("box", "icon", "Box art", 640),
-    Hero("hero", "hero", "Hero / fanart", 1280),
-    Logo("logo", "logo", "Logo", 800),
-    Title("titleScreen", "screenshot_title", "Title screen", 960),
-    Gameplay("screenshot", "screenshot_gameplay", "Gameplay screenshot", 960),
-    Video("video", "videos", "Video snap", 0),
+enum class MediaKind(val field: String, val dir: String, @StringRes private val labelRes: Int, val maxPx: Int) {
+    Box("box", "icon", R.string.scrape_kind_box, 640),
+    Hero("hero", "hero", R.string.scrape_kind_hero, 1280),
+    Logo("logo", "logo", R.string.scrape_kind_logo, 800),
+    Title("titleScreen", "screenshot_title", R.string.scrape_kind_title, 960),
+    Gameplay("screenshot", "screenshot_gameplay", R.string.scrape_kind_gameplay, 960),
+    Video("video", "videos", R.string.scrape_kind_video, 0),
 
     /**
      * A scan of the real retail box's front, and of its spine, for the Shelf view only. Each has its own folder (the
      * names Skraper and Batocera use), so the box art the rest of Tandem shows (the "icon" folder) is never replaced.
      * Neither is kept in the game's details: the Shelf finds them in their folders.
      */
-    Front("boxFront", "box2dfront", "Physical box front", 900),
-    Spine("boxSpine", "box2dside", "Box spine", 900);
+    Front("boxFront", "box2dfront", R.string.scrape_kind_front, 900),
+    Spine("boxSpine", "box2dside", R.string.scrape_kind_spine, 900);
+
+    val label: String get() = Tx.s(labelRes)
 
     /** True for the physical-box kinds, which only the Shelf view uses. */
     val packaging: Boolean get() = this == Front || this == Spine
@@ -60,15 +65,18 @@ object MetaField {
 }
 
 /** The kinds of game details a scrape can fill, each made of one or more [MetaField]s. */
-enum class MetaType(val label: String, val detail: String, val fields: List<String>) {
-    Name("Name", "The game's proper name instead of the file name", listOf(MetaField.TITLE)),
-    Description("Description", "A few paragraphs about the game", listOf(MetaField.DESCRIPTION)),
-    Genres("Genres", "Sorts games into the Genres lists", listOf(MetaField.GENRES)),
-    Credits("Developer & publisher", "Who made it and who released it", listOf(MetaField.DEVELOPER, MetaField.PUBLISHER)),
-    Year("Release year", "For sorting by year", listOf(MetaField.YEAR)),
-    Players("Players", "How many can play at once", listOf(MetaField.PLAYERS)),
-    Rating("Rating", "Community rating, as stars", listOf(MetaField.RATING)),
-    TimeToBeat("Time to beat", "Main story, extras and 100% (HowLongToBeat)", listOf(MetaField.TIME));
+enum class MetaType(@StringRes private val labelRes: Int, @StringRes private val detailRes: Int, val fields: List<String>) {
+    Name(R.string.scrape_meta_name, R.string.scrape_meta_name_detail, listOf(MetaField.TITLE)),
+    Description(R.string.scrape_meta_description, R.string.scrape_meta_description_detail, listOf(MetaField.DESCRIPTION)),
+    Genres(R.string.scrape_meta_genres, R.string.scrape_meta_genres_detail, listOf(MetaField.GENRES)),
+    Credits(R.string.scrape_meta_credits, R.string.scrape_meta_credits_detail, listOf(MetaField.DEVELOPER, MetaField.PUBLISHER)),
+    Year(R.string.scrape_meta_year, R.string.scrape_meta_year_detail, listOf(MetaField.YEAR)),
+    Players(R.string.scrape_meta_players, R.string.scrape_meta_players_detail, listOf(MetaField.PLAYERS)),
+    Rating(R.string.scrape_meta_rating, R.string.scrape_meta_rating_detail, listOf(MetaField.RATING)),
+    TimeToBeat(R.string.scrape_meta_time, R.string.scrape_meta_time_detail, listOf(MetaField.TIME));
+
+    val label: String get() = Tx.s(labelRes)
+    val detail: String get() = Tx.s(detailRes)
 
     /** True when the game has nothing for this type yet. */
     fun missing(m: GameMeta): Boolean = when (this) {
@@ -83,11 +91,14 @@ enum class MetaType(val label: String, val detail: String, val fields: List<Stri
     }
 }
 
-enum class ScrapeMode(val label: String, val detail: String) {
+enum class ScrapeMode(@StringRes private val labelRes: Int, @StringRes private val detailRes: Int) {
     // "Missing" and "Refresh" are what older scraping.json files stored, so they keep their meaning.
-    Basics("Missing basics", "Only games without box art or a description, and only those two"),
-    Missing("Missing selected", "Fill in what you picked that a game doesn't have yet"),
-    Refresh("Force all", "Fetch everything you picked again and replace it"),
+    Basics(R.string.scrape_mode_basics, R.string.scrape_mode_basics_detail),
+    Missing(R.string.scrape_mode_missing, R.string.scrape_mode_missing_detail),
+    Refresh(R.string.scrape_mode_refresh, R.string.scrape_mode_refresh_detail);
+
+    val label: String get() = Tx.s(labelRes)
+    val detail: String get() = Tx.s(detailRes)
 }
 
 /**
@@ -95,36 +106,41 @@ enum class ScrapeMode(val label: String, val detail: String) {
  * next one only for what the ones before couldn't fill.
  */
 enum class ScrapeSource(
-    val label: String,
-    /** One line on what it gives. */
-    val gives: String,
+    /** Its name, a brand that stays as it is in every language; null for libretro's, which has words in it. */
+    private val brand: String?,
+    @StringRes private val givesRes: Int,
     val kinds: Set<MediaKind>,
     val details: Set<MetaType>,
 ) {
     ScreenScraper(
-        "ScreenScraper", "Matches the file itself: box art, logos, fanart, screenshots, videos and details",
+        "ScreenScraper", R.string.scrape_source_ss_gives,
         MediaKind.entries.toSet(), MetaType.entries.toSet() - MetaType.TimeToBeat,
     ),
     LaunchBox(
-        "LaunchBox", "A big free games database, kept on this device: box art, logos, fanart, screenshots and details",
+        "LaunchBox", R.string.scrape_source_lb_gives,
         MediaKind.entries.toSet(), MetaType.entries.toSet() - MetaType.TimeToBeat,
     ),
     Igdb(
-        "IGDB", "Twitch's games database: covers, artwork, screenshots and details, great for newer games",
+        "IGDB", R.string.scrape_source_igdb_gives,
         setOf(MediaKind.Box, MediaKind.Hero, MediaKind.Gameplay), MetaType.entries.toSet() - MetaType.TimeToBeat,
     ),
     SteamGridDb(
-        "SteamGridDB", "Community-made covers, heroes and logos, the best for PC and Switch games",
+        "SteamGridDB", R.string.scrape_source_sgdb_gives,
         setOf(MediaKind.Box, MediaKind.Hero, MediaKind.Logo), emptySet(),
     ),
     Libretro(
-        "libretro thumbnails", "Box art (real box scans), title screens and screenshots for classic systems",
+        null, R.string.scrape_source_libretro_gives,
         setOf(MediaKind.Box, MediaKind.Front, MediaKind.Title, MediaKind.Gameplay), emptySet(),
     ),
     Hltb(
-        "HowLongToBeat", "How long a game takes: main story, main + extras and 100%",
+        "HowLongToBeat", R.string.scrape_source_hltb_gives,
         emptySet(), setOf(MetaType.TimeToBeat),
     );
+
+    val label: String get() = brand ?: Tx.s(R.string.scrape_source_libretro)
+
+    /** One line on what it gives. */
+    val gives: String get() = Tx.s(givesRes)
 
     companion object {
         val defaultOrder = listOf(ScreenScraper, LaunchBox, Igdb, SteamGridDb, Libretro, Hltb)
@@ -132,8 +148,11 @@ enum class ScrapeSource(
 }
 
 /** Region codes as ScreenScraper uses them, with the No-Intro tag libretro file names carry. */
-enum class Region(val code: String, val label: String, val tag: String) {
-    US("us", "USA", "USA"), EU("eu", "Europe", "Europe"), JP("jp", "Japan", "Japan"), World("wor", "World", "World");
+enum class Region(val code: String, @StringRes private val labelRes: Int, val tag: String) {
+    US("us", R.string.scrape_region_us, "USA"), EU("eu", R.string.scrape_region_eu, "Europe"),
+    JP("jp", R.string.scrape_region_jp, "Japan"), World("wor", R.string.scrape_region_world, "World");
+
+    val label: String get() = Tx.s(labelRes)
 
     companion object {
         fun of(code: String) = entries.firstOrNull { it.code == code } ?: US
@@ -146,6 +165,7 @@ enum class Region(val code: String, val label: String, val tag: String) {
     }
 }
 
+/** Languages for descriptions, each named in itself (never translated, so anyone finds their own). */
 val LANGUAGES = linkedMapOf(
     "en" to "English", "fr" to "Français", "de" to "Deutsch", "es" to "Español", "it" to "Italiano",
     "pt" to "Português", "nl" to "Nederlands", "ja" to "日本語",

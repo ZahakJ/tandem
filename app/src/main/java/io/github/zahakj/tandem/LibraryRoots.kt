@@ -76,7 +76,7 @@ object LibraryRoots {
         val p = tidy(path)
         val name = p.substringAfterLast('/').ifEmpty { p }
         val where = where(p, internal)
-        return if (where == null) name else "$name · $where"
+        return if (where == null) name else "$name · $where" // tx-ok: a name and a place
     }
 
     /** "SD card 1234-ABCD" for a path on a removable volume; null on internal storage. */
@@ -85,7 +85,7 @@ object LibraryRoots {
         val i = tidy(internal)
         if (p == i || p.startsWith("$i/")) return null
         val volume = Regex("^/storage/([^/]+)").find(p)?.groupValues?.get(1) ?: return null
-        return if (volume == "emulated" || volume == "self") null else "SD card $volume"
+        return if (volume == "emulated" || volume == "self") null else words(R.string.library_roots_sd_card, "SD card $volume", volume)
     }
 
     /** The path as people read it: without the storage prefix ("Games/n3ds", "1234-ABCD/Games"). */
@@ -93,7 +93,7 @@ object LibraryRoots {
         val p = tidy(path)
         val i = tidy(internal)
         return when {
-            p == i -> "Internal storage"
+            p == i -> words(R.string.library_roots_internal, "Internal storage")
             p.startsWith("$i/") -> p.substring(i.length + 1)
             p.startsWith("/storage/") -> p.removePrefix("/storage/")
             else -> p
@@ -139,4 +139,11 @@ object LibraryRoots {
         if (gameRoot == null || tidy(gameRoot).equals(tidy(main), ignoreCase = true)) listOf(main) else listOf(gameRoot, main)
 
     private fun tidy(path: String): String = path.replace('\\', '/').trimEnd('/')
+
+    /**
+     * Text in Tandem's language; [english] (the same words) where there are no resources, as in the unit tests that
+     * check the rules here.
+     */
+    private fun words(@androidx.annotation.StringRes id: Int, english: String, vararg args: Any): String =
+        if (Tx.ready) Tx.s(id, *args) else english
 }

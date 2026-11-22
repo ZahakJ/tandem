@@ -47,7 +47,9 @@ import io.github.zahakj.tandem.LaunchDisplay
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Selected
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.AppPrefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,7 +75,7 @@ fun AppsScreen() {
     var query by remember { mutableStateOf("") }
     var gamesOnly by remember { mutableStateOf(false) }
     var focused by remember { mutableStateOf<AndroidApps.App?>(null) }
-    val search = { TextEntry.ask("Search apps", query, onChange = { query = it.trim() }) { query = it.trim() } }
+    val search = { TextEntry.ask(Tx.s(R.string.library_apps_search), query, onChange = { query = it.trim() }) { query = it.trim() } }
 
     LaunchedEffect(Unit) {
         Buttons.events.collect { b ->
@@ -90,7 +92,7 @@ fun AppsScreen() {
     if (list == null) {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Pip(80.dp, mood = 1)
-            Text("Finding your apps…", style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
+            Text(Tx.s(R.string.library_apps_finding), style = MaterialTheme.typography.titleMedium, color = Palette.Muted)
         }
         return
     }
@@ -107,15 +109,15 @@ fun AppsScreen() {
         val header: () -> Unit = { focused = null; Selection.current = Selected.Home }
         val matching = remember(list, q) { list.filter { q.isEmpty() || it.label.lowercase().contains(q) } }
         Row(Modifier.fillMaxWidth().padding(start = 22.dp, end = 22.dp, top = 6.dp).focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            SearchField(query, "Search apps", Modifier.weight(1f).remembersFocus(routeKey, "search", false), onFocus = header, onClick = search)
-            FilterTab("All apps", matching.size, Palette.Sky, !gamesOnly, Modifier.remembersFocus(routeKey, "filter", false), onFocus = header) { gamesOnly = false }
-            FilterTab("Games", matching.count { it.isGame }, Palette.Butter, gamesOnly, Modifier.remembersFocus(routeKey, "games", false), onFocus = header) { gamesOnly = true }
+            SearchField(query, Tx.s(R.string.library_apps_search), Modifier.weight(1f).remembersFocus(routeKey, "search", false), onFocus = header, onClick = search)
+            FilterTab(Tx.s(R.string.library_apps_all), matching.size, Palette.Sky, !gamesOnly, Modifier.remembersFocus(routeKey, "filter", false), onFocus = header) { gamesOnly = false }
+            FilterTab(Tx.s(R.string.library_apps_games), matching.count { it.isGame }, Palette.Butter, gamesOnly, Modifier.remembersFocus(routeKey, "games", false), onFocus = header) { gamesOnly = true }
         }
         if (shown.isEmpty()) {
             Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                 Pip(70.dp, mood = 2)
                 Text(
-                    if (query.isNotEmpty()) "No apps match \"$query\"" else if (gamesOnly) "No games marked yet. Switch to All apps and press Y on a game to add it" else "No apps found",
+                    if (query.isNotEmpty()) Tx.s(R.string.library_apps_no_match, query) else Tx.s(if (gamesOnly) R.string.library_apps_no_games else R.string.library_apps_none),
                     Modifier.padding(horizontal = 24.dp), style = MaterialTheme.typography.titleMedium, textAlign = androidx.compose.ui.text.style.TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -141,7 +143,7 @@ fun AppsScreen() {
                         onFocus = {
                             focused = app
                             FocusMemory.remember(routeKey, gridRoute)
-                            Selection.current = Selected.Group(app.label, if (app.isGame) "Android game" else "Android app", emptyList(), Palette.forName(app.packageName))
+                            Selection.current = Selected.Group(app.label, Tx.s(if (app.isGame) R.string.library_apps_game else R.string.library_apps_app), emptyList(), Palette.forName(app.packageName))
                         },
                         onClick = { open(app) },
                     )
@@ -165,7 +167,7 @@ private fun AppTile(app: AndroidApps.App, modifier: Modifier, onFocus: () -> Uni
             Text(app.label, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }
         if (app.isGame) {
-            Box(Modifier.align(Alignment.TopEnd).padding(6.dp)) { ArtBadge("Game", Palette.Butter, Glyph.Gamepad) }
+            Box(Modifier.align(Alignment.TopEnd).padding(6.dp)) { ArtBadge(Tx.s(R.string.library_apps_badge_game), Palette.Butter, Glyph.Gamepad) }
         }
     }
 }

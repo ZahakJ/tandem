@@ -114,7 +114,7 @@ class GameDeleteTest {
         val rom = file(elsewhere, "Mario.sfc")
         val p = plan(rom)
         assertFalse(p.ok)
-        assertNotNull(p.refused)
+        assertNotNull(p.refusal)
         // Going up out of the root by "..".
         assertFalse(plan(File(roms, "../Downloads/Mario.sfc")).ok)
     }
@@ -151,7 +151,7 @@ class GameDeleteTest {
         val otherFile = file(other, "other.bin")
         Files.createSymbolicLink(File(game, "shared").toPath(), other.toPath())
         val p = plan(game)
-        assertTrue(p.refused, p.ok)
+        assertTrue(p.refusal?.toString(), p.ok)
         val r = DeletePlanner.delete(p.files, listOf(roms))
         assertTrue(r.failed.isEmpty())
         assertFalse(game.exists())
@@ -187,6 +187,6 @@ class GameDeleteTest {
         file(pc, "Hades.desktop")
         val p = DeletePlanner.gameFiles(shortcut, listOf(roms), listOf(pc), emptyList())
         assertEquals(setOf("windows/Hades.pcgame"), names(p))
-        assertNull(p.refused)
+        assertNull(p.refusal)
     }
 }

@@ -2,6 +2,9 @@ package io.github.zahakj.tandem.data
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateMapOf
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,13 +35,13 @@ object SourceTests {
             val r = try {
                 withTimeout(45_000) { runInterruptible { test(app, s) } }
             } catch (e: SourceDown) {
-                TestResult(false, e.message ?: "It said no")
+                TestResult(false, e.message ?: Tx.s(R.string.scrape_test_said_no))
             } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
-                TestResult(false, "No answer in time. Check the Wi-Fi and try again")
+                TestResult(false, Tx.s(R.string.scrape_test_timeout))
             } catch (e: HttpError) {
-                TestResult(false, "It answered with an error (${e.code})")
+                TestResult(false, Tx.s(R.string.scrape_test_http, e.code))
             } catch (e: Exception) {
-                TestResult(false, "Couldn't reach it. Check the Wi-Fi and try again")
+                TestResult(false, Tx.s(R.string.scrape_test_unreachable))
             }
             results[s] = r
             running.remove(s)
@@ -51,43 +54,48 @@ object SourceTests {
         val cfg = ScrapeConfig.settings
         return when (s) {
             ScrapeSource.LaunchBox -> {
-                val info = LaunchBoxDb.info ?: return TestResult(false, "Not downloaded yet: press Download")
-                val index = LaunchBoxDb.index() ?: return TestResult(false, "Not downloaded yet: press Download")
+                val info = LaunchBoxDb.info ?: return TestResult(false, Tx.s(R.string.scrape_test_lb_not_downloaded))
+                val index = LaunchBoxDb.index() ?: return TestResult(false, Tx.s(R.string.scrape_test_lb_not_downloaded))
                 val platform = "Nintendo Switch".takeIf { index.has(it) } ?: info.platforms.firstOrNull { index.has(it) }
-                    ?: return TestResult(false, "The download has none of your systems; download it again")
+                    ?: return TestResult(false, Tx.s(R.string.scrape_test_lb_no_systems))
                 if (platform == "Nintendo Switch") {
                     val g = index.find(listOf(LbQuery("t", platform, listOf(GAME))))["t"]
-                        ?: return TestResult(false, "Couldn't find $GAME in the download")
-                    TestResult(true, "Found ${g.name} (${g.year ?: "?"}) with ${g.images.size} pictures, on this device")
+                        ?: return TestResult(false, Tx.s(R.string.scrape_test_lb_not_found, GAME))
+                    TestResult(true, Tx.p(R.plurals.scrape_test_lb_found, g.images.size, g.name, g.year?.toString() ?: "?", g.images.size))
                 } else {
-                    TestResult(true, "${"%,d".format(info.games)} games for your systems, on this device")
+                    TestResult(true, Tx.p(R.plurals.scrape_test_lb_games, info.games, String.format(Lang.locale, "%,d", info.games)))
                 }
             }
             ScrapeSource.ScreenScraper -> {
-                if (!cfg.hasScreenScraper) return TestResult(false, "Needs a developer ID and developer password")
+                if (!cfg.hasScreenScraper) return TestResult(false, Tx.s(R.string.scrape_test_ss_needs))
                 val ss = ScreenScraper(cfg)
                 ss.signIn()
-                val g = ss.findByTitle(GAME, 225, cfg.languagePref, cfg.regionPref) ?: return TestResult(false, "Signed in, but the search found nothing")
-                TestResult(true, "Found ${g.name ?: GAME}" + if (cfg.ssUser.isNotBlank()) ", signed in as ${cfg.ssUser}" else "")
+                val g = ss.findByTitle(GAME, 225, cfg.languagePref, cfg.regionPref) ?: return TestResult(false, Tx.s(R.string.scrape_test_nothing_signed_in))
+                TestResult(true, if (cfg.ssUser.isNotBlank()) Tx.s(R.string.scrape_test_found_as, g.name ?: GAME, cfg.ssUser) else Tx.s(R.string.scrape_test_found, g.name ?: GAME))
             }
             ScrapeSource.Igdb -> {
-                if (!cfg.hasIgdb) return TestResult(false, "Needs a Twitch client ID and client secret")
-                val g = Igdb(cfg.igdbClientId, cfg.igdbSecret).search(GAME, 130) ?: return TestResult(false, "Signed in, but the search found nothing")
-                TestResult(true, "Found ${g.name}${g.year?.let { " ($it)" } ?: ""} with ${g.screenshots.size + g.artworks.size + (if (g.cover != null) 1 else 0)} pictures")
+                if (!cfg.hasIgdb) return TestResult(false, Tx.s(R.string.scrape_test_igdb_needs))
+                val g = Igdb(cfg.igdbClientId, cfg.igdbSecret).search(GAME, 130) ?: return TestResult(false, Tx.s(R.string.scrape_test_nothing_signed_in))
+                val pictures = g.screenshots.size + g.artworks.size + (if (g.cover != null) 1 else 0)
+                TestResult(
+                    true,
+                    g.year?.let { Tx.p(R.plurals.scrape_test_igdb_found_year, pictures, g.name, it.toString(), pictures) }
+                        ?: Tx.p(R.plurals.scrape_test_igdb_found, pictures, g.name, pictures),
+                )
             }
             ScrapeSource.SteamGridDb -> {
-                if (!cfg.hasSteamGridDb) return TestResult(false, "Needs an API key")
-                val (id, name) = SteamGridDb(cfg.sgdbKey).find(GAME) ?: return TestResult(false, "The key works, but the search found nothing")
+                if (!cfg.hasSteamGridDb) return TestResult(false, Tx.s(R.string.scrape_test_sgdb_needs))
+                val (id, name) = SteamGridDb(cfg.sgdbKey).find(GAME) ?: return TestResult(false, Tx.s(R.string.scrape_test_sgdb_nothing))
                 val heroes = SteamGridDb(cfg.sgdbKey).candidates(id, MediaKind.Hero).size
-                TestResult(true, "Found $name with $heroes heroes")
+                TestResult(true, Tx.p(R.plurals.scrape_test_sgdb_found, heroes, name, heroes))
             }
             ScrapeSource.Libretro -> {
                 val ok = Libretro(ctx.cacheDir).listed("Nintendo - Super Nintendo Entertainment System", MediaKind.Box, "Super Mario World (USA)")
-                if (ok) TestResult(true, "Found Super Mario World's box art") else TestResult(false, "Couldn't read the thumbnail list")
+                if (ok) TestResult(true, Tx.s(R.string.scrape_test_libretro_found)) else TestResult(false, Tx.s(R.string.scrape_test_libretro_failed))
             }
             ScrapeSource.Hltb -> {
-                val g = Hltb().search(GAME) ?: return TestResult(false, "The search found nothing")
-                TestResult(true, "${g.name}: ${TimeToBeat.hours(g.time.main)} main story, ${TimeToBeat.hours(g.time.complete)} for 100%")
+                val g = Hltb().search(GAME) ?: return TestResult(false, Tx.s(R.string.scrape_test_nothing))
+                TestResult(true, Tx.s(R.string.scrape_test_hltb_found, g.name, TimeToBeat.hours(g.time.main), TimeToBeat.hours(g.time.complete)))
             }
         }
     }

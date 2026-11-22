@@ -39,6 +39,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.LaunchBoxDb
 import io.github.zahakj.tandem.data.ScrapeConfig
 import io.github.zahakj.tandem.data.ScrapeSettings
@@ -87,23 +90,28 @@ object ArtSetup {
 
     /** Asks, then downloads the LaunchBox database in the background for every system the user has. */
     fun downloadLaunchBox(ctx: Context) {
-        if (LaunchBoxDb.progress != null) { Toasts.show("Already downloading"); return }
+        if (LaunchBoxDb.progress != null) { Toasts.show(Tx.s(R.string.scrape_lb_already)); return }
         val platforms = LaunchBoxDb.wantedPlatforms()
-        if (platforms.isEmpty()) { Toasts.show("None of your systems are in LaunchBox's database"); return }
+        if (platforms.isEmpty()) { Toasts.show(Tx.s(R.string.scrape_lb_none_of_yours)); return }
         val metered = LaunchBoxDb.metered(ctx)
         Confirm.ask(
-            "Download LaunchBox's database?",
-            "About ${LaunchBoxDb.APPROX_MB} MB" + (if (metered) ", and you're on a metered connection: Wi-Fi is better" else "") +
-                ". Tandem keeps only your ${platforms.size} systems and looks games up on this device.",
-            "Download",
+            Tx.s(R.string.scrape_lb_download_title),
+            Tx.p(
+                if (metered) R.plurals.scrape_lb_download_text_metered else R.plurals.scrape_lb_download_text,
+                platforms.size, LaunchBoxDb.APPROX_MB, platforms.size,
+            ),
+            Tx.s(R.string.scrape_lb_download),
         ) {
-            Toasts.show("Downloading LaunchBox's database…")
+            Toasts.show(Tx.s(R.string.scrape_lb_downloading))
             scope.launch {
                 val ok = withContext(Dispatchers.IO) {
                     runCatching { LaunchBoxDb.download(platforms) }.onFailure { android.util.Log.w("Tandem", "LaunchBox", it) }.isSuccess
                 }
                 SourceTests.forget(ScrapeSource.LaunchBox)
-                Toasts.show(if (ok) "LaunchBox is ready: ${"%,d".format(LaunchBoxDb.info?.games ?: 0)} games ✨" else "Couldn't download LaunchBox's database. Try again on Wi-Fi")
+                Toasts.show(
+                    if (ok) Tx.s(R.string.scrape_lb_ready, String.format(Lang.locale, "%,d", LaunchBoxDb.info?.games ?: 0))
+                    else Tx.s(R.string.scrape_lb_failed),
+                )
             }
         }
     }
@@ -112,60 +120,63 @@ object ArtSetup {
 private const val WIZARD = "artsetup"
 private const val SHEET = "artsetup:sheet"
 
-/** How to set a source up, in plain words. [numbered] steps are done in order; otherwise they are notes. */
-class SourceGuide(val account: String, val steps: List<String>, val sends: String, val numbered: Boolean = true)
+/**
+ * How to set a source up, in plain words. [numbered] steps are done in order; otherwise they are notes. [free]: it
+ * needs no account.
+ */
+class SourceGuide(val account: String, val steps: List<String>, val sends: String, val numbered: Boolean = true, val free: Boolean = false)
 
 fun guideFor(s: ScrapeSource): SourceGuide = when (s) {
     ScrapeSource.LaunchBox -> SourceGuide(
-        "No account needed",
+        Tx.s(R.string.scrape_guide_no_account),
         listOf(
-            "Tandem downloads LaunchBox's free games database once (about ${LaunchBoxDb.APPROX_MB} MB, Wi-Fi recommended) and keeps just your systems.",
-            "Games are looked up on this device. It refreshes once a month, when you scrape on Wi-Fi.",
+            Tx.s(R.string.scrape_guide_lb_1, LaunchBoxDb.APPROX_MB),
+            Tx.s(R.string.scrape_guide_lb_2),
         ),
-        "Nothing about your games. Pictures come from images.launchbox-app.com.",
-        numbered = false,
+        Tx.s(R.string.scrape_guide_lb_sends),
+        numbered = false, free = true,
     )
     ScrapeSource.ScreenScraper -> SourceGuide(
-        "Free account + developer ID",
+        Tx.s(R.string.scrape_guide_ss_account),
         listOf(
-            "Make a free account at screenscraper.fr.",
-            "Ask for API access on their forum (\"Demande d'accès à l'API\") to get a developer ID and password. Tandem can't ship one.",
-            "Enter both below. Your own login is optional but gives you a bigger daily quota.",
+            Tx.s(R.string.scrape_guide_ss_1),
+            Tx.s(R.string.scrape_guide_ss_2),
+            Tx.s(R.string.scrape_guide_ss_3),
         ),
-        "Your login, the developer ID, and each game's file name, size, system and checksum.",
+        Tx.s(R.string.scrape_guide_ss_sends),
     )
     ScrapeSource.Igdb -> SourceGuide(
-        "Free Twitch account",
+        Tx.s(R.string.scrape_guide_igdb_account),
         listOf(
-            "Sign in at dev.twitch.tv/console/apps (Twitch asks for two-factor sign-in first).",
-            "Register Your Application: any name, redirect URL http://localhost, category Application Integration, client type Confidential.",
-            "Copy the Client ID, press New Secret, and copy the Client Secret.",
+            Tx.s(R.string.scrape_guide_igdb_1),
+            Tx.s(R.string.scrape_guide_igdb_2),
+            Tx.s(R.string.scrape_guide_igdb_3),
         ),
-        "Your client ID and secret (to Twitch) and each game's title.",
+        Tx.s(R.string.scrape_guide_igdb_sends),
     )
     ScrapeSource.SteamGridDb -> SourceGuide(
-        "Free account",
+        Tx.s(R.string.scrape_guide_sgdb_account),
         listOf(
-            "Sign in at steamgriddb.com (with your Steam account).",
-            "Open steamgriddb.com/profile/preferences/api.",
-            "Generate an API key and enter it below.",
+            Tx.s(R.string.scrape_guide_sgdb_1),
+            Tx.s(R.string.scrape_guide_sgdb_2),
+            Tx.s(R.string.scrape_guide_sgdb_3),
         ),
-        "Your API key and each game's title.",
+        Tx.s(R.string.scrape_guide_sgdb_sends),
     )
     ScrapeSource.Libretro -> SourceGuide(
-        "No account needed",
-        listOf("Always ready. Great for classic systems; it has nothing for Switch, Wii U or PC games."),
-        "Picture names made from each game's file name or title.",
-        numbered = false,
+        Tx.s(R.string.scrape_guide_no_account),
+        listOf(Tx.s(R.string.scrape_guide_libretro_1)),
+        Tx.s(R.string.scrape_guide_libretro_sends),
+        numbered = false, free = true,
     )
     ScrapeSource.Hltb -> SourceGuide(
-        "No account needed",
+        Tx.s(R.string.scrape_guide_no_account),
         listOf(
-            "Uses the same search as the howlongtobeat.com website. It isn't an official API, so it can stop working when the site changes; scraping then just skips it.",
-            "Times show on the bottom screen.",
+            Tx.s(R.string.scrape_guide_hltb_1),
+            Tx.s(R.string.scrape_guide_hltb_2),
         ),
-        "Each game's title.",
-        numbered = false,
+        Tx.s(R.string.scrape_guide_hltb_sends),
+        numbered = false, free = true,
     )
 }
 
@@ -173,34 +184,38 @@ fun guideFor(s: ScrapeSource): SourceGuide = when (s) {
 fun sourceStatus(s: ScrapeSource, cfg: ScrapeSettings = ScrapeConfig.settings): Pair<String, Color> {
     val test = SourceTests.results[s]
     return when {
-        SourceTests.running[s] == true -> "Testing…" to Palette.Sky
-        s == ScrapeSource.LaunchBox && LaunchBoxDb.progress != null -> "Downloading ${((LaunchBoxDb.progress ?: 0f) * 100).toInt()}%" to Palette.Sky
-        !cfg.isOn(s) -> "Off" to Palette.Muted
-        !cfg.configured(s) -> "Needs a key" to Palette.Peach
-        s == ScrapeSource.LaunchBox && LaunchBoxDb.info == null -> "Not downloaded" to Palette.Butter
-        test != null && !test.ok -> "✗ Test failed" to Palette.Peach
-        test != null -> "✓ Works" to Palette.Mint
-        else -> "Ready" to Palette.Mint
+        SourceTests.running[s] == true -> Tx.s(R.string.scrape_status_testing) to Palette.Sky
+        s == ScrapeSource.LaunchBox && LaunchBoxDb.progress != null -> Tx.s(R.string.scrape_status_downloading, ((LaunchBoxDb.progress ?: 0f) * 100).toInt()) to Palette.Sky
+        !cfg.isOn(s) -> Tx.s(R.string.scrape_status_off) to Palette.Muted
+        !cfg.configured(s) -> Tx.s(R.string.scrape_status_needs_key) to Palette.Peach
+        s == ScrapeSource.LaunchBox && LaunchBoxDb.info == null -> Tx.s(R.string.scrape_status_not_downloaded) to Palette.Butter
+        test != null && !test.ok -> Tx.s(R.string.scrape_status_failed) to Palette.Peach
+        test != null -> Tx.s(R.string.scrape_status_works) to Palette.Mint
+        else -> Tx.s(R.string.scrape_status_ready) to Palette.Mint
     }
 }
 
 /** "Free key", "No account": what a source needs, shortest form. */
-private fun needs(s: ScrapeSource) = when (s) {
-    ScrapeSource.LaunchBox, ScrapeSource.Libretro, ScrapeSource.Hltb -> "No account"
-    ScrapeSource.ScreenScraper -> "Account + dev ID"
-    ScrapeSource.Igdb -> "Free Twitch key"
-    ScrapeSource.SteamGridDb -> "Free key"
-}
+private fun needs(s: ScrapeSource) = Tx.s(
+    when (s) {
+        ScrapeSource.LaunchBox, ScrapeSource.Libretro, ScrapeSource.Hltb -> R.string.scrape_needs_none
+        ScrapeSource.ScreenScraper -> R.string.scrape_needs_ss
+        ScrapeSource.Igdb -> R.string.scrape_needs_igdb
+        ScrapeSource.SteamGridDb -> R.string.scrape_needs_key
+    },
+)
 
 /** What a source gives, short enough for two lines of a tile (the whole of it is on its card). */
-private fun tagline(s: ScrapeSource) = when (s) {
-    ScrapeSource.ScreenScraper -> "Matches the file itself: art, videos and details"
-    ScrapeSource.LaunchBox -> "Box art, logos, fanart and details, kept on this device"
-    ScrapeSource.Igdb -> "Covers, artwork and details, great for newer games"
-    ScrapeSource.SteamGridDb -> "Community covers, heroes and logos for PC and Switch"
-    ScrapeSource.Libretro -> "Real box scans and title screens for classic systems"
-    ScrapeSource.Hltb -> "How long a game takes: story, extras and 100%"
-}
+private fun tagline(s: ScrapeSource) = Tx.s(
+    when (s) {
+        ScrapeSource.ScreenScraper -> R.string.scrape_tagline_ss
+        ScrapeSource.LaunchBox -> R.string.scrape_tagline_lb
+        ScrapeSource.Igdb -> R.string.scrape_tagline_igdb
+        ScrapeSource.SteamGridDb -> R.string.scrape_tagline_sgdb
+        ScrapeSource.Libretro -> R.string.scrape_tagline_libretro
+        ScrapeSource.Hltb -> R.string.scrape_tagline_hltb
+    },
+)
 
 /** Each source's icon, the same on its tile and its card. */
 private fun sourceGlyph(s: ScrapeSource) = when (s) {
@@ -317,9 +332,9 @@ fun ArtSetupOverlay() {
                     Pip(44.dp, mood = 1)
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        Text("Artwork & details setup", style = MaterialTheme.typography.titleLarge, maxLines = 1)
+                        Text(Tx.s(R.string.scrape_setup_title), style = MaterialTheme.typography.titleLarge, maxLines = 1)
                         Text(
-                            "Scraping asks these left to right, each only for what's still missing. LaunchBox and libretro need no account.",
+                            Tx.s(R.string.scrape_setup_intro),
                             style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                         )
                     }
@@ -328,12 +343,12 @@ fun ArtSetupOverlay() {
                 SourceGrid(order, columns, tileHeight, WIZARD, target, compact = tileHeight < 124.dp) { ArtSetup.highlighted = it }
                 Spacer(Modifier.height(14.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ButtonHint("A", "Set up", Palette.Mint)
+                    ButtonHint("A", Tx.s(R.string.scrape_setup_hint_set_up), Palette.Mint)
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
                         ButtonHint("L1", "", Palette.Lavender)
-                        ButtonHint("R1", "Ask earlier / later", Palette.Lavender)
+                        ButtonHint("R1", Tx.s(R.string.scrape_setup_hint_order), Palette.Lavender)
                     }
-                    ButtonHint("B", "Done", Palette.Lavender)
+                    ButtonHint("B", Tx.s(R.string.scrape_setup_hint_done), Palette.Lavender)
                 }
             }
         }
@@ -360,30 +375,30 @@ private fun SourceSheet(s: ScrapeSource, maxWidth: Dp, maxHeight: Dp) {
     fun keyChanged() = SourceTests.forget(s)
     val keys: List<KeyField> = when (s) {
         ScrapeSource.ScreenScraper -> listOf(
-            KeyField("devid", "Developer ID", cfg.ssDevId) {
-                TextEntry.ask("ScreenScraper developer ID", cfg.ssDevId) { v -> ScrapeConfig.update { it.copy(ssDevId = v.trim()) }; keyChanged() }
+            KeyField("devid", Tx.s(R.string.scrape_key_dev_id), cfg.ssDevId) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_dev_id_ask), cfg.ssDevId) { v -> ScrapeConfig.update { it.copy(ssDevId = v.trim()) }; keyChanged() }
             },
-            KeyField("devpw", "Dev password", cfg.ssDevPassword, secret = true) {
-                TextEntry.ask("ScreenScraper developer password", "", secret = true) { v -> ScrapeConfig.update { it.copy(ssDevPassword = v) }; keyChanged() }
+            KeyField("devpw", Tx.s(R.string.scrape_key_dev_pw), cfg.ssDevPassword, secret = true) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_dev_pw_ask), "", secret = true) { v -> ScrapeConfig.update { it.copy(ssDevPassword = v) }; keyChanged() }
             },
-            KeyField("user", "Your login", cfg.ssUser, optional = true) {
-                TextEntry.ask("Your ScreenScraper username (optional)", cfg.ssUser) { v -> ScrapeConfig.update { it.copy(ssUser = v.trim(), ssVerifiedUser = "") }; keyChanged() }
+            KeyField("user", Tx.s(R.string.scrape_key_login), cfg.ssUser, optional = true) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_login_ask), cfg.ssUser) { v -> ScrapeConfig.update { it.copy(ssUser = v.trim(), ssVerifiedUser = "") }; keyChanged() }
             },
-            KeyField("pw", "Your password", cfg.ssPassword, secret = true, optional = true) {
-                TextEntry.ask("Your ScreenScraper password", "", secret = true) { v -> ScrapeConfig.update { it.copy(ssPassword = v, ssVerifiedUser = "") }; keyChanged() }
+            KeyField("pw", Tx.s(R.string.scrape_key_pw), cfg.ssPassword, secret = true, optional = true) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_pw_ask), "", secret = true) { v -> ScrapeConfig.update { it.copy(ssPassword = v, ssVerifiedUser = "") }; keyChanged() }
             },
         )
         ScrapeSource.Igdb -> listOf(
-            KeyField("id", "Client ID", cfg.igdbClientId) {
-                TextEntry.ask("Twitch Client ID (dev.twitch.tv/console/apps)", cfg.igdbClientId) { v -> ScrapeConfig.update { it.copy(igdbClientId = v.trim()) }; keyChanged() }
+            KeyField("id", Tx.s(R.string.scrape_key_client_id), cfg.igdbClientId) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_client_id_ask), cfg.igdbClientId) { v -> ScrapeConfig.update { it.copy(igdbClientId = v.trim()) }; keyChanged() }
             },
-            KeyField("secret", "Client secret", cfg.igdbSecret, secret = true) {
-                TextEntry.ask("Twitch Client Secret", "", secret = true) { v -> ScrapeConfig.update { it.copy(igdbSecret = v.trim()) }; keyChanged() }
+            KeyField("secret", Tx.s(R.string.scrape_key_secret), cfg.igdbSecret, secret = true) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_secret_ask), "", secret = true) { v -> ScrapeConfig.update { it.copy(igdbSecret = v.trim()) }; keyChanged() }
             },
         )
         ScrapeSource.SteamGridDb -> listOf(
-            KeyField("key", "API key", cfg.sgdbKey, secret = true) {
-                TextEntry.ask("SteamGridDB API key (steamgriddb.com › Preferences › API)", "", secret = true) { v -> ScrapeConfig.update { it.copy(sgdbKey = v.trim()) }; keyChanged() }
+            KeyField("key", Tx.s(R.string.scrape_key_api), cfg.sgdbKey, secret = true) {
+                TextEntry.ask(Tx.s(R.string.scrape_key_api_ask), "", secret = true) { v -> ScrapeConfig.update { it.copy(sgdbKey = v.trim()) }; keyChanged() }
             },
         )
         else -> emptyList()
@@ -391,17 +406,17 @@ private fun SourceSheet(s: ScrapeSource, maxWidth: Dp, maxHeight: Dp) {
     val on = cfg.isOn(s)
     val notDownloaded = s == ScrapeSource.LaunchBox && LaunchBoxDb.info == null && LaunchBoxDb.progress == null
     val actions = buildList {
-        add(SheetButton("toggle", if (on) "Turn off" else "Turn on", if (on) Palette.Lavender else Palette.Mint) {
+        add(SheetButton("toggle", Tx.s(if (on) R.string.scrape_card_turn_off else R.string.scrape_card_turn_on), if (on) Palette.Lavender else Palette.Mint) {
             ScrapeConfig.update { it.copy(off = if (on) it.off + s else it.off - s) }
             Sounds.toggle(!on)
         })
         if (s == ScrapeSource.LaunchBox) {
-            add(SheetButton("download", if (LaunchBoxDb.info == null) "Download (${LaunchBoxDb.APPROX_MB} MB)" else "Download again", Palette.Butter) {
+            add(SheetButton("download", if (LaunchBoxDb.info == null) Tx.s(R.string.scrape_card_download, LaunchBoxDb.APPROX_MB) else Tx.s(R.string.scrape_card_download_again), Palette.Butter) {
                 ArtSetup.downloadLaunchBox(ctx)
             })
         }
-        add(SheetButton("test", if (SourceTests.running[s] == true) "Testing…" else "Test", Palette.Sky) { SourceTests.run(ctx, s) })
-        add(SheetButton("done", "Done", Palette.Lavender) { ArtSetup.sheet = null; Nav.focusTick++ })
+        add(SheetButton("test", Tx.s(if (SourceTests.running[s] == true) R.string.scrape_status_testing else R.string.scrape_card_test), Palette.Sky) { SourceTests.run(ctx, s) })
+        add(SheetButton("done", Tx.s(R.string.scrape_setup_hint_done), Palette.Lavender) { ArtSetup.sheet = null; Nav.focusTick++ })
     }
     // The button that does the obvious next thing, filled: Turn on for a source that is off, Download for LaunchBox
     // before its database is here, Test once the keys are in, and Done while they aren't.
@@ -489,7 +504,7 @@ private val SheetGap = 10.dp
 /** Whether it needs an account, as a coloured tag, then the steps in number bubbles (or the notes, with dots). */
 @Composable
 private fun HowTo(g: SourceGuide, modifier: Modifier) {
-    val free = g.account.startsWith("No account")
+    val free = g.free
     val tone = if (free) Palette.Mint else Palette.Butter
     Column(modifier) {
         Row(
@@ -520,17 +535,19 @@ private fun HowTo(g: SourceGuide, modifier: Modifier) {
 @Composable
 private fun Facts(s: ScrapeSource, g: SourceGuide, modifier: Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        InfoBox("Gives", s.gives + ".", Glyph.Image, Palette.Mint)
-        InfoBox("Sends", g.sends, Glyph.Eye, Palette.Lavender)
+        InfoBox(Tx.s(R.string.scrape_card_gives), Tx.s(R.string.scrape_card_gives_text, s.gives), Glyph.Image, Palette.Mint)
+        InfoBox(Tx.s(R.string.scrape_card_sends), g.sends, Glyph.Eye, Palette.Lavender)
         if (s == ScrapeSource.LaunchBox) {
             val info = LaunchBoxDb.info
             InfoBox(
-                "On this device",
+                Tx.s(R.string.scrape_card_on_device),
                 when {
-                    LaunchBoxDb.progress != null -> "Downloading… ${((LaunchBoxDb.progress ?: 0f) * 100).toInt()}%"
-                    info == null -> "Not downloaded yet."
-                    else -> "${"%,d".format(info.games)} games for ${info.platforms.size} systems, from " +
-                        android.text.format.DateUtils.getRelativeTimeSpanString(info.built).toString().lowercase() + "."
+                    LaunchBoxDb.progress != null -> Tx.s(R.string.scrape_card_downloading, ((LaunchBoxDb.progress ?: 0f) * 100).toInt())
+                    info == null -> Tx.s(R.string.scrape_card_not_downloaded)
+                    else -> Tx.p(
+                        R.plurals.scrape_card_lb_info, info.platforms.size, String.format(Lang.locale, "%,d", info.games), info.platforms.size,
+                        android.text.format.DateUtils.getRelativeTimeSpanString(info.built).toString().lowercase(Lang.locale),
+                    )
                 },
                 Glyph.Save, Palette.Sky,
             )
@@ -559,8 +576,8 @@ private class KeyField(val key: String, val label: String, val value: String, va
         else -> Palette.Peach
     }
     val shown: String get() = when {
-        value.isBlank() -> if (optional) "Optional" else "Not set"
-        secret -> "Saved ✓"
+        value.isBlank() -> Tx.s(if (optional) R.string.scrape_key_optional else R.string.scrape_key_not_set)
+        secret -> Tx.s(R.string.scrape_key_saved)
         else -> value
     }
 }

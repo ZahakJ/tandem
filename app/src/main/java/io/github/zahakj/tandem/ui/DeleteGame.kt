@@ -36,6 +36,8 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
 import io.github.zahakj.tandem.PlatformLibrary
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
@@ -88,7 +90,7 @@ object DeleteGame {
     )
 
     /** What a toast may call [g]: its title, unless private mode is keeping it hidden. */
-    fun nameOf(g: Game): String = if (Privacy.enabled && Privacy.isHidden(g)) "a hidden game" else g.title
+    fun nameOf(g: Game): String = if (Privacy.enabled && Privacy.isHidden(g)) Tx.s(R.string.library_delete_hidden_name) else g.title
 
     /** True when [g] is a stand-in for a game installed in another app (a file, not a folder game). */
     fun isShortcut(g: Game): Boolean =
@@ -96,22 +98,22 @@ object DeleteGame {
 
     /** Where a shortcut's real game lives, for the popup. */
     fun installedIn(g: Game): String = when (g.platform.id) {
-        "windows" -> "GameNative, Winlator or DroidDeck (Steam games)"
-        else -> g.platform.playerFor(g)?.name ?: g.platform.allPlayers.firstOrNull()?.name ?: "its emulator"
+        "windows" -> Tx.s(R.string.library_delete_pc_apps)
+        else -> g.platform.playerFor(g)?.name ?: g.platform.allPlayers.firstOrNull()?.name ?: Tx.s(R.string.library_delete_its_emulator)
     }
 
     /** From the game menu. Refuses a game that is running (offering to close it) or a hidden game that isn't showing. */
     fun ask(ctx: Context, g: Game) {
         Nav.closeMenus()
         if (!Privacy.canShow(g)) {
-            Toasts.show("Show hidden games first to delete one"); return
+            Toasts.show(Tx.s(R.string.library_delete_show_hidden)); return
         }
         val running = RunningGames.list.firstOrNull { it.game?.key == g.key }
         if (running != null) {
             Confirm.ask(
-                "Close it first?",
-                "${nameOf(g)} is running. Tandem can close it, then delete it. Progress you haven't saved is lost.",
-                "Close game",
+                Tx.s(R.string.library_delete_close_first),
+                Tx.s(R.string.library_delete_running, nameOf(g)),
+                Tx.s(R.string.library_delete_close_game),
             ) {
                 closeRunning(ctx, running) {
                     if (RunningGames.list.none { it.pkg == running.pkg }) ask(ctx, g)
@@ -180,22 +182,22 @@ object DeleteGame {
             // Looked at again right before deleting, in case anything changed while the popup was open.
             val fresh = plan(g)
             val files = fresh.files
-            if (files == null || !files.ok) { refused = files?.refused ?: "Couldn't look at its files"; return@inBackground }
+            if (files == null || !files.ok) { refused = files?.refused ?: Tx.s(R.string.library_delete_cant_look); return@inBackground }
             val all = files.files + if (art) fresh.art else emptyList()
             result = DeletePlanner.delete(all, roots() + mediaRoot)
         }) {
             busy = false
             request = null
-            refused?.let { Toasts.show("Nothing deleted. $it"); Nav.focusTick++; return@inBackground }
+            refused?.let { Toasts.show(Tx.s(R.string.library_delete_nothing_deleted, it)); Nav.focusTick++; return@inBackground }
             val res = result ?: return@inBackground
             val name = nameOf(g)
             val hidden = Privacy.isHidden(g)
             forget(g, keep)
             if (!hidden) Log.i("Tandem", "Deleted ${g.key}: ${res.deleted} items, ${res.freed} bytes, ${res.failed.size} failed")
-            val freed = Formatter.formatShortFileSize(ctx, res.freed)
+            val freed = Formatter.formatShortFileSize(Tx.context, res.freed)
             Toasts.show(
-                if (res.failed.isEmpty()) "Deleted $name ($freed freed)"
-                else "Deleted $name ($freed freed), but ${io.github.zahakj.tandem.plural(res.failed.size, "file")} couldn't be removed",
+                if (res.failed.isEmpty()) Tx.s(R.string.library_delete_done, name, freed)
+                else Tx.p(R.plurals.library_delete_done_failed, res.failed.size, name, freed, res.failed.size),
             )
             LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
         }
@@ -212,7 +214,7 @@ object DeleteGame {
                 Intent(Intent.ACTION_DELETE, android.net.Uri.parse("package:$pkg")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             )
         }.isSuccess
-        if (!ok) { uninstalling = null; Toasts.show("Android wouldn't open its uninstall screen"); Nav.focusTick++ }
+        if (!ok) { uninstalling = null; Toasts.show(Tx.s(R.string.library_delete_no_uninstaller)); Nav.focusTick++ }
     }
 
     /** Back in Tandem: an app sent to the uninstaller that is now gone is forgotten. */
@@ -224,7 +226,7 @@ object DeleteGame {
         if (!gone) return
         val name = nameOf(g)
         forget(g, keep)
-        Toasts.show("Uninstalled $name")
+        Toasts.show(Tx.s(R.string.library_delete_uninstalled, name))
     }
 
     /**
@@ -265,7 +267,8 @@ object DeleteGame {
     }
 }
 
-private fun size(ctx: Context, bytes: Long): String = Formatter.formatShortFileSize(ctx, bytes)
+@Suppress("UNUSED_PARAMETER")
+private fun size(ctx: Context, bytes: Long): String = Formatter.formatShortFileSize(Tx.context, bytes)
 
 /** Rendered once in the app root, below the confirm popup. */
 @Composable
@@ -288,11 +291,11 @@ fun DeleteGameOverlay() {
                 Pip(48.dp, mood = 2)
                 Column(Modifier.weight(1f)) {
                     Text(
-                        if (r.isApp) "Uninstall ${g.title}?" else "Delete ${g.title}?",
+                        Tx.s(if (r.isApp) R.string.library_delete_ask_uninstall else R.string.library_delete_ask, g.title),
                         style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                     Text(
-                        listOfNotNull(g.platform.name, files?.takeIf { it.ok }?.let { size(ctx, it.bytes + if (DeleteGame.withArt) r.art.sumOf { a -> a.bytes } else 0) + " freed" })
+                        listOfNotNull(g.platform.name, files?.takeIf { it.ok }?.let { Tx.s(R.string.library_delete_freed, size(ctx, it.bytes + if (DeleteGame.withArt) r.art.sumOf { a -> a.bytes } else 0)) })
                             .joinToString(" · "),
                         style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
@@ -306,59 +309,57 @@ fun DeleteGameOverlay() {
             ) {
                 if (r.isApp) {
                     Note(
-                        "Android removes the app and everything it keeps, saves included, after asking you once more. " +
-                            "Tandem then forgets it: favourite, Up next, home grid and hidden lists.",
+                        Tx.s(R.string.library_delete_app_note),
                     )
                 } else if (files == null) {
-                    Note("Looking at its files…")
+                    Note(Tx.s(R.string.library_delete_looking))
                 } else if (!files.ok) {
-                    Note(files.refused.orEmpty() + ". Nothing will be deleted.", Palette.Peach)
+                    Note(Tx.s(R.string.library_delete_refused, files.refused.orEmpty()), Palette.Peach)
                 } else {
-                    Heading("Game files", size(ctx, files.bytes))
+                    Heading(Tx.s(R.string.library_delete_files), size(ctx, files.bytes))
                     val root = Library.romsDir.parentFile ?: Library.romsDir
                     val names = files.files.map { it.file.relativeToOrNull(root)?.path ?: it.file.path }
                     names.take(5).forEach { Note(it, maxLines = 1) }
-                    if (names.size > 5) Note("and ${names.size - 5} more", maxLines = 1)
+                    if (names.size > 5) Note(Tx.p(R.plurals.library_delete_more, names.size - 5), maxLines = 1)
                     if (DeleteGame.isShortcut(g)) {
                         Note(
-                            "This is only Tandem's shortcut. The game itself is installed in ${DeleteGame.installedIn(g)}: " +
-                                "uninstall it there to free its space.",
+                            Tx.s(R.string.library_delete_shortcut, DeleteGame.installedIn(g)),
                             Palette.Butter,
                         )
                     }
-                    if (files.kept.isNotEmpty()) Note("Kept, another game uses it: ${files.kept.joinToString { it.name }}", maxLines = 2)
+                    if (files.kept.isNotEmpty()) Note(Tx.s(R.string.library_delete_kept, files.kept.joinToString { it.name }), maxLines = 2)
                     if (hasArt) {
                         MenuRow(
-                            "Downloaded art (${r.art.size})",
-                            if (DeleteGame.withArt) "Delete · ${size(ctx, r.art.sumOf { it.bytes })}" else "Keep",
+                            Tx.s(R.string.library_delete_art, r.art.size),
+                            if (DeleteGame.withArt) Tx.s(R.string.library_delete_art_delete, size(ctx, r.art.sumOf { it.bytes })) else Tx.s(R.string.library_delete_art_keep),
                             "art", "deletegame", target, Palette.Butter,
                         ) { DeleteGame.withArt = !DeleteGame.withArt }
                     } else {
-                        Note(if (r.artShared) "Downloaded art stays: another game of the same name uses it." else "No downloaded art.")
+                        Note(Tx.s(if (r.artShared) R.string.library_delete_art_shared else R.string.library_delete_no_art))
                     }
-                    Note("Saves stay in the emulator: Tandem doesn't know where each one keeps them.")
+                    Note(Tx.s(R.string.library_delete_saves))
                 }
                 if (canDelete) {
-                    Note("Tandem forgets the game: favourite, Up next, home grid, collections and hidden lists.")
-                    MenuRow("Keep play stats", onOff(DeleteGame.keepStats), "stats", "deletegame", target, Palette.Lavender) {
+                    Note(Tx.s(R.string.library_delete_forgets))
+                    MenuRow(Tx.s(R.string.library_delete_keep_stats), onOff(DeleteGame.keepStats), "stats", "deletegame", target, Palette.Lavender) {
                         DeleteGame.keepStats = !DeleteGame.keepStats
                     }
                 }
             }
             if (canDelete) {
                 Text(
-                    if (r.isApp) "Android asks before it uninstalls." else "This can't be undone.",
+                    Tx.s(if (r.isApp) R.string.library_delete_android_asks else R.string.library_delete_cant_undo),
                     Modifier.fillMaxWidth().padding(top = 6.dp),
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Peach, textAlign = TextAlign.Center,
                 )
             }
             Row(Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                PillButton(if (canDelete) "Cancel" else "OK", Palette.Mint, Modifier.takesFocus("deletegame", "no", target == "no")) { DeleteGame.close() }
+                PillButton(Tx.s(if (canDelete) R.string.library_delete_cancel else R.string.library_delete_ok), Palette.Mint, Modifier.takesFocus("deletegame", "no", target == "no")) { DeleteGame.close() }
                 if (canDelete) {
                     val yes = Modifier.takesFocus("deletegame", "yes", target == "yes").graphicsLayer { alpha = if (ready) 1f else 0.35f }
                     // Android asks again before it uninstalls, so an app needs no hold; deleting files does.
-                    if (r.isApp) PillButton("Uninstall app", Palette.Peach, yes) { DeleteGame.uninstall(ctx) }
-                    else HoldButton(if (DeleteGame.busy) "Deleting…" else "Delete", Palette.Peach, yes, hint = holdHint("delete it")) {
+                    if (r.isApp) PillButton(Tx.s(R.string.library_delete_uninstall_app), Palette.Peach, yes) { DeleteGame.uninstall(ctx) }
+                    else HoldButton(Tx.s(if (DeleteGame.busy) R.string.library_delete_deleting else R.string.library_delete_delete), Palette.Peach, yes, hint = holdHint(Tx.s(R.string.library_delete_hold))) {
                         if (ready && !DeleteGame.busy) DeleteGame.run(ctx)
                     }
                 }

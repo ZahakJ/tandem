@@ -63,7 +63,9 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.everPlayed
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -196,7 +198,7 @@ fun appTint(pkg: String): Color = Dock.builtIn(pkg)?.color ?: AppLooks.cached(pk
 /** "3 minutes ago", "Yesterday", or "just now". */
 private fun ago(time: Long): String {
     val now = System.currentTimeMillis()
-    return if (now - time < 60_000) "just now" else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
+    return if (now - time < 60_000) Tx.s(R.string.library_app_just_now) else DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS).toString()
 }
 
 /** The height of the button hints, so the content stays clear of them. */
@@ -222,7 +224,7 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
     }
     val l = look
     val label = when {
-        drawer -> "All apps"
+        drawer -> Tx.s(R.string.library_app_all_apps)
         else -> builtIn?.title ?: l?.label ?: remember(pkg) { RunningGames.appLabel(ctx, pkg) }
     }
     val tint = builtIn?.color ?: l?.color ?: Palette.Sky
@@ -245,12 +247,12 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
             .sortedByDescending { it.meta.lastPlayed }
     }
     val kind = when {
-        builtIn != null -> "Tandem app"
-        drawer -> "App drawer"
-        systems.isNotEmpty() || AndroidApps.isEmulator(pkg) -> "Emulator"
-        asGame != null -> "Android game"
-        l?.system == true -> "System app"
-        else -> "Android app"
+        builtIn != null -> Tx.s(R.string.library_app_kind_tandem)
+        drawer -> Tx.s(R.string.library_app_kind_drawer)
+        systems.isNotEmpty() || AndroidApps.isEmulator(pkg) -> Tx.s(R.string.library_app_kind_emulator)
+        asGame != null -> Tx.s(R.string.library_app_kind_game)
+        l?.system == true -> Tx.s(R.string.library_app_kind_system)
+        else -> Tx.s(R.string.library_app_kind_app)
     }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -272,22 +274,22 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                 AppBigIcon(pkg, l?.icon, tint, iconSize)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text(kind.uppercase(), style = MaterialTheme.typography.labelLarge, color = lerp(tint, Palette.Text, if (dark) 0.35f else 0.55f), maxLines = 1)
+                    Text(kind.uppercase(Lang.locale), style = MaterialTheme.typography.labelLarge, color = lerp(tint, Palette.Text, if (dark) 0.35f else 0.55f), maxLines = 1)
                     Text(label, style = MaterialTheme.typography.displaySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     val sub = when {
                         builtIn != null -> builtIn.blurb
-                        drawer -> "Every app on this device. Pin your favourites to the dock with Y."
-                        else -> listOfNotNull(l?.version?.let { "Version $it" }, l?.updated?.takeIf { it > 0 }?.let { "updated ${ago(it)}" }).joinToString(" · ")
+                        drawer -> Tx.s(R.string.library_app_drawer_blurb)
+                        else -> listOfNotNull(l?.version?.let { Tx.s(R.string.library_app_version, it) }, l?.updated?.takeIf { it > 0 }?.let { Tx.s(R.string.library_app_updated, ago(it)) }).joinToString(" · ")
                     }
                     if (sub.isNotEmpty()) Text(sub, style = MaterialTheme.typography.bodyLarge, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
             val pills = buildList {
-                if (running) add("● Running" to Palette.Mint)
+                if (running) add(Tx.s(R.string.library_app_running) to Palette.Mint)
                 l?.category?.let { add(it to Palette.Lavender) }
-                if (asGame != null) add("In Android Games" to Palette.Peach)
+                if (asGame != null) add(Tx.s(R.string.library_app_in_android_games) to Palette.Peach)
                 systems.take(8).forEach { add(it.shortName to SystemColors.of(it.id)) }
-                if (systems.size > 8) add("+${systems.size - 8} more" to Palette.Muted)
+                if (systems.size > 8) add(Tx.s(R.string.library_app_more, systems.size - 8) to Palette.Muted)
             }
             if (pills.isNotEmpty()) {
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -296,21 +298,21 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
             }
             val facts = buildList {
                 if (drawer) apps?.let { (all, docked) ->
-                    add("Apps" to "${all.size}")
-                    add("In the dock" to "$docked")
+                    add(Tx.s(R.string.library_app_apps) to "${all.size}")
+                    add(Tx.s(R.string.library_app_in_dock) to "$docked")
                 }
                 asGame?.meta?.let { m ->
-                    add("Played" to if (m.playSeconds >= 60) formatPlayLong(m.playSeconds) else if (m.playCount > 0) plural(m.playCount, "time") else "Not yet")
-                    if (m.lastPlayed > 0) add("Last played" to ago(m.lastPlayed))
+                    add(Tx.s(R.string.library_app_played) to if (m.playSeconds >= 60) formatPlayLong(m.playSeconds) else if (m.playCount > 0) Tx.p(R.plurals.library_app_times, m.playCount) else Tx.s(R.string.library_app_not_yet))
+                    if (m.lastPlayed > 0) add(Tx.s(R.string.library_app_last_played) to ago(m.lastPlayed))
                 }
                 if (systems.isNotEmpty()) {
-                    add("Games played" to if (played.isEmpty()) "None yet" else "${played.size}")
-                    played.sumOf { it.meta.playSeconds }.takeIf { it >= 60 }?.let { add("Time played" to formatPlayLong(it)) }
-                    played.firstOrNull()?.meta?.lastPlayed?.takeIf { it > 0 }?.let { add("Last used" to ago(it)) }
+                    add(Tx.s(R.string.library_app_games_played) to if (played.isEmpty()) Tx.s(R.string.library_app_none_yet) else "${played.size}")
+                    played.sumOf { it.meta.playSeconds }.takeIf { it >= 60 }?.let { add(Tx.s(R.string.library_app_time_played) to formatPlayLong(it)) }
+                    played.firstOrNull()?.meta?.lastPlayed?.takeIf { it > 0 }?.let { add(Tx.s(R.string.library_app_last_used) to ago(it)) }
                 }
                 // A system app's install date is just when the system was built: not worth a line.
                 l?.installed?.takeIf { it > 0 && !l.system }?.let {
-                    add("Installed" to DateUtils.formatDateTime(ctx, it, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_SHOW_YEAR))
+                    add(Tx.s(R.string.library_app_installed) to DateUtils.formatDateTime(Tx.context, it, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_SHOW_YEAR))
                 }
             }
             if (facts.isNotEmpty()) {
@@ -334,11 +336,11 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
 /** What the buttons do on a dock app. */
 @Composable
 fun AppHints(pkg: String) {
-    ButtonHint("A", "Open", Palette.Mint)
+    ButtonHint("A", Tx.s(R.string.library_app_hint_open), Palette.Mint)
     // Tandem's own apps (and the All apps button) have no Android app menu; in the All apps drawer Y pins to the dock.
-    if (Panels.apps) ButtonHint("Y", "Pin to dock", Palette.Butter)
-    else if (Dock.builtIn(pkg) == null && pkg != Dock.ALL_APPS) ButtonHint("Y", "Options", Palette.Butter)
-    if (ScreenRoles.xSwaps()) ButtonHint("X", "Swap", Palette.Sky)
+    if (Panels.apps) ButtonHint("Y", Tx.s(R.string.library_app_hint_pin), Palette.Butter)
+    else if (Dock.builtIn(pkg) == null && pkg != Dock.ALL_APPS) ButtonHint("Y", Tx.s(R.string.library_app_hint_options), Palette.Butter)
+    if (ScreenRoles.xSwaps()) ButtonHint("X", Tx.s(R.string.library_app_hint_swap), Palette.Sky)
 }
 
 /**
@@ -468,7 +470,7 @@ private fun AppPeek(apps: List<AppEntry>) {
 @Composable
 private fun PlayedWith(games: List<Game>, app: String, cover: Dp) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Recently played in $app", style = MaterialTheme.typography.titleSmall, color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        Text(Tx.s(R.string.library_app_recently_in, app), style = MaterialTheme.typography.titleSmall, color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis)
         BoxWithConstraints(Modifier.fillMaxWidth()) {
             val gap = 10.dp
             val fit = ((maxWidth + gap) / (cover + gap)).toInt().coerceAtLeast(1)

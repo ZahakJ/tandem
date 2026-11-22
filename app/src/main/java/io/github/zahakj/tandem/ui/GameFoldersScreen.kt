@@ -60,7 +60,8 @@ import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.SystemPrefs
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -108,7 +109,7 @@ fun GameFoldersScreen() {
         Nav.focusTick++
         rescan()
         // Its games only leave the view; what Tandem knows about them stays, so coming back costs nothing.
-        Undo.offer("Took out $name. Its games are out of sight; their details are kept") {
+        Undo.offer(Tx.s(R.string.library_folders_took_out, name)) {
             SystemPrefs.update { it.copy(roots = (it.roots + path).distinct(), trees = if (tree == null) it.trees else it.trees + (path to tree)) }
             FocusMemory.remember(route, path)
             Nav.focusTick++
@@ -153,17 +154,17 @@ fun GameFoldersScreen() {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(key = "h:where", span = { GridItemSpan(maxLineSpan) }) { SettingsHeader("Where games live") }
+            item(key = "h:where", span = { GridItemSpan(maxLineSpan) }) { SettingsHeader(Tx.s(R.string.library_folders_where)) }
             item(key = MAIN) {
                 val n = counts[romsPath] ?: 0
                 FolderCard(
-                    "ROMs", "Tandem's own folder · always in", plural(n, "game"), Palette.Mint, systemsIn[romsPath].orEmpty(),
+                    "ROMs", Tx.s(R.string.library_folders_roms_detail), Tx.p(R.plurals.library_games, n), Palette.Mint, systemsIn[romsPath].orEmpty(), // tx-ok: a folder's name
                     Modifier.takesFocus(route, MAIN, target == MAIN),
                     onFocus = {
                         FocusMemory.remember(route, MAIN); focused = MAIN
-                        Selection.current = Selected.Setting("ROMs", plural(n, "game"), "Tandem's own folder on internal storage, where it keeps its data. It is always read for games too, and needn't hold any.", Palette.Mint, "Options")
+                        Selection.current = Selected.Setting("ROMs", Tx.p(R.plurals.library_games, n), Tx.s(R.string.library_folders_roms_help), Palette.Mint, Tx.s(R.string.library_folders_options)) // tx-ok: a folder's name
                     },
-                ) { Toasts.show("The ROMs folder is always included. Add your games folders beside it") }
+                ) { Toasts.show(Tx.s(R.string.library_folders_roms_always)) }
             }
             items(roots, key = { it }) { path ->
                 val n = counts[path] ?: 0
@@ -171,23 +172,23 @@ fun GameFoldersScreen() {
                 val name = LibraryRoots.label(path, internal)
                 val color = if (there) Palette.Sky else Palette.Peach
                 FolderCard(
-                    name, LibraryRoots.shortPath(path, internal), if (!there) "Not there right now" else if (n == 0 && copies(path, internal) != null) "Copies only" else plural(n, "game"), color, systemsIn[path].orEmpty(),
+                    name, LibraryRoots.shortPath(path, internal), folderCount(there, n, path, internal), color, systemsIn[path].orEmpty(),
                     Modifier.takesFocus(route, path, target == path),
                     onFocus = {
                         FocusMemory.remember(route, path); focused = path
                         Selection.current = Selected.Setting(
-                            name, if (there) plural(n, "game") else "Not there right now",
-                            if (there) "Games are found by their system folders (3DS, gba, PlayStation 2…) or by their kind of file. Y takes it out again." else "The card or folder isn't mounted. Its games come back by themselves once it is.",
-                            color, "Options",
+                            name, if (there) Tx.p(R.plurals.library_games, n) else Tx.s(R.string.library_folders_not_there),
+                            Tx.s(if (there) R.string.library_folders_help_there else R.string.library_folders_help_gone),
+                            color, Tx.s(R.string.library_folders_options),
                         )
                     },
-                    empty = copiesNote(path, internal) ?: "No games found yet",
+                    empty = copiesNote(path, internal) ?: Tx.s(R.string.library_folders_no_games),
                 ) { FocusMemory.forget("gamefolder"); open = path }
             }
             item(key = ADD) {
                 AddCard(Modifier.takesFocus(route, ADD, target == ADD), onFocus = {
                     FocusMemory.remember(route, ADD); focused = ADD
-                    Selection.current = Selected.Setting("Pick your games folder", "SD card or device", "Pick the folder your games are in: a folder per system, one system's folder, or games of every kind together.", Palette.Mint, "Pick")
+                    Selection.current = Selected.Setting(Tx.s(R.string.library_folders_pick), Tx.s(R.string.library_folders_pick_value), Tx.s(R.string.library_folders_pick_help), Palette.Mint, Tx.s(R.string.library_folders_pick_action))
                 }) {
                     pick()
                 }
@@ -222,20 +223,20 @@ fun GameFoldersScreen() {
             }
             Spacer(Modifier.height(16.dp))
             Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                PillButton("Look for games again", Palette.Mint, Modifier.weight(1f).takesFocus(routeKey, "rescan", sheetTarget == "rescan"), fill = true, filled = true) {
+                PillButton(Tx.s(R.string.library_folders_rescan), Palette.Mint, Modifier.weight(1f).takesFocus(routeKey, "rescan", sheetTarget == "rescan"), fill = true, filled = true) {
                     open = null
                     Nav.focusTick++
-                    Toasts.show("Looking for games…")
+                    Toasts.show(Tx.s(R.string.library_folders_looking))
                     rescan()
                 }
-                PillButton("Take it out", Palette.Peach, Modifier.weight(1f).takesFocus(routeKey, "remove", sheetTarget == "remove"), fill = true) {
+                PillButton(Tx.s(R.string.library_folders_take_out), Palette.Peach, Modifier.weight(1f).takesFocus(routeKey, "remove", sheetTarget == "remove"), fill = true) {
                     open = null
                     remove(path)
                 }
             }
             Spacer(Modifier.height(10.dp))
             Text(
-                "Taking it out hides its games; their details are kept, and Undo (for a few seconds) brings it back.",
+                Tx.s(R.string.library_folders_take_out_note),
                 style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
             )
         }
@@ -263,29 +264,29 @@ fun rememberGameFolderPicker(start: Uri? = null, onAdded: (String) -> Unit = {})
             Prefs.setRomsTree(ctx, uri)
             Sounds.confirm()
             Toasts.show(
-                if (treePath(uri) == internal) "Emulators can open games anywhere on internal storage now. Pick your games folder too if it isn't ROMs"
-                else "ROMs is always in. Emulators can open its games now",
+                Tx.s(if (treePath(uri) == internal) R.string.library_folders_roms_tree_internal
+                else R.string.library_folders_roms_tree),
             )
             onAdded(romsPath)
             return@rememberLauncherForActivityResult
         }
         val path = treePath(uri)
         if (path == null) {
-            Toasts.show("That folder can't be used, try one on the device or SD card")
+            Toasts.show(Tx.s(R.string.library_folder_unusable))
             Sounds.error()
             return@rememberLauncherForActivityResult
         }
         val name = LibraryRoots.label(path, internal)
         when (LibraryRoots.check(path, romsPath, SystemPrefs.data.roots)) {
-            LibraryRoots.Verdict.IsRoms -> Toasts.show("That's the ROMs folder, which is always in")
-            LibraryRoots.Verdict.InsideRoms -> Toasts.show("$name is inside the ROMs folder, so its games are already found")
-            LibraryRoots.Verdict.AboveRoms -> Toasts.show("$name holds the ROMs folder, so its games would show twice. Pick the folder your games are in")
-            LibraryRoots.Verdict.Already -> Toasts.show("$name is already in")
+            LibraryRoots.Verdict.IsRoms -> Toasts.show(Tx.s(R.string.library_folders_is_roms))
+            LibraryRoots.Verdict.InsideRoms -> Toasts.show(Tx.s(R.string.library_folders_inside_roms, name))
+            LibraryRoots.Verdict.AboveRoms -> Toasts.show(Tx.s(R.string.library_folders_above_roms, name))
+            LibraryRoots.Verdict.Already -> Toasts.show(Tx.s(R.string.library_folders_already, name))
             LibraryRoots.Verdict.Ok -> {
                 grant()
                 SystemPrefs.update { it.copy(roots = it.roots + path, trees = it.trees + (path to uri.toString())) }
                 Sounds.confirm()
-                Toasts.show("Added $name, looking for games…")
+                Toasts.show(Tx.s(R.string.library_folder_added, name))
                 onAdded(path)
                 scope.launch { reloadLibrary(ctx) }
                 return@rememberLauncherForActivityResult
@@ -293,7 +294,7 @@ fun rememberGameFolderPicker(start: Uri? = null, onAdded: (String) -> Unit = {})
         }
         Sounds.error()
     }
-    return { runCatching { launcher.launch(start) }.onFailure { Toasts.show("No folder picker on this device") } }
+    return { runCatching { launcher.launch(start) }.onFailure { Toasts.show(Tx.s(R.string.library_folders_no_picker)) } }
 }
 
 /** One of a folder's systems: how many of its games are there, and its pack picture (null: Tandem draws one). */
@@ -304,14 +305,14 @@ private class FolderSystem(val platform: io.github.zahakj.tandem.Platform, val g
  * LibraryRoots.shadowed), so a folder of copies doesn't look empty. Null with no copies, or in private mode, where
  * counting them could hint at hidden games.
  */
-private fun copiesNote(path: String, internal: String): String? = copies(path, internal)?.let { (n, where) -> "${plural(n, "game")} already in $where" }
+private fun copiesNote(path: String, internal: String): String? = copies(path, internal)?.let { (n, where) -> Tx.p(R.plurals.library_folders_copies, n, n, where) }
 
 /** How many of [path]'s games are copies of ones another folder gives, and that folder's name ("other folders" for several). */
 private fun copies(path: String, internal: String): Pair<Int, String>? {
     if (io.github.zahakj.tandem.Privacy.enabled) return null
     val s = Library.shadowed[path] ?: return null
     val romsPath = Library.romsDir.path
-    val where = s.listedFrom.singleOrNull()?.let { if (it == romsPath) "ROMs" else LibraryRoots.label(it, internal) } ?: "other folders"
+    val where = s.listedFrom.singleOrNull()?.let { if (it == romsPath) "ROMs" else LibraryRoots.label(it, internal) } ?: Tx.s(R.string.library_folders_other)
     return s.count to where
 }
 
@@ -323,7 +324,7 @@ private const val CARD_SYSTEMS = 5
  * first) and how many games it holds right now.
  */
 @Composable
-private fun FolderCard(name: String, detail: String, games: String, color: Color, systems: List<FolderSystem>, focus: Modifier, onFocus: () -> Unit, empty: String = "No games found yet", onClick: () -> Unit) {
+private fun FolderCard(name: String, detail: String, games: String, color: Color, systems: List<FolderSystem>, focus: Modifier, onFocus: () -> Unit, empty: String? = null, onClick: () -> Unit) {
     FocusCard(Modifier.fillMaxWidth().height(126.dp).then(focus), glow = color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, entry = true, onClick = onClick) {
         Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color.copy(alpha = 0.18f), color.copy(alpha = 0.03f)))).padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -343,7 +344,7 @@ private fun FolderCard(name: String, detail: String, games: String, color: Color
                 if (systems.size > CARD_SYSTEMS) {
                     Text("+${systems.size - CARD_SYSTEMS}", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                 }
-                if (systems.isEmpty()) Text(empty, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (systems.isEmpty()) Text(empty ?: Tx.s(R.string.library_folders_no_games), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.weight(1f))
                 Pill(games, color)
             }
@@ -373,8 +374,8 @@ private fun AddCard(focus: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
         ) {
             GlyphChip(Glyph.Plus, Palette.Mint, size = 40.dp, round = true)
             Spacer(Modifier.height(8.dp))
-            Text("Pick your games folder…", style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("On the device or an SD card, laid out any way", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(Tx.s(R.string.library_folders_pick_card), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(Tx.s(R.string.library_folders_pick_card_detail), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -394,40 +395,40 @@ private fun RootDetails(path: String, games: Int, internal: String) {
         Text(LibraryRoots.label(path, internal), style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Text(path, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.height(10.dp))
-        Pill(if (!there) "Not there right now" else if (games == 0 && copies(path, internal) != null) "Copies only" else plural(games, "game"), if (there) Palette.Sky else Palette.Peach)
+        Pill(folderCount(there, games, path, internal), if (there) Palette.Sky else Palette.Peach)
         Spacer(Modifier.height(10.dp))
         val scroll = rememberScrollState()
         Column(Modifier.weight(1f).fadingEdges(scroll).verticalScroll(scroll), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             when {
                 !there -> Text(
-                    if (LibraryRoots.removable(path, internal)) "The SD card is out. Its games are hidden until it is back in, and come back by themselves."
-                    else "The folder isn't there right now. Its games are hidden until it is back.",
+                    Tx.s(if (LibraryRoots.removable(path, internal)) R.string.library_folders_sd_out
+                    else R.string.library_folders_gone),
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
                 bySystem.isEmpty() && copies(path, internal) != null -> Text(
                     copies(path, internal)!!.let { (n, where) ->
-                        if (n == 1) "The game here is already in $where: the same file, so it's listed once, from there. Nothing is lost; take the copy out of one of the folders if you like."
-                        else "The $n games here are already in $where: the same files, so each is listed once, from there. Nothing is lost; take the copies out of one of the folders if you like."
+                        if (n == 1) Tx.s(R.string.library_folders_copy_one, where)
+                        else Tx.p(R.plurals.library_folders_copy_many, n, n, where)
                     },
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
                 bySystem.isEmpty() -> Text(
-                    "No games found here yet. Games are found in folders named for their system (3DS, GBA, PS2…), and files only one system plays (.3ds, .nsp, .gba…) are found anywhere.",
+                    Tx.s(R.string.library_folders_none_here),
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                 )
                 else -> {
                     for ((system, n) in bySystem) Row(Modifier.fillMaxWidth()) {
                         Text(system, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(plural(n, "game"), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
+                        Text(Tx.p(R.plurals.library_games, n), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1)
                     }
                     copiesNote(path, internal)?.let { note ->
-                        Text("Plus $note, listed from there.", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+                        Text(Tx.s(R.string.library_folders_plus_copies, note), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
                     }
                 }
             }
             Spacer(Modifier.height(8.dp))
             Text(
-                "Artwork is read from this folder's downloaded_media first, then from ROMs/downloaded_media. Y takes the folder out; its games' details are kept.",
+                Tx.s(R.string.library_folders_art_note),
                 style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
             )
         }
@@ -439,15 +440,20 @@ private fun FoldersHelp(extra: Int, romsGames: Int) {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         Pip(72.dp, mood = 1)
         Spacer(Modifier.height(12.dp))
-        Text("Game folders", style = MaterialTheme.typography.titleLarge)
+        Text(Tx.s(R.string.library_folders_title), style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(6.dp))
         Text(
-            "Point Tandem at the folder your games are in, on the device or an SD card, laid out any way: a folder per system, one system's folder, " +
-                "or every kind together. Their games join the same systems. " +
-                if (extra == 0) "Only ROMs is in so far, with ${plural(romsGames, "game")}." else "Right now ROMs and ${plural(extra, "more folder")} are in.",
+            if (extra == 0) Tx.p(R.plurals.library_folders_intro_roms, romsGames) else Tx.p(R.plurals.library_folders_intro_more, extra),
             style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
         )
     }
+}
+
+/** A folder's pill: how many games it holds, or that it isn't there, or that its games are all copies. */
+private fun folderCount(there: Boolean, n: Int, path: String, internal: String): String = when {
+    !there -> Tx.s(R.string.library_folders_not_there)
+    n == 0 && copies(path, internal) != null -> Tx.s(R.string.library_folders_copies_only)
+    else -> Tx.p(R.plurals.library_games, n)
 }
 
 /** Settings rows for this feature: the folder manager, and folder watching (FolderWatch.kt). */
@@ -455,20 +461,21 @@ private fun FoldersHelp(extra: Int, romsGames: Int) {
 fun gameFoldersSettings(): SettingSection {
     val roots = SystemPrefs.data.roots
     val s = Store.settings
-    return SettingSection(
-        "Game folders",
-        listOf(
+    return SettingSection(en = "Game folders",
+        title = Tx.s(R.string.library_folders_title),
+        rows = listOf(
             SettingRow(
-                "Game folders", if (roots.isEmpty()) "ROMs only" else "ROMs + ${plural(roots.size, "folder")}", Palette.Mint, Glyph.Folder,
-                help = "The folders your games are in: pick any folder, on the device or an SD card, laid out any way. ROMs, Tandem's own folder, is always included. " +
-                    "Their games join the same systems, and a folder that isn't there (the card is out) is skipped until it is back.",
+                Tx.s(R.string.library_folders_title),
+                if (roots.isEmpty()) Tx.s(R.string.library_folders_roms_only) else Tx.p(R.plurals.library_folders_roms_plus, roots.size),
+                Palette.Mint, Glyph.Folder,
+                help = Tx.s(R.string.library_folders_help),
                 opens = true, keywords = "sd card storage external roots folders paths directory more games second tree pick games folder roms",
+                en = "Game folders",
             ) { Nav.go(Route.GameFolders) },
             toggle(
-                "Watch game folders", Glyph.Eye, Palette.Mint,
-                "Notice games copied in over USB or MTP, or an SD card put back, and show them a few seconds later without a rescan. " +
-                    "Only while Tandem is on screen; nothing runs in the background.",
-                s.watchFolders,
+                Tx.s(R.string.library_folders_watch), Glyph.Eye, Palette.Mint,
+                Tx.s(R.string.library_folders_watch_help),
+                s.watchFolders, en = "Watch game folders",
             ) { on -> Store.updateSettings { it.copy(watchFolders = on) } }
                 .copy(keywords = "watch monitor automatic rescan refresh new games copied mtp usb inotify live"),
         ),

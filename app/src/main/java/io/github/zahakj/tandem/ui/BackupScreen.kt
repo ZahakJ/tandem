@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.FileChecks
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.BackupCategory
 import io.github.zahakj.tandem.data.BackupFiles
 import io.github.zahakj.tandem.data.BackupSnapshot
@@ -112,29 +114,29 @@ object BackupUi {
 
     fun backUp(ctx: Context) {
         val cats = chosen
-        if (cats.isEmpty()) { Sounds.error(); Toasts.show("Pick at least one thing to back up"); return }
+        if (cats.isEmpty()) { Sounds.error(); Toasts.show(Tx.s(R.string.data_backup_pick_one)); return }
         val keys = withKeys
         val sources = Backups.capture(ctx)
         close()
-        DataJobs.run("backup", "Backing up…", { Backups.backUp(ctx, sources, cats, keys) }) { s ->
+        DataJobs.run("backup", Tx.s(R.string.data_backup_backing_up), { Backups.backUp(ctx, sources, cats, keys) }) { s ->
             Sounds.confirm()
-            "Backed up to ROMs/tandem/backup/${s.dir.name}"
+            Tx.s(R.string.data_backup_backed_up, s.dir.name)
         }
     }
 
     fun restore(ctx: Context) {
         val s = picked ?: return
         val cats = restoring.intersect(s.manifest.holds)
-        if (cats.isEmpty()) { Sounds.error(); Toasts.show("Pick at least one thing to restore"); return }
+        if (cats.isEmpty()) { Sounds.error(); Toasts.show(Tx.s(R.string.data_backup_pick_restore)); return }
         Confirm.hold(
-            "Restore ${cats.joinToString(", ") { it.label }}?",
-            "What Tandem has now for these is replaced. An automatic backup of how things are now is saved first.",
-            "Restore",
+            Tx.s(R.string.data_backup_restore_ask, cats.joinToString(", ") { it.label }),
+            Tx.s(R.string.data_backup_restore_text),
+            Tx.s(R.string.data_backup_restore),
         ) {
             close()
             val sources = Backups.capture(ctx)
-            DataJobs.run("restore", "Restoring…", {
-                Backups.autoNow(ctx, sources, "restoring")
+            DataJobs.run("restore", Tx.s(R.string.data_backup_restoring), {
+                Backups.autoNow(ctx, sources, Tx.s(R.string.data_backup_reason_restoring))
                 Backups.restore(ctx, s, cats)
             }) { r -> restored(ctx, r); r.message() }
         }
@@ -151,28 +153,28 @@ object BackupUi {
     }
 
     fun askDelete(s: BackupSnapshot) {
-        Confirm.hold("Delete this backup?", "${title(s)} · ${BackupFiles.summary(s.manifest)}. This can't be undone.", "Delete") {
+        Confirm.hold(Tx.s(R.string.data_backup_delete_ask), Tx.s(R.string.data_backup_delete_text, title(s), BackupFiles.summary(s.manifest)), Tx.s(R.string.data_backup_delete)) {
             MainScope().launch {
                 val ok = withContext(Dispatchers.IO) { runCatching { BackupFiles.delete(s) }.getOrDefault(false) }
                 if (highlighted === s) highlighted = null
-                Toasts.show(if (ok) "Backup deleted" else "Couldn't delete that backup")
+                Toasts.show(Tx.s(if (ok) R.string.data_backup_deleted else R.string.data_backup_delete_failed))
                 refresh()
                 Nav.focusTick++
             }
         }
     }
 
-    fun title(s: BackupSnapshot): String = if (s.legacy) "Older backup" else BackupFiles.date(s.manifest)
+    fun title(s: BackupSnapshot): String = if (s.legacy) Tx.s(R.string.data_backup_older_title) else BackupFiles.date(s.manifest)
 
     fun kind(s: BackupSnapshot): String = when {
-        s.legacy -> "Older"
-        s.manifest.automatic -> "Automatic"
-        else -> "Manual"
+        s.legacy -> Tx.s(R.string.data_backup_older)
+        s.manifest.automatic -> Tx.s(R.string.data_backup_automatic)
+        else -> Tx.s(R.string.data_backup_manual)
     }
 
     /** "Before Quick look · 1,204 games · 38 tiles · 2 days ago". */
     fun line(s: BackupSnapshot): String =
-        listOfNotNull(s.manifest.reason?.let { "Before $it" }, BackupFiles.summary(s.manifest)).joinToString(" · ")
+        listOfNotNull(s.manifest.reason?.let { Tx.s(R.string.data_backup_before, it) }, BackupFiles.summary(s.manifest)).joinToString(" · ")
 
     @Composable
     fun Host() {
@@ -200,7 +202,7 @@ object BackupUi {
     private fun BackUpPanel(ctx: Context, room: Dp) {
         val keys = listOf("yes") + BackupCategory.entries.map { it.id } + listOf("keys", "no")
         val target = rememberFocusTarget(MAKE, keys)
-        Panel(room, "Back up", "A new backup in ROMs/tandem/backup on this device. Older ones stay.", rows = {
+        Panel(room, Tx.s(R.string.data_backup_back_up), Tx.s(R.string.data_backup_back_up_detail), rows = {
             CategoryGrid { c ->
                 val on = c in chosen
                 TickCard(c.label, c.blurb, on, glyphOf(c), Palette.Sky, Modifier.weight(1f).height(CardHeight).takesFocus(MAKE, c.id, target == c.id)) {
@@ -209,16 +211,16 @@ object BackupUi {
                 }
             }
             SwitchCard(
-                "Account keys and logins", "Scraping, RetroAchievements and Steam. The backup folder is readable by other apps.",
+                Tx.s(R.string.data_backup_keys), Tx.s(R.string.data_backup_keys_detail),
                 withKeys, Palette.Peach, Modifier.takesFocus(MAKE, "keys", target == "keys"), glyph = Glyph.Key,
             ) {
                 withKeys = !withKeys
                 Sounds.toggle(withKeys)
             }
         }) {
-            PillButton("Cancel", Palette.Mint, Modifier.takesFocus(MAKE, "no", target == "no")) { close() }
+            PillButton(Tx.s(R.string.data_backup_cancel), Palette.Mint, Modifier.takesFocus(MAKE, "no", target == "no")) { close() }
             PillButton(
-                "Back up", Palette.Peach,
+                Tx.s(R.string.data_backup_back_up), Palette.Peach,
                 Modifier.takesFocus(MAKE, "yes", target == "yes").graphicsLayer { alpha = if (chosen.isEmpty()) 0.35f else 1f },
             ) { backUp(ctx) }
         }
@@ -230,18 +232,18 @@ object BackupUi {
         val keys = list.orEmpty().map { key(it) }.ifEmpty { listOf("make") }
         val target = rememberFocusTarget(LIST, keys)
         PanelSurface(Modifier.width(620.dp).heightIn(max = room)) {
-            Header("Restore", "Pick a backup, then what to put back.")
+            Header(Tx.s(R.string.data_backup_restore), Tx.s(R.string.data_backup_restore_detail))
             when {
                 list == null -> Text(
-                    "Looking in ROMs/tandem/backup…", Modifier.padding(TextInset), style = MaterialTheme.typography.bodyMedium,
+                    Tx.s(R.string.data_backup_looking), Modifier.padding(TextInset), style = MaterialTheme.typography.bodyMedium,
                     color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 list.isEmpty() -> {
                     Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) {
-                        PipNote("No backups yet", "Back up saves one in ROMs/tandem/backup.", mood = 1)
+                        PipNote(Tx.s(R.string.data_backup_none), Tx.s(R.string.data_backup_none_detail), mood = 1)
                     }
                     Row(Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp)) {
-                        PillButton("Back up now", Palette.Sky, Modifier.takesFocus(LIST, "make", target == "make")) { openBackUp() }
+                        PillButton(Tx.s(R.string.data_backup_now), Palette.Sky, Modifier.takesFocus(LIST, "make", target == "make")) { openBackUp() }
                     }
                 }
                 else -> {
@@ -258,9 +260,9 @@ object BackupUi {
                     }
                     KeepInView(state, keys.indexOf(target))
                     Row(Modifier.padding(horizontal = TextInset, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                        ButtonHint("A", "Choose", Palette.Mint)
-                        ButtonHint("X", "Delete", Palette.Peach)
-                        ButtonHint("B", "Close", Palette.Lavender)
+                        ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
+                        ButtonHint("X", Tx.s(R.string.data_backup_delete), Palette.Peach)
+                        ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
                     }
                 }
             }
@@ -296,7 +298,7 @@ object BackupUi {
                 if (c in holds) {
                     val on = c in restoring
                     TickCard(
-                        c.label, if (on) "Put back from this backup" else "Keeps what's here now", on, glyphOf(c), Palette.Mint,
+                        c.label, Tx.s(if (on) R.string.data_backup_put_back else R.string.data_backup_keep_here), on, glyphOf(c), Palette.Mint,
                         Modifier.weight(1f).height(CardHeight).takesFocus(PICK, c.id, target == c.id),
                     ) {
                         restoring = if (on) restoring - c else restoring + c
@@ -305,19 +307,19 @@ object BackupUi {
                 } else {
                     // Not in this backup: shown faded, so the four categories always read the same.
                     Box(Modifier.weight(1f).height(CardHeight).graphicsLayer { alpha = 0.35f }) {
-                        TickCard(c.label, "Not in this backup", false, glyphOf(c), Palette.Muted, Modifier.fillMaxSize().focusProperties { canFocus = false }) {}
+                        TickCard(c.label, Tx.s(R.string.data_backup_not_in), false, glyphOf(c), Palette.Muted, Modifier.fillMaxSize().focusProperties { canFocus = false }) {}
                     }
                 }
             }
             Text(
-                if (s.manifest.keys) "Includes account keys." else "Account keys on this device stay as they are.",
+                Tx.s(if (s.manifest.keys) R.string.data_backup_has_keys else R.string.data_backup_no_keys),
                 Modifier.fillMaxWidth().padding(horizontal = TextInset / 2),
                 style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
         }) {
-            PillButton("Back", Palette.Mint, Modifier.takesFocus(PICK, "no", target == "no")) { back() }
+            PillButton(Tx.s(R.string.common_back), Palette.Mint, Modifier.takesFocus(PICK, "no", target == "no")) { back() }
             PillButton(
-                "Restore", Palette.Peach,
+                Tx.s(R.string.data_backup_restore), Palette.Peach,
                 Modifier.takesFocus(PICK, "yes", target == "yes").graphicsLayer { alpha = if (none) 0.35f else 1f },
             ) { restore(ctx) }
         }
