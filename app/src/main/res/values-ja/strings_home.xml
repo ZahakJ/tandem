@@ -380,4 +380,30 @@
     <plurals name="home_collection_more_systems_most">
         <item quantity="other">ほか%1$d機種 · よく遊ぶ順</item>
     </plurals>
+
+    <plurals name="home_orbit_games">
+        <item quantity="other">%1$d本</item>
+    </plurals>
+    <plurals name="home_orbit_playing">
+        <item quantity="other">%1$d本プレイ中</item>
+    </plurals>
+    <string name="home_orbit_empty_hidden">ゲームはすべて非表示です</string>
+    <string name="home_orbit_empty_none">ゲームはまだありません。ゲームが入っているフォルダを選んでください</string>
+    <string name="home_orbit_empty_show">非表示のゲームを表示</string>
+    <string name="home_orbit_empty_pick">ゲームのフォルダを選ぶ</string>
+    <string name="home_orbit_continue">つづきから</string>
+    <string name="home_orbit_resume">再開</string>
+    <string name="home_orbit_caption_continue">つづきから · %1$s</string>
+    <string name="home_orbit_caption_resume">再開 · %1$s</string>
+    <string name="home_orbit_all_apps">すべてのアプリ</string>
+    <string name="home_orbit_app">アプリ</string>
+    <string name="home_orbit_note_pin">アプリをドックにピン留めすると、ここに出てきます</string>
+    <string name="home_orbit_settings">オービット</string>
+    <string name="home_orbit_holds">オービットに乗せるもの</string>
+    <string name="home_orbit_holds_help">オービットをめぐるもの：機種、コレクション、Tandemのアプリ、またはその一部。L1とR1でグループを移動します。</string>
+    <string name="home_orbit_holds_all">機種・コレクション・アプリ</string>
+    <string name="home_orbit_holds_games">機種とコレクション</string>
+    <string name="home_orbit_holds_systems">機種のみ</string>
+    <string name="home_orbit_continue_card">「つづきから」カード</string>
+    <string name="home_orbit_continue_card_help">最後に遊んだゲームを、パッケージの列の左に立つカードとして表示します。Aでつづきから遊べます（起動中なら再開）。</string>
 </resources>

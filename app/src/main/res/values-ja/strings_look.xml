@@ -299,7 +299,7 @@
     <string name="look_layout_carousel_help">カルーセル：選択中のカードが真ん中に大きく、ほかのカードは左右へ向きを変えて並びます。</string>
     <string name="look_layout_list_help">コンパクトな列と、その横の大きなプレビュー。ぱっと見渡せて、巨大なライブラリにぴったり。</string>
     <string name="look_layout_console_help">ゲーム機のようなダッシュボード：選択中のアートが画面いっぱいに広がり、下に大きなタイルが1列並びます。</string>
-    <string name="look_layout_orbit_help">Tandemオリジナル：機種、コレクション、アプリが丸いアイコンの軌道をめぐり、選択中のものが手前に大きく。その上には最近のゲームが手札のように広がり、「つづきから」のリボンがかかります。左右で回転、L1とR1でグループを移動、Xで画面を入れ替え。</string>
+    <string name="look_layout_orbit_help">Tandemオリジナル：機種、コレクション、アプリがガラス玉になって光るリングをめぐり、選択中のものが手前に大きく。リングの中には最近のゲームのパッケージが並んで立ち、その横に「つづきから」カード。左右で回転、L1とR1でグループを移動、Xで画面を入れ替え。</string>
     <string name="look_layout_spotlight_help">ゲームが主役：選択中のゲームのアートが画面いっぱいに広がり、片側にパッケージの列、反対側にロゴ・ストーリー・プレイ時間。上下で列を動かし、L1とR1で機種やコレクションを切り替え、Xでストーリーを全部読めます。</string>
 
     <string name="look_hints_play">遊ぶ</string>
@@ -462,9 +462,9 @@
     <string name="look_preset_grid_6">Cocoonのテーマパック（インストール済みなら）</string>
     <string name="look_preset_grid_7">Cocoonのバックアップがあれば、ホーム・ドック・テーマをそのまま再現</string>
     <string name="look_preset_orbit">オービット</string>
-    <string name="look_preset_orbit_blurb">Tandemオリジナルのホーム：機種、コレクション、アプリが丸いアイコンの軌道に並び、その上に選択中のもののゲームが扇のように広がります。</string>
+    <string name="look_preset_orbit_blurb">Tandemオリジナルのホーム：機種、コレクション、アプリが光るリングにガラス玉となって並び、その中に選択中のもののゲームのパッケージが立ち並びます。</string>
     <string name="look_preset_orbit_1">機種・コレクション・アプリのオービットのホーム</string>
-    <string name="look_preset_orbit_2">スポットライトの上に「つづきから」のリボン</string>
+    <string name="look_preset_orbit_2">パッケージの横に「つづきから」カード</string>
     <string name="look_preset_orbit_3">軌道の下に丸いドック</string>
     <string name="look_preset_orbit_4">下画面に詳細</string>
     <string name="look_preset_orbit_5">オービットではXで画面を入れ替え</string>

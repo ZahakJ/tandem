@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stats & trophies and the trophies themselves. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="stats_tab_overview">概要</string>
+    <string name="stats_tab_library">ライブラリ</string>
+    <string name="stats_tab_trophies">トロフィー</string>
+    <string name="stats_tab_sessions">プレイ履歴</string>
+    <string name="stats_tab_achievements">実績</string>
+    <string name="stats_hint_switch_tab">タブ切り替え</string>
+
+    <string name="stats_overview_empty">何か遊んだら、ここで数えておきますね。記録はすべてこの端末の中だけです</string>
+    <string name="stats_overview_go_back">戻る</string>
+
+    <string name="stats_tile_total">総プレイ時間</string>
+    <plurals name="stats_tile_total_across">
+        <item quantity="other">%1$d本のゲームで</item>
+    </plurals>
+    <string name="stats_tile_games">遊んだゲーム</string>
+    <plurals name="stats_tile_games_of">
+        <item quantity="other">ライブラリ%1$d本中</item>
+    </plurals>
+    <string name="stats_tile_streak">連続プレイ</string>
+    <string name="stats_tile_streak_new">これから</string>
+    <plurals name="stats_tile_streak_days">
+        <item quantity="other">%1$d日</item>
+    </plurals>
+    <plurals name="stats_tile_streak_best">
+        <item quantity="other">最長%1$d日</item>
+    </plurals>
+    <string name="stats_tile_history_starts">記録は今日から</string>
+    <string name="stats_tile_sessions">プレイ回数</string>
+    <string name="stats_tile_sessions_short">さくっと短め</string>
+    <string name="stats_tile_sessions_average">1回あたり約%1$s</string>
+    <string name="stats_tile_said">%1$s：%2$s · %3$s</string>
+
+    <string name="stats_by_system">機種別</string>
+    <string name="stats_most_played">よく遊ぶゲーム</string>
+    <plurals name="stats_mosaic_more">
+        <item quantity="other">ほか%1$d</item>
+    </plurals>
+    <string name="stats_mosaic_share">プレイ時間の%1$d%%</string>
+
+    <string name="stats_fact_morning">早起きさんですね。プレイのほとんどが朝です。</string>
+    <string name="stats_fact_afternoon">午後の冒険家。いちばん遊ぶのは昼下がりです。</string>
+    <string name="stats_fact_evening">夜があなたのゲームタイム。まったりですね！</string>
+    <string name="stats_fact_night">生粋の夜ふかしさん。プレイのほとんどが夜11時すぎです。</string>
+    <string name="stats_fact_private">記録がこの端末から出ることはありません</string>
+
+    <string name="stats_chart_title">最近30日</string>
+    <string name="stats_chart_empty_new">プレイの記録は今日からです。何か遊ぶと、ここに日々が積み上がっていきます。</string>
+    <string name="stats_chart_empty">最近30日はプレイなし。次のプレイがここに出てきます。</string>
+    <string name="stats_chart_nothing">まだなし</string>
+    <string name="stats_chart_total">合計%1$s</string>
+    <string name="stats_chart_day">%1$s · %2$s</string>
+    <string name="stats_chart_day_none">%1$s · プレイなし</string>
+    <string name="stats_today">今日</string>
+    <string name="stats_yesterday">昨日</string>
+    <string name="stats_date_short">M/d（EEE）</string>
+    <string name="stats_date_long">M月d日 EEEE</string>
+
+    <string name="stats_sessions_none_for">「%1$s」のプレイ履歴はありません。プレイ時間はインポートしたものかもしれません</string>
+    <string name="stats_sessions_show_all_long">すべてのプレイ履歴を表示</string>
+    <string name="stats_sessions_empty">遊ぶたびに、ここに履歴が残ります</string>
+    <string name="stats_sessions_see_overview">概要を見る</string>
+    <string name="stats_sessions_show_all">すべて表示</string>
+    <string name="stats_sessions_clear_these">この履歴を消去</string>
+    <string name="stats_sessions_clear_all">すべての履歴を消去</string>
+    <string name="stats_sessions_clear_these_ask">「%1$s」のプレイ履歴を消去しますか？</string>
+    <string name="stats_sessions_clear_all_ask">すべてのプレイ履歴を消去しますか？</string>
+    <plurals name="stats_sessions_cleared">
+        <item quantity="other">%1$d回分の履歴を消去しました</item>
+    </plurals>
+    <plurals name="stats_sessions_count">
+        <item quantity="other">%1$d回</item>
+    </plurals>
+    <plurals name="stats_sessions_count_for">
+        <item quantity="other">%2$s · %1$d回</item>
+    </plurals>
+    <string name="stats_sessions_hint_edit">履歴を編集</string>
+    <string name="stats_sessions_day">%1$s · %2$s</string>
+    <string name="stats_sessions_game_gone">そのゲームはもうライブラリにありません</string>
+
+    <string name="stats_export_saved">play-stats.csvとplay-sessions.csvをROMs/tandemに保存しました</string>
+    <string name="stats_export_failed">ROMs/tandemに書きこめませんでした</string>
+
+    <string name="stats_library_empty">どのゲームでも Y › ステータス で積みゲーにしたり、クリア済みにしたりできます。ライブラリがここで自然と整理されていきます</string>
+    <string name="stats_library_playing">プレイ中</string>
+    <string name="stats_library_playing_latest">最新：%1$s</string>
+    <string name="stats_library_playing_none">遊びかけなし</string>
+    <string name="stats_library_backlog">積みゲー</string>
+    <string name="stats_library_backlog_left">崩すのに約%1$s</string>
+    <string name="stats_library_backlog_left_more">崩すのに約%1$s以上</string>
+    <string name="stats_library_backlog_none">出番待ちのゲーム</string>
+    <string name="stats_library_finished">クリア済み</string>
+    <plurals name="stats_library_finished_year">
+        <item quantity="other">今年%1$d本</item>
+    </plurals>
+    <string name="stats_library_completed">コンプリート</string>
+    <string name="stats_library_completed_none">100%達成</string>
+    <string name="stats_library_completed_share">クリアしたゲームの%1$d%%</string>
+    <plurals name="stats_library_untracked">
+        <item quantity="other">遊んだゲームのうち%1$d本にまだステータスがありません。Aで、よく遊んだ順に1本ずつ分けていけます。</item>
+    </plurals>
+    <string name="stats_library_shelf">%1$s · %2$d</string>
+    <string name="stats_library_shelf_playing">プレイ中</string>
+    <string name="stats_library_shelf_backlog">積みゲー</string>
+    <string name="stats_library_shelf_beaten">クリア済みとコンプリート</string>
+    <string name="stats_library_shelf_shelved">中断中</string>
+    <string name="stats_library_shelf_endless">エンドレス</string>
+    <string name="stats_library_just_started">始めたばかり</string>
+    <string name="stats_ago_today">今日</string>
+    <string name="stats_ago_yesterday">昨日</string>
+    <plurals name="stats_ago_days">
+        <item quantity="other">%1$d日前</item>
+    </plurals>
+    <plurals name="stats_ago_months">
+        <item quantity="other">%1$dか月前</item>
+    </plurals>
+    <plurals name="stats_ago_years">
+        <item quantity="other">%1$d年前</item>
+    </plurals>
+    <string name="stats_waiting">出番待ち</string>
+    <string name="stats_waiting_today">今日から出番待ち</string>
+    <string name="stats_waiting_yesterday">昨日から出番待ち</string>
+    <plurals name="stats_waiting_days">
+        <item quantity="other">%1$d日間出番待ち</item>
+    </plurals>
+    <plurals name="stats_waiting_months">
+        <item quantity="other">%1$dか月間出番待ち</item>
+    </plurals>
+    <plurals name="stats_waiting_years">
+        <item quantity="other">%1$d年間出番待ち</item>
+    </plurals>
+
+    <string name="stats_sorter_none">遊んだゲームには全部ステータスがついています</string>
+    <plurals name="stats_sorter_done">
+        <item quantity="other">仕分け完了！%1$d本終わりました</item>
+    </plurals>
+    <string name="stats_sorter_title">遊んだゲームを仕分ける</string>
+    <string name="stats_sorter_set">決定</string>
+    <string name="stats_sorter_stop">今はここまで</string>
+    <string name="stats_sorter_progress">%1$d/%2$d</string>
+    <string name="stats_sorter_skip">これは飛ばす</string>
+
+    <string name="stats_tier_bronze">ブロンズ</string>
+    <string name="stats_tier_silver">シルバー</string>
+    <string name="stats_tier_gold">ゴールド</string>
+    <string name="stats_tier_platinum">プラチナ</string>
+
+    <string name="stats_trophy_new">🏆 %1$sトロフィー：%2$s · %3$s</string>
+    <plurals name="stats_trophy_new_more">
+        <item quantity="other">🏆 %2$sトロフィー：%3$s（ほか%1$d個）</item>
+    </plurals>
+    <string name="stats_trophies_about">トロフィーは、すべての機種でのプレイとゲームのステータスから獲得します</string>
+    <plurals name="stats_trophies_earned">
+        <item quantity="other">トロフィー %1$d/%2$d</item>
+    </plurals>
+    <plurals name="stats_trophies_finished">
+        <item quantity="other">%1$d本クリア</item>
+    </plurals>
+    <string name="stats_trophies_cabinet">飾り棚：クリアしたゲーム</string>
+    <string name="stats_date_month">yyyy年M月</string>
+    <string name="stats_date_earned">yyyy年M月d日</string>
+    <string name="stats_trophy_said">%1$s：%2$s</string>
+    <string name="stats_trophy_progress_said">%1$s。今のところ%2$s</string>
+    <string name="stats_trophy_earned_on">%1$s · %2$s</string>
+    <string name="stats_trophy_hours">%1$d時間／%2$d時間</string>
+
+    <string name="stats_trophy_first_play">ゲームスタート！</string>
+    <string name="stats_trophy_first_play_how">Tandemで初めてゲームを遊ぶ</string>
+    <string name="stats_trophy_hour">あと1回だけ</string>
+    <string name="stats_trophy_hour_how">合計1時間遊ぶ</string>
+    <string name="stats_trophy_ten_hours">なじんできた</string>
+    <string name="stats_trophy_ten_hours_how">合計10時間遊ぶ</string>
+    <string name="stats_trophy_hundred_hours">百時間の猛者</string>
+    <string name="stats_trophy_hundred_hours_how">合計100時間遊ぶ</string>
+    <string name="stats_trophy_thousand_hours">生涯ゲーマー</string>
+    <string name="stats_trophy_thousand_hours_how">合計1,000時間遊ぶ</string>
+    <string name="stats_trophy_marathon">耐久プレイ</string>
+    <string name="stats_trophy_marathon_how">1回で3時間遊ぶ</string>
+    <string name="stats_trophy_devoted">やりこみ派</string>
+    <string name="stats_trophy_devoted_how">1本のゲームを25時間遊ぶ</string>
+    <string name="stats_trophy_second_home">第二の故郷</string>
+    <string name="stats_trophy_second_home_how">1本のゲームを100時間遊ぶ</string>
+    <string name="stats_trophy_week">1週間皆勤</string>
+    <string name="stats_trophy_week_how">7日連続で遊ぶ</string>
+    <string name="stats_trophy_month">皆勤賞</string>
+    <string name="stats_trophy_month_how">30日連続で遊ぶ</string>
+    <string name="stats_trophy_regular">常連さん</string>
+    <string name="stats_trophy_regular_how">100回遊ぶ</string>
+    <string name="stats_trophy_night_owl">夜ふかし名人</string>
+    <string name="stats_trophy_night_owl_how">夜中の2時から5時にゲームを始める</string>
+    <string name="stats_trophy_early_bird">早起きは三文の徳</string>
+    <string name="stats_trophy_early_bird_how">朝7時前にゲームを始める</string>
+    <string name="stats_trophy_travelled">あちこち旅人</string>
+    <string name="stats_trophy_travelled_how">3機種でゲームを遊ぶ</string>
+    <string name="stats_trophy_globetrotter">世界を股にかけて</string>
+    <string name="stats_trophy_globetrotter_how">8機種でゲームを遊ぶ</string>
+    <string name="stats_trophy_sampler">つまみ食い</string>
+    <string name="stats_trophy_sampler_how">25本のゲームを遊ぶ</string>
+    <string name="stats_trophy_plans">積みゲーの山</string>
+    <string name="stats_trophy_plans_how">積みゲーを5本にする</string>
+    <string name="stats_trophy_credits">スタッフロール</string>
+    <string name="stats_trophy_credits_how">ゲームを1本クリアする</string>
+    <string name="stats_trophy_closer">完走者</string>
+    <string name="stats_trophy_closer_how">ゲームを5本クリアする</string>
+    <string name="stats_trophy_finisher">クリアの達人</string>
+    <string name="stats_trophy_finisher_how">ゲームを25本クリアする</string>
+    <string name="stats_trophy_completionist">コンプ魂</string>
+    <string name="stats_trophy_completionist_how">ゲームを1本100%コンプリートする</string>
+    <string name="stats_trophy_perfectionist">完璧主義者</string>
+    <string name="stats_trophy_perfectionist_how">ゲームを10本100%コンプリートする</string>
+    <string name="stats_trophy_monthly">月イチクリア</string>
+    <string name="stats_trophy_monthly_how">1年で12本クリアする</string>
+    <string name="stats_trophy_collector">コレクター</string>
+    <string name="stats_trophy_collector_how">ライブラリのゲームを100本にする</string>
+    <string name="stats_trophy_archivist">ゲーム図書館長</string>
+    <string name="stats_trophy_archivist_how">ライブラリのゲームを500本にする</string>
+    <string name="stats_trophy_master">Tandemマスター</string>
+    <string name="stats_trophy_master_how">ほかのトロフィーをすべて獲得する</string>
+
+    <string name="stats_date_session">yyyy年M月d日（EEE）</string>
+    <string name="stats_date_day_month">M月d日</string>
+    <string name="stats_date_weekday">EEE</string>
+    <string name="stats_session_header">%1$s · %2$s · %3$s</string>
+    <string name="stats_session_edit_length">長さを編集</string>
+    <string name="stats_session_change_date">日時を変更</string>
+    <string name="stats_session_when">%1$s %2$s</string>
+    <string name="stats_session_merge">次の回とまとめる</string>
+    <string name="stats_session_merge_adds">＋%1$s</string>
+    <string name="stats_session_merged">%1$sの1回分にまとめました</string>
+    <string name="stats_session_only_game">このゲームだけ</string>
+    <string name="stats_session_delete">削除</string>
+    <string name="stats_session_deleted">履歴を削除しました</string>
+    <string name="stats_session_length">長さ</string>
+    <string name="stats_session_one_min">1分</string>
+    <string name="stats_session_one_day">24時間</string>
+    <string name="stats_session_ten_min">10分</string>
+    <string name="stats_session_cancel">キャンセル</string>
+    <string name="stats_session_save">保存</string>
+    <string name="stats_session_length_set">長さを%1$sにしました</string>
+    <string name="stats_session_day">日付</string>
+    <string name="stats_session_time">時刻</string>
+    <string name="stats_session_midnight">0時</string>
+    <string name="stats_session_change">変更</string>
+    <string name="stats_session_a_week">1週間</string>
+    <string name="stats_session_an_hour">1時間</string>
+    <string name="stats_session_moved">%1$s %2$sに移動しました</string>
+    <plurals name="stats_sessions_clear_detail">
+        <item quantity="other">%1$d回分（%2$s）の履歴を削除し、プレイ時間・プレイ回数・最後に遊んだ日を残りから計算し直します。ほかのフロントエンドからインポートしたプレイ時間は残ります。元に戻せません。</item>
+    </plurals>
+    <plurals name="stats_sessions_clear_detail_of">
+        <item quantity="other">「%3$s」の%1$d回分（%2$s）の履歴を削除し、プレイ時間・プレイ回数・最後に遊んだ日を残りから計算し直します。ほかのフロントエンドからインポートしたプレイ時間は残ります。元に戻せません。</item>
+    </plurals>
+</resources>

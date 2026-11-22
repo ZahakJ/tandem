@@ -176,6 +176,12 @@ Two exceptions where Japan has its own word: **OLED** is 有機EL (what every Ja
 | Match (RetroAchievements) | 照合 | |
 | Regions | 北米 / 欧州 / 日本 / 世界 | |
 | Screenshot chip on the companion | スクショ | Short, what Japanese players say |
+| Notebook (Notes) / General | ノート / 一般 | |
+| A journal note on a session | ひとこと | Light, like a diary line |
+| Glossary (note kind) / Symbol / Meaning | 用語集 / 記号 / 意味 | |
+| Streak | 連続プレイ (🔥 %d日連続) | |
+| Orbit (new design) | glowing ring of glassy orbs = 光るリング / ガラス玉; Continue card = 「つづきから」カード | |
+| Trophy names | Transcreated: スタッフロール, 早起きは三文の徳, 積みゲーの山, 皆勤賞, あと1回だけ… | |
 | Trophy | トロフィー | PlayStation's word |
 | Bronze / Silver / Gold / Platinum | ブロンズ / シルバー / ゴールド / プラチナ | PlayStation's words |
 | Achievement | 実績 | Xbox and Steam Japan |
