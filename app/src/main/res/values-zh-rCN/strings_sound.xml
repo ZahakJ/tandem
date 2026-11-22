@@ -62,6 +62,8 @@
     <string name="sound_pack_minimal_blurb">安静、短促、低调。几乎听不见。</string>
     <string name="sound_pack_studio">录音棚</string>
     <string name="sound_pack_studio_blurb">毛毡与木头：低沉温暖的敲击，带一点柔软的回弹，像一把做工精良的键盘。</string>
+    <string name="sound_pack_thock">麻将音</string>
+    <string name="sound_pack_thock_blurb">低沉、厚实的“麻将音”，像一把好轴体的机械键盘。</string>
     <string name="sound_pack_glass">玻璃</string>
     <string name="sound_pack_glass_blurb">干净明亮的水晶音色，余音稍长。清脆又精致。</string>
     <string name="sound_pack_air">空气</string>

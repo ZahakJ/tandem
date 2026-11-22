@@ -49,6 +49,9 @@ internal object ModernSfx {
             val GLASS = Timbre(pitch = 1.5, tap = 1.35, tapGain = 0.8, body = 1.4, bodyGain = 0.35, decay = 1.9, fm = 1.5, air = 0.8, cutoff = 9500.0, room = 2.6, level = -1.0)
             // Pure sines, a whisper of a tap, breaths doing most of the work, soft room.
             val AIR = Timbre(pitch = 1.0, tap = 0.7, tapGain = 0.35, body = 0.9, bodyGain = 0.5, decay = 1.4, fm = 0.0, air = 1.9, cutoff = 5000.0, room = 2.0)
+            // A good keyboard's thock: the weight moved down to ~250–300 Hz and left to ring a little longer, the
+            // click muffled and quiet on top, nothing bright, almost no room. The tones keep their pitch, only warmer.
+            val THOCK = Timbre(pitch = 1.0, tap = 0.5, tapGain = 0.55, body = 0.22, bodyGain = 2.1, decay = 2.2, fm = 0.25, air = 0.5, cutoff = 2600.0, room = 0.35, level = 1.0)
 
             /** The timbre for [pack], or null for the packs made another way. */
             fun of(pack: SoundPack): Timbre? = when (pack) {
@@ -56,6 +59,7 @@ internal object ModernSfx {
                 SoundPack.Studio -> STUDIO
                 SoundPack.Glass -> GLASS
                 SoundPack.Air -> AIR
+                SoundPack.Thock -> THOCK
                 else -> null
             }
         }

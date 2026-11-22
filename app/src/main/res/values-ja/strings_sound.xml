@@ -62,6 +62,8 @@
     <string name="sound_pack_minimal_blurb">静かで短く、さりげない。あるかないかくらいの音です。</string>
     <string name="sound_pack_studio">スタジオ</string>
     <string name="sound_pack_studio_blurb">フェルトと木の音。低くあたたかいタップに、やわらかなコトッ。上質なキーボードのような打ち心地です。</string>
+    <string name="sound_pack_thock">コトコト</string>
+    <string name="sound_pack_thock_blurb">メカニカルキーボードのような、低くこもったコトコトした打鍵音。</string>
     <string name="sound_pack_glass">ガラス</string>
     <string name="sound_pack_glass_blurb">澄んだ明るいクリスタルの音が、少し長めに響きます。くっきり、つややか。</string>
     <string name="sound_pack_air">そよかぜ</string>

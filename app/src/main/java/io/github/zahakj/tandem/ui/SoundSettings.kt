@@ -252,7 +252,7 @@ fun SoundCues() {
 
 private fun packColor(p: SoundPack): Color = when (p) {
     SoundPack.Modern -> Palette.Sky; SoundPack.Playful -> Palette.Lavender; SoundPack.Chiptune -> Palette.Mint; SoundPack.Bubbly -> Palette.Peach
-    SoundPack.Minimal -> Palette.Muted; SoundPack.Studio -> Palette.Butter; SoundPack.Glass -> Palette.Sky; SoundPack.Air -> Palette.Mint
+    SoundPack.Minimal -> Palette.Muted; SoundPack.Studio -> Palette.Butter; SoundPack.Glass -> Palette.Sky; SoundPack.Air -> Palette.Mint; SoundPack.Thock -> Palette.Peach
 }
 
 /** An option of UI sounds in the picker: its pack's wave, a flat line for Off, a recording's bars for Custom. */
@@ -316,6 +316,8 @@ private fun DrawScope.drawPackWave(p: SoundPack, color: Color, phase: Float) {
             SoundPack.Minimal -> if (u < 0.08f) sin(u * 80).toFloat() * (1 - u / 0.08f) else 0f
             // A low, rounded thump that is gone quickly.
             SoundPack.Studio -> sin((u * 4 - phase * 2) * 2 * PI).toFloat() * (1 - u).pow(4f)
+            // A deep thud that lands hard and is gone: two slow swings, steeply damped.
+            SoundPack.Thock -> sin((u * 2.5 - phase * 2) * 2 * PI).toFloat() * (1 - u).pow(6f) * 1.1f
             // A fast, bright ring that takes its time to fade.
             SoundPack.Glass -> sin((u * 16 - phase * 2) * 2 * PI).toFloat() * (1 - u).pow(1.2f) * 0.8f
             // A soft swell rising and falling.

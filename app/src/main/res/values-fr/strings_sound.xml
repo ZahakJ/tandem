@@ -90,6 +90,8 @@
     <string name="sound_pack_minimal_blurb">Discret, bref et subtil. À peine là.</string>
     <string name="sound_pack_studio">Studio</string>
     <string name="sound_pack_studio_blurb">Feutre et bois : des tapotements graves et chaleureux, avec un petit bruit mat, comme un clavier bien fait.</string>
+    <string name="sound_pack_thock">Thock</string>
+    <string name="sound_pack_thock_blurb">Des « thock » graves et feutrés, comme un bon clavier mécanique.</string>
     <string name="sound_pack_glass">Cristal</string>
     <string name="sound_pack_glass_blurb">Des notes de cristal claires et lumineuses qui résonnent un peu plus longtemps. Net et soigné.</string>
     <string name="sound_pack_air">Brise</string>

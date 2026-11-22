@@ -29,6 +29,24 @@ class SfxTest {
         assertTrue("$name doesn't end quietly", abs(data.last()) < 1e-3f)
     }
 
+    /** Zero crossings a second: a rough measure of how bright a sound is. */
+    private fun brightness(data: FloatArray): Double {
+        var n = 0
+        for (i in 1 until data.size) if ((data[i - 1] < 0f) != (data[i] < 0f)) n++
+        return n * rate.toDouble() / data.size
+    }
+
+    // Only the navigation sounds: in the others the little tune keeps its notes, only warmer.
+    @Test fun thockIsDeeperThanModern() {
+        for (k in listOf(Sfx.Move, Sfx.Key, Sfx.Page)) {
+            val modern = brightness(SfxSynth.render(SoundPack.Modern, k, rate))
+            val thock = brightness(SfxSynth.render(SoundPack.Thock, k, rate))
+            report.append("%-10s brightness modern %6.0f  thock %6.0f%n".format(k.name, modern, thock))
+            assertTrue("Thock ${k.name} ($thock) isn't clearly deeper than Modern's ($modern)", thock < modern * 0.7)
+        }
+        println(report)
+    }
+
     @Test fun everySoundIsShortQuietAndUnclipped() {
         for (pack in SoundPack.entries) for (k in Sfx.entries) {
             val max = when {

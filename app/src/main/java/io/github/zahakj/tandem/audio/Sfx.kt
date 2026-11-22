@@ -26,6 +26,7 @@ enum class SoundPack(val id: String, @StringRes private val labelRes: Int, @Stri
     Studio("studio", R.string.sound_pack_studio, R.string.sound_pack_studio_blurb),
     Glass("glass", R.string.sound_pack_glass, R.string.sound_pack_glass_blurb),
     Air("air", R.string.sound_pack_air, R.string.sound_pack_air_blurb),
+    Thock("thock", R.string.sound_pack_thock, R.string.sound_pack_thock_blurb),
     ;
 
     val label: String get() = Tx.s(labelRes)
@@ -212,7 +213,7 @@ object SfxSynth {
                         ph += f / rate
                         (sin(2 * PI * ph) + 0.1 * sin(4 * PI * ph)) * env(t, 0.003, len * 0.35)
                     }
-                    SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air -> {
+                    SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air, SoundPack.Thock -> {
                         ph += f0 / rate
                         sin(2 * PI * ph) * env(t, 0.002, len * 0.25) * 0.8
                     }
@@ -256,7 +257,7 @@ object SfxSynth {
                 }
                 SoundPack.Chiptune -> note(0.0, 96, 0.03, 0.8)
                 SoundPack.Bubbly -> note(0.0, 86, 0.035, 0.9)
-                SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air -> {
+                SoundPack.Minimal, SoundPack.Modern, SoundPack.Studio, SoundPack.Glass, SoundPack.Air, SoundPack.Thock -> {
                     val bp = Svf().apply { set(2200.0, 2.0, rate) }
                     for (i in 0 until idx(0.02)) {
                         val t = i.toDouble() / rate

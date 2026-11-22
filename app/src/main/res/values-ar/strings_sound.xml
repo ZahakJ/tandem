@@ -73,6 +73,8 @@
     <string name="sound_pack_minimal_blurb">هادئة وقصيرة وخفيفة. بالكاد تُسمع.</string>
     <string name="sound_pack_studio">استوديو</string>
     <string name="sound_pack_studio_blurb">لبّاد وخشب: نقرات منخفضة دافئة مع خبطة ناعمة، كلوحة مفاتيح متقنة الصنع.</string>
+    <string name="sound_pack_thock">طقطقة</string>
+    <string name="sound_pack_thock_blurb">طقطقات عميقة مكتومة، كلوحة مفاتيح ميكانيكية بمفاتيح ممتازة.</string>
     <string name="sound_pack_glass">كريستال</string>
     <string name="sound_pack_glass_blurb">نغمات كريستالية صافية مشرقة يطول رنينها قليلًا. أنيقة ومصقولة.</string>
     <string name="sound_pack_air">نسيم</string>

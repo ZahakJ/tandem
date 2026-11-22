@@ -90,6 +90,8 @@
     <string name="sound_pack_minimal_blurb">Quiet, short and subtle. Barely there.</string>
     <string name="sound_pack_studio">Studio</string>
     <string name="sound_pack_studio_blurb">Felt and wood: low, warm taps with a soft thump, like a well-made keyboard.</string>
+    <string name="sound_pack_thock">Thock</string>
+    <string name="sound_pack_thock_blurb">Deep, muted thocks, like a mechanical keyboard with good switches.</string>
     <string name="sound_pack_glass">Glass</string>
     <string name="sound_pack_glass_blurb">Clean, bright crystal tones that ring a little longer. Crisp and polished.</string>
     <string name="sound_pack_air">Air</string>
