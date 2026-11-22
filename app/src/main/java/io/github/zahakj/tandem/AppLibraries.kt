@@ -118,6 +118,8 @@ object AppLibraries {
                 if (old.exists()) ScanCache.bump()
                 old.deleteRecursively()
             }
+            // The script DroidDeck used before app-games.sh took over for both apps.
+            File(files, "droiddeck.sh").delete()
             snapshot = s
             dir = d
             setTiles(build(s))
