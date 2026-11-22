@@ -176,6 +176,20 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Do Not Disturb | عدم الإزعاج | Android |
 | Root (Shizuku as root) | بصلاحيات الجذر | Android |
 | Play time units, short | 45د، 2س 5د | |
+| Wait units (PIN pad) | 25 ث، 4 د، 23 س | |
+| Statuses: Backlog, Playing, Finished, Completed, Shelved, Endless | قائمة الانتظار، قيد اللعب، أنهيتها، مكتملة، مؤجّلة، بلا نهاية | |
+| Clip / Screenshot | مقطع / لقطة شاشة | |
+| Companion app (per game, Extras) | التطبيق المرافق | Distinct from Tandem's own رفيق |
+| Unlocked / Locked (achievement) | مفتوح / مقفل | |
+| Locked field (Edit details) | خانة مقفلة | |
+| Chord / Hold (rebinding) | تركيبة / ضغط مطوّل | |
+| Performance modes: Standard, Performance, High performance | قياسي، أداء، أداء عالٍ | |
+| Fan modes: Off, Quiet, Smart, Sport | إيقاف، هادئ، ذكي، رياضي | |
+| Screen off (companion option) | شاشة مطفأة | |
+| Time to beat | مدة الإنهاء | |
+| Downloaded media | الوسائط المنزّلة | |
+| Scrape modes: Missing basics, Missing selected, Force all | الأساسيات الناقصة، الناقص المختار، الكل من جديد | |
+| Fanart | فن المعجبين | |
 | Play time units, long | 45 دقيقة، ساعتان، 3 ساعات و5 د | |
 | Dual screen assistant (AYN's app) | مساعد الشاشة المزدوجة | Check against AYN's own Arabic name if it has one |
 

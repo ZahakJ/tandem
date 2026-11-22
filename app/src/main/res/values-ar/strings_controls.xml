@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Controls: controllers, button prompts, the clock format, rebinding, the Deck (لوحة اللمس) and playing
+     with an external controller. Button letters stay as they are. See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="controls_group_home_button">زر Home في ذراع التحكّم</string>
+    <string name="controls_group_controllers">أذرع التحكّم</string>
+    <string name="controls_group_pad_link">العب بذراع تحكّم</string>
+
+    <string name="controls_home_button">زر Home في ذراع التحكّم</string>
+    <string name="controls_home_button_help">كثير من أذرع التحكّم في وضع X-input ترسل زر Home (الدليل) كزر يتجاهله Android. داخل Tandem يعمل دائمًا كزر Home. ولتشغيله في الألعاب والتطبيقات الأخرى أيضًا، فعّل «Tandem: Controller Home button» في إعدادات تسهيل الاستخدام في Android (الزر A يفتحها؛ وإن كان الخيار باهتًا، اسمح بالإعدادات المقيّدة في «معلومات التطبيق» لـ Tandem أولًا). بعدها لا ينظر Tandem إلا إلى ذلك الزر وحده، ومن أذرع التحكّم الخارجية فقط؛ ولا يلمس أزرار الجهاز المدمجة أبدًا.</string>
+    <string name="controls_open">فتح</string>
+    <string name="controls_hold_home">الضغط مطوّلًا على Home</string>
+    <string name="controls_hold_home_help">ما يفعله الضغط مطوّلًا على زر Home في ذراع التحكّم: مبدّل الألعاب في Tandem، أو التطبيقات الأخيرة في Android (يحتاج تفعيل «زر Home في ذراع التحكّم»؛ وبدونه، مبدّل الألعاب).</string>
+    <string name="controls_hold_home_switcher">مبدّل الألعاب</string>
+    <string name="controls_hold_home_recents">التطبيقات الأخيرة</string>
+
+    <string name="controls_pad_nintendo_help">تسميات أزرار Nintendo: يبدّل A/B وX/Y لهذا الذراع وحده، فيصبح الزر المطبوع عليه A هو زر التأكيد. استخدمه لأذرع على طراز Switch في وضع X-input. يسري داخل Tandem؛ ولا يتأثر به الجهاز المدمج ولا الأذرع الأخرى، و«تبديل A وB» أعلاه يبقى ساريًا فوقه. وللمحاكيات تعيين أزرار خاص بكل ذراع في إعداداتها.</string>
+    <string name="controls_pad_unnamed">ذراع تحكّم</string>
+    <string name="controls_pad_numbered">%1$s %2$d</string>
+    <string name="controls_no_pads">لا أذرع تحكّم أخرى</string>
+    <string name="controls_no_pads_value">صِل واحدًا</string>
+    <string name="controls_no_pads_help">اقرن ذراع تحكّم عبر البلوتوث أو صِله بسلك وسيظهر هنا، مع مفتاح تسميات Nintendo الخاص به (يبدّل A/B وX/Y لذلك الذراع وحده). وأزرار الجهاز المدمجة تتبع «تبديل A وB» أعلاه.</string>
+    <string name="controls_no_pads_toast">اقرن ذراع تحكّم أو صِله، وسيظهر هنا</string>
+    <string name="controls_pads_note">مفعّل: تسميات Nintendo</string>
+
+    <string name="controls_link">ذراع التحكّم في الألعاب</string>
+    <string name="controls_link_unavailable">غير متاح</string>
+    <string name="controls_link_help">أي ذراع تحكّم يلعب بدل المدمج، في كل محاكي، حتى في منتصف اللعب: تبقى الألعاب تستمع إلى أزرار الجهاز المدمجة، وTandem يمرّر إليها أزرار الذراع المختار وعصيّه. والأزرار المدمجة تبقى تعمل أيضًا (وفي الإعدادات السريعة كذلك). الذراع الذي يتصل أثناء لعبة يعرض نفسه على الشاشة السفلية: اضغط A أو Start فيه. وفصله يعيدك إلى الأزرار المدمجة.</string>
+    <string name="controls_link_builtin">المدمج</string>
+    <string name="controls_link_auto">استخدم دائمًا الذراع المتصل</string>
+    <string name="controls_link_auto_help">استخدم دائمًا ذراع التحكّم المتصل: الذراع الذي يتصل يلعب بدل المدمج فورًا، دون سؤال. اتركه معطّلًا للعب بلاعبَين: يبقى الذراع حينها ذراعًا مستقلًا، ويحتاج المحاكي إلى تعيينه كاللاعب 2.</string>
+    <string name="controls_link_in_use">المستخدم: %1$s</string>
+
+    <string name="controls_binding_hold">%1$s مطوّلًا</string>
+    <string name="controls_binding_none">بلا زر</string>
+    <string name="controls_binding_none_value">بلا زر</string>
+
+    <string name="controls_clock_system">مثل النظام</string>
+    <string name="controls_clock_12">12 ساعة</string>
+    <string name="controls_clock_24">24 ساعة</string>
+    <string name="controls_clock_off">مخفية</string>
+
+    <string name="controls_command_open">فتح / تحديد</string>
+    <string name="controls_command_open_help">يفتح العنصر المحدّد أو يشغّل اللعبة؛ A على الأزرار والصفوف.</string>
+    <string name="controls_command_back">رجوع</string>
+    <string name="controls_command_back_help">يرجع، أو يُغلق قائمة أو لوحة.</string>
+    <string name="controls_command_options">خيارات اللعبة</string>
+    <string name="controls_command_options_help">قائمة خيارات اللعبة أو المنصّة أو المجلد أو التطبيق المحدّد؛ لمسة مطوّلة على شاشة اللمس.</string>
+    <string name="controls_command_action">تبديل الشاشتين / بحث</string>
+    <string name="controls_command_action_help">بحث، أو تبديل الشاشتين على شبكة الأيقونات، حسب إعداد «الزر X». ويحذف حرفًا على لوحة المفاتيح.</string>
+    <string name="controls_command_start">قائمة Start</string>
+    <string name="controls_command_start_help">لوحة Start؛ في الإعدادات يُغلقها، وفي النماذج يؤكّد.</string>
+    <string name="controls_command_quick">الإعدادات السريعة</string>
+    <string name="controls_command_quick_help">السطوع، ومستوى الصوت، وWi-Fi، وتوفير شحن البطارية، وبقية المربعات السريعة.</string>
+    <string name="controls_command_switcher">الألعاب الجارية</string>
+    <string name="controls_command_switcher_help">كل لعبة مفتوحة، لتستأنفها أو تُغلقها.</string>
+    <string name="controls_command_switcher_chord">الألعاب الجارية، بأزرار معًا</string>
+    <string name="controls_command_switcher_chord_help">مبدّل الألعاب مرة أخرى، بأزرار تُضغط معًا: Select وStart، ما لم تغيّرها.</string>
+    <string name="controls_command_surprise">فاجئني</string>
+    <string name="controls_command_surprise_help">يقفز إلى لعبة عشوائية لم تلعبها قط. وهو أيضًا «تراجع» على الرسائل، وSelect في التطبيقات.</string>
+    <string name="controls_command_hidden">الألعاب المخفية</string>
+    <string name="controls_command_hidden_help">الوضع الخاص معطّل: يفعّله فورًا. مفعّل: يُظهر الألعاب المخفية بعد رمز PIN، أو يخبّئها.</string>
+    <string name="controls_command_previous">التبويب أو الصفحة السابقة</string>
+    <string name="controls_command_previous_help">المنصّة أو المجموعة أو صفحة الإعدادات أو تبويب الإحصاءات السابق؛ أيقونات أكبر على الشبكة.</string>
+    <string name="controls_command_next">التبويب أو الصفحة التالية</string>
+    <string name="controls_command_next_help">المنصّة أو المجموعة أو صفحة الإعدادات أو تبويب الإحصاءات التالي؛ أيقونات أصغر على الشبكة.</string>
+    <string name="controls_command_page_up">صفحة لأعلى</string>
+    <string name="controls_command_page_up_help">في قائمة ألعاب: الحرف السابق (أو السنة، أو التقييم)، وفي غيرها صفحة لأعلى؛ وشريط «لُعبت مؤخرًا» على الشبكة.</string>
+    <string name="controls_command_page_down">صفحة لأسفل</string>
+    <string name="controls_command_page_down_help">في قائمة ألعاب: الحرف التالي (أو السنة، أو التقييم)، وفي غيرها صفحة لأسفل.</string>
+    <string name="controls_command_side_panel">اللوحة الجانبية</string>
+    <string name="controls_command_side_panel_help">على الشاشة الرئيسية: بيب، والإعدادات السريعة، وإشعاراتك. تتشارك زرها مع «صفحة لأسفل» ما لم تغيّره.</string>
+    <string name="controls_command_favourite">المفضّلة</string>
+    <string name="controls_command_favourite_help">يضيف اللعبة المحدّدة إلى المفضّلة، أو يزيلها منها. بلا زر حتى تعطيه واحدًا.</string>
+    <string name="controls_command_screenshot">لقطة شاشة</string>
+    <string name="controls_command_screenshot_help">لقطة شاشة للعبة التي تعمل على الشاشة الأخرى، تُحفظ في ROMs/screenshots، كما يفعل زر «لقطة شاشة» في الرفيق. تعمل ما دام Tandem في المقدّمة.</string>
+    <string name="controls_command_clip">مقطع</string>
+    <string name="controls_command_clip_help">مقطع مدته 15 ثانية للعبة التي تعمل على الشاشة الأخرى، أو يوقف المقطع الجاري تسجيله، كما يفعل زر «مقطع» في الرفيق. يعمل ما دام Tandem في المقدّمة.</string>
+    <string name="controls_command_home">Home في ذراع التحكّم</string>
+    <string name="controls_command_home_help">زر Home (الدليل) في ذراع التحكّم داخل Tandem: الضغطة القصيرة Home، والمطوّلة تفعل ما يقوله «الضغط مطوّلًا على Home».</string>
+
+    <string name="controls_refused_hold_chord">الضغط المطوّل يكون بزر واحد</string>
+    <string name="controls_refused_single">«%1$s» يحتاج زرًا واحدًا، لا تركيبة ولا ضغطًا مطوّلًا</string>
+    <string name="controls_refused_part_of">%1$s جزء من «%2$s» (%3$s)</string>
+    <string name="controls_refused_is_pass">%1$s هو «%2$s»: لا يمكن أن يكون جزءًا من تركيبة أو ضغط مطوّل</string>
+    <string name="controls_refused_overlaps">%1$s يتداخل مع «%2$s» (%3$s)</string>
+    <string name="controls_refused_essential">«%1$s» يحتاج زرًا دائمًا</string>
+    <string name="controls_refused_essential_swap">%1$s هو «%2$s»، الذي يحتاج زرًا دائمًا: أعطِ «%2$s» زرًا آخر أولًا</string>
+    <string name="controls_refused_exchange">«%1$s» لا يمكنه أخذ %2$s بالمقابل: %3$s</string>
+
+    <string name="controls_rebind_title">إعادة تعيين الأزرار</string>
+    <plurals name="controls_rebind_changes">
+        <item quantity="zero">لا تغييرات</item>
+        <item quantity="one">تغيير واحد</item>
+        <item quantity="two">تغييران</item>
+        <item quantity="few">%1$d تغييرات</item>
+        <item quantity="many">%1$d تغييرًا</item>
+        <item quantity="other">%1$d تغيير</item>
+    </plurals>
+    <string name="controls_rebind_reset_all">إعادة ضبط الكل</string>
+    <string name="controls_rebind_reset_all_help">كل أمر يعود إلى زره الأصلي.</string>
+    <string name="controls_rebind_reset_all_detail">كل أمر يعود إلى زره الأصلي، بما في ذلك «تبديل A وB» و«تبديل X وY». و«تراجع» يعيد أزرارك.</string>
+    <string name="controls_rebind_reset">إعادة الضبط</string>
+    <string name="controls_rebind_rebind">إعادة التعيين</string>
+    <string name="controls_rebind_none_hint">بلا زر</string>
+    <string name="controls_rebind_already_default">كل الأزرار على وضعها الافتراضي أصلًا</string>
+    <string name="controls_rebind_reset_done">عادت كل الأزرار إلى وضعها الافتراضي</string>
+    <string name="controls_rebind_commands">الأوامر</string>
+    <string name="controls_rebind_changed">مُعدّل</string>
+    <string name="controls_rebind_default">الافتراضي: %1$s</string>
+    <string name="controls_rebind_set">%1$s: %2$s</string>
+    <string name="controls_rebind_set_none">%1$s: بلا زر</string>
+    <string name="controls_rebind_set_swapped">%1$s: %2$s، بالتبادل</string>
+    <string name="controls_rebind_same">«%1$s» على هذا الزر أصلًا</string>
+    <string name="controls_rebind_nothing_pressed">لم تضغط شيئًا: «%1$s» يبقى كما كان</string>
+    <string name="controls_rebind_listen_title">إعادة تعيين «%1$s»</string>
+    <string name="controls_rebind_listen_how">اضغط الزر الجديد، أو عدة أزرار معًا لتركيبة. واضغط زرًا واحدًا مطوّلًا لضغطة مطوّلة.</string>
+    <string name="controls_rebind_waiting">أنتظر…</string>
+    <string name="controls_rebind_seconds">%1$d ث</string>
+    <string name="controls_rebind_cancel">إلغاء</string>
+    <string name="controls_rebind_and">%1$s و%2$s</string>
+    <string name="controls_rebind_swap_title">تبديل مع %1$s؟</string>
+    <string name="controls_rebind_swap_moves">%1$s هو %2$s. بالتبديل، يأخذه «%3$s» وينتقل %2$s إلى %4$s.</string>
+    <string name="controls_rebind_swap_none">%1$s هو %2$s. بالتبديل، يأخذه «%3$s» ويبقى %2$s بلا زر.</string>
+    <string name="controls_rebind_swap">بدّلهما</string>
+    <string name="controls_deck">لوحة اللمس</string>
+    <string name="controls_deck_game_art">صورة اللعبة</string>
+    <string name="controls_deck_companion">الرفيق</string>
+    <string name="controls_deck_game_below">لوحة اللمس تكتب في لعبة على الشاشة العلوية. وهذه اللعبة تعمل على السفلية، فلا عمل لها هنا.</string>
+    <string name="controls_deck_sticky">المس Shift أو Ctrl أو Alt للمفتاح التالي؛ واضغط مطوّلًا لتثبيته</string>
+    <string name="controls_deck_layout_full">لوحة كاملة</string>
+    <string name="controls_deck_layout_game">مفاتيح اللعب</string>
+    <string name="controls_deck_direct">مباشر</string>
+    <string name="controls_deck_shell">Shell</string>
+    <string name="controls_deck_no_shizuku">يحتاج Shizuku</string>
+    <string name="controls_deck_connecting">جارٍ الاتصال…</string>
+    <string name="controls_deck_direct_said">المفاتيح والمؤشر تذهب مباشرة إلى خدمة الإدخال في Android، في أجزاء من الثانية</string>
+    <string name="controls_deck_shell_said">منع Android وصول Tandem إلى خدمة الإدخال، فكل مفتاح ينفّذ أمر إدخال: يستغرق لحظة، والنقرات تقع حيث يشير مؤشر اللوحة</string>
+    <string name="controls_deck_no_shizuku_said">شغّل Shizuku واسمح لـ Tandem، ثم افتح لوحة اللمس من جديد</string>
+    <string name="controls_deck_connecting_said">أسأل Shizuku…</string>
+    <string name="controls_deck_trackpad_hint">اسحب للتأشير · المس للنقر · إصبعان للنقر الأيمن أو التمرير</string>
+    <string name="controls_deck_sensitivity">حساسية لوحة التتبّع</string>
+    <string name="controls_deck_sensitivity_help">إلى أي مدى يتحرّك مؤشر اللعبة مع حركة إصبعك على لوحة التتبّع. السحبات السريعة تذهب دائمًا أبعد من البطيئة المتأنّية.</string>
+    <string name="controls_deck_default_layout">التخطيط الافتراضي</string>
+    <string name="controls_deck_default_layout_help">لوحة المفاتيح التي تُفتح بها لوحة اللمس: اللوحة الكاملة، أو المدمجة بمجموعة WASD وأزرار الفأرة. وبدّل بينها متى شئت من الأزرار على لوحة اللمس.</string>
+    <string name="controls_deck_sounds">أصوات المفاتيح</string>
+    <string name="controls_deck_sounds_help">نقرة ناعمة لكل مفتاح ولمسة على لوحة اللمس.</string>
+    <string name="controls_deck_haptics">اهتزاز المفاتيح</string>
+    <string name="controls_deck_haptics_help">اهتزازة خفيفة لكل مفتاح ولمسة على لوحة اللمس.</string>
+
+    <string name="controls_padlink_offer">تلعب بـ %1$s؟</string>
+    <string name="controls_padlink_offer_how">اضغط A أو Start فيه. سيتولّى مكان الأزرار المدمجة في هذه اللعبة.</string>
+    <string name="controls_padlink_accept">العب به</string>
+    <string name="controls_padlink_decline">ليس الآن</string>
+    <string name="controls_padlink_offer_toast">اضغط A أو Start في %1$s لتلعب به</string>
+    <string name="controls_padlink_no_pads">صِل ذراع تحكّم أولًا</string>
+    <string name="controls_padlink_no_helper">هذه النسخة من Tandem بلا أداة مساعدة لذراع التحكّم.</string>
+    <string name="controls_padlink_no_builtin">لا يوجد في هذا الجهاز ذراع تحكّم مدمج ليحلّ محلّه.</string>
+    <string name="controls_padlink_needs_shizuku">يحتاج Shizuku أو صلاحيات الجذر: اللعبة لا تقرأ إلا الذراع المدمج، وهما وحدهما يستطيعان تغذيته.</string>
+    <string name="controls_padlink_builtin">عدت إلى الأزرار المدمجة</string>
+    <string name="controls_padlink_playing">تلعب بـ %1$s</string>
+    <string name="controls_padlink_failed">تعذّر تولّي %1$s</string>
+    <string name="controls_padlink_failed_unknown">تعذّر تولّي ذراع التحكّم</string>
+</resources>

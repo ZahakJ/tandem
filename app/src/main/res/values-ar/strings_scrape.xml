@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Scraping: the Scrape library screen, the Artwork & details setup, and what the scraper and its sources
+     say. Source names are brands and stay as they are. See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="scrape_kind_box">الغلاف</string>
+    <string name="scrape_kind_hero">صورة بارزة / فن المعجبين</string>
+    <string name="scrape_kind_logo">الشعار</string>
+    <string name="scrape_kind_title">شاشة العنوان</string>
+    <string name="scrape_kind_gameplay">لقطة من اللعب</string>
+    <string name="scrape_kind_video">لقطة فيديو</string>
+    <string name="scrape_kind_front">واجهة العلبة الحقيقية</string>
+    <string name="scrape_kind_spine">كعب العلبة</string>
+
+    <string name="scrape_meta_name">الاسم</string>
+    <string name="scrape_meta_name_detail">اسم اللعبة الصحيح بدل اسم الملف</string>
+    <string name="scrape_meta_description">الوصف</string>
+    <string name="scrape_meta_description_detail">بضع فقرات عن اللعبة</string>
+    <string name="scrape_meta_genres">الأنواع</string>
+    <string name="scrape_meta_genres_detail">يوزّع الألعاب على قوائم الأنواع</string>
+    <string name="scrape_meta_credits">المطوّر والناشر</string>
+    <string name="scrape_meta_credits_detail">من صنعها ومن أصدرها</string>
+    <string name="scrape_meta_year">سنة الإصدار</string>
+    <string name="scrape_meta_year_detail">للترتيب حسب السنة</string>
+    <string name="scrape_meta_players">اللاعبون</string>
+    <string name="scrape_meta_players_detail">كم شخصًا يلعب معًا</string>
+    <string name="scrape_meta_rating">التقييم</string>
+    <string name="scrape_meta_rating_detail">تقييم المجتمع، بالنجوم</string>
+    <string name="scrape_meta_time">مدة الإنهاء</string>
+    <string name="scrape_meta_time_detail">القصة الرئيسية، والإضافات، و100% (HowLongToBeat)</string>
+
+    <string name="scrape_mode_basics">الأساسيات الناقصة</string>
+    <string name="scrape_mode_basics_detail">الألعاب التي ينقصها الغلاف أو الوصف فقط، وهذان فقط</string>
+    <string name="scrape_mode_missing">الناقص المختار</string>
+    <string name="scrape_mode_missing_detail">أكمل ما اخترته مما لا تملكه اللعبة بعد</string>
+    <string name="scrape_mode_refresh">الكل من جديد</string>
+    <string name="scrape_mode_refresh_detail">اجلب كل ما اخترته من جديد واستبدله</string>
+    <string name="scrape_mode_line">%1$s: %2$s</string>
+
+    <string name="scrape_source_libretro">مصغّرات libretro</string>
+    <string name="scrape_source_ss_gives">يطابق الملف نفسه: أغلفة، وشعارات، وفن المعجبين، ولقطات شاشة، وفيديوهات، وتفاصيل</string>
+    <string name="scrape_source_lb_gives">قاعدة بيانات ألعاب كبيرة ومجانية، محفوظة على هذا الجهاز: أغلفة، وشعارات، وفن المعجبين، ولقطات شاشة، وتفاصيل</string>
+    <string name="scrape_source_igdb_gives">قاعدة بيانات الألعاب من Twitch: أغلفة، وصور فنية، ولقطات شاشة، وتفاصيل، رائعة للألعاب الأحدث</string>
+    <string name="scrape_source_sgdb_gives">أغلفة وصور بارزة وشعارات من صنع المجتمع، الأفضل لألعاب الكمبيوتر وSwitch</string>
+    <string name="scrape_source_libretro_gives">أغلفة (مسح ضوئي لعلب حقيقية)، وشاشات عنوان، ولقطات شاشة للمنصّات الكلاسيكية</string>
+    <string name="scrape_source_hltb_gives">كم تستغرق اللعبة: القصة الرئيسية، والقصة مع الإضافات، و100%</string>
+
+    <string name="scrape_region_us">أمريكا</string>
+    <string name="scrape_region_eu">أوروبا</string>
+    <string name="scrape_region_jp">اليابان</string>
+    <string name="scrape_region_world">العالم</string>
+
+    <string name="scrape_size_kb">%1$d KB</string>
+    <string name="scrape_size_mb">%1$s MB</string>
+    <string name="scrape_size_gb">%1$s GB</string>
+
+    <string name="scrape_hidden_never_sent">الألعاب المخفية لا تُرسل إلى أي مكان أبدًا</string>
+    <string name="scrape_offline">الوضع الخاص يُبقي Tandem بلا إنترنت: لا جلب ولا بحث عن صور</string>
+    <string name="scrape_busy">بيب مشغول بالجلب أصلًا. حاول مجددًا حين ينتهي</string>
+    <string name="scrape_looking_for">أبحث عن %1$s…</string>
+    <string name="scrape_cant_start">تعذّر البدء، هل هناك عملية جلب جارية؟</string>
+    <string name="scrape_lb_ask_title">تنزيل قاعدة بيانات LaunchBox؟</string>
+    <string name="scrape_lb_ask_text">LaunchBox لا يحتاج إلى حساب: ينزّل Tandem قاعدة بياناته مرة واحدة (نحو %1$d MB)، ويحتفظ بمنصّاتك فقط، ويبحث عن الألعاب على هذا الجهاز. ويحدّثها مرة شهريًا عبر Wi-Fi.</string>
+    <string name="scrape_lb_ask_text_metered">LaunchBox لا يحتاج إلى حساب: ينزّل Tandem قاعدة بياناته مرة واحدة (نحو %1$d MB، وأنت على اتصال محدود البيانات)، ويحتفظ بمنصّاتك فقط، ويبحث عن الألعاب على هذا الجهاز. ويحدّثها مرة شهريًا عبر Wi-Fi.</string>
+    <string name="scrape_lb_ask_yes">نزّل واجلب</string>
+    <string name="scrape_lb_ask_skip">تخطَّ LaunchBox</string>
+    <string name="scrape_background_top">الجلب يعمل في الخلفية: التقدّم على الشاشة العلوية</string>
+    <string name="scrape_background_bottom">الجلب يعمل في الخلفية: التقدّم على الشاشة السفلية</string>
+
+    <string name="scrape_scope_all">كل المنصّات</string>
+    <string name="scrape_scope_one">لعبة واحدة</string>
+
+    <string name="scrape_tile_hero">صورة بارزة</string>
+    <string name="scrape_tile_gameplay">لقطة لعب</string>
+    <string name="scrape_tile_video">فيديو</string>
+    <string name="scrape_tile_physical">العلبة الحقيقية</string>
+    <string name="scrape_tile_box_detail">الغلاف على كل بطاقة</string>
+    <string name="scrape_tile_hero_detail">صورة عريضة للشاشة السفلية</string>
+    <string name="scrape_tile_logo_detail">الاسم، فوق الصورة البارزة</string>
+    <string name="scrape_tile_title_detail">شاشة عنوان اللعبة</string>
+    <string name="scrape_tile_gameplay_detail">لحظة من اللعب</string>
+    <string name="scrape_tile_video_detail">مقطع قصير، 3 MB للعبة</string>
+    <string name="scrape_tile_physical_detail">العلبة وكعبها، لعرض الرف</string>
+    <string name="scrape_tile_video_size">نحو %1$s إجمالًا</string>
+
+    <string name="scrape_where_box">الغلاف: الصورة على كل بطاقة لعبة، وعلى الرفوف، ومع تفاصيل اللعبة. الصورة الوحيدة التي تستخدمها كل التخطيطات.</string>
+    <string name="scrape_where_hero">الصورة البارزة: صورة فنية عريضة. تملأ الشاشة السفلية خلف تفاصيل اللعبة، وخلفية «تحت الأضواء»، والصورة خلف اللعبة المحدّدة.</string>
+    <string name="scrape_where_logo">الشعار: اسم اللعبة مرسومًا كصورة، فوق الصورة البارزة على الشاشة السفلية وفي «تحت الأضواء» بدل النص العادي.</string>
+    <string name="scrape_where_title">شاشة العنوان: تظهر خلف اللعبة إن لم تكن لها صورة بارزة، وهي من الصور التي تختار منها الشاشة السفلية.</string>
+    <string name="scrape_where_gameplay">لقطة اللعب: صورة ثابتة من اللعب. تظهر خلف اللعبة إن لم تكن لها صورة بارزة ولا شاشة عنوان، وهي من الصور التي تختار منها الشاشة السفلية. لا تتحرّك: المقاطع هي «الفيديو».</string>
+    <string name="scrape_where_video">الفيديو: مقطع قصير يُعرض فوق الصورة البارزة بعد لحظة من تحديد اللعبة، حين يكون «المظهر والأجواء › لقطات الفيديو» مفعّلًا.</string>
+    <string name="scrape_where_video_off">الفيديو: مقطع قصير يُعرض فوق الصورة البارزة بعد لحظة من تحديد اللعبة، حين يكون «المظهر والأجواء › لقطات الفيديو» مفعّلًا (وهو معطّل الآن).</string>
+    <string name="scrape_where_physical">العلبة الحقيقية: مسح ضوئي حقيقي لواجهة العلبة وكعبها، لعرض الرف والأغلفة بشكل العلبة.</string>
+
+    <string name="scrape_setup_what">ماذا تجلب</string>
+    <string name="scrape_setup_games">الألعاب</string>
+    <string name="scrape_setup_games_all">كل منصّة فيها ألعاب</string>
+    <string name="scrape_setup_games_one">منصّة واحدة</string>
+    <string name="scrape_setup_folder">المجلد</string>
+    <string name="scrape_setup_folder_detail">أحد مجلداتها فقط</string>
+    <string name="scrape_setup_all_folders">كل المجلدات</string>
+    <string name="scrape_setup_mode">الطريقة</string>
+    <string name="scrape_setup_locked">استبدل الخانات المقفلة</string>
+    <string name="scrape_setup_locked_on">يستبدل أيضًا ما عدّلته أو اخترته بيدك</string>
+    <string name="scrape_setup_locked_off">ما عدّلته أو اخترته بيدك يبقى</string>
+    <string name="scrape_setup_artwork">الصور</string>
+    <string name="scrape_setup_details">التفاصيل</string>
+    <string name="scrape_setup_game_details">تفاصيل الألعاب</string>
+    <string name="scrape_setup_game_details_detail">الأسماء، والأوصاف، والأنواع، والسنة، واللاعبون…</string>
+    <string name="scrape_setup_game_details_needs">يحتاج مصدرًا: فعّل LaunchBox أو ScreenScraper أو IGDB أدناه</string>
+    <string name="scrape_setup_needs_hltb">يحتاج HowLongToBeat</string>
+    <string name="scrape_setup_region_language">المنطقة واللغة</string>
+    <string name="scrape_setup_region">المنطقة</string>
+    <string name="scrape_setup_region_detail">الأغلفة المفضّلة</string>
+    <string name="scrape_setup_language">اللغة</string>
+    <string name="scrape_setup_language_detail">للأوصاف والأنواع</string>
+    <string name="scrape_setup_sources">المصادر</string>
+    <string name="scrape_setup_counting">أعدّ الألعاب…</string>
+    <string name="scrape_setup_none">لا ألعاب للجلب هنا</string>
+    <plurals name="scrape_setup_to_check">
+        <item quantity="zero">لا ألعاب للفحص</item>
+        <item quantity="one">لعبة واحدة للفحص</item>
+        <item quantity="two">لعبتان للفحص</item>
+        <item quantity="few">%1$d ألعاب للفحص</item>
+        <item quantity="many">%1$d لعبة للفحص</item>
+        <item quantity="other">%1$d لعبة للفحص</item>
+    </plurals>
+    <string name="scrape_setup_all_complete">كلها لها غلاف ووصف أصلًا</string>
+    <string name="scrape_setup_all_have_box">كلها لها غلاف · %1$s</string>
+    <plurals name="scrape_setup_no_box_yet">
+        <item quantity="zero">لا ألعاب بلا غلاف بعد</item>
+        <item quantity="one">لعبة واحدة بلا غلاف بعد</item>
+        <item quantity="two">لعبتان بلا غلاف بعد</item>
+        <item quantity="few">%1$d ألعاب بلا غلاف بعد</item>
+        <item quantity="many">%1$d لعبة بلا غلاف بعد</item>
+        <item quantity="other">%1$d لعبة بلا غلاف بعد</item>
+    </plurals>
+    <plurals name="scrape_setup_no_box">
+        <item quantity="zero">لا ألعاب بلا غلاف</item>
+        <item quantity="one">لعبة واحدة بلا غلاف</item>
+        <item quantity="two">لعبتان بلا غلاف</item>
+        <item quantity="few">%1$d ألعاب بلا غلاف</item>
+        <item quantity="many">%1$d لعبة بلا غلاف</item>
+        <item quantity="other">%1$d لعبة بلا غلاف</item>
+    </plurals>
+    <plurals name="scrape_setup_no_text">
+        <item quantity="zero">لا ألعاب بلا وصف</item>
+        <item quantity="one">لعبة واحدة بلا وصف</item>
+        <item quantity="two">لعبتان بلا وصف</item>
+        <item quantity="few">%1$d ألعاب بلا وصف</item>
+        <item quantity="many">%1$d لعبة بلا وصف</item>
+        <item quantity="other">%1$d لعبة بلا وصف</item>
+    </plurals>
+    <string name="scrape_setup_no_both">%1$s · %2$s</string>
+    <plurals name="scrape_setup_hidden_skipped">
+        <item quantity="zero">لم تُتخطَّ أي لعبة مخفية</item>
+        <item quantity="one">تُخطّيت لعبة مخفية واحدة، ولا تُرسل إلى أي مكان أبدًا</item>
+        <item quantity="two">تُخطّيت لعبتان مخفيتان، ولا تُرسلان إلى أي مكان أبدًا</item>
+        <item quantity="few">تُخطّيت %1$d ألعاب مخفية، ولا تُرسل إلى أي مكان أبدًا</item>
+        <item quantity="many">تُخطّيت %1$d لعبة مخفية، ولا تُرسل إلى أي مكان أبدًا</item>
+        <item quantity="other">تُخطّيت %1$d لعبة مخفية، ولا تُرسل إلى أي مكان أبدًا</item>
+    </plurals>
+    <string name="scrape_setup_want_something">فعّل نوعًا واحدًا على الأقل من الصور أو التفاصيل</string>
+    <string name="scrape_setup_want_source">فعّل مصدرًا واحدًا على الأقل في «المصادر»</string>
+    <string name="scrape_setup_start">ابدأ الجلب</string>
+    <string name="scrape_setup_leave_card">سأعمل في الخلفية وأعرض سير العمل على الشاشة الأخرى، وأتوقف مؤقتًا وأنت تلعب.</string>
+    <string name="scrape_setup_leave">يمكنك مغادرة هذه الشاشة. سأواصل العمل وأتوقف مؤقتًا وأنت تلعب.</string>
+    <plurals name="scrape_games">
+        <item quantity="zero">لا ألعاب</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">لعبتان</item>
+        <item quantity="few">%1$d ألعاب</item>
+        <item quantity="many">%1$d لعبة</item>
+        <item quantity="other">%1$d لعبة</item>
+    </plurals>
+    <string name="scrape_pick_scope_title">أي ألعاب</string>
+    <string name="scrape_pick_scope_detail">اجلب لكل المنصّات، أو لواحدة فقط</string>
+    <string name="scrape_pick_folder_title">أي مجلد</string>
+    <string name="scrape_pick_language_detail">الأوصاف والأنواع بهذه اللغة، متى توفّرت في ScreenScraper</string>
+    <string name="scrape_sources_order">كل لعبة تسأل أول مصدر مفعّل، ثم التالي عمّا بقي ناقصًا فقط</string>
+    <string name="scrape_sources_set_up">إعداد المصادر</string>
+
+    <string name="scrape_run_lb_ready">أجهّز LaunchBox: %1$d%%</string>
+    <plurals name="scrape_run_done_of">
+        <item quantity="zero">%1$d من %2$d لعبة</item>
+        <item quantity="one">%1$d من لعبة واحدة</item>
+        <item quantity="two">%1$d من لعبتين</item>
+        <item quantity="few">%1$d من %2$d ألعاب</item>
+        <item quantity="many">%1$d من %2$d لعبة</item>
+        <item quantity="other">%1$d من %2$d لعبة</item>
+    </plurals>
+    <plurals name="scrape_run_got_art">
+        <item quantity="zero">لم تحصل أي لعبة على صور جديدة</item>
+        <item quantity="one">لعبة واحدة حصلت على صور جديدة</item>
+        <item quantity="two">لعبتان حصلتا على صور جديدة</item>
+        <item quantity="few">%1$d ألعاب حصلت على صور جديدة</item>
+        <item quantity="many">%1$d لعبة حصلت على صور جديدة</item>
+        <item quantity="other">%1$d لعبة حصلت على صور جديدة</item>
+    </plurals>
+    <plurals name="scrape_run_got_details">
+        <item quantity="zero">لم تحصل أي لعبة على تفاصيل</item>
+        <item quantity="one">لعبة واحدة حصلت على تفاصيل</item>
+        <item quantity="two">لعبتان حصلتا على تفاصيل</item>
+        <item quantity="few">%1$d ألعاب حصلت على تفاصيل</item>
+        <item quantity="many">%1$d لعبة حصلت على تفاصيل</item>
+        <item quantity="other">%1$d لعبة حصلت على تفاصيل</item>
+    </plurals>
+    <plurals name="scrape_run_complete">
+        <item quantity="zero">لا ألعاب مكتملة أصلًا</item>
+        <item quantity="one">لعبة واحدة مكتملة أصلًا</item>
+        <item quantity="two">لعبتان مكتملتان أصلًا</item>
+        <item quantity="few">%1$d ألعاب مكتملة أصلًا</item>
+        <item quantity="many">%1$d لعبة مكتملة أصلًا</item>
+        <item quantity="other">%1$d لعبة مكتملة أصلًا</item>
+    </plurals>
+    <plurals name="scrape_run_not_found">
+        <item quantity="zero">لم يغب شيء</item>
+        <item quantity="one">لعبة واحدة لم يُعثر عليها</item>
+        <item quantity="two">لعبتان لم يُعثر عليهما</item>
+        <item quantity="few">%1$d ألعاب لم يُعثر عليها</item>
+        <item quantity="many">%1$d لعبة لم يُعثر عليها</item>
+        <item quantity="other">%1$d لعبة لم يُعثر عليها</item>
+    </plurals>
+    <plurals name="scrape_run_failed">
+        <item quantity="zero">لم يفشل أي تنزيل</item>
+        <item quantity="one">فشل تنزيل لعبة واحدة، حاول لاحقًا</item>
+        <item quantity="two">فشل تنزيل لعبتين، حاول لاحقًا</item>
+        <item quantity="few">فشل تنزيل %1$d ألعاب، حاول لاحقًا</item>
+        <item quantity="many">فشل تنزيل %1$d لعبة، حاول لاحقًا</item>
+        <item quantity="other">فشل تنزيل %1$d لعبة، حاول لاحقًا</item>
+    </plurals>
+    <string name="scrape_run_stop">إيقاف</string>
+    <string name="scrape_run_resume">استئناف</string>
+    <string name="scrape_run_pause">إيقاف مؤقت</string>
+    <string name="scrape_run_keep_browsing">واصل التصفّح</string>
+    <string name="scrape_run_done">تم</string>
+    <string name="scrape_run_new">جلب جديد</string>
+    <string name="scrape_run_covers">الأغلفة</string>
+    <string name="scrape_run_missed">الفائتة</string>
+    <string name="scrape_run_missed_title">لم يُعثر عليها: اختر صورها بيدك</string>
+    <string name="scrape_run_new_artwork">صور جديدة</string>
+    <string name="scrape_run_just_found">وجدتها للتو</string>
+    <string name="scrape_run_nothing_new">لا جديد هذه المرة</string>
+    <string name="scrape_run_covers_soon">ستظهر الأغلفة هنا كلما وجدتها</string>
+    <string name="scrape_run_getting_ready">أستعدّ…</string>
+    <string name="scrape_run_finding">أبحث عن الصور…</string>
+    <string name="scrape_run_paused">متوقف مؤقتًا</string>
+    <string name="scrape_run_paused_play">متوقف مؤقتًا وأنت تلعب</string>
+    <string name="scrape_run_all_done">انتهى كل شيء!</string>
+    <string name="scrape_run_stopped">توقّف</string>
+    <string name="scrape_run_eta_under_minute">بقيت أقل من دقيقة</string>
+    <string name="scrape_run_eta_minute">بقيت دقيقة تقريبًا</string>
+    <plurals name="scrape_run_eta_minutes">
+        <item quantity="zero">بقيت %1$d دقيقة تقريبًا</item>
+        <item quantity="one">بقيت دقيقة تقريبًا</item>
+        <item quantity="two">بقيت دقيقتان تقريبًا</item>
+        <item quantity="few">بقيت %1$d دقائق تقريبًا</item>
+        <item quantity="many">بقيت %1$d دقيقة تقريبًا</item>
+        <item quantity="other">بقيت %1$d دقيقة تقريبًا</item>
+    </plurals>
+    <plurals name="scrape_run_summary_art">
+        <item quantity="zero">لا صور جديدة</item>
+        <item quantity="one">صور جديدة للعبة واحدة</item>
+        <item quantity="two">صور جديدة للعبتين</item>
+        <item quantity="few">صور جديدة لـ %1$d ألعاب</item>
+        <item quantity="many">صور جديدة لـ %1$d لعبة</item>
+        <item quantity="other">صور جديدة لـ %1$d لعبة</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details_too">
+        <item quantity="zero">وبلا تفاصيل</item>
+        <item quantity="one">وتفاصيل لواحدة</item>
+        <item quantity="two">وتفاصيل لاثنتين</item>
+        <item quantity="few">وتفاصيل لـ %1$d</item>
+        <item quantity="many">وتفاصيل لـ %1$d</item>
+        <item quantity="other">وتفاصيل لـ %1$d</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details">
+        <item quantity="zero">لا تفاصيل جديدة</item>
+        <item quantity="one">تفاصيل جديدة للعبة واحدة</item>
+        <item quantity="two">تفاصيل جديدة للعبتين</item>
+        <item quantity="few">تفاصيل جديدة لـ %1$d ألعاب</item>
+        <item quantity="many">تفاصيل جديدة لـ %1$d لعبة</item>
+        <item quantity="other">تفاصيل جديدة لـ %1$d لعبة</item>
+    </plurals>
+    <string name="scrape_pill_paused">⏸ الجلب متوقف مؤقتًا</string>
+    <string name="scrape_pill_one">✦ جارٍ الجلب…</string>
+    <string name="scrape_pill_count">✦ جارٍ الجلب %1$d/%2$d</string>
+    <string name="scrape_card_last_found">آخر ما وُجد: %1$s</string>
+    <plurals name="scrape_card_found">
+        <item quantity="zero">%1$d وُجدت</item>
+        <item quantity="one">%1$d وُجدت</item>
+        <item quantity="two">%1$d وُجدتا</item>
+        <item quantity="few">%1$d وُجدت</item>
+        <item quantity="many">%1$d وُجدت</item>
+        <item quantity="other">%1$d وُجدت</item>
+    </plurals>
+    <plurals name="scrape_card_details">
+        <item quantity="zero">%1$d بتفاصيل</item>
+        <item quantity="one">%1$d بتفاصيل</item>
+        <item quantity="two">%1$d بتفاصيل</item>
+        <item quantity="few">%1$d بتفاصيل</item>
+        <item quantity="many">%1$d بتفاصيل</item>
+        <item quantity="other">%1$d بتفاصيل</item>
+    </plurals>
+    <plurals name="scrape_card_missing">
+        <item quantity="zero">%1$d مفقودة</item>
+        <item quantity="one">%1$d مفقودة</item>
+        <item quantity="two">%1$d مفقودتان</item>
+        <item quantity="few">%1$d مفقودة</item>
+        <item quantity="many">%1$d مفقودة</item>
+        <item quantity="other">%1$d مفقودة</item>
+    </plurals>
+    <plurals name="scrape_card_failed">
+        <item quantity="zero">%1$d فشلت</item>
+        <item quantity="one">%1$d فشلت</item>
+        <item quantity="two">%1$d فشلتا</item>
+        <item quantity="few">%1$d فشلت</item>
+        <item quantity="many">%1$d فشلت</item>
+        <item quantity="other">%1$d فشلت</item>
+    </plurals>
+    <plurals name="scrape_card_complete">
+        <item quantity="zero">%1$d مكتملة</item>
+        <item quantity="one">%1$d مكتملة</item>
+        <item quantity="two">%1$d مكتملتان</item>
+        <item quantity="few">%1$d مكتملة</item>
+        <item quantity="many">%1$d مكتملة</item>
+        <item quantity="other">%1$d مكتملة</item>
+    </plurals>
+    <string name="scrape_card_cancel">إلغاء</string>
+    <string name="scrape_one_that_game">هذه اللعبة</string>
+    <string name="scrape_one_art_details">صور وتفاصيل جديدة لـ %1$s ✨</string>
+    <string name="scrape_one_art">صور جديدة لـ %1$s ✨</string>
+    <string name="scrape_one_details">تفاصيل جديدة لـ %1$s ✨</string>
+    <string name="scrape_one_nothing">لم أجد جديدًا لـ %1$s</string>
+    <plurals name="scrape_done_toast">
+        <item quantity="zero">انتهى الجلب: لا صور جديدة</item>
+        <item quantity="one">انتهى الجلب: صور جديدة للعبة واحدة ✨</item>
+        <item quantity="two">انتهى الجلب: صور جديدة للعبتين ✨</item>
+        <item quantity="few">انتهى الجلب: صور جديدة لـ %1$d ألعاب ✨</item>
+        <item quantity="many">انتهى الجلب: صور جديدة لـ %1$d لعبة ✨</item>
+        <item quantity="other">انتهى الجلب: صور جديدة لـ %1$d لعبة ✨</item>
+    </plurals>
+
+    <string name="scrape_settings_title">الصور والتفاصيل</string>
+    <string name="scrape_settings_scrape">جلب صور المكتبة</string>
+    <string name="scrape_settings_scrape_value">الصور والتفاصيل</string>
+    <string name="scrape_settings_scrape_help">نزّل الأغلفة والشعارات والصور البارزة والفيديوهات والأوصاف لألعابك، من LaunchBox وlibretro (بلا حساب)، وScreenScraper وIGDB وSteamGridDB وHowLongToBeat.</string>
+    <string name="scrape_settings_sources_value">%1$d من %2$d مفعّلة</string>
+    <string name="scrape_settings_sources_help">إعداد الصور والتفاصيل: ما يقدّمه كل مصدر، وأيها يحتاج حسابًا، ومن أين تحصل على مفتاح مجاني، وزر «اختبار» لكل منها. ويغيّر أيضًا ترتيب سؤالها.</string>
+    <string name="scrape_settings_clear">مسح الوسائط المنزّلة</string>
+    <string name="scrape_settings_clear_none">لا شيء بعد</string>
+    <plurals name="scrape_settings_clear_files">
+        <item quantity="zero">لا ملفات · %2$s</item>
+        <item quantity="one">ملف واحد · %2$s</item>
+        <item quantity="two">ملفان · %2$s</item>
+        <item quantity="few">%1$d ملفات · %2$s</item>
+        <item quantity="many">%1$d ملفًا · %2$s</item>
+        <item quantity="other">%1$d ملف · %2$s</item>
+    </plurals>
+    <string name="scrape_settings_clear_help">احذف ما نزّله الجلب، لمنصّة واحدة أو لكلها، لتحرير مساحة. يسألك أولًا.</string>
+    <string name="scrape_settings_wait">انتظر حتى ينتهي الجلب أولًا</string>
+    <string name="scrape_settings_nothing">لم يُنزّل شيء بعد</string>
+
+    <string name="scrape_lb_already">جارٍ التنزيل أصلًا</string>
+    <string name="scrape_lb_none_of_yours">لا توجد أي من منصّاتك في قاعدة بيانات LaunchBox</string>
+    <string name="scrape_lb_download_title">تنزيل قاعدة بيانات LaunchBox؟</string>
+    <plurals name="scrape_lb_download_text">
+        <item quantity="zero">نحو %1$d MB. يحتفظ Tandem بمنصّاتك فقط (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="one">نحو %1$d MB. يحتفظ Tandem بمنصّتك الوحيدة (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="two">نحو %1$d MB. يحتفظ Tandem بمنصّتيك فقط (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="few">نحو %1$d MB. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="many">نحو %1$d MB. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="other">نحو %1$d MB. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+    </plurals>
+    <plurals name="scrape_lb_download_text_metered">
+        <item quantity="zero">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّاتك فقط (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="one">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّتك الوحيدة (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="two">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّتيك فقط (%2$d) ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="few">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="many">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+        <item quantity="other">نحو %1$d MB، وأنت على اتصال محدود البيانات: Wi-Fi أفضل. يحتفظ Tandem بمنصّاتك الـ%2$d فقط ويبحث عن الألعاب على هذا الجهاز.</item>
+    </plurals>
+    <string name="scrape_lb_download">تنزيل</string>
+    <string name="scrape_lb_downloading">جارٍ تنزيل قاعدة بيانات LaunchBox…</string>
+    <string name="scrape_lb_ready">LaunchBox جاهز: %1$s لعبة ✨</string>
+    <string name="scrape_lb_failed">تعذّر تنزيل قاعدة بيانات LaunchBox. حاول مجددًا عبر Wi-Fi</string>
+
+    <string name="scrape_guide_no_account">بلا حساب</string>
+    <string name="scrape_guide_lb_1">ينزّل Tandem قاعدة بيانات الألعاب المجانية من LaunchBox مرة واحدة (نحو %1$d MB، ويُفضّل Wi-Fi) ويحتفظ بمنصّاتك فقط.</string>
+    <string name="scrape_guide_lb_2">يُبحث عن الألعاب على هذا الجهاز. وتُحدَّث مرة شهريًا، حين تجلب عبر Wi-Fi.</string>
+    <string name="scrape_guide_lb_sends">لا شيء عن ألعابك. الصور تأتي من images.launchbox-app.com.</string>
+    <string name="scrape_guide_ss_account">حساب مجاني + معرّف مطوّر</string>
+    <string name="scrape_guide_ss_1">أنشئ حسابًا مجانيًا على screenscraper.fr.</string>
+    <string name="scrape_guide_ss_2">اطلب الوصول إلى API في منتداهم («Demande d\'accès à l\'API») لتحصل على معرّف مطوّر وكلمة مرور. لا يستطيع Tandem أن يأتي بواحد جاهز.</string>
+    <string name="scrape_guide_ss_3">أدخل الاثنين أدناه. وتسجيل دخولك الشخصي اختياري، لكنه يمنحك حصة يومية أكبر.</string>
+    <string name="scrape_guide_ss_sends">بيانات دخولك، ومعرّف المطوّر، واسم ملف كل لعبة وحجمه ومنصّته وبصمته.</string>
+    <string name="scrape_guide_igdb_account">حساب Twitch مجاني</string>
+    <string name="scrape_guide_igdb_1">سجّل الدخول على dev.twitch.tv/console/apps (يطلب Twitch التحقّق بخطوتين أولًا).</string>
+    <string name="scrape_guide_igdb_2">Register Your Application: أي اسم، وعنوان إعادة التوجيه http://localhost، والفئة Application Integration، ونوع العميل Confidential.</string>
+    <string name="scrape_guide_igdb_3">انسخ Client ID، واضغط New Secret، وانسخ Client Secret.</string>
+    <string name="scrape_guide_igdb_sends">معرّف العميل والسر (إلى Twitch)، وعنوان كل لعبة.</string>
+    <string name="scrape_guide_sgdb_account">حساب مجاني</string>
+    <string name="scrape_guide_sgdb_1">سجّل الدخول على steamgriddb.com (بحساب Steam).</string>
+    <string name="scrape_guide_sgdb_2">افتح steamgriddb.com/profile/preferences/api.</string>
+    <string name="scrape_guide_sgdb_3">أنشئ مفتاح API وأدخله أدناه.</string>
+    <string name="scrape_guide_sgdb_sends">مفتاح API الخاص بك، وعنوان كل لعبة.</string>
+    <string name="scrape_guide_libretro_1">جاهز دائمًا. رائع للمنصّات الكلاسيكية؛ ولا شيء فيه لألعاب Switch أو Wii U أو الكمبيوتر.</string>
+    <string name="scrape_guide_libretro_sends">أسماء صور مأخوذة من اسم ملف كل لعبة أو عنوانها.</string>
+    <string name="scrape_guide_hltb_1">يستخدم البحث نفسه الذي يستخدمه موقع howlongtobeat.com. ليس واجهة API رسمية، فقد يتوقف عن العمل حين يتغيّر الموقع؛ وعندها يتخطّاه الجلب ببساطة.</string>
+    <string name="scrape_guide_hltb_2">تظهر المدد على الشاشة السفلية.</string>
+    <string name="scrape_guide_hltb_sends">عنوان كل لعبة.</string>
+
+    <string name="scrape_status_testing">جارٍ الاختبار…</string>
+    <string name="scrape_status_downloading">جارٍ التنزيل %1$d%%</string>
+    <string name="scrape_status_off">معطّل</string>
+    <string name="scrape_status_needs_key">يحتاج مفتاحًا</string>
+    <string name="scrape_status_not_downloaded">غير منزّل</string>
+    <string name="scrape_status_failed">✗ فشل الاختبار</string>
+    <string name="scrape_status_works">✓ يعمل</string>
+    <string name="scrape_status_ready">جاهز</string>
+    <string name="scrape_needs_none">بلا حساب</string>
+    <string name="scrape_needs_ss">حساب + معرّف مطوّر</string>
+    <string name="scrape_needs_igdb">مفتاح Twitch مجاني</string>
+    <string name="scrape_needs_key">مفتاح مجاني</string>
+    <string name="scrape_tagline_ss">يطابق الملف نفسه: صور وفيديوهات وتفاصيل</string>
+    <string name="scrape_tagline_lb">أغلفة وشعارات وفن المعجبين وتفاصيل، محفوظة على هذا الجهاز</string>
+    <string name="scrape_tagline_igdb">أغلفة وصور فنية وتفاصيل، رائع للألعاب الأحدث</string>
+    <string name="scrape_tagline_sgdb">أغلفة وصور بارزة وشعارات من المجتمع للكمبيوتر وSwitch</string>
+    <string name="scrape_tagline_libretro">مسح ضوئي لعلب حقيقية وشاشات عنوان للمنصّات الكلاسيكية</string>
+    <string name="scrape_tagline_hltb">كم تستغرق اللعبة: القصة، والإضافات، و100%</string>
+
+    <string name="scrape_setup_title">إعداد الصور والتفاصيل</string>
+    <string name="scrape_setup_intro">يسأل الجلب هذه المصادر بالترتيب، كلًّا منها عمّا بقي ناقصًا فقط. LaunchBox وlibretro لا يحتاجان إلى حساب.</string>
+    <string name="scrape_setup_hint_set_up">إعداد</string>
+    <string name="scrape_setup_hint_order">أبكر / لاحقًا</string>
+    <string name="scrape_setup_hint_done">تم</string>
+
+    <string name="scrape_key_dev_id">معرّف المطوّر</string>
+    <string name="scrape_key_dev_id_ask">معرّف المطوّر في ScreenScraper</string>
+    <string name="scrape_key_dev_pw">كلمة مرور المطوّر</string>
+    <string name="scrape_key_dev_pw_ask">كلمة مرور المطوّر في ScreenScraper</string>
+    <string name="scrape_key_login">اسم المستخدم</string>
+    <string name="scrape_key_login_ask">اسم المستخدم في ScreenScraper (اختياري)</string>
+    <string name="scrape_key_pw">كلمة المرور</string>
+    <string name="scrape_key_pw_ask">كلمة المرور في ScreenScraper</string>
+    <string name="scrape_key_client_id">Client ID</string>
+    <string name="scrape_key_client_id_ask">Client ID من Twitch (dev.twitch.tv/console/apps)</string>
+    <string name="scrape_key_secret">Client Secret</string>
+    <string name="scrape_key_secret_ask">Client Secret من Twitch</string>
+    <string name="scrape_key_api">مفتاح API</string>
+    <string name="scrape_key_api_ask">مفتاح API من SteamGridDB (steamgriddb.com › Preferences › API)</string>
+    <string name="scrape_key_optional">اختياري</string>
+    <string name="scrape_key_not_set">غير محدّد</string>
+    <string name="scrape_key_saved">حُفظ ✓</string>
+    <string name="scrape_card_turn_off">تعطيل</string>
+    <string name="scrape_card_turn_on">تفعيل</string>
+    <string name="scrape_card_download">تنزيل (%1$d MB)</string>
+    <string name="scrape_card_download_again">نزّل مجددًا</string>
+    <string name="scrape_card_test">اختبار</string>
+    <string name="scrape_card_gives">يقدّم</string>
+    <string name="scrape_card_gives_text">%1$s.</string>
+    <string name="scrape_card_sends">يُرسل</string>
+    <string name="scrape_card_on_device">على هذا الجهاز</string>
+    <string name="scrape_card_downloading">جارٍ التنزيل… %1$d%%</string>
+    <string name="scrape_card_not_downloaded">لم يُنزّل بعد.</string>
+    <plurals name="scrape_card_lb_info">
+        <item quantity="zero">%1$s لعبة لـ %2$d منصّة، من %3$s.</item>
+        <item quantity="one">%1$s لعبة لمنصّة واحدة، من %3$s.</item>
+        <item quantity="two">%1$s لعبة لمنصّتين، من %3$s.</item>
+        <item quantity="few">%1$s لعبة لـ %2$d منصّات، من %3$s.</item>
+        <item quantity="many">%1$s لعبة لـ %2$d منصّة، من %3$s.</item>
+        <item quantity="other">%1$s لعبة لـ %2$d منصّة، من %3$s.</item>
+    </plurals>
+
+    <string name="scrape_note_stopped_early">حدث خطأ ما، فتوقفت مبكرًا</string>
+    <string name="scrape_now_ss_sign_in">أسجّل الدخول إلى ScreenScraper…</string>
+    <string name="scrape_note_ss_unavailable">ScreenScraper غير متاح</string>
+    <string name="scrape_note_ss_unreachable">تعذّر الوصول إلى ScreenScraper، أستخدم المصادر الأخرى</string>
+    <string name="scrape_now_igdb_sign_in">أسجّل الدخول إلى IGDB…</string>
+    <string name="scrape_note_igdb_unavailable">IGDB غير متاح</string>
+    <string name="scrape_note_igdb_unreachable">تعذّر الوصول إلى IGDB، أستخدم المصادر الأخرى</string>
+    <string name="scrape_note_details_need">التفاصيل تحتاج تفعيل LaunchBox أو ScreenScraper أو IGDB</string>
+    <string name="scrape_now_lb_downloading">أنزّل قاعدة بيانات LaunchBox…</string>
+    <string name="scrape_now_lb_refreshing">أحدّث قاعدة بيانات LaunchBox…</string>
+    <string name="scrape_now_lb_progress">قاعدة بيانات LaunchBox: %1$d%%</string>
+    <string name="scrape_note_lb_offline">لا اتصال بالإنترنت: اتصل بشبكة Wi-Fi لتنزيل قاعدة بيانات LaunchBox</string>
+    <string name="scrape_note_lb_failed">تعذّر تنزيل قاعدة بيانات LaunchBox</string>
+    <string name="scrape_note_lb_refresh_failed">تعذّر تحديث قاعدة بيانات LaunchBox، أستخدم التي لديّ</string>
+    <string name="scrape_note_lb_needs">LaunchBox يحتاج قاعدة بياناته: الإعدادات › المكتبة والصور › إعداد المصادر › LaunchBox</string>
+    <string name="scrape_note_lb_missing_systems">بعض المنصّات ليست في تنزيل LaunchBox بعد؛ نزّله مجددًا لإضافتها</string>
+    <string name="scrape_now_lb_looking">أبحث عن الألعاب في LaunchBox…</string>
+    <string name="scrape_note_lb_unreadable">تعذّرت قراءة قاعدة بيانات LaunchBox</string>
+    <string name="scrape_note_igdb_short">تعذّر الوصول إلى IGDB</string>
+    <string name="scrape_note_ss_short">تعذّر الوصول إلى ScreenScraper</string>
+    <string name="scrape_note_sgdb_short">تعذّر الوصول إلى SteamGridDB</string>
+
+    <string name="scrape_down_twitch_pass">لم يمنح Twitch تصريح IGDB</string>
+    <string name="scrape_down_twitch_keys">لم يقبل Twitch معرّف العميل أو السر الخاص بـ IGDB</string>
+    <string name="scrape_down_igdb_refused">رفض IGDB الطلب؛ تحقّق من معرّف العميل والسر</string>
+    <string name="scrape_down_hltb_slow">طلب HowLongToBeat من Tandem أن يبطئ؛ سأتخطّاه حاليًا</string>
+    <string name="scrape_down_hltb_changed">غيّر HowLongToBeat طريقة البحث فيه، فتخطّيته</string>
+    <string name="scrape_down_ss_login">لم يقبل ScreenScraper بيانات دخولك</string>
+    <string name="scrape_down_ss_quota">استُنفدت الحصة اليومية لحسابك في ScreenScraper</string>
+    <string name="scrape_down_ss_unknown">أوقف ScreenScraper البحث: ألعاب مجهولة كثيرة اليوم</string>
+    <string name="scrape_down_ss_closed">ScreenScraper مغلق أو مزدحم الآن</string>
+    <string name="scrape_down_ss_dev">لم يقبل ScreenScraper معرّف المطوّر أو بيانات الدخول</string>
+    <string name="scrape_down_ss_version">حظر ScreenScraper هذا الإصدار من التطبيق</string>
+    <string name="scrape_down_sgdb_key">لم يقبل SteamGridDB مفتاح API</string>
+
+    <string name="scrape_test_said_no">رفض الطلب</string>
+    <string name="scrape_test_timeout">لا رد في الوقت المحدّد. تحقّق من Wi-Fi وحاول مجددًا</string>
+    <string name="scrape_test_http">ردّ بخطأ (%1$d)</string>
+    <string name="scrape_test_unreachable">تعذّر الوصول إليه. تحقّق من Wi-Fi وحاول مجددًا</string>
+    <string name="scrape_test_lb_not_downloaded">لم يُنزّل بعد: اضغط «تنزيل»</string>
+    <string name="scrape_test_lb_no_systems">التنزيل لا يضم أيًّا من منصّاتك؛ نزّله مجددًا</string>
+    <string name="scrape_test_lb_not_found">لم أجد %1$s في التنزيل</string>
+    <plurals name="scrape_test_lb_found">
+        <item quantity="zero">وجدت %1$s (%2$s) بلا صور، على هذا الجهاز</item>
+        <item quantity="one">وجدت %1$s (%2$s) مع صورة واحدة، على هذا الجهاز</item>
+        <item quantity="two">وجدت %1$s (%2$s) مع صورتين، على هذا الجهاز</item>
+        <item quantity="few">وجدت %1$s (%2$s) مع %3$d صور، على هذا الجهاز</item>
+        <item quantity="many">وجدت %1$s (%2$s) مع %3$d صورة، على هذا الجهاز</item>
+        <item quantity="other">وجدت %1$s (%2$s) مع %3$d صورة، على هذا الجهاز</item>
+    </plurals>
+    <plurals name="scrape_test_lb_games">
+        <item quantity="zero">%1$s لعبة لمنصّاتك، على هذا الجهاز</item>
+        <item quantity="one">%1$s لعبة لمنصّاتك، على هذا الجهاز</item>
+        <item quantity="two">%1$s لعبة لمنصّاتك، على هذا الجهاز</item>
+        <item quantity="few">%1$s ألعاب لمنصّاتك، على هذا الجهاز</item>
+        <item quantity="many">%1$s لعبة لمنصّاتك، على هذا الجهاز</item>
+        <item quantity="other">%1$s لعبة لمنصّاتك، على هذا الجهاز</item>
+    </plurals>
+    <string name="scrape_test_ss_needs">يحتاج معرّف مطوّر وكلمة مرور المطوّر</string>
+    <string name="scrape_test_nothing_signed_in">سُجّل الدخول، لكن البحث لم يجد شيئًا</string>
+    <string name="scrape_test_found">وجدت %1$s</string>
+    <string name="scrape_test_found_as">وجدت %1$s، مسجّلًا الدخول باسم %2$s</string>
+    <string name="scrape_test_igdb_needs">يحتاج معرّف عميل Twitch وسر العميل</string>
+    <plurals name="scrape_test_igdb_found">
+        <item quantity="zero">وجدت %1$s بلا صور</item>
+        <item quantity="one">وجدت %1$s مع صورة واحدة</item>
+        <item quantity="two">وجدت %1$s مع صورتين</item>
+        <item quantity="few">وجدت %1$s مع %2$d صور</item>
+        <item quantity="many">وجدت %1$s مع %2$d صورة</item>
+        <item quantity="other">وجدت %1$s مع %2$d صورة</item>
+    </plurals>
+    <plurals name="scrape_test_igdb_found_year">
+        <item quantity="zero">وجدت %1$s (%2$s) بلا صور</item>
+        <item quantity="one">وجدت %1$s (%2$s) مع صورة واحدة</item>
+        <item quantity="two">وجدت %1$s (%2$s) مع صورتين</item>
+        <item quantity="few">وجدت %1$s (%2$s) مع %3$d صور</item>
+        <item quantity="many">وجدت %1$s (%2$s) مع %3$d صورة</item>
+        <item quantity="other">وجدت %1$s (%2$s) مع %3$d صورة</item>
+    </plurals>
+    <string name="scrape_test_sgdb_needs">يحتاج مفتاح API</string>
+    <string name="scrape_test_sgdb_nothing">المفتاح يعمل، لكن البحث لم يجد شيئًا</string>
+    <plurals name="scrape_test_sgdb_found">
+        <item quantity="zero">وجدت %1$s بلا صور بارزة</item>
+        <item quantity="one">وجدت %1$s مع صورة بارزة واحدة</item>
+        <item quantity="two">وجدت %1$s مع صورتين بارزتين</item>
+        <item quantity="few">وجدت %1$s مع %2$d صور بارزة</item>
+        <item quantity="many">وجدت %1$s مع %2$d صورة بارزة</item>
+        <item quantity="other">وجدت %1$s مع %2$d صورة بارزة</item>
+    </plurals>
+    <string name="scrape_test_libretro_found">وجدت غلاف Super Mario World</string>
+    <string name="scrape_test_libretro_failed">تعذّرت قراءة قائمة المصغّرات</string>
+    <string name="scrape_test_nothing">البحث لم يجد شيئًا</string>
+    <string name="scrape_test_hltb_found">%1$s: %2$s للقصة الرئيسية، و%3$s لـ 100%%</string>
+</resources>

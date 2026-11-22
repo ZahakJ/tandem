@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. What Tandem keeps: backups, a game's status, logo place, sort orders, app screens.
+     See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="data_logo_auto">تلقائي</string>
+    <string name="data_logo_left">يسار</string>
+    <string name="data_logo_centre">وسط</string>
+    <string name="data_logo_right">يمين</string>
+    <string name="data_logo_top">أعلى</string>
+    <string name="data_logo_bottom">أسفل</string>
+
+    <string name="data_status_backlog">قائمة الانتظار</string>
+    <string name="data_status_backlog_blurb">سألعبها يومًا ما</string>
+    <string name="data_status_playing">قيد اللعب</string>
+    <string name="data_status_playing_blurb">ألعبها الآن</string>
+    <string name="data_status_finished">أنهيتها</string>
+    <string name="data_status_finished_blurb">رأيت شارة النهاية</string>
+    <string name="data_status_completed">مكتملة</string>
+    <string name="data_status_completed_blurb">أنجزت كل شيء، 100%</string>
+    <string name="data_status_shelved">مؤجّلة</string>
+    <string name="data_status_shelved_blurb">على الرف حاليًا</string>
+    <string name="data_status_endless">بلا نهاية</string>
+    <string name="data_status_endless_blurb">لا خاتمة لها: للمتعة فقط</string>
+
+    <string name="data_sort_name">الاسم</string>
+    <string name="data_sort_recent">لُعبت مؤخرًا</string>
+    <string name="data_sort_most">الأكثر لعبًا</string>
+    <string name="data_sort_year">سنة الإصدار</string>
+    <string name="data_sort_rating">التقييم</string>
+    <string name="data_sort_added">أُضيفت مؤخرًا</string>
+
+    <string name="data_time_minutes">%1$d دقيقة</string>
+    <string name="data_time_hours">%1$s ساعة</string>
+
+    <string name="data_screen_auto">تلقائي</string>
+    <string name="data_screen_top">العلوية</string>
+    <string name="data_screen_bottom">السفلية</string>
+
+    <string name="data_backup_games">بيانات الألعاب</string>
+    <string name="data_backup_games_blurb">المفضّلة، والتفاصيل، ووقت اللعب، والجلسات، واليوميات، والمجلدات المخفية</string>
+    <string name="data_backup_look">المظهر</string>
+    <string name="data_backup_look_blurb">السمة، والألوان، والخلفيات، والأصوات، والحركة</string>
+    <string name="data_backup_layout">التخطيط والمجلدات</string>
+    <string name="data_backup_layout_blurb">شبكة الأيقونات، والمجلدات، والشريط، والأدوات</string>
+    <string name="data_backup_systems">المنصّات والمحاكيات</string>
+    <string name="data_backup_systems_blurb">اختيارات المحاكيات، ومجلدات المنصّات، وأذرع التحكّم، وجلب الصور</string>
+    <string name="data_backup_restored">استُعيد: %1$s</string>
+    <string name="data_backup_failed">فشل %1$s: %2$s</string>
+    <string name="data_backup_missing">%1$s ليس في هذه النسخة</string>
+    <string name="data_backup_nothing">لا شيء لاستعادته</string>
+    <string name="data_backup_cant_write_to">تعذّرت الكتابة في %1$s</string>
+    <string name="data_backup_cant_finish">تعذّر إكمال النسخ الاحتياطي</string>
+    <string name="data_backup_cant_read">تعذّرت قراءة %1$s</string>
+    <string name="data_backup_cant_restore">تعذّرت الاستعادة</string>
+    <string name="data_backup_cant_write">تعذّرت كتابة %1$s</string>
+    <plurals name="data_backup_count_games">
+        <item quantity="zero">لا ألعاب</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">لعبتان</item>
+        <item quantity="few">%1$s ألعاب</item>
+        <item quantity="many">%1$s لعبة</item>
+        <item quantity="other">%1$s لعبة</item>
+    </plurals>
+    <plurals name="data_backup_count_tiles">
+        <item quantity="zero">لا مربعات</item>
+        <item quantity="one">مربع واحد</item>
+        <item quantity="two">مربعان</item>
+        <item quantity="few">%1$s مربعات</item>
+        <item quantity="many">%1$s مربعًا</item>
+        <item quantity="other">%1$s مربع</item>
+    </plurals>
+    <plurals name="data_backup_count_folders">
+        <item quantity="zero">لا مجلدات</item>
+        <item quantity="one">مجلد واحد</item>
+        <item quantity="two">مجلدان</item>
+        <item quantity="few">%1$s مجلدات</item>
+        <item quantity="many">%1$s مجلدًا</item>
+        <item quantity="other">%1$s مجلد</item>
+    </plurals>
+    <plurals name="data_backup_count_widgets">
+        <item quantity="zero">لا أدوات</item>
+        <item quantity="one">أداة واحدة</item>
+        <item quantity="two">أداتان</item>
+        <item quantity="few">%1$s أدوات</item>
+        <item quantity="many">%1$s أداة</item>
+        <item quantity="other">%1$s أداة</item>
+    </plurals>
+    <string name="data_backup_pick_one">اختر شيئًا واحدًا على الأقل لنسخه احتياطيًا</string>
+    <string name="data_backup_backing_up">جارٍ النسخ الاحتياطي…</string>
+    <string name="data_backup_backed_up">حُفظت النسخة في ROMs/tandem/backup/%1$s</string>
+    <string name="data_backup_pick_restore">اختر شيئًا واحدًا على الأقل لاستعادته</string>
+    <string name="data_backup_restore_ask">استعادة %1$s؟</string>
+    <string name="data_backup_restore_text">سيُستبدل ما لدى Tandem الآن من هذه الأشياء. وتُحفظ أولًا نسخة تلقائية من وضعك الحالي.</string>
+    <string name="data_backup_restore">استعادة</string>
+    <string name="data_backup_restoring">جارٍ الاستعادة…</string>
+    <string name="data_backup_reason_restoring">الاستعادة</string>
+    <string name="data_backup_delete_ask">حذف هذه النسخة؟</string>
+    <string name="data_backup_delete_text">%1$s · %2$s. ولا رجعة في ذلك.</string>
+    <string name="data_backup_delete">حذف</string>
+    <string name="data_backup_deleted">حُذفت النسخة</string>
+    <string name="data_backup_delete_failed">تعذّر حذف هذه النسخة</string>
+    <string name="data_backup_older_title">نسخة أقدم</string>
+    <string name="data_backup_older">أقدم</string>
+    <string name="data_backup_automatic">تلقائية</string>
+    <string name="data_backup_manual">يدوية</string>
+    <string name="data_backup_before">قبل %1$s</string>
+    <string name="data_backup_back_up">نسخ احتياطي</string>
+    <string name="data_backup_back_up_detail">نسخة جديدة في ROMs/tandem/backup على هذا الجهاز. والنسخ الأقدم تبقى.</string>
+    <string name="data_backup_keys">مفاتيح الحسابات وبيانات الدخول</string>
+    <string name="data_backup_keys_detail">جلب الصور وRetroAchievements وSteam. ومجلد النسخ الاحتياطي تستطيع التطبيقات الأخرى قراءته.</string>
+    <string name="data_backup_cancel">إلغاء</string>
+    <string name="data_backup_restore_detail">اختر نسخة، ثم ما تريد إرجاعه.</string>
+    <string name="data_backup_looking">أبحث في ROMs/tandem/backup…</string>
+    <string name="data_backup_none">لا نسخ احتياطية بعد</string>
+    <string name="data_backup_none_detail">«نسخ احتياطي» يحفظ نسخة في ROMs/tandem/backup.</string>
+    <string name="data_backup_now">انسخ احتياطيًا الآن</string>
+    <string name="data_backup_put_back">أرجِع من هذه النسخة</string>
+    <string name="data_backup_keep_here">يُبقي ما هو موجود الآن</string>
+    <string name="data_backup_not_in">ليس في هذه النسخة</string>
+    <string name="data_backup_has_keys">تتضمّن مفاتيح الحسابات.</string>
+    <string name="data_backup_no_keys">مفاتيح الحسابات على هذا الجهاز تبقى كما هي.</string>
+    <string name="data_backup_just_now">الآن</string>
+    <string name="data_backup_minute_ago">قبل دقيقة</string>
+    <plurals name="data_backup_minutes_ago">
+        <item quantity="zero">قبل %1$d دقيقة</item>
+        <item quantity="one">قبل دقيقة</item>
+        <item quantity="two">قبل دقيقتين</item>
+        <item quantity="few">قبل %1$d دقائق</item>
+        <item quantity="many">قبل %1$d دقيقة</item>
+        <item quantity="other">قبل %1$d دقيقة</item>
+    </plurals>
+    <string name="data_backup_hour_ago">قبل ساعة</string>
+    <plurals name="data_backup_hours_ago">
+        <item quantity="zero">قبل %1$d ساعة</item>
+        <item quantity="one">قبل ساعة</item>
+        <item quantity="two">قبل ساعتين</item>
+        <item quantity="few">قبل %1$d ساعات</item>
+        <item quantity="many">قبل %1$d ساعة</item>
+        <item quantity="other">قبل %1$d ساعة</item>
+    </plurals>
+    <string name="data_backup_yesterday">أمس</string>
+    <plurals name="data_backup_days_ago">
+        <item quantity="zero">قبل %1$d يوم</item>
+        <item quantity="one">قبل يوم</item>
+        <item quantity="two">قبل يومين</item>
+        <item quantity="few">قبل %1$d أيام</item>
+        <item quantity="many">قبل %1$d يومًا</item>
+        <item quantity="other">قبل %1$d يوم</item>
+    </plurals>
+</resources>
