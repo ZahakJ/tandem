@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The two screens: the bottom screen, the companion, the second home, screen roles, the screen-off and the status line. Keys start with screens_. See docs/TRANSLATING.md. Names (Tandem, Pip, Discord, Steam, RetroAchievements, Shizuku) stay as they are. -->
+<resources>
+    <!-- What the bottom screen shows while a game plays on the top one. Short: they are choices on a row. -->
+    <string name="screens_companion_art">Game art</string>
+    <string name="screens_companion_tandem">Tandem companion</string>
+    <string name="screens_companion_dark">Screen off</string>
+    <string name="screens_companion_off">Leave to emulator</string>
+    <string name="screens_companion_deck">Deck: keyboard &amp; trackpad</string>
+    <!-- Settings › Play & system › Performance & sleep › Screen off. -->
+    <string name="screens_off_group">Screen off</string>
+    <string name="screens_off_while_playing">Bottom screen while playing</string>
+    <string name="screens_off_while_playing_help">What the bottom screen shows while a game plays on the top one: the game\'s art, Tandem\'s companion, Screen off (black and still until you tap it, the biggest battery saving on this screen) or nothing at all, for an emulator that draws there itself. 3DS and DS emulators keep their own screen whatever this says. Y on a system or a game chooses for that one alone.</string>
+    <string name="screens_off_after">Off after</string>
+    <string name="screens_off_after_help">Minutes without a touch on the bottom screen before it goes dark while a game plays, whatever it shows, until you tap it. Never keeps the dimmed art or companion up all game long. With Screen off, this is also how long a tap lights the screen.</string>
+    <string name="screens_off_never">Never</string>
+    <plurals name="screens_off_after_minutes">
+        <item quantity="one">After %1$d min</item>
+        <item quantity="other">After %1$d min</item>
+    </plurals>
+    <!-- The bottom screen while browsing: details of what is highlighted on the top one. -->
+    <!-- On a game that is still open. Short. -->
+    <string name="screens_running">● Running</string>
+    <!-- HowLongToBeat in a chip: "⏱ 12h · 30h for 100%". %1$s a time like "30h". -->
+    <string name="screens_ttb_complete">%1$s for 100%%</string>
+    <!-- %1$s the times above, joined. -->
+    <string name="screens_ttb_chip">⏱ %1$s</string>
+    <string name="screens_favorite">♥ Favorite</string>
+    <!-- Button hints. Short. -->
+    <string name="screens_hint_resume">Resume</string>
+    <string name="screens_hint_play">Play</string>
+    <string name="screens_hint_options">Options</string>
+    <string name="screens_hint_more">More</string>
+    <string name="screens_hint_search">Search</string>
+    <string name="screens_hint_open">Open</string>
+    <!-- What L1 and R1 switch between. Short. -->
+    <string name="screens_switch_systems">Systems</string>
+    <string name="screens_switch_genres">Genres</string>
+    <string name="screens_switch_lists">Lists</string>
+    <string name="screens_switch_groups">Groups</string>
+    <string name="screens_switch_rows">Rows</string>
+    <!-- A game's facts, label above value. -->
+    <string name="screens_fact_times_played">Times played</string>
+    <string name="screens_fact_not_yet">Not yet</string>
+    <string name="screens_fact_play_time">Play time</string>
+    <string name="screens_fact_time_to_beat">Time to beat</string>
+    <!-- Time to beat parts. %1$s a time like "12h". -->
+    <string name="screens_ttb_main">%1$s main</string>
+    <string name="screens_ttb_extras">%1$s extras</string>
+    <string name="screens_ttb_100">%1$s 100%%</string>
+    <string name="screens_fact_last_played">Last played</string>
+    <string name="screens_fact_added">Added</string>
+    <string name="screens_fact_folder">Folder</string>
+    <string name="screens_fact_file">File</string>
+    <!-- How many play, from the game's metadata: "1–4 players"; %1$s may be a range. -->
+    <string name="screens_players_one">1 player</string>
+    <string name="screens_players">%1$s players</string>
+    <string name="screens_just_now">just now</string>
+    <!-- The line under a game. -->
+    <string name="screens_not_played">Not played yet: a fresh adventure!</string>
+    <!-- %1$s a play time like "3 h 20 min". -->
+    <string name="screens_played_time">Played %1$s</string>
+    <plurals name="screens_played_times">
+        <item quantity="one">Played %1$d time</item>
+        <item quantity="other">Played %1$d times</item>
+    </plurals>
+    <string name="screens_played">Played</string>
+    <!-- %1$s the line above, %2$s when ("3 minutes ago"). -->
+    <string name="screens_played_when">%1$s · %2$s</string>
+    <!-- Under a system or folder. %1$s a play time. -->
+    <string name="screens_played_in_here">%1$s played in here</string>
+    <plurals name="screens_games">
+        <item quantity="one">%1$d game</item>
+        <item quantity="other">%1$d games</item>
+    </plurals>
+    <!-- Pip's greeting on the bottom screen. -->
+    <string name="screens_good_morning">Good morning!</string>
+    <string name="screens_good_afternoon">Good afternoon!</string>
+    <string name="screens_good_evening">Good evening!</string>
+    <string name="screens_up_late">Up late? Me too.</string>
+    <string name="screens_no_games">Let\'s find some games</string>
+    <plurals name="screens_games_ready">
+        <item quantity="one">%1$d game ready to play</item>
+        <item quantity="other">%1$d games ready to play</item>
+    </plurals>
+    <!-- The in-game companion on the bottom screen while a game plays on the top one. -->
+    <string name="screens_comp_just_started">just started</string>
+    <!-- %1$s how long this session has run: "0:12:34" or "12 min". -->
+    <string name="screens_comp_playing">Playing %1$s</string>
+    <!-- %1$s a play time. -->
+    <string name="screens_comp_in_total">%1$s in total</string>
+    <string name="screens_comp_first_time">First time playing</string>
+    <!-- Chips and buttons. Short. -->
+    <string name="screens_comp_back">Back to Tandem</string>
+    <string name="screens_comp_screenshot">Screenshot</string>
+    <string name="screens_comp_notes">Notes</string>
+    <string name="screens_comp_companion">Companion</string>
+    <string name="screens_comp_game_screen">Game screen</string>
+    <string name="screens_comp_manual">Manual</string>
+    <string name="screens_comp_clip">Clip</string>
+    <!-- %1$d seconds left of the clip. -->
+    <string name="screens_comp_stop_clip">Stop clip · %1$ds</string>
+    <!-- Pip cheering at milestones of one session. %1$d hours. -->
+    <plurals name="screens_comp_legendary">
+        <item quantity="one">%1$d hour! A legendary run</item>
+        <item quantity="other">%1$d hours! A legendary run</item>
+    </plurals>
+    <plurals name="screens_comp_stretch">
+        <item quantity="one">%1$d hour in. Water and a stretch?</item>
+        <item quantity="other">%1$d hours in. Water and a stretch?</item>
+    </plurals>
+    <string name="screens_comp_hour">An hour already! Having fun?</string>
+    <string name="screens_comp_half_hour">Half an hour in. Nice rhythm!</string>
+    <!-- The battery: "Charging 80%". -->
+    <string name="screens_comp_charging">Charging %1$d%%</string>
+    <string name="screens_comp_game_art">Game art</string>
+    <string name="screens_comp_tap_to_close">Tap to close</string>
+    <string name="screens_comp_close_game">Close game</string>
+    <!-- Steppers: the screen's brightness and the volume. Short. -->
+    <string name="screens_comp_light">Light</string>
+    <string name="screens_comp_volume">Volume</string>
+    <string name="screens_comp_wifi_on">Wi-Fi on</string>
+    <string name="screens_comp_wifi_off">Wi-Fi off</string>
+    <!-- The second home: Tandem on the bottom screen while an app or game is on the top one. -->
+    <string name="screens_home_android_apps">Android apps</string>
+    <string name="screens_home_open_on_top">Open on the top screen</string>
+    <string name="screens_home_home_brings_back">Home brings Tandem back</string>
+    <string name="screens_home_moving">Moving…</string>
+    <!-- %1$s an app's name. -->
+    <string name="screens_home_move_here">Move %1$s here</string>
+    <!-- Swapping the two screens. -->
+    <string name="screens_swap_single">Single screen is on, so there\'s no other screen to swap with</string>
+    <string name="screens_swap_no_second">There\'s no second screen to swap with</string>
+    <string name="screens_swap_busy">The bottom screen is busy right now. Try again in a moment</string>
+    <string name="screens_swap_failed">The bottom screen couldn\'t take the controls, so the screens stay as they were</string>
+    <!-- A game's status (Y › Status). %1$s a game's title. -->
+    <string name="screens_status_cleared">Status cleared</string>
+    <string name="screens_status_finished">Finished %1$s! 🎉</string>
+    <string name="screens_status_completed">Completed %1$s, 100%% ★</string>
+    <!-- %1$s a game's title, %2$s its new status. -->
+    <string name="screens_status_set">%1$s: %2$s</string>
+    <string name="screens_status">Status</string>
+    <string name="screens_status_none">None</string>
+    <string name="screens_status_help">Backlog, Playing, Finished… A game in the backlog moves to Playing by itself once you\'ve played it a while.</string>
+    <string name="screens_status_no_status">No status</string>
+    <!-- Play time against HowLongToBeat: "12 h of ~40 h". %1$s and %2$s are times. -->
+    <string name="screens_status_progress">%1$s of ~%2$s</string>
+</resources>

@@ -85,9 +85,10 @@ interface PerfDevice {
 }
 
 object PerformancePlan {
-    val modes = listOf(0 to "Standard", 1 to "Performance", 2 to "High performance")
-    /** 4 (Custom) is AYN's own, with its speed in AYN's app, so it is never offered or written. */
-    val fans = listOf(0 to "Off", 1 to "Quiet", 2 to "Smart", 3 to "Sport")
+    /** AYN's performance modes, each with its name's string. */
+    val modes = listOf(0 to R.string.play_perf_standard, 1 to R.string.play_perf_performance, 2 to R.string.play_perf_high)
+    /** The fan modes. 4 (Custom) is AYN's own, with its speed in AYN's app, so it is never offered or written. */
+    val fans = listOf(0 to R.string.play_perf_fan_off, 1 to R.string.play_perf_fan_quiet, 2 to R.string.play_perf_fan_smart, 3 to R.string.play_perf_fan_sport)
     const val FAN_CUSTOM = 4
 
     /** An AYN device: the performance mode setting exists. */
@@ -139,14 +140,16 @@ object PerformancePlan {
         return set(ch.from)
     }
 
-    fun modeName(v: Int): String = modes.firstOrNull { it.first == v }?.second ?: "Mode $v"
-    fun fanName(v: Int): String = fans.firstOrNull { it.first == v }?.second ?: "Fan $v"
-    fun hzName(v: Int): String = "$v Hz"
+    fun modeName(v: Int): String = modes.firstOrNull { it.first == v }?.let { Tx.s(it.second) } ?: Tx.s(R.string.play_perf_mode_n, v)
+    fun fanName(v: Int): String = fans.firstOrNull { it.first == v }?.let { Tx.s(it.second) } ?: Tx.s(R.string.play_perf_fan_n, v)
+    fun hzName(v: Int): String = Tx.s(R.string.play_perf_hz, v)
 
-    /** "High performance · Sport · 120 Hz": what [p] sets, or null when it keeps everything. */
-    fun label(p: PerfProfile?): String? {
+    /** "High performance · Sport · 120 Hz": what [p] sets, or null when it keeps everything. The names can be given (tests). */
+    fun label(
+        p: PerfProfile?, mode: (Int) -> String = ::modeName, fan: (Int) -> String = ::fanName, hz: (Int) -> String = ::hzName,
+    ): String? {
         p ?: return null
-        val parts = listOfNotNull(p.mode?.let(::modeName), p.fan?.let(::fanName), p.hz?.let(::hzName))
+        val parts = listOfNotNull(p.mode?.let(mode), p.fan?.let(fan), p.hz?.let(hz))
         return parts.takeIf { it.isNotEmpty() }?.joinToString(" · ")
     }
 }

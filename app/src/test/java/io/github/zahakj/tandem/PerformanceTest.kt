@@ -126,11 +126,13 @@ class PerformanceTest {
         assertEquals(PerfProfile(), PerfProfile.resolve(PerfProfile(mode = PerfProfile.KEEP, hz = PerfProfile.KEEP), PerfProfile(mode = 1, hz = 60)))
     }
 
+    // The names come from the string resources; stand-ins show what is named, in which order.
     @Test fun theLabelNamesWhatIsSet() {
-        assertEquals("High performance · Sport · 120 Hz", PerformancePlan.label(high))
-        assertEquals("Standard · Off", PerformancePlan.label(PerfProfile(mode = 0, fan = 0)))
-        assertEquals("60 Hz", PerformancePlan.label(PerfProfile(hz = 60)))
-        assertNull(PerformancePlan.label(null))
+        fun label(p: PerfProfile?) = PerformancePlan.label(p, { "mode $it" }, { "fan $it" }, { "$it Hz" })
+        assertEquals("mode 2 · fan 3 · 120 Hz", label(high))
+        assertEquals("mode 0 · fan 0", label(PerfProfile(mode = 0, fan = 0)))
+        assertEquals("60 Hz", label(PerfProfile(hz = 60)))
+        assertNull(label(null))
     }
 
     @Test fun theChangesSurviveARestartAsJson() {

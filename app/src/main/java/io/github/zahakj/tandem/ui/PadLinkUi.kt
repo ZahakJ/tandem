@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.PadLink
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 
 /**
  * Controller passthrough on the in-game companion (PadLink.kt): the "Play with <name>" offer while a controller that
@@ -49,19 +51,19 @@ fun PadLinkCard(modifier: Modifier = Modifier) {
         ) {
             if (offer != null) {
                 Text(
-                    "Play with ${offer.name}?", style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center,
+                    Tx.s(R.string.controls_padlink_offer, offer.name), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center,
                     maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Press A or Start on it. It takes over the built-in controls in this game.",
+                    Tx.s(R.string.controls_padlink_offer_how),
                     style = MaterialTheme.typography.bodySmall, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    ButtonHint("A", "Play with it", Palette.Mint, onClick = { PadLink.accept() })
+                    ButtonHint("A", Tx.s(R.string.controls_padlink_accept), Palette.Mint, onClick = { PadLink.accept() })
                     Spacer(Modifier.width(18.dp))
-                    ButtonHint("B", "Not now", Palette.Lavender, onClick = { PadLink.decline() })
+                    ButtonHint("B", Tx.s(R.string.controls_padlink_decline), Palette.Lavender, onClick = { PadLink.decline() })
                 }
             } else if (notice != null) {
                 Text(notice, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)

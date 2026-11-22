@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem
 
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
@@ -100,11 +101,12 @@ class PinCodeTest {
         assertFalse(PinCode.resetDue(PinRecord(resetAsked = 1), now + PinCode.RESET_WAIT_MS * 2))
     }
 
+    // The words ("30 s") come from the string resources; the numbers and units are worked out here.
     @Test fun waitsReadRoundedUp() {
-        assertEquals("1 s", PinCode.say(1))
-        assertEquals("30 s", PinCode.say(30_000))
-        assertEquals("2 min", PinCode.say(61_000))
-        assertEquals("24 h", PinCode.say(PinCode.RESET_WAIT_MS))
-        assertEquals("1 h", PinCode.say(3_599_000 + 60_000 - 59_000))
+        assertEquals(1 to TimeUnit.SECONDS, PinCode.waitIn(1))
+        assertEquals(30 to TimeUnit.SECONDS, PinCode.waitIn(30_000))
+        assertEquals(2 to TimeUnit.MINUTES, PinCode.waitIn(61_000))
+        assertEquals(24 to TimeUnit.HOURS, PinCode.waitIn(PinCode.RESET_WAIT_MS))
+        assertEquals(1 to TimeUnit.HOURS, PinCode.waitIn(3_599_000 + 60_000 - 59_000))
     }
 }

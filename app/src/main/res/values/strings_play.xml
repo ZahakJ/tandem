@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Playing: launching games and what goes wrong, closing them, performance, clips, screenshots and the in-game companion. Keys start with play_. See docs/TRANSLATING.md. Names (Tandem, Pip, Discord, Steam, RetroAchievements, Shizuku) stay as they are. -->
+<resources>
+    <!-- Performance profiles on AYN handhelds: the performance mode, fan and refresh rate while a game plays. -->
+    <!-- AYN's performance modes and fan modes, as their own control centre names them. Short. -->
+    <string name="play_perf_standard">Standard</string>
+    <string name="play_perf_performance">Performance</string>
+    <string name="play_perf_high">High performance</string>
+    <string name="play_perf_fan_off">Off</string>
+    <string name="play_perf_fan_quiet">Quiet</string>
+    <string name="play_perf_fan_smart">Smart</string>
+    <string name="play_perf_fan_sport">Sport</string>
+    <!-- A mode or fan Tandem doesn't know, by its number. -->
+    <string name="play_perf_mode_n">Mode %1$d</string>
+    <string name="play_perf_fan_n">Fan %1$d</string>
+    <!-- A refresh rate: "120 Hz". -->
+    <string name="play_perf_hz">%1$d Hz</string>
+    <!-- Leave the value as it is. Short. -->
+    <string name="play_perf_keep">Keep</string>
+    <!-- Settings › Play & system › Performance & sleep. -->
+    <string name="play_perf_group">Performance while playing</string>
+    <string name="play_perf_profiles">Performance profiles</string>
+    <string name="play_perf_ayn_only">AYN devices only</string>
+    <string name="play_perf_ayn_only_help">On an AYN handheld, Tandem can set the performance mode, fan mode and refresh rate while a game plays, per game or for all of them. This device doesn\'t have AYN\'s modes, so there is nothing to set here.</string>
+    <string name="play_perf_ayn_only_toast">This device doesn\'t have AYN\'s performance modes</string>
+    <string name="play_perf_needs_shizuku">Needs Shizuku</string>
+    <string name="play_perf_needs_shizuku_help">Set the performance mode, fan mode and refresh rate while a game plays, and put them back after. Tandem changes them the way AYN\'s control centre does; Android lets only the shell write those keys, so this needs Shizuku running with Tandem allowed.</string>
+    <string name="play_perf_needs_shizuku_toast">This needs Shizuku running, with Tandem allowed</string>
+    <string name="play_perf_mode">Performance mode</string>
+    <string name="play_perf_mode_help">The AYN performance mode while a game plays: Standard, Performance or High performance. Keep leaves whatever is set. It goes back to how it was when you come back to Tandem; a game\'s own choice (Y on the game) wins over this.</string>
+    <string name="play_perf_fan">Fan mode</string>
+    <string name="play_perf_fan_help">The fan while a game plays: Off, Quiet, Smart or Sport. Keep leaves whatever is set, and a custom speed from AYN\'s app is always left alone.</string>
+    <string name="play_perf_refresh">Refresh rate</string>
+    <string name="play_perf_refresh_help">The top screen\'s refresh rate while a game plays. 60 Hz saves battery and heat; 120 Hz is smoother for games that can run that fast. Keep leaves whatever is set.</string>
+    <!-- Y on a game › More…: the game's own profile. "Default" follows Settings. -->
+    <string name="play_perf_default">Default</string>
+    <!-- %1$s what Settings has, like "Sport" or "Keep". -->
+    <string name="play_perf_default_is">Default · %1$s</string>
+    <string name="play_perf_as_in_settings">As in Settings: %1$s</string>
+    <string name="play_perf_keep_sub">Leaves it as it is</string>
+    <string name="play_perf_game_help">For this game only; Default follows Settings › Play &amp; system › Performance &amp; sleep.</string>
+    <!-- Screenshots and clips of the game on the other screen (the companion's buttons, or a button bound to them). -->
+    <string name="play_shot_saved">Screenshot saved and copied: paste it anywhere</string>
+    <string name="play_shot_needs_shizuku">Screenshots need Shizuku</string>
+    <string name="play_shot_no_screen">Couldn\'t find the game\'s screen</string>
+    <string name="play_shot_failed">Couldn\'t take the screenshot</string>
+    <string name="play_no_game">Start a game first: this captures the game on the other screen</string>
+    <string name="play_clip_needs_shizuku">Clips need Shizuku</string>
+    <string name="play_clip_busy">Already recording a clip</string>
+    <string name="play_clip_failed">Couldn\'t record the clip</string>
+    <string name="play_clip_not_saved">Couldn\'t save the clip</string>
+    <string name="play_clip_saved">Clip saved to Gallery</string>
+    <string name="play_clip_saved_silent">Clip saved to Gallery, without sound</string>
+    <!-- The notification while a clip records, and its channel in Android's settings. -->
+    <string name="play_clip_channel">Clips</string>
+    <string name="play_clip_recording">Recording a clip</string>
+    <!-- A game starting: under its title, when it starts on the bottom screen. Short. -->
+    <string name="play_launch_bottom">Bottom screen ↓</string>
+    <!-- Pip explains why a game didn't start. The buttons (short); %1$s an emulator's name. -->
+    <string name="play_problem_get">Get %1$s</string>
+    <string name="play_problem_no_store">Couldn\'t open a store for %1$s</string>
+    <string name="play_problem_systems">Systems</string>
+    <string name="play_problem_pick_other">Pick another emulator</string>
+    <string name="play_problem_update">Update %1$s</string>
+    <string name="play_problem_rescan">Rescan</string>
+    <string name="play_problem_hide">Hide it</string>
+    <!-- "Android Games" is the system of Android games in the library. -->
+    <string name="play_problem_hidden">Hidden from Android Games</string>
+    <string name="play_problem_start_anyway">Start anyway</string>
+    <string name="play_problem_ok">OK</string>
+    <!-- Titles and explanations. %1$s an emulator, %2$s a system like "Game Boy Advance", %3$s a game. -->
+    <string name="play_problem_not_installed">%1$s isn\'t installed</string>
+    <string name="play_problem_not_installed_text">I play %2$s games with %1$s. Get it, open it once to set it up, then press A on %3$s again.</string>
+    <!-- %1$s a system. -->
+    <string name="play_problem_no_emulator">No emulator for %1$s yet</string>
+    <string name="play_problem_no_emulator_text">Add one in ROMs/tandem/platforms.json, or drop a Cocoon platform file into ROMs/platforms.</string>
+    <!-- %1$s an emulator, %2$s a game. -->
+    <string name="play_problem_wont_open">%1$s didn\'t open</string>
+    <string name="play_problem_wont_open_text">It\'s installed, but wouldn\'t take %1$s. It may need an update, or a different emulator may work better.</string>
+    <!-- The same, with what Android said (%2$s) on a line of its own. -->
+    <string name="play_problem_wont_open_detail">It\'s installed, but wouldn\'t take %1$s. It may need an update, or a different emulator may work better.\n(%2$s)</string>
+    <string name="play_problem_missing">I can\'t find this game</string>
+    <!-- %1$s a file name. -->
+    <string name="play_problem_missing_text">%1$s was moved or deleted. A rescan will tidy up the list.</string>
+    <string name="play_problem_shortcut">This shortcut needs a game id</string>
+    <!-- %1$s a file name, %2$s what is wrong with it. The quoted line is an example of the file's contents. -->
+    <string name="play_problem_shortcut_text">%1$s: %2$s. Vita .dpt files need a line like \"[vita_game_id] PCSA00011\"; Windows .pcgame files hold the GameNative app id.</string>
+    <!-- %1$s a game (an Android app). -->
+    <string name="play_problem_app_missing">%1$s isn\'t installed anymore</string>
+    <string name="play_problem_app_missing_text">Reinstall it from its store, or hide it from Android Games.</string>
+    <string name="play_problem_not_offline">Couldn\'t go offline, game not started</string>
+    <string name="play_problem_not_offline_text">Airplane mode didn\'t go on, so nothing was started. Check that Shizuku is running, or start it anyway.</string>
+
+    <!-- Starting a game while another is still running. %1$s an emulator's (app's) name. -->
+    <string name="play_close_outside">%1$s · opened outside Tandem</string>
+    <!-- %1$s an app, %2$s a play time. -->
+    <string name="play_close_played">%1$s · played %2$s this time</string>
+    <!-- %1$s a system's short name, %2$s an app. -->
+    <string name="play_close_where">%1$s · %2$s</string>
+    <string name="play_close_never_ask">I won\'t ask again. Turn it back on in Settings › Play &amp; system › Playing</string>
+    <!-- What Pip says as the question appears. -->
+    <string name="play_close_pip">Wait, a game is still running</string>
+    <plurals name="play_close_more">
+        <item quantity="one">and %1$d more</item>
+        <item quantity="other">and %1$d more</item>
+    </plurals>
+    <string name="play_close_press_again">Press again to close</string>
+    <!-- %1$s the game about to start. -->
+    <string name="play_close_and_start">Close and start %1$s</string>
+    <string name="play_close_cancel">Cancel</string>
+    <string name="play_close_dont_ask">Don\'t ask again</string>
+    <!-- Above a running game's name, in capitals as written. %1$s its app, in capitals. -->
+    <string name="play_close_kicker">● STILL RUNNING</string>
+    <string name="play_close_kicker_in">● STILL RUNNING IN %1$s</string>
+    <!-- A game private mode keeps hidden: never named. -->
+    <string name="play_close_hidden_game">A hidden game</string>
+    <!-- %1$s a game or app, %2$s the game about to start. -->
+    <string name="play_close_one">%1$s is still running</string>
+    <string name="play_close_one_text">Starting %1$s will close it. Anything you haven\'t saved there will be lost.</string>
+    <plurals name="play_close_many">
+        <item quantity="one">%1$d game is still running</item>
+        <item quantity="other">%1$d games are still running</item>
+    </plurals>
+    <string name="play_close_many_text">Starting %1$s will close them all. Anything you haven\'t saved in them will be lost.</string>
+    <string name="play_close_resume_it">Resume it</string>
+    <string name="play_close_resume">Resume %1$s</string>
+    <!-- Moving an app between the two screens (hold Back, or Move here on the bottom screen). %1$s an app's name. -->
+    <string name="play_move_needs_shizuku">Moving apps between screens needs Shizuku</string>
+    <string name="play_move_refused">Android wouldn\'t move that app</string>
+    <string name="play_move_back">Moved back. %1$s opens as before</string>
+    <string name="play_move_to_bottom">Moved to the bottom screen. %1$s opens there from now on (hold Back again to undo)</string>
+    <string name="play_move_to_top">Moved to the top screen. %1$s opens there from now on (hold Back again to undo)</string>
+    <string name="play_move_not_open">%1$s isn\'t open</string>
+    <string name="play_move_bottom_from_now">%1$s opens on the bottom screen from now on</string>
+    <!-- Peanuts Native (an app's name) building a Switch game. %1$s a game. -->
+    <string name="play_peanuts_building">Building %1$s natively. This takes 5 to 40 minutes; you can keep playing meanwhile</string>
+    <!-- %1$s why, as the Peanuts app says it (in English). -->
+    <string name="play_peanuts_cant">Peanuts Native can\'t build this copy: %1$s</string>
+    <string name="play_peanuts_see_app">see its app</string>
+    <!-- Carrying a Switch save between Eden Duo and Peanuts (apps' names). %1$s what went wrong. -->
+    <string name="play_save_failed">Couldn\'t bring the save across: %1$s. Both saves are as they were</string>
+    <string name="play_save_from_eden">Carried on from your Eden Duo save</string>
+    <string name="play_save_from_native">Carried on from your native save</string>
+    <string name="play_cant_see_running">Can\'t check for running games without Shizuku</string>
+    <!-- What is wrong with a shortcut file, after its name in the problem above ("game.dpt: game.dpt is empty."). -->
+    <!-- %1$s a template key, like file.id. -->
+    <string name="play_shortcut_key_empty">\"%1$s\" is empty</string>
+    <!-- %1$s a file name. -->
+    <string name="play_shortcut_empty">%1$s is empty</string>
+    <string name="play_shortcut_no_id">%1$s has no game id inside</string>
+    <!-- %1$s a file name, %2$s a tag name like vita_game_id. -->
+    <string name="play_shortcut_no_tag">%1$s has no [%2$s] line</string>
+    <!-- The hidden-games buttons, pressed while hidden games show. -->
+    <string name="play_hidden_tucked">Hidden games are tucked away</string>
+    <!-- Why something online didn't happen, wherever a failure is shown. -->
+    <string name="play_private_offline">Private mode is on, so Tandem stays offline</string>
+</resources>

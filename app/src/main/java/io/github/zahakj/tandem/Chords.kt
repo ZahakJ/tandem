@@ -253,7 +253,7 @@ object Privacy {
         revealed = false
         HiddenItems.endPeeks()
         Offline.tuckedAway()
-        Toasts.show("Hidden games are tucked away")
+        Toasts.show(Tx.s(R.string.play_hidden_tucked))
         Nav.focusTick++
     }
 }

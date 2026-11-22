@@ -45,9 +45,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.GameCompanion
 import io.github.zahakj.tandem.LibraryGuest
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.SecondaryHome
 import io.github.zahakj.tandem.SecondaryHomeActivity
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.SystemPrefs
 import kotlinx.coroutines.Dispatchers
@@ -192,7 +194,7 @@ private fun Face(activity: SecondaryHomeActivity, dim: Boolean, resumed: Boolean
                 )
             }
             val (level, charging) = battery
-            if (level >= 0) Pill((if (charging) "Charging " else "") + "$level%", if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
+            if (level >= 0) Pill(Tx.s(if (charging) R.string.screens_comp_charging else R.string.common_percent, level), if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
         }
         Spacer(Modifier.weight(1f))
         if (app != null) AppPanel(activity, app, dim) else Hello(now, dim)
@@ -200,11 +202,11 @@ private fun Face(activity: SecondaryHomeActivity, dim: Boolean, resumed: Boolean
         // Hidden while dimmed, so a touch to wake never lands on one.
         Row(Modifier.fillMaxWidth().graphicsLayer { alpha = if (dim) 0f else 1f }, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             // Never closes the app on top: it moves down here (Shizuku) or stays open behind Tandem.
-            Chip("Back to Tandem", Palette.Mint, enabled = !dim) {
+            Chip(Tx.s(R.string.screens_comp_back), Palette.Mint, enabled = !dim) {
                 Thread({ io.github.zahakj.tandem.AppMove.tandemOnTop(activity, app) }, "tandem-back").start()
             }
             val stock = remember { SecondaryHome.stockBottom(activity) != null }
-            if (stock) Chip("Android apps", Palette.Sky, enabled = !dim) { SecondaryHome.openStockBottom(activity) }
+            if (stock) Chip(Tx.s(R.string.screens_home_android_apps), Palette.Sky, enabled = !dim) { SecondaryHome.openStockBottom(activity) }
         }
     }
 }
@@ -222,13 +224,13 @@ private fun AppPanel(activity: SecondaryHomeActivity, pkg: String, dim: Boolean)
             AppIcon(pkg, Modifier.size(72.dp).clip(RoundedCornerShape(18.dp)))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(label, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                Text("Open on the top screen", style = MaterialTheme.typography.titleSmall, color = Palette.Sky, maxLines = 1)
-                Text("Home brings Tandem back", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                Text(Tx.s(R.string.screens_home_open_on_top), style = MaterialTheme.typography.titleSmall, color = Palette.Sky, maxLines = 1)
+                Text(Tx.s(R.string.screens_home_home_brings_back), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
             }
         }
         // Moves the app down here (Shizuku), and it opens here from then on.
         Row(Modifier.fillMaxWidth().graphicsLayer { alpha = if (dim) 0f else 1f }) {
-            Chip(if (moving) "Moving…" else "Move $label here", Palette.Butter, enabled = !dim && !moving) {
+            Chip(if (moving) Tx.s(R.string.screens_home_moving) else Tx.s(R.string.screens_home_move_here, label), Palette.Butter, enabled = !dim && !moving) {
                 moving = true
                 Thread({ io.github.zahakj.tandem.AppMove.moveToBottom(activity, pkg); activity.runOnUiThread { moving = false } }, "tandem-move-app").start()
             }
@@ -240,7 +242,9 @@ private fun AppPanel(activity: SecondaryHomeActivity, pkg: String, dim: Boolean)
 @Composable
 private fun Hello(now: Long, dim: Boolean) {
     val hour = remember(now) { Calendar.getInstance().apply { timeInMillis = now }.get(Calendar.HOUR_OF_DAY) }
-    val hello = when (hour) { in 5..11 -> "Good morning!"; in 12..17 -> "Good afternoon!"; in 18..22 -> "Good evening!"; else -> "Up late? Me too." }
+    val hello = Tx.s(
+        when (hour) { in 5..11 -> R.string.screens_good_morning; in 12..17 -> R.string.screens_good_afternoon; in 18..22 -> R.string.screens_good_evening; else -> R.string.screens_up_late },
+    )
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         // Pip rests while dimmed (no blinks either); a still box keeps the layout from jumping.
         if (dim) Spacer(Modifier.size(120.dp)) else Pip(120.dp, mood = if (hour in 0..5) 2 else 1, bounce = false)

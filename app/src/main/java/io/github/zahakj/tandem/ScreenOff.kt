@@ -48,7 +48,8 @@ object ScreenOff {
     enum class Show { Bright, Dim, Dark }
 
     /** "Never" or "After 5 min", for the setting row. */
-    fun offAfterLabel(minutes: Int): String = if (minutes <= 0) "Never" else "After $minutes min"
+    fun offAfterLabel(minutes: Int): String =
+        if (minutes <= 0) Tx.s(R.string.screens_off_never) else Tx.p(R.plurals.screens_off_after_minutes, minutes)
 
     /**
      * What the panel shows now. [dark]: the mode is Screen off. [offAfterMs]: the Off after setting, 0 for never.

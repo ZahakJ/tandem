@@ -34,6 +34,8 @@ import io.github.zahakj.tandem.HiddenItems
 import io.github.zahakj.tandem.PinCode
 import io.github.zahakj.tandem.PinVault
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,7 +47,7 @@ import kotlinx.coroutines.withContext
  * twice. Wrong tries wait longer each time, and the pad counts the wait down.
  */
 
-/** What the pad is for. */
+/** What the pad is for. [title] is kept while the pad is up (a language change meanwhile leaves it as it was). */
 sealed class PinAsk(val title: String) {
     /** Check the PIN, then [onRight]. With no PIN set (private mode from before PINs, or a forgotten one), set one first. */
     class Check(title: String, val onRight: () -> Unit) : PinAsk(title)
@@ -98,7 +100,7 @@ fun PinPadOverlay() {
             // Whatever was showing goes back into hiding before anyone picks the new PIN.
             Privacy.revealed = false
             HiddenItems.endPeeks()
-            note = "The wait is over. Choose a new PIN"
+            note = Tx.s(R.string.accounts_pin_wait_over)
         }
         phase = if (a is PinAsk.Check && PinVault.isSet) Phase.Enter else Phase.New
     }
@@ -125,7 +127,7 @@ fun PinPadOverlay() {
                 val t = System.currentTimeMillis()
                 now = t
                 if (PinCode.waitLeft(PinVault.record, t) > 0) { Sounds.error(); return }
-                if (!PinCode.valid(digits)) { note = "Your PIN is ${PinCode.MIN} to ${PinCode.MAX} digits"; Sounds.error(); return }
+                if (!PinCode.valid(digits)) { note = Tx.s(R.string.accounts_pin_length, PinCode.MIN, PinCode.MAX); Sounds.error(); return }
                 val pin = digits
                 busy = true
                 scope.launch {
@@ -138,7 +140,7 @@ fun PinPadOverlay() {
                         is PinCode.Attempt.Wrong -> {
                             PinVault.save(r.rec)
                             Sounds.error()
-                            note = if (r.waitMs > 0) "Wrong PIN. Wait ${PinCode.say(r.waitMs)} before the next try" else "Wrong PIN"
+                            note = if (r.waitMs > 0) Tx.s(R.string.accounts_pin_wrong_wait, PinCode.say(r.waitMs)) else Tx.s(R.string.accounts_pin_wrong)
                         }
                         is PinCode.Attempt.Wait -> Sounds.error()
                         PinCode.Attempt.NotSet -> phase = Phase.New
@@ -146,7 +148,7 @@ fun PinPadOverlay() {
                 }
             }
             Phase.New -> {
-                if (!PinCode.valid(digits)) { note = "Pick ${PinCode.MIN} to ${PinCode.MAX} digits"; Sounds.error(); return }
+                if (!PinCode.valid(digits)) { note = Tx.s(R.string.accounts_pin_pick_length, PinCode.MIN, PinCode.MAX); Sounds.error(); return }
                 first = digits
                 digits = ""
                 note = null
@@ -156,7 +158,7 @@ fun PinPadOverlay() {
             Phase.Again -> {
                 if (digits != first) {
                     digits = ""; first = ""
-                    note = "Those didn't match. Choose it again"
+                    note = Tx.s(R.string.accounts_pin_mismatch)
                     phase = Phase.New
                     Sounds.error()
                     return
@@ -169,7 +171,7 @@ fun PinPadOverlay() {
                     if (PinPad.ask !== a) return@launch
                     PinVault.save(rec)
                     Sounds.confirm()
-                    Toasts.show("PIN set. Keep it somewhere safe")
+                    Toasts.show(Tx.s(R.string.accounts_pin_set))
                     finish(a)
                 }
             }
@@ -190,7 +192,7 @@ fun PinPadOverlay() {
     fun forgot() {
         if (phase != Phase.Enter) return
         val left = PinCode.resetLeft(PinVault.record, System.currentTimeMillis())
-        if (left != null) { note = "You can choose a new PIN in ${PinCode.say(left)}"; return }
+        if (left != null) { note = Tx.s(R.string.accounts_pin_new_in, PinCode.say(left)); return }
         FocusMemory.remember(ROUTE, "wait")
         phase = Phase.Forgot
     }
@@ -213,37 +215,37 @@ fun PinPadOverlay() {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 val title = when (phase) {
                     Phase.Enter -> a.title
-                    Phase.New -> if (a is PinAsk.Create) a.title else "Choose a PIN for private mode"
-                    Phase.Again -> "Enter it again"
-                    Phase.Forgot -> "Forgot your PIN?"
+                    Phase.New -> if (a is PinAsk.Create) a.title else Tx.s(R.string.accounts_pin_choose_private)
+                    Phase.Again -> Tx.s(R.string.accounts_pin_again)
+                    Phase.Forgot -> Tx.s(R.string.accounts_pin_forgot_title)
                 }
                 Text(title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (phase == Phase.Forgot) ForgotPage(onWait = {
                     PinVault.save(PinCode.askReset(PinVault.record, System.currentTimeMillis()))
                     now = System.currentTimeMillis()
                     phase = Phase.Enter
-                    note = "You can choose a new PIN in ${PinCode.say(PinCode.RESET_WAIT_MS)}"
+                    note = Tx.s(R.string.accounts_pin_new_in, PinCode.say(PinCode.RESET_WAIT_MS))
                     FocusMemory.remember(ROUTE, "k:1")
                     Nav.focusTick++
                 }, onBack = { phase = Phase.Enter; FocusMemory.remember(ROUTE, "k:1"); Nav.focusTick++ })
                 else {
                     val line = when {
-                        busy -> "Checking…"
-                        waitMs > 0 -> "Too many wrong tries. Wait ${PinCode.say(waitMs)}"
+                        busy -> Tx.s(R.string.accounts_pin_checking)
+                        waitMs > 0 -> Tx.s(R.string.accounts_pin_too_many, PinCode.say(waitMs))
                         note != null -> note
-                        phase == Phase.Enter && resetMs != null -> "New PIN possible in ${PinCode.say(resetMs)}"
-                        phase == Phase.Enter -> "Enter your PIN"
-                        else -> "${PinCode.MIN} to ${PinCode.MAX} digits"
+                        phase == Phase.Enter && resetMs != null -> Tx.s(R.string.accounts_pin_new_possible, PinCode.say(resetMs))
+                        phase == Phase.Enter -> Tx.s(R.string.accounts_pin_enter)
+                        else -> Tx.s(R.string.accounts_pin_digits, PinCode.MIN, PinCode.MAX)
                     }
                     Text(line.orEmpty(), style = MaterialTheme.typography.bodyMedium, color = if (note != null || waitMs > 0) Palette.Peach else Palette.Muted,
                         textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     PinDots(digits.length)
                     Keypad(enabled = !busy && waitMs <= 0) { type(it) }
                     Row(Modifier.padding(top = 2.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        ButtonHint("X", "Delete", Palette.Peach)
-                        ButtonHint("Start", "OK", Palette.Mint)
-                        if (phase == Phase.Enter) ButtonHint("Y", "Forgot", Palette.Lavender, onClick = { forgot() })
-                        ButtonHint("B", "Cancel", Palette.Lavender)
+                        ButtonHint("X", Tx.s(R.string.accounts_pin_delete), Palette.Peach)
+                        ButtonHint("Start", Tx.s(R.string.accounts_pin_ok), Palette.Mint)
+                        if (phase == Phase.Enter) ButtonHint("Y", Tx.s(R.string.accounts_pin_forgot), Palette.Lavender, onClick = { forgot() })
+                        ButtonHint("B", Tx.s(R.string.accounts_pin_cancel), Palette.Lavender)
                     }
                 }
             }
@@ -265,7 +267,7 @@ private fun PinDots(typed: Int) {
     }
 }
 
-/** 1 to 9, then ⌫ 0 OK, as on a phone. */
+/** 1 to 9, then ⌫ 0 OK, as on a phone. The keys are ids too ("OK" shows in Tandem's language). */
 @Composable
 private fun Keypad(enabled: Boolean, onKey: (String) -> Unit) {
     val target = rememberFocusTarget(ROUTE, KEYS.map { "k:$it" })
@@ -279,7 +281,7 @@ private fun Keypad(enabled: Boolean, onKey: (String) -> Unit) {
                     onClick = { if (enabled) onKey(k) else Sounds.error() },
                 ) {
                     Box(Modifier.fillMaxSize().background(color.copy(alpha = if (k.length > 1 || k == "⌫") 0.18f else 0.08f)), contentAlignment = Alignment.Center) {
-                        Text(k, style = MaterialTheme.typography.titleMedium, color = if (enabled) Palette.Text else Palette.Muted, maxLines = 1)
+                        Text(if (k == "OK") Tx.s(R.string.accounts_pin_ok) else k, style = MaterialTheme.typography.titleMedium, color = if (enabled) Palette.Text else Palette.Muted, maxLines = 1)
                     }
                 }
             }
@@ -292,12 +294,11 @@ private fun Keypad(enabled: Boolean, onKey: (String) -> Unit) {
 private fun ForgotPage(onWait: () -> Unit, onBack: () -> Unit) {
     val target = rememberFocusTarget(ROUTE, listOf("back", "wait"))
     Text(
-        "Everything hidden stays hidden. After a ${PinCode.say(PinCode.RESET_WAIT_MS)} wait you can choose a new PIN here. " +
-            "Entering the right PIN before then calls it off.",
+        Tx.s(R.string.accounts_pin_forgot_how, PinCode.say(PinCode.RESET_WAIT_MS)),
         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center, maxLines = 6, overflow = TextOverflow.Ellipsis,
     )
     Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        PillButton("Back", Palette.Mint, Modifier.takesFocus(ROUTE, "back", target == "back"), onClick = onBack)
-        PillButton("Start the wait", Palette.Peach, Modifier.takesFocus(ROUTE, "wait", target == "wait"), onClick = onWait)
+        PillButton(Tx.s(R.string.common_back), Palette.Mint, Modifier.takesFocus(ROUTE, "back", target == "back"), onClick = onBack)
+        PillButton(Tx.s(R.string.accounts_pin_start_wait), Palette.Peach, Modifier.takesFocus(ROUTE, "wait", target == "wait"), onClick = onWait)
     }
 }

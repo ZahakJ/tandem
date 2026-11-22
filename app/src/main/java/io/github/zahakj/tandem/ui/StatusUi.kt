@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.GameStatus
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.playStatus
@@ -62,10 +64,10 @@ object StatusUi {
         Store.update(g.key) { GameStatus.set(it, to, System.currentTimeMillis()) }
         if (to?.beaten == true) Sounds.favorite() else Sounds.toggle(to != null)
         val said = when (to) {
-            null -> "Status cleared"
-            GameStatus.Finished -> "Finished ${g.title}! 🎉"
-            GameStatus.Completed -> "Completed ${g.title}, 100% ★"
-            else -> "${g.title}: ${to.label}"
+            null -> Tx.s(R.string.screens_status_cleared)
+            GameStatus.Finished -> Tx.s(R.string.screens_status_finished, g.title)
+            GameStatus.Completed -> Tx.s(R.string.screens_status_completed, g.title)
+            else -> Tx.s(R.string.screens_status_set, g.title, to.label)
         }
         // Undo puts back exactly what was there, the first-finished date included.
         Undo.offer(said) { Store.update(g.key) { it.copy(status = before.status, statusAt = before.statusAt, finishedAt = before.finishedAt) } }
@@ -76,8 +78,8 @@ object StatusUi {
     fun action(g: Game, open: () -> Unit): MenuAction {
         val s = g.meta.playStatus
         return MenuAction(
-            "status", "Status", Glyph.Trophy, s?.color ?: Palette.Sky, value = s?.chip ?: "None",
-            help = "Backlog, Playing, Finished… A game in the backlog moves to Playing by itself once you've played it a while.",
+            "status", Tx.s(R.string.screens_status), Glyph.Trophy, s?.color ?: Palette.Sky, value = s?.chip ?: Tx.s(R.string.screens_status_none),
+            help = Tx.s(R.string.screens_status_help),
         ) { open() }
     }
 
@@ -86,7 +88,7 @@ object StatusUi {
         val now = g.meta.playStatus
         val rows = GameStatus.entries.map { s ->
             MenuAction("st:${s.id}", s.label, color = s.color, value = if (s == now) "✓" else null, sub = s.blurb, art = { StatusMarkArt(s) }) { set(g, s); done() }
-        } + MenuAction("st:none", "No status", Glyph.Close, Palette.Lavender, value = if (now == null) "✓" else null) { set(g, null); done() }
+        } + MenuAction("st:none", Tx.s(R.string.screens_status_no_status), Glyph.Close, Palette.Lavender, value = if (now == null) "✓" else null) { set(g, null); done() }
         return MenuPage(PAGE, rows, onBack)
     }
 }
@@ -107,7 +109,8 @@ fun playProgress(m: io.github.zahakj.tandem.data.GameMeta): String? {
     if (m.playSeconds < 60) return null
     val s = m.playStatus
     val main = m.timeToBeat?.main?.takeIf { it > 0 && s != GameStatus.Endless && s?.beaten != true }
-    return formatPlayTime(m.playSeconds) + (main?.let { " of ~" + io.github.zahakj.tandem.data.TimeToBeat.hours(it) } ?: "")
+    val played = formatPlayTime(m.playSeconds)
+    return main?.let { Tx.s(R.string.screens_status_progress, played, io.github.zahakj.tandem.data.TimeToBeat.hours(it)) } ?: played
 }
 
 /**

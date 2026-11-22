@@ -119,22 +119,23 @@ class SteamApiTest {
         val unlocks = (1..5).map { SteamAchievement(id = "a$it", name = "Thing $it", icon = "https://cdn.example/$it.jpg", unlocked = true, unlockedAt = it.toLong(), percent = if (it == 1) 2.5f else 40f) }
         val toasts = SteamApi.announcement("Portal 2", unlocks, max = 3)
         assertEquals(4, toasts.size)
-        assertEquals("You got “Thing 1”! Only 2.5 % of players have it!", toasts[0].text)
-        assertEquals("https://cdn.example/1.jpg", toasts[0].icon)
-        assertEquals("You got “Thing 2”! 40 % of players have it.", toasts[1].text)
-        assertEquals("…and 2 more achievements in Portal 2. What a session!", toasts[3].text)
+        // What they say comes from the string resources: here, what each one is about.
+        assertEquals(SteamApi.Toast.Unlocked("Thing 1", 2.5f, "Portal 2", "https://cdn.example/1.jpg"), toasts[0])
+        assertEquals(SteamApi.Toast.Unlocked("Thing 2", 40f, "Portal 2", "https://cdn.example/2.jpg"), toasts[1])
+        assertEquals(SteamApi.Toast.More(2, "Portal 2"), toasts[3])
         assertNull(toasts[3].icon)
         // Rarity unknown: the game's name stands in. One unlock: no summary.
         val one = SteamApi.announcement("Portal 2", listOf(SteamAchievement(id = "x", name = "Solo", unlocked = true)))
-        assertEquals(listOf("You got “Solo”! In Portal 2."), one.map { it.text })
+        assertEquals(listOf(SteamApi.Toast.Unlocked("Solo", -1f, "Portal 2", null)), one)
         assertEquals(emptyList<SteamApi.Toast>(), SteamApi.announcement("Portal 2", emptyList()))
     }
 
     @Test fun percentLabels() {
-        assertNull(SteamApi.percentLabel(-1f))
-        assertEquals("under 1 %", SteamApi.percentLabel(0.4f))
-        assertEquals("3.2 %", SteamApi.percentLabel(3.2f))
-        assertEquals("62 %", SteamApi.percentLabel(62.0999f))
+        // The words around the number ("under 1 %", "3.2 %") come from the string resources.
+        assertNull(SteamApi.percentNumber(-1f))
+        assertNull(SteamApi.percentNumber(0.4f))
+        assertEquals("3.2", SteamApi.percentNumber(3.2f))
+        assertEquals("62", SteamApi.percentNumber(62.0999f))
         assertTrue(SteamApi.rare(3.2f))
         assertFalse(SteamApi.rare(10.1f))
         assertFalse(SteamApi.rare(-1f))

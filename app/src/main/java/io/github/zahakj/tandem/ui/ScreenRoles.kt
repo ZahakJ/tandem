@@ -21,6 +21,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.SystemPrefs
 
@@ -71,9 +73,9 @@ object ScreenRoles {
     /** Swaps the screens (or swaps them back), remembering the choice. */
     fun toggle(ctx: Context) {
         when {
-            SystemPrefs.data.singleScreen -> Toasts.show("Single screen is on, so there's no other screen to swap with")
-            !bottomShowing && secondary(ctx) == null -> Toasts.show("There's no second screen to swap with")
-            !bottomShowing -> Toasts.show("The bottom screen is busy right now. Try again in a moment")
+            SystemPrefs.data.singleScreen -> Toasts.show(Tx.s(R.string.screens_swap_single))
+            !bottomShowing && secondary(ctx) == null -> Toasts.show(Tx.s(R.string.screens_swap_no_second))
+            !bottomShowing -> Toasts.show(Tx.s(R.string.screens_swap_busy))
             SwapFx.busy -> Unit
             else -> {
                 Sounds.swap()
@@ -91,7 +93,7 @@ object ScreenRoles {
         if (!Store.settings.look.swapScreens) return
         swappedAt = SystemClock.uptimeMillis()
         Store.updateSettings { it.copy(look = it.look.copy(swapScreens = false)) }
-        Toasts.show("The bottom screen couldn't take the controls, so the screens stay as they were")
+        Toasts.show(Tx.s(R.string.screens_swap_failed))
     }
 
     /**

@@ -50,11 +50,11 @@ object GameShot {
 
     /** Reads the game's screen into [file] (a PNG), whose folder must be there; nothing else. Blocking. */
     fun capture(file: File, gameOnTop: Boolean): Result {
-        if (!Shell.ready()) return Result.Failed("Screenshots need Shizuku")
+        if (!Shell.ready()) return Result.Failed(Tx.s(R.string.play_shot_needs_shizuku))
         val ids = displays(Shell.run("dumpsys", "SurfaceFlinger", "--display-id"))
-        val id = (if (gameOnTop) ids.firstOrNull() else ids.getOrNull(1)) ?: return Result.Failed("Couldn't find the game's screen")
+        val id = (if (gameOnTop) ids.firstOrNull() else ids.getOrNull(1)) ?: return Result.Failed(Tx.s(R.string.play_shot_no_screen))
         Shell.run("screencap", "-p", "-d", id, file.path)
-        if (!file.isFile || file.length() == 0L) return Result.Failed("Couldn't take the screenshot")
+        if (!file.isFile || file.length() == 0L) return Result.Failed(Tx.s(R.string.play_shot_failed))
         return Result.Saved(file)
     }
 

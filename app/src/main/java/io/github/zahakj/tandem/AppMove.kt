@@ -160,7 +160,7 @@ object AppMove {
         val prefs = AppPrefs.data
         if (!prefs.holdBackMoves || !LaunchDisplay.dualScreen(app)) return false
         val secondary = LaunchDisplay.secondary(app)?.displayId ?: return false
-        val text = dump() ?: run { toast(app, "Moving apps between screens needs Shizuku"); return false }
+        val text = dump() ?: run { toast(app, Tx.s(R.string.play_move_needs_shizuku)); return false }
         val skip = { pkg: String -> pkg == app.packageName || (!prefs.moveGames && isGame(pkg)) }
         val task = pick(text, skip) ?: return false
         val pkg = task.pkg ?: return false
@@ -168,7 +168,7 @@ object AppMove {
         val to = if (toBottom) secondary else Display.DEFAULT_DISPLAY
         // Up: it is a swap. Another app on top goes down (Tandem on top: the bottom-screen home shows the library).
         val partner = if (toBottom) null else swapPartner(text, task, skip)
-        if (!moveTask(task, to)) { toast(app, "Android wouldn't move that app"); return false }
+        if (!moveTask(task, to)) { toast(app, Tx.s(R.string.play_move_refused)); return false }
         if (!toBottom) SecondaryHome.beforeLeave(app, pkg)
         if (partner != null) moveTask(partner, secondary)
         val undo = last?.takeIf { it.pkg == pkg && SystemClock.uptimeMillis() - it.at < UNDO_MS }
@@ -183,11 +183,11 @@ object AppMove {
         if (undo != null) {
             last = null
             AppPrefs.update(pkg) { it.copy(screen = undo.screen) }
-            toast(app, "Moved back. $label opens as before")
+            toast(app, Tx.s(R.string.play_move_back, label))
         } else {
             last = Last(pkg, AppPrefs.of(pkg).screen, SystemClock.uptimeMillis(), partner?.pkg)
             AppPrefs.update(pkg) { it.copy(screen = if (toBottom) AppScreen.BOTTOM else AppScreen.TOP) }
-            toast(app, "Moved to the ${if (toBottom) "bottom" else "top"} screen. $label opens there from now on (hold Back again to undo)")
+            toast(app, Tx.s(if (toBottom) R.string.play_move_to_bottom else R.string.play_move_to_top, label))
         }
         return true
     }
@@ -196,13 +196,13 @@ object AppMove {
     fun moveToBottom(ctx: Context, pkg: String): Boolean {
         val app = ctx.applicationContext
         val secondary = LaunchDisplay.secondary(app)?.displayId ?: return false
-        val text = dump() ?: run { toast(app, "Moving apps between screens needs Shizuku"); return false }
-        val task = taskOf(text, pkg) ?: run { toast(app, "${RunningGames.appLabel(app, pkg)} isn't open"); return false }
-        if (task.display != secondary && !moveTask(task, secondary)) { toast(app, "Android wouldn't move that app"); return false }
+        val text = dump() ?: run { toast(app, Tx.s(R.string.play_move_needs_shizuku)); return false }
+        val task = taskOf(text, pkg) ?: run { toast(app, Tx.s(R.string.play_move_not_open, RunningGames.appLabel(app, pkg))); return false }
+        if (task.display != secondary && !moveTask(task, secondary)) { toast(app, Tx.s(R.string.play_move_refused)); return false }
         focus(app, pkg, secondary)
         last = Last(pkg, AppPrefs.of(pkg).screen, SystemClock.uptimeMillis())
         AppPrefs.update(pkg) { it.copy(screen = AppScreen.BOTTOM) }
-        toast(app, "${RunningGames.appLabel(app, pkg)} opens on the bottom screen from now on")
+        toast(app, Tx.s(R.string.play_move_bottom_from_now, RunningGames.appLabel(app, pkg)))
         return true
     }
 

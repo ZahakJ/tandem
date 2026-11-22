@@ -39,8 +39,10 @@ import io.github.zahakj.tandem.Bindings
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Chords
 import io.github.zahakj.tandem.Command
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.delay
@@ -58,7 +60,10 @@ private const val RESET_ALL = "resetall"
 private sealed interface Rebinding {
     val command: Command
 
-    /** Waiting for buttons; [why] says why the last attempt was refused. */
+    /**
+     * Waiting for buttons; [why] says why the last attempt was refused (kept as text while the popup is up: a
+     * language change meanwhile shows it in the old one until the next attempt).
+     */
     data class Listening(override val command: Command, val why: String? = null) : Rebinding
 
     /** [plan] would take the binding from other commands: swap, or cancel. */
@@ -84,13 +89,16 @@ fun RebindScreen() {
     /** Carries out [plan] for [c]: stores it, asks about a swap, or says why not. */
     fun apply(c: Command, b: Binding?, plan: Bindings.Plan, listening: Boolean) {
         when (plan) {
-            is Bindings.Plan.Done -> { popup = null; store(plan.map, c, if (b == null) "${c.label}: no button" else "${c.label}: ${Prompts.bindingText(b, style)}") }
+            is Bindings.Plan.Done -> {
+                popup = null
+                store(plan.map, c, if (b == null) Tx.s(R.string.controls_rebind_set_none, c.label) else Tx.s(R.string.controls_rebind_set, c.label, Prompts.bindingText(b, style)))
+            }
             is Bindings.Plan.Swap -> popup = if (b != null) Rebinding.Asking(c, b, plan) else null
             is Bindings.Plan.Refused -> {
                 Sounds.error()
                 if (listening) popup = Rebinding.Listening(c, plan.why) else Toasts.show(plan.why)
             }
-            Bindings.Plan.Same -> { popup = null; Toasts.show("${c.label} is already on that") }
+            Bindings.Plan.Same -> { popup = null; Toasts.show(Tx.s(R.string.controls_rebind_same, c.label)) }
         }
     }
 
@@ -116,35 +124,41 @@ fun RebindScreen() {
             contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item(key = "h:all") { SettingsHeader("Rebind buttons", note = Bindings.changed(map).takeIf { it > 0 }?.let { io.github.zahakj.tandem.plural(it, "change") }) }
+            item(key = "h:all") { SettingsHeader(Tx.s(R.string.controls_rebind_title), note = Bindings.changed(map).takeIf { it > 0 }?.let { Tx.p(R.plurals.controls_rebind_changes, it) }) }
             item(key = RESET_ALL) {
                 FocusCard(
                     Modifier.fillMaxWidth().takesFocus(route, RESET_ALL, target == RESET_ALL), glow = Palette.Peach, shape = RoundedCornerShape(16.dp),
                     onFocus = {
                         FocusMemory.remember(route, RESET_ALL); focused = null
-                        Selection.current = Selected.Setting("Reset all", "", "Every command back on the button it came with.", Palette.Peach, action = "Reset")
+                        Selection.current = Selected.Setting(
+                            Tx.s(R.string.controls_rebind_reset_all), "", Tx.s(R.string.controls_rebind_reset_all_help), Palette.Peach,
+                            action = Tx.s(R.string.controls_rebind_reset),
+                        )
                     },
                     onClick = {
-                        if (Bindings.changed(ControllerStore.bindings) == 0) Toasts.show("Every button is on its default already")
+                        if (Bindings.changed(ControllerStore.bindings) == 0) Toasts.show(Tx.s(R.string.controls_rebind_already_default))
                         else {
                             val before = ControllerStore.bindings
                             ControllerStore.setBindings(Bindings.defaults)
-                            Undo.offer("Every button is back on its default") { ControllerStore.setBindings(before) }
+                            Undo.offer(Tx.s(R.string.controls_rebind_reset_done)) { ControllerStore.setBindings(before) }
                         }
                     },
                 ) {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
                         GlyphChip(Glyph.Refresh, Palette.Peach)
                         Spacer(Modifier.width(12.dp))
-                        Text("Reset all", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(Tx.s(R.string.controls_rebind_reset_all), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }
-            item(key = "h:commands") { SettingsHeader("Commands") }
+            item(key = "h:commands") { SettingsHeader(Tx.s(R.string.controls_rebind_commands)) }
             items(Command.entries, key = { it.name }) { c ->
                 CommandRow(c, map[c], style, Modifier.takesFocus(route, c.name, target == c.name), onFocus = {
                     FocusMemory.remember(route, c.name); focused = c
-                    Selection.current = Selected.Setting(c.label, map[c]?.let { Prompts.bindingText(it, style) } ?: "No button", c.help, Palette.Lavender, action = "Rebind")
+                    Selection.current = Selected.Setting(
+                        c.label, map[c]?.let { Prompts.bindingText(it, style) } ?: Tx.s(R.string.controls_binding_none_value), c.help, Palette.Lavender,
+                        action = Tx.s(R.string.controls_rebind_rebind),
+                    )
                 }) { popup = Rebinding.Listening(c) }
             }
         }
@@ -158,7 +172,7 @@ fun RebindScreen() {
     RebindPopup(
         popup, style,
         onCaptured = { c, b -> apply(c, b, Bindings.plan(ControllerStore.bindings, c, b), listening = true) },
-        onSwap = { a -> popup = null; store(a.plan.map, a.command, "${a.command.label}: ${Prompts.bindingText(a.binding, style)}, swapped") },
+        onSwap = { a -> popup = null; store(a.plan.map, a.command, Tx.s(R.string.controls_rebind_set_swapped, a.command.label, Prompts.bindingText(a.binding, style))) },
         onClose = { popup = null; Nav.focusTick++ },
     )
 }
@@ -168,7 +182,7 @@ private fun CommandRow(c: Command, b: Binding?, style: String, focus: Modifier, 
     FocusCard(Modifier.fillMaxWidth().then(focus), glow = Palette.Lavender, shape = RoundedCornerShape(16.dp), onFocus = onFocus, onClick = onClick) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(c.label, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            if (b != c.default) { Pill("Changed", Palette.Butter); Spacer(Modifier.width(8.dp)) }
+            if (b != c.default) { Pill(Tx.s(R.string.controls_rebind_changed), Palette.Butter); Spacer(Modifier.width(8.dp)) }
             BindingGlyph(b, style)
         }
     }
@@ -179,7 +193,7 @@ private fun CommandRow(c: Command, b: Binding?, style: String, focus: Modifier, 
 private fun BindingGlyph(b: Binding?, style: String, color: Color = Palette.Lavender) {
     val single = b?.takeIf { !it.hold }?.single
     val p = if (single != null) Prompts.physical(single.name, style) else null
-    val text = p?.glyph ?: b?.let { Prompts.bindingText(it, style) } ?: "No button"
+    val text = p?.glyph ?: b?.let { Prompts.bindingText(it, style) } ?: Tx.s(R.string.controls_binding_none_value)
     Box(
         Modifier.height(24.dp).widthIn(min = 24.dp).clip(if (p?.square == true) RoundedCornerShape(6.dp) else RoundedCornerShape(50))
             .background(p?.color ?: color.copy(alpha = if (b == null) 0.12f else 0.85f)).padding(horizontal = 8.dp),
@@ -196,10 +210,10 @@ private fun BindingGlyph(b: Binding?, style: String, color: Color = Palette.Lave
 private fun CommandDetails(c: Command?, map: Map<Command, Binding?>, style: String) {
     Column(Modifier.fillMaxSize()) {
         if (c == null) {
-            Text("Reset all", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(Tx.s(R.string.controls_rebind_reset_all), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Every command goes back on the button it came with, Swap A and B and Swap X and Y included. Undo brings your buttons back.",
+                Tx.s(R.string.controls_rebind_reset_all_detail),
                 style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 6, overflow = TextOverflow.Ellipsis,
             )
         } else {
@@ -209,7 +223,7 @@ private fun CommandDetails(c: Command?, map: Map<Command, Binding?>, style: Stri
                 BindingGlyph(map[c], style)
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    "Default: " + (c.default?.let { Prompts.bindingText(it, style) } ?: "no button"),
+                    Tx.s(R.string.controls_rebind_default, c.default?.let { Prompts.bindingText(it, style) } ?: Tx.s(R.string.controls_binding_none)),
                     style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -219,12 +233,12 @@ private fun CommandDetails(c: Command?, map: Map<Command, Binding?>, style: Stri
         Spacer(Modifier.weight(1f))
         @OptIn(ExperimentalLayoutApi::class)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ButtonHint("A", if (c == null) "Reset all" else "Rebind", Palette.Mint)
+            ButtonHint("A", Tx.s(if (c == null) R.string.controls_rebind_reset_all else R.string.controls_rebind_rebind), Palette.Mint)
             if (c != null) {
-                ButtonHint("X", "Reset", Palette.Butter)
-                if (c !in Bindings.essential) ButtonHint("Y", "No button", Palette.Peach)
+                ButtonHint("X", Tx.s(R.string.controls_rebind_reset), Palette.Butter)
+                if (c !in Bindings.essential) ButtonHint("Y", Tx.s(R.string.controls_rebind_none_hint), Palette.Peach)
             }
-            ButtonHint("B", "Back", Palette.Lavender)
+            ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
         }
     }
 }
@@ -256,7 +270,7 @@ private fun RebindPopup(
             // Buttons still held: the binding is being made, so the time waits for it.
             if (Chords.captured.isEmpty()) left -= 100
         }
-        Toasts.show("Nothing pressed: ${listening.command.label} stays as it was")
+        Toasts.show(Tx.s(R.string.controls_rebind_nothing_pressed, listening.command.label))
         onClose()
     }
     OverlayPanel(popup != null, onClose = onClose) {
@@ -264,10 +278,10 @@ private fun RebindPopup(
         PanelSurface(Modifier.widthIn(min = 360.dp, max = 560.dp)) {
             when (p) {
                 is Rebinding.Listening -> {
-                    Text("Rebind ${p.command.label}", style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(Tx.s(R.string.controls_rebind_listen_title, p.command.label), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Press the new button, or several together for a chord. Hold one button for a hold.",
+                        Tx.s(R.string.controls_rebind_listen_how),
                         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis,
                     )
                     p.why?.let {
@@ -278,35 +292,35 @@ private fun RebindPopup(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         val sofar = Chords.captured
                         Box(Modifier.weight(1f)) {
-                            if (sofar.isEmpty()) Text("Waiting…", style = MaterialTheme.typography.titleMedium, color = Palette.Muted, maxLines = 1)
+                            if (sofar.isEmpty()) Text(Tx.s(R.string.controls_rebind_waiting), style = MaterialTheme.typography.titleMedium, color = Palette.Muted, maxLines = 1)
                             else BindingGlyph(Binding(sofar.toSet()), style, Palette.Mint)
                         }
-                        Pill("${((left + 999) / 1000)} s", Palette.Lavender)
+                        Pill(Tx.s(R.string.controls_rebind_seconds, ((left + 999) / 1000).toInt()), Palette.Lavender)
                     }
                     Spacer(Modifier.height(14.dp))
-                    ButtonHint("B", "Cancel", Palette.Lavender)
+                    ButtonHint("B", Tx.s(R.string.controls_rebind_cancel), Palette.Lavender)
                 }
                 is Rebinding.Asking -> {
-                    val names = p.plan.others.joinToString(" and ") { it.label }
+                    val names = p.plan.others.map { it.label }.reduce { a, b -> Tx.s(R.string.controls_rebind_and, a, b) }
                     val old = p.plan.map[p.plan.others.first()]
-                    Text("Swap with $names?", style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(Tx.s(R.string.controls_rebind_swap_title, names), style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "${Prompts.bindingText(p.binding, style)} is $names. Swapped, ${p.command.label} takes it and $names " +
-                            (old?.let { "moves to ${Prompts.bindingText(it, style)}." } ?: "is left with no button."),
+                        old?.let { Tx.s(R.string.controls_rebind_swap_moves, Prompts.bindingText(p.binding, style), names, p.command.label, Prompts.bindingText(it, style)) }
+                            ?: Tx.s(R.string.controls_rebind_swap_none, Prompts.bindingText(p.binding, style), names, p.command.label),
                         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 4, overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(14.dp))
                     val ask = rememberFocusTarget("rebind:ask", listOf("swap", "cancel"))
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        PillButton("Swap them", Palette.Mint, Modifier.takesFocus("rebind:ask", "swap", ask == "swap")) { onSwap(p) }
-                        PillButton("Cancel", Palette.Lavender, Modifier.takesFocus("rebind:ask", "cancel", ask == "cancel"), onClick = onClose)
+                        PillButton(Tx.s(R.string.controls_rebind_swap), Palette.Mint, Modifier.takesFocus("rebind:ask", "swap", ask == "swap")) { onSwap(p) }
+                        PillButton(Tx.s(R.string.controls_rebind_cancel), Palette.Lavender, Modifier.takesFocus("rebind:ask", "cancel", ask == "cancel"), onClick = onClose)
                     }
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                        ButtonHint("A", "Choose", Palette.Mint)
-                        ButtonHint("B", "Cancel", Palette.Lavender)
+                        ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
+                        ButtonHint("B", Tx.s(R.string.controls_rebind_cancel), Palette.Lavender)
                     }
                 }
             }

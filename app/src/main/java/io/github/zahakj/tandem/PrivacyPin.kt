@@ -14,6 +14,7 @@ import java.security.MessageDigest
 import java.security.SecureRandom
 import java.util.Base64
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
@@ -124,14 +125,25 @@ object PinCode {
     /** The wait is over: the PIN is gone and a new one has to be set. */
     fun resetDue(rec: PinRecord, now: Long): Boolean = rec.isSet && resetLeft(rec, now) == 0L
 
-    /** "25 s", "4 min", "23 h", for a wait. Rounded up, so it never says 0 while there is still one. */
-    fun say(ms: Long): String {
+    /** A wait as a number of seconds, minutes or hours. Rounded up, so it never says 0 while there is still one. */
+    fun waitIn(ms: Long): Pair<Int, TimeUnit> {
         val s = (ms + 999) / 1000
         return when {
-            s < 60 -> "$s s"
-            s < 3600 -> "${(s + 59) / 60} min"
-            else -> "${(s + 3599) / 3600} h"
+            s < 60 -> s.toInt() to TimeUnit.SECONDS
+            s < 3600 -> ((s + 59) / 60).toInt() to TimeUnit.MINUTES
+            else -> ((s + 3599) / 3600).toInt() to TimeUnit.HOURS
         }
+    }
+
+    /** "25 s", "4 min", "23 h", for a wait ([waitIn]). */
+    fun say(ms: Long): String {
+        val (n, unit) = waitIn(ms)
+        val res = when (unit) {
+            TimeUnit.SECONDS -> R.plurals.accounts_wait_seconds
+            TimeUnit.MINUTES -> R.plurals.accounts_wait_minutes
+            else -> R.plurals.accounts_wait_hours
+        }
+        return Tx.p(res, n)
     }
 
     private fun b64(b: ByteArray): String = Base64.getEncoder().encodeToString(b)
@@ -179,7 +191,7 @@ object PrivateMode {
      */
     fun turnOn() {
         if (Privacy.enabled) return
-        if (!PinVault.isSet) { io.github.zahakj.tandem.ui.PinPad.create("Choose a PIN for private mode") { switchOn() }; return }
+        if (!PinVault.isSet) { io.github.zahakj.tandem.ui.PinPad.create(Tx.s(R.string.accounts_pin_choose_private)) { switchOn() }; return }
         switchOn()
     }
 
@@ -190,18 +202,18 @@ object PrivateMode {
         // Nothing more goes online (Offline.kt): a scrape under way stops here.
         io.github.zahakj.tandem.data.Scraper.cancel()
         io.github.zahakj.tandem.ui.Sounds.toggle(true)
-        io.github.zahakj.tandem.ui.Toasts.show("Private mode on. ${io.github.zahakj.tandem.ui.Prompts.words(Command.Hidden)} and your PIN show hidden games")
+        io.github.zahakj.tandem.ui.Toasts.show(Tx.s(R.string.accounts_private_on, io.github.zahakj.tandem.ui.Prompts.words(Command.Hidden)))
         io.github.zahakj.tandem.ui.Nav.focusTick++
     }
 
     fun turnOff() {
         if (!Privacy.enabled) return
-        io.github.zahakj.tandem.ui.PinPad.check("Turn off private mode") {
+        io.github.zahakj.tandem.ui.PinPad.check(Tx.s(R.string.accounts_pin_turn_off)) {
             HomeStore.updateSettings { it.copy(privateMode = false) }
             Privacy.revealed = false
             HiddenItems.endPeeks()
             io.github.zahakj.tandem.ui.Sounds.toggle(false)
-            io.github.zahakj.tandem.ui.Toasts.show("Private mode off")
+            io.github.zahakj.tandem.ui.Toasts.show(Tx.s(R.string.accounts_private_off))
             io.github.zahakj.tandem.ui.Nav.focusTick++
         }
     }
@@ -209,9 +221,9 @@ object PrivateMode {
     /** Brings hidden games out in private mode, once the PIN is right. */
     fun reveal() {
         if (!Privacy.enabled || Privacy.revealed) return
-        io.github.zahakj.tandem.ui.PinPad.check("Show hidden games") {
+        io.github.zahakj.tandem.ui.PinPad.check(Tx.s(R.string.accounts_pin_show_hidden)) {
             Privacy.revealed = true
-            io.github.zahakj.tandem.ui.Toasts.show("Psst… hidden games are showing")
+            io.github.zahakj.tandem.ui.Toasts.show(Tx.s(R.string.accounts_private_showing))
             io.github.zahakj.tandem.ui.Nav.focusTick++
         }
     }
@@ -219,7 +231,7 @@ object PrivateMode {
     /** Settings › Play & system › Privacy & hidden › Private mode PIN: the current PIN first, then the new one twice. */
     fun changePin() {
         val pad = io.github.zahakj.tandem.ui.PinPad
-        if (!PinVault.isSet) { pad.create("Choose a PIN for private mode") {}; return }
-        pad.check("Enter your current PIN") { pad.create("Choose a new PIN") {} }
+        if (!PinVault.isSet) { pad.create(Tx.s(R.string.accounts_pin_choose_private)) {}; return }
+        pad.check(Tx.s(R.string.accounts_pin_enter_current)) { pad.create(Tx.s(R.string.accounts_pin_choose_new)) {} }
     }
 }

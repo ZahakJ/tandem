@@ -46,7 +46,7 @@ object SaveSync {
         if (RunningGames.list.any { it.game?.key == game.key }) return null
         return runCatching { sync(ctx, title, peanutsRoot(peanuts), toPeanuts = PeanutsNative.isPeanuts(pkg)) }
             .onFailure { Log.w("Tandem", "Save sync for $title failed", it) }
-            .getOrElse { "Couldn't bring the save across: ${it.message}. Both saves are as they were" }
+            .getOrElse { Tx.s(R.string.play_save_failed, it.message.toString()) }
     }
 
     private fun sync(ctx: Context, title: String, peanutsRoot: String, toPeanuts: Boolean): String? {
@@ -97,7 +97,7 @@ object SaveSync {
             stageRoot.listFiles()?.filter { it.name.startsWith(title) }?.forEach { it.deleteRecursively() }
         }
         Log.i("Tandem", "Save of $title brought ${if (toPeanuts) "from Eden Duo to Peanuts" else "from Peanuts to Eden Duo"}")
-        return if (toPeanuts) "Carried on from your Eden Duo save" else "Carried on from your native save"
+        return Tx.s(if (toPeanuts) R.string.play_save_from_eden else R.string.play_save_from_native)
     }
 
     /** The shell script, copied out of the APK where root can read it (again whenever the app is updated). */

@@ -57,6 +57,8 @@ import io.github.zahakj.tandem.DeckScroll
 import io.github.zahakj.tandem.DeckSession
 import io.github.zahakj.tandem.DeckTap
 import io.github.zahakj.tandem.GameCompanion
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.HomeStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -89,24 +91,24 @@ fun DeckPanel(info: CompanionInfo, activity: CompanionActivity) {
     val toggles = remember(numpad, fn) { setOfNotNull(DeckLayouts.TOGGLE_NUMPAD.takeIf { numpad }, DeckLayouts.TOGGLE_FN.takeIf { fn }) }
     Column(Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Deck", style = MaterialTheme.typography.titleMedium, maxLines = 1)
+            Text(Tx.s(R.string.controls_deck), style = MaterialTheme.typography.titleMedium, maxLines = 1)
             StatusChip(ctx)
             Spacer(Modifier.weight(1f))
-            Chip("Game art", Palette.Lavender) { activity.setMode(GameCompanion.ART) }
-            Chip("Companion", Palette.Mint) { activity.setMode(GameCompanion.TANDEM) }
+            Chip(Tx.s(R.string.controls_deck_game_art), Palette.Lavender) { activity.setMode(GameCompanion.ART) }
+            Chip(Tx.s(R.string.controls_deck_companion), Palette.Mint) { activity.setMode(GameCompanion.TANDEM) }
         }
         if (!activity.gameOnTop) {
             // The game is on the bottom screen, and this is on the top one: keys would land on this very window.
             Text(
-                "The Deck types into a game on the top screen. This game plays on the bottom one, so there is nothing for it to do here.",
+                Tx.s(R.string.controls_deck_game_below),
                 Modifier.fillMaxWidth().padding(top = 20.dp), style = MaterialTheme.typography.bodyLarge, color = Palette.Muted, maxLines = 4, overflow = TextOverflow.Ellipsis,
             )
             return@Column
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            for ((id, name) in DeckLayouts.choices) Chip(name, Palette.Sky, strong = id == layoutId) { if (layoutId != id) { layoutId = id; Sounds.select() } }
+            for ((id, name) in layoutChoices()) Chip(name, Palette.Sky, strong = id == layoutId) { if (layoutId != id) { layoutId = id; Sounds.select() } }
             Text(
-                "Tap Shift, Ctrl or Alt for the next key; hold to lock it",
+                Tx.s(R.string.controls_deck_sticky),
                 Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.End,
             )
         }
@@ -125,18 +127,18 @@ fun DeckPanel(info: CompanionInfo, activity: CompanionActivity) {
 private fun StatusChip(ctx: Context) {
     val status = DeckSession.status
     val (text, color) = when (status) {
-        DeckSession.Status.Direct -> "Direct" to Palette.Mint
-        DeckSession.Status.Shell -> "Shell" to Palette.Butter
-        DeckSession.Status.NoShizuku -> "Needs Shizuku" to Palette.Peach
-        else -> "Connecting…" to Palette.Muted
+        DeckSession.Status.Direct -> Tx.s(R.string.controls_deck_direct) to Palette.Mint
+        DeckSession.Status.Shell -> Tx.s(R.string.controls_deck_shell) to Palette.Butter
+        DeckSession.Status.NoShizuku -> Tx.s(R.string.controls_deck_no_shizuku) to Palette.Peach
+        else -> Tx.s(R.string.controls_deck_connecting) to Palette.Muted
     }
     val said = when (status) {
-        DeckSession.Status.Direct -> "Keys and the pointer go straight into Android's input service, in a few milliseconds"
-        DeckSession.Status.Shell -> "Android kept Tandem from the input service, so each key runs an input command: it takes a moment, and clicks land where the pad's cursor points"
-        DeckSession.Status.NoShizuku -> "Start Shizuku and allow Tandem, then open the Deck again"
-        else -> "Asking Shizuku…"
+        DeckSession.Status.Direct -> R.string.controls_deck_direct_said
+        DeckSession.Status.Shell -> R.string.controls_deck_shell_said
+        DeckSession.Status.NoShizuku -> R.string.controls_deck_no_shizuku_said
+        else -> R.string.controls_deck_connecting_said
     }
-    Chip(text, color) { Toast.makeText(ctx.applicationContext, said, Toast.LENGTH_LONG).show() }
+    Chip(text, color) { Toast.makeText(ctx.applicationContext, Tx.s(said), Toast.LENGTH_LONG).show() }
 }
 
 @Composable
@@ -308,7 +310,7 @@ private fun Pad(sensitivity: Float, click: () -> Unit, modifier: Modifier) {
             },
     ) {
         Text(
-            "Drag to point · tap to click · two fingers for a right click or to scroll",
+            Tx.s(R.string.controls_deck_trackpad_hint),
             Modifier.align(Alignment.BottomCenter).padding(horizontal = 12.dp, vertical = 8.dp),
             style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
         )
@@ -346,33 +348,35 @@ private fun ScrollStrip(modifier: Modifier) {
 
 private fun timesLabel(v: Float): String = (if (v == v.toInt().toFloat()) v.toInt().toString() else "%.2f".format(v).trimEnd('0')) + "×"
 
+/** The layouts as choices, [DeckLayouts.choices]' ids with their names in Tandem's language. */
+private fun layoutChoices(): List<Pair<String, String>> = DeckLayouts.choices.map { (id, _) ->
+    id to Tx.s(if (id == DeckLayouts.GAME) R.string.controls_deck_layout_game else R.string.controls_deck_layout_full)
+}
+
 /** Settings › Controls › Deck. */
 @Composable
 fun deckSettings(): SettingSection {
     val s = HomeStore.settings
-    return SettingSection(
-        "Deck",
-        listOf(
-            number(
-                "Trackpad sensitivity", Glyph.Move, Palette.Sky,
-                "How far the game's pointer goes for a finger's movement on the Deck's trackpad. Quick swipes always go further than slow, careful ones.",
-                s.deckSensitivity, DeckPointer.MIN_SENSITIVITY, DeckPointer.MAX_SENSITIVITY, DeckPointer.SENSITIVITY_STEP, ::timesLabel,
-            ) { v -> HomeStore.updateSettings { it.copy(deckSensitivity = v ?: DeckPointer.DEFAULT_SENSITIVITY) } }
-                .copy(keywords = "deck trackpad mouse pointer speed sensitivity acceleration touchpad pc windows stream"),
-            choice(
-                "Default layout", Glyph.Key, Palette.Sky,
-                "The keyboard the Deck opens with: the full keyboard, or the compact one with the WASD cluster and mouse buttons. Switch any time with the chips on the Deck.",
-                DeckLayouts.choices, s.deckLayout,
-                look = { v -> DeckScene(v) },
-            ) { v -> HomeStore.updateSettings { it.copy(deckLayout = v) } }.copy(keywords = "deck keyboard layout qwerty wasd game keys"),
-            toggle("Key sounds", Glyph.Volume, Palette.Sky, "A soft click for each key and tap on the Deck.", s.deckSounds) { on ->
-                HomeStore.updateSettings { it.copy(deckSounds = on) }
-            }.copy(keywords = "deck keyboard click sound typing"),
-            toggle("Key haptics", Glyph.Motion, Palette.Sky, "A tiny buzz for each key and tap on the Deck.", s.deckHaptics) { on ->
-                HomeStore.updateSettings { it.copy(deckHaptics = on) }
-            }.copy(keywords = "deck keyboard vibrate vibration haptic feedback buzz"),
-        ),
-    )
+    return SettingSection(Tx.s(R.string.controls_deck), en = "Deck", rows = listOf(
+        number(
+            Tx.s(R.string.controls_deck_sensitivity), Glyph.Move, Palette.Sky, Tx.s(R.string.controls_deck_sensitivity_help),
+            s.deckSensitivity, DeckPointer.MIN_SENSITIVITY, DeckPointer.MAX_SENSITIVITY, DeckPointer.SENSITIVITY_STEP, ::timesLabel,
+            en = "Trackpad sensitivity",
+        ) { v -> HomeStore.updateSettings { it.copy(deckSensitivity = v ?: DeckPointer.DEFAULT_SENSITIVITY) } }
+            .copy(keywords = "deck trackpad mouse pointer speed sensitivity acceleration touchpad pc windows stream"),
+        choice(
+            Tx.s(R.string.controls_deck_default_layout), Glyph.Key, Palette.Sky, Tx.s(R.string.controls_deck_default_layout_help),
+            layoutChoices(), s.deckLayout,
+            look = { v -> DeckScene(v) },
+            en = "Default layout",
+        ) { v -> HomeStore.updateSettings { it.copy(deckLayout = v) } }.copy(keywords = "deck keyboard layout qwerty wasd game keys"),
+        toggle(Tx.s(R.string.controls_deck_sounds), Glyph.Volume, Palette.Sky, Tx.s(R.string.controls_deck_sounds_help), s.deckSounds, en = "Key sounds") { on ->
+            HomeStore.updateSettings { it.copy(deckSounds = on) }
+        }.copy(keywords = "deck keyboard click sound typing"),
+        toggle(Tx.s(R.string.controls_deck_haptics), Glyph.Motion, Palette.Sky, Tx.s(R.string.controls_deck_haptics_help), s.deckHaptics, en = "Key haptics") { on ->
+            HomeStore.updateSettings { it.copy(deckHaptics = on) }
+        }.copy(keywords = "deck keyboard vibrate vibration haptic feedback buzz"),
+    ))
 }
 
 /**

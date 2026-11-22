@@ -60,10 +60,10 @@ object GameClip {
      * [stop] ends it early.
      */
     fun record(ctx: Context, title: String, gameOnTop: Boolean, projection: MediaProjection?, voice: Boolean): Result {
-        if (!Shell.ready()) return Result.Failed("Clips need Shizuku")
-        if (endsAt != 0L) return Result.Failed("Already recording a clip")
+        if (!Shell.ready()) return Result.Failed(Tx.s(R.string.play_clip_needs_shizuku))
+        if (endsAt != 0L) return Result.Failed(Tx.s(R.string.play_clip_busy))
         val ids = GameShot.displays(Shell.run("dumpsys", "SurfaceFlinger", "--display-id"))
-        val id = (if (gameOnTop) ids.firstOrNull() else ids.getOrNull(1)) ?: return Result.Failed("Couldn't find the game's screen")
+        val id = (if (gameOnTop) ids.firstOrNull() else ids.getOrNull(1)) ?: return Result.Failed(Tx.s(R.string.play_shot_no_screen))
         val dir = File(Environment.getExternalStorageDirectory(), DIR)
         val file = File(dir, fileName(title, LocalDateTime.now()))
         val raw = File(dir, RAW)
@@ -91,12 +91,12 @@ object GameClip {
             endsAt = 0L
         }
         watch.join(100)
-        if (!raw.isFile || raw.length() == 0L) return Result.Failed("Couldn't record the clip")
+        if (!raw.isFile || raw.length() == 0L) return Result.Failed(Tx.s(R.string.play_clip_failed))
         val format = audio?.format
         val sound = audio != null && format != null && audio.samples.isNotEmpty() && runCatching {
             mux(raw, file, format, audio.samples, (pictureNs - audio.startedNs) / 1000)
         }.onFailure { android.util.Log.w("Tandem", "Couldn't add the clip's sound", it); file.delete() }.isSuccess
-        if (!sound && !raw.renameTo(file)) return Result.Failed("Couldn't save the clip")
+        if (!sound && !raw.renameTo(file)) return Result.Failed(Tx.s(R.string.play_clip_not_saved))
         raw.delete()
         MediaScannerConnection.scanFile(ctx, arrayOf(file.path), arrayOf("video/mp4"), null)
         return Result.Saved(file, sound)

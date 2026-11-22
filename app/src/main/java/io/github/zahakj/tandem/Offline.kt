@@ -33,8 +33,10 @@ import java.util.concurrent.TimeUnit
  * [OfflinePlan] is plain, for tests (OfflineTest).
  */
 
-/** Thrown instead of going online while private mode is on. */
-class PrivateOffline : IOException("Private mode is on, so Tandem stays offline")
+/** Thrown instead of going online while private mode is on. Its message, which may be shown, is made when read. */
+class PrivateOffline : IOException() {
+    override val message: String get() = Tx.s(R.string.play_private_offline)
+}
 
 object NetGate {
     /** True while nothing may go online. */

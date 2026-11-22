@@ -371,7 +371,7 @@ private fun ModeCard(mode: String, label: String, chosen: Boolean, modifier: Mod
             GlyphChip(glyph, if (chosen) color else Palette.Muted, size = 30.dp, round = true)
             Spacer(Modifier.weight(1f))
             ShrinkToFit(Modifier.fillMaxWidth(), alignment = Alignment.CenterStart) {
-                Text(label.substringBefore(":"), style = MaterialTheme.typography.titleSmall, maxLines = 1)
+                Text(GameCompanion.shortLabel(mode), style = MaterialTheme.typography.titleSmall, maxLines = 1)
             }
             Text(note, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
         }

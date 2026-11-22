@@ -212,7 +212,8 @@ class BindingsTest {
         val hidden = Binding.of(Pad.L1, Pad.R1, Pad.Select)
         assertEquals("L1+R1+Select", Prompts.bindingText(hidden, "xbox"))
         assertEquals("L1+R1+−", Prompts.bindingText(hidden, "nintendo"))
-        assertEquals("Hold +", Prompts.bindingText(Binding.hold(Pad.Start), "nintendo"))
+        // A hold reads "Hold %1$s" from the string resources, which unit tests don't load: the buttons part here.
+        assertEquals("+", Prompts.padsText(Binding.hold(Pad.Start), "nintendo"))
         assertEquals("Hold Select", Binding.hold(Pad.Select).label)
     }
 

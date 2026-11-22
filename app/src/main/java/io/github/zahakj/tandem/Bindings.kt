@@ -1,6 +1,7 @@
 package io.github.zahakj.tandem
 
 import android.view.KeyEvent
+import androidx.annotation.StringRes
 
 /*
  * Which controller button does what in Tandem (Settings › Controls › Buttons › Rebind buttons).
@@ -39,8 +40,14 @@ data class Binding(val pads: Set<Pad>, val hold: Boolean = false) {
     val single: Pad? get() = pads.singleOrNull()
     val chord: Boolean get() = pads.size > 1
 
-    /** "L1+R1+Select", "Hold Select"; the pads in controller order whatever order they were pressed in. */
+    /**
+     * "L1+R1+Select", "Hold Select"; the pads in controller order whatever order they were pressed in. English, for
+     * logs and tests: [shown] is the same in Tandem's language.
+     */
     val label: String get() = (if (hold) "Hold " else "") + pads.sortedBy { it.ordinal }.joinToString("+") { it.name }
+
+    /** [label] in Tandem's language, for sentences people read. */
+    val shown: String get() = pads.sortedBy { it.ordinal }.joinToString("+") { it.name }.let { if (hold) Tx.s(R.string.controls_binding_hold, it) else it }
 
     /** For controllers.json: "hold:Select", "L1+R1+Select". */
     fun serialize(): String = (if (hold) "hold:" else "") + pads.sortedBy { it.ordinal }.joinToString("+") { it.name }
@@ -60,26 +67,29 @@ data class Binding(val pads: Set<Pad>, val hold: Boolean = false) {
 }
 
 /** Everything Tandem does on a button, with its default. [help] is what the rebind page says about it. */
-enum class Command(val label: String, val default: Binding?, val help: String) {
-    Open("Open / Select", Binding.of(Pad.A), "Opens the highlighted item or plays the game; A on buttons and rows."),
-    Back("Back", Binding.of(Pad.B), "Goes back, or closes a menu or panel."),
-    Options("Game options", Binding.of(Pad.Y), "The options menu for the highlighted game, system, folder or app; a long press on the touch screen."),
-    Action("Swap screens / Search", Binding.of(Pad.X), "Search, or swap the two screens on the icon grid, as X button says. Deletes a letter on the keyboard."),
-    StartMenu("Start menu", Binding.of(Pad.Start), "The Start panel; in Settings it closes Settings, and in forms it confirms."),
-    QuickPanel("Quick settings", Binding.hold(Pad.Start), "Brightness, volume, Wi-Fi, Battery saver and the other quick tiles."),
-    Switcher("Running games", Binding.hold(Pad.Select), "Every game that is open, to resume or close."),
-    SwitcherChord("Running games, together", Binding.of(Pad.Select, Pad.Start), "The game switcher again, on buttons pressed together: Select and Start, unless you change it."),
-    Surprise("Surprise me", Binding.of(Pad.Select), "Jumps to a random game you have never played. Also Undo on a message, and Select in the apps."),
-    Hidden("Hidden games", Binding.of(Pad.L1, Pad.R1, Pad.Select), "Private mode off: turns it on at once. On: shows hidden games after your PIN, or tucks them away."),
-    Previous("Previous tab or page", Binding.of(Pad.L1), "The previous system, collection, Settings page or Stats tab; bigger icons on the grid."),
-    Next("Next tab or page", Binding.of(Pad.R1), "The next system, collection, Settings page or Stats tab; smaller icons on the grid."),
-    PageUp("Page up", Binding.of(Pad.L2), "In a list of games the previous letter (or year, rating), elsewhere a page up; the Recently played strip on the grid."),
-    PageDown("Page down", Binding.of(Pad.R2), "In a list of games the next letter (or year, rating), elsewhere a page down."),
-    SidePanel("Side panel", Binding.of(Pad.R2), "On the home screen: Pip, the quick settings and your notifications. Shares its button with Page down unless you change it."),
-    Favourite("Favourite", null, "Adds the highlighted game to your favourites, or takes it out again. No button until you give it one."),
-    Screenshot("Screenshot", null, "A screenshot of the game playing on the other screen, saved to ROMs/screenshots, as the companion's Screenshot does. Works while Tandem is in front."),
-    Clip("Clip", null, "A 15-second clip of the game playing on the other screen, or stops the one recording, as the companion's Clip does. Works while Tandem is in front."),
-    ControllerHome("Controller Home", Binding.of(Pad.Home), "A controller's Home (guide) button inside Tandem: a tap is Home, a hold does what Hold the Home button says.");
+enum class Command(@StringRes private val labelRes: Int, val default: Binding?, @StringRes private val helpRes: Int) {
+    Open(R.string.controls_command_open, Binding.of(Pad.A), R.string.controls_command_open_help),
+    Back(R.string.controls_command_back, Binding.of(Pad.B), R.string.controls_command_back_help),
+    Options(R.string.controls_command_options, Binding.of(Pad.Y), R.string.controls_command_options_help),
+    Action(R.string.controls_command_action, Binding.of(Pad.X), R.string.controls_command_action_help),
+    StartMenu(R.string.controls_command_start, Binding.of(Pad.Start), R.string.controls_command_start_help),
+    QuickPanel(R.string.controls_command_quick, Binding.hold(Pad.Start), R.string.controls_command_quick_help),
+    Switcher(R.string.controls_command_switcher, Binding.hold(Pad.Select), R.string.controls_command_switcher_help),
+    SwitcherChord(R.string.controls_command_switcher_chord, Binding.of(Pad.Select, Pad.Start), R.string.controls_command_switcher_chord_help),
+    Surprise(R.string.controls_command_surprise, Binding.of(Pad.Select), R.string.controls_command_surprise_help),
+    Hidden(R.string.controls_command_hidden, Binding.of(Pad.L1, Pad.R1, Pad.Select), R.string.controls_command_hidden_help),
+    Previous(R.string.controls_command_previous, Binding.of(Pad.L1), R.string.controls_command_previous_help),
+    Next(R.string.controls_command_next, Binding.of(Pad.R1), R.string.controls_command_next_help),
+    PageUp(R.string.controls_command_page_up, Binding.of(Pad.L2), R.string.controls_command_page_up_help),
+    PageDown(R.string.controls_command_page_down, Binding.of(Pad.R2), R.string.controls_command_page_down_help),
+    SidePanel(R.string.controls_command_side_panel, Binding.of(Pad.R2), R.string.controls_command_side_panel_help),
+    Favourite(R.string.controls_command_favourite, null, R.string.controls_command_favourite_help),
+    Screenshot(R.string.controls_command_screenshot, null, R.string.controls_command_screenshot_help),
+    Clip(R.string.controls_command_clip, null, R.string.controls_command_clip_help),
+    ControllerHome(R.string.controls_command_home, Binding.of(Pad.Home), R.string.controls_command_home_help);
+
+    val label: String get() = Tx.s(labelRes)
+    val help: String get() = Tx.s(helpRes)
 
     /** How the command reaches the rest of Tandem. */
     enum class Kind {
@@ -154,28 +164,28 @@ object Bindings {
         commands(map, b).filter { it != c && it !in companions(c) }
 
     /**
-     * Why [b] can't be [c]'s binding, in a sentence, or null when it can. A [Command.Kind.Pass] command needs its
-     * button's own down and up (A is held to select a tile, the Home button is tapped or held), so it takes one
-     * button that no chord or hold waits on; and a chord inside another chord would fire both.
+     * Why [b] can't be [c]'s binding, as a sentence made when it is read, or null when it can. A [Command.Kind.Pass]
+     * command needs its button's own down and up (A is held to select a tile, the Home button is tapped or held), so
+     * it takes one button that no chord or hold waits on; and a chord inside another chord would fire both.
      */
-    fun refusal(map: Map<Command, Binding?>, c: Command, b: Binding): String? {
-        if (b.hold && b.chord) return "A hold is one button"
+    fun refusal(map: Map<Command, Binding?>, c: Command, b: Binding): (() -> String)? {
+        if (b.hold && b.chord) return { Tx.s(R.string.controls_refused_hold_chord) }
         val others = Command.entries.filter { it != c }
         if (c.kind == Command.Kind.Pass) {
-            if (b.hold || b.chord) return "${c.label} needs a single button, not a chord or a hold"
+            if (b.hold || b.chord) return { Tx.s(R.string.controls_refused_single, c.label) }
             val pad = b.single!!
             others.firstOrNull { o -> map[o]?.let { (it.hold || it.chord) && pad in it.pads } == true }
-                ?.let { o -> return "$pad is part of ${o.label} (${map[o]!!.label})" }
+                ?.let { o -> return { Tx.s(R.string.controls_refused_part_of, pad.name, o.label, map[o]!!.shown) } }
         } else if (b.hold || b.chord) {
             for (pad in b.pads) {
                 others.firstOrNull { it.kind == Command.Kind.Pass && map[it]?.single == pad }
-                    ?.let { o -> return "$pad is ${o.label}: it can't be part of a chord or a hold" }
+                    ?.let { o -> return { Tx.s(R.string.controls_refused_is_pass, pad.name, o.label) } }
             }
             if (b.chord) {
                 others.filter { it !in companions(c) }.firstOrNull { o ->
                     val ob = map[o] ?: return@firstOrNull false
                     ob.chord && !ob.hold && ob.pads != b.pads && (ob.pads.containsAll(b.pads) || b.pads.containsAll(ob.pads))
-                }?.let { o -> return "${b.label} overlaps ${o.label} (${map[o]!!.label})" }
+                }?.let { o -> return { Tx.s(R.string.controls_refused_overlaps, b.shown, o.label, map[o]!!.shown) } }
             }
         }
         return null
@@ -218,8 +228,10 @@ object Bindings {
         data class Done(val map: Map<Command, Binding?>) : Plan
         /** [others] had it and would take the command's old binding (or none) in exchange: ask, then store [map]. */
         data class Swap(val others: List<Command>, val map: Map<Command, Binding?>) : Plan
-        /** It can't be: [why], in a sentence. */
-        data class Refused(val why: String) : Plan
+        /** It can't be: [why], in a sentence (made when read, so it is in the language of the moment). */
+        class Refused(private val reason: () -> String) : Plan {
+            val why: String get() = reason()
+        }
         /** It is the binding the command already has. */
         data object Same : Plan
     }
@@ -231,16 +243,16 @@ object Bindings {
      */
     fun plan(map: Map<Command, Binding?>, c: Command, b: Binding?): Plan {
         if (map[c] == b) return Plan.Same
-        if (b == null) return if (c in essential) Plan.Refused("${c.label} always needs a button") else Plan.Done(map + (c to null))
+        if (b == null) return if (c in essential) Plan.Refused { Tx.s(R.string.controls_refused_essential, c.label) } else Plan.Done(map + (c to null))
         refusal(map, c, b)?.let { return Plan.Refused(it) }
         val others = conflicts(map, c, b)
         val out = rebind(map, c, b)
         for (o in others) {
             val given = out[o]
             if (given == null) {
-                if (o in essential) return Plan.Refused("${b.label} is ${o.label}, which always needs a button: give ${o.label} another one first")
+                if (o in essential) return Plan.Refused { Tx.s(R.string.controls_refused_essential_swap, b.shown, o.label) }
             } else {
-                refusal(out, o, given)?.let { return Plan.Refused("${o.label} can't take ${given.label} in exchange: $it") }
+                refusal(out, o, given)?.let { why -> return Plan.Refused { Tx.s(R.string.controls_refused_exchange, o.label, given.shown, why()) } }
             }
         }
         return if (others.isEmpty()) Plan.Done(out) else Plan.Swap(others, out)

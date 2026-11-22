@@ -40,11 +40,14 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.CloseCheck
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGame
 import io.github.zahakj.tandem.RunningGames
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
 
@@ -71,10 +74,10 @@ private fun RunningGame.entry(): CloseCheck.Entry =
 
 /** One line under a running game's name: how long it has been played this time, or where it runs. */
 private fun RunningGame.detail(): String? {
-    val g = game ?: return "$appName · opened outside Tandem"
+    val g = game ?: return Tx.s(R.string.play_close_outside, appName)
     if (!Privacy.canShow(g)) return null
     val played = RunningGames.sessionSeconds(this)
-    return if (played != null && played > 0) "$appName · played ${formatPlayTime(played)} this time" else "${g.platform.shortName} · $appName"
+    return if (played != null && played > 0) Tx.s(R.string.play_close_played, appName, formatPlayTime(played)) else Tx.s(R.string.play_close_where, g.platform.shortName, appName)
 }
 
 /** Placed in [LaunchOverlay], so it shows wherever the library is drawn. */
@@ -90,11 +93,11 @@ internal fun CloseAskPanel() {
             HomeStore.updateSettings { it.copy(askBeforeClosing = false) }
             cancel()
             Sounds.toggle(false)
-            Toasts.show("I won't ask again. Turn it back on in Settings › Play & system › Playing", 4500)
+            Toasts.show(Tx.s(R.string.play_close_never_ask), 4500)
         }
         true
     }
-    LaunchedEffect(ask?.id) { if (ask != null) Sounds.pipSays("Wait, a game is still running") }
+    LaunchedEffect(ask?.id) { if (ask != null) Sounds.pipSays(Tx.s(R.string.play_close_pip)) }
     OverlayPanel(ask != null, onClose = cancel) {
         val a = shown ?: return@OverlayPanel
         val entries = a.closing.map { it.entry() }
@@ -118,7 +121,7 @@ internal fun CloseAskPanel() {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     a.closing.take(MAX_LISTED).forEach { r -> GameLine(r, r.entry()) }
                     val more = a.closing.size - MAX_LISTED
-                    if (more > 0) Text("and $more more", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+                    if (more > 0) Text(Tx.p(R.plurals.play_close_more, more), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
                 }
             }
             Spacer(Modifier.height(14.dp))
@@ -130,7 +133,7 @@ internal fun CloseAskPanel() {
                 }
                 val armed = closeConfirm.armed == "close:${a.id}"
                 AskButton(
-                    if (armed) "Press again to close" else "Close and start ${a.plan.game.title}", Palette.Peach,
+                    if (armed) Tx.s(R.string.play_close_press_again) else Tx.s(R.string.play_close_and_start, a.plan.game.title), Palette.Peach,
                     Modifier.takesFocus(CloseAsk.ROUTE, "close", target == "close"),
                 ) {
                     if (closeConfirm.press("close:${a.id}")) {
@@ -138,13 +141,13 @@ internal fun CloseAskPanel() {
                         Launcher.proceed(a.ctx, a.plan)
                     }
                 }
-                AskButton("Cancel", Palette.Lavender, Modifier.takesFocus(CloseAsk.ROUTE, "cancel", target == "cancel"), onClick = cancel)
+                AskButton(Tx.s(R.string.play_close_cancel), Palette.Lavender, Modifier.takesFocus(CloseAsk.ROUTE, "cancel", target == "cancel"), onClick = cancel)
             }
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("A", "Choose", Palette.Mint)
-                ButtonHint("B", "Cancel", Palette.Lavender)
-                ButtonHint("Y", "Don't ask again", Palette.Butter)
+                ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
+                ButtonHint("B", Tx.s(R.string.play_close_cancel), Palette.Lavender)
+                ButtonHint("Y", Tx.s(R.string.play_close_dont_ask), Palette.Butter)
             }
         }
     }
@@ -183,7 +186,7 @@ private fun SingleHeader(a: CloseAsk, r: RunningGame, e: CloseCheck.Entry, title
                 Pip(44.dp, Modifier.align(Alignment.BottomEnd).offset(x = 6.dp, y = 4.dp), mood = 3)
             }
             Column(Modifier.weight(1f).padding(start = 12.dp, end = 4.dp)) {
-                val kicker = if (e.hidden) "● STILL RUNNING" else "● STILL RUNNING IN ${r.appName.uppercase()}"
+                val kicker = if (e.hidden) Tx.s(R.string.play_close_kicker) else Tx.s(R.string.play_close_kicker_in, r.appName.uppercase(Lang.locale))
                 Text(kicker, style = MaterialTheme.typography.labelMedium.onArt(), color = Palette.Peach, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(title, style = MaterialTheme.typography.titleLarge.onArt(), maxLines = 2, overflow = TextOverflow.Ellipsis)
                 if (!e.hidden) r.detail()?.let {

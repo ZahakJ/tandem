@@ -78,7 +78,7 @@ object LaunchIntents {
         for ((key, extra) in spec.extras) {
             val values = extra.values.map(vars::expand)
             val one = values.firstOrNull().orEmpty()
-            fun number(): String = one.trim().ifEmpty { throw BadShortcutException("\"$key\" is empty") }
+            fun number(): String = one.trim().ifEmpty { throw BadShortcutException(Tx.s(R.string.play_shortcut_key_empty, key)) }
             when (extra.type) {
                 "strings" -> intent.putExtra(key, values.toTypedArray())
                 "int" -> intent.putExtra(key, number().toIntOrNull() ?: throw BadShortcutException("\"$one\" isn't a number"))
@@ -105,8 +105,8 @@ object LaunchIntents {
                 "file.dir" -> file.parent.orEmpty()
                 "file.uri" -> sharedUri.toString()
                 "file.fileuri" -> Uri.fromFile(file).toString()
-                "file.text" -> text ?: throw BadShortcutException("${file.name} is empty")
-                "file.id" -> GameFiles.idIn(text) ?: throw BadShortcutException("${file.name} has no game id inside")
+                "file.text" -> text ?: throw BadShortcutException(Tx.s(R.string.play_shortcut_empty, file.name))
+                "file.id" -> GameFiles.idIn(text) ?: throw BadShortcutException(Tx.s(R.string.play_shortcut_no_id, file.name))
                 "file.mime" -> GameFiles.mime(file)
                 "storage" -> Environment.getExternalStorageDirectory().path
                 "roms" -> Library.romsDir.path
@@ -114,7 +114,7 @@ object LaunchIntents {
                 else -> if (name.startsWith("tags.")) {
                     // A "[name] value" line in a Daijisho-style template file; a plain id file works too.
                     tags[name.removePrefix("tags.").lowercase()] ?: GameFiles.idIn(text)
-                        ?: throw BadShortcutException("${file.name} has no [${name.removePrefix("tags.")}] line")
+                        ?: throw BadShortcutException(Tx.s(R.string.play_shortcut_no_tag, file.name, name.removePrefix("tags.")))
                 } else {
                     m.value
                 }

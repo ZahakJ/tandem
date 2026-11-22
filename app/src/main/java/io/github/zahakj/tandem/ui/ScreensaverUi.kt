@@ -143,7 +143,7 @@ private fun SleepyPip(modifier: Modifier, clock: SteadyClock, phase: () -> Float
         Pip(84.dp, mood = 2)
         for (k in 0 until 3) {
             Text(
-                "z", Modifier.align(Alignment.TopEnd).graphicsLayer {
+                "z", Modifier.align(Alignment.TopEnd).graphicsLayer { // tx-ok: a sleeping z, a picture
                     val p = clock.loop(3200, k / 3f)
                     translationX = 10f + p * 40f + 6f * sin(phase() * 20 + k)
                     translationY = -p * 90f

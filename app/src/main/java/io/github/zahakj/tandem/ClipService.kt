@@ -49,9 +49,9 @@ class ClipService : Service() {
 
     private fun note(): Notification {
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Clips", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, Tx.s(R.string.play_clip_channel), NotificationManager.IMPORTANCE_LOW))
         return Notification.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("Recording a clip").setOngoing(true).build()
+            .setContentTitle(Tx.s(R.string.play_clip_recording)).setOngoing(true).build()
     }
 
     companion object {
@@ -74,7 +74,7 @@ class ClipService : Service() {
 
         /** What a clip's result says, in a toast. */
         fun said(r: GameClip.Result): String = when (r) {
-            is GameClip.Result.Saved -> if (r.sound) "Clip saved to Gallery" else "Clip saved to Gallery, without sound"
+            is GameClip.Result.Saved -> Tx.s(if (r.sound) R.string.play_clip_saved else R.string.play_clip_saved_silent)
             is GameClip.Result.Failed -> r.why
         }
 

@@ -7,10 +7,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import io.github.zahakj.tandem.ControllerHomeService
 import io.github.zahakj.tandem.Gamepads
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ControllerStore
 
-/** Group titles of these rows, picked into Settings › Controls by [settingsCatalog]. */
+/** The English names of these rows' groups (SettingSection.en), picked into Settings › Controls by [settingsCatalog]. */
 const val HomeButtonGroup = "Controller Home button"
 const val ControllersGroup = "Game controllers"
 const val PadLinkGroup = "Play with a controller"
@@ -41,7 +44,7 @@ private fun padChoices(pads: List<Pair<String, String>>): List<Pair<String, Stri
     return pads.map { (descriptor, name) ->
         val n = (seen[name] ?: 0) + 1
         seen[name] = n
-        descriptor to if (n > 1) "$name $n" else name
+        descriptor to if (n > 1) Tx.s(R.string.controls_pad_numbered, name, n) else name
     }
 }
 
@@ -54,34 +57,31 @@ fun controllerSettings(): List<SettingSection> {
     // Switched off there on purpose: Tandem won't switch it back on by itself (A11yHeal).
     androidx.compose.runtime.LaunchedEffect(resumes) { io.github.zahakj.tandem.A11yHeal.backFromSettings(ctx) }
     val version = Gamepads.version
-    val pads = remember(version, resumes) { Gamepads.connected().map { it.descriptor to it.name.orEmpty().ifBlank { "Controller" } } }
+    // The name for a controller without one is looked up outside remember, so it follows the language.
+    val unnamed = Tx.s(R.string.controls_pad_unnamed)
+    val pads = remember(version, resumes) { Gamepads.connected().map { it.descriptor to it.name.orEmpty() } }.map { (d, n) -> d to n.ifBlank { unnamed } }
     val cs = ControllerStore.settings
 
     val home = SettingSection(
-        HomeButtonGroup,
+        Tx.s(R.string.controls_group_home_button),
         listOf(
             SettingRow(
-                "Controller Home button", if (serviceOn) "On" else "Off", Palette.Lavender, Glyph.Home,
-                "Many controllers in X-input mode send their Home " +
-                    "(guide) button as a button Android ignores. Inside Tandem it always works like Home. To make it work in " +
-                    "games and other apps too, switch on \"Tandem: Controller Home button\" in Android's Accessibility " +
-                    "settings (A opens them; if it is greyed out, allow restricted settings in Tandem's App info first). " +
-                    "Tandem then looks only at that one button, only from external controllers; the built-in controls " +
-                    "are never touched.",
-                opens = true, action = "Open", keywords = "guide xbox button mode accessibility emulator bluetooth gamepad",
+                Tx.s(R.string.controls_home_button), onOff(serviceOn), Palette.Lavender, Glyph.Home,
+                Tx.s(R.string.controls_home_button_help),
+                opens = true, action = Tx.s(R.string.controls_open), keywords = "guide xbox button mode accessibility emulator bluetooth gamepad",
+                en = "Controller Home button",
             ) {
                 io.github.zahakj.tandem.A11yHeal.openingSettings(ctx)
                 val tries = listOf(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS), Intent(Settings.ACTION_SETTINGS))
                 for (i in tries) if (runCatching { ctx.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }.isSuccess) break
             },
             choice(
-                "Hold the Home button", Glyph.Swap, Palette.Lavender,
-                "What holding a controller's Home button does: Tandem's game switcher, or Android's recent apps (needs " +
-                    "Controller Home button on; without it, the game switcher).",
-                listOf("switcher" to "Game switcher", "recents" to "Recent apps"), cs.holdHome,
+                Tx.s(R.string.controls_hold_home), Glyph.Swap, Palette.Lavender, Tx.s(R.string.controls_hold_home_help),
+                listOf("switcher" to Tx.s(R.string.controls_hold_home_switcher), "recents" to Tx.s(R.string.controls_hold_home_recents)), cs.holdHome,
+                en = "Hold the Home button",
             ) { v -> ControllerStore.update { it.copy(holdHome = v) } },
         ),
-        Glyph.Home,
+        Glyph.Home, en = HomeButtonGroup,
     )
 
     // Two identical pads get numbered, so each row has its own name.
@@ -90,12 +90,7 @@ fun controllerSettings(): List<SettingSection> {
         val label = names[i].second
         val on = descriptor in cs.nintendo
         toggle(
-            label, Glyph.Gamepad, Palette.Lavender,
-            "Nintendo button labels: swaps A/B and X/Y for this controller only, so the button printed A confirms. " +
-                "Use it for Switch-style pads in X-input mode. It applies inside Tandem; the built-in controls and " +
-                "other controllers are unaffected, and Swap A and B above still applies on top. Emulators have their " +
-                "own per-controller button mapping in their settings.",
-            on,
+            label, Glyph.Gamepad, Palette.Lavender, Tx.s(R.string.controls_pad_nintendo_help), on,
         ) { set ->
             ControllerStore.update { s ->
                 if (set) s.copy(nintendo = s.nintendo + descriptor, names = s.names + (descriptor to name))
@@ -106,11 +101,10 @@ fun controllerSettings(): List<SettingSection> {
     val rows = padRows.ifEmpty {
         listOf(
             SettingRow(
-                "No other controllers", "Connect one", Palette.Lavender, Glyph.Gamepad,
-                "Pair a Bluetooth controller or plug one in and it shows up here, with its own Nintendo button labels " +
-                    "switch (swap A/B and X/Y for that controller only). The built-in controls follow Swap A and B above.",
-                keywords = "bluetooth gamepad nintendo labels swap",
-            ) { Toasts.show("Pair or plug in a controller, it appears here") },
+                Tx.s(R.string.controls_no_pads), Tx.s(R.string.controls_no_pads_value), Palette.Lavender, Glyph.Gamepad,
+                Tx.s(R.string.controls_no_pads_help),
+                keywords = "bluetooth gamepad nintendo labels swap", en = "No other controllers",
+            ) { Toasts.show(Tx.s(R.string.controls_no_pads_toast)) },
         )
     }
 
@@ -120,37 +114,33 @@ fun controllerSettings(): List<SettingSection> {
     val linkRows = if (!linkReady) {
         listOf(
             SettingRow(
-                "Controller in games", "Unavailable", Palette.Lavender, Glyph.Gamepad,
-                remember(resumes) { io.github.zahakj.tandem.PadLink.whyNot(ctx) },
-                keywords = "passthrough xbox bluetooth controller player 1 shizuku root",
+                Tx.s(R.string.controls_link), Tx.s(R.string.controls_link_unavailable), Palette.Lavender, Glyph.Gamepad,
+                remember(resumes, Lang.revision.intValue) { io.github.zahakj.tandem.PadLink.whyNot(ctx) },
+                keywords = "passthrough xbox bluetooth controller player 1 shizuku root", en = "Controller in games",
             ) { Toasts.show(io.github.zahakj.tandem.PadLink.whyNot(ctx)) },
         )
     } else {
         listOf(
             choice(
-                "Controller in games", Glyph.Gamepad, Palette.Lavender,
-                "Which controller plays as the built-in one, in every emulator, mid-game included: games keep " +
-                    "listening to the built-in controls and Tandem passes the chosen controller's buttons and sticks " +
-                    "to them. The built-in controls keep working too (also in Quick settings). A controller connecting " +
-                    "during a game offers itself on the bottom screen: press its A or Start. Disconnecting it goes back " +
-                    "to the built-in controls.",
+                Tx.s(R.string.controls_link), Glyph.Gamepad, Palette.Lavender, Tx.s(R.string.controls_link_help),
                 // Built-in, then each connected controller by name (two alike get numbered, as on Connected controllers).
-                listOf("" to "Built-in") + padChoices(pads),
+                listOf("" to Tx.s(R.string.controls_link_builtin)) + padChoices(pads),
                 linkState.linked.orEmpty(),
+                en = "Controller in games",
             ) { v -> io.github.zahakj.tandem.PadLink.choose(v.ifEmpty { null }) }
                 .copy(keywords = "passthrough xbox bluetooth controller player 1 switch use this controller ${pads.joinToString(" ") { it.second }}"),
             toggle(
-                "Always use a connected pad", Glyph.Gamepad, Palette.Lavender,
-                "Always use a connected controller: one that connects plays as the built-in controller at once, " +
-                    "without asking. Leave it off to play two players: the controller then stays a controller of its " +
-                    "own, and the emulator needs it mapped as Player 2.",
+                Tx.s(R.string.controls_link_auto), Glyph.Gamepad, Palette.Lavender, Tx.s(R.string.controls_link_auto_help),
                 cs.usePads,
+                en = "Always use a connected pad",
             ) { on ->
                 ControllerStore.update { it.copy(usePads = on) }
                 io.github.zahakj.tandem.PadLink.devicesChanged()
             }.copy(keywords = "auto passthrough xbox bluetooth controller player 1"),
         )
     }
-    val link = SettingSection(PadLinkGroup, linkRows, Glyph.Gamepad, note = if (linkState.linked != null) "In use: ${io.github.zahakj.tandem.PadLink.linked?.name}" else null)
-    return listOf(home, SettingSection(ControllersGroup, rows, Glyph.Gamepad, note = "On: Nintendo labels"), link)
+    val linkNote = if (linkState.linked != null) Tx.s(R.string.controls_link_in_use, io.github.zahakj.tandem.PadLink.linked?.name.toString()) else null
+    val link = SettingSection(Tx.s(R.string.controls_group_pad_link), linkRows, Glyph.Gamepad, note = linkNote, en = PadLinkGroup)
+    val controllers = SettingSection(Tx.s(R.string.controls_group_controllers), rows, Glyph.Gamepad, note = Tx.s(R.string.controls_pads_note), en = ControllersGroup)
+    return listOf(home, controllers, link)
 }

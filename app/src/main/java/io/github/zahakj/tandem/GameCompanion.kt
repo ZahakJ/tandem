@@ -48,13 +48,20 @@ object GameCompanion {
     /** A keyboard and trackpad for the game (ui/DeckPanel.kt): offered for PC games and streams ([DeckGames]). */
     const val DECK = "deck"
 
-    val choices = listOf(ART to "Game art", TANDEM to "Tandem companion", DARK to "Screen off", OFF to "Leave to emulator")
-    private val deckChoice = DECK to "Deck: keyboard & trackpad"
+    /** The modes, id to label (made when read, in the language then). */
+    val choices: List<Pair<String, String>> get() = listOf(
+        ART to Tx.s(R.string.screens_companion_art), TANDEM to Tx.s(R.string.screens_companion_tandem),
+        DARK to Tx.s(R.string.screens_companion_dark), OFF to Tx.s(R.string.screens_companion_off),
+    )
+    private val deckChoice get() = DECK to Tx.s(R.string.screens_companion_deck)
 
     /** The choices for a game or system; the Deck only where a keyboard and mouse make sense ([deck]). */
     fun choices(deck: Boolean): List<Pair<String, String>> = if (deck) choices.take(2) + deckChoice + choices.drop(2) else choices
 
-    fun label(mode: String): String = (choices + deckChoice).firstOrNull { it.first == mode }?.second ?: "Game art"
+    fun label(mode: String): String = (choices + deckChoice).firstOrNull { it.first == mode }?.second ?: Tx.s(R.string.screens_companion_art)
+
+    /** [label] without its detail, for small cards: the Deck is just "Deck" there. */
+    fun shortLabel(mode: String): String = if (mode == DECK) Tx.s(R.string.controls_deck) else label(mode)
 
     /**
      * The next choice after [mode] (or with [by] -1 the one before), for rows that cycle; [deck] says whether the Deck
@@ -552,7 +559,7 @@ class CompanionActivity : ComponentActivity() {
         val app = applicationContext
         Thread({
             val said = when (val r = GameShot.take(app, title, gameOnTop)) {
-                is GameShot.Result.Saved -> "Screenshot saved and copied: paste it anywhere"
+                is GameShot.Result.Saved -> Tx.s(R.string.play_shot_saved)
                 is GameShot.Result.Failed -> r.why
             }
             runOnUiThread { android.widget.Toast.makeText(app, said, android.widget.Toast.LENGTH_SHORT).show() }
@@ -705,6 +712,6 @@ object Capture {
 
     private fun nothing() {
         io.github.zahakj.tandem.ui.Sounds.error()
-        io.github.zahakj.tandem.ui.Toasts.show("Start a game first: this captures the game on the other screen")
+        io.github.zahakj.tandem.ui.Toasts.show(Tx.s(R.string.play_no_game))
     }
 }

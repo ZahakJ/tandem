@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Privacy
 
 import androidx.compose.animation.AnimatedVisibility
@@ -45,10 +46,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RetroAchievements
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.SteamAchievements
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.HomeStore
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,23 +61,23 @@ private var raVersion by mutableStateOf(0)
 
 /** Asks for the username, then the Web API key, checks them, and turns achievements on. */
 fun raSignIn() {
-    if (io.github.zahakj.tandem.NetGate.closed) { Toasts.show("Private mode keeps Tandem offline. Turn it off to sign in"); return }
-    TextEntry.ask("RetroAchievements username", HomeStore.ra.user) { name ->
+    if (io.github.zahakj.tandem.NetGate.closed) { Toasts.show(Tx.s(R.string.accounts_ra_offline)); return }
+    TextEntry.ask(Tx.s(R.string.accounts_ra_username), HomeStore.ra.user) { name ->
         val user = name.trim()
         if (user.isEmpty()) return@ask
-        TextEntry.ask("Web API key (retroachievements.org › Settings › Keys)", "", secret = true) { k ->
+        TextEntry.ask(Tx.s(R.string.accounts_ra_key), "", secret = true) { k ->
             val key = k.trim()
             if (key.isEmpty()) return@ask
-            Toasts.show("Checking with RetroAchievements…")
+            Toasts.show(Tx.s(R.string.accounts_ra_checking))
             kotlinx.coroutines.MainScope().launch {
                 val p = RetroAchievements.verify(user, key)
                 if (p == null) {
-                    Toasts.show("That didn't work. Check the name, the key and your connection")
+                    Toasts.show(Tx.s(R.string.accounts_ra_sign_in_failed))
                 } else {
                     HomeStore.updateRa { it.copy(user = p.user, key = key, enabled = true, matches = emptyMap()) }
                     RetroAchievements.invalidate()
                     raVersion++
-                    Toasts.show("Signed in as ${p.user} 🏆")
+                    Toasts.show(Tx.s(R.string.accounts_ra_signed_in, p.user))
                     Sounds.achievement()
                 }
             }
@@ -87,21 +90,21 @@ fun achievementsSettings(): SettingSection {
     val ra = HomeStore.ra
     val signedIn = ra.user.isNotBlank() && ra.key.isNotBlank()
     return SettingSection(
-        "RetroAchievements",
+        "RetroAchievements", // tx-ok: a name
         buildList {
             add(
                 SettingRow(
-                    "Account", if (signedIn) ra.user else "Sign in", Palette.Butter, Glyph.Trophy,
-                    "Sign in with your RetroAchievements username and Web API key (retroachievements.org › Settings › Keys) to see trophies here, in Stats and on the bottom screen. Never for hidden games.",
-                    keywords = "retroachievements ra trophies login sign in cheevos",
+                    Tx.s(R.string.accounts_ra_account), if (signedIn) ra.user else Tx.s(R.string.accounts_ra_sign_in), Palette.Butter, Glyph.Trophy,
+                    Tx.s(R.string.accounts_ra_account_help),
+                    keywords = "retroachievements ra trophies login sign in cheevos", en = "Account",
                 ) { raSignIn() },
             )
             if (signedIn) {
                 add(
                     SettingRow(
-                        "Show achievements", onOff(ra.enabled), Palette.Butter, Glyph.Trophy, toggle = ra.enabled,
-                        help = "Show a game's achievements and your progress. Off, Tandem doesn't talk to RetroAchievements at all.",
-                        keywords = "retroachievements trophies",
+                        Tx.s(R.string.accounts_ra_show), onOff(ra.enabled), Palette.Butter, Glyph.Trophy, toggle = ra.enabled,
+                        help = Tx.s(R.string.accounts_ra_show_help),
+                        keywords = "retroachievements trophies", en = "Show achievements",
                     ) {
                         HomeStore.updateRa { it.copy(enabled = !it.enabled) }
                         raVersion++
@@ -109,20 +112,23 @@ fun achievementsSettings(): SettingSection {
                 )
                 add(
                     SettingRow(
-                        "Look up games again", "${ra.matches.count { it.value > 0 }} matched", Palette.Butter, Glyph.Refresh,
-                        "Forget which RetroAchievements game each of yours matched, and match them again as you browse. Useful after replacing ROM files.",
-                        keywords = "retroachievements rematch hash",
+                        Tx.s(R.string.accounts_ra_rematch), Tx.p(R.plurals.accounts_ra_matched, ra.matches.count { it.value > 0 }), Palette.Butter, Glyph.Refresh,
+                        Tx.s(R.string.accounts_ra_rematch_help),
+                        keywords = "retroachievements rematch hash", en = "Look up games again",
                     ) {
                         RetroAchievements.forgetMatches()
-                        Toasts.show("I'll match your games again as you browse")
+                        Toasts.show(Tx.s(R.string.accounts_ra_rematch_toast))
                     },
                 )
                 add(
-                    SettingRow("Sign out", "", Palette.Peach, Glyph.Key, "Forget your RetroAchievements account on this device.", keywords = "retroachievements logout") {
+                    SettingRow(
+                        Tx.s(R.string.accounts_ra_sign_out), "", Palette.Peach, Glyph.Key, Tx.s(R.string.accounts_ra_sign_out_help),
+                        keywords = "retroachievements logout", en = "Sign out",
+                    ) {
                         HomeStore.updateRa { RaAccountSignedOut }
                         RetroAchievements.invalidate()
                         raVersion++
-                        Toasts.show("Signed out of RetroAchievements")
+                        Toasts.show(Tx.s(R.string.accounts_ra_signed_out))
                     },
                 )
             }
@@ -158,7 +164,7 @@ internal fun RetroAchievements.Earned.recent(): RecentUnlock = RecentUnlock(
     key = "ra:$date/$title",
     title = title,
     game = game,
-    line = "$points pts" + (if (hardcore) " · hardcore" else "") + " · " + date.substringBefore(' '),
+    line = Tx.p(if (hardcore) R.plurals.accounts_ra_unlock_line_hardcore else R.plurals.accounts_ra_unlock_line, points, points, date.substringBefore(' ')),
     badge = badgeUrl,
     at = raDateMs(date),
     steam = false,
@@ -178,9 +184,8 @@ fun AchievementsTab() {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 PipNote(
-                    "Bring your achievements",
-                    "Sign in to RetroAchievements with your username and Web API key, or connect Steam with your own Web API key and account.\n" +
-                        "Tandem only talks to them when this is on, and never about hidden games.",
+                    Tx.s(R.string.accounts_achievements_bring),
+                    Tx.s(R.string.accounts_achievements_bring_text),
                     mood = 1,
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -190,7 +195,7 @@ fun AchievementsTab() {
                         onClick = { if (HomeStore.ra.key.isNotBlank()) { HomeStore.updateRa { it.copy(enabled = true) }; raVersion++ } else raSignIn() },
                     ) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(if (HomeStore.ra.key.isNotBlank()) "Turn RetroAchievements on" else "RetroAchievements", style = MaterialTheme.typography.titleSmall, color = Palette.Butter)
+                            Text(if (HomeStore.ra.key.isNotBlank()) Tx.s(R.string.accounts_ra_turn_on) else "RetroAchievements", style = MaterialTheme.typography.titleSmall, color = Palette.Butter) // tx-ok: a name
                         }
                     }
                     SteamSignInButton(Modifier.remembersFocus(route, "steam-signin", false))
@@ -208,7 +213,8 @@ fun AchievementsTab() {
     // Steam's side is what is cached: it changes as looks come back.
     val steamRecords = SteamAchievements.games.values.toList()
     val steamGames = remember(steamRecords, Libraries.all, Privacy.view, steam) { steamGameEntries() }
-    val recent: List<RecentUnlock>? = remember(raRecent, steamGames) {
+    // Keyed on the language too: each unlock's line is text.
+    val recent: List<RecentUnlock>? = remember(raRecent, steamGames, Lang.revision.intValue) {
         raRecent?.let { list -> (list.map { it.recent() } + steamRecentUnlocks(steamGames)).sortedByDescending { it.at } }
     }
     val keys = buildList {
@@ -242,20 +248,20 @@ fun AchievementsTab() {
                         Text(p?.user ?: HomeStore.ra.user, style = MaterialTheme.typography.headlineSmall, maxLines = 1)
                         Text(
                             when {
-                                p == null && profileDone -> "Couldn't reach RetroAchievements. A tries again"
-                                p == null -> "Loading your profile…"
+                                p == null && profileDone -> Tx.s(R.string.accounts_ra_unreachable)
+                                p == null -> Tx.s(R.string.accounts_ra_loading)
                                 p.richPresence.isNotBlank() -> p.richPresence
                                 p.motto.isNotBlank() -> p.motto
-                                else -> "Member since ${p.memberSince}"
+                                else -> Tx.s(R.string.accounts_ra_member_since, p.memberSince)
                             },
                             style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                         )
                     }
                     if (p != null) {
                         Column(horizontalAlignment = Alignment.End) {
-                            Pill("🏆 ${p.points} points", Palette.Butter)
+                            Pill(Tx.p(R.plurals.accounts_ra_points, p.points), Palette.Butter)
                             Spacer(Modifier.height(4.dp))
-                            if (p.softPoints > 0) Pill("${p.softPoints} softcore", Palette.Lavender)
+                            if (p.softPoints > 0) Pill(Tx.p(R.plurals.accounts_ra_softcore, p.softPoints), Palette.Lavender)
                         }
                     }
                 }
@@ -265,16 +271,16 @@ fun AchievementsTab() {
             SteamProfileCard(steamGames, Modifier.takesFocus(route, "steam", target == "steam")) { FocusMemory.remember(route, "steam"); Selection.current = Selected.Home }
         }
         item("recent-title", span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle("Earned in the last 30 days", Palette.Butter, Modifier.padding(top = 4.dp))
+            SectionTitle(Tx.s(R.string.accounts_achievements_recent), Palette.Butter, Modifier.padding(top = 4.dp))
         }
         val list = recent
         when {
             list == null && recentDone -> item("failed", span = { GridItemSpan(maxLineSpan) }) {
-                PipNote("Couldn't fetch your trophies", "Check the connection, then press A on your profile to try again.", mood = 2)
+                PipNote(Tx.s(R.string.accounts_achievements_failed), Tx.s(R.string.accounts_achievements_failed_text), mood = 2)
             }
-            list == null -> item("loading", span = { GridItemSpan(maxLineSpan) }) { PipNote("Fetching your trophies…", "One moment.") }
+            list == null -> item("loading", span = { GridItemSpan(maxLineSpan) }) { PipNote(Tx.s(R.string.accounts_achievements_loading), Tx.s(R.string.accounts_achievements_loading_text)) }
             list.isEmpty() -> item("none", span = { GridItemSpan(maxLineSpan) }) {
-                PipNote("Nothing new this month", "Your next achievement will shine right here.", mood = 2)
+                PipNote(Tx.s(R.string.accounts_achievements_none), Tx.s(R.string.accounts_achievements_none_text), mood = 2)
             }
             else -> items(list, key = { it.key }) { e ->
                 val key = e.key
@@ -291,14 +297,14 @@ fun AchievementsTab() {
                             Text(e.game, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(e.line, style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
-                        if (e.steam) Pill("Steam", Palette.Sky, Modifier.padding(start = 6.dp))
+                        if (e.steam) Pill("Steam", Palette.Sky, Modifier.padding(start = 6.dp)) // tx-ok: a name
                     }
                 }
             }
         }
         if (steamGames.isNotEmpty()) {
             item("steam-title", span = { GridItemSpan(maxLineSpan) }) {
-                SectionTitle("Steam games", Palette.Sky, Modifier.padding(top = 4.dp))
+                SectionTitle(Tx.s(R.string.accounts_steam_games), Palette.Sky, Modifier.padding(top = 4.dp))
             }
             items(steamGames, key = { "sg:${it.record.appId}" }) { e ->
                 val key = "sg:${e.record.appId}"
@@ -339,7 +345,7 @@ fun AchievementsStrip(game: Game) {
                     Box(Modifier.fillMaxWidth(fraction).fillMaxHeight().clip(RoundedCornerShape(50)).background(Palette.Butter))
                 }
                 Spacer(Modifier.width(10.dp))
-                Text(if (p.earned == p.total) "Mastered ✨" else "${(fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = Palette.Butter)
+                Text(if (p.earned == p.total) Tx.s(R.string.accounts_achievements_mastered) else "${(fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = Palette.Butter)
             }
             Spacer(Modifier.height(6.dp))
             // Earned badges first, then the next few still to get (greyed).

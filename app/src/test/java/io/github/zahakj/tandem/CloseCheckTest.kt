@@ -82,37 +82,25 @@ class CloseCheckTest {
         assertEquals(emptyList<String>(), close(running, "*", celeste, closePrevious = false, anyApp = true))
     }
 
+    // The question's words come from the string resources; here, whom it names and how.
     @Test fun oneGameIsNamedInTheQuestion() {
-        val (title, body) = CloseCheck.headline(listOf(Entry("Hades II", "GameNative", hidden = false)), "Celeste")
-        assertEquals("Hades II is still running", title)
-        assertEquals("Starting Celeste will close it. Anything you haven't saved there will be lost.", body)
-        assertEquals("Resume Hades II", CloseCheck.resumeLabel(Entry("Hades II", "GameNative", hidden = false)))
+        assertEquals(CloseCheck.Who.One("Hades II"), CloseCheck.who(listOf(Entry("Hades II", "GameNative", hidden = false))))
+        assertEquals("Hades II", CloseCheck.shownName(Entry("Hades II", "GameNative", hidden = false)))
     }
 
     @Test fun anEmulatorWithoutATandemGameIsNamedByItself() {
-        val (title, _) = CloseCheck.headline(listOf(Entry(null, "RetroArch", hidden = false)), "Celeste")
-        assertEquals("RetroArch is still running", title)
+        assertEquals(CloseCheck.Who.One("RetroArch"), CloseCheck.who(listOf(Entry(null, "RetroArch", hidden = false))))
     }
 
     @Test fun severalGamesAreCounted() {
-        val (title, body) = CloseCheck.headline(
-            listOf(Entry("Hades II", "GameNative", false), Entry("Zelda", "Eden", false)), "Celeste",
-        )
-        assertEquals("2 games are still running", title)
-        assertTrue(body.startsWith("Starting Celeste will close them all."))
+        assertEquals(CloseCheck.Who.Many(2), CloseCheck.who(listOf(Entry("Hades II", "GameNative", false), Entry("Zelda", "Eden", false))))
     }
 
     @Test fun aHiddenGameIsNeverNamedNorIsItsEmulator() {
         val secret = Entry("Secret Game", "GameNative", hidden = true)
-        val (title, body) = CloseCheck.headline(listOf(secret), "Celeste")
-        assertEquals("A hidden game is still running", title)
-        for (text in listOf(title, body, CloseCheck.name(secret), CloseCheck.resumeLabel(secret))) {
-            assertFalse(text, text.contains("Secret"))
-            assertFalse(text, text.contains("GameNative"))
-        }
-        assertEquals("A hidden game", CloseCheck.name(secret))
+        assertEquals(CloseCheck.Who.One(null), CloseCheck.who(listOf(secret)))
+        assertEquals(null, CloseCheck.shownName(secret))
         // Among others, it is still left unnamed.
-        val (many, _) = CloseCheck.headline(listOf(Entry("Zelda", "Eden", false), secret), "Celeste")
-        assertEquals("2 games are still running", many)
+        assertEquals(CloseCheck.Who.Many(2), CloseCheck.who(listOf(Entry("Zelda", "Eden", false), secret)))
     }
 }

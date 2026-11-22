@@ -128,9 +128,8 @@ class ScreenOffTest {
         assertEquals(dark, CompanionMode.resolve(null, dark, dual = true, default = art))
     }
 
-    @Test fun offAfterLabels() {
-        assertEquals("Never", ScreenOff.offAfterLabel(0))
-        assertEquals("After 5 min", ScreenOff.offAfterLabel(5))
+    // Their labels ("Never", "After 5 min") come from the string resources.
+    @Test fun offAfterChoices() {
         assertEquals(listOf(0, 1, 2, 5, 10), ScreenOff.OFF_AFTER_MINUTES)
     }
 

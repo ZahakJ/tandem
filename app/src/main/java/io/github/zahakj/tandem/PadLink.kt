@@ -47,7 +47,7 @@ object PadLink {
     /** The pad in use, or null for the built-in controls. */
     val linked: PadPlan.Pad? get() = state.pad(state.linked)
 
-    /** A short message for the bottom screen during a game ([notice] then clears itself). */
+    /** A short message for the bottom screen during a game ([notice] then clears itself, so its language can't go stale). */
     var notice by mutableStateOf<String?>(null)
         private set
 
@@ -64,9 +64,9 @@ object PadLink {
 
     /** Why it isn't available, in one line (Settings shows it). */
     fun whyNot(ctx: Context): String = when {
-        !File(ctx.applicationInfo.nativeLibraryDir, HELPER).isFile -> "This build of Tandem has no controller helper."
-        builtIn() == null -> "This device has no built-in controller to stand in for."
-        else -> "Needs Shizuku or root: a game only reads the built-in controller, and only they can feed it."
+        !File(ctx.applicationInfo.nativeLibraryDir, HELPER).isFile -> Tx.s(R.string.controls_padlink_no_helper)
+        builtIn() == null -> Tx.s(R.string.controls_padlink_no_builtin)
+        else -> Tx.s(R.string.controls_padlink_needs_shizuku)
     }
 
     private fun builtIn(): InputDevice? = InputDevice.getDeviceIds().toList().mapNotNull { InputDevice.getDevice(it) }
@@ -85,7 +85,7 @@ object PadLink {
             if (state.linked != null || state.offer != null) dispatch(PadPlan.Event.Choose(null))
             return
         }
-        val pads = Gamepads.connected().map { PadPlan.Pad(it.descriptor, it.name.orEmpty().ifBlank { "Controller" }) }
+        val pads = Gamepads.connected().map { PadPlan.Pad(it.descriptor, it.name.orEmpty().ifBlank { Tx.s(R.string.controls_pad_unnamed) }) }
         dispatch(PadPlan.Event.Devices(pads, inGame(ctx), ControllerStore.settings.usePads))
     }
 
@@ -98,7 +98,7 @@ object PadLink {
     /** The next choice, for the Controller tile: Built-in, then each connected pad. */
     fun cycle() {
         devicesChanged()
-        if (state.pads.isEmpty()) { show("Connect a controller first"); return }
+        if (state.pads.isEmpty()) { show(Tx.s(R.string.controls_padlink_no_pads)); return }
         dispatch(PadPlan.Event.Choose(PadPlan.next(state)))
     }
 
@@ -122,12 +122,12 @@ object PadLink {
         val step = PadPlan.reduce(before, e)
         state = step.state
         if (state.linked != before.linked || state.offer != before.offer) Log.i(TAG, "${e::class.simpleName}: linked ${before.linked?.take(6)} -> ${state.linked?.take(6)}, offer ${before.offer?.take(6)} -> ${state.offer?.take(6)}")
-        step.notice?.let { show(it) }
+        step.notice?.let { show(it.text) }
         if (state.offer != before.offer) {
             main.removeCallbacks(expire)
             if (state.offer != null) {
                 main.postDelayed(expire, OFFER_MS)
-                offer?.let { if (GameCompanion.up()) notice = null else systemToast("Press A or Start on ${it.name} to play with it") }
+                offer?.let { if (GameCompanion.up()) notice = null else systemToast(Tx.s(R.string.controls_padlink_offer_toast, it.name)) }
             }
         }
         val want = state.linked?.let { Want(it, link = true) } ?: state.offer?.let { Want(it, link = false) }

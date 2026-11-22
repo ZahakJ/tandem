@@ -43,18 +43,20 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.NetGate
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.SteamAchievement
 import io.github.zahakj.tandem.SteamAchievements
 import io.github.zahakj.tandem.SteamApi
 import io.github.zahakj.tandem.SteamGameAchievements
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Net
 import io.github.zahakj.tandem.data.SteamStore
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -78,9 +80,8 @@ var steamVersion by mutableIntStateOf(0)
 private val SteamColor get() = Palette.Sky
 
 private val greyscale = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
-private val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
-
-private fun dateOf(ms: Long): String = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(dateFormat)
+/** "3 Nov 2026", with the month in Tandem's language. */
+private fun dateOf(ms: Long): String = Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMM yyyy", Lang.locale))
 
 /** Pip's toasts for new unlocks, one after another, with the achievement's icon beside Pip. */
 object SteamUnlocks {
@@ -107,35 +108,39 @@ fun steamSettings(): SettingSection {
     val acc = SteamStore.account
     val known = SteamAchievements.games.size
     return SettingSection(
-        "Steam",
+        "Steam", // tx-ok: a name
         buildList {
             add(
                 SettingRow(
-                    "Steam Web API key", if (acc.key.isNotBlank()) "Set" else "Not set", SteamColor, Glyph.Key,
-                    "Your own key from steamcommunity.com/dev/apikey (any domain name will do). Tandem sends it only to Steam, with your account id and the app ids of your Steam games, to read your achievements. Kept on this device, out of Android's backups.",
-                    keywords = "steam web api key achievements token",
+                    Tx.s(R.string.accounts_steam_key), Tx.s(if (acc.key.isNotBlank()) R.string.accounts_steam_key_set else R.string.accounts_steam_key_not_set), SteamColor, Glyph.Key,
+                    Tx.s(R.string.accounts_steam_key_help),
+                    keywords = "steam web api key achievements token", en = "Steam Web API key",
                 ) { steamAskKey() },
             )
             add(
                 SettingRow(
-                    "Steam account", if (acc.id.isNotBlank()) acc.name.ifBlank { acc.id } else "Sign in", SteamColor, Glyph.Trophy,
-                    "Your SteamID64, your profile address or your profile name (looked up through Steam). Your game details must be public in Steam's privacy settings. Never for hidden games, and nothing in private mode.",
-                    keywords = "steam account steamid vanity profile achievements sign in login",
+                    Tx.s(R.string.accounts_steam_account), if (acc.id.isNotBlank()) acc.name.ifBlank { acc.id } else Tx.s(R.string.accounts_ra_sign_in), SteamColor, Glyph.Trophy,
+                    Tx.s(R.string.accounts_steam_account_help),
+                    keywords = "steam account steamid vanity profile achievements sign in login", en = "Steam account",
                 ) { steamSignIn() },
             )
             if (acc.signedIn) {
                 add(
                     SettingRow(
-                        "Look up achievements", if (SteamAchievements.refreshing) "Looking…" else plural(known, "game"), SteamColor, Glyph.Refresh,
-                        "Ask Steam about every Steam game in your library now. Otherwise a game is looked up when you highlight it or come back from playing it.",
-                        keywords = "steam refresh achievements look up",
+                        Tx.s(R.string.accounts_steam_look_up),
+                        if (SteamAchievements.refreshing) Tx.s(R.string.accounts_steam_looking) else Tx.p(R.plurals.accounts_steam_games_count, known), SteamColor, Glyph.Refresh,
+                        Tx.s(R.string.accounts_steam_look_up_help),
+                        keywords = "steam refresh achievements look up", en = "Look up achievements",
                     ) { steamLookUp() },
                 )
                 add(
-                    SettingRow("Sign out", "", Palette.Peach, Glyph.Key, "Forget your Steam key and account on this device, and the achievements fetched for them.", keywords = "steam logout") {
+                    SettingRow(
+                        Tx.s(R.string.accounts_ra_sign_out), "", Palette.Peach, Glyph.Key, Tx.s(R.string.accounts_steam_sign_out_help),
+                        keywords = "steam logout", en = "Sign out",
+                    ) {
                         SteamAchievements.signOut()
                         steamVersion++
-                        Toasts.show("Signed out of Steam")
+                        Toasts.show(Tx.s(R.string.accounts_steam_signed_out))
                     },
                 )
             }
@@ -145,25 +150,25 @@ fun steamSettings(): SettingSection {
 
 /** Asks for the key; [then] runs once it is saved (the sign-in continues), else a toast says what's next. */
 fun steamAskKey(then: (() -> Unit)? = null) {
-    TextEntry.ask("Steam Web API key (steamcommunity.com/dev/apikey)", "", secret = true) { k ->
+    TextEntry.ask(Tx.s(R.string.accounts_steam_key_ask), "", secret = true) { k ->
         val key = k.trim()
         if (key.isEmpty()) return@ask
         SteamStore.update { it.copy(key = key) }
         steamVersion++
         if (then != null) then()
-        else Toasts.show(if (SteamStore.account.id.isBlank()) "Key saved. Now add your Steam account" else "Key saved")
+        else Toasts.show(Tx.s(if (SteamStore.account.id.isBlank()) R.string.accounts_steam_key_saved_next else R.string.accounts_steam_key_saved))
     }
 }
 
 /** Asks for the account (after the key, when there is none yet), checks it with Steam, then looks everything up. */
 fun steamSignIn() {
-    if (NetGate.closed) { Toasts.show("Private mode keeps Tandem offline. Turn it off to sign in"); return }
+    if (NetGate.closed) { Toasts.show(Tx.s(R.string.accounts_ra_offline)); return }
     val acc = SteamStore.account
     if (acc.key.isBlank()) { steamAskKey(then = ::steamSignIn); return }
-    TextEntry.ask("Your SteamID64, profile address or profile name", acc.id) { typed ->
+    TextEntry.ask(Tx.s(R.string.accounts_steam_account_ask), acc.id) { typed ->
         val input = SteamApi.parseAccount(typed)
-        if (input == null) { Toasts.show("That doesn't look like a Steam account. Try your SteamID64 or profile address"); return@ask }
-        Toasts.show("Asking Steam…")
+        if (input == null) { Toasts.show(Tx.s(R.string.accounts_steam_not_account)); return@ask }
+        Toasts.show(Tx.s(R.string.accounts_steam_asking))
         MainScope().launch {
             val key = SteamStore.account.key
             val id = withContext(Dispatchers.IO) {
@@ -171,19 +176,19 @@ fun steamSignIn() {
             }
             if (id == null) {
                 Sounds.error()
-                Toasts.show(if (input.vanity != null) "Steam knows no profile called “${input.vanity}”. Try your SteamID64" else "Couldn't reach Steam. Check the key and your connection")
+                Toasts.show(input.vanity?.let { Tx.s(R.string.accounts_steam_no_profile, it) } ?: Tx.s(R.string.accounts_steam_unreachable_key))
                 return@launch
             }
             val p = withContext(Dispatchers.IO) { runCatching { SteamApi.parseSummaries(Net.text(SteamApi.summariesUrl(key, id))) }.getOrNull() }
             if (p == null) {
                 Sounds.error()
-                Toasts.show("Steam didn't accept the key or the account. Check both and try again")
+                Toasts.show(Tx.s(R.string.accounts_steam_refused))
                 return@launch
             }
             SteamStore.update { it.copy(id = p.steamId, name = p.name, avatar = p.avatar) }
             steamVersion++
             Sounds.achievement()
-            Toasts.show("Signed in to Steam as ${p.name.ifBlank { p.steamId }} 🏆")
+            Toasts.show(Tx.s(R.string.accounts_steam_signed_in, p.name.ifBlank { p.steamId }))
             steamLookUp(quiet = true)
         }
     }
@@ -191,15 +196,17 @@ fun steamSignIn() {
 
 /** Look up achievements: the whole library, with a toast when it is done. */
 fun steamLookUp(quiet: Boolean = false) {
-    if (NetGate.closed) { Toasts.show("Private mode keeps Tandem offline"); return }
-    if (SteamAchievements.refreshing) { Toasts.show("Still looking…"); return }
-    if (!quiet) Toasts.show("Looking up your Steam achievements…")
+    if (NetGate.closed) { Toasts.show(Tx.s(R.string.accounts_steam_offline)); return }
+    if (SteamAchievements.refreshing) { Toasts.show(Tx.s(R.string.accounts_steam_still_looking)); return }
+    if (!quiet) Toasts.show(Tx.s(R.string.accounts_steam_looking_up))
     SteamAchievements.refreshAll { looked, unlocked, failed ->
         val text = when {
-            looked == 0 && failed == 0 -> "No Steam games in your library yet. Steam games are .steam shortcuts in ROMs/windows"
-            looked == 0 -> SteamAchievements.problem ?: "Couldn't reach Steam. Check the key and your connection"
-            else -> "Looked up ${plural(looked, "Steam game")}: ${plural(unlocked, "achievement")} unlocked" +
-                (if (failed > 0) " · ${plural(failed, "game")} couldn't be looked up" else "")
+            looked == 0 && failed == 0 -> Tx.s(R.string.accounts_steam_no_games)
+            looked == 0 -> SteamAchievements.problem ?: Tx.s(R.string.accounts_steam_unreachable_key)
+            else -> Tx.s(
+                R.string.accounts_steam_looked_up,
+                Tx.p(R.plurals.accounts_steam_looked_up_games, looked), Tx.p(R.plurals.accounts_steam_looked_up_achievements, unlocked),
+            ).let { if (failed > 0) Tx.p(R.plurals.accounts_steam_looked_up_failed, failed, it, failed) else it }
         }
         Toasts.show(text, 4500)
     }
@@ -225,7 +232,7 @@ fun SteamStrip(game: Game) {
         val p = record ?: return@AnimatedVisibility
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Pill("Steam", SteamColor)
+                Pill("Steam", SteamColor) // tx-ok: a name
                 Spacer(Modifier.width(8.dp))
                 Text("🏆 ${p.unlocked} / ${p.total}", style = MaterialTheme.typography.titleSmall, color = SteamColor, maxLines = 1)
                 Spacer(Modifier.width(10.dp))
@@ -233,7 +240,7 @@ fun SteamStrip(game: Game) {
                     Box(Modifier.fillMaxWidth(p.fraction).fillMaxHeight().clip(RoundedCornerShape(50)).background(SteamColor))
                 }
                 Spacer(Modifier.width(10.dp))
-                Text(if (p.unlocked == p.total) "All done ✨" else "${(p.fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = SteamColor, maxLines = 1)
+                Text(if (p.unlocked == p.total) Tx.s(R.string.accounts_steam_all_done) else "${(p.fraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, color = SteamColor, maxLines = 1)
             }
             Spacer(Modifier.height(6.dp))
             val shown = remember(p) { SteamApi.displayOrder(p.achievements).let { it.filter { a -> a.unlocked }.take(6) + it.filter { a -> !a.unlocked } }.take(9) }
@@ -284,8 +291,10 @@ fun SteamAchievementsPopup() {
     PanelGuard(g != null)
     InterceptButtons(g != null && TextEntry.request == null) { b ->
         if (b == Button.X) shown?.let { game ->
-            Toasts.show("Asking Steam again…")
-            SteamAchievements.lookUp(game) { r -> Toasts.show(if (r == null) (SteamAchievements.problem ?: "Couldn't reach Steam") else "Up to date: ${r.unlocked} of ${r.total} unlocked") }
+            Toasts.show(Tx.s(R.string.accounts_steam_asking_again))
+            SteamAchievements.lookUp(game) { r ->
+                Toasts.show(if (r == null) (SteamAchievements.problem ?: Tx.s(R.string.accounts_steam_unreachable)) else Tx.s(R.string.accounts_steam_up_to_date, r.unlocked, r.total))
+            }
         }
         true
     }
@@ -303,20 +312,20 @@ fun SteamAchievementsPopup() {
                     Text(record?.gameName?.ifBlank { null } ?: game.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
                         when {
-                            record == null -> "Asking Steam…"
-                            record.none -> "Steam lists no achievements for this game"
-                            else -> "${record.unlocked} of ${record.total} unlocked · last looked ${dateOf(record.fetchedAt)}"
+                            record == null -> Tx.s(R.string.accounts_steam_asking)
+                            record.none -> Tx.s(R.string.accounts_steam_none_listed)
+                            else -> Tx.s(R.string.accounts_steam_unlocked_looked, record.unlocked, record.total, dateOf(record.fetchedAt))
                         },
                         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 }
                 Spacer(Modifier.width(10.dp))
-                Pill("Steam", SteamColor)
+                Pill("Steam", SteamColor) // tx-ok: a name
             }
             Spacer(Modifier.height(10.dp))
             if (list.isEmpty()) {
-                if (record == null) PipNote("Fetching achievements…", "One moment.")
-                else PipNote("Nothing to unlock here", "Steam lists no achievements for this game.", mood = 2)
+                if (record == null) PipNote(Tx.s(R.string.accounts_steam_fetching), Tx.s(R.string.accounts_achievements_loading_text))
+                else PipNote(Tx.s(R.string.accounts_steam_nothing), Tx.s(R.string.accounts_steam_nothing_text), mood = 2)
             } else {
                 LazyColumn(
                     Modifier.weight(1f, fill = false).fadingEdges(state),
@@ -328,9 +337,9 @@ fun SteamAchievementsPopup() {
                 }
             }
             Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("A", "Details", Palette.Mint)
-                ButtonHint("X", "Look up again", SteamColor)
-                ButtonHint("B", "Close", Palette.Lavender)
+                ButtonHint("A", Tx.s(R.string.accounts_steam_details), Palette.Mint)
+                ButtonHint("X", Tx.s(R.string.accounts_steam_look_again), SteamColor)
+                ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
             }
         }
     }
@@ -341,14 +350,14 @@ fun SteamAchievementsPopup() {
 private fun SteamAchievementRow(a: SteamAchievement, modifier: Modifier) {
     val description = when {
         a.description.isNotBlank() -> a.description
-        a.hidden && !a.unlocked -> "Hidden until you unlock it"
+        a.hidden && !a.unlocked -> Tx.s(R.string.accounts_steam_hidden)
         else -> ""
     }
     val rarity = SteamApi.percentLabel(a.percent)
     FocusCard(
         modifier.fillMaxWidth().height(66.dp), glow = SteamColor, shape = RoundedCornerShape(16.dp),
         onFocus = { FocusMemory.remember(SteamUi.ROUTE, a.id) },
-        onClick = { Toasts.show(listOfNotNull(a.name, description.ifBlank { null }, rarity?.let { "$it of players have it" }).joinToString(". "), 4500) },
+        onClick = { Toasts.show(listOfNotNull(a.name, description.ifBlank { null }, rarity?.let { Tx.s(R.string.accounts_steam_players_have_it, it) }).joinToString(". "), 4500) },
     ) {
         Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             SteamIcon(a, 48.dp)
@@ -356,7 +365,11 @@ private fun SteamAchievementRow(a: SteamAchievement, modifier: Modifier) {
                 Text(a.name, style = MaterialTheme.typography.titleSmall, color = if (a.unlocked) Palette.Text else Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 if (description.isNotBlank()) Text(description, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    if (a.unlocked) "Unlocked" + (if (a.unlockedAt > 0) " · ${dateOf(a.unlockedAt)}" else "") else "Locked",
+                    when {
+                        !a.unlocked -> Tx.s(R.string.accounts_steam_locked)
+                        a.unlockedAt > 0 -> Tx.s(R.string.accounts_steam_unlocked_on, dateOf(a.unlockedAt))
+                        else -> Tx.s(R.string.accounts_steam_unlocked)
+                    },
                     style = MaterialTheme.typography.labelSmall, color = if (a.unlocked) SteamColor else Palette.Muted, maxLines = 1,
                 )
             }
@@ -369,7 +382,7 @@ private fun SteamAchievementRow(a: SteamAchievement, modifier: Modifier) {
 
 /** The Steam games with achievements, as Stats lists them: most unlocked first. A record whose file is gone has no game. */
 class SteamGameEntry(val game: Game?, val record: SteamGameAchievements) {
-    val title: String get() = record.gameName.ifBlank { game?.title ?: "Steam app ${record.appId}" }
+    val title: String get() = record.gameName.ifBlank { game?.title ?: Tx.s(R.string.accounts_steam_app, record.appId) }
 }
 
 /** Every known Steam game that may be shown, with its library game when there is one. */
@@ -398,7 +411,7 @@ fun steamRecentUnlocks(entries: List<SteamGameEntry>, days: Int = 30, now: Long 
                 key = "steam:${e.record.appId}/${a.id}",
                 title = a.name,
                 game = e.title,
-                line = listOfNotNull(SteamApi.percentLabel(a.percent)?.let { "$it of players" }, dateOf(a.unlockedAt)).joinToString(" · "),
+                line = listOfNotNull(SteamApi.percentLabel(a.percent)?.let { Tx.s(R.string.accounts_steam_of_players, it) }, dateOf(a.unlockedAt)).joinToString(" · "),
                 badge = a.icon,
                 at = a.unlockedAt,
                 steam = true,
@@ -425,23 +438,27 @@ fun SteamProfileCard(entries: List<SteamGameEntry>, modifier: Modifier, onFocus:
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(acc.name.ifBlank { acc.id }, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Spacer(Modifier.width(10.dp))
-                    Pill("Steam", SteamColor)
+                    Pill("Steam", SteamColor) // tx-ok: a name
                 }
                 Text(
                     when {
-                        SteamAchievements.refreshing -> "Looking up your games…"
+                        SteamAchievements.refreshing -> Tx.s(R.string.accounts_steam_looking_games)
                         SteamAchievements.problem != null -> SteamAchievements.problem!!
-                        entries.isEmpty() -> "No Steam games with achievements yet. A looks them up"
-                        else -> "$unlocked of $total achievements across ${plural(entries.size, "game")}" + (if (perfect > 0) " · ${plural(perfect, "game")} at 100%" else "") + ". A looks again"
+                        entries.isEmpty() -> Tx.s(R.string.accounts_steam_no_achievements)
+                        perfect > 0 -> Tx.s(
+                            R.string.accounts_steam_across_perfect, unlocked, total,
+                            Tx.p(R.plurals.accounts_steam_games_count, entries.size), Tx.p(R.plurals.accounts_steam_games_count, perfect),
+                        )
+                        else -> Tx.s(R.string.accounts_steam_across, unlocked, total, Tx.p(R.plurals.accounts_steam_games_count, entries.size))
                     },
                     style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
-                Pill("🏆 $unlocked unlocked", SteamColor)
+                Pill(Tx.p(R.plurals.accounts_steam_unlocked_pill, unlocked), SteamColor)
                 if (perfect > 0) {
                     Spacer(Modifier.height(4.dp))
-                    Pill("$perfect at 100%", Palette.Butter)
+                    Pill(Tx.p(R.plurals.accounts_steam_perfect_pill, perfect), Palette.Butter)
                 }
             }
         }
@@ -454,7 +471,7 @@ fun SteamGameCard(e: SteamGameEntry, modifier: Modifier, onFocus: () -> Unit) {
     val p = e.record
     FocusCard(
         modifier.fillMaxWidth().height(76.dp), glow = SteamColor, shape = RoundedCornerShape(16.dp), onFocus = onFocus,
-        onClick = { e.game?.let { SteamUi.openFor(it) } ?: Toasts.show("That game isn't in your library any more") },
+        onClick = { e.game?.let { SteamUi.openFor(it) } ?: Toasts.show(Tx.s(R.string.accounts_steam_not_in_library)) },
     ) {
         Row(Modifier.fillMaxSize().padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             val latest = remember(p) { p.achievements.filter { it.unlocked }.maxByOrNull { it.unlockedAt } ?: p.achievements.firstOrNull() }
@@ -462,7 +479,8 @@ fun SteamGameCard(e: SteamGameEntry, modifier: Modifier, onFocus: () -> Unit) {
             Column(Modifier.weight(1f).padding(start = 10.dp)) {
                 Text(e.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    "${p.unlocked} of ${p.total}" + (if (p.unlocked == p.total) " · All done ✨" else " · ${(p.fraction * 100).toInt()}%"),
+                    if (p.unlocked == p.total) Tx.s(R.string.accounts_steam_card_done, p.unlocked, p.total)
+                    else Tx.s(R.string.accounts_steam_card_progress, p.unlocked, p.total, (p.fraction * 100).toInt()),
                     style = MaterialTheme.typography.labelMedium, color = SteamColor, maxLines = 1,
                 )
                 Spacer(Modifier.height(5.dp))
@@ -483,7 +501,7 @@ fun SteamSignInButton(modifier: Modifier) {
         onClick = { steamSignIn() },
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Connect Steam", style = MaterialTheme.typography.titleSmall, color = SteamColor)
+            Text(Tx.s(R.string.accounts_steam_connect), style = MaterialTheme.typography.titleSmall, color = SteamColor)
         }
     }
 }

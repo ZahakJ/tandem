@@ -42,7 +42,20 @@ object PadPlan {
         data class Failed(val descriptor: String) : Event()
     }
 
-    data class Step(val state: State, val notice: String? = null)
+    /** What a step has to say. Plain data, so it is tested on the JVM; [text] is it in Tandem's language. */
+    sealed class Notice {
+        abstract val text: String
+
+        /** The pad in use went, or the built-in controls were picked. */
+        data object BuiltIn : Notice() { override val text: String get() = Tx.s(R.string.controls_padlink_builtin) }
+        data class Playing(val name: String) : Notice() { override val text: String get() = Tx.s(R.string.controls_padlink_playing, name) }
+        /** The helper couldn't take [name] (null: a pad no longer listed). */
+        data class Failed(val name: String?) : Notice() {
+            override val text: String get() = name?.let { Tx.s(R.string.controls_padlink_failed, it) } ?: Tx.s(R.string.controls_padlink_failed_unknown)
+        }
+    }
+
+    data class Step(val state: State, val notice: Notice? = null)
 
     /** The choice after [current] in Built-in, then each connected pad, round again. */
     fun next(state: State): String? {
@@ -54,7 +67,7 @@ object PadPlan {
         is Event.Devices -> devices(s, e)
         is Event.Choose -> {
             val pad = s.pad(e.descriptor)
-            if (pad == null) Step(s.copy(linked = null, offer = null, declined = s.declined + s.pads.map { it.descriptor }), if (s.linked != null) BUILT_IN else null)
+            if (pad == null) Step(s.copy(linked = null, offer = null, declined = s.declined + s.pads.map { it.descriptor }), if (s.linked != null) Notice.BuiltIn else null)
             else Step(s.copy(linked = pad.descriptor, offer = null, failed = s.failed - pad.descriptor), if (s.linked != pad.descriptor) playing(pad) else null)
         }
         Event.Accept -> {
@@ -63,11 +76,10 @@ object PadPlan {
             else Step(s.copy(linked = pad.descriptor, offer = null), playing(pad))
         }
         Event.Decline -> Step(s.copy(offer = null, declined = s.declined + listOfNotNull(s.offer)))
-        is Event.Gone -> if (s.linked != e.descriptor) Step(s) else Step(s.copy(linked = null), BUILT_IN)
+        is Event.Gone -> if (s.linked != e.descriptor) Step(s) else Step(s.copy(linked = null), Notice.BuiltIn)
         is Event.Failed -> {
-            val name = s.pad(e.descriptor)?.name ?: "the controller"
             if (s.linked != e.descriptor) Step(s.copy(failed = s.failed + e.descriptor))
-            else Step(s.copy(linked = null, failed = s.failed + e.descriptor), "Couldn't take over $name")
+            else Step(s.copy(linked = null, failed = s.failed + e.descriptor), Notice.Failed(s.pad(e.descriptor)?.name))
         }
     }
 
@@ -80,10 +92,10 @@ object PadPlan {
             declined = s.declined intersect now,
             failed = s.failed intersect now,
         )
-        var notice: String? = null
+        var notice: Notice? = null
         if (state.linked != null && state.linked !in now) {
             state = state.copy(linked = null)
-            notice = BUILT_IN
+            notice = Notice.BuiltIn
         }
         if (state.linked == null) {
             val free = { p: Pad -> p.descriptor !in state.declined && p.descriptor !in state.failed }
@@ -99,6 +111,5 @@ object PadPlan {
         return Step(state, notice)
     }
 
-    const val BUILT_IN = "Back to the built-in controls"
-    fun playing(pad: Pad) = "Playing with ${pad.name}"
+    private fun playing(pad: Pad) = Notice.Playing(pad.name)
 }

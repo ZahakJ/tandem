@@ -24,7 +24,7 @@ class PadPlanTest {
         val taken = run(Event.Accept, from = offered.state)
         assertEquals("x", taken.state.linked)
         assertNull(taken.state.offer)
-        assertEquals("Playing with Xbox Wireless Controller", taken.notice)
+        assertEquals(PadPlan.Notice.Playing("Xbox Wireless Controller"), taken.notice)
     }
 
     @Test fun aPadConnectedBeforeTheGameIsOfferedWhenTheGameStarts() {
@@ -52,11 +52,11 @@ class PadPlanTest {
         val playing = run(devices(), devices(xbox), Event.Accept).state
         val gone = run(devices(), from = playing)
         assertNull(gone.state.linked)
-        assertEquals(PadPlan.BUILT_IN, gone.notice)
+        assertEquals(PadPlan.Notice.BuiltIn, gone.notice)
         // The helper noticing first says the same; the device list catching up then changes nothing more.
         val early = run(Event.Gone("x"), from = playing)
         assertNull(early.state.linked)
-        assertEquals(PadPlan.BUILT_IN, early.notice)
+        assertEquals(PadPlan.Notice.BuiltIn, early.notice)
         assertNull(run(devices(), from = early.state).notice)
     }
 
@@ -64,7 +64,7 @@ class PadPlanTest {
         val auto = run(devices(auto = true, inGame = false), devices(xbox, auto = true, inGame = false))
         assertEquals("x", auto.state.linked)
         assertNull(auto.state.offer)
-        assertEquals("Playing with Xbox Wireless Controller", auto.notice)
+        assertEquals(PadPlan.Notice.Playing("Xbox Wireless Controller"), auto.notice)
         val both = run(devices(xbox, pro, auto = true), from = auto.state)
         assertEquals("x", both.state.linked)
         val next = run(devices(pro, auto = true), from = both.state)
@@ -84,7 +84,7 @@ class PadPlanTest {
         val auto = run(devices(xbox, auto = true)).state
         val failed = run(Event.Failed("x"), from = auto)
         assertNull(failed.state.linked)
-        assertEquals("Couldn't take over Xbox Wireless Controller", failed.notice)
+        assertEquals(PadPlan.Notice.Failed("Xbox Wireless Controller"), failed.notice)
         assertNull(run(devices(xbox, auto = true), from = failed.state).state.linked)
         // Picking it by hand tries again.
         assertEquals("x", run(Event.Choose("x"), from = failed.state).state.linked)

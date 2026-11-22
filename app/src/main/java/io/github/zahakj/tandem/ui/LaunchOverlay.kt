@@ -48,6 +48,8 @@ import io.github.zahakj.tandem.Emulators
 import io.github.zahakj.tandem.LaunchProblem
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Processes
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.SystemPrefs
 import kotlinx.coroutines.Dispatchers
@@ -206,8 +208,8 @@ private fun LaunchAnimation(launch: LaunchFx.Launch) {
             Text(game.title, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(6.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Pill(if (game.platform.isApps) "Android" else plan.spec.name, Palette.forName(game.platform.id))
-                if (bottom) Pill("Bottom screen ↓", Palette.Sky)
+                Pill(if (game.platform.isApps) "Android" else plan.spec.name, Palette.forName(game.platform.id)) // tx-ok: a name
+                if (bottom) Pill(Tx.s(R.string.play_launch_bottom), Palette.Sky)
             }
         }
     }
@@ -238,33 +240,39 @@ private fun ProblemPanel() {
                 Text(text.first, style = MaterialTheme.typography.titleLarge)
                 Text(text.second, style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
                 Spacer(Modifier.height(4.dp))
-                val actions = buildList<Pair<String, () -> Unit>> {
+                // Each with a key for focus (never the label, which is in the language of the moment).
+                val actions = buildList<Triple<String, String, () -> Unit>> {
+                    fun add(key: String, label: String, action: () -> Unit) = add(Triple(key, label, action))
                     when (p) {
                         is LaunchProblem.NoEmulator -> {
-                            p.suggested?.let { s -> add("Get ${s.name}" to { close(); if (!Emulators.openStore(ctx, s)) Toasts.show("Couldn't open a store for ${s.name}") }) }
-                            add("Systems" to { close(); Nav.go(Route.Systems) })
+                            p.suggested?.let { s ->
+                                add("get", Tx.s(R.string.play_problem_get, s.name)) {
+                                    close(); if (!Emulators.openStore(ctx, s)) Toasts.show(Tx.s(R.string.play_problem_no_store, s.name))
+                                }
+                            }
+                            add("systems", Tx.s(R.string.play_problem_systems)) { close(); Nav.go(Route.Systems) }
                         }
                         is LaunchProblem.WontOpen -> {
-                            if (game.platform.players.size > 1) add("Pick another emulator" to { close(); Nav.go(Route.Systems) })
-                            add("Update ${p.spec.name}" to { close(); Emulators.openStore(ctx, p.spec) })
+                            if (game.platform.players.size > 1) add("pick", Tx.s(R.string.play_problem_pick_other)) { close(); Nav.go(Route.Systems) }
+                            add("update", Tx.s(R.string.play_problem_update, p.spec.name)) { close(); Emulators.openStore(ctx, p.spec) }
                         }
-                        is LaunchProblem.FileMissing -> add("Rescan" to { close(); scope.launch { reloadLibrary(ctx, announce = true) } })
-                        is LaunchProblem.AppMissing -> add("Hide it" to {
-                            close(); Store.update(game.key) { it.copy(hidden = true) }; Toasts.show("Hidden from Android Games")
-                        })
+                        is LaunchProblem.FileMissing -> add("rescan", Tx.s(R.string.play_problem_rescan)) { close(); scope.launch { reloadLibrary(ctx, announce = true) } }
+                        is LaunchProblem.AppMissing -> add("hide", Tx.s(R.string.play_problem_hide)) {
+                            close(); Store.update(game.key) { it.copy(hidden = true) }; Toasts.show(Tx.s(R.string.play_problem_hidden))
+                        }
                         is LaunchProblem.BadShortcut -> {}
-                        is LaunchProblem.NotOffline -> add("Start anyway" to {
+                        is LaunchProblem.NotOffline -> add("anyway", Tx.s(R.string.play_problem_start_anyway)) {
                             close(); io.github.zahakj.tandem.Offline.allowOnce(game); LaunchFx.play(ctx, p.plan)
-                        })
+                        }
                     }
-                    add("OK" to close)
+                    add("ok", Tx.s(R.string.play_problem_ok), close)
                 }
                 // Wraps onto a second line rather than running off the panel with long emulator names.
                 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
                 androidx.compose.foundation.layout.FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    actions.forEachIndexed { i, (label, action) ->
+                    actions.forEachIndexed { i, (key, label, action) ->
                         FocusCard(
-                            Modifier.takesFocus("problem:${game.key}", label, i == 0),
+                            Modifier.takesFocus("problem:${game.key}", key, i == 0),
                             glow = if (i == 0) Palette.Mint else Palette.Lavender, shape = RoundedCornerShape(14.dp), onClick = action,
                         ) {
                             Text(label, Modifier.padding(horizontal = 14.dp, vertical = 9.dp), style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
@@ -282,19 +290,17 @@ private fun describe(p: LaunchProblem): Pair<String, String> {
     val system = game.platform.name
     return when (p) {
         is LaunchProblem.NoEmulator -> if (p.suggested != null) {
-            "${p.suggested.name} isn't installed" to "I play $system games with ${p.suggested.name}. Get it, open it once to set it up, then press A on ${game.title} again."
+            Tx.s(R.string.play_problem_not_installed, p.suggested.name) to Tx.s(R.string.play_problem_not_installed_text, p.suggested.name, system, game.title)
         } else {
-            "No emulator for $system yet" to "Add one in ROMs/tandem/platforms.json, or drop a Cocoon platform file into ROMs/platforms."
+            Tx.s(R.string.play_problem_no_emulator, system) to Tx.s(R.string.play_problem_no_emulator_text)
         }
         is LaunchProblem.WontOpen ->
-            "${p.spec.name} didn't open" to ("It's installed, but wouldn't take ${game.title}. It may need an update, or a different emulator may work better." +
-                (p.detail?.let { "\n($it)" } ?: ""))
-        is LaunchProblem.FileMissing -> "I can't find this game" to "${game.file.name} was moved or deleted. A rescan will tidy up the list."
-        is LaunchProblem.BadShortcut -> "This shortcut needs a game id" to
-            "${game.file.name}: ${p.detail}. Vita .dpt files need a line like \"[vita_game_id] PCSA00011\"; Windows .pcgame files hold the GameNative app id."
-        is LaunchProblem.AppMissing -> "${game.title} isn't installed anymore" to "Reinstall it from its store, or hide it from Android Games."
+            Tx.s(R.string.play_problem_wont_open, p.spec.name) to
+                (p.detail?.let { Tx.s(R.string.play_problem_wont_open_detail, game.title, it) } ?: Tx.s(R.string.play_problem_wont_open_text, game.title))
+        is LaunchProblem.FileMissing -> Tx.s(R.string.play_problem_missing) to Tx.s(R.string.play_problem_missing_text, game.file.name)
+        is LaunchProblem.BadShortcut -> Tx.s(R.string.play_problem_shortcut) to Tx.s(R.string.play_problem_shortcut_text, game.file.name, p.detail.toString())
+        is LaunchProblem.AppMissing -> Tx.s(R.string.play_problem_app_missing, game.title) to Tx.s(R.string.play_problem_app_missing_text)
         // Names nothing: this shows while a hidden game is being started.
-        is LaunchProblem.NotOffline -> "Couldn't go offline, game not started" to
-            "Airplane mode didn't go on, so nothing was started. Check that Shizuku is running, or start it anyway."
+        is LaunchProblem.NotOffline -> Tx.s(R.string.play_problem_not_offline) to Tx.s(R.string.play_problem_not_offline_text)
     }
 }

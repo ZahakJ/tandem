@@ -149,7 +149,7 @@ object DeckLayouts {
     const val TOGGLE_NUMPAD = -10
     const val TOGGLE_FN = -11
 
-    /** Settings' choices for the layout the Deck opens with. */
+    /** Settings' choices for the layout the Deck opens with, by their English names (DeckPanel shows them translated). */
     val choices = listOf(FULL to "Full keyboard", GAME to "Game keys")
 
     /** Every row of the full keyboard is this wide, in key units, so the rows line up. */
@@ -186,7 +186,7 @@ object DeckLayouts {
         listOf(tab) + letters("qwertyuiop") + listOf(k("[", DeckCodes.LEFT_BRACKET, shifted = "{"), k("]", DeckCodes.RIGHT_BRACKET, shifted = "}"), k("\\", DeckCodes.BACKSLASH, shifted = "|")),
         listOf(esc.copy(width = 1.5f)) + letters("asdfghjkl") + listOf(k(";", DeckCodes.SEMICOLON, shifted = ":"), k("'", DeckCodes.APOSTROPHE, shifted = "\""), enter),
         listOf(shift) + letters("zxcvbnm") + listOf(k(",", DeckCodes.COMMA, shifted = "<"), k(".", DeckCodes.PERIOD, shifted = ">"), k("/", DeckCodes.SLASH, shifted = "?"), up, k("Del", DeckCodes.FORWARD_DEL, 1.5f)),
-        listOf(ctrl, alt, space, toggle("Fn", TOGGLE_FN), toggle("123", TOGGLE_NUMPAD), left, down, right),
+        listOf(ctrl, alt, space, toggle("Fn", TOGGLE_FN), toggle("123", TOGGLE_NUMPAD), left, down, right), // tx-ok: key caps, as on a US PC keyboard
     )
 
     /**
@@ -199,7 +199,7 @@ object DeckLayouts {
             listOf(tab, k("Ins", DeckCodes.INSERT, 1.5f), k("Home", DeckCodes.MOVE_HOME, 1.5f), k("PgUp", DeckCodes.PAGE_UP, 1.5f), gap(0.5f), n(7), n(8), n(9), k("/", DeckCodes.NUMPAD_DIVIDE, 1.5f), gap(0.5f), k("Num", DeckCodes.NUM_LOCK, 1.5f)),
             listOf(esc.copy(width = 1.5f), k("Del", DeckCodes.FORWARD_DEL, 1.5f), k("End", DeckCodes.MOVE_END, 1.5f), k("PgDn", DeckCodes.PAGE_DOWN, 1.5f), gap(0.5f), n(4), n(5), n(6), k("*", DeckCodes.NUMPAD_MULTIPLY, 1.5f), gap(0.5f), k("Caps", DeckCodes.CAPS_LOCK, 1.5f)),
             listOf(shift.copy(width = 1.5f), space.copy(width = 4.5f), gap(0.5f), n(1), n(2), n(3), k("-", DeckCodes.NUMPAD_SUBTRACT, 1.5f), gap(0.5f), up, gap(0.5f)),
-            listOf(ctrl, alt, toggle("Fn", TOGGLE_FN), toggle("abc", TOGGLE_NUMPAD), gap(0.5f), k("0", DeckCodes.numpad(0), 1.5f), k(".", DeckCodes.NUMPAD_DOT, 1.5f), k("+", DeckCodes.NUMPAD_ADD, 1.5f), k("Enter", DeckCodes.NUMPAD_ENTER, 1.5f), left, down, right),
+            listOf(ctrl, alt, toggle("Fn", TOGGLE_FN), toggle("abc", TOGGLE_NUMPAD), gap(0.5f), k("0", DeckCodes.numpad(0), 1.5f), k(".", DeckCodes.NUMPAD_DOT, 1.5f), k("+", DeckCodes.NUMPAD_ADD, 1.5f), k("Enter", DeckCodes.NUMPAD_ENTER, 1.5f), left, down, right), // tx-ok: key caps
         )
     }
 

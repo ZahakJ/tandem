@@ -47,24 +47,29 @@ object CloseCheck {
      */
     data class Entry(val title: String?, val appName: String, val hidden: Boolean)
 
-    /** How [e] is named. A hidden game is never named, nor is its emulator. */
-    fun name(e: Entry): String = when {
-        e.hidden -> "A hidden game"
-        else -> e.title ?: e.appName
+    /** The name [e] may be shown by, or null: a hidden game is never named, nor is its emulator. */
+    fun shownName(e: Entry): String? = if (e.hidden) null else e.title ?: e.appName
+
+    /** How [e] is named in words ("A hidden game" when it may not be). */
+    fun name(e: Entry): String = shownName(e) ?: Tx.s(R.string.play_close_hidden_game)
+
+    /** Whom the question is about: one game (by [shownName]) or how many. Plain data, tested without Android. */
+    sealed class Who {
+        data class One(val name: String?) : Who()
+        data class Many(val count: Int) : Who()
+    }
+
+    fun who(closing: List<Entry>): Who {
+        require(closing.isNotEmpty())
+        return if (closing.size == 1) Who.One(shownName(closing[0])) else Who.Many(closing.size)
     }
 
     /** The question's title and explanation, for [closing] (not empty) when starting [starting]. */
-    fun headline(closing: List<Entry>, starting: String): Pair<String, String> {
-        require(closing.isNotEmpty())
-        return if (closing.size == 1) {
-            "${name(closing[0])} is still running" to
-                "Starting $starting will close it. Anything you haven't saved there will be lost."
-        } else {
-            "${closing.size} games are still running" to
-                "Starting $starting will close them all. Anything you haven't saved in them will be lost."
-        }
+    fun headline(closing: List<Entry>, starting: String): Pair<String, String> = when (val w = who(closing)) {
+        is Who.One -> Tx.s(R.string.play_close_one, w.name ?: Tx.s(R.string.play_close_hidden_game)) to Tx.s(R.string.play_close_one_text, starting)
+        is Who.Many -> Tx.p(R.plurals.play_close_many, w.count) to Tx.s(R.string.play_close_many_text, starting)
     }
 
     /** The safe button's label: resumes [first], the one most in the way. */
-    fun resumeLabel(first: Entry): String = if (first.hidden) "Resume it" else "Resume ${first.title ?: first.appName}"
+    fun resumeLabel(first: Entry): String = shownName(first)?.let { Tx.s(R.string.play_close_resume, it) } ?: Tx.s(R.string.play_close_resume_it)
 }

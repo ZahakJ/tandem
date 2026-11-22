@@ -68,7 +68,7 @@ object Launcher {
                     }
                     when {
                         closing == null -> {
-                            if (!toldCantSee) { toldCantSee = true; io.github.zahakj.tandem.ui.Toasts.show("Can't check for running games without Shizuku") }
+                            if (!toldCantSee) { toldCantSee = true; io.github.zahakj.tandem.ui.Toasts.show(Tx.s(R.string.play_cant_see_running)) }
                             proceed(ctx, p)
                         }
                         closing.isEmpty() -> proceed(ctx, p)

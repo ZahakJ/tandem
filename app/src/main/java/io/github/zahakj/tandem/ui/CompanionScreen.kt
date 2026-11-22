@@ -88,9 +88,11 @@ import io.github.zahakj.tandem.GameScreens
 import io.github.zahakj.tandem.Performance
 import io.github.zahakj.tandem.PerformancePlan
 import io.github.zahakj.tandem.GameCompanion
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.ScreenOff
 import io.github.zahakj.tandem.Shell
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.Dispatchers
@@ -301,7 +303,7 @@ private fun rememberTick(dim: Boolean, resumed: Boolean): State<Long> =
 /** "0:12:34" while bright; "12 min" while dimmed, when it only changes once a minute. */
 private fun sessionText(ms: Long, seconds: Boolean): String {
     val s = (ms / 1000).coerceAtLeast(0)
-    if (!seconds) return formatPlayLong(s).let { if (s < 60) "just started" else it }
+    if (!seconds) return formatPlayLong(s).let { if (s < 60) Tx.s(R.string.screens_comp_just_started) else it }
     return "%d:%02d:%02d".format(s / 3600, (s / 60) % 60, s % 60)
 }
 
@@ -401,12 +403,12 @@ private fun ArtFace(
                 val now by rememberTick(dim, resumed)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     if (info.system.isNotEmpty()) Pill(info.system, androidx.compose.ui.graphics.lerp(tint, Color.White, 0.35f), Modifier.darkChip())
-                    Pill("Playing " + sessionText(now - info.start + info.earlier, seconds = !dim), Palette.Mint, Modifier.darkChip())
+                    Pill(Tx.s(R.string.screens_comp_playing, sessionText(now - info.start + info.earlier, seconds = !dim)), Palette.Mint, Modifier.darkChip())
                 }
                 // Always a line here, so every game's screen has the same shape.
                 val total = totalSeconds(info, now)
                 Text(
-                    if (total >= 60) "${formatPlayLong(total)} in total" else "First time playing",
+                    if (total >= 60) Tx.s(R.string.screens_comp_in_total, formatPlayLong(total)) else Tx.s(R.string.screens_comp_first_time),
                     style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White.copy(alpha = 0.78f), maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 // The AYN modes this game plays with (Performance.kt), when a profile set any.
@@ -422,11 +424,11 @@ private fun ArtFace(
                 Modifier.fillMaxWidth().padding(14.dp).graphicsLayer { alpha = stage(intro.value, 0.55f, 1f) },
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                SmallChip("Back to Tandem", Palette.Mint) { GameCompanion.backToTandem(activity) }
-                SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
+                SmallChip(Tx.s(R.string.screens_comp_back), Palette.Mint) { GameCompanion.backToTandem(activity) }
+                SmallChip(Tx.s(R.string.screens_comp_screenshot), Palette.Butter) { activity.screenshot() }
                 ClipChip(activity)
-                SmallChip("Notes", Palette.Sky) { CompanionNotes.show(info.key) }
-                SmallChip("Companion", Palette.Lavender) { activity.switchMode() }
+                SmallChip(Tx.s(R.string.screens_comp_notes), Palette.Sky) { CompanionNotes.show(info.key) }
+                SmallChip(Tx.s(R.string.screens_comp_companion), Palette.Lavender) { activity.switchMode() }
             }
             // The Deck, the game's own second screen and its manual, bottom right, clear of the logo and pills on the left.
             Column(Modifier.align(Alignment.BottomEnd).padding(14.dp), horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -442,7 +444,7 @@ private fun ArtFace(
 @Composable
 private fun DeckChip(info: CompanionInfo, activity: CompanionActivity) {
     if (!DeckGames.suits(info.systemId, info.pkg)) return
-    SmallChip("Deck", Palette.Sky) { activity.setMode(GameCompanion.DECK) }
+    SmallChip(Tx.s(R.string.controls_deck), Palette.Sky) { activity.setMode(GameCompanion.DECK) }
 }
 
 /** The art fading into the deepened colour behind it towards the lower left (wide screens) or the bottom. */
@@ -475,7 +477,7 @@ private fun SmallChip(text: String, color: Color, onTap: () -> Unit) {
 private fun GameScreenChip(activity: CompanionActivity, modifier: Modifier = Modifier) {
     // The game's own second screen (GameScreens.kt): offered while it is ready and not already up.
     if (!GameScreens.available || GameScreens.shown) return
-    Box(modifier) { SmallChip("Game screen", Palette.Mint) { GameScreens.show(activity) } }
+    Box(modifier) { SmallChip(Tx.s(R.string.screens_comp_game_screen), Palette.Mint) { GameScreens.show(activity) } }
 }
 
 /** The game's manual (Manuals.kt), read here on the bottom screen; offered only when the game has one. */
@@ -483,7 +485,7 @@ private fun GameScreenChip(activity: CompanionActivity, modifier: Modifier = Mod
 private fun ManualChip(info: CompanionInfo, modifier: Modifier = Modifier) {
     val has = remember(info.key, info.manual) { info.manual != null || io.github.zahakj.tandem.Manuals.forKey(info.key) != null }
     if (!has) return
-    Box(modifier) { SmallChip("Manual", Palette.Butter) { CompanionManual.show(info.key) } }
+    Box(modifier) { SmallChip(Tx.s(R.string.screens_comp_manual), Palette.Butter) { CompanionManual.show(info.key) } }
 }
 
 @Composable
@@ -496,18 +498,18 @@ private fun ClipChip(activity: CompanionActivity) {
         }
         value = 0
     }
-    if (ends == 0L) SmallChip("Clip", Palette.Peach) { activity.clip() }
-    else SmallChip("Stop clip · ${left}s", Palette.Peach) { activity.clip() }
+    if (ends == 0L) SmallChip(Tx.s(R.string.screens_comp_clip), Palette.Peach) { activity.clip() }
+    else SmallChip(Tx.s(R.string.screens_comp_stop_clip, left.toInt()), Palette.Peach) { activity.clip() }
 }
 
 // ---- Tandem companion ----
 
 /** Session milestones Pip cheers for, in minutes, with what it says. */
 private fun milestoneLine(minutes: Long): String? = when {
-    minutes >= 240 -> "${minutes / 60} hours! A legendary run"
-    minutes >= 120 -> "${minutes / 60} hours in. Water and a stretch?"
-    minutes >= 60 -> "An hour already! Having fun?"
-    minutes >= 30 -> "Half an hour in. Nice rhythm!"
+    minutes >= 240 -> (minutes / 60).toInt().let { Tx.p(R.plurals.screens_comp_legendary, it) }
+    minutes >= 120 -> (minutes / 60).toInt().let { Tx.p(R.plurals.screens_comp_stretch, it) }
+    minutes >= 60 -> Tx.s(R.string.screens_comp_hour)
+    minutes >= 30 -> Tx.s(R.string.screens_comp_half_hour)
     else -> null
 }
 
@@ -554,13 +556,13 @@ private fun CompanionFace(
                 )
             }
             val (level, charging) = battery
-            if (level >= 0) Pill((if (charging) "Charging " else "") + "$level%", if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
+            if (level >= 0) Pill(Tx.s(if (charging) R.string.screens_comp_charging else R.string.common_percent, level), if (level <= 20 && !charging) Palette.Peach else Palette.Mint)
             Spacer(Modifier.width(10.dp))
-            SmallChip("Screenshot", Palette.Butter) { activity.screenshot() }
+            SmallChip(Tx.s(R.string.screens_comp_screenshot), Palette.Butter) { activity.screenshot() }
             Spacer(Modifier.width(8.dp))
             ClipChip(activity)
             Spacer(Modifier.width(8.dp))
-            SmallChip("Notes", Palette.Sky) { CompanionNotes.show(info.key) }
+            SmallChip(Tx.s(R.string.screens_comp_notes), Palette.Sky) { CompanionNotes.show(info.key) }
         }
         // Pip, playing along, and the game.
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -568,11 +570,11 @@ private fun CompanionFace(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(info.title, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    listOf(info.system, "Playing " + sessionText(now - info.start + info.earlier, seconds = !dim)).filter { it.isNotEmpty() }.joinToString(" · "),
+                    listOf(info.system, Tx.s(R.string.screens_comp_playing, sessionText(now - info.start + info.earlier, seconds = !dim))).filter { it.isNotEmpty() }.joinToString(" · "),
                     style = MaterialTheme.typography.titleSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 val total = totalSeconds(info, now)
-                if (total >= 60) Text("${formatPlayLong(total)} in total", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+                if (total >= 60) Text(Tx.s(R.string.screens_comp_in_total, formatPlayLong(total)), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                 PerformancePlan.label(Performance.active)?.let {
                     Text(it, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
@@ -606,10 +608,10 @@ private fun LeaveRow(info: CompanionInfo) {
         var confirmClose by remember { mutableStateOf(false) }
         LaunchedEffect(confirmClose) { if (confirmClose) { delay(3500); confirmClose = false } }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            BigButton("Back to Tandem", Palette.Mint) { GameCompanion.backToTandem(activity) }
-            BigButton("Game art", Palette.Lavender) { activity.switchMode() }
+            BigButton(Tx.s(R.string.screens_comp_back), Palette.Mint) { GameCompanion.backToTandem(activity) }
+            BigButton(Tx.s(R.string.screens_comp_game_art), Palette.Lavender) { activity.switchMode() }
             if (canClose) {
-                BigButton(if (confirmClose) "Tap to close" else "Close game", Palette.Peach) {
+                BigButton(Tx.s(if (confirmClose) R.string.screens_comp_tap_to_close else R.string.screens_comp_close_game), Palette.Peach) {
                     if (!confirmClose) { confirmClose = true; return@BigButton }
                     val pkg = info.pkg ?: return@BigButton
                     scope.launch {
@@ -686,10 +688,10 @@ private fun Toggles() {
     fun io(work: () -> Unit) = scope.launch { withContext(Dispatchers.IO) { runCatching(work) }; tick++ }
     val (bright, volume, wifi) = state
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Stepper("Light", if (bright >= 0) "${bright * 100 / SystemControls.BRIGHT_STEPS}%" else "–", Palette.Butter, enabled = bright >= 0) { by ->
+        Stepper(Tx.s(R.string.screens_comp_light), if (bright >= 0) Tx.s(R.string.common_percent, bright * 100 / SystemControls.BRIGHT_STEPS) else "–", Palette.Butter, enabled = bright >= 0) { by ->
             io { SystemControls.setBrightnessLevel(activity, bright + by * 2) }
         }
-        Stepper("Volume", if (volume >= 0) "$volume" else "–", Palette.Sky, enabled = volume >= 0) { by ->
+        Stepper(Tx.s(R.string.screens_comp_volume), if (volume >= 0) "$volume" else "–", Palette.Sky, enabled = volume >= 0) { by ->
             io { SystemControls.setVolume(activity, volume + by) }
         }
         Box(
@@ -707,7 +709,7 @@ private fun Toggles() {
                     }
                 },
             contentAlignment = Alignment.Center,
-        ) { Text(if (wifi) "Wi-Fi on" else "Wi-Fi off", style = MaterialTheme.typography.labelLarge, color = if (wifi) Palette.Mint else Palette.Muted, maxLines = 1) }
+        ) { Text(Tx.s(if (wifi) R.string.screens_comp_wifi_on else R.string.screens_comp_wifi_off), style = MaterialTheme.typography.labelLarge, color = if (wifi) Palette.Mint else Palette.Muted, maxLines = 1) }
     }
 }
 

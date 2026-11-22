@@ -153,8 +153,8 @@ object PeanutsNative {
             val (ok, why) = answer ?: (true to "")
             Log.i("Tandem", "Peanuts build $id: $ok $why")
             io.github.zahakj.tandem.ui.Toasts.show(
-                if (ok) "Building ${game.title} natively. This takes 5 to 40 minutes; you can keep playing meanwhile"
-                else "Peanuts Native can't build this copy: ${why.substringBefore(':').ifEmpty { "see its app" }}",
+                if (ok) Tx.s(R.string.play_peanuts_building, game.title)
+                else Tx.s(R.string.play_peanuts_cant, why.substringBefore(':').ifEmpty { Tx.s(R.string.play_peanuts_see_app) }),
                 6000,
             )
             readAt = 0L

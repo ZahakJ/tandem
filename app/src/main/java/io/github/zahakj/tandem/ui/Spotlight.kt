@@ -372,7 +372,7 @@ private fun GameSpot(s: Spot, game: Game, shift: () -> Float, front: () -> Float
                 if (meta.favorite) Pill("♥", Palette.Peach, Modifier.darkChip())
                 GameExtrasBadges(game, Modifier.darkChip())
             }
-            val credits = remember(meta) { creditsLine(meta) }
+            val credits = remember(meta, Lang.revision.intValue) { creditsLine(meta) }
             if (credits != null) {
                 Text(
                     credits, Modifier.widthIn(max = textW).padding(top = 8.dp).riseIn(game.key, delayMs = 360, distance = 12.dp, fromScale = 0.97f),

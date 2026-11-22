@@ -42,7 +42,10 @@ import java.security.MessageDigest
 @Serializable
 data class Release(val version: String, val notes: String, val apkName: String, val apkUrl: String, val sumsUrl: String)
 
-/** Where an update stands. [Problem] is a short sentence for the user. */
+/**
+ * Where an update stands. [Problem] is a short sentence for the user, in the language it was made in until the next
+ * check or install replaces it.
+ */
 sealed interface UpdateState {
     data object Idle : UpdateState
     data object Checking : UpdateState
@@ -218,7 +221,7 @@ object Updates {
                 state = UpdateState.Idle
                 if (newer != null && !manual && prefs(app).getString(TOLD, null) != newer.version) {
                     prefs(app).edit().putString(TOLD, newer.version).apply()
-                    Toasts.show("Tandem ${newer.version} is out · open Start to update", 4500)
+                    Toasts.show(Tx.s(R.string.accounts_update_out_toast, newer.version), 4500)
                 }
             }) { t ->
                 Log.i("Tandem", "Update check failed: ${t.message}")
@@ -228,22 +231,23 @@ object Updates {
     }
 
     private fun problem(t: Throwable): String = when (t) {
-        is PrivateOffline -> "Offline in private mode"
-        is io.github.zahakj.tandem.data.HttpError -> "GitHub said ${t.code}"
-        is IOException -> "Couldn't reach GitHub"
-        else -> t.message ?: "That didn't work"
+        is PrivateOffline -> Tx.s(R.string.accounts_update_offline)
+        is io.github.zahakj.tandem.data.HttpError -> Tx.s(R.string.accounts_update_github_said, t.code)
+        is IOException -> Tx.s(R.string.accounts_update_unreachable)
+        else -> t.message ?: Tx.s(R.string.accounts_update_failed)
     }
 
     /** The row's words: this version and where the update stands. */
     fun statusLine(): String {
         val now = current
         return when (val s = state) {
-            UpdateState.Checking -> "$now · Checking…"
-            is UpdateState.Downloading -> "Downloading ${s.pct} %"
-            UpdateState.Verifying -> "Verifying"
-            UpdateState.Installing -> "Installing"
+            UpdateState.Checking -> Tx.s(R.string.accounts_update_checking, now)
+            is UpdateState.Downloading -> Tx.s(R.string.accounts_update_downloading, s.pct)
+            UpdateState.Verifying -> Tx.s(R.string.accounts_update_verifying)
+            UpdateState.Installing -> Tx.s(R.string.accounts_update_installing)
             is UpdateState.Problem -> s.text
-            UpdateState.Idle -> found?.let { "${it.version} available" } ?: if (checkedAt > 0) "$now · Up to date" else now
+            UpdateState.Idle -> found?.let { Tx.s(R.string.accounts_update_available, it.version) }
+                ?: if (checkedAt > 0) Tx.s(R.string.accounts_update_up_to_date, now) else now
         }
     }
 
@@ -260,7 +264,7 @@ object Updates {
         inBackground({
             outcome = runCatching { fetchAndInstall(app, rel) }.getOrElse { t ->
                 Log.w("Tandem", "Update failed", t)
-                if (t is IOException) problem(t) else t.message ?: "That didn't work"
+                if (t is IOException) problem(t) else t.message ?: Tx.s(R.string.accounts_update_failed)
             }
         }) {
             // Null: Android's installer has it now (its answer comes to UpdateInstallReceiver), or Tandem restarts.
@@ -320,22 +324,22 @@ object Updates {
      */
     private fun verify(ctx: Context, rel: Release, apk: File): String? {
         val sums = String(Net.bytes(rel.sumsUrl, maxBytes = 64 shl 10))
-        val want = Releases.sumFor(sums, rel.apkName) ?: return "SHA256SUMS doesn't list ${rel.apkName}"
+        val want = Releases.sumFor(sums, rel.apkName) ?: return Tx.s(R.string.accounts_update_not_listed, rel.apkName)
         val digest = MessageDigest.getInstance("SHA-256")
         apk.inputStream().use { input ->
             val buf = ByteArray(64 * 1024)
             while (true) { val n = input.read(buf); if (n < 0) break; digest.update(buf, 0, n) }
         }
-        if (digest.digest().joinToString("") { "%02x".format(it) } != want) return "Download damaged (checksum differs)"
+        if (digest.digest().joinToString("") { "%02x".format(it) } != want) return Tx.s(R.string.accounts_update_damaged)
         val pm = ctx.packageManager
-        val theirs = pm.getPackageArchiveInfo(apk.path, PackageManager.GET_SIGNING_CERTIFICATES) ?: return "Not a readable APK"
+        val theirs = pm.getPackageArchiveInfo(apk.path, PackageManager.GET_SIGNING_CERTIFICATES) ?: return Tx.s(R.string.accounts_update_unreadable)
         val mine = pm.getPackageInfo(ctx.packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-        if (theirs.packageName != ctx.packageName) return "Not a Tandem APK"
-        if (theirs.longVersionCode <= mine.longVersionCode) return "Not newer than this Tandem"
+        if (theirs.packageName != ctx.packageName) return Tx.s(R.string.accounts_update_not_tandem)
+        if (theirs.longVersionCode <= mine.longVersionCode) return Tx.s(R.string.accounts_update_not_newer)
         val history = theirs.signingInfo?.signingCertificateHistory.orEmpty().map { Releases.sha256(it.toByteArray()) }.toSet()
         if (!Releases.sameSigner(signers(mine), signers(theirs), history)) {
             // A debug build has the debug key: the release can't replace it. Install it by hand after uninstalling.
-            return if (BuildConfig.DEBUG) "Can't install over a debug build" else "Not signed with Tandem's key: not installed"
+            return Tx.s(if (BuildConfig.DEBUG) R.string.accounts_update_debug_build else R.string.accounts_update_wrong_key)
         }
         return null
     }
@@ -397,9 +401,9 @@ class UpdateInstallReceiver : BroadcastReceiver() {
         when (val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)) {
             PackageInstaller.STATUS_PENDING_USER_ACTION -> {
                 @Suppress("DEPRECATION")
-                val confirm = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT) ?: return Updates.failed("Android didn't ask to install")
+                val confirm = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT) ?: return Updates.failed(Tx.s(R.string.accounts_update_no_question))
                 runCatching { context.startActivity(confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
-                    .onFailure { Updates.failed("Couldn't open Android's installer") }
+                    .onFailure { Updates.failed(Tx.s(R.string.accounts_update_no_installer)) }
             }
             // Tandem is replaced and restarts; nothing to do.
             PackageInstaller.STATUS_SUCCESS -> Unit
@@ -407,7 +411,7 @@ class UpdateInstallReceiver : BroadcastReceiver() {
             else -> {
                 val msg = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
                 Log.w("Tandem", "Update install failed ($status): $msg")
-                Updates.failed(if (status == PackageInstaller.STATUS_FAILURE_STORAGE) "Not enough space to install" else "Android didn't install it")
+                Updates.failed(Tx.s(if (status == PackageInstaller.STATUS_FAILURE_STORAGE) R.string.accounts_update_no_space else R.string.accounts_update_not_installed))
             }
         }
     }

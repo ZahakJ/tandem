@@ -207,16 +207,44 @@ object SteamApi {
     /** "2.3 %", "41 %" or "under 1 %"; null when the share isn't known. */
     fun percentLabel(percent: Float): String? = when {
         percent < 0f -> null
-        percent < 1f -> "under 1 %"
-        percent < 10f -> String.format(Locale.US, "%.1f %%", percent)
-        else -> "${percent.toInt()} %"
+        percent < 1f -> Tx.s(R.string.accounts_steam_under_1)
+        else -> Tx.s(R.string.accounts_steam_percent, percentNumber(percent)!!)
+    }
+
+    /** The number in [percentLabel] from 1 % up: "2.3", "41"; null below 1 % and when the share isn't known. */
+    fun percentNumber(percent: Float): String? = when {
+        percent < 1f -> null
+        percent < 10f -> String.format(Locale.US, "%.1f", percent)
+        else -> "${percent.toInt()}"
     }
 
     /** True for the ones few players have: worth a word when unlocked. */
     fun rare(percent: Float): Boolean = percent in 0f..10f
 
-    /** A toast: what it says and the achievement's icon, when it has one. */
-    data class Toast(val text: String, val icon: String?)
+    /** A toast: what it says ([text], made when shown) and the achievement's icon, when it has one. */
+    sealed class Toast {
+        abstract val icon: String?
+        abstract val text: String
+
+        /** One unlock: its [name], the share of players who have it (-1: unknown) and the game it is in. */
+        data class Unlocked(val name: String, val percent: Float, val gameName: String, override val icon: String?) : Toast() {
+            override val text: String get() {
+                val rarity = percentLabel(percent)
+                return when {
+                    rarity == null -> if (gameName.isNotBlank()) Tx.s(R.string.accounts_steam_got_in, name, gameName) else Tx.s(R.string.accounts_steam_got_plain, name)
+                    rare(percent) -> Tx.s(R.string.accounts_steam_got_rare, name, rarity)
+                    else -> Tx.s(R.string.accounts_steam_got, name, rarity)
+                }
+            }
+        }
+
+        /** The [count] unlocks after the first few, together. */
+        data class More(val count: Int, val gameName: String) : Toast() {
+            override val icon: String? get() = null
+            override val text: String get() =
+                if (gameName.isNotBlank()) Tx.p(R.plurals.accounts_steam_more_in, count, count, gameName) else Tx.p(R.plurals.accounts_steam_more, count)
+        }
+    }
 
     /**
      * What Pip says when [unlocks] arrived during a session of [gameName]: one toast for each of the first [max],
@@ -224,22 +252,11 @@ object SteamApi {
      */
     fun announcement(gameName: String, unlocks: List<SteamAchievement>, max: Int = 3): List<Toast> {
         if (unlocks.isEmpty()) return emptyList()
-        val shown = unlocks.take(max).map { a ->
-            val rarity = percentLabel(a.percent)
-            val tail = when {
-                rarity == null -> if (gameName.isNotBlank()) "In $gameName." else ""
-                rare(a.percent) -> "Only $rarity of players have it!"
-                else -> "$rarity of players have it."
-            }
-            Toast(("You got “${a.name}”! $tail").trim(), a.icon.ifBlank { null })
-        }
+        val shown = unlocks.take(max).map { a -> Toast.Unlocked(a.name, a.percent, gameName, a.icon.ifBlank { null }) }
         val rest = unlocks.size - shown.size
         if (rest <= 0) return shown
-        val where = if (gameName.isNotBlank()) " in $gameName" else ""
-        return shown + Toast("…and ${plural(rest, "more achievement")}$where. What a session!", null)
+        return shown + Toast.More(rest, gameName)
     }
-
-    private fun plural(n: Int, word: String): String = if (n == 1) "1 $word" else "$n ${word}s"
 
     /**
      * The Steam app id a library file stands for: a `.steam` or `.steamappid` shortcut's first line (a bare number,
