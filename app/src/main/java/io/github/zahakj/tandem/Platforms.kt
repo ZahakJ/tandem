@@ -66,14 +66,18 @@ data class Platform(
 
     /** The emulator for [game]: its own choice if that is installed (and takes this file), else the system default. */
     fun playerFor(game: Game): LaunchSpec? {
-        val ps = playersFor(game.file.name, players)
+        val ps = playersFor(game, players)
         // A Switch game Peanuts Native has built plays natively; one it hasn't built never goes there.
         PeanutsNative.playerFor(game, ps)?.let { return it }
-        // A game of DroidDeck's library starts in DroidDeck.
-        DroidDeck.playerFor(game, ps)?.let { return it }
+        // A game of DroidDeck's or GameNative's library starts in the app that has it.
+        AppLibraries.playerFor(game, ps)?.let { return it }
         val usable = ps.filter { !PeanutsNative.isPeanuts(it.packageName) || PeanutsNative.of(game, it.packageName)?.state == "ready" }
         return usable.firstOrNull { it.name == game.meta.emulator } ?: usable.firstOrNull()
     }
+
+    /** The players for [game], out of [all]: the ones that open its file, and for an app's game the apps that have it. */
+    fun playersFor(game: Game, all: List<LaunchSpec> = players): List<LaunchSpec> =
+        AppLibraries.playersFor(game, playersFor(game.file.name, all))
 
     /**
      * The players that open [fileName], out of [all]. A file a player [LaunchSpec.owns] (a streamed game's .moonlight)
@@ -87,8 +91,11 @@ data class Platform(
     }
 }
 
-/** A typed intent extra from platforms.json. [values] hold templates like "{file.id}". */
-data class Extra(val type: String, val values: List<String>)
+/**
+ * A typed intent extra from platforms.json. [values] hold templates like "{file.id}". An [optional] one is left out
+ * when it comes out empty or names a tag the file doesn't have (`{tags.x}` then doesn't stand in the file's id).
+ */
+data class Extra(val type: String, val values: List<String>, val optional: Boolean = false)
 
 /** Changes to a [LaunchSpec] for one kind of file: by extension, or "dir" for games that are folders. */
 data class SpecPatch(val action: String?, val game: String?, val data: String?, val extras: Map<String, Extra>)
@@ -159,7 +166,7 @@ object Platforms {
     fun all(ctx: Context): List<Platform> {
         SystemPrefs.init(ctx)
         ScanCache.init(ctx)
-        DroidDeck.init(ctx)
+        AppLibraries.init(ctx)
         Emulators.refresh(ctx)
         // A launch shim is a helper app with no icon of its own that only starts an emulator. Installed packages
         // without a launcher entry are treated as one, and imported players that go through them are skipped.
@@ -267,6 +274,7 @@ object Platforms {
     /**
      * Extras keep their JSON type: a string, a list of strings (string array), true/false, or a number. A templated
      * number or other type is written as {"int": "{file.id}"}; also "long", "bool", "float", "uri", "string", "strings".
+     * Adding "optional": true to that object leaves the extra out for a file without the tag it names.
      */
     private fun extras(o: JSONObject?): Map<String, Extra> {
         if (o == null) return emptyMap()
@@ -278,9 +286,9 @@ object Platforms {
                 is Long -> Extra("long", listOf(v.toString()))
                 is Number -> Extra("float", listOf(v.toString()))
                 is JSONObject -> {
-                    val type = v.keys().asSequence().first()
+                    val type = v.keys().asSequence().first { it != "optional" }
                     val inner = v.get(type)
-                    Extra(type, if (inner is JSONArray) inner.strings() else listOf(inner.toString()))
+                    Extra(type, if (inner is JSONArray) inner.strings() else listOf(inner.toString()), optional = v.optBoolean("optional"))
                 }
                 else -> Extra("string", listOf(v.toString()))
             }

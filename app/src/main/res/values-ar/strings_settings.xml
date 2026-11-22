@@ -317,5 +317,7 @@
     <string name="settings_search_source_help">%1$s.</string>
     <string name="settings_updates_auto_help">يبحث عن إصدار جديد من Tandem مرة يوميًا ما دام Tandem مفتوحًا، ويخبرك مرة واحدة برسالة وفي لوحة Start. لا يسأل GitHub إلا عن رقم أحدث إصدار، ولا يُثبَّت شيء حتى تضغط «تحديث». عند التعطيل، لا يُفحص ولا يظهر شيء حتى تتحقّق بنفسك بالزر A على «التحديثات». والوضع الخاص يتخطّاه.</string>
     <string name="settings_sub_droiddeck">DroidDeck</string>
-    <string name="settings_sub_droiddeck_help">ألعاب Steam التي ثبّتّها في DroidDeck، مباشرةً في مكتبتك.</string>
+    <string name="settings_sub_droiddeck_help">الألعاب التي ثبّتّها في DroidDeck، من كل المتاجر، مباشرةً في مكتبتك.</string>
+    <string name="settings_sub_gamenative">GameNative</string>
+    <string name="settings_sub_gamenative_help">الألعاب التي نزّلتها في GameNative، من كل المتاجر، مباشرةً في مكتبتك.</string>
 </resources>

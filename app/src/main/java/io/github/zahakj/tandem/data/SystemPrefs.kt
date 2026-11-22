@@ -44,8 +44,10 @@ data class SystemsData(
      * GameFinder). Their document links sit in [trees].
      */
     val roots: List<String> = emptyList(),
-    /** Games installed in DroidDeck join the Windows system on their own (DroidDeck.kt). */
+    /** Games installed in DroidDeck join the Windows system on their own (AppLibraries.kt). */
     val droidDeck: Boolean = true,
+    /** Games installed in GameNative join the Windows system on their own (AppLibraries.kt). */
+    val gameNative: Boolean = true,
 )
 
 /** Systems, emulators and launch choices, kept in systems.json next to Tandem's other data. */

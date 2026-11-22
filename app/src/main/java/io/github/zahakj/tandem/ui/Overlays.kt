@@ -268,7 +268,7 @@ fun GameMenu() {
     ActionMenuHost(game != null, onClose = { Nav.closeMenus() }) spec@{
         val g = shown ?: return@spec null
         val meta = g.meta
-        val players = g.platform.playersFor(g.file.name)
+        val players = g.platform.playersFor(g)
         val current = g.platform.playerFor(g)
         val routeKey = "menu:${g.key}"
         val runningIn = runningOf(g)
@@ -386,8 +386,8 @@ fun GameMenu() {
                 }
             })
             // Files, art and Tandem's record, after a popup that lists them (DeleteGame.kt). Not for a game of
-            // DroidDeck's library: it goes when it is uninstalled in DroidDeck.
-            if (!io.github.zahakj.tandem.DroidDeck.owns(g)) add(MenuAction("delete", Tx.s(if (g.platform.isApps) R.string.menus_game_uninstall else R.string.menus_game_delete), Glyph.Trash, Palette.Peach, value = if (running) Tx.s(R.string.menus_game_running) else null, more = true,
+            // DroidDeck's or GameNative's library: it goes when it is uninstalled there.
+            if (!io.github.zahakj.tandem.AppLibraries.owns(g)) add(MenuAction("delete", Tx.s(if (g.platform.isApps) R.string.menus_game_uninstall else R.string.menus_game_delete), Glyph.Trash, Palette.Peach, value = if (running) Tx.s(R.string.menus_game_running) else null, more = true,
                 help = if (running) Tx.s(R.string.menus_game_running_help) else null) {
                 DeleteGame.ask(ctx, g)
             })

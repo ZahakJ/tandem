@@ -340,5 +340,7 @@
     <string name="settings_search_source_help">%1$s.</string>
     <string name="settings_updates_auto_help">Cherche une nouvelle version de Tandem une fois par jour quand Tandem est ouvert, et te prévient une fois par un message et dans le panneau Start. Seul le numéro de la dernière version est demandé à GitHub ; rien ne s’installe tant que tu n’appuies pas sur « Mettre à jour ». Désactivé, rien n’est vérifié ni affiché tant que tu ne vérifies pas avec A sur Mises à jour. En mode privé, rien n’est vérifié.</string>
     <string name="settings_sub_droiddeck">DroidDeck</string>
-    <string name="settings_sub_droiddeck_help">Les jeux Steam installés dans DroidDeck, direct dans ta bibliothèque.</string>
+    <string name="settings_sub_droiddeck_help">Les jeux installés dans DroidDeck, de toutes les boutiques, direct dans ta bibliothèque.</string>
+    <string name="settings_sub_gamenative">GameNative</string>
+    <string name="settings_sub_gamenative_help">Les jeux téléchargés dans GameNative, de toutes les boutiques, direct dans ta bibliothèque.</string>
 </resources>

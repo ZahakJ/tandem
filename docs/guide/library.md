@@ -161,7 +161,8 @@ PC games live in `ROMs/windows` (or `ROMs/pc`, `ROMs/steam`) as small shortcut f
 
 GameNative is the system's first emulator. For Winlator shortcuts, pick Winlator per game (<kbd>Y</kbd> › More › **Emulator**) or as the system's emulator in **Systems and emulators**.
 
-- **DroidDeck for Steam games.** [DroidDeck](https://github.com/Droid-Deck/DroidDeck/releases) 0.7 or newer runs a Steam game in the real Steam client. See [Games installed in DroidDeck](#games-installed-in-droiddeck): they show up on their own, no shortcut needed. For a `.steam` or `.steamappid` shortcut of your own, <kbd>Y</kbd> › More › **Emulator** offers DroidDeck alongside GameNative (and Winlator, if installed), for that game only. Other PC games never offer it, and GameNative stays the system's default.
+- **Games you installed in DroidDeck or GameNative need no shortcut.** They show up on their own, from every store: see [Games installed in DroidDeck and GameNative](#games-installed-in-droiddeck-and-gamenative).
+- **DroidDeck as a player.** [DroidDeck](https://github.com/Droid-Deck/DroidDeck/releases) 0.7 or newer runs a Steam game in the real Steam client, and games from its other stores. For a shortcut of your own (`.steam`, `.steamappid`, or a store's file such as `.epic` that DroidDeck exported), <kbd>Y</kbd> › More › **Emulator** offers DroidDeck alongside GameNative (and Winlator, if installed), for that game only. GameNative stays the system's default.
 - **Games streamed from your PC.** A `.moonlight` file in the same folder is a game that runs on your own PC and streams to the handheld through Moonlight; it sits with the other PC games and always opens in Moonlight. See [Streaming from a home PC](streaming.md#a-tile-for-each-streamed-game) for what goes in the file.
 - **Art for Steam shortcuts.** After every scan, a `.steam` game missing its box art, hero or logo gets them from Steam's public store pictures by its app id, with no account or key, saved in `ROMs/downloaded_media/windows/` like scraped art. That never happens for hidden games or in private mode.
 - **Steam achievements.** With your own Steam Web API key and account, Tandem shows a Steam game's achievements and tells you what you unlocked when you come back from playing. See [Steam achievements](#steam-achievements).
@@ -169,7 +170,7 @@ GameNative is the system's first emulator. For Winlator shortcuts, pick Winlator
 <details>
 <summary>What a shortcut file holds, and how each app is started</summary>
 
-A shortcut's first line holds the id the app needs: a bare number (`123456`), `app_id=123456` or a `[name] value` line all work. GameNative is told the id and the store the file's extension stands for. Winlator gets the shortcut's path. Tandem hands DroidDeck the app id with its `com.droiddeck.launcher.LAUNCH_GAME` intent; in `platforms.json` DroidDeck is a player with an `extensions` list (see [Systems and emulators](platforms.md#emulator-fields)).
+A shortcut's first line holds the id the app needs: a bare number (`123456`), `app_id=123456` or a `[name] value` line all work. GameNative is told the id (a number, `app_id`) and the store the file's extension stands for (`game_source`: `STEAM`, `EPIC`, `GOG`, `AMAZON`, `CUSTOM_GAME`). Winlator gets the shortcut's path. Tandem hands DroidDeck the id as text with its `com.droiddeck.launcher.LAUNCH_GAME` intent, and `game_source` `STEAM` for a Steam game; in `platforms.json` DroidDeck is a player with an `extensions` list (see [Systems and emulators](platforms.md#emulator-fields)). A file can hold one id per app on lines of their own, `[gamenative] 202` and `[droiddeck] 10065604626084986880`: each player reads its own line, and a file without them gives both the first line's id.
 
 </details>
 
@@ -188,32 +189,49 @@ For `ROMs/windows/Some Game.steam`, that is `icon/Some Game.jpg`, `hero/Some Gam
 
 </details>
 
-### Games installed in DroidDeck
+### Games installed in DroidDeck and GameNative
 
-Steam games you install in DroidDeck show up among your PC games by themselves, with DroidDeck's box art, hero and logo, and start straight in DroidDeck. No shortcut files: nothing is written to your game folders.
+Games you install in [DroidDeck](https://github.com/Droid-Deck/DroidDeck/releases) or download in [GameNative](https://github.com/utkarshdalal/GameNative/releases) show up among your PC games by themselves, from every store the app has, and start straight in that app. No shortcut files: nothing is written to your game folders.
 
-- **When Tandem looks.** When it starts, when you come back to it, and on **Rescan games**. It's cheap: if DroidDeck's library hasn't changed since last time, nothing is read again.
-- **Uninstalled in DroidDeck, gone from Tandem** on the next look. Its play time, favourite, status and last played stay, and come back with it if you install it again.
-- **Your own shortcut wins.** If a `.steam` or `.steamappid` file in your folders is for the same game, you get one tile, yours: its name, art and records. If it has no box art, hero or logo of its own, it gets DroidDeck's.
-- **Playing.** Continue, resume, close and play time work as for any game. The game menu has no **Delete** for these: uninstall the game in DroidDeck. <kbd>Y</kbd> › More › **Emulator** can still send one to GameNative instead.
-- **Only Steam games for now.** DroidDeck's games from other stores (Epic, GOG and the rest) are left out until DroidDeck can be asked to start them the same way.
-- **Settings › Library & art › DroidDeck** says how many games Tandem found, or why it found none ("DroidDeck isn't installed", "Needs root"), and has **Show DroidDeck games** to turn it all off. <kbd>A</kbd> on the status looks again.
+| App | Stores |
+| --- | --- |
+| DroidDeck 0.7.1 or newer | Steam, Epic, GOG, Amazon, Xbox, Ubisoft, EA, Rockstar, Battle.net, itch.io, Game Jolt, and games you added to DroidDeck by hand |
+| GameNative | Steam, Epic, GOG, Amazon (its custom games, added from a folder, still need a `.pcgame` file from **Export for frontend**) |
 
-**Root, for now.** DroidDeck 0.7 keeps its library in its own private folder (`files/library-cache.json`), which other apps can't read. Until it shares the library itself, Tandem reads it with root, through Shizuku, the same way the [Switch save sync](switch.md#one-save-across-eden-duo-and-peanuts-native) does, and copies the pictures out as root. Without root the status says **Needs root** and games you already had stay as they were. On a rooted handheld, the root manager may show a short note each time; coming back to Tandem asks at most once a minute.
+- **When Tandem looks.** When it starts, when you come back to it, and on **Rescan games**. It's cheap: if neither app's library changed since last time, nothing is read again.
+- **One tile per game.** A game both apps have is one tile, matched by the store's own id (the Steam app id, Epic's app name, GOG's or Amazon's product id; by name, within the same store, only when an app doesn't say). It starts in the app you last played it in, in either app, else in DroidDeck. <kbd>Y</kbd> › More › **Emulator** switches to the other one for that game, and offers only the apps that have it (a Steam game can go to any of them).
+- **Uninstalled in the app, gone from Tandem** on the next look. Its play time, favourite, status and last played stay, and come back with it if you install it again. A game in both apps keeps its tile, and everything on it, while either still has it.
+- **Your own shortcut wins.** If a file in your folders is for the same game (a `.steam` or `.steamappid` file with its app id, or a store's file from **Export for frontend** such as `Some Game.epic`), you get one tile, yours: its name, art and records. If it has no box art, hero or logo of its own, it gets the apps' pictures. Started in an app that has the game, it is given that app's own id, so a GameNative export for Epic starts in DroidDeck too.
+- **Playing.** Continue, resume, close and play time work as for any game. The game menu has no **Delete** for these: uninstall the game in its app.
+- **Settings › Library & art › DroidDeck** and **› GameNative** say how many games Tandem found there (every store counted), or why it found none ("isn't installed", "Needs root"), and each has a switch to leave that app's games out. <kbd>A</kbd> on the status looks again.
 
-**Once DroidDeck shares its library.** A read-only library provider for DroidDeck has been proposed upstream. When an installed DroidDeck has it, Tandem uses it instead, no root needed: the status's help says "DroidDeck shares its library with Tandem", and a change in DroidDeck shows up in Tandem while it's open. Play time and everything else carry over, since a game keeps the same id either way.
+**Root.** Both apps keep their library in their own private folder, which other apps can't read: DroidDeck in `files/library-cache.json`, GameNative in its database (`databases/pluvia.db`). Tandem reads them with root, through Shizuku, the same way the [Switch save sync](switch.md#one-save-across-eden-duo-and-peanuts-native) does. One root call looks at both apps' files; only a library that changed is read again. GameNative's database is copied into Tandem's own storage, read there read-only and deleted; nothing of either app is ever changed. Without root the status says **Needs root** and games you already had stay as they were. On a rooted handheld, the root manager may show a short note each time; coming back to Tandem asks at most once a minute.
+
+**Once DroidDeck shares its library.** A read-only library provider for DroidDeck has been proposed upstream. When an installed DroidDeck has it, Tandem uses it instead, no root needed for DroidDeck: the status's help says "DroidDeck shares its library with Tandem", and a change in DroidDeck shows up in Tandem while it's open. Play time and everything else carry over, since a game keeps the same id either way. GameNative has nothing like it, so it always needs root.
+
+**Pictures, never from the internet.** Tandem copies the pictures the apps already have on the handheld: DroidDeck's (its SteamGridDB art for Steam games, else Steam's own; a store game's from DroidDeck's art cache or the game's folder), then the ones GameNative keeps in its picture cache (the covers it showed you in its library). A store game GameNative never showed has none until you scrape it, as for any game. A Steam game missing art gets Steam's store pictures like any `.steam` shortcut ([Art for Steam shortcuts](#windows-and-steam-games)).
 
 <details>
-<summary>Where it all goes</summary>
+<summary>Where it all goes, and what each app is sent</summary>
 
 | What | Where |
 | --- | --- |
-| Tandem's copy of DroidDeck's list, and which pictures were copied | `files/droiddeck/library.json` in Tandem's own storage |
-| One small file per game, holding its Steam app id (what Tandem starts) | `files/droiddeck/games/droiddeck-steam-<app id>.steam` in Tandem's own storage |
-| Box art, hero, logo | `ROMs/downloaded_media/windows/icon/`, `hero/`, `logo/` named `droiddeck-steam-<app id>`, like scraped art (Clear downloaded media removes them; they come back on the next rescan) |
-| The switch | `droidDeck` in `systems.json` |
+| Tandem's copy of both apps' lists, and which pictures were copied | `files/app-games/library.json` in Tandem's own storage (it was `files/droiddeck/library.json`; carried over on the first start) |
+| One small file per game | `files/app-games/games/` in Tandem's own storage: `droiddeck-steam-<app id>.steam`, `droiddeck-<store>-<DroidDeck id>.<store>` (`.droiddeck` for a game added by hand), `gamenative-<store>-<GameNative id>.<store>` |
+| Box art, hero, logo | `ROMs/downloaded_media/windows/icon/`, `hero/`, `logo/` named like the game's file, like scraped art (Clear downloaded media removes them; they come back on the next rescan) |
+| A copy of GameNative's database, while it is read | Tandem's cache (`cache/gamenative-db/`), deleted straight after |
+| The switches | `droidDeck` and `gameNative` in `systems.json` |
 
-Pictures come from DroidDeck's SteamGridDB art (`files/steam-art/<app id>/grid-p`, `grid-hero`, `grid-logo`) when it has some, else from Steam's own (the `art`, `hero` and `logo` of each game in `library-cache.json`). A picture is copied again only when its size, time or path changed, or the copy is gone. Play time and the rest are kept under the game's key, `windows/droiddeck-steam-<app id>.steam`.
+A Steam game's file holds its app id, which both apps take. Another store's holds a line per app, `[gamenative] <id>` and `[droiddeck] <id>`, and the players in `platforms.json` read their own (`{tags.gamenative}`, `{tags.droiddeck}`).
+
+| Started in | Intent | Extras |
+| --- | --- | --- |
+| DroidDeck | `com.droiddeck.launcher.LAUNCH_GAME` to `com.droiddeck.launcher/.FrontEndActivity` | `app_id` (text): a Steam game's app id, any other game's 64-bit DroidDeck id written unsigned. `game_source`: `STEAM` for a Steam game; for another store, its name (`EPIC`, `GOG`…) only with DroidDeck newer than 0.7.1, which turns down any other source and finds the game by its id alone |
+| GameNative | `app.gamenative.LAUNCH_GAME` to `app.gamenative/.MainActivity` | `app_id` (a number: the Steam app id, GOG's product id, or GameNative's own number for an Epic or Amazon game), `game_source` (`STEAM`, `EPIC`, `GOG`, `AMAZON`) |
+
+A tile's file name stays the same while either app has the game: a game GameNative had first keeps `gamenative-…` when DroidDeck gets it too. Play time and the rest are kept under the game's key, `windows/<file name>`. A picture is copied again only when its size, time or path changed, or the copy is gone.
+
+If you use your own copy of `platforms.json` (`ROMs/tandem/platforms.json`), copy the GameNative and DroidDeck players from the built-in one again: they now read `{tags.gamenative}` and `{tags.droiddeck}`, and DroidDeck takes every store's extension.
 
 </details>
 

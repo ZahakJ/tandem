@@ -34,9 +34,11 @@
     <uses-permission android:name="io.github.zahakj.edenduo.permission.CONTROL_COMPANION" />
     <!-- Read the games installed in DroidDeck through its library provider, once it has one (DroidDeck.kt). -->
     <uses-permission android:name="com.droiddeck.launcher.permission.READ_LIBRARY" />
-    <!-- DroidDeck by name, besides QUERY_ALL_PACKAGES: its launch activity and its library provider. -->
+    <!-- DroidDeck and GameNative by name, besides QUERY_ALL_PACKAGES: their launch activities, DroidDeck's library
+         provider, and whether they are installed (AppLibraries.kt). -->
     <queries>
         <package android:name="com.droiddeck.launcher" />
+        <package android:name="app.gamenative" />
     </queries>
 
     <!-- localeConfig: the languages Tandem speaks (Tx.kt, docs/TRANSLATING.md), offered in Android 13+'s own app

@@ -149,6 +149,7 @@ object SettingsPlan {
         Sub("controls/deck", "controls", "Deck", R.string.settings_sub_deck, Glyph.Text, R.string.settings_sub_deck_help),
         Sub("library/accounts", "library", "Accounts", R.string.settings_sub_accounts, Glyph.Trophy, R.string.settings_sub_accounts_help),
         Sub("library/droiddeck", "library", "DroidDeck", R.string.settings_sub_droiddeck, Glyph.Cartridge, R.string.settings_sub_droiddeck_help),
+        Sub("library/gamenative", "library", "GameNative", R.string.settings_sub_gamenative, Glyph.Cartridge, R.string.settings_sub_gamenative_help),
         Sub("play/perf", "play", "Performance & sleep", R.string.settings_sub_perf, Glyph.Battery, R.string.settings_sub_perf_help),
         Sub("play/privacy", "play", "Privacy & hidden", R.string.settings_sub_privacy, Glyph.Shield, R.string.settings_sub_privacy_help),
         Sub("play/data", "play", "Your data", R.string.settings_sub_data, Glyph.Save, R.string.settings_sub_data_help),
@@ -204,7 +205,7 @@ object SettingsPlan {
             Group(
                 "Games & systems", R.string.settings_group_games_systems,
                 p("Game folders", "Game folders") + p("Library", "Rescan games") + p("Game folders", "Watch game folders") + p("Library", "Sort games by") +
-                    p("Systems & launching", "Systems and emulators", "Android apps") + link("library/droiddeck"),
+                    p("Systems & launching", "Systems and emulators", "Android apps") + link("library/droiddeck") + link("library/gamenative"),
             ),
             Group("Artwork & accounts", R.string.settings_group_artwork_accounts, p("Artwork & details", "Scrape library", "Set up sources", "Clear downloaded media") + link("library/accounts")),
         ),
@@ -243,6 +244,7 @@ object SettingsPlan {
             Group("Discord", R.string.settings_group_discord, p("Discord", "Discord status", "Disconnect Discord")),
         ),
         "library/droiddeck" to listOf(Group("DroidDeck", R.string.settings_sub_droiddeck, p("DroidDeck", "DroidDeck library", "Show DroidDeck games"))),
+        "library/gamenative" to listOf(Group("GameNative", R.string.settings_sub_gamenative, p("GameNative", "GameNative library", "Show GameNative games"))),
         "play/perf" to listOf(
             Group(
                 "Performance & sleep", R.string.settings_group_perf_sleep,
@@ -380,6 +382,7 @@ private fun subSummary(id: String, rows: List<SettingRow>): String {
             "Discord ✓".takeIf { DiscordPresence.available && DiscordPresence.linked },
         ).joinParts().ifEmpty { Tx.s(R.string.settings_sub_accounts_none) }
         "library/droiddeck" -> row("DroidDeck library")?.value
+        "library/gamenative" -> row("GameNative library")?.value
         "play/privacy" -> Tx.s(if (HomeStore.settings.privateMode) R.string.settings_sub_privacy_on else R.string.settings_sub_privacy_off)
         "play/data" -> Tx.s(R.string.settings_sub_data_summary)
         "play/dev" -> Tx.p(R.plurals.settings_sub_dev_tools, rows.size)
@@ -397,7 +400,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val onRescan = remember(ctx) { { LibraryScan.rescan(ctx) } }
     val pool = RowPool(
         appearanceSections() + listOf(
-            librarySettings(onRescan), droidDeckSettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), widgetsSettings(),
+            librarySettings(onRescan), droidDeckSettings(onRescan), gameNativeSettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), widgetsSettings(),
             achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
             performanceSettings(), screenOffSettings(), deckSettings(),
             SettingSection("Extras", listOf(resumePageRow())), // tx-ok: a plan key, never shown (the plan places the row)

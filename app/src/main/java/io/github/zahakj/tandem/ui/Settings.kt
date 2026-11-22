@@ -248,29 +248,41 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
     ))
 }
 
+
+/** What a status row says for an app's library ([io.github.zahakj.tandem.AppLibraries.Status]): its value and help. */
+private class AppLibraryTexts(
+    val found: Int, val shared: Int, val root: Int, val notInstalled: Int, val notInstalledHelp: Int,
+    val needsRoot: Int, val needsRootHelp: Int, val off: Int, val checking: Int,
+)
+
+private fun appLibraryStatus(status: io.github.zahakj.tandem.AppLibraries.Status, t: AppLibraryTexts): Pair<String, String> = when (status) {
+    is io.github.zahakj.tandem.AppLibraries.Status.Found -> Tx.p(t.found, status.count) to Tx.s(if (status.shared) t.shared else t.root)
+    io.github.zahakj.tandem.AppLibraries.Status.NotInstalled -> Tx.s(t.notInstalled) to Tx.s(t.notInstalledHelp)
+    io.github.zahakj.tandem.AppLibraries.Status.NeedsRoot -> Tx.s(t.needsRoot) to Tx.s(t.needsRootHelp)
+    io.github.zahakj.tandem.AppLibraries.Status.Off -> onOff(false) to Tx.s(t.off)
+    io.github.zahakj.tandem.AppLibraries.Status.Checking -> Tx.s(R.string.settings_library_rescan_looking) to Tx.s(t.checking)
+}
+
 /**
- * DroidDeck's installed games in the Windows system (DroidDeck.kt): what Tandem found there, and the switch. A on
- * the status looks again (a rescan).
+ * DroidDeck's installed games in the Windows system (AppLibraries.kt): what Tandem found there, every store counted,
+ * and the switch. A on the status looks again (a rescan).
  */
 @Composable
 fun droidDeckSettings(onRescan: () -> Unit): SettingSection {
     val ctx = androidx.compose.ui.platform.LocalContext.current
     val on = io.github.zahakj.tandem.data.SystemPrefs.data.droidDeck
-    val status = io.github.zahakj.tandem.DroidDeck.status
     val scanning = settingsScanning()
-    val (value, help) = when (status) {
-        is io.github.zahakj.tandem.DroidDeck.Status.Found -> Tx.p(R.plurals.library_droiddeck_found, status.count) to
-            Tx.s(if (status.shared) R.string.library_droiddeck_help_shared else R.string.library_droiddeck_help_root)
-        io.github.zahakj.tandem.DroidDeck.Status.NotInstalled -> Tx.s(R.string.library_droiddeck_not_installed) to Tx.s(R.string.library_droiddeck_help_not_installed)
-        io.github.zahakj.tandem.DroidDeck.Status.NeedsRoot -> Tx.s(R.string.library_droiddeck_needs_root) to Tx.s(R.string.library_droiddeck_help_needs_root)
-        io.github.zahakj.tandem.DroidDeck.Status.Off -> onOff(false) to Tx.s(R.string.library_droiddeck_help_off)
-        io.github.zahakj.tandem.DroidDeck.Status.Checking -> Tx.s(R.string.settings_library_rescan_looking) to Tx.s(R.string.library_droiddeck_help_checking)
-    }
+    val (value, help) = appLibraryStatus(io.github.zahakj.tandem.AppLibraries.droidDeck, AppLibraryTexts(
+        R.plurals.library_droiddeck_found, R.string.library_droiddeck_help_shared, R.string.library_droiddeck_help_root,
+        R.string.library_droiddeck_not_installed, R.string.library_droiddeck_help_not_installed,
+        R.string.library_droiddeck_needs_root, R.string.library_droiddeck_help_needs_root,
+        R.string.library_droiddeck_help_off, R.string.library_droiddeck_help_checking,
+    ))
     return SettingSection("DroidDeck", rows = listOf( // tx-ok: an app's name
         SettingRow(
             Tx.s(R.string.library_droiddeck_status), if (scanning) Tx.s(R.string.settings_library_rescan_looking) else value, Palette.Sky, Glyph.Refresh,
             help = help,
-            keywords = "droiddeck steam proton pc windows games installed import root library",
+            keywords = "droiddeck steam epic gog amazon xbox ubisoft ea rockstar battlenet itch gamejolt proton pc windows games installed import root library store",
             en = "DroidDeck library",
             onClick = onRescan,
         ),
@@ -280,9 +292,44 @@ fun droidDeckSettings(onRescan: () -> Unit): SettingSection {
         ) { v ->
             io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(droidDeck = v) }
             LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
-        }.copy(keywords = "droiddeck steam proton pc windows games import automatic"),
+        }.copy(keywords = "droiddeck steam epic gog amazon store pc windows games import automatic"),
     ))
 }
+
+/**
+ * GameNative's downloaded games in the Windows system (AppLibraries.kt): what Tandem found there, every store counted,
+ * and the switch. A on the status looks again (a rescan).
+ */
+@Composable
+fun gameNativeSettings(onRescan: () -> Unit): SettingSection {
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val on = io.github.zahakj.tandem.data.SystemPrefs.data.gameNative
+    val scanning = settingsScanning()
+    // GameNative has no provider: it is always read with root.
+    val (value, help) = appLibraryStatus(io.github.zahakj.tandem.AppLibraries.gameNative, AppLibraryTexts(
+        R.plurals.library_gamenative_found, R.string.library_gamenative_help_root, R.string.library_gamenative_help_root,
+        R.string.library_gamenative_not_installed, R.string.library_gamenative_help_not_installed,
+        R.string.library_gamenative_needs_root, R.string.library_gamenative_help_needs_root,
+        R.string.library_gamenative_help_off, R.string.library_gamenative_help_checking,
+    ))
+    return SettingSection("GameNative", rows = listOf( // tx-ok: an app's name
+        SettingRow(
+            Tx.s(R.string.library_gamenative_status), if (scanning) Tx.s(R.string.settings_library_rescan_looking) else value, Palette.Sky, Glyph.Refresh,
+            help = help,
+            keywords = "gamenative steam epic gog amazon pc windows games downloaded installed import root library store",
+            en = "GameNative library",
+            onClick = onRescan,
+        ),
+        toggle(
+            Tx.s(R.string.library_gamenative_show), Glyph.Cartridge, Palette.Sky, Tx.s(R.string.library_gamenative_show_help), on,
+            en = "Show GameNative games",
+        ) { v ->
+            io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(gameNative = v) }
+            LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
+        }.copy(keywords = "gamenative steam epic gog amazon store pc windows games import automatic"),
+    ))
+}
+
 
 @Composable
 fun dataSettings(): SettingSection {

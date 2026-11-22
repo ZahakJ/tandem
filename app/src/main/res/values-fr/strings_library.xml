@@ -543,12 +543,27 @@
     </plurals>
     <string name="library_droiddeck_not_installed">DroidDeck n’est pas installé</string>
     <string name="library_droiddeck_needs_root">Requiert le root</string>
-    <string name="library_droiddeck_help_shared">DroidDeck partage sa bibliothèque avec Tandem : ses jeux Steam rejoignent tes jeux PC, visuels compris. Appuie sur A pour jeter un nouveau coup d’œil.</string>
+    <string name="library_droiddeck_help_shared">DroidDeck partage sa bibliothèque avec Tandem : ses jeux, de Steam comme de toutes les autres boutiques, rejoignent tes jeux PC, visuels compris. Appuie sur A pour jeter un nouveau coup d’œil.</string>
     <string name="library_droiddeck_help_root">Lu en root pour l’instant, car DroidDeck garde sa bibliothèque pour lui. Dès qu’il la partagera avec les autres applis, Tandem s’en passera. Appuie sur A pour jeter un nouveau coup d’œil.</string>
-    <string name="library_droiddeck_help_not_installed">DroidDeck n’est pas installé. Installe-le, ajoutes-y un jeu Steam, et il apparaîtra ici tout seul.</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeck n’est pas installé. Installe-le, ajoutes-y un jeu de Steam ou d’une autre boutique, et il apparaîtra ici tout seul.</string>
     <string name="library_droiddeck_help_needs_root">Il faut le root pour lire la bibliothèque de DroidDeck (tant que DroidDeck ne la partage pas avec les autres applis). Lance Shizuku en root, puis appuie sur A pour revérifier.</string>
     <string name="library_droiddeck_help_off">Désactivé : les jeux de DroidDeck restent hors de ta bibliothèque. Ton temps de jeu, lui, est gardé.</string>
     <string name="library_droiddeck_help_checking">Petit coup d’œil dans DroidDeck…</string>
     <string name="library_droiddeck_show">Afficher les jeux DroidDeck</string>
-    <string name="library_droiddeck_show_help">Les jeux Steam installés dans DroidDeck rejoignent tes jeux PC tout seuls, avec les visuels de DroidDeck, et se lancent direct dans DroidDeck. Désinstalles-en un là-bas et il s’en va ; son temps de jeu reste.</string>
+    <string name="library_droiddeck_show_help">Les jeux installés dans DroidDeck, de Steam, Epic, GOG et toutes les autres boutiques, rejoignent tes jeux PC tout seuls, avec les visuels de DroidDeck, et se lancent direct dans DroidDeck. Désinstalles-en un là-bas et il s’en va ; son temps de jeu reste.</string>
+
+    <string name="library_gamenative_status">Bibliothèque GameNative</string>
+    <plurals name="library_gamenative_found">
+        <item quantity="one">%1$d jeu trouvé</item>
+        <item quantity="other">%1$d jeux trouvés</item>
+    </plurals>
+    <string name="library_gamenative_not_installed">GameNative n’est pas installé</string>
+    <string name="library_gamenative_needs_root">Requiert le root</string>
+    <string name="library_gamenative_help_root">Lu en root, car GameNative garde sa bibliothèque pour lui. Tandem en lit une copie et ne touche jamais à celle de GameNative. Appuie sur A pour jeter un nouveau coup d’œil.</string>
+    <string name="library_gamenative_help_not_installed">GameNative n’est pas installé. Installe-le, télécharges-y un jeu de Steam, Epic, GOG ou Amazon, et il apparaîtra ici tout seul.</string>
+    <string name="library_gamenative_help_needs_root">Il faut le root pour lire la bibliothèque de GameNative. Lance Shizuku en root, puis appuie sur A pour revérifier.</string>
+    <string name="library_gamenative_help_off">Désactivé : les jeux de GameNative restent hors de ta bibliothèque. Ton temps de jeu, lui, est gardé.</string>
+    <string name="library_gamenative_help_checking">Petit coup d’œil dans GameNative…</string>
+    <string name="library_gamenative_show">Afficher les jeux GameNative</string>
+    <string name="library_gamenative_show_help">Les jeux téléchargés dans GameNative, de Steam, Epic, GOG ou Amazon, rejoignent tes jeux PC tout seuls et se lancent direct dans GameNative. Un jeu que DroidDeck a aussi ne fait qu’une vignette, qui se lance là où tu y as joué en dernier. Désinstalles-en un là-bas et il s’en va ; son temps de jeu reste.</string>
 </resources>

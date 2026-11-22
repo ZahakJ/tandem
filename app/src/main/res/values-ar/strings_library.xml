@@ -521,12 +521,31 @@
     </plurals>
     <string name="library_droiddeck_not_installed">DroidDeck غير مثبّت</string>
     <string name="library_droiddeck_needs_root">يحتاج صلاحيات الجذر</string>
-    <string name="library_droiddeck_help_shared">يشارك DroidDeck مكتبته مع Tandem، فتنضمّ ألعاب Steam فيه إلى ألعاب الكمبيوتر بصورها كاملة. اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_droiddeck_help_shared">يشارك DroidDeck مكتبته مع Tandem، فتنضمّ ألعابه من Steam ومن كل متجر آخر إلى ألعاب الكمبيوتر بصورها كاملة. اضغط A لإلقاء نظرة جديدة.</string>
     <string name="library_droiddeck_help_root">يقرؤها Tandem الآن بصلاحيات الجذر، لأن DroidDeck يحتفظ بمكتبته لنفسه. وحين يشاركها DroidDeck مع التطبيقات الأخرى، يقرؤها Tandem بلا جذر. اضغط A لإلقاء نظرة جديدة.</string>
-    <string name="library_droiddeck_help_not_installed">DroidDeck غير مثبّت. ثبّته وأضف فيه لعبة من Steam، وستظهر هنا من تلقاء نفسها.</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeck غير مثبّت. ثبّته وأضف فيه لعبة من Steam أو من أي متجر آخر، وستظهر هنا من تلقاء نفسها.</string>
     <string name="library_droiddeck_help_needs_root">يحتاج Tandem إلى صلاحيات الجذر ليقرأ مكتبة DroidDeck (إلى أن يشاركها DroidDeck مع التطبيقات الأخرى). شغّل Shizuku بصلاحيات الجذر، ثم اضغط A لإلقاء نظرة جديدة.</string>
     <string name="library_droiddeck_help_off">معطّل: تبقى ألعاب DroidDeck خارج مكتبتك، ووقت لعبك فيها محفوظ.</string>
     <string name="library_droiddeck_help_checking">نظرة سريعة داخل DroidDeck…</string>
     <string name="library_droiddeck_show">إظهار ألعاب DroidDeck</string>
-    <string name="library_droiddeck_show_help">ألعاب Steam المثبّتة في DroidDeck تنضمّ إلى ألعاب الكمبيوتر وحدها، بصور DroidDeck، وتبدأ فيه مباشرةً. احذف لعبة هناك فتغادر من هنا، ويبقى وقت لعبك فيها.</string>
+    <string name="library_droiddeck_show_help">الألعاب المثبّتة في DroidDeck، من Steam وEpic وGOG وكل متجر آخر، تنضمّ إلى ألعاب الكمبيوتر وحدها، بصور DroidDeck، وتبدأ فيه مباشرةً. احذف لعبة هناك فتغادر من هنا، ويبقى وقت لعبك فيها.</string>
+
+    <string name="library_gamenative_status">مكتبة GameNative</string>
+    <plurals name="library_gamenative_found">
+        <item quantity="zero">لا ألعاب فيها بعد</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">لعبتان</item>
+        <item quantity="few">%1$d ألعاب</item>
+        <item quantity="many">%1$d لعبة</item>
+        <item quantity="other">%1$d لعبة</item>
+    </plurals>
+    <string name="library_gamenative_not_installed">GameNative غير مثبّت</string>
+    <string name="library_gamenative_needs_root">يحتاج صلاحيات الجذر</string>
+    <string name="library_gamenative_help_root">يقرؤها Tandem بصلاحيات الجذر، لأن GameNative يحتفظ بمكتبته لنفسه. يقرأ Tandem نسخة منها، ولا يلمس ملفات GameNative نفسها أبدًا. اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_gamenative_help_not_installed">GameNative غير مثبّت. ثبّته ونزّل فيه لعبة من Steam أو Epic أو GOG أو Amazon، وستظهر هنا من تلقاء نفسها.</string>
+    <string name="library_gamenative_help_needs_root">يحتاج Tandem إلى صلاحيات الجذر ليقرأ مكتبة GameNative. شغّل Shizuku بصلاحيات الجذر، ثم اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_gamenative_help_off">معطّل: تبقى ألعاب GameNative خارج مكتبتك، ووقت لعبك فيها محفوظ.</string>
+    <string name="library_gamenative_help_checking">نظرة سريعة داخل GameNative…</string>
+    <string name="library_gamenative_show">إظهار ألعاب GameNative</string>
+    <string name="library_gamenative_show_help">الألعاب التي تنزّلها في GameNative، من Steam أو Epic أو GOG أو Amazon، تنضمّ إلى ألعاب الكمبيوتر وحدها وتبدأ فيه مباشرةً. وإن كانت في DroidDeck أيضًا، فهي مربع واحد يبدأ حيث لعبتها آخر مرة. احذف لعبة هناك فتغادر من هنا، ويبقى وقت لعبك فيها.</string>
 </resources>

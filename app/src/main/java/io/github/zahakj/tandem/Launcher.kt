@@ -97,12 +97,14 @@ object Launcher {
             return Plan(game, game.platform.allPlayers.first(), null, null, bottom)
         }
         val chosen = game.platform.playerFor(game)
-            ?: return LaunchProblem.NoEmulator(game, game.platform.playersFor(game.file.name, game.platform.allPlayers).firstOrNull())
+            ?: return LaunchProblem.NoEmulator(game, game.platform.playersFor(game, game.platform.allPlayers).firstOrNull())
         if (!game.file.exists()) return LaunchProblem.FileMissing(game)
-        val spec = chosen.forFile(game.file)
+        // A shortcut of the user's for a DroidDeck or GameNative game starts from Tandem's file, which has every app's id.
+        val file = AppLibraries.launchFile(game, chosen) ?: game.file
+        val spec = chosen.forFile(file)
         val uri = documentUri(ctx, game.file) ?: Uri.fromFile(game.file)
         val intent = try {
-            LaunchIntents.build(spec, game, uri)
+            LaunchIntents.build(spec, game, uri, file)
         } catch (e: BadShortcutException) {
             return LaunchProblem.BadShortcut(game, e.message.orEmpty())
         } catch (e: IllegalArgumentException) {

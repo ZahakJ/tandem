@@ -431,12 +431,26 @@
     </plurals>
     <string name="library_droiddeck_not_installed">DroidDeckが入っていません</string>
     <string name="library_droiddeck_needs_root">rootが必要</string>
-    <string name="library_droiddeck_help_shared">DroidDeckがライブラリをTandemに共有してくれるので、SteamのゲームがアートごとPCゲームの仲間入り。Aでもう一度のぞきます。</string>
+    <string name="library_droiddeck_help_shared">DroidDeckがライブラリをTandemに共有してくれるので、Steamもほかのストアも、ゲームがアートごとPCゲームの仲間入り。Aでもう一度のぞきます。</string>
     <string name="library_droiddeck_help_root">いまはrootで読んでいます。DroidDeckがライブラリを自分だけで持っているからです。ほかのアプリに共有してくれるようになれば、rootなしで読めます。Aでもう一度のぞきます。</string>
-    <string name="library_droiddeck_help_not_installed">DroidDeckが入っていません。インストールしてSteamのゲームを入れれば、ここに自動で並びます。</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeckが入っていません。インストールしてSteamやほかのストアのゲームを入れれば、ここに自動で並びます。</string>
     <string name="library_droiddeck_help_needs_root">DroidDeckのライブラリを読むにはrootが必要です（DroidDeckがほかのアプリに共有するようになるまで）。Shizukuをrootで動かしてから、Aでもう一度のぞきます。</string>
     <string name="library_droiddeck_help_off">オフ：DroidDeckのゲームはライブラリに並びません。プレイ時間はちゃんと残ります。</string>
     <string name="library_droiddeck_help_checking">DroidDeckをのぞいています…</string>
     <string name="library_droiddeck_show">DroidDeckのゲームを表示</string>
-    <string name="library_droiddeck_show_help">DroidDeckに入れたSteamのゲームが、DroidDeckのアートつきで自動的にPCゲームに並び、そのままDroidDeckで起動します。向こうでアンインストールすると消えますが、プレイ時間は残ります。</string>
+    <string name="library_droiddeck_show_help">DroidDeckに入れたゲームが、Steam、Epic、GOGほかどのストアのものでも、DroidDeckのアートつきで自動的にPCゲームに並び、そのままDroidDeckで起動します。向こうでアンインストールすると消えますが、プレイ時間は残ります。</string>
+
+    <string name="library_gamenative_status">GameNativeのライブラリ</string>
+    <plurals name="library_gamenative_found">
+        <item quantity="other">%1$d本見つかりました</item>
+    </plurals>
+    <string name="library_gamenative_not_installed">GameNativeが入っていません</string>
+    <string name="library_gamenative_needs_root">rootが必要</string>
+    <string name="library_gamenative_help_root">rootで読んでいます。GameNativeがライブラリを自分だけで持っているからです。読むのはコピーだけで、GameNative本体のファイルには一切さわりません。Aでもう一度のぞきます。</string>
+    <string name="library_gamenative_help_not_installed">GameNativeが入っていません。インストールしてSteam、Epic、GOG、Amazonのゲームをダウンロードすれば、ここに自動で並びます。</string>
+    <string name="library_gamenative_help_needs_root">GameNativeのライブラリを読むにはrootが必要です。Shizukuをrootで動かしてから、Aでもう一度のぞきます。</string>
+    <string name="library_gamenative_help_off">オフ：GameNativeのゲームはライブラリに並びません。プレイ時間はちゃんと残ります。</string>
+    <string name="library_gamenative_help_checking">GameNativeをのぞいています…</string>
+    <string name="library_gamenative_show">GameNativeのゲームを表示</string>
+    <string name="library_gamenative_show_help">GameNativeでダウンロードしたSteam、Epic、GOG、Amazonのゲームが自動的にPCゲームに並び、そのままGameNativeで起動します。DroidDeckにもあるゲームはタイル1枚にまとまり、最後に遊んだほうで起動します。向こうでアンインストールすると消えますが、プレイ時間は残ります。</string>
 </resources>

@@ -155,8 +155,8 @@ object Collections {
     private fun emulatorOf(g: Game, players: HashMap<String, List<LaunchSpec>>): String? {
         if (g.platform.isApps) return null
         val all = players.getOrPut(g.platform.id) { g.platform.players }
-        val ps = g.platform.playersFor(g.file.name, all)
-        val p = ps.firstOrNull { it.name == g.meta.emulator } ?: ps.firstOrNull() ?: return null
+        val ps = g.platform.playersFor(g, all)
+        val p = AppLibraries.playerFor(g, ps) ?: ps.firstOrNull { it.name == g.meta.emulator } ?: ps.firstOrNull() ?: return null
         return p.packageName.takeIf { p.component != LaunchSpec.ANY_APP && it.isNotBlank() }
     }
 

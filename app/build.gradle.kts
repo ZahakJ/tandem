@@ -193,6 +193,8 @@ dependencies {
     // JVM unit tests (./gradlew testDebugUnitTest). kxml2 is the XML pull parser Android itself uses.
     testImplementation("junit:junit:4.13.2")
     testImplementation("net.sf.kxml:kxml2:2.3.0")
+    // A real SQLite for GameNativeLibraryTest: GameNative's database read with the same queries as on the device.
+    testImplementation("org.xerial:sqlite-jdbc:3.46.1.3")
 }
 
 if (buildPadLink != null) {

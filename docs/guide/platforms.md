@@ -23,7 +23,7 @@ Tandem knows 104 systems out of the box, and offers each installed emulator that
 | Genesis, Master System, Game Gear | `genesis`, `megadrive`, `mastersystem`, `gamegear` | `.md` `.gen` `.sms` `.gg` `.zip` | RetroArch (Genesis Plus GX, PicoDrive) |
 | Saturn, Dreamcast | `saturn`, `dreamcast` | `.chd` `.cue` `.gdi` `.cdi` | Yaba Sanshiro, Flycast, Redream, RetroArch |
 | Arcade, Neo Geo | `arcade`, `mame`, `fbneo`, `neogeo` | `.zip` `.7z` `.chd` | RetroArch (FinalBurn Neo, MAME), MAME4droid |
-| Windows | `windows`, `pc`, `steam` | `.steam` `.epic` `.pcgame` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md); games installed in DroidDeck join on their own ([how](library.md#games-installed-in-droiddeck)) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
+| Windows | `windows`, `pc`, `steam` | `.steam` `.epic` `.pcgame` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md); games installed in DroidDeck or GameNative join on their own ([how](library.md#games-installed-in-droiddeck-and-gamenative)) | GameNative, DroidDeck, Winlator, Moonlight (streamed games only) |
 | DOS, ScummVM | `dos`, `scummvm` | `.zip` `.dosz` `.exe` `.scummvm` | DOSBox Pure, ScummVM |
 
 A system appears only when its folder has at least one game. The built-in [`platforms.json`](../../app/src/main/assets/platforms.json) lists every system, folder name and file type. PC games are shortcut files; [Windows and Steam games](library.md#windows-and-steam-games) explains them.
@@ -132,8 +132,8 @@ Each entry in `players` describes how to start one emulator.
 | `component` | Yes | The emulator's activity, as `package/full.activity.Name`. |
 | `action` | No | The intent action. Defaults to `android.intent.action.VIEW`. |
 | `game` | No | How the game is handed over; see below. Defaults to `data`. |
-| `extras` | No | Extra values to send with the intent. They keep their JSON type: a string, a list (sent as a string array), `true`/`false`, or a number. A templated number is written `{"int": "{file.id}"}` (also `long`, `float`, `bool`, `uri`, `string`). |
-| `extensions` | No | The file extensions this player opens. Other files of the system go to its other players, and the game menu offers it only for these. DroidDeck lists `steam` and `steamappid`. |
+| `extras` | No | Extra values to send with the intent. They keep their JSON type: a string, a list (sent as a string array), `true`/`false`, or a number. A templated number is written `{"int": "{file.id}"}` (also `long`, `float`, `bool`, `uri`, `string`). Add `"optional": true` to that object to leave the extra out for a file without the `[name]` line its `{tags.<name>}` reads (DroidDeck's `game_source`). |
+| `extensions` | No | The file extensions this player opens. Other files of the system go to its other players, and the game menu offers it only for these. DroidDeck lists `steam`, `steamappid` and its stores' (`epic`, `gog`, `amazon`, `xbox`…). |
 | `own` | No | `true`: the files in `extensions` are this player's alone. No other player of the system is used or offered for them, whichever is the system's default. Moonlight owns `moonlight`. |
 | `data`, `type` | No | Templates for the intent's data and MIME type, for players that want something other than the game file (`gamenative://run?appid={file.id}`, say). |
 | `categories` | No | Intent categories to add. |
@@ -157,7 +157,7 @@ The `game` field takes one of these forms:
 <details>
 <summary>Templates you can use in extras, data and type</summary>
 
-`{file.path}`, `{file.uri}` (a shared link), `{file.fileuri}`, `{file.name}`, `{file.stem}`, `{file.ext}`, `{file.dir}`, `{file.mime}`, `{file.id}` (the id inside a small shortcut file, such as a Vita `.dpt` or a PC `.steam`), `{file.text}` (its first line), `{tags.<name>}` (a `[name] value` line in it), `{storage}`, `{roms}` and `{package}`.
+`{file.path}`, `{file.uri}` (a shared link), `{file.fileuri}`, `{file.name}`, `{file.stem}`, `{file.ext}`, `{file.dir}`, `{file.mime}`, `{file.id}` (the id inside a small shortcut file, such as a Vita `.dpt` or a PC `.steam`), `{file.text}` (its first line), `{tags.<name>}` (a `[name] value` line in it; without one, the file's id: GameNative's `{tags.gamenative}` and DroidDeck's `{tags.droiddeck}` read Tandem's own files for their games, and any shortcut's id), `{storage}`, `{roms}` and `{package}`.
 
 </details>
 

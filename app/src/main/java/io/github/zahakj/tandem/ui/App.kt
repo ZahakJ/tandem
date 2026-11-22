@@ -396,8 +396,8 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
     val began = SystemClock.uptimeMillis()
     val libs = withContext(Dispatchers.IO) {
         val all = platforms ?: Platforms.load(ctx)
-        // DroidDeck's installed games first (cheap when nothing changed; a change counts as a changed folder).
-        io.github.zahakj.tandem.DroidDeck.sync(ctx, all, force = !onlyIfChanged)
+        // DroidDeck's and GameNative's installed games first (cheap when nothing changed; a change counts as a changed folder).
+        io.github.zahakj.tandem.AppLibraries.sync(ctx, all, force = !onlyIfChanged)
         Library.scan(all)
     }
     // How long a scan takes (tools/perf.sh reads it).
@@ -407,7 +407,7 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
         // No folder changed since the cached library went up: it is the same library, so the home isn't rebuilt.
         io.github.zahakj.tandem.FileChecks.clear()
         io.github.zahakj.tandem.data.DetailsFill.request()
-        io.github.zahakj.tandem.DroidDeck.fillShortcutArt()
+        io.github.zahakj.tandem.AppLibraries.fillShortcutArt()
         io.github.zahakj.tandem.data.SteamArt.request()
         if (announce) Toasts.show(Tx.p(R.plurals.home_scan_found, Collections.visible(shown.flatMap { it.games }).size))
         return
@@ -423,7 +423,7 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
     Libraries.all = libs
     // New games (and ones a scrape never reached) get their description from the LaunchBox database on the device.
     io.github.zahakj.tandem.data.DetailsFill.request()
-    io.github.zahakj.tandem.DroidDeck.fillShortcutArt()
+    io.github.zahakj.tandem.AppLibraries.fillShortcutArt()
     io.github.zahakj.tandem.data.SteamArt.request()
     if (announce) Toasts.show(Tx.p(R.plurals.home_scan_found, Collections.visible(libs.flatMap { it.games }).size))
 }
