@@ -297,18 +297,18 @@ object NoteDoc {
         return if (j == i) blocks else blocks.toMutableList().apply { add(j, removeAt(i)) }
     }
 
-    /** The headings a new glossary gets. */
+    /** The headings a new glossary gets when none are given (the app passes them in its language: NotesUi.glossaryHeader). */
     val GLOSSARY = listOf("Symbol", "Meaning")
 
     /**
      * A new, empty glossary row: in the table at or before block [near] (else the last table), or in a new
      * Symbol | Meaning table after [near]. Returns the blocks, the table's index and the row's.
      */
-    fun addRow(blocks: List<Block>, near: Int): Triple<List<Block>, Int, Int> {
+    fun addRow(blocks: List<Block>, near: Int, header: List<String> = GLOSSARY): Triple<List<Block>, Int, Int> {
         val at = (near.coerceAtMost(blocks.size - 1) downTo 0).firstOrNull { blocks[it] is Block.Table }
             ?: blocks.indices.lastOrNull { blocks[it] is Block.Table }
         if (at == null) {
-            val table = Block.Table(GLOSSARY, listOf(GLOSSARY.map { "" }))
+            val table = Block.Table(header, listOf(header.map { "" }))
             val i = (near + 1).coerceIn(0, blocks.size)
             return Triple(insert(blocks, near, table), i, 0)
         }

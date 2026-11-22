@@ -1,9 +1,12 @@
 package io.github.zahakj.tandem.data
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -12,14 +15,20 @@ import java.util.concurrent.Executors
 
 /** How much room a widget takes. The footprint in grid cells depends on the screen; see `ui/Widgets.kt`. */
 @Serializable
-enum class WidgetSize(val label: String) { Small("Small"), Medium("Medium"), Wide("Wide"), Tall("Tall") }
+enum class WidgetSize(@StringRes private val res: Int) {
+    Small(R.string.widgets_size_small), Medium(R.string.widgets_size_medium), Wide(R.string.widgets_size_wide), Tall(R.string.widgets_size_tall);
+    val label: String get() = Tx.s(res)
+}
 
 /**
  * Where a widget shows: the widget row on the home (top) screen, the bottom screen when nothing is highlighted, both,
  * or a spot of its own on the icon grid (see IconGridConfig.spans).
  */
 @Serializable
-enum class WidgetPlace(val label: String) { Home("Home screen"), Bottom("Bottom screen"), Both("Both screens"), Grid("Home grid") }
+enum class WidgetPlace(@StringRes private val res: Int) {
+    Home(R.string.widgets_place_home), Bottom(R.string.widgets_place_bottom), Both(R.string.widgets_place_both), Grid(R.string.widgets_place_grid);
+    val label: String get() = Tx.s(res)
+}
 
 /**
  * One placed widget. [type] is a widget kind id (see `WidgetKinds`); unknown types are kept but not shown, so a

@@ -48,6 +48,8 @@ import io.github.zahakj.tandem.CompanionInfo
 import io.github.zahakj.tandem.GameShot
 import io.github.zahakj.tandem.NoteStore
 import io.github.zahakj.tandem.OpenNote
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.NoteDoc
 import io.github.zahakj.tandem.data.NoteDoc.Block
 import io.github.zahakj.tandem.data.NoteEntry
@@ -166,12 +168,12 @@ private fun ColumnScope.ListPage(info: CompanionInfo, book: Notebook?, activity:
     val notes by produceState<List<NoteEntry>?>(null, book, NoteStore.version) {
         value = book?.let { b -> withContext(Dispatchers.IO) { NoteFiles.notes(b) } }
     }
-    Header("Notes · ${info.title}", "Game", { CompanionNotes.hide() })
+    Header(Tx.s(R.string.apps_cnotes_title, info.title), Tx.s(R.string.apps_cnotes_back_game), { CompanionNotes.hide() })
     val list = notes
     Box(Modifier.fillMaxWidth().weight(1f)) {
         if (list != null && list.isEmpty()) {
             Text(
-                "No notes for this game yet. Start one below; they're kept in ROMs/⁠notes/⁠${book?.name.orEmpty()}.",
+                Tx.s(R.string.apps_cnotes_empty, book?.name.orEmpty()),
                 Modifier.align(Alignment.Center).padding(16.dp), style = MaterialTheme.typography.bodyLarge, color = Palette.Muted, maxLines = 4,
             )
         } else if (list != null) {
@@ -192,22 +194,23 @@ private fun ColumnScope.ListPage(info: CompanionInfo, book: Notebook?, activity:
     val b = book ?: return
     fun make(kind: NotesUi.Kind) = newNote(b, kind, say)
     AddRow(
-        "+ Note" to { make(NotesUi.Kind.Note) }, "+ Checklist" to { make(NotesUi.Kind.Checklist) }, "+ Glossary" to { make(NotesUi.Kind.Glossary) },
-        "+ Sketch" to { make(NotesUi.Kind.Sketch) }, "+ Screenshot" to { shotNote(b, activity, say) },
+        plusLabel(NotesUi.Kind.Note.label) to { make(NotesUi.Kind.Note) }, plusLabel(NotesUi.Kind.Checklist.label) to { make(NotesUi.Kind.Checklist) },
+        plusLabel(NotesUi.Kind.Glossary.label) to { make(NotesUi.Kind.Glossary) },
+        plusLabel(NotesUi.Kind.Sketch.label) to { make(NotesUi.Kind.Sketch) }, plusLabel(Tx.s(R.string.apps_cnotes_screenshot)) to { shotNote(b, activity, say) },
     )
 }
 
 private fun newNote(book: Notebook, kind: NotesUi.Kind, say: (String) -> Unit) {
     val text = NotesUi.newText(kind)
     NoteStore.later({ NoteStore.create(book, NotesUi.newName(kind.label), text) }) { file ->
-        file ?: run { say("Couldn't make a note in ROMs/notes"); return@later }
+        file ?: run { say(Tx.s(R.string.apps_notes_make_failed)); return@later }
         val note = OpenNote(file, NoteDoc.parse(text))
         CompanionNotes.note = note
         when (kind) {
-            NotesUi.Kind.Note -> CompanionNotes.type("Write your note", multiLine = true) { t -> if (t.isNotBlank()) note.edit { it + Block.Text(t.trimEnd()) } }
+            NotesUi.Kind.Note -> CompanionNotes.type(Tx.s(R.string.apps_note_write), multiLine = true) { t -> if (t.isNotBlank()) note.edit { it + Block.Text(t.trimEnd()) } }
             NotesUi.Kind.Checklist -> typeTasks(note)
             NotesUi.Kind.Glossary -> Unit
-            NotesUi.Kind.Sketch -> SketchPad.open(file, null, square = false, title = "Sketch", owner = OWNER, say = say, onDiscard = { dropIfEmpty(note) }) { png ->
+            NotesUi.Kind.Sketch -> SketchPad.open(file, null, square = false, title = Tx.s(R.string.apps_note_sketch), owner = OWNER, say = say, onDiscard = { dropIfEmpty(note) }) { png ->
                 note.edit { it + Block.Picture(relPath(file, png), "") }
             }
         }
@@ -218,13 +221,13 @@ private fun newNote(book: Notebook, kind: NotesUi.Kind, say: (String) -> Unit) {
 private fun shotNote(book: Notebook, activity: CompanionActivity, say: (String) -> Unit) {
     val onTop = activity.gameOnTop
     NoteStore.later({
-        val file = NoteStore.create(book, NotesUi.newName("Screenshot"))
+        val file = NoteStore.create(book, NotesUi.newName(Tx.s(R.string.apps_cnotes_screenshot)))
         val r = NoteStore.screenshot(file, onTop)
         if (r is GameShot.Result.Failed) NoteFiles.delete(file)
         file to r
     }) { r ->
         val (file, shot) = r ?: return@later
-        if (shot !is GameShot.Result.Saved) { NoteStore.changed(); say((shot as? GameShot.Result.Failed)?.why ?: "Couldn't take the screenshot"); return@later }
+        if (shot !is GameShot.Result.Saved) { NoteStore.changed(); say((shot as? GameShot.Result.Failed)?.why ?: Tx.s(R.string.apps_cnotes_shot_failed)); return@later }
         val blocks = listOf(Block.Picture(relPath(file, shot.file), ""))
         NoteStore.save(file, blocks)
         CompanionNotes.note = OpenNote(file, blocks)
@@ -239,7 +242,7 @@ private fun dropIfEmpty(note: OpenNote) {
 }
 
 private fun typeTasks(note: OpenNote) {
-    CompanionNotes.type("New checklist item (leave it empty to stop)") { t ->
+    CompanionNotes.type(Tx.s(R.string.apps_note_new_item)) { t ->
         if (t.isNotBlank()) {
             note.edit { it + Block.Task(t.trim(), false) }
             typeTasks(note)
@@ -254,8 +257,8 @@ private fun typeTasks(note: OpenNote) {
 private fun ColumnScope.NotePage(note: OpenNote, activity: CompanionActivity, say: (String) -> Unit) {
     val blocks = note.blocks
     var picked by remember(note) { mutableIntStateOf(-1) }
-    Header(note.title, "Notes", { CompanionNotes.note = null }, onTitle = {
-        CompanionNotes.type("Rename the note", note.title) { name -> note.rename(name) { } }
+    Header(note.title, Tx.s(R.string.apps_cnotes_back_notes), { CompanionNotes.note = null }, onTitle = {
+        CompanionNotes.type(Tx.s(R.string.apps_notes_rename_note), note.title) { name -> note.rename(name) { } }
     })
     val state = rememberLazyListState()
     LazyColumn(
@@ -263,7 +266,7 @@ private fun ColumnScope.NotePage(note: OpenNote, activity: CompanionActivity, sa
         contentPadding = PaddingValues(vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         if (blocks != null && blocks.isEmpty()) item("empty") {
-            Text("Empty: add something below. Tap a line to change it; hold it to move or delete it.", Modifier.padding(8.dp), style = MaterialTheme.typography.bodyLarge, color = Palette.Muted)
+            Text(Tx.s(R.string.apps_cnotes_note_empty), Modifier.padding(8.dp), style = MaterialTheme.typography.bodyLarge, color = Palette.Muted)
         }
         itemsIndexed(blocks.orEmpty(), key = { i, _ -> i }) { i, b ->
             Column(
@@ -287,20 +290,20 @@ private fun ColumnScope.NotePage(note: OpenNote, activity: CompanionActivity, sa
         }
     }
     AddRow(
-        "+ Text" to { CompanionNotes.type("New text", multiLine = true) { t -> if (t.isNotBlank()) note.edit { it + Block.Text(t.trimEnd()) } } },
-        "+ Item" to { typeTasks(note) },
-        "+ Entry" to { note.edit { NoteDoc.addRow(it, it.size - 1).first } },
-        "+ Sketch" to {
-            SketchPad.open(note.file, null, square = false, title = "Sketch", owner = OWNER, say = say) { png -> note.edit { it + Block.Picture(relPath(note.file, png), "") } }
+        plusLabel(Tx.s(R.string.apps_cnotes_text)) to { CompanionNotes.type(Tx.s(R.string.apps_note_new_text), multiLine = true) { t -> if (t.isNotBlank()) note.edit { it + Block.Text(t.trimEnd()) } } },
+        plusLabel(Tx.s(R.string.apps_cnotes_item)) to { typeTasks(note) },
+        plusLabel(Tx.s(R.string.apps_cnotes_entry)) to { note.edit { NoteDoc.addRow(it, it.size - 1, NotesUi.glossaryHeader()).first } },
+        plusLabel(NotesUi.Kind.Sketch.label) to {
+            SketchPad.open(note.file, null, square = false, title = Tx.s(R.string.apps_note_sketch), owner = OWNER, say = say) { png -> note.edit { it + Block.Picture(relPath(note.file, png), "") } }
         },
-        "+ Screenshot" to {
+        plusLabel(Tx.s(R.string.apps_cnotes_screenshot)) to {
             val onTop = activity.gameOnTop
             val f = note.file
             NoteStore.later({ NoteStore.screenshot(f, onTop) }) { r ->
                 when (r) {
                     is GameShot.Result.Saved -> note.edit { it + Block.Picture(relPath(f, r.file), "") }
                     is GameShot.Result.Failed -> say(r.why)
-                    null -> say("Couldn't take the screenshot")
+                    null -> say(Tx.s(R.string.apps_cnotes_shot_failed))
                 }
             }
         },
@@ -310,13 +313,13 @@ private fun ColumnScope.NotePage(note: OpenNote, activity: CompanionActivity, sa
 /** A tap on a block: type its text, tick it, or draw on the picture. */
 private fun tapBlock(note: OpenNote, i: Int, say: (String) -> Unit) {
     when (val b = note.blocks?.getOrNull(i)) {
-        is Block.Text -> CompanionNotes.type("Edit the text", b.text, multiLine = true) { t ->
+        is Block.Text -> CompanionNotes.type(Tx.s(R.string.apps_note_edit_text), b.text, multiLine = true) { t ->
             note.edit { l -> l.toMutableList().apply { if (t.isBlank()) removeAt(i) else set(i, Block.Text(t.trimEnd())) } }
         }
         is Block.Task -> note.edit { l -> l.toMutableList().apply { set(i, b.copy(done = !b.done)) } }
         is Block.Picture -> {
-            val file = NoteStore.picture(note.file, b.path) ?: run { say("That picture isn't there any more"); return }
-            SketchPad.open(note.file, file, square = false, title = "Draw on it", owner = OWNER, say = say) { png ->
+            val file = NoteStore.picture(note.file, b.path) ?: run { say(Tx.s(R.string.apps_note_picture_gone)); return }
+            SketchPad.open(note.file, file, square = false, title = Tx.s(R.string.apps_cnotes_draw_on), owner = OWNER, say = say) { png ->
                 if (png != file) note.edit { l -> l.toMutableList().apply { set(i, b.copy(path = relPath(note.file, png))) } }
             }
         }
@@ -329,22 +332,25 @@ private fun tapBlock(note: OpenNote, i: Int, say: (String) -> Unit) {
 private fun BlockActions(note: OpenNote, i: Int, b: Block, done: () -> Unit) {
     AddRow(
         *listOfNotNull(
-            ("Edit" to {
-                CompanionNotes.type("Edit the item", b.text()) { t ->
+            (Tx.s(R.string.apps_cnotes_edit) to {
+                CompanionNotes.type(Tx.s(R.string.apps_note_edit_item), b.text()) { t ->
                     note.edit { l -> l.toMutableList().apply { if (t.isBlank()) removeAt(i) else set(i, (b as Block.Task).copy(text = t.trim())) } }
                 }
                 done()
             }).takeIf { b is Block.Task },
-            ("Caption" to {
-                CompanionNotes.type("Caption", (b as Block.Picture).caption) { t -> note.edit { l -> l.toMutableList().apply { set(i, b.copy(caption = t.trim())) } } }
+            (Tx.s(R.string.apps_note_caption) to {
+                CompanionNotes.type(Tx.s(R.string.apps_note_caption), (b as Block.Picture).caption) { t -> note.edit { l -> l.toMutableList().apply { set(i, b.copy(caption = t.trim())) } } }
                 done()
             }).takeIf { b is Block.Picture },
-            "Up" to { note.edit { NoteDoc.move(it, i, -1) }; done() },
-            "Down" to { note.edit { NoteDoc.move(it, i, 1) }; done() },
-            "Delete" to { note.edit { it.toMutableList().apply { removeAt(i) } }; done() },
+            Tx.s(R.string.apps_cnotes_up) to { note.edit { NoteDoc.move(it, i, -1) }; done() },
+            Tx.s(R.string.apps_cnotes_down) to { note.edit { NoteDoc.move(it, i, 1) }; done() },
+            Tx.s(R.string.apps_cnotes_delete) to { note.edit { it.toMutableList().apply { removeAt(i) } }; done() },
         ).toTypedArray(),
     )
 }
+
+/** A button that adds something: "+ Note". */
+private fun plusLabel(what: String) = Tx.s(R.string.apps_cnotes_add, what)
 
 private fun Block.text(): String = (this as? Block.Task)?.text ?: (this as? Block.Text)?.text.orEmpty()
 
@@ -369,7 +375,7 @@ private fun Glossary(note: OpenNote, i: Int, t: Block.Table, say: (String) -> Un
                         .combinedClickable(onLongClick = if (k == 0) type else draw, onClick = if (k == 0) draw else type).padding(6.dp),
                     contentAlignment = Alignment.CenterStart,
                 ) {
-                    if (cell.isEmpty()) Text(if (k == 0) "Draw" else "Type", style = MaterialTheme.typography.labelLarge, color = Palette.Muted.copy(alpha = 0.6f))
+                    if (cell.isEmpty()) Text(if (k == 0) Tx.s(R.string.apps_cnotes_draw) else Tx.s(R.string.apps_cnotes_type), style = MaterialTheme.typography.labelLarge, color = Palette.Muted.copy(alpha = 0.6f))
                     else GlossaryCell(note.file, cell, pictureSize = 56.dp)
                 }
             }
@@ -386,13 +392,13 @@ private fun setCell(note: OpenNote, i: Int, r: Int, k: Int, value: String) = not
 
 private fun typeCell(note: OpenNote, i: Int, r: Int, k: Int, heading: String) {
     val cell = ((note.blocks?.getOrNull(i) as? Block.Table)?.rows?.getOrNull(r)?.getOrNull(k)).orEmpty()
-    CompanionNotes.type(heading.ifEmpty { "Column ${k + 1}" }, if (NoteDoc.cellPicture(cell) != null) "" else cell) { v -> setCell(note, i, r, k, v.trim()) }
+    CompanionNotes.type(heading.ifEmpty { Tx.s(R.string.apps_note_column_n, k + 1) }, if (NoteDoc.cellPicture(cell) != null) "" else cell) { v -> setCell(note, i, r, k, v.trim()) }
 }
 
 private fun drawCell(note: OpenNote, i: Int, r: Int, k: Int, say: (String) -> Unit) {
     val cell = ((note.blocks?.getOrNull(i) as? Block.Table)?.rows?.getOrNull(r)?.getOrNull(k)).orEmpty()
     val existing: File? = NoteDoc.cellPicture(cell)?.let { NoteStore.picture(note.file, it) }
-    SketchPad.open(note.file, existing, square = true, title = "Draw the symbol", owner = OWNER, say = say) { png ->
+    SketchPad.open(note.file, existing, square = true, title = Tx.s(R.string.apps_cnotes_draw_symbol), owner = OWNER, say = say) { png ->
         setCell(note, i, r, k, NoteDoc.pictureCell(relPath(note.file, png)))
     }
 }
@@ -403,7 +409,7 @@ private fun drawCell(note: OpenNote, i: Int, r: Int, k: Int, say: (String) -> Un
 private fun ColumnScope.TypingPage(t: CompanionNotes.Typing) {
     val text = remember(t) { mutableStateOf(TextFieldValue(t.initial, TextRange(t.initial.length))) }
     val done = { CompanionNotes.typing = null; t.onDone(text.value.text) }
-    Header(t.title, "Cancel", { CompanionNotes.typing = null }) { PanelChip("Done", Palette.Mint, strong = true, onTap = done) }
+    Header(t.title, Tx.s(R.string.apps_note_cancel), { CompanionNotes.typing = null }) { PanelChip(Tx.s(R.string.apps_note_done), Palette.Mint, strong = true, onTap = done) }
     Column(Modifier.fillMaxWidth().weight(1f).imePadding()) {
         NoteTextField(text, t.multiLine, Modifier.fillMaxWidth().then(if (t.multiLine) Modifier.weight(1f) else Modifier), onDone = done)
     }
@@ -411,7 +417,7 @@ private fun ColumnScope.TypingPage(t: CompanionNotes.Typing) {
 
 @Composable
 private fun ColumnScope.SketchPage(s: SketchSession) {
-    Header(s.title, "Discard", { SketchPad.discard() }) { PanelChip("Done", Palette.Mint, strong = true) { SketchPad.done() } }
+    Header(s.title, Tx.s(R.string.apps_cnotes_discard), { SketchPad.discard() }) { PanelChip(Tx.s(R.string.apps_note_done), Palette.Mint, strong = true) { SketchPad.done() } }
     SketchTools(s.state, Modifier.fillMaxWidth())
     SketchCanvas(s.state, Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(12.dp)))
 }

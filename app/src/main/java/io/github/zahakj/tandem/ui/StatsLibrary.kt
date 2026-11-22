@@ -38,8 +38,9 @@ import io.github.zahakj.tandem.data.GameStatus
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.TimeToBeat
 import io.github.zahakj.tandem.data.playStatus
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.everPlayed
-import io.github.zahakj.tandem.plural
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -72,11 +73,11 @@ fun LibraryTab() {
     val games = Collections.visibleGames()
     val cat = remember(games, Store.meta, Privacy.view) { Catalog(games.filter { Privacy.canShow(it) }) }
     val shelves = listOf(
-        Triple("playing", "Playing", cat.playing to GameStatus.Playing),
-        Triple("backlog", "Backlog", cat.backlog to GameStatus.Backlog),
-        Triple("beaten", "Finished and completed", cat.beaten to GameStatus.Finished),
-        Triple("shelved", "Shelved", cat.shelved to GameStatus.Shelved),
-        Triple("endless", "Endless", cat.endless to GameStatus.Endless),
+        Triple("playing", R.string.stats_library_shelf_playing, cat.playing to GameStatus.Playing),
+        Triple("backlog", R.string.stats_library_shelf_backlog, cat.backlog to GameStatus.Backlog),
+        Triple("beaten", R.string.stats_library_shelf_beaten, cat.beaten to GameStatus.Finished),
+        Triple("shelved", R.string.stats_library_shelf_shelved, cat.shelved to GameStatus.Shelved),
+        Triple("endless", R.string.stats_library_shelf_endless, cat.endless to GameStatus.Endless),
     ).filter { it.third.first.isNotEmpty() }
     val tiles = listOf("t:playing", "t:backlog", "t:beaten", "t:completed")
     val keys = tiles + listOfNotNull("untracked".takeIf { cat.untracked > 0 }) + shelves.flatMap { (id, _, p) -> p.first.map { "$id:${it.key}" } }
@@ -91,7 +92,7 @@ fun LibraryTab() {
     KeepInView(list, targetItem)
     if (cat.by.isEmpty() && cat.untracked == 0) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            EmptyNote("Y › Status on any game puts it in your backlog, or marks it finished. Your library sorts itself out here", "Go back", Modifier.takesFocus(route, "empty", true), mood = 1) { Nav.back() }
+            EmptyNote(Tx.s(R.string.stats_library_empty), Tx.s(R.string.stats_overview_go_back), Modifier.takesFocus(route, "empty", true), mood = 1) { Nav.back() }
         }
         return
     }
@@ -105,21 +106,23 @@ fun LibraryTab() {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 val backlogLeft = cat.backlogTimed.sum().toLong()
                 StatTile(
-                    "Playing", "${cat.playing.size}", cat.playing.firstOrNull()?.let { "latest: ${it.title}" } ?: "nothing on the go",
+                    Tx.s(R.string.stats_library_playing), "${cat.playing.size}", cat.playing.firstOrNull()?.let { Tx.s(R.string.stats_library_playing_latest, it.title) } ?: Tx.s(R.string.stats_library_playing_none),
                     GameStatus.Playing.color, Modifier.weight(1f).takesFocus(route, "t:playing", target == "t:playing"), route, "t:playing",
                 ) { openFolder(Route.Collection(Collections.PLAYING)) }
                 StatTile(
-                    "Backlog", "${cat.backlog.size}",
-                    if (backlogLeft > 0) "about ${TimeToBeat.hours(backlogLeft.toInt())} to clear" + if (cat.backlogTimed.size < cat.backlog.size) "+" else "" else "games waiting",
+                    Tx.s(R.string.stats_library_backlog), "${cat.backlog.size}",
+                    if (backlogLeft > 0) {
+                        Tx.s(if (cat.backlogTimed.size < cat.backlog.size) R.string.stats_library_backlog_left_more else R.string.stats_library_backlog_left, TimeToBeat.hours(backlogLeft.toInt()))
+                    } else Tx.s(R.string.stats_library_backlog_none),
                     GameStatus.Backlog.color, Modifier.weight(1f).takesFocus(route, "t:backlog", target == "t:backlog"), route, "t:backlog",
                 ) { openFolder(Route.Collection(Collections.BACKLOG)) }
                 StatTile(
-                    "Finished", "${cat.beaten.size}", "${cat.beatenThisYear} this year",
+                    Tx.s(R.string.stats_library_finished), "${cat.beaten.size}", Tx.p(R.plurals.stats_library_finished_year, cat.beatenThisYear),
                     GameStatus.Finished.color, Modifier.weight(1f).takesFocus(route, "t:beaten", target == "t:beaten"), route, "t:beaten",
                 ) { openFolder(Route.Collection(Collections.BEATEN)) }
                 val done = cat.of(GameStatus.Completed).size
                 StatTile(
-                    "Completed", "$done", if (cat.beaten.isEmpty()) "100% runs" else "${done * 100 / cat.beaten.size}% of finished games",
+                    Tx.s(R.string.stats_library_completed), "$done", if (cat.beaten.isEmpty()) Tx.s(R.string.stats_library_completed_none) else Tx.s(R.string.stats_library_completed_share, done * 100 / cat.beaten.size),
                     GameStatus.Completed.color, Modifier.weight(1f).takesFocus(route, "t:completed", target == "t:completed"), route, "t:completed",
                 ) { openFolder(Route.Collection(Collections.BEATEN)) }
             }
@@ -134,7 +137,7 @@ fun LibraryTab() {
                     Pip(40.dp, mood = 1)
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        "${plural(cat.untracked, "game")} you've played ${if (cat.untracked == 1) "has" else "have"} no status yet. A sorts them one by one, most played first.",
+                        Tx.p(R.plurals.stats_library_untracked, cat.untracked),
                         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -143,7 +146,7 @@ fun LibraryTab() {
         for ((id, title, pair) in shelves) item("shelf:$id") {
             val (list, status) = pair
             Column {
-                SectionTitle("$title · ${list.size}", status.color)
+                SectionTitle(Tx.s(R.string.stats_library_shelf, Tx.s(title), list.size), status.color)
                 val row = rememberLazyListState()
                 LazyRow(Modifier.fadingEdges(row, horizontal = true).focusRow(), state = row, horizontalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom)) {
                     items(list, key = { it.key }) { g ->
@@ -168,10 +171,10 @@ fun LibraryTab() {
 private fun shelfCaption(g: Game, s: GameStatus): String {
     val m = g.meta
     return when (s) {
-        GameStatus.Playing -> playProgress(m) ?: "just started"
+        GameStatus.Playing -> playProgress(m) ?: Tx.s(R.string.stats_library_just_started)
         GameStatus.Finished, GameStatus.Completed ->
             (if (m.playStatus == GameStatus.Completed) "★ " else "✓ ") + (m.finishedAt.takeIf { it > 0 }?.let { ago(it) } ?: m.playStatus?.label.orEmpty())
-        GameStatus.Backlog -> m.timeToBeat?.main?.takeIf { it > 0 }?.let { "~" + TimeToBeat.hours(it) } ?: "waiting " + ago(m.statusAt).removeSuffix(" ago")
+        GameStatus.Backlog -> m.timeToBeat?.main?.takeIf { it > 0 }?.let { "~" + TimeToBeat.hours(it) } ?: waited(m.statusAt)
         GameStatus.Shelved, GameStatus.Endless -> if (m.playSeconds >= 60) formatPlayTime(m.playSeconds) else s.label
     }
 }
@@ -181,11 +184,24 @@ private fun ago(time: Long): String {
     if (time <= 0) return ""
     val days = (System.currentTimeMillis() - time) / 86_400_000L
     return when {
-        days < 1 -> "today"
-        days < 2 -> "yesterday"
-        days < 31 -> "$days days ago"
-        days < 365 -> "${days / 30} months ago".replace("1 months", "1 month")
-        else -> "${days / 365} years ago".replace("1 years", "1 year")
+        days < 1 -> Tx.s(R.string.stats_ago_today)
+        days < 2 -> Tx.s(R.string.stats_ago_yesterday)
+        days < 31 -> Tx.p(R.plurals.stats_ago_days, days.toInt())
+        days < 365 -> Tx.p(R.plurals.stats_ago_months, (days / 30).toInt())
+        else -> Tx.p(R.plurals.stats_ago_years, (days / 365).toInt())
+    }
+}
+
+/** How long a backlog game has waited: "waiting 3 days", "waiting 2 months". */
+private fun waited(time: Long): String {
+    if (time <= 0) return Tx.s(R.string.stats_waiting)
+    val days = (System.currentTimeMillis() - time) / 86_400_000L
+    return when {
+        days < 1 -> Tx.s(R.string.stats_waiting_today)
+        days < 2 -> Tx.s(R.string.stats_waiting_yesterday)
+        days < 31 -> Tx.p(R.plurals.stats_waiting_days, days.toInt())
+        days < 365 -> Tx.p(R.plurals.stats_waiting_months, (days / 30).toInt())
+        else -> Tx.p(R.plurals.stats_waiting_years, (days / 365).toInt())
     }
 }
 
@@ -201,7 +217,7 @@ object StatusSorter {
     fun open() {
         val keys = Collections.visibleGames().filter { Privacy.canShow(it) && it.meta.playStatus == null && it.meta.everPlayed }
             .sortedByDescending { it.meta.playSeconds }.map { it.key }
-        if (keys.isEmpty()) { Toasts.show("Every game you've played has a status"); return }
+        if (keys.isEmpty()) { Toasts.show(Tx.s(R.string.stats_sorter_none)); return }
         done = 0
         FocusMemory.forget(ROUTE)
         queue = keys
@@ -213,7 +229,7 @@ object StatusSorter {
     fun next() {
         val q = queue ?: return
         done++
-        if (q.size <= 1) { close(); Toasts.show("All sorted! ${plural(done, "game")} done") } else queue = q.drop(1)
+        if (q.size <= 1) { close(); Toasts.show(Tx.p(R.plurals.stats_sorter_done, done)) } else queue = q.drop(1)
     }
 
     const val ROUTE = "statussorter"
@@ -234,12 +250,12 @@ fun StatusSorterPopup() {
         val target = rememberFocusTarget(route, choices)
         PanelSurface(Modifier.width(720.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Sort your played games", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
-                ButtonHint("A", "Set", Palette.Mint)
+                Text(Tx.s(R.string.stats_sorter_title), style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                ButtonHint("A", Tx.s(R.string.stats_sorter_set), Palette.Mint)
                 Spacer(Modifier.width(12.dp))
-                ButtonHint("B", "Stop for now", Palette.Lavender)
+                ButtonHint("B", Tx.s(R.string.stats_sorter_stop), Palette.Lavender)
                 Spacer(Modifier.width(12.dp))
-                Pill("${StatusSorter.done + 1} of ${StatusSorter.done + keys.size}", Palette.Sky)
+                Pill(Tx.s(R.string.stats_sorter_progress, StatusSorter.done + 1, StatusSorter.done + keys.size), Palette.Sky)
             }
             Spacer(Modifier.height(10.dp))
             Row {
@@ -276,7 +292,7 @@ fun StatusSorterPopup() {
                         shape = androidx.compose.foundation.shape.RoundedCornerShape(14.dp),
                         onFocus = { FocusMemory.remember(route, "skip") }, onClick = { StatusSorter.next() },
                     ) {
-                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("Skip this one", style = MaterialTheme.typography.titleSmall, color = Palette.Lavender) }
+                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(Tx.s(R.string.stats_sorter_skip), style = MaterialTheme.typography.titleSmall, color = Palette.Lavender) }
                     }
                 }
             }

@@ -71,13 +71,16 @@ import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.DeviceInfo
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.MainActivity
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RetroAchievements
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.StorageInfo
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.VolumeInfo
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
@@ -103,49 +106,49 @@ object WidgetKinds {
 
     val all: List<WidgetKind> = listOf(
         WidgetKind(
-            "storage", "Storage", "Free space, the biggest systems and folders. A measures again.", "◔", Palette.Mint,
+            "storage", R.string.widgets_storage, R.string.widgets_storage_blurb, "◔", Palette.Mint,
             ALL, Medium,
             options = listOf(
-                WidgetOption("list", "List", listOf("systems" to "Biggest systems", "folders" to "Biggest folders", "none" to "Just the rings"), "systems") { it != Small },
-                toggleOption("extras", "Art & cache sizes", true) { it != Small },
+                WidgetOption("list", R.string.widgets_opt_list, listOf("systems" to R.string.widgets_opt_list_systems, "folders" to R.string.widgets_opt_list_folders, "none" to R.string.widgets_opt_list_none), "systems") { it != Small },
+                toggleOption("extras", R.string.widgets_opt_extras, true) { it != Small },
             ),
-            actions = { listOf(WidgetAction("Measure again", color = Palette.Mint) { WidgetUi.rescan++; Toasts.show("Measuring your folders…") }) },
+            actions = { listOf(WidgetAction(Tx.s(R.string.widgets_act_measure), color = Palette.Mint) { WidgetUi.rescan++; Toasts.show(Tx.s(R.string.widgets_measuring)) }) },
             content = { s, m -> StorageWidget(s, m) },
         ),
         WidgetKind(
-            "battery", "Battery", "Charge, temperature and time left. A opens quick settings.", "⚡", Palette.Butter,
+            "battery", R.string.widgets_battery, R.string.widgets_battery_blurb, "⚡", Palette.Butter,
             listOf(Small, Medium, Tall), Small,
-            options = listOf(toggleOption("temp", "Temperature", true), toggleOption("estimate", "Time left", true)),
+            options = listOf(toggleOption("temp", R.string.widgets_opt_temp, true), toggleOption("estimate", R.string.widgets_opt_estimate, true)),
             content = { s, m -> BatteryWidget(s, m) },
         ),
         WidgetKind(
-            "clock", "Clock", "Digital, analog or big and friendly. A switches the style.", "◷", Palette.Lavender,
+            "clock", R.string.widgets_clock, R.string.widgets_clock_blurb, "◷", Palette.Lavender,
             ALL, Small,
             options = listOf(
-                WidgetOption("style", "Style", listOf("digital" to "Digital", "analog" to "Analog", "big" to "Big & friendly"), "digital"),
-                WidgetOption("hours", "Hours", listOf("system" to "Like Android", "12" to "12-hour", "24" to "24-hour"), "system"),
-                toggleOption("seconds", "Seconds", false),
-                toggleOption("date", "Date", true),
+                WidgetOption("style", R.string.widgets_opt_style, CLOCK_STYLES, "digital"),
+                WidgetOption("hours", R.string.widgets_opt_hours, listOf("system" to R.string.widgets_opt_hours_system, "12" to R.string.widgets_opt_hours_12, "24" to R.string.widgets_opt_hours_24), "system"),
+                toggleOption("seconds", R.string.widgets_opt_seconds, false),
+                toggleOption("date", R.string.widgets_opt_date, true),
             ),
             content = { s, m -> ClockWidget(s, m) },
         ),
         WidgetKind(
-            "nowplaying", "Now playing", "The game waiting in the background. A resumes it.", "▶", Palette.Mint,
+            "nowplaying", R.string.widgets_nowplaying, R.string.widgets_nowplaying_blurb, "▶", Palette.Mint,
             listOf(Small, Medium, Wide, Tall), Medium,
             content = { s, m -> NowPlayingWidget(s, m) },
         ),
         WidgetKind(
-            "continue", "Continue playing", "Your latest games, one press away.", "↺", Palette.Mint,
+            "continue", R.string.widgets_continue, R.string.widgets_continue_blurb, "↺", Palette.Mint,
             listOf(Medium, Wide, Tall), Wide,
             content = { s, m ->
                 val list = rememberGames { Collections.continuePlaying() }
-                GameStrip(s, m, "Continue playing", list.map { StripItem(it.key, it, it.title) }, "Nothing played yet", "Your latest games land here")
+                GameStrip(s, m, Tx.s(R.string.widgets_continue), list.map { StripItem(it.key, it, it.title) }, Tx.s(R.string.widgets_continue_empty), Tx.s(R.string.widgets_continue_empty_detail))
             },
         ),
         WidgetKind(
-            "favorites", "Favorites", "The games you ♥.", "♥", Palette.Peach,
+            "favorites", R.string.widgets_favorites, R.string.widgets_favorites_blurb, "♥", Palette.Peach,
             listOf(Medium, Wide, Tall), Wide,
-            options = listOf(WidgetOption("order", "Order", listOf("name" to "A to Z", "recent" to "Recently played", "most" to "Most played"), "name")),
+            options = listOf(WidgetOption("order", R.string.widgets_opt_order, listOf("name" to R.string.widgets_opt_order_name, "recent" to R.string.widgets_opt_order_recent, "most" to R.string.widgets_opt_order_most), "name")),
             content = { s, m ->
                 val order = s.opt("order")
                 val list = rememberGames(order) {
@@ -156,75 +159,75 @@ object WidgetKinds {
                         else -> f
                     }
                 }
-                GameStrip(s, m, "Favorites", list.map { StripItem(it.key, it, it.title) }, "No favorites yet", "Press Y on a game › Add to favorites")
+                GameStrip(s, m, Tx.s(R.string.widgets_favorites), list.map { StripItem(it.key, it, it.title) }, Tx.s(R.string.widgets_favorites_empty), Tx.s(R.string.widgets_favorites_empty_detail))
             },
         ),
         WidgetKind(
-            "random", "Surprise me", "A random pick, with a reroll.", "🎲", Palette.Lavender,
+            "random", R.string.widgets_random, R.string.widgets_random_blurb, "🎲", Palette.Lavender,
             listOf(Small, Medium, Tall), Medium,
-            options = listOf(WidgetOption("pool", "Pick from", listOf("unplayed" to "Never played", "any" to "Everything", "favorites" to "Favorites"), "unplayed")),
-            actions = { w -> listOf(WidgetAction("Pick another", color = Palette.Lavender, closes = false) { Surprise.reroll(w.id, w.options["pool"] ?: "unplayed") }) },
+            options = listOf(WidgetOption("pool", R.string.widgets_opt_pool, listOf("unplayed" to R.string.widgets_opt_pool_unplayed, "any" to R.string.widgets_opt_pool_any, "favorites" to R.string.widgets_opt_pool_favorites), "unplayed")),
+            actions = { w -> listOf(WidgetAction(Tx.s(R.string.widgets_act_pick_another), color = Palette.Lavender, closes = false) { Surprise.reroll(w.id, w.options["pool"] ?: "unplayed") }) },
             content = { s, m -> SurpriseWidget(s, m) },
         ),
         WidgetKind(
-            "recent", "Recently added", "New arrivals in your library.", "✦", Palette.Sky,
+            "recent", R.string.widgets_recent, R.string.widgets_recent_blurb, "✦", Palette.Sky,
             listOf(Medium, Wide, Tall), Wide,
             content = { s, m ->
                 val list = rememberGames { Collections.recentlyAdded() }
                 val week = System.currentTimeMillis() - 7L * 24 * 3600_000
-                GameStrip(s, m, "Recently added", list.map { StripItem(it.key, it, it.title, badge = if (it.meta.firstSeen > week) "New" else null) }, "No games yet", "Pick your games folder in Settings › Library & art › Game folders")
+                GameStrip(s, m, Tx.s(R.string.widgets_recent), list.map { StripItem(it.key, it, it.title, badge = if (it.meta.firstSeen > week) Tx.s(R.string.widgets_recent_new) else null) }, Tx.s(R.string.widgets_no_games), Tx.s(R.string.widgets_recent_empty_detail))
             },
         ),
         WidgetKind(
-            "stats", "Play stats", "Today, this week, your streak and a little chart. A opens stats.", "★", Palette.Butter,
+            "stats", R.string.widgets_stats, R.string.widgets_stats_blurb, "★", Palette.Butter,
             ALL, Medium,
             content = { s, m -> StatsWidget(s, m) },
         ),
         WidgetKind(
-            "achievements", "Achievements", "Your latest RetroAchievements unlocks.", "🏆", Palette.Butter,
+            "achievements", R.string.widgets_achievements, R.string.widgets_achievements_blurb, "🏆", Palette.Butter,
             listOf(Medium, Wide, Tall), Medium,
             available = { HomeStore.ra.let { it.enabled && it.user.isNotBlank() && it.key.isNotBlank() } },
-            needs = "Sign in to RetroAchievements in Settings first",
-            actions = { listOf(WidgetAction("Check again", color = Palette.Butter) { RaRecent.at = 0; RaRecent.version++ }) },
+            needs = R.string.widgets_achievements_needs,
+            actions = { listOf(WidgetAction(Tx.s(R.string.widgets_act_check_again), color = Palette.Butter) { RaRecent.at = 0; RaRecent.version++ }) },
             content = { s, m -> AchievementsWidget(s, m) },
         ),
         WidgetKind(
-            "pip", "Pip", "Your little companion. Pip notices the time and your streak.", "☺", Palette.Peach,
+            "pip", R.string.widgets_pip, R.string.widgets_pip_blurb, "☺", Palette.Peach,
             listOf(Small, Medium, Tall), Small,
             options = listOf(
-                toggleOption("talk", "Speech bubble", true),
-                WidgetOption("mood", "Mood", listOf("auto" to "Automatic", "happy" to "Happy", "excited" to "Excited", "sleepy" to "Sleepy"), "auto"),
+                toggleOption("talk", R.string.widgets_opt_talk, true),
+                WidgetOption("mood", R.string.widgets_opt_mood, listOf("auto" to R.string.widgets_opt_mood_auto, "happy" to R.string.widgets_opt_mood_happy, "excited" to R.string.widgets_opt_mood_excited, "sleepy" to R.string.widgets_opt_mood_sleepy), "auto"),
             ),
             content = { s, m -> PipWidget(s, m) },
         ),
         WidgetKind(
-            "upnext", "Up next", "Your list of games to play next. Y on any game › Add to Up next.", "☰", Palette.Sky,
+            "upnext", R.string.widgets_upnext, R.string.widgets_upnext_blurb, "☰", Palette.Sky,
             listOf(Medium, Wide, Tall), Wide,
-            options = listOf(WidgetOption("played", "Played games", listOf("show" to "Show with ✓", "hide" to "Hide"), "show")),
+            options = listOf(WidgetOption("played", R.string.widgets_opt_played, listOf("show" to R.string.widgets_opt_played_show, "hide" to R.string.widgets_opt_played_hide), "show")),
             actions = { _ ->
                 buildList {
-                    add(WidgetAction("Add a game or note…", color = Palette.Sky) { UpNext.ask() })
+                    add(WidgetAction(Tx.s(R.string.widgets_act_add_upnext), color = Palette.Sky) { UpNext.ask() })
                     val played = UpNext.shown().count { (e, g) -> UpNext.played(e, g) }
-                    if (played > 0) add(WidgetAction("Clear played games", "$played", Palette.Mint, closes = false, refocus = true) { Toasts.show("Cleared ${plural(UpNext.clearPlayed(), "game", "games")}") })
-                    for ((e, g) in UpNext.shown().take(12)) add(WidgetAction("Remove ${g?.title ?: e.note.orEmpty()}", null, Palette.Peach, closes = false, refocus = true) { UpNext.remove(e) })
+                    if (played > 0) add(WidgetAction(Tx.s(R.string.widgets_act_clear_played), "$played", Palette.Mint, closes = false, refocus = true) { Toasts.show(Tx.p(R.plurals.widgets_cleared_played, UpNext.clearPlayed())) })
+                    for ((e, g) in UpNext.shown().take(12)) add(WidgetAction(Tx.s(R.string.widgets_act_remove, g?.title ?: e.note.orEmpty()), null, Palette.Peach, closes = false, refocus = true) { UpNext.remove(e) })
                 }
             },
             content = { s, m -> UpNextWidget(s, m) },
         ),
         WidgetKind(
-            "sysmon", "System monitor", "Free memory, CPU temperature (when Android shares it) and uptime.", "▤", Palette.Sky,
+            "sysmon", R.string.widgets_sysmon, R.string.widgets_sysmon_blurb, "▤", Palette.Sky,
             listOf(Small, Medium, Tall), Medium,
-            options = listOf(toggleOption("uptime", "Uptime", true)),
+            options = listOf(toggleOption("uptime", R.string.widgets_opt_uptime, true)),
             content = { s, m -> SysmonWidget(s, m) },
         ),
         WidgetKind(
-            "apps", "App shortcuts", "Your dock apps in a mini dock.", "⊞", Palette.Sky,
+            "apps", R.string.widgets_apps, R.string.widgets_apps_blurb, "⊞", Palette.Sky,
             listOf(Medium, Wide, Tall), Medium,
-            actions = { listOf(WidgetAction("Choose dock apps", color = Palette.Sky) { Panels.openApps() }) },
+            actions = { listOf(WidgetAction(Tx.s(R.string.widgets_act_choose_dock), color = Palette.Sky) { Panels.openApps() }) },
             content = { s, m -> AppsWidget(s, m) },
         ),
         WidgetKind(
-            "greeting", "Greeting", "Pip says hello, with the time and your last game. A plays it.", "✿", Palette.Lavender,
+            "greeting", R.string.widgets_greeting, R.string.widgets_greeting_blurb, "✿", Palette.Lavender,
             listOf(Medium, Wide, Tall), Wide,
             content = { s, m -> GreetingWidget(s, m) },
         ),
@@ -240,15 +243,18 @@ object WidgetKinds {
 
 private fun play(ctx: Context, g: Game) = Launcher.launch(Host.activity ?: ctx, g)
 
-private fun bytes(ctx: Context, b: Long): String = Formatter.formatShortFileSize(ctx, b)
+// Sizes in the app's language ("GB", "Go"), whatever [ctx] is.
+@Suppress("UNUSED_PARAMETER")
+private fun bytes(ctx: Context, b: Long): String = Formatter.formatShortFileSize(Tx.context, b)
 
 /** Minutes as "45m" or "2h 5m". */
-private fun hm(minutes: Long): String = if (minutes < 60) "${minutes}m" else "${minutes / 60}h ${minutes % 60}m"
+private fun hm(minutes: Long): String =
+    if (minutes < 60) Tx.s(R.string.widgets_minutes, minutes) else Tx.s(R.string.widgets_hours_minutes, minutes / 60, minutes % 60)
 
 /** Play time for widgets: "0m", "under 1m", "45m", "2h 5m". */
 private fun shortPlay(seconds: Long): String = when {
-    seconds <= 0 -> "0m"
-    seconds < 60 -> "under 1m"
+    seconds <= 0 -> hm(0)
+    seconds < 60 -> Tx.s(R.string.widgets_under_minute)
     else -> hm(seconds / 60)
 }
 
@@ -437,7 +443,7 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
     }
     val extras = s.on("extras") && sizes != null
     val lh = lineHeights()
-    WidgetCard(s, m, onClick = { WidgetUi.rescan++; Toasts.show("Measuring your folders…") }) { _, _ ->
+    WidgetCard(s, m, onClick = { WidgetUi.rescan++; Toasts.show(Tx.s(R.string.widgets_measuring)) }) { _, _ ->
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val pad = widgetPad(maxWidth, maxHeight)
             val w = maxWidth - pad * 2
@@ -451,7 +457,7 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
                     else -> 1
                 }
                 when {
-                    vols.isEmpty() -> EmptyNote("◔", "Checking storage…", null, Palette.Mint, compact = true)
+                    vols.isEmpty() -> EmptyNote("◔", Tx.s(R.string.widgets_storage_checking), null, Palette.Mint, compact = true)
                     // A narrow cell: the rings one above the other, each with its free space under it when there's room.
                     w < 120.dp -> {
                         val n = if (vols.size > 1 && h >= w * 2f + 10.dp) 2 else 1
@@ -461,7 +467,7 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
                             for (v in vols.take(n)) {
                                 val ring = min(w, if (withText) slot - lh.small else slot).coerceAtMost(84.dp)
                                 VolumeRing(v, ring)
-                                if (withText) FitLine("${bytes(ctx, v.free)} free", MaterialTheme.typography.labelSmall, Modifier.width(w), Palette.Muted, Alignment.Center)
+                                if (withText) FitLine(Tx.s(R.string.widgets_free, bytes(ctx, v.free)), MaterialTheme.typography.labelSmall, Modifier.width(w), Palette.Muted, Alignment.Center)
                             }
                         }
                     }
@@ -476,14 +482,14 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
                         }
                     }
                     else -> Column(Modifier.fillMaxSize()) {
-                        Header("◔", "Storage", Palette.Mint, trailing = if (StorageInfo.scanning) "measuring…" else null)
+                        Header("◔", Tx.s(R.string.widgets_storage), Palette.Mint, trailing = if (StorageInfo.scanning) Tx.s(R.string.widgets_storage_measuring) else null)
                         Spacer(Modifier.height(6.dp))
                         if (w < 200.dp) {
                             val v = vols.first()
                             VolumeChip(v, 52.dp, ctx, 3)
                             vols.getOrNull(1)?.let { sd ->
                                 Spacer(Modifier.height(4.dp))
-                                Text("${sd.label} · ${bytes(ctx, sd.free)} free", style = MaterialTheme.typography.labelSmall, color = fullnessColor(sd.fraction, Palette.Sky), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(Tx.s(R.string.widgets_volume_free, sd.label, bytes(ctx, sd.free)), style = MaterialTheme.typography.labelSmall, color = fullnessColor(sd.fraction, Palette.Sky), maxLines = 1, overflow = TextOverflow.Ellipsis)
                             }
                         } else {
                             Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -495,7 +501,7 @@ private fun StorageWidget(s: WidgetScope, m: Modifier) {
                         else Spacer(Modifier.weight(1f))
                         if (extras) {
                             val sz = sizes!!
-                            PartsText("Art ${bytes(ctx, sz.mediaBytes)} · Cache ${bytes(ctx, sz.cacheBytes)}", MaterialTheme.typography.labelSmall, color = Palette.Muted)
+                            PartsText(Tx.s(R.string.widgets_art_cache, bytes(ctx, sz.mediaBytes), bytes(ctx, sz.cacheBytes)), MaterialTheme.typography.labelSmall, color = Palette.Muted)
                         }
                     }
                 }
@@ -521,8 +527,8 @@ private fun VolumeChip(v: VolumeInfo, ring: Dp, ctx: Context, lines: Int, modifi
         Spacer(Modifier.width(7.dp))
         Column(Modifier.weight(1f, fill = false)) {
             if (lines >= 2) FitLine(v.label, MaterialTheme.typography.labelMedium, color = Palette.Muted)
-            FitLine(if (lines == 3) bytes(ctx, v.free) else "${bytes(ctx, v.free)} free", MaterialTheme.typography.titleSmall, color = color)
-            if (lines >= 3) FitLine("free", MaterialTheme.typography.labelSmall, color = Palette.Muted)
+            FitLine(if (lines == 3) bytes(ctx, v.free) else Tx.s(R.string.widgets_free, bytes(ctx, v.free)), MaterialTheme.typography.titleSmall, color = color)
+            if (lines >= 3) FitLine(Tx.s(R.string.widgets_free_word), MaterialTheme.typography.labelSmall, color = Palette.Muted)
         }
     }
 }
@@ -531,9 +537,9 @@ private fun VolumeChip(v: VolumeInfo, ring: Dp, ctx: Context, lines: Int, modifi
 private fun Extras(sz: io.github.zahakj.tandem.FolderSizes, ctx: Context, modifier: Modifier) {
     val games = sz.roms.filterKeys { it != "downloaded_media" && it != "tandem" }.values.sum()
     Column(modifier, verticalArrangement = Arrangement.spacedBy(1.dp)) {
-        ExtraLine("Games", bytes(ctx, games), Palette.Mint)
-        ExtraLine("Art & videos", bytes(ctx, sz.mediaBytes), Palette.Lavender)
-        ExtraLine("Cache", bytes(ctx, sz.cacheBytes), Palette.Sky)
+        ExtraLine(Tx.s(R.string.widgets_extra_games), bytes(ctx, games), Palette.Mint)
+        ExtraLine(Tx.s(R.string.widgets_extra_art), bytes(ctx, sz.mediaBytes), Palette.Lavender)
+        ExtraLine(Tx.s(R.string.widgets_extra_cache), bytes(ctx, sz.cacheBytes), Palette.Sky)
     }
 }
 
@@ -551,7 +557,7 @@ private fun StorageList(rows: List<Pair<String, Long>>, sizes: io.github.zahakj.
     BoxWithConstraints(modifier) {
         if (rows.isEmpty()) {
             Text(
-                if (StorageInfo.scanning || sizes == null) "Measuring folders…" else "Nothing to measure",
+                if (StorageInfo.scanning || sizes == null) Tx.s(R.string.widgets_measuring_folders) else Tx.s(R.string.widgets_nothing_to_measure),
                 Modifier.align(Alignment.CenterStart), style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
             )
             return@BoxWithConstraints
@@ -590,7 +596,7 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
     val b = rememberPolled(30_000) { DeviceInfo.battery(ctx) }
     WidgetCard(s, m, onClick = { Panels.toggleQuick() }) { _, _ ->
         if (b == null || b.level < 0) {
-            EmptyNote("⚡", "Battery", "Checking…", Palette.Butter, compact = true)
+            EmptyNote("⚡", Tx.s(R.string.widgets_battery), Tx.s(R.string.widgets_checking), Palette.Butter, compact = true)
             return@WidgetCard
         }
         val color = when {
@@ -600,22 +606,24 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
             else -> Palette.Mint
         }
         val status = when {
-            b.full -> "Fully charged"
-            b.charging -> "Charging"
-            b.plugged -> "Plugged in"
-            b.level <= 15 -> "Running low"
-            else -> "On battery"
+            b.full -> Tx.s(R.string.widgets_battery_full)
+            b.charging -> Tx.s(R.string.widgets_battery_charging)
+            b.plugged -> Tx.s(R.string.widgets_battery_plugged)
+            b.level <= 15 -> Tx.s(R.string.widgets_battery_low)
+            else -> Tx.s(R.string.widgets_battery_on)
         }
         // A short word for narrow cells, where "Fully charged" would have to shrink too far.
         val shortStatus = when {
-            b.full -> "Charged"
-            b.charging -> "Charging"
-            b.plugged -> "Plugged in"
-            b.level <= 15 -> "Low"
-            else -> "On battery"
+            b.full -> Tx.s(R.string.widgets_battery_charged_short)
+            b.charging -> Tx.s(R.string.widgets_battery_charging)
+            b.plugged -> Tx.s(R.string.widgets_battery_plugged)
+            b.level <= 15 -> Tx.s(R.string.widgets_battery_low_short)
+            else -> Tx.s(R.string.widgets_battery_on)
         }
-        val estimate = b.minutesLeft?.takeIf { s.on("estimate") }?.let { if (b.charging) "Full in ${hm(it)}" else "About ${hm(it)} left" }
-        val temp = b.tempC?.takeIf { s.on("temp") }?.let { "${"%.0f".format(it)}°C" + if (it >= 42f) " · warm" else "" }
+        val estimate = b.minutesLeft?.takeIf { s.on("estimate") }?.let { if (b.charging) Tx.s(R.string.widgets_battery_full_in, hm(it)) else Tx.s(R.string.widgets_battery_left, hm(it)) }
+        // The degrees alone for small cells, with "warm" beside them where there's room.
+        val tempShort = b.tempC?.takeIf { s.on("temp") }?.let { "${"%.0f".format(Lang.locale, it)}°C" }
+        val temp = tempShort?.let { t -> if ((b.tempC ?: 0f) >= 42f) Tx.s(R.string.widgets_battery_warm, t) else t }
         val lh = lineHeights()
         val ring = @Composable { size: Dp ->
             // Charging pulses on the shared ambient clock, read only in the layer (no recomposition per frame).
@@ -648,7 +656,7 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
                         ring(min(h, 62.dp))
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-                            if (3 in kept) FitLine("Battery", MaterialTheme.typography.labelMedium, color = Palette.Butter)
+                            if (3 in kept) FitLine(Tx.s(R.string.widgets_battery), MaterialTheme.typography.labelMedium, color = Palette.Butter)
                             FitLine(status, MaterialTheme.typography.titleSmall, color = color)
                             if (1 in kept) estimate?.let { FitLine(it, MaterialTheme.typography.labelMedium, color = Palette.Muted) }
                             if (2 in kept) temp?.let { FitLine(it, MaterialTheme.typography.labelMedium, color = Palette.Muted) }
@@ -665,7 +673,7 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
                     val ringSize = min(min(w, h - used), if (big) 84.dp else 64.dp)
                     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                         if (3 in kept) {
-                            Header("⚡", "Battery", Palette.Butter)
+                            Header("⚡", Tx.s(R.string.widgets_battery), Palette.Butter)
                             Spacer(Modifier.height(6.dp))
                         }
                         ring(ringSize)
@@ -675,7 +683,7 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
                             else FitLine(if (w < 64.dp) shortStatus else status, MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center)
                         }
                         if (2 in kept) estimate?.let { FitLine(it, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center) }
-                        if (1 in kept) temp?.let { FitLine(if (big) it else it.substringBefore(' '), if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center) }
+                        if (1 in kept) temp?.let { FitLine(if (big) it else tempShort.orEmpty(), if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), Palette.Muted, Alignment.Center) }
                     }
                 }
             }
@@ -685,7 +693,7 @@ private fun BatteryWidget(s: WidgetScope, m: Modifier) {
 
 // ---------------------------------------------------------------- clock
 
-private val CLOCK_STYLES = listOf("digital" to "Digital", "analog" to "Analog", "big" to "Big & friendly")
+private val CLOCK_STYLES = listOf("digital" to R.string.widgets_opt_style_digital, "analog" to R.string.widgets_opt_style_analog, "big" to R.string.widgets_opt_style_big)
 
 @Composable
 private fun ClockWidget(s: WidgetScope, m: Modifier) {
@@ -694,17 +702,17 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
     val nowMs = rememberNow(if (seconds) 1000 else 60_000)
     val now = LocalDateTime.ofInstant(Instant.ofEpochMilli(nowMs), ZoneId.systemDefault())
     val is24 = when (s.opt("hours")) { "12" -> false; "24" -> true; else -> android.text.format.DateFormat.is24HourFormat(ctx) }
-    val time = now.format(DateTimeFormatter.ofPattern(if (is24) "HH:mm" else "h:mm"))
-    val ampm = if (is24) null else now.format(DateTimeFormatter.ofPattern("a"))
-    val secs = if (seconds) now.format(DateTimeFormatter.ofPattern(":ss")) else null
+    val time = now.format(DateTimeFormatter.ofPattern(if (is24) "HH:mm" else "h:mm", Lang.locale))
+    val ampm = if (is24) null else now.format(DateTimeFormatter.ofPattern("a", Lang.locale))
+    val secs = if (seconds) now.format(DateTimeFormatter.ofPattern(":ss", Lang.locale)) else null
     val showDate = s.on("date")
-    val date = now.format(DateTimeFormatter.ofPattern("EEE d MMM"))
+    val date = now.format(DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_short), Lang.locale))
     val style = s.opt("style")
     WidgetCard(s, m, onClick = {
         val i = CLOCK_STYLES.indexOfFirst { it.first == style }
         val next = CLOCK_STYLES[(i + 1) % CLOCK_STYLES.size]
         Widgets.setOption(s.widget.id, "style", next.first)
-        Toasts.show("Clock style: ${next.second}")
+        Toasts.show(Tx.s(R.string.widgets_clock_style, Tx.s(next.second)))
     }) { _, _ ->
         val lh = lineHeights()
         BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -739,8 +747,8 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                             AnalogFace(now, seconds, Modifier.size(face))
                             Spacer(Modifier.width(14.dp))
                             Column(Modifier.width(textW)) {
-                                FitLine(now.format(DateTimeFormatter.ofPattern("EEEE")), MaterialTheme.typography.titleLarge, Modifier.width(textW))
-                                if (1 in kept) FitLine(now.format(DateTimeFormatter.ofPattern("d MMMM")), MaterialTheme.typography.titleSmall, Modifier.width(textW), Palette.Lavender)
+                                FitLine(now.format(DateTimeFormatter.ofPattern("EEEE", Lang.locale)), MaterialTheme.typography.titleLarge, Modifier.width(textW))
+                                if (1 in kept) FitLine(now.format(DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_day_month), Lang.locale)), MaterialTheme.typography.titleSmall, Modifier.width(textW), Palette.Lavender)
                                 if (2 in kept) FitLine(timeLine, MaterialTheme.typography.labelLarge, Modifier.width(textW), Palette.Muted)
                             }
                         }
@@ -750,14 +758,14 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                     val brush = Brush.linearGradient(listOf(Palette.Butter, Palette.Peach, Palette.Lavender))
                     val stacked = h > w * 1.1f
                     if (stacked) {
-                        val hours = now.format(DateTimeFormatter.ofPattern(if (is24) "HH" else "h"))
-                        val mins = now.format(DateTimeFormatter.ofPattern("mm"))
+                        val hours = now.format(DateTimeFormatter.ofPattern(if (is24) "HH" else "h", Lang.locale))
+                        val mins = now.format(DateTimeFormatter.ofPattern("mm", Lang.locale))
                         val pill = showDate && h * 0.32f >= 26.dp
                         val big = (min(w * 0.62f, h * (if (pill) 0.34f else 0.44f)).value).sp
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(hours, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
                             Text(mins, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
-                            if (pill) Pill(now.format(DateTimeFormatter.ofPattern(if (w < 90.dp) "EEE" else "EEEE")), Palette.Lavender)
+                            if (pill) Pill(now.format(DateTimeFormatter.ofPattern(if (w < 90.dp) "EEE" else "EEEE", Lang.locale)), Palette.Lavender)
                         }
                     } else {
                         val dated = showDate && h >= lh.title + 34.dp
@@ -765,7 +773,7 @@ private fun ClockWidget(s: WidgetScope, m: Modifier) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(time, style = MaterialTheme.typography.displaySmall.copy(brush = brush, fontSize = big, lineHeight = big, fontWeight = FontWeight.Black), maxLines = 1, softWrap = false)
                             if (dated) FitLine(
-                                now.format(DateTimeFormatter.ofPattern("EEEE")) + (ampm?.let { " · $it" } ?: ""),
+                                now.format(DateTimeFormatter.ofPattern("EEEE", Lang.locale)) + (ampm?.let { " · $it" } ?: ""),
                                 MaterialTheme.typography.labelLarge, Modifier.widthIn(max = w), Palette.Lavender, Alignment.Center,
                             )
                         }
@@ -849,7 +857,7 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
         val twoParts = r != null && others > 0 && chips && (stacked || h >= 60.dp)
         WidgetCard(s, Modifier.fillMaxSize(), accent = color, cursorCount = if (twoParts) 2 else 0, onClick = { i ->
             when {
-                r == null -> Toasts.show(if (RunningGames.canSee) "Start a game and it'll wait here" else "Allow Tandem in Shizuku to see running games")
+                r == null -> Toasts.show(if (RunningGames.canSee) Tx.s(R.string.widgets_np_start) else Tx.s(R.string.widgets_np_shizuku))
                 i == 1 && twoParts -> Panels.openSwitcher()
                 else -> RunningGames.resume(Host.activity ?: ctx, r)
             }
@@ -858,8 +866,8 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
                 Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                     if (!s.small && w >= 150.dp && h >= 40.dp) { Pip(min(h, 48.dp), mood = 2); Spacer(Modifier.width(8.dp)) }
                     EmptyNote(
-                        "▶", if (RunningGames.canSee) "Nothing running" else "Can't see games",
-                        if (RunningGames.canSee) "Games you leave open wait here" else "Needs Shizuku", Palette.Mint, compact = true,
+                        "▶", if (RunningGames.canSee) Tx.s(R.string.widgets_np_nothing) else Tx.s(R.string.widgets_np_cant_see),
+                        if (RunningGames.canSee) Tx.s(R.string.widgets_np_wait) else Tx.s(R.string.widgets_np_needs), Palette.Mint, compact = true,
                         modifier = Modifier.weight(1f, fill = false),
                     )
                 }
@@ -871,7 +879,7 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
                 // The art fades into the card's own tint where the name sits (a mask, not a dark band), and the name
                 // carries a soft shadow.
                 Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.45f to 1f, 1f to 0.3f)) { GameArt(game) }
-                if (w >= 96.dp) Pill("● Running", Palette.Mint, Modifier.align(Alignment.TopStart).padding(6.dp).darkChip())
+                if (w >= 96.dp) Pill(Tx.s(R.string.widgets_np_running), Palette.Mint, Modifier.align(Alignment.TopStart).padding(6.dp).darkChip())
                 // The name only where it fits whole words; on the smallest cells the art says it.
                 if (w >= 64.dp && h >= 44.dp) ShrinkText(game.title, MaterialTheme.typography.labelLarge.onArt(), Modifier.align(Alignment.BottomStart).padding(pad), maxLines = 2, minScale = 0.8f)
                 return@WidgetCard
@@ -879,11 +887,11 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
             // The art fades out on the left, where the text sits, into the card's own tint: no dark band over it.
             if (hero != null) AsyncImage(hero, null, Modifier.fillMaxSize().fadeMaskHorizontal(0f to 0.1f, 0.5f to 0.4f, 1f to 1f), contentScale = ContentScale.Crop)
             val played = RunningGames.sessionSeconds(r)
-            val detail = if (played != null && played > 60) "${game.platform.shortName} · ${shortPlay(played)} this time" else "${game.platform.shortName} · ${r.appName}"
+            val detail = if (played != null && played > 60) Tx.s(R.string.widgets_np_this_time, game.platform.shortName, shortPlay(played)) else Tx.s(R.string.widgets_np_in_app, game.platform.shortName, r.appName)
             if (stacked) {
                 Column(Modifier.fillMaxSize().padding(pad)) {
                     if (h >= 120.dp) {
-                        FitLine("● NOW PLAYING", MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Mint)
+                        FitLine(Tx.s(R.string.widgets_np_now_playing), MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Mint)
                         Spacer(Modifier.height(6.dp))
                     }
                     Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).clip(RoundedCornerShape(14.dp))) { GameArt(game) }
@@ -891,7 +899,7 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
                     Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = if (h >= 140.dp) 2 else 1, overflow = TextOverflow.Ellipsis)
                     if (h >= 140.dp) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (chips) Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
-                        Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
+                        Chip(Tx.s(R.string.widgets_np_resume), Palette.Mint, focused && cursor == 0)
                         if (twoParts) Chip("+$others", Palette.Lavender, focused && cursor == 1)
                     }
                 }
@@ -901,13 +909,13 @@ private fun NowPlayingWidget(s: WidgetScope, m: Modifier) {
                 Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.fillMaxHeight().aspectRatio(1f).clip(RoundedCornerShape(12.dp))) { GameArt(game) }
                     Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                        if (1 in kept) Text("● PAUSED IN ${r.appName.uppercase()}", style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (1 in kept) Text(Tx.s(R.string.widgets_np_paused_in, r.appName.uppercase(Lang.locale)), style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
                         if (2 in kept) Text(detail, style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                     if (chips) Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Chip("▶ Resume", Palette.Mint, focused && cursor == 0)
-                        if (twoParts) Chip("+$others more", Palette.Lavender, focused && cursor == 1)
+                        Chip(Tx.s(R.string.widgets_np_resume), Palette.Mint, focused && cursor == 0)
+                        if (twoParts) Chip(Tx.s(R.string.widgets_np_more, others), Palette.Lavender, focused && cursor == 1)
                     }
                 }
             }
@@ -975,7 +983,7 @@ private fun GameStrip(
                 val label = when {
                     !focused || count == 0 -> title
                     cursor < shown.size -> shown[cursor].label
-                    else -> "Add to Up next"
+                    else -> Tx.s(R.string.widgets_strip_add_upnext)
                 }
                 if (header > 0.dp) Header(s.kind.icon, label, accent, Modifier.height(header), trailing = if (items.isNotEmpty() && !focused) "${items.size}" else null)
                 if (shown.isEmpty() && addSlot == null) {
@@ -1002,7 +1010,7 @@ private fun GameStrip(
                             Row(
                                 Modifier.fillMaxWidth().height(tile).clip(RoundedCornerShape(10.dp)).background(accent.copy(alpha = if (on) 0.3f else 0.1f)).widgetTap(s) { addSlot() },
                                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center,
-                            ) { Text(if (shown.isEmpty()) "+ Add your first game" else "+ Add", style = MaterialTheme.typography.labelLarge, color = accent) }
+                            ) { Text(if (shown.isEmpty()) Tx.s(R.string.widgets_strip_add_first) else Tx.s(R.string.widgets_strip_add), style = MaterialTheme.typography.labelLarge, color = accent) }
                         }
                     }
                 } else {
@@ -1062,7 +1070,7 @@ private fun UpNextWidget(s: WidgetScope, m: Modifier) {
             .filter { !(hidePlayed && it.done) }
     }
     GameStrip(
-        s, m, "Up next", items, "Nothing up next", "Y on a game › Add to Up next",
+        s, m, Tx.s(R.string.widgets_upnext), items, Tx.s(R.string.widgets_upnext_empty), Tx.s(R.string.widgets_upnext_empty_detail),
         addSlot = { UpNext.ask() },
         onItem = { item ->
             val g = item.game
@@ -1118,11 +1126,11 @@ private fun SurpriseWidget(s: WidgetScope, m: Modifier) {
     val spin by animateFloatAsState(Surprise.spins(id) * 360f, spring(dampingRatio = 0.55f, stiffness = Spring.StiffnessLow), label = "dice")
     val lh = lineHeights()
     WidgetCard(s, m, accent = Palette.Lavender, cursorCount = if (game != null) 2 else 0, onClick = { i ->
-        if (game == null) Toasts.show("Nothing to pick from yet")
+        if (game == null) Toasts.show(Tx.s(R.string.widgets_random_none))
         else if (i == 1) Surprise.reroll(id, kind) else play(ctx, game)
     }) { focused, cursor ->
         if (game == null) {
-            EmptyNote("🎲", if (kind == "favorites") "No favorites yet" else "No games yet", "Nothing to pick from", Palette.Lavender, compact = s.small)
+            EmptyNote("🎲", if (kind == "favorites") Tx.s(R.string.widgets_favorites_empty) else Tx.s(R.string.widgets_no_games), Tx.s(R.string.widgets_random_nothing), Palette.Lavender, compact = s.small)
             return@WidgetCard
         }
         val dice = @Composable { mod: Modifier, size: Dp ->
@@ -1149,7 +1157,7 @@ private fun SurpriseWidget(s: WidgetScope, m: Modifier) {
                     }
                     stacked -> Column(Modifier.fillMaxSize().padding(pad)) {
                         if (w >= 110.dp && h >= 150.dp) {
-                            Header("🎲", "Surprise me", Palette.Lavender, Modifier.padding(end = diceSize))
+                            Header("🎲", Tx.s(R.string.widgets_random), Palette.Lavender, Modifier.padding(end = diceSize))
                             Spacer(Modifier.height(6.dp))
                         }
                         Box(Modifier.weight(1f).aspectRatio(1f, matchHeightConstraintsFirst = true).align(Alignment.CenterHorizontally).picked(focused && cursor == 0, Palette.Butter, RoundedCornerShape(14.dp)).clip(RoundedCornerShape(14.dp))) { GameArt(g) }
@@ -1162,7 +1170,7 @@ private fun SurpriseWidget(s: WidgetScope, m: Modifier) {
                         // The name first, then the prompt and the system as the height allows.
                         val kept = fitting(listOf(lh.title, lh.small, lh.small, lh.title), h) // name, prompt, system, a second name line
                         Column(Modifier.weight(1f).padding(start = 10.dp, end = diceSize)) {
-                            if (1 in kept) Text("🎲 How about…", style = MaterialTheme.typography.labelMedium, color = Palette.Lavender, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            if (1 in kept) Text(Tx.s(R.string.widgets_random_how_about), style = MaterialTheme.typography.labelMedium, color = Palette.Lavender, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(g.title, style = MaterialTheme.typography.titleSmall, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
                             if (2 in kept) Text(g.platform.shortName, style = MaterialTheme.typography.labelSmall, color = Palette.forName(g.platform.id), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         }
@@ -1209,9 +1217,9 @@ fun rememberMiniStats(): MiniStats {
 @Composable
 private fun StatsWidget(s: WidgetScope, m: Modifier) {
     val st = rememberMiniStats()
-    val streak = if (st.streak == 0) "No streak yet" else "🔥 ${plural(st.streak, "day", "days")}"
+    val streak = if (st.streak == 0) Tx.s(R.string.widgets_stats_no_streak) else Tx.p(R.plurals.widgets_stats_streak, st.streak)
     val streakColor = if (st.streak > 0) Palette.Peach else Palette.Muted
-    val week = "${shortPlay(st.week)} this week"
+    val week = Tx.s(R.string.widgets_stats_week, shortPlay(st.week))
     val lh = lineHeights()
     WidgetCard(s, m, onClick = { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }) { _, _ ->
         BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -1225,7 +1233,7 @@ private fun StatsWidget(s: WidgetScope, m: Modifier) {
                     val colW = (w * 0.45f).coerceIn(84.dp, 130.dp)
                     Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.width(colW)) {
-                            if (1 in kept) FitLine("★ Today", MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), Palette.Butter)
+                            if (1 in kept) FitLine(Tx.s(R.string.widgets_stats_today_star), MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), Palette.Butter)
                             FitLine(shortPlay(st.today), MaterialTheme.typography.titleLarge, Modifier.fillMaxWidth())
                             if (2 in kept) FitLine(week, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), Palette.Mint)
                             if (3 in kept) FitLine(streak, MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), streakColor)
@@ -1244,10 +1252,10 @@ private fun StatsWidget(s: WidgetScope, m: Modifier) {
                     val bars = s.high && left >= 44.dp
                     Column(Modifier.fillMaxSize(), verticalArrangement = if (bars) Arrangement.Top else Arrangement.Center) {
                         if (4 in kept) {
-                            Header("★", "Play time", Palette.Butter)
+                            Header("★", Tx.s(R.string.widgets_stats_play_time), Palette.Butter)
                             Spacer(Modifier.height(6.dp))
                         }
-                        if (1 in kept) FitLine(if (s.high) "Today" else "★ Today", if (s.high) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), if (s.high) Palette.Muted else Palette.Butter)
+                        if (1 in kept) FitLine(if (s.high) Tx.s(R.string.widgets_stats_today) else Tx.s(R.string.widgets_stats_today_star), if (s.high) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), if (s.high) Palette.Muted else Palette.Butter)
                         FitLine(shortPlay(st.today), MaterialTheme.typography.headlineSmall, Modifier.fillMaxWidth())
                         if (3 in kept) FitLine(week, MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth(), Palette.Mint)
                         if (2 in kept) FitLine(streak, if (s.high) MaterialTheme.typography.labelLarge else MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), streakColor)
@@ -1262,7 +1270,7 @@ private fun StatsWidget(s: WidgetScope, m: Modifier) {
     }
 }
 
-private val DAY_LETTERS = DateTimeFormatter.ofPattern("EEEEE")
+private val DAY_LETTERS get() = DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_day_letter), Lang.locale)
 
 /** The last 7 days as soft bars that grow in; today is the warm one on the right. */
 @Composable
@@ -1341,14 +1349,14 @@ private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
             val h = maxHeight - pad * 2
             Column(Modifier.fillMaxSize().padding(pad)) {
                 if (list == null || list.isEmpty()) {
-                    if (h >= 80.dp) Header("🏆", "Achievements", Palette.Butter)
-                    EmptyNote("🏆", if (list == null) "Checking…" else "No unlocks this month", if (list == null) null else "Your next one shows up here", Palette.Butter, compact = true)
+                    if (h >= 80.dp) Header("🏆", Tx.s(R.string.widgets_achievements), Palette.Butter)
+                    EmptyNote("🏆", if (list == null) Tx.s(R.string.widgets_checking) else Tx.s(R.string.widgets_ach_none), if (list == null) null else Tx.s(R.string.widgets_ach_next), Palette.Butter, compact = true)
                     return@Column
                 }
                 val first = list.first()
                 if (s.high || h > w * 1.1f) {
                     if (h >= 100.dp) {
-                        Header("🏆", "Latest unlocks", Palette.Butter)
+                        Header("🏆", Tx.s(R.string.widgets_ach_latest_all), Palette.Butter)
                         Spacer(Modifier.height(6.dp))
                     }
                     // Badges with their names when there's width for them, else the badges alone.
@@ -1372,7 +1380,7 @@ private fun AchievementsWidget(s: WidgetScope, m: Modifier) {
                     Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(first.badge, null, Modifier.size(min(h, 58.dp)).clip(RoundedCornerShape(12.dp)))
                         Column(Modifier.weight(1f).padding(start = 10.dp)) {
-                            if (1 in kept) Text("🏆 Latest unlock", style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            if (1 in kept) Text(Tx.s(R.string.widgets_ach_latest), style = MaterialTheme.typography.labelMedium, color = Palette.Butter, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(first.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             if (2 in kept) Text("${first.game} · ${first.line}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = if (3 in kept) 2 else 1, overflow = TextOverflow.Ellipsis)
                         }
@@ -1406,7 +1414,7 @@ private fun PipWidget(s: WidgetScope, m: Modifier) {
             else -> 0
         }
     }
-    val lines = remember(hour / 3, st.streak, st.playedToday, unplayed) { pipLines(hour, st, unplayed) }
+    val lines = remember(hour / 3, st.streak, st.playedToday, unplayed, Lang.revision.intValue) { pipLines(hour, st, unplayed) }
     var line by remember { mutableIntStateOf(0) }
     val hop = remember { Animatable(0f) }
     var hops by remember { mutableIntStateOf(0) }
@@ -1432,7 +1440,7 @@ private fun PipWidget(s: WidgetScope, m: Modifier) {
                         pip(size)
                         Spacer(Modifier.width(10.dp))
                         if (bubble) Bubble(text, Modifier.weight(1f), small = h < 64.dp)
-                        else FitLine("Pip", MaterialTheme.typography.titleLarge, Modifier.weight(1f), Palette.Peach)
+                        else FitLine(Tx.s(R.string.widgets_pip), MaterialTheme.typography.titleLarge, Modifier.weight(1f), Palette.Peach)
                     }
                 } else {
                     // Pip over its words, which go first when they would leave Pip too small.
@@ -1475,21 +1483,21 @@ private fun Bubble(text: String, modifier: Modifier, small: Boolean = false) {
 
 private fun pipLines(hour: Int, st: MiniStats, unplayed: Int): List<String> = buildList {
     when (hour) {
-        in 0..5 -> { add("Up late? Me too."); add("One more level, then bed?") }
-        in 6..11 -> add("Good morning! Quick game before the day?")
-        in 12..17 -> add("Afternoon break? I'll keep your seat warm.")
-        else -> add("Cosy evening. What are we playing?")
+        in 0..5 -> { add(Tx.s(R.string.widgets_pip_late)); add(Tx.s(R.string.widgets_pip_bed)) }
+        in 6..11 -> add(Tx.s(R.string.widgets_pip_morning))
+        in 12..17 -> add(Tx.s(R.string.widgets_pip_afternoon))
+        else -> add(Tx.s(R.string.widgets_pip_evening))
     }
     when {
-        st.streak >= 2 && st.playedToday -> add("${st.streak} days in a row! Look at you go.")
-        st.streak >= 1 && !st.playedToday -> add("Play today to keep your ${plural(st.streak, "day", "days")} streak!")
-        st.playedToday -> add("${shortPlay(st.today)} today. Nice!")
-        else -> add("I missed you. Shall we play?")
+        st.streak >= 2 && st.playedToday -> add(Tx.p(R.plurals.widgets_pip_streak, st.streak))
+        st.streak >= 1 && !st.playedToday -> add(Tx.p(R.plurals.widgets_pip_keep_streak, st.streak))
+        st.playedToday -> add(Tx.s(R.string.widgets_pip_today, shortPlay(st.today)))
+        else -> add(Tx.s(R.string.widgets_pip_missed))
     }
-    if (unplayed > 0) add("${plural(unplayed, "game", "games")} you haven't tried yet 👀")
-    add("Psst… ${Prompts.words(io.github.zahakj.tandem.Command.Surprise)} picks a game for you.")
-    add("${Prompts.words(io.github.zahakj.tandem.Command.Switcher)} to see what's running.")
-    add("I like it when you're here.")
+    if (unplayed > 0) add(Tx.p(R.plurals.widgets_pip_untried, unplayed))
+    add(Tx.s(R.string.widgets_pip_surprise, Prompts.words(io.github.zahakj.tandem.Command.Surprise)))
+    add(Tx.s(R.string.widgets_pip_switcher, Prompts.words(io.github.zahakj.tandem.Command.Switcher)))
+    add(Tx.s(R.string.widgets_pip_here))
 }
 
 // ---------------------------------------------------------------- system monitor
@@ -1500,11 +1508,11 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
     val mem = rememberPolled(5_000) { DeviceInfo.memory(ctx) }
     val temp = rememberPolled(10_000) { DeviceInfo.cpuTempC() }
     val now = rememberNow(60_000)
-    val uptime = if (s.on("uptime")) now.let { "Up ${hm(SystemClock.elapsedRealtime() / 60_000)}" } else null
+    val uptime = if (s.on("uptime")) now.let { Tx.s(R.string.widgets_sys_uptime, hm(SystemClock.elapsedRealtime() / 60_000)) } else null
     val lh = lineHeights()
     WidgetCard(s, m, accent = Palette.Sky) { _, _ ->
         if (mem == null) {
-            EmptyNote("▤", "System", "Checking…", Palette.Sky, compact = true)
+            EmptyNote("▤", Tx.s(R.string.widgets_sys_title), Tx.s(R.string.widgets_checking), Palette.Sky, compact = true)
             return@WidgetCard
         }
         val color = fullnessColor(mem.usedFraction, Palette.Sky)
@@ -1512,16 +1520,16 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
             Ring(mem.usedFraction, color, Modifier.size(size), stroke = ringStroke(size)) {
                 RingLabel(size) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (size >= 50.dp) Text("RAM", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+                        if (size >= 50.dp) Text(Tx.s(R.string.widgets_sys_ram), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
                         Text("${(mem.usedFraction * 100).toInt()}%", style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false)
                     }
                 }
             }
         }
-        val tempText = temp?.let { "CPU ${"%.0f".format(it)}°C" }
+        val tempText = temp?.let { Tx.s(R.string.widgets_sys_cpu, "${"%.0f".format(Lang.locale, it)}°C") }
         val tempColor = temp?.let { if (it >= 70) Palette.Peach else if (it >= 55) Palette.Butter else Palette.Mint } ?: Palette.Muted
-        val free = "${bytes(ctx, mem.free)} free"
-        val total = "of ${bytes(ctx, mem.total)}"
+        val free = Tx.s(R.string.widgets_free, bytes(ctx, mem.free))
+        val total = Tx.s(R.string.widgets_sys_of, bytes(ctx, mem.total))
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val pad = widgetPad(maxWidth, maxHeight)
             val w = maxWidth - pad * 2
@@ -1536,7 +1544,7 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
                         ring(min(h, 62.dp))
                         Spacer(Modifier.width(12.dp))
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
-                            if (2 in kept) FitLine("Memory", MaterialTheme.typography.labelMedium, color = Palette.Sky)
+                            if (2 in kept) FitLine(Tx.s(R.string.widgets_sys_memory), MaterialTheme.typography.labelMedium, color = Palette.Sky)
                             FitLine(free, MaterialTheme.typography.titleSmall)
                             if (3 in kept) FitLine(total, MaterialTheme.typography.labelSmall, color = Palette.Muted)
                             if (1 in kept) FitLine(tempText!!, MaterialTheme.typography.labelMedium, color = tempColor)
@@ -1555,7 +1563,7 @@ private fun SysmonWidget(s: WidgetScope, m: Modifier) {
                         ring(ringSize)
                         if (kept.isNotEmpty()) Spacer(Modifier.height(3.dp))
                         val line = Modifier.fillMaxWidth()
-                        if (2 in kept) FitLine("Memory", MaterialTheme.typography.labelMedium, line, Palette.Sky, Alignment.Center)
+                        if (2 in kept) FitLine(Tx.s(R.string.widgets_sys_memory), MaterialTheme.typography.labelMedium, line, Palette.Sky, Alignment.Center)
                         if (0 in kept) FitLine(free, if (big) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelSmall, line, if (big) Palette.Text else Palette.Muted, Alignment.Center)
                         if (3 in kept) FitLine(total, MaterialTheme.typography.labelSmall, line, Palette.Muted, Alignment.Center)
                         if (1 in kept) FitLine(tempText!!, if (big) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelSmall, line, tempColor, Alignment.Center)
@@ -1596,7 +1604,7 @@ private fun AppsWidget(s: WidgetScope, m: Modifier) {
             val tile = @Composable { i: Int, mod: Modifier ->
                 val on = focused && cursor == i
                 val pkg = shown.getOrNull(i)
-                val label = if (pkg != null) RunningGames.appLabel(ctx, pkg) else "All apps"
+                val label = if (pkg != null) RunningGames.appLabel(ctx, pkg) else Tx.s(R.string.widgets_apps_all)
                 val glyph = @Composable {
                     if (pkg != null) AppIcon(pkg, Modifier.size(icon))
                     else Box(Modifier.size(icon).clip(RoundedCornerShape(12.dp)).background(Palette.Sky.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
@@ -1625,7 +1633,7 @@ private fun AppsWidget(s: WidgetScope, m: Modifier) {
                 }
             }
             if (vertical) Column(Modifier.fillMaxSize().padding(pad), verticalArrangement = Arrangement.spacedBy(4.dp, if (headed) Alignment.Top else Alignment.CenterVertically)) {
-                if (headed) Header("⊞", "Apps", Palette.Sky)
+                if (headed) Header("⊞", Tx.s(R.string.widgets_apps_title), Palette.Sky)
                 for (i in 0 until count) tile(i, Modifier)
             } else Row(Modifier.fillMaxSize().padding(pad), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                 for (i in 0 until count) tile(i, Modifier)
@@ -1642,11 +1650,11 @@ private fun GreetingWidget(s: WidgetScope, m: Modifier) {
     val now = rememberNow(60_000)
     val date = LocalDateTime.ofInstant(Instant.ofEpochMilli(now), ZoneId.systemDefault())
     val hour = date.hour
-    val hello = when (hour) { in 5..11 -> "Good morning!"; in 12..17 -> "Good afternoon!"; in 18..22 -> "Good evening!"; else -> "Up late? Me too." }
+    val hello = Tx.s(when (hour) { in 5..11 -> R.string.widgets_hello_morning; in 12..17 -> R.string.widgets_hello_afternoon; in 18..22 -> R.string.widgets_hello_evening; else -> R.string.widgets_pip_late })
     val total = rememberGames { Collections.visibleGames() }.size
     val last = rememberGames { Collections.continuePlaying().take(1) }.firstOrNull()
     val time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(java.util.Date(now))
-    val games = if (total == 0) listOf("No games yet") else listOf("${plural(total, "game", "games")} ready to play", plural(total, "game", "games"))
+    val games = if (total == 0) listOf(Tx.s(R.string.widgets_no_games)) else listOf(Tx.p(R.plurals.widgets_greeting_ready, total), Tx.p(R.plurals.widgets_greeting_games, total))
     val lh = lineHeights()
     val fs = androidx.compose.ui.platform.LocalDensity.current.fontScale
     WidgetCard(s, m, accent = Palette.Lavender, onClick = { if (last != null) play(ctx, last) else Toasts.show(hello) }) { _, _ ->
@@ -1657,7 +1665,7 @@ private fun GreetingWidget(s: WidgetScope, m: Modifier) {
             ) {
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(10.dp))) { GameArt(last) }
                 Column(Modifier.weight(1f, fill = false).padding(start = 9.dp)) {
-                    Text("Last played", style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1)
+                    Text(Tx.s(R.string.widgets_last_played), style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1)
                     Text(last.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }

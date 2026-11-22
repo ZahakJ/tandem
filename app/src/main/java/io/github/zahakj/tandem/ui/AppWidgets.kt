@@ -64,6 +64,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.github.zahakj.tandem.Emulators
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.AppWidgetEntry
 import io.github.zahakj.tandem.data.AppWidgetFit
 import io.github.zahakj.tandem.data.AppWidgetGroup
@@ -91,9 +93,9 @@ import kotlinx.coroutines.withContext
 
 /** The kind every hosted Android widget is. On screen it goes by its provider's name. */
 val AppWidgetKind = WidgetKind(
-    AppWidgetRef.TYPE, "Android widget", "A widget from one of your apps: weather, a calendar, music and more.", "▣", Palette.Sky,
+    AppWidgetRef.TYPE, R.string.widgets_android, R.string.widgets_android_blurb, "▣", Palette.Sky,
     listOf(WidgetSize.Small, WidgetSize.Medium, WidgetSize.Wide, WidgetSize.Tall), WidgetSize.Medium,
-    label = { w -> AppWidgetRef.label(w) ?: "Android widget" },
+    label = { w -> AppWidgetRef.label(w) ?: Tx.s(R.string.widgets_android) },
     actions = { w -> listOfNotNull(AppWidgetAdd.setUpAction(w)) },
     content = { s, m -> AppWidgetContent(s, m) },
 )
@@ -263,7 +265,7 @@ object AppWidgetHosting {
             if (w.place == WidgetPlace.Grid) IconGridStore.remove(GridWidgets.key(w.id), default = false)
             Widgets.remove(w.id)
             delete(id)
-            Toasts.show("$name isn't available any more, so it was taken off")
+            Toasts.show(Tx.s(R.string.widgets_app_gone, name))
         }
         // Never while a widget is being added: its id isn't stored until Android has set it up.
         if (AppWidgetAdd.pending != null) return
@@ -318,7 +320,7 @@ object AppWidgetAdd {
 
     fun begin(activity: Activity, entry: AppWidgetEntry, info: AppWidgetProviderInfo, target: AppWidgetTarget) {
         if (pending != null) return
-        val id = AppWidgetHosting.allocate() ?: run { Toasts.show("Android widgets aren't available right now"); Sounds.error(); return }
+        val id = AppWidgetHosting.allocate() ?: run { Toasts.show(Tx.s(R.string.widgets_app_unavailable)); Sounds.error(); return }
         pending = Pending(id, entry, info, target)
         // Allowed once the user ticked "always allow" in Android's question; otherwise Android asks now.
         val m = AppWidgetHosting.manager(activity)
@@ -329,7 +331,7 @@ object AppWidgetAdd {
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.profile)
         @Suppress("DEPRECATION")
-        runCatching { activity.startActivityForResult(ask, REQ_BIND) }.onFailure { cancel("Android wouldn't ask about the widget") }
+        runCatching { activity.startActivityForResult(ask, REQ_BIND) }.onFailure { cancel(Tx.s(R.string.widgets_app_no_ask)) }
     }
 
     /** The set-up screen, unless the provider does without one (or says it is optional); then the widget goes in. */
@@ -342,7 +344,7 @@ object AppWidgetAdd {
     /** MainActivity.onActivityResult: true when the result was one of these. */
     fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int): Boolean {
         when (requestCode) {
-            REQ_BIND -> if (resultCode == Activity.RESULT_OK) configureOrFinish(activity) else cancel("Android didn't allow the widget")
+            REQ_BIND -> if (resultCode == Activity.RESULT_OK) configureOrFinish(activity) else cancel(Tx.s(R.string.widgets_app_not_allowed))
             REQ_CONFIGURE -> if (resultCode == Activity.RESULT_OK) finish() else cancel(null)
             REQ_RECONFIGURE -> Unit
             else -> return false
@@ -355,7 +357,7 @@ object AppWidgetAdd {
         pending = null
         AppWidgetPlan.place(p.target, p.entry, AppWidgetRef.options(p.id, p.entry.provider, p.entry.label))
         Sounds.confirm()
-        Toasts.show("Added ${p.entry.label} ✓")
+        Toasts.show(Tx.s(R.string.widgets_ed_added, p.entry.label))
     }
 
     private fun cancel(why: String?) {
@@ -370,8 +372,8 @@ object AppWidgetAdd {
         val id = AppWidgetRef.id(w) ?: return null
         val info = AppWidgetHosting.info(activity, id) ?: return null
         if (info.configure == null || info.widgetFeatures and AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE == 0) return null
-        return WidgetAction("Set up…", color = Palette.Sky) {
-            if (!AppWidgetHosting.configure(activity, id, REQ_RECONFIGURE)) { Toasts.show("Its set-up screen won't open"); Sounds.error() }
+        return WidgetAction(Tx.s(R.string.widgets_app_set_up), color = Palette.Sky) {
+            if (!AppWidgetHosting.configure(activity, id, REQ_RECONFIGURE)) { Toasts.show(Tx.s(R.string.widgets_app_set_up_failed)); Sounds.error() }
         }
     }
 }
@@ -462,7 +464,7 @@ private fun HostedWidget(id: Int, s: WidgetScope, out: MutableState<RelayView?>)
     if (info == null) {
         Column(Modifier.fillMaxSize().padding(8.dp), Arrangement.Center, Alignment.CenterHorizontally) {
             Text("▣", style = MaterialTheme.typography.titleLarge, color = Palette.Muted)
-            if (!s.small) Text("Not available", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (!s.small) Text(Tx.s(R.string.widgets_app_not_available), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         return
     }
@@ -494,7 +496,7 @@ private fun AppWidgetPlaceholder(s: WidgetScope) {
         Text("▣", style = MaterialTheme.typography.displaySmall, color = Palette.Sky)
         if (!s.small) {
             Text(
-                "A widget from one of your apps", style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
+                Tx.s(R.string.widgets_app_from_apps), style = MaterialTheme.typography.labelMedium, color = Palette.Muted,
                 textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
         }
@@ -527,24 +529,24 @@ fun AppWidgetPicker() {
         }
         PanelSurface(Modifier.fillMaxSize()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Add an Android widget", style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(Tx.s(R.string.widgets_app_add_title), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.width(10.dp))
                 val (where, color) = when (t) {
-                    is AppWidgetTarget.Area -> if (t.area == WidgetArea.Top) "Top screen" to Palette.Butter else "Bottom screen" to Palette.Sky
-                    is AppWidgetTarget.GridAt -> "Home grid" to Palette.Butter
-                    is AppWidgetTarget.FolderAt -> "In the folder" to Palette.Butter
+                    is AppWidgetTarget.Area -> if (t.area == WidgetArea.Top) Tx.s(R.string.widgets_ed_top) to Palette.Butter else Tx.s(R.string.widgets_ed_bottom) to Palette.Sky
+                    is AppWidgetTarget.GridAt -> Tx.s(R.string.widgets_place_grid) to Palette.Butter
+                    is AppWidgetTarget.FolderAt -> Tx.s(R.string.widgets_app_in_folder) to Palette.Butter
                 }
                 Pill(where, color)
                 Spacer(Modifier.weight(1f))
-                ButtonHint("A", "Add", Palette.Mint)
+                ButtonHint("A", Tx.s(R.string.widgets_ed_add_hint), Palette.Mint)
                 Spacer(Modifier.width(12.dp))
-                ButtonHint("B", "Close", Palette.Lavender)
+                ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
             }
             Spacer(Modifier.height(6.dp))
             val list = catalog
             when {
-                list == null -> PipNote("Looking through your apps…", "The widgets they offer will show here.", mood = 1)
-                list.isEmpty -> EmptyNote("None of your apps offers a widget yet", "Go back", Modifier.remembersFocus(key, "back", true)) { AppWidgetUi.close() }
+                list == null -> PipNote(Tx.s(R.string.widgets_app_looking), Tx.s(R.string.widgets_app_looking_detail), mood = 1)
+                list.isEmpty -> EmptyNote(Tx.s(R.string.widgets_app_none), Tx.s(R.string.widgets_app_go_back), Modifier.remembersFocus(key, "back", true)) { AppWidgetUi.close() }
                 else -> ProviderGrid(list, t, key)
             }
         }
@@ -570,7 +572,7 @@ private fun ProviderGrid(catalog: AppWidgetHosting.Catalog, target: AppWidgetTar
                     AppIcon(g.pkg, Modifier.size(26.dp))
                     Spacer(Modifier.width(8.dp))
                     Text(g.app, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Pill(plural(g.entries.size, "widget", "widgets"), Palette.Muted)
+                    Pill(Tx.p(R.plurals.widgets_count, g.entries.size), Palette.Muted)
                 }
             }
             items(g.entries, key = { it.provider }) { e ->
@@ -580,7 +582,7 @@ private fun ProviderGrid(catalog: AppWidgetHosting.Catalog, target: AppWidgetTar
                     glow = Palette.Sky,
                     onClick = {
                         val activity = Host.activity ?: ctx as? Activity
-                        if (info == null || activity == null) { Toasts.show("That widget can't be added right now"); Sounds.error(); return@FocusCard }
+                        if (info == null || activity == null) { Toasts.show(Tx.s(R.string.widgets_app_cant_add)); Sounds.error(); return@FocusCard }
                         AppWidgetUi.close()
                         AppWidgetAdd.begin(activity, e, info, target)
                     },
@@ -601,7 +603,7 @@ private fun ProviderGrid(catalog: AppWidgetHosting.Catalog, target: AppWidgetTar
                             Pill(AppWidgetPlan.sizeLabel(target, e), Palette.Butter)
                         }
                         Text(
-                            if (e.configures) "Asks a few questions first" else "Ready to go",
+                            if (e.configures) Tx.s(R.string.widgets_app_asks) else Tx.s(R.string.widgets_app_ready),
                             style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         )
                     }

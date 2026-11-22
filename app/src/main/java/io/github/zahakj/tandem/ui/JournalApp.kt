@@ -24,12 +24,13 @@ import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ExtrasStore
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.PlaySession
-import io.github.zahakj.tandem.plural
 import java.util.Calendar
 import java.util.Date
 
@@ -44,10 +45,10 @@ private fun sessionKey(s: PlaySession) = "${s.k}@${s.s}"
 private fun dayLabel(time: Long): String {
     val now = System.currentTimeMillis()
     return when {
-        DateUtils.isToday(time) -> "Today"
-        DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS) -> "Yesterday"
-        now - time < 6 * DateUtils.DAY_IN_MILLIS -> DateFormat.format("EEEE", time).toString()
-        else -> DateFormat.format("EEEE d MMMM yyyy", time).toString()
+        DateUtils.isToday(time) -> Tx.s(R.string.apps_journal_today)
+        DateUtils.isToday(time + DateUtils.DAY_IN_MILLIS) -> Tx.s(R.string.apps_journal_yesterday)
+        now - time < 6 * DateUtils.DAY_IN_MILLIS -> DateFormat.format(Tx.s(R.string.apps_journal_date_weekday), time).toString()
+        else -> DateFormat.format(Tx.s(R.string.apps_journal_date_long), time).toString()
     }
 }
 
@@ -87,7 +88,7 @@ fun JournalScreen() {
         sessions.groupBy { it.k }.mapNotNull { (k, v) -> byKey[k]?.takeIf { Privacy.canShow(it) }?.let { Triple(it, v.sumOf { s -> s.d }, v.size) } }
             .sortedByDescending { it.second }
     }
-    val chips = listOf("timeline" to "Timeline", "games" to "Games", "notes" to "With notes")
+    val chips = listOf("timeline" to Tx.s(R.string.apps_journal_timeline), "games" to Tx.s(R.string.apps_journal_games), "notes" to Tx.s(R.string.apps_journal_with_notes))
     val rowKeys = when (view) {
         "games" -> games.map { "game:${it.first.key}" }
         "notes" -> lines.filterIsInstance<JournalLine.Session>().filter { notes.sessions[it.key] != null }.map { it.key }
@@ -96,12 +97,12 @@ fun JournalScreen() {
     val keys = chips.map { "chip:${it.first}" } + rowKeys
     val target = rememberFocusTarget("$route:$view", keys)
     fun editSession(line: JournalLine.Session) {
-        TextEntry.ask("A note for ${line.game.title} (${formatPlayLong(line.s.d)})", notes.sessions[line.key].orEmpty()) { t ->
+        TextEntry.ask(Tx.s(R.string.apps_journal_note_for, line.game.title, formatPlayLong(line.s.d)), notes.sessions[line.key].orEmpty()) { t ->
             ExtrasStore.updateNotes { n -> n.copy(sessions = if (t.isBlank()) n.sessions - line.key else n.sessions + (line.key to t.trim().take(240))) }
         }
     }
     fun editGame(g: Game) {
-        TextEntry.ask("A note about ${g.title}", notes.games[g.key].orEmpty()) { t ->
+        TextEntry.ask(Tx.s(R.string.apps_journal_note_about, g.title), notes.games[g.key].orEmpty()) { t ->
             ExtrasStore.updateNotes { n -> n.copy(games = if (t.isBlank()) n.games - g.key else n.games + (g.key to t.trim().take(400))) }
         }
     }
@@ -113,14 +114,14 @@ fun JournalScreen() {
         g != null
     }
     val total = remember(sessions) { sessions.sumOf { it.d } }
-    ToolScaffold(app, if (sessions.isEmpty()) null else "${formatPlayLong(total)} logged", hints = {
-        ButtonHint("A", "Note", Palette.Mint)
-        ButtonHint("Y", "Game note", Palette.Butter)
-        ButtonHint("B", "Back", Palette.Lavender)
+    ToolScaffold(app, if (sessions.isEmpty()) null else Tx.s(R.string.apps_journal_logged, formatPlayLong(total)), hints = {
+        ButtonHint("A", Tx.s(R.string.apps_journal_note), Palette.Mint)
+        ButtonHint("Y", Tx.s(R.string.apps_journal_game_note), Palette.Butter)
+        ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
     }) {
         if (lines.isEmpty()) {
             EmptyNote(
-                "Play something and each session shows up here, ready for a note", "Go back",
+                Tx.s(R.string.apps_journal_empty), Tx.s(R.string.apps_files_go_back),
                 Modifier.takesFocus("$route:$view", "empty", true), Modifier.align(Alignment.Center), mood = 0,
             ) { Nav.back() }
         } else {
@@ -144,14 +145,14 @@ fun JournalScreen() {
                     items(shownLines, key = { x -> when (x) { is JournalLine -> x.key; is Triple<*, *, *> -> "game:${(x.first as Game).key}"; else -> x.hashCode() } }) { x ->
                         when (x) {
                             is JournalLine.Day -> Text(
-                                "${dayLabel(x.day)} · ${formatPlayLong(x.seconds)}", Modifier.padding(start = 4.dp, top = 8.dp),
+                                Tx.s(R.string.apps_journal_day, dayLabel(x.day), formatPlayLong(x.seconds)), Modifier.padding(start = 4.dp, top = 8.dp),
                                 style = MaterialTheme.typography.labelLarge, color = app.color, maxLines = 1,
                             )
                             is JournalLine.Session -> {
                                 val note = notes.sessions[x.key]
                                 val time = DateFormat.getTimeFormat(androidx.compose.ui.platform.LocalContext.current).format(Date(x.s.s))
                                 ToolRow(
-                                    x.game.title, note ?: "${formatPlayLong(x.s.d)} · $time · ${x.game.platform.shortName}",
+                                    x.game.title, note ?: Tx.s(R.string.apps_journal_session, formatPlayLong(x.s.d), time, x.game.platform.shortName),
                                     SystemColors.of(x.game.platform.id), Modifier.takesFocus("$route:$view", x.key, x.key == target),
                                     tag = if (note != null) formatPlayTime(x.s.d) else null,
                                     onFocus = { Selection.current = Selected.GameItem(x.game) }, onClick = { editSession(x) },
@@ -161,7 +162,7 @@ fun JournalScreen() {
                                 val g = x.first as Game
                                 val k = "game:${g.key}"
                                 ToolRow(
-                                    g.title, notes.games[g.key] ?: "${plural(x.third as Int, "session")} · ${g.platform.name}",
+                                    g.title, notes.games[g.key] ?: Tx.p(R.plurals.apps_journal_game_sessions, x.third as Int, x.third as Int, g.platform.name),
                                     SystemColors.of(g.platform.id), Modifier.takesFocus("$route:$view", k, k == target),
                                     tag = formatPlayTime(x.second as Long),
                                     onFocus = { Selection.current = Selected.GameItem(g) }, onClick = { editGame(g) },

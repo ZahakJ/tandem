@@ -63,6 +63,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.NoteDoc
 import kotlinx.coroutines.delay
 import java.io.File
@@ -108,8 +110,8 @@ fun NoteInputOverlay() {
                 NoteTextField(text, r.multiLine, Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(min = 48.dp, max = if (r.multiLine) 260.dp else 56.dp), onDone = done)
                 Spacer(Modifier.size(12.dp))
                 Row(Modifier.padding(horizontal = 4.dp), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ButtonHint("Start", "Done", Palette.Mint, onClick = done)
-                    ButtonHint("B", if (r.multiLine) "Done" else "Cancel", Palette.Lavender)
+                    ButtonHint("Start", Tx.s(R.string.apps_note_done), Palette.Mint, onClick = done)
+                    ButtonHint("B", if (r.multiLine) Tx.s(R.string.apps_note_done) else Tx.s(R.string.apps_note_cancel), Palette.Lavender)
                 }
             }
         }
@@ -240,7 +242,7 @@ fun NotePicture(file: File?, px: Int, modifier: Modifier = Modifier, crop: Boole
     val ctx = LocalContext.current
     if (file == null) {
         Box(modifier.background(Palette.NightDeep), contentAlignment = Alignment.Center) {
-            Text("Missing picture", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+            Text(Tx.s(R.string.apps_note_missing_picture), style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
         }
         return
     }
@@ -274,7 +276,7 @@ fun TaskLine(text: String, done: Boolean, modifier: Modifier = Modifier) {
         TaskBox(done)
         Spacer(Modifier.width(12.dp))
         Text(
-            mdInline(text.ifEmpty { "(empty)" }),
+            mdInline(text.ifEmpty { Tx.s(R.string.apps_note_empty_line) }),
             style = MaterialTheme.typography.bodyLarge.copy(textDecoration = if (done) TextDecoration.LineThrough else null),
             color = if (done) Palette.Muted else Palette.Text, maxLines = 3, overflow = TextOverflow.Ellipsis,
         )

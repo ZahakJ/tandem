@@ -1,5 +1,9 @@
 package io.github.zahakj.tandem.data
 
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
+import androidx.annotation.StringRes
+
 /*
  * The plain parts of game manuals (Manuals.kt, ui/ManualReader.kt): which files count as a manual and which game
  * they belong to, the order of the pages in a zip or a folder, and the small Markdown subset text manuals are read
@@ -7,15 +11,18 @@ package io.github.zahakj.tandem.data
  */
 
 /** What a manual file is, by its extension. */
-enum class ManualKind(val extensions: Set<String>, val label: String) {
+enum class ManualKind(val extensions: Set<String>, @StringRes private val res: Int) {
     /** A PDF, rendered page by page. */
-    Pdf(setOf("pdf"), "PDF"),
+    Pdf(setOf("pdf"), R.string.apps_manual_kind_pdf),
     /** A zip of pictures (comic-book archives are zips too), one picture per page in natural name order. */
-    Zip(setOf("cbz", "zip"), "Pictures"),
+    Zip(setOf("cbz", "zip"), R.string.apps_manual_kind_zip),
     /** One picture: a one-page manual, a map, a reference card. */
-    Image(setOf("png", "jpg", "jpeg", "webp", "gif", "bmp"), "Picture"),
+    Image(setOf("png", "jpg", "jpeg", "webp", "gif", "bmp"), R.string.apps_manual_kind_image),
     /** Plain text or Markdown: a guide, a walkthrough, a FAQ. */
-    Text(setOf("txt", "md", "markdown"), "Text");
+    Text(setOf("txt", "md", "markdown"), R.string.apps_manual_kind_text);
+
+    /** What it is, in words: "PDF", "Pictures". */
+    val label: String get() = Tx.s(res)
 
     companion object {
         fun of(name: String): ManualKind? {
@@ -242,8 +249,9 @@ object ManualText {
      * Whatever comes before the first heading is a page of its own. Pages with more than [PAGE_CHARS] of text are cut
      * into parts at a block boundary, so a plain guide with no headings is still read a screen or two at a time.
      */
-    fun pages(blocks: List<Block>): List<Page> {
-        if (blocks.isEmpty()) return listOf(Page("Page 1", emptyList()))
+    // [untitled] names a page with no heading; the app passes "Page n" in its language.
+    fun pages(blocks: List<Block>, untitled: (Int) -> String = { "Page $it" }): List<Page> {
+        if (blocks.isEmpty()) return listOf(Page(untitled(1), emptyList()))
         val top = blocks.filterIsInstance<Block.Heading>().minOfOrNull { it.level }
         val splitAt = when (top) { null -> 0; 1 -> 2; else -> top }
         val chapters = ArrayList<MutableList<Block>>()
@@ -260,7 +268,7 @@ object ManualText {
             fun flush() {
                 if (part.isEmpty()) return
                 parts++
-                val name = title ?: "Page ${out.size + 1}"
+                val name = title ?: untitled(out.size + 1)
                 out += Page(if (parts > 1) "$name ($parts)" else name, part)
                 part = ArrayList()
                 chars = 0

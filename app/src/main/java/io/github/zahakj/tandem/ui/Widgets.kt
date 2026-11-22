@@ -3,6 +3,7 @@ package io.github.zahakj.tandem.ui
 import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -76,9 +77,11 @@ import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.StorageInfo
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.UpNextEntry
 import io.github.zahakj.tandem.data.Widget
 import io.github.zahakj.tandem.data.WidgetPlace
@@ -102,18 +105,21 @@ import kotlinx.coroutines.withContext
 /** The two places widgets live. */
 enum class WidgetArea { Top, Bottom }
 
-/** A widget setting: the user cycles through [choices] (value to label). */
+/** A widget setting: the user cycles through [choices] (value to label). The words are looked up when shown. */
 class WidgetOption(
     val key: String,
-    val label: String,
-    val choices: List<Pair<String, String>>,
+    @StringRes private val labelRes: Int,
+    private val choiceRes: List<Pair<String, Int>>,
     val default: String,
     /** Only shown for sizes where it makes a difference. */
     val showFor: (WidgetSize) -> Boolean = { true },
-)
+) {
+    val label: String get() = Tx.s(labelRes)
+    val choices: List<Pair<String, String>> get() = choiceRes.map { (v, res) -> v to Tx.s(res) }
+}
 
-fun toggleOption(key: String, label: String, default: Boolean, showFor: (WidgetSize) -> Boolean = { true }) =
-    WidgetOption(key, label, listOf("on" to "On", "off" to "Off"), if (default) "on" else "off", showFor)
+fun toggleOption(key: String, @StringRes label: Int, default: Boolean, showFor: (WidgetSize) -> Boolean = { true }) =
+    WidgetOption(key, label, listOf("on" to R.string.common_on, "off" to R.string.common_off), if (default) "on" else "off", showFor)
 
 /** An extra row in a widget's menu ("Measure again", "Reroll"). */
 /** [closes]: close the menu after; otherwise [refocus] when the action removes rows (focus starts again at the top). */
@@ -122,8 +128,8 @@ class WidgetAction(val label: String, val value: String? = null, val color: Colo
 /** A kind of widget: what it is called, the sizes it supports, its settings and how it draws. */
 class WidgetKind(
     val id: String,
-    val name: String,
-    val blurb: String,
+    @StringRes private val nameRes: Int,
+    @StringRes private val blurbRes: Int,
     val icon: String,
     val accent: Color,
     val sizes: List<WidgetSize>,
@@ -131,12 +137,17 @@ class WidgetKind(
     val options: List<WidgetOption> = emptyList(),
     /** False hides it (RetroAchievements without an account); [needs] says why in the gallery. */
     val available: () -> Boolean = { true },
-    val needs: String? = null,
+    @StringRes needs: Int? = null,
     val actions: (Widget) -> List<WidgetAction> = { emptyList() },
     val content: @Composable (WidgetScope, Modifier) -> Unit,
     /** What one of these is called on screen: the kind's name, unless the widget has a name of its own (an Android widget's provider). */
-    val label: (Widget) -> String = { name },
-)
+    val label: (Widget) -> String = { Tx.s(nameRes) },
+) {
+    val name: String get() = Tx.s(nameRes)
+    val blurb: String get() = Tx.s(blurbRes)
+    private val needsRes = needs
+    val needs: String? get() = needsRes?.let { Tx.s(it) }
+}
 
 /** What a widget needs to draw itself. */
 class WidgetScope(
@@ -164,8 +175,6 @@ val TOP_CELL_H = 108.dp
 val TOP_GAP = 14.dp
 
 fun span(n: Int, cell: Dp, gap: Dp): Dp = if (n <= 0) 0.dp else cell * n + gap * (n - 1)
-
-fun plural(n: Int, one: String, many: String) = "$n ${if (n == 1) one else many}"
 
 /** Popups, focus and move mode for widgets. */
 object WidgetUi {
@@ -252,7 +261,7 @@ object WidgetUi {
     fun startMoving(id: String, area: WidgetArea) {
         close()
         moving = id; movingArea = area
-        Toasts.show("Move it with the D-pad, then press A")
+        Toasts.show(Tx.s(R.string.widgets_move_hint))
     }
 }
 
@@ -379,10 +388,10 @@ object UpNext {
     fun toggle(g: Game) {
         val e = entries().firstOrNull { it.key == g.key }
         if (e != null) {
-            removeWithUndo(e, "Removed from Up next")
+            removeWithUndo(e, Tx.s(R.string.widgets_upnext_removed))
         } else {
             add(UpNextEntry(key = g.key, added = System.currentTimeMillis()))
-            Toasts.show("Added to Up next ✓")
+            Toasts.show(Tx.s(R.string.widgets_upnext_added))
         }
     }
 
@@ -414,7 +423,7 @@ object UpNext {
 
     /** Asks for a game name (or any note) with the on-screen keyboard. A name that matches one game adds that game. */
     fun ask() {
-        TextEntry.ask("Add to Up next: a game name or a note") { text ->
+        TextEntry.ask(Tx.s(R.string.widgets_upnext_ask)) { text ->
             val t = text.trim()
             if (t.isEmpty()) return@ask
             val pool = Collections.visibleGames()
@@ -422,17 +431,17 @@ object UpNext {
             val match = pool.firstOrNull { it.title.lowercase() == q }
                 ?: pool.filter { it.title.lowercase().contains(q) }.takeIf { it.size == 1 }?.first()
             if (match != null) {
-                if (contains(match)) Toasts.show("${match.title} is already on the list")
-                else { add(UpNextEntry(key = match.key, added = System.currentTimeMillis())); Toasts.show("Added ${match.title} ✓") }
+                if (contains(match)) Toasts.show(Tx.s(R.string.widgets_upnext_already, match.title))
+                else { add(UpNextEntry(key = match.key, added = System.currentTimeMillis())); Toasts.show(Tx.s(R.string.widgets_upnext_added_game, match.title)) }
             } else {
                 add(UpNextEntry(note = t.take(60), added = System.currentTimeMillis()))
-                Toasts.show("Added a note to Up next ✓")
+                Toasts.show(Tx.s(R.string.widgets_upnext_added_note))
             }
         }
     }
 
     fun editNote(e: UpNextEntry) {
-        TextEntry.ask("Edit note (empty removes it)", e.note.orEmpty()) { text ->
+        TextEntry.ask(Tx.s(R.string.widgets_upnext_edit_note), e.note.orEmpty()) { text ->
             val t = text.trim()
             WidgetStore.update { c -> c.copy(upNext = if (t.isEmpty()) c.upNext - e else c.upNext.map { if (it == e) it.copy(note = t.take(60)) else it }) }
         }
@@ -584,7 +593,7 @@ fun Modifier.movable(id: String, area: WidgetArea): Modifier {
                 else -> return@onPreviewKeyEvent false
             }
             if (d == 0) {
-                if (e.type == KeyEventType.KeyUp) { WidgetUi.moving = null; Toasts.show("Moved ✓") }
+                if (e.type == KeyEventType.KeyUp) { WidgetUi.moving = null; Toasts.show(Tx.s(R.string.widgets_moved)) }
             } else if (e.type == KeyEventType.KeyDown) {
                 Widgets.move(area, id, d)
             }
@@ -625,7 +634,7 @@ fun HomeWidgetsRow(inset: Dp = 22.dp) {
     val placed = Widgets.pack(list, WidgetArea.Top, Widgets.homeRows(list))
     val route = Route.Home.key
     Column {
-        SectionTitle("Widgets", Palette.Butter, Modifier.padding(start = inset))
+        SectionTitle(Tx.s(R.string.widgets_title), Palette.Butter, Modifier.padding(start = inset))
         val scroll = rememberScrollState()
         // Widgets scrolled sideways fade out at the edge instead of being cut; the padding is room for the highlight.
         Box(Modifier.fillMaxWidth().bleed(FocusRoomSide).fadingEdges(scroll, horizontal = true).focusRow().horizontalScroll(scroll).padding(horizontal = inset + FocusRoomSide, vertical = FocusRoom)) {
@@ -746,7 +755,7 @@ fun WidgetHost() {
         }
     }
     LaunchedEffect(Nav.route) { WidgetUi.moving = null }
-    BackHandler(enabled = WidgetUi.moving != null && !WidgetUi.popupOpen) { WidgetUi.moving = null; Toasts.show("Moved ✓") }
+    BackHandler(enabled = WidgetUi.moving != null && !WidgetUi.popupOpen) { WidgetUi.moving = null; Toasts.show(Tx.s(R.string.widgets_moved)) }
 
     WidgetMenu()
     WidgetGallery()
@@ -761,34 +770,31 @@ fun widgetsSettings(): SettingSection {
     val top = Widgets.list(WidgetArea.Top).size
     val bottom = Widgets.list(WidgetArea.Bottom).size
     val upNext = UpNext.entries().size
-    return SettingSection(
-        "Widgets",
-        listOf(
+    return SettingSection(Tx.s(R.string.widgets_settings), en = "Widgets", rows = listOf(
             SettingRow(
-                "Customize widgets", plural(WidgetStore.widgets.size, "widget", "widgets"), Palette.Butter, Glyph.Grid,
-                "Add, move, resize and remove widgets: clock, battery, play time, storage, Up next and more.",
-                opens = true, keywords = "widget editor add clock battery storage",
+                Tx.s(R.string.widgets_customize), Tx.p(R.plurals.widgets_count, WidgetStore.widgets.size), Palette.Butter, Glyph.Grid,
+                Tx.s(R.string.widgets_customize_help),
+                opens = true, keywords = "widget editor add clock battery storage", en = "Customize widgets",
             ) {
                 WidgetUi.editorTab = 0; Nav.go(Route.Widgets)
             },
             SettingRow(
-                "Widgets on the home screen", if (!c.homeEnabled) "Off" else if (top == 0) "None yet" else plural(top, "widget", "widgets"), Palette.Butter, Glyph.Layers,
-                "Show your widgets at the top of the home screen.", toggle = c.homeEnabled,
+                Tx.s(R.string.widgets_home), if (!c.homeEnabled) Tx.s(R.string.common_off) else if (top == 0) Tx.s(R.string.widgets_none_yet) else Tx.p(R.plurals.widgets_count, top), Palette.Butter, Glyph.Layers,
+                Tx.s(R.string.widgets_home_help), toggle = c.homeEnabled, en = "Widgets on the home screen",
                 preview = { ToggleShowcase(c.homeEnabled, Palette.Butter) { on -> HomeWidgetsScene(on) } },
             ) {
                 WidgetStore.update { it.copy(homeEnabled = !it.homeEnabled) }
             },
             choice(
-                "Widgets on the grid", Glyph.Grid, Palette.Butter,
-                "Where Add here › Widget… on the icon grid puts a new widget: in a spot of its own, 1 to 2 cells each way, " +
-                    "or in the widget row. Widgets already placed stay where they are.",
-                listOf("cells" to "In cells", "row" to "As a row"), if (c.gridPlace == "row") "row" else "cells",
-                look = { v -> GridWidgetScene(v == "row") },
+                Tx.s(R.string.widgets_grid), Glyph.Grid, Palette.Butter,
+                Tx.s(R.string.widgets_grid_help),
+                listOf("cells" to Tx.s(R.string.widgets_grid_cells), "row" to Tx.s(R.string.widgets_grid_row)), if (c.gridPlace == "row") "row" else "cells", // tx-ok: option ids
+                look = { v -> GridWidgetScene(v == "row") }, en = "Widgets on the grid",
             ) { v -> WidgetStore.update { it.copy(gridPlace = v) } }.copy(keywords = "widget grid cells row icon grid"),
             SettingRow(
-                "Bottom screen when idle", if (bottom == 0) "Greeting" else plural(bottom, "widget", "widgets"), Palette.Butter, Glyph.Screens,
-                "What the bottom screen shows when nothing is highlighted: Pip's greeting, or widgets you choose.",
-                opens = true, keywords = "second screen idle greeting",
+                Tx.s(R.string.widgets_bottom), if (bottom == 0) Tx.s(R.string.widgets_bottom_greeting) else Tx.p(R.plurals.widgets_count, bottom), Palette.Butter, Glyph.Screens,
+                Tx.s(R.string.widgets_bottom_help),
+                opens = true, keywords = "second screen idle greeting", en = "Bottom screen when idle",
             ) {
                 WidgetUi.editorTab = 1; Nav.go(Route.Widgets)
             },

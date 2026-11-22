@@ -65,8 +65,10 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.PlaySession
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.everPlayed
-import io.github.zahakj.tandem.plural
 import java.io.File
 import java.time.Instant
 import java.time.LocalDate
@@ -77,14 +79,16 @@ import java.time.temporal.ChronoUnit
 
 /** The tabs on the stats screen; L1 and R1 switch between them. */
 object StatsTabs {
-    val names = listOf("Overview", "Library", "Trophies", "Sessions", "Achievements")
+    private val names = listOf(R.string.stats_tab_overview, R.string.stats_tab_library, R.string.stats_tab_trophies, R.string.stats_tab_sessions, R.string.stats_tab_achievements)
+    val count get() = names.size
+    fun name(i: Int) = Tx.s(names[i])
     const val OVERVIEW = 0
     const val LIBRARY = 1
     const val TROPHIES = 2
     const val SESSIONS = 3
     const val ACHIEVEMENTS = 4
     var tab by mutableIntStateOf(0)
-    fun shift(by: Int) { tab = (tab + by + names.size) % names.size }
+    fun shift(by: Int) { tab = (tab + by + count) % count }
 }
 
 /** Everything the stats screen shows, worked out once from the library and the play history. */
@@ -135,8 +139,8 @@ private class PlayStats(games: List<Game>, val sessions: List<PlaySession>) {
 
     val averageSession: Long = if (sessions.isEmpty()) 0 else sessions.sumOf { it.d } / sessions.size
 
-    /** When you usually play, weighted by how long. */
-    val timeOfDay: String? = run {
+    /** When you usually play, weighted by how long: a line's resource, so it follows the language. */
+    val timeOfDay: Int? = run {
         if (sessions.size < 3) return@run null
         val buckets = LongArray(4)
         for (s in sessions) {
@@ -144,10 +148,10 @@ private class PlayStats(games: List<Game>, val sessions: List<PlaySession>) {
             buckets[when (h) { in 5..11 -> 0; in 12..17 -> 1; in 18..22 -> 2; else -> 3 }] += s.d
         }
         when (buckets.indices.maxBy { buckets[it] }) {
-            0 -> "You're an early bird: most of your play happens in the morning."
-            1 -> "Afternoon adventurer: that's when you play the most."
-            2 -> "Evenings are your game time. Cosy!"
-            else -> "A true night owl. Most of your play is after 11 PM."
+            0 -> R.string.stats_fact_morning
+            1 -> R.string.stats_fact_afternoon
+            2 -> R.string.stats_fact_evening
+            else -> R.string.stats_fact_night
         }
     }
 }
@@ -165,7 +169,8 @@ fun StatsScreen() {
     DisposableEffect(Unit) { onDispose { PlaySessions.only = null; PlaySessions.focused = null } }
     Column(Modifier.fillMaxSize()) {
         Row(Modifier.padding(horizontal = 22.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            StatsTabs.names.forEachIndexed { i, name ->
+            for (i in 0 until StatsTabs.count) {
+                val name = StatsTabs.name(i)
                 val color = listOf(Palette.Mint, Palette.Sky, Palette.Butter, Palette.Lavender, Palette.Peach)[i]
                 FocusCard(
                     Modifier.height(30.dp),
@@ -182,7 +187,7 @@ fun StatsScreen() {
             }
             Spacer(Modifier.weight(1f))
             ButtonHint("L1", "", Palette.Muted)
-            ButtonHint("R1", "Switch tab", Palette.Muted)
+            ButtonHint("R1", Tx.s(R.string.stats_hint_switch_tab), Palette.Muted)
         }
         Box(Modifier.weight(1f)) {
             when (tab) {
@@ -207,7 +212,7 @@ private fun Overview() {
     val route = "stats:0"
     if (stats.played.isEmpty() && sessions.isEmpty()) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            EmptyNote("Play something and I'll keep count here, all on this device", "Go back", Modifier.takesFocus(route, "empty", true), mood = 1) { Nav.back() }
+            EmptyNote(Tx.s(R.string.stats_overview_empty), Tx.s(R.string.stats_overview_go_back), Modifier.takesFocus(route, "empty", true), mood = 1) { Nav.back() }
         }
         return
     }
@@ -235,23 +240,23 @@ private fun Overview() {
         item("tiles") {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 StatTile(
-                    "Total play", if (stats.totalSeconds > 0) formatPlayTime(stats.totalSeconds) else "–",
-                    "across ${plural(stats.played.size, "game")}", Palette.Mint,
+                    Tx.s(R.string.stats_tile_total), if (stats.totalSeconds > 0) formatPlayTime(stats.totalSeconds) else "–",
+                    Tx.p(R.plurals.stats_tile_total_across, stats.played.size), Palette.Mint,
                     Modifier.weight(1f).takesFocus(route, "total", target == "total"), route, "total",
                 )
-                StatTile("Games played", "${stats.gamesPlayed}", "of ${games.size} in your library", Palette.Sky, Modifier.weight(1f).takesFocus(route, "games", target == "games"), route, "games")
+                StatTile(Tx.s(R.string.stats_tile_games), "${stats.gamesPlayed}", Tx.p(R.plurals.stats_tile_games_of, games.size), Palette.Sky, Modifier.weight(1f).takesFocus(route, "games", target == "games"), route, "games")
                 StatTile(
-                    "Streak",
-                    if (noHistory) "New" else if (stats.streak == 0) "–" else plural(stats.streak, "day"),
-                    if (noHistory) "history starts today" else "best ${plural(stats.bestStreak, "day")}", Palette.Peach,
+                    Tx.s(R.string.stats_tile_streak),
+                    if (noHistory) Tx.s(R.string.stats_tile_streak_new) else if (stats.streak == 0) "–" else Tx.p(R.plurals.stats_tile_streak_days, stats.streak),
+                    if (noHistory) Tx.s(R.string.stats_tile_history_starts) else Tx.p(R.plurals.stats_tile_streak_best, stats.bestStreak), Palette.Peach,
                     Modifier.weight(1f).takesFocus(route, "streak", target == "streak"), route, "streak",
                 )
                 StatTile(
-                    "Sessions", if (noHistory) "–" else "${sessions.size}",
+                    Tx.s(R.string.stats_tile_sessions), if (noHistory) "–" else "${sessions.size}",
                     when {
-                        noHistory -> "history starts today"
-                        stats.averageSession < 60 -> "short and sweet"
-                        else -> "about ${formatPlayTime(stats.averageSession)} each"
+                        noHistory -> Tx.s(R.string.stats_tile_history_starts)
+                        stats.averageSession < 60 -> Tx.s(R.string.stats_tile_sessions_short)
+                        else -> Tx.s(R.string.stats_tile_sessions_average, formatPlayTime(stats.averageSession))
                     },
                     Palette.Butter,
                     Modifier.weight(1f).takesFocus(route, "sessions", target == "sessions"), route, "sessions",
@@ -261,13 +266,13 @@ private fun Overview() {
         item("chart") { DayChart(stats, noHistory, Modifier.takesFocus(route, "chart", target == "chart")) }
         if (stats.perSystem.isNotEmpty()) item("systems") {
             Column {
-                SectionTitle("By system", Palette.Lavender)
+                SectionTitle(Tx.s(R.string.stats_by_system), Palette.Lavender)
                 SystemMosaic(stats.perSystem, route, target)
             }
         }
         if (stats.top.isNotEmpty()) item("top") {
             Column {
-                SectionTitle("Most played", Palette.Peach)
+                SectionTitle(Tx.s(R.string.stats_most_played), Palette.Peach)
                 val topRow = androidx.compose.foundation.lazy.rememberLazyListState()
                 LazyRow(Modifier.fadingEdges(topRow, horizontal = true).focusRow(), state = topRow, horizontalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom)) {
                     items(stats.top, key = { it.key }) { g ->
@@ -290,12 +295,12 @@ private fun Overview() {
                 FocusCard(
                     Modifier.fillMaxWidth().takesFocus(route, "fact", target == "fact"), glow = Palette.Lavender,
                     onFocus = { FocusMemory.remember(route, "fact"); Selection.current = Selected.Home },
-                    onClick = { Toasts.show("Your stats never leave this device") },
+                    onClick = { Toasts.show(Tx.s(R.string.stats_fact_private)) },
                 ) {
                     Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Pip(46.dp, mood = 1)
                         Spacer(Modifier.width(12.dp))
-                        Text(fact, style = MaterialTheme.typography.titleSmall)
+                        Text(Tx.s(fact), style = MaterialTheme.typography.titleSmall)
                     }
                 }
             }
@@ -316,7 +321,7 @@ internal fun CoverCaption(text: String, color: Color) {
 
 @Composable
 internal fun StatTile(label: String, value: String, detail: String, color: Color, modifier: Modifier, route: String, key: String, onClick: (() -> Unit)? = null) {
-    FocusCard(modifier.height(96.dp), glow = color, onFocus = { FocusMemory.remember(route, key); Selection.current = Selected.Home }, onClick = { onClick?.invoke() ?: Toasts.show("$label: $value · $detail") }) {
+    FocusCard(modifier.height(96.dp), glow = color, onFocus = { FocusMemory.remember(route, key); Selection.current = Selected.Home }, onClick = { onClick?.invoke() ?: Toasts.show(Tx.s(R.string.stats_tile_said, label, value, detail)) }) {
         Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(color.copy(alpha = 0.28f), Palette.Card))))
         Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.Center) {
             Text(label, style = MaterialTheme.typography.labelLarge, color = color)
@@ -336,9 +341,9 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
     val monthTotal = days.sum()
     val day = stats.today.minusDays((29 - selected).toLong())
     val dayName = when (selected) {
-        29 -> "Today"
-        28 -> "Yesterday"
-        else -> day.format(DateTimeFormatter.ofPattern("EEE d MMM"))
+        29 -> Tx.s(R.string.stats_today)
+        28 -> Tx.s(R.string.stats_yesterday)
+        else -> day.format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_short), Lang.locale))
     }
     if (monthTotal == 0L) {
         // Nothing to chart: a friendly line instead of a row of empty dots.
@@ -350,10 +355,10 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
                 Pip(56.dp, mood = if (noHistory) 1 else 2)
                 Spacer(Modifier.width(14.dp))
                 Column {
-                    Text("Last 30 days", style = MaterialTheme.typography.titleMedium)
+                    Text(Tx.s(R.string.stats_chart_title), style = MaterialTheme.typography.titleMedium)
                     Text(
-                        if (noHistory) "Your play history starts today. Play something and your days fill in here."
-                        else "No play in the last 30 days. Your next session shows up here.",
+                        if (noHistory) Tx.s(R.string.stats_chart_empty_new)
+                        else Tx.s(R.string.stats_chart_empty),
                         style = MaterialTheme.typography.bodyMedium, color = Palette.Muted,
                     )
                 }
@@ -375,11 +380,11 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
     ) { focused ->
         Column(Modifier.fillMaxSize().padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Last 30 days", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                Pill(if (monthTotal == 0L) "Nothing yet" else formatPlayTime(monthTotal) + " in total", Palette.Mint)
+                Text(Tx.s(R.string.stats_chart_title), style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+                Pill(if (monthTotal == 0L) Tx.s(R.string.stats_chart_nothing) else Tx.s(R.string.stats_chart_total, formatPlayTime(monthTotal)), Palette.Mint)
             }
             Text(
-                "$dayName · " + if (days[selected] == 0L) "no play" else formatPlayTime(days[selected]),
+                if (days[selected] == 0L) Tx.s(R.string.stats_chart_day_none, dayName) else Tx.s(R.string.stats_chart_day, dayName, formatPlayTime(days[selected])),
                 style = MaterialTheme.typography.labelLarge, color = if (focused) Palette.Peach else Palette.Muted,
             )
             Spacer(Modifier.height(6.dp))
@@ -415,8 +420,8 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
                 }
             }
             Row {
-                Text(stats.today.minusDays(29).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, modifier = Modifier.weight(1f))
-                Text("Today", style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
+                Text(stats.today.minusDays(29).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Lang.locale)), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, modifier = Modifier.weight(1f))
+                Text(Tx.s(R.string.stats_today), style = MaterialTheme.typography.labelSmall, color = Palette.Muted)
             }
         }
     }
@@ -444,18 +449,18 @@ private fun SessionsList() {
     if (sessions.isEmpty()) {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             if (only != null) {
-                EmptyNote("No sessions for $onlyTitle: its play time may come from an import", "Show all sessions", Modifier.takesFocus(route, "all", true), color = Palette.Sky) {
+                EmptyNote(Tx.s(R.string.stats_sessions_none_for, onlyTitle.orEmpty()), Tx.s(R.string.stats_sessions_show_all_long), Modifier.takesFocus(route, "all", true), color = Palette.Sky) {
                     PlaySessions.only = null
                 }
             } else {
-                EmptyNote("Every time you play, a session shows up here", "See the overview", Modifier.takesFocus(route, "empty", true)) { StatsTabs.tab = StatsTabs.OVERVIEW }
+                EmptyNote(Tx.s(R.string.stats_sessions_empty), Tx.s(R.string.stats_sessions_see_overview), Modifier.takesFocus(route, "empty", true)) { StatsTabs.tab = StatsTabs.OVERVIEW }
             }
         }
         return
     }
     val zone = ZoneId.systemDefault()
     val today = LocalDate.now(zone)
-    val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+    val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Lang.locale)
     val groups = sessions.groupBy { Instant.ofEpochMilli(it.s).atZone(zone).toLocalDate() }
     val heads = listOfNotNull("all".takeIf { only != null }, "clear")
     val target = rememberFocusTarget(route, heads + sessions.map { PlaySessions.rowKey(it) })
@@ -472,31 +477,31 @@ private fun SessionsList() {
     ) {
         item("head") {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                if (only != null) PillButton("Show all", Palette.Sky, Modifier.takesFocus(route, "all", target == "all")) {
+                if (only != null) PillButton(Tx.s(R.string.stats_sessions_show_all), Palette.Sky, Modifier.takesFocus(route, "all", target == "all")) {
                     PlaySessions.only = null
                     FocusMemory.remember(route, "all")
                 }
-                PillButton(if (only != null) "Clear these sessions" else "Clear all sessions", Palette.Peach, Modifier.takesFocus(route, "clear", target == "clear")) {
-                    Confirm.hold(if (only != null) "Clear $onlyTitle's sessions?" else "Clear all sessions?", clearDetail(all, onlyTitle), "Clear") {
+                PillButton(if (only != null) Tx.s(R.string.stats_sessions_clear_these) else Tx.s(R.string.stats_sessions_clear_all), Palette.Peach, Modifier.takesFocus(route, "clear", target == "clear")) {
+                    Confirm.hold(if (only != null) Tx.s(R.string.stats_sessions_clear_these_ask, onlyTitle.orEmpty()) else Tx.s(R.string.stats_sessions_clear_all_ask), clearDetail(all, onlyTitle), Tx.s(R.string.common_clear)) {
                         PlaySessions.clear(all)
-                        Toasts.show(plural(all.size, "session") + " cleared")
+                        Toasts.show(Tx.p(R.plurals.stats_sessions_cleared, all.size))
                     }
                 }
                 Text(
-                    onlyTitle?.let { "$it · ${plural(all.size, "session")}" } ?: plural(all.size, "session"),
+                    onlyTitle?.let { Tx.p(R.plurals.stats_sessions_count_for, all.size, all.size, it) } ?: Tx.p(R.plurals.stats_sessions_count, all.size),
                     Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
-                ButtonHint("Y", "Edit session", Palette.Butter)
+                ButtonHint("Y", Tx.s(R.string.stats_sessions_hint_edit), Palette.Butter)
             }
         }
         for ((date, list) in groups) {
             item("d:$date") {
                 val label = when (ChronoUnit.DAYS.between(date, today)) {
-                    0L -> "Today"
-                    1L -> "Yesterday"
-                    else -> date.format(DateTimeFormatter.ofPattern("EEEE d MMMM"))
+                    0L -> Tx.s(R.string.stats_today)
+                    1L -> Tx.s(R.string.stats_yesterday)
+                    else -> date.format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_long), Lang.locale))
                 }
-                SectionTitle("$label · ${formatPlayTime(list.sumOf { it.d })}", Palette.Sky, Modifier.padding(top = 6.dp))
+                SectionTitle(Tx.s(R.string.stats_sessions_day, label, formatPlayTime(list.sumOf { it.d })), Palette.Sky, Modifier.padding(top = 6.dp))
             }
             items(list, key = { "s:${it.k}:${it.s}" }) { s ->
                 val game = byKey[s.k]
@@ -509,7 +514,7 @@ private fun SessionsList() {
                     onFocus = { Selection.current = game?.let { Selected.GameItem(it) } ?: Selected.Home },
                     // A long press is Y: the session's menu.
                     entry = true,
-                    onClick = { if (game != null) Launcher.launch(ctx, game) else Toasts.show("That game isn't in your library any more") },
+                    onClick = { if (game != null) Launcher.launch(ctx, game) else Toasts.show(Tx.s(R.string.stats_sessions_game_gone)) },
                 ) {
                     Row(Modifier.fillMaxSize().padding(7.dp), verticalAlignment = Alignment.CenterVertically) {
                         Box(Modifier.size(44.dp).clip(RoundedCornerShape(10.dp))) { SessionArt(s.k, game) }
@@ -550,7 +555,8 @@ fun exportStats(ctx: Context) {
             val dir = File(Library.romsDir, "tandem").apply { mkdirs() }
             File(dir, "play-stats.csv").writeText(
                 buildString {
-                    appendLine(csv("Title", "System", "File", "Minutes played", "Times played", "Last played"))
+                    // The files' column names stay English: other tools read them.
+                    appendLine(csv("Title", "System", "File", "Minutes played", "Times played", "Last played")) // tx-ok: file headers
                     for (g in games.sortedByDescending { it.meta.playSeconds }) {
                         appendLine(csv(g.title, g.platform.name, g.file.name, g.meta.playSeconds / 60, g.meta.playCount, g.meta.lastPlayed.takeIf { it > 0 }?.let { fmt.format(Instant.ofEpochMilli(it)) }))
                     }
@@ -558,7 +564,7 @@ fun exportStats(ctx: Context) {
             )
             File(dir, "play-sessions.csv").writeText(
                 buildString {
-                    appendLine(csv("Title", "System", "Started", "Minutes"))
+                    appendLine(csv("Title", "System", "Started", "Minutes")) // tx-ok: file headers
                     for (s in sessions) {
                         val g = byKey[s.k]
                         appendLine(csv(titleFor(s.k, g), g?.platform?.name ?: s.k.substringBefore('/'), fmt.format(Instant.ofEpochMilli(s.s)), s.d / 60))
@@ -567,12 +573,15 @@ fun exportStats(ctx: Context) {
             )
         }.isSuccess
     }) {
-        Toasts.show(if (ok) "Saved play-stats.csv and play-sessions.csv in ROMs/tandem" else "Couldn't write to ROMs/tandem")
+        Toasts.show(if (ok) Tx.s(R.string.stats_export_saved) else Tx.s(R.string.stats_export_failed))
     }
 }
 
 /** One box of the system mosaic: a system, or the systems too small for a box of their own. */
-private class MosaicBox(val key: String, val label: String, val color: Color, val seconds: Long, val platform: Platform?, val others: List<Platform> = emptyList())
+private class MosaicBox(val key: String, val color: Color, val seconds: Long, val platform: Platform?, val others: List<Platform> = emptyList()) {
+    // Worked out when shown: the boxes are remembered, and the words follow the language.
+    val label: String get() = platform?.shortName ?: Tx.p(R.plurals.stats_mosaic_more, others.size)
+}
 
 private const val MOSAIC_MAX = 8
 
@@ -582,8 +591,8 @@ private fun mosaicBoxes(per: List<Pair<Platform, Long>>): List<MosaicBox> {
     val big = per.takeWhile { it.second * 100 / total >= 3 }.take(MOSAIC_MAX - 1)
     val own = if (per.size - big.size <= 1) per.take(MOSAIC_MAX) else big
     val rest = per.drop(own.size)
-    return own.map { (p, s) -> MosaicBox("sys:${p.id}", p.shortName, SystemColors.of(p.id), s, p) } +
-        listOfNotNull(rest.takeIf { it.isNotEmpty() }?.let { r -> MosaicBox("sys:other", "${r.size} more", Palette.Lavender, r.sumOf { it.second }, null, r.map { it.first }) })
+    return own.map { (p, s) -> MosaicBox("sys:${p.id}", SystemColors.of(p.id), s, p) } +
+        listOfNotNull(rest.takeIf { it.isNotEmpty() }?.let { r -> MosaicBox("sys:other", Palette.Lavender, r.sumOf { it.second }, null, r.map { it.first }) })
 }
 
 private fun mosaicKeys(per: List<Pair<Platform, Long>>) = mosaicBoxes(per).map { it.key }
@@ -638,7 +647,7 @@ private fun SystemMosaic(per: List<Pair<Platform, Long>>, route: String, target:
                         formatPlayTime(b.seconds), style = if (roomy) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.labelLarge,
                         color = ink, maxLines = 1,
                     )
-                    if (roomy) Text("${(b.seconds * 100 / total).coerceAtLeast(1)}% of your play", style = MaterialTheme.typography.labelMedium, color = ink.copy(alpha = 0.75f), maxLines = 1)
+                    if (roomy) Text(Tx.s(R.string.stats_mosaic_share, (b.seconds * 100 / total).coerceAtLeast(1).toInt()), style = MaterialTheme.typography.labelMedium, color = ink.copy(alpha = 0.75f), maxLines = 1)
                 }
             }
         }

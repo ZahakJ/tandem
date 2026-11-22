@@ -29,8 +29,10 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -86,18 +88,20 @@ fun FilesScreen() {
     InterceptButtons(toolActive("files")) { b ->
         if (b != Button.Y) return@InterceptButtons false
         val f = list.orEmpty().firstOrNull { it.path == FocusMemory.get(route) } ?: return@InterceptButtons true
-        val what = if (f.isDirectory) "the folder ${f.name} and everything in it" else f.name
         val size = if (f.isDirectory) FilesState.sizes[f.path] else f.length()
-        Confirm.hold(
-            "Delete ${f.name}?",
-            "This deletes $what${size?.let { " (" + Formatter.formatShortFileSize(ctx, it) + ")" } ?: ""} from your storage. This can't be undone.",
-            "Delete",
-        ) {
+        val sized = size?.let { Formatter.formatShortFileSize(Tx.context, it) }
+        val detail = when {
+            f.isDirectory && sized != null -> Tx.s(R.string.apps_files_delete_folder_size, f.name, sized)
+            f.isDirectory -> Tx.s(R.string.apps_files_delete_folder, f.name)
+            sized != null -> Tx.s(R.string.apps_files_delete_file_size, f.name, sized)
+            else -> Tx.s(R.string.apps_files_delete_file, f.name)
+        }
+        Confirm.hold(Tx.s(R.string.apps_files_delete_ask, f.name), detail, Tx.s(R.string.apps_files_delete)) {
             inBackground({ f.deleteRecursively() }) {
                 FilesState.sizes.remove(f.path)
                 FilesState.sizes.keys.filter { f.path.startsWith(it) }.forEach { FilesState.sizes.remove(it) }
                 FilesState.version++
-                Toasts.show("Deleted ${f.name}")
+                Toasts.show(Tx.s(R.string.apps_files_deleted, f.name))
                 LibraryScan.rescan(ctx)
             }
         }
@@ -107,10 +111,11 @@ fun FilesScreen() {
     // Choosing a picture (an app's icon): A on a picture uses it; leaving Files gives up.
     val picking = ImagePick.request != null
     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { ImagePick.cancel() } }
-    ToolScaffold(app, if (picking) ImagePick.request?.title else if (free >= 0) "${Formatter.formatShortFileSize(ctx, free)} free" else null, hints = {
-        ButtonHint("A", if (picking) "Open · use ${ImagePick.request?.what ?: "picture"}" else "Open", Palette.Mint)
-        ButtonHint("Y", "Delete", Palette.Peach)
-        ButtonHint("B", if (FilesState.stack.isEmpty()) "Back" else "Up", Palette.Lavender)
+    ToolScaffold(app, if (picking) ImagePick.request?.title else if (free >= 0) freeText(free) else null, hints = {
+        val pick = ImagePick.request
+        ButtonHint("A", if (picking && pick != null) Tx.s(R.string.apps_files_open_use, pick.what) else Tx.s(R.string.apps_files_open), Palette.Mint)
+        ButtonHint("Y", Tx.s(R.string.apps_files_delete), Palette.Peach)
+        ButtonHint("B", if (FilesState.stack.isEmpty()) Tx.s(R.string.common_back) else Tx.s(R.string.apps_files_up), Palette.Lavender)
     }) {
         Column(Modifier.fillMaxSize()) {
             Text(
@@ -118,8 +123,8 @@ fun FilesScreen() {
                 style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             when {
-                list == null -> PipNote("Looking…", "Reading ${dir.name}.", mood = 1)
-                list.isEmpty() -> EmptyNote("Nothing in ${dir.name} yet", if (FilesState.stack.isEmpty()) "Go back" else "Up a folder", Modifier.takesFocus(route, "empty", true)) {
+                list == null -> PipNote(Tx.s(R.string.apps_files_looking), Tx.s(R.string.apps_files_reading, dir.name), mood = 1)
+                list.isEmpty() -> EmptyNote(Tx.s(R.string.apps_files_empty, dir.name), if (FilesState.stack.isEmpty()) Tx.s(R.string.apps_files_go_back) else Tx.s(R.string.apps_files_up_folder), Modifier.takesFocus(route, "empty", true)) {
                     if (FilesState.stack.isEmpty()) Nav.back() else {
                         val left = FilesState.stack.removeAt(FilesState.stack.lastIndex)
                         FocusMemory.remember("${Route.Tool("files").key}:${FilesState.current.path}", left.path)
@@ -138,15 +143,15 @@ fun FilesScreen() {
                             val color = if (f.isDirectory) systemColorFor(f) else Palette.Sky
                             ToolRow(
                                 f.name,
-                                if (f.isDirectory) (size?.let { Formatter.formatShortFileSize(ctx, it) } ?: "Measuring…") + " · folder"
-                                else f.extension.uppercase().ifEmpty { "File" },
+                                if (f.isDirectory) size?.let { Tx.s(R.string.apps_files_folder_size, Formatter.formatShortFileSize(Tx.context, it)) } ?: Tx.s(R.string.apps_files_folder_measuring)
+                                else f.extension.uppercase().ifEmpty { Tx.s(R.string.apps_files_file) },
                                 color, Modifier.takesFocus(route, f.path, f.path == target), height = 56.dp,
-                                tag = if (!f.isDirectory) Formatter.formatShortFileSize(ctx, f.length()) else null,
-                                onFocus = { Selection.current = Selected.Group(f.name, if (f.isDirectory) "Folder" else "File", emptyList(), color) },
+                                tag = if (!f.isDirectory) Formatter.formatShortFileSize(Tx.context, f.length()) else null,
+                                onFocus = { Selection.current = Selected.Group(f.name, if (f.isDirectory) Tx.s(R.string.apps_files_folder) else Tx.s(R.string.apps_files_file), emptyList(), color) },
                                 onClick = {
                                     if (f.isDirectory) { FilesState.stack.add(f); Nav.focusTick++ }
                                     else if (picking && ImagePick.accepts(f)) ImagePick.pick(f)
-                                    else Toasts.show("${f.name} · ${Formatter.formatFileSize(ctx, f.length())}")
+                                    else Toasts.show(Tx.s(R.string.apps_files_said, f.name, Formatter.formatFileSize(Tx.context, f.length())))
                                 },
                             ) {
                                 TandemIconTile(if (f.isDirectory) TIcon.Files else TIcon.Diamond, color)

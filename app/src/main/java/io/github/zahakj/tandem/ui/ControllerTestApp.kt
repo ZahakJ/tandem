@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlin.math.abs
 
 /*
@@ -42,6 +44,7 @@ object PadTest {
     var active by mutableStateOf(false)
     val down = mutableStateMapOf<Int, Boolean>()
     val axes = mutableStateMapOf<Int, Float>()
+    /** The last keys pressed, by name (Android's, never translated); shown as "… down". */
     val log = mutableStateListOf<String>()
     var device by mutableStateOf<String?>(null)
     var presses by mutableStateOf(0)
@@ -57,7 +60,7 @@ object PadTest {
                 if (e.repeatCount == 0) {
                     down[code] = true
                     presses++
-                    log.add(0, "${name(code)} down")
+                    log.add(0, name(code))
                     if (log.size > 9) log.removeAt(log.lastIndex)
                     if (exitKey) backDownAt = SystemClock.uptimeMillis()
                 } else if (exitKey && backDownAt > 0 && SystemClock.uptimeMillis() - backDownAt > 1500) {
@@ -106,27 +109,28 @@ fun ControllerTestScreen() {
         onDispose { PadTest.active = false; PadTest.down.clear(); PadTest.axes.clear() }
     }
     ToolScaffold(app, PadTest.device, sideWidth = 190.dp, hints = {
-        Text("Press anything: it lights up here.", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
-        Box(Modifier.swallowTaps { PadTest.leave() }) { ButtonHint("B", "Hold to leave (or tap)", Palette.Lavender, onClick = { PadTest.leave() }) }
+        Text(Tx.s(R.string.apps_pad_press), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+        Box(Modifier.swallowTaps { PadTest.leave() }) { ButtonHint("B", Tx.s(R.string.apps_pad_leave), Palette.Lavender, onClick = { PadTest.leave() }) }
     }) {
         Row(Modifier.fillMaxSize().padding(vertical = 10.dp)) {
             Box(Modifier.weight(1f).fillMaxSize()) { PadDrawing(Modifier.fillMaxSize()) }
             Column(Modifier.width(170.dp).padding(start = 10.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text("Last presses", style = MaterialTheme.typography.labelLarge, color = app.color)
-                for (l in PadTest.log) Text(l, style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                if (PadTest.log.isEmpty()) Text("Nothing yet", style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
+                Text(Tx.s(R.string.apps_pad_last), style = MaterialTheme.typography.labelLarge, color = app.color)
+                for (l in PadTest.log) Text(Tx.s(R.string.apps_pad_down, l), style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (PadTest.log.isEmpty()) Text(Tx.s(R.string.apps_pad_nothing), style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
                 Box(Modifier.weight(1f))
-                Text("Sticks", style = MaterialTheme.typography.labelLarge, color = app.color)
-                Text("L  %+.2f  %+.2f".format(PadTest.axis(MotionEvent.AXIS_X), PadTest.axis(MotionEvent.AXIS_Y)), style = MaterialTheme.typography.bodySmall, maxLines = 1)
-                Text("R  %+.2f  %+.2f".format(PadTest.axis(MotionEvent.AXIS_Z), PadTest.axis(MotionEvent.AXIS_RZ)), style = MaterialTheme.typography.bodySmall, maxLines = 1)
+                Text(Tx.s(R.string.apps_pad_sticks), style = MaterialTheme.typography.labelLarge, color = app.color)
+                Text("L  %+.2f  %+.2f".format(PadTest.axis(MotionEvent.AXIS_X), PadTest.axis(MotionEvent.AXIS_Y)), style = MaterialTheme.typography.bodySmall, maxLines = 1) // tx-ok: stick letters and numbers
+                Text("R  %+.2f  %+.2f".format(PadTest.axis(MotionEvent.AXIS_Z), PadTest.axis(MotionEvent.AXIS_RZ)), style = MaterialTheme.typography.bodySmall, maxLines = 1) // tx-ok: stick letters and numbers
                 Text(
-                    "Triggers  %.2f  %.2f".format(
+                    Tx.s(
+                        R.string.apps_pad_triggers,
                         maxOf(PadTest.axis(MotionEvent.AXIS_LTRIGGER), PadTest.axis(MotionEvent.AXIS_BRAKE)),
                         maxOf(PadTest.axis(MotionEvent.AXIS_RTRIGGER), PadTest.axis(MotionEvent.AXIS_GAS)),
                     ),
                     style = MaterialTheme.typography.bodySmall, maxLines = 1,
                 )
-                Text("${PadTest.presses} presses", style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1)
+                Text(Tx.p(R.plurals.apps_pad_presses, PadTest.presses), style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1)
             }
         }
     }

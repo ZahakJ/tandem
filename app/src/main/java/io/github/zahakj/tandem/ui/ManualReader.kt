@@ -67,8 +67,9 @@ import io.github.zahakj.tandem.ManualDoc
 import io.github.zahakj.tandem.ManualPages
 import io.github.zahakj.tandem.Manuals
 import io.github.zahakj.tandem.PagedManual
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ManualText
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -142,16 +143,16 @@ fun ManualScreen(route: Route.Manual) {
     if (game == null || file == null || failed) {
         EmptyNote(
             when {
-                game == null -> "That game isn't in the library any more"
-                file == null -> "No manual for ${game.title}: put one in ${Manuals.shortPath(Manuals.folderFor(game.platform))}"
-                else -> "Couldn't read ${file.name}"
+                game == null -> Tx.s(R.string.apps_manual_game_gone)
+                file == null -> Tx.s(R.string.apps_manual_none, game.title, Manuals.shortPath(Manuals.folderFor(game.platform)))
+                else -> Tx.s(R.string.apps_manual_unreadable, file.name)
             },
-            "Go back", Modifier.takesFocus(route.key, "back", true), Modifier.fillMaxSize(), mood = 2, color = color,
+            Tx.s(R.string.apps_manual_go_back), Modifier.takesFocus(route.key, "back", true), Modifier.fillMaxSize(), mood = 2, color = color,
         ) { Nav.back() }
         return
     }
     if (doc == null) {
-        PipNote("Opening ${file.name}…", "A big manual takes a moment.", mood = 1, modifier = Modifier.fillMaxSize().padding(top = 60.dp))
+        PipNote(Tx.s(R.string.apps_manual_opening, file.name), Tx.s(R.string.apps_manual_slow), mood = 1, modifier = Modifier.fillMaxSize().padding(top = 60.dp))
         return
     }
     val state = remember(doc) { ReaderState(game.key, doc.pageCount) }
@@ -178,11 +179,13 @@ fun ManualScreen(route: Route.Manual) {
             }
             Pill("${state.page + 1} / ${doc.pageCount}", color)
             Spacer(Modifier.weight(1f))
-            ButtonHint("◀▶", if (text) "Chapter" else "Page", Palette.Sky)
-            ButtonHint("▲▼", "Scroll", Palette.Sky)
-            ButtonHint("A", if (text) (if (state.zoomed) "Smaller text" else "Larger text") else (if (state.zoomed) "Fit page" else "Fit width"), Palette.Mint)
-            ButtonHint("Start", "Go to page", Palette.Butter)
-            ButtonHint("B", "Back", Palette.Lavender)
+            ButtonHint("◀▶", if (text) Tx.s(R.string.apps_manual_chapter) else Tx.s(R.string.apps_manual_page), Palette.Sky)
+            ButtonHint("▲▼", Tx.s(R.string.apps_manual_scroll), Palette.Sky)
+            val zoom = if (text) (if (state.zoomed) R.string.apps_manual_smaller_text else R.string.apps_manual_larger_text)
+            else (if (state.zoomed) R.string.apps_manual_fit_page else R.string.apps_manual_fit_width)
+            ButtonHint("A", Tx.s(zoom), Palette.Mint)
+            ButtonHint("Start", Tx.s(R.string.apps_manual_go_to), Palette.Butter)
+            ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
         }
         Spacer(Modifier.width(10.dp))
         Column(Modifier.weight(1f).fillMaxHeight()) {
@@ -218,9 +221,9 @@ fun ManualScreen(route: Route.Manual) {
 
 /** Start: type a page number on the controller keyboard. */
 private fun askPage(state: ReaderState) {
-    TextEntry.ask("Go to page (1 to ${state.count})") { typed ->
+    TextEntry.ask(Tx.s(R.string.apps_manual_go_to_ask, state.count)) { typed ->
         val n = typed.trim().toIntOrNull()
-        if (n == null || n !in 1..state.count) Toasts.show("Type a page number from 1 to ${state.count}")
+        if (n == null || n !in 1..state.count) Toasts.show(Tx.s(R.string.apps_manual_go_to_bad, state.count))
         else { state.go(n - 1); Sounds.page() }
     }
 }
@@ -301,7 +304,7 @@ private fun TextPage(page: ManualText.Page?, large: Boolean, scroll: ScrollState
         Modifier.fillMaxSize().fadingEdges(scroll).verticalScroll(scroll).padding(horizontal = 18.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        if (blocks.isEmpty()) Text("Nothing on this page.", style = body, color = Palette.Muted)
+        if (blocks.isEmpty()) Text(Tx.s(R.string.apps_manual_empty_page), style = body, color = Palette.Muted)
         for (b in blocks) when (b) {
             is ManualText.Block.Heading -> Text(
                 mdInline(b.text),
@@ -388,14 +391,16 @@ fun CompanionManualPanel(info: CompanionInfo) {
     Column(Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val state = if (doc != null) remember(doc) { ReaderState(info.key, doc.pageCount) } else null
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TouchChip("‹ Game", Palette.Lavender) { CompanionManual.hide() }
+            TouchChip(Tx.s(R.string.apps_manual_back_game), Palette.Lavender) { CompanionManual.hide() }
             Text(
-                (doc as? ManualDoc.Text)?.pages?.getOrNull(state?.page ?: 0)?.title ?: file?.name ?: "Manual",
+                (doc as? ManualDoc.Text)?.pages?.getOrNull(state?.page ?: 0)?.title ?: file?.name ?: Tx.s(R.string.apps_manual_title),
                 Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             if (state != null) {
                 val text = doc is ManualDoc.Text
-                TouchChip(if (text) (if (state.zoomed) "Smaller" else "Larger") else (if (state.zoomed) "Fit page" else "Fit width"), Palette.Mint) {
+                val zoom = if (text) (if (state.zoomed) R.string.apps_manual_smaller else R.string.apps_manual_larger)
+                else (if (state.zoomed) R.string.apps_manual_fit_page else R.string.apps_manual_fit_width)
+                TouchChip(Tx.s(zoom), Palette.Mint) {
                     state.zoomed = !state.zoomed
                 }
             }
@@ -405,7 +410,7 @@ fun CompanionManualPanel(info: CompanionInfo) {
                 file == null || failed -> Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                     Pip(64.dp, mood = 2)
                     Text(
-                        if (file == null) "No manual for this game. Put one in ROMs/manuals." else "Couldn't read ${file.name}.",
+                        if (file == null) Tx.s(R.string.apps_manual_none_here) else Tx.s(R.string.apps_manual_unreadable_here, file.name),
                         style = MaterialTheme.typography.bodyLarge, color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis,
                     )
                 }
@@ -420,7 +425,7 @@ fun CompanionManualPanel(info: CompanionInfo) {
         if (state != null) {
             PageBar(state, tint, Modifier.fillMaxWidth().padding(horizontal = 4.dp))
             Text(
-                "Tap the sides to turn, the middle to zoom. ${plural(state.count, "page")}.",
+                Tx.p(R.plurals.apps_manual_touch, state.count),
                 style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
         }

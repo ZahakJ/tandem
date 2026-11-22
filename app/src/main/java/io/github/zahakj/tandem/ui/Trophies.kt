@@ -44,7 +44,9 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Privacy
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ExtrasStore
 import io.github.zahakj.tandem.data.GameStatus
 import io.github.zahakj.tandem.data.HomeStore
@@ -93,7 +95,7 @@ object Trophies {
             val t = fresh.maxByOrNull { it.tier.ordinal } ?: return@inBackground
             Sounds.achievement()
             val more = fresh.size - 1
-            Toasts.show("🏆 ${t.tier.label} trophy: ${t.title}" + if (more > 0) " (and $more more)" else " · ${t.detail}", 5000)
+            Toasts.show(if (more > 0) Tx.p(R.plurals.stats_trophy_new_more, more, more, t.tier.label, t.title) else Tx.s(R.string.stats_trophy_new, t.tier.label, t.title, t.detail), 5000)
         }
     }
 }
@@ -142,7 +144,7 @@ fun TrophyCup(tier: TrophyTier, earned: Boolean, size: Dp, modifier: Modifier = 
     }
 }
 
-private val earnedFormat = DateTimeFormatter.ofPattern("d MMM yyyy")
+private fun earnedFormat() = DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_earned), Lang.locale)
 
 /** The Trophies tab: a summary, the cabinet of finished games, then every trophy, earned ones first. */
 @Composable
@@ -182,14 +184,14 @@ fun TrophiesTab() {
             FocusCard(
                 Modifier.fillMaxWidth().height(104.dp).takesFocus(route, "summary", target == "summary"), glow = Palette.Butter,
                 onFocus = { FocusMemory.remember(route, "summary"); Selection.current = Selected.Home },
-                onClick = { Toasts.show("Trophies come from your play and your games' statuses, on every system") },
+                onClick = { Toasts.show(Tx.s(R.string.stats_trophies_about)) },
             ) {
                 Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Palette.Butter.copy(alpha = 0.25f), Palette.Card))))
                 Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                     TrophyCup(if (earnedCount == trophies.size) TrophyTier.Platinum else TrophyTier.Gold, earnedCount > 0, 64.dp)
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
-                        Text("$earnedCount of ${trophies.size} trophies", style = MaterialTheme.typography.headlineSmall, maxLines = 1)
+                        Text(Tx.p(R.plurals.stats_trophies_earned, trophies.size, earnedCount, trophies.size), style = MaterialTheme.typography.headlineSmall, maxLines = 1)
                         Spacer(Modifier.height(8.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                             for (tier in TrophyTier.entries) {
@@ -200,7 +202,7 @@ fun TrophiesTab() {
                                 }
                             }
                             Spacer(Modifier.weight(1f))
-                            Text(plural(beaten.size, "game") + " finished", style = MaterialTheme.typography.labelLarge, color = Palette.Butter, maxLines = 1)
+                            Text(Tx.p(R.plurals.stats_trophies_finished, beaten.size), style = MaterialTheme.typography.labelLarge, color = Palette.Butter, maxLines = 1)
                         }
                     }
                 }
@@ -208,7 +210,7 @@ fun TrophiesTab() {
         }
         if (beaten.isNotEmpty()) item("cabinet") {
             Column {
-                SectionTitle("The cabinet: games you finished", Palette.Butter)
+                SectionTitle(Tx.s(R.string.stats_trophies_cabinet), Palette.Butter)
                 val row = rememberLazyListState()
                 LazyRow(Modifier.fadingEdges(row, horizontal = true).focusRow(), state = row, horizontalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom)) {
                     items(beaten, key = { it.key }) { g ->
@@ -220,7 +222,7 @@ fun TrophiesTab() {
                             Row(Modifier.padding(top = 4.dp).clip(RoundedCornerShape(6.dp)).background(Palette.CardHigh).padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                                 TrophyCup(if (s == GameStatus.Completed) TrophyTier.Platinum else TrophyTier.Gold, true, 14.dp)
                                 Text(
-                                    " " + (g.meta.finishedAt.takeIf { it > 0 }?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("MMM yyyy")) } ?: s?.label.orEmpty()),
+                                    " " + (g.meta.finishedAt.takeIf { it > 0 }?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_month), Lang.locale)) } ?: s?.label.orEmpty()),
                                     style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1,
                                 )
                             }
@@ -245,7 +247,7 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
     FocusCard(
         modifier.height(84.dp), glow = if (earned) t.tier.metal().first else Palette.Lavender,
         onFocus = { FocusMemory.remember(route, "t:${t.id}"); Selection.current = Selected.Home },
-        onClick = { Toasts.show(if (earned) "${t.title}: ${t.detail}" else "${t.detail}. ${progressWords(t, facts)} so far") },
+        onClick = { Toasts.show(if (earned) Tx.s(R.string.stats_trophy_said, t.title, t.detail) else Tx.s(R.string.stats_trophy_progress_said, t.detail, progressWords(t, facts))) },
     ) {
         if (earned) Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(t.tier.metal().first.copy(alpha = 0.16f), Palette.Card))))
         Row(Modifier.fillMaxSize().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -270,7 +272,7 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
                 Spacer(Modifier.height(4.dp))
                 if (earned) {
                     Text(
-                        t.tier.label + (at?.let { " · " + Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(earnedFormat) } ?: ""),
+                        at?.let { Tx.s(R.string.stats_trophy_earned_on, t.tier.label, Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).format(earnedFormat())) } ?: t.tier.label,
                         style = MaterialTheme.typography.labelSmall, color = color, maxLines = 1,
                     )
                 } else {
@@ -284,5 +286,5 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
 /** "4 / 10", or hours for the time trophies ("12 h / 100 h"). */
 private fun progressWords(t: Trophy, f: TrophyFacts): String {
     val have = t.have(f).coerceAtMost(t.goal)
-    return if (t.goal >= 3600) "${have / 3600} h / ${t.goal / 3600} h" else "$have / ${t.goal}"
+    return if (t.goal >= 3600) Tx.s(R.string.stats_trophy_hours, (have / 3600).toInt(), (t.goal / 3600).toInt()) else "$have / ${t.goal}"
 }

@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,6 +59,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.NoteStore
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.SketchCrop
 import io.github.zahakj.tandem.data.SketchData
 import io.github.zahakj.tandem.data.SketchStroke
@@ -73,7 +76,10 @@ import kotlin.math.roundToInt
  * links to the flattened PNG; the strokes are kept beside it (NoteStore.saveSketch).
  */
 
-enum class SketchTool(val label: String) { Pen("Pen"), Eraser("Eraser"), Crop("Crop") }
+enum class SketchTool(@StringRes private val res: Int) {
+    Pen(R.string.apps_sketch_pen), Eraser(R.string.apps_sketch_eraser), Crop(R.string.apps_sketch_crop);
+    val label: String get() = Tx.s(res)
+}
 
 /** A drawing being edited: strokes and crop with undo, the pen, and the controller's cursor. */
 class SketchState(private val start: SketchData, val background: ImageBitmap?) {
@@ -206,7 +212,7 @@ class SketchSession(
         }
         val data = state.result()
         NoteStore.later({ NoteStore.saveSketch(target.png, data) }) { ok ->
-            if (ok == true) onSaved(target.png) else say("Couldn't save the drawing")
+            if (ok == true) onSaved(target.png) else say(Tx.s(R.string.apps_sketch_save_failed))
             after()
         }
     }
@@ -229,7 +235,7 @@ object SketchPad {
             val bg = t.background?.let { NoteStore.decode(it)?.asImageBitmap() }
             t to bg
         }) { r ->
-            val (t, bg) = r ?: run { say("Couldn't open that picture"); return@later }
+            val (t, bg) = r ?: run { say(Tx.s(R.string.apps_sketch_open_failed)); return@later }
             session = SketchSession(title, SketchState(t.start, bg), t, owner, onSaved, say, onDiscard)
         }
     }
@@ -326,10 +332,10 @@ fun SketchTools(s: SketchState, modifier: Modifier = Modifier) {
             ) { Box(Modifier.size((5 + i * 5).dp).clip(CircleShape).background(Palette.Text)) }
         }
         for (t in SketchTool.entries) ToolChip(t.label, s.tool == t, Palette.Sky) { s.tool = t }
-        ToolChip("Undo", false, Palette.Butter) { s.undo() }
-        ToolChip("Redo", false, Palette.Butter) { s.redo() }
-        if (s.crop != null) ToolChip("Whole picture", false, Palette.Lavender) { s.fullPicture() }
-        ToolChip("Clear", false, Palette.Peach) { s.clear() }
+        ToolChip(Tx.s(R.string.apps_sketch_undo), false, Palette.Butter) { s.undo() }
+        ToolChip(Tx.s(R.string.apps_sketch_redo), false, Palette.Butter) { s.redo() }
+        if (s.crop != null) ToolChip(Tx.s(R.string.apps_sketch_whole), false, Palette.Lavender) { s.fullPicture() }
+        ToolChip(Tx.s(R.string.apps_sketch_clear), false, Palette.Peach) { s.clear() }
     }
 }
 
@@ -377,9 +383,9 @@ fun SketchPadOverlay() {
         PanelSurface(Modifier.fillMaxSize()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(ses.title, Modifier.weight(1f), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                ToolChip("Discard", false, Palette.Peach) { SketchPad.discard() }
+                ToolChip(Tx.s(R.string.apps_sketch_discard), false, Palette.Peach) { SketchPad.discard() }
                 Box(Modifier.size(8.dp))
-                ToolChip("Done", true, Palette.Mint) { done() }
+                ToolChip(Tx.s(R.string.apps_sketch_done), true, Palette.Mint) { done() }
             }
             SketchTools(s, Modifier.fillMaxWidth().padding(vertical = 8.dp))
             SketchCanvas(
@@ -401,12 +407,12 @@ fun SketchPadOverlay() {
                     .focusable(),
             )
             Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                ButtonHint("A", if (s.penDown) "Lift" else s.tool.label, Palette.Mint)
-                ButtonHint("Y", "Tool", Palette.Sky)
-                ButtonHint("X", "Undo", Palette.Butter)
-                ButtonHint("L1", "Ink", Palette.Lavender)
-                ButtonHint("R2", "Width", Palette.Lavender)
-                ButtonHint("Start", "Done", Palette.Mint)
+                ButtonHint("A", if (s.penDown) Tx.s(R.string.apps_sketch_lift) else s.tool.label, Palette.Mint)
+                ButtonHint("Y", Tx.s(R.string.apps_sketch_tool), Palette.Sky)
+                ButtonHint("X", Tx.s(R.string.apps_sketch_undo), Palette.Butter)
+                ButtonHint("L1", Tx.s(R.string.apps_sketch_ink), Palette.Lavender)
+                ButtonHint("R2", Tx.s(R.string.apps_sketch_width), Palette.Lavender)
+                ButtonHint("Start", Tx.s(R.string.apps_sketch_done), Palette.Mint)
             }
         }
     }

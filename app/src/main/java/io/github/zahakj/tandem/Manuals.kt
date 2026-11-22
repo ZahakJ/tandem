@@ -194,7 +194,7 @@ sealed class ManualDoc(val file: File) : Closeable {
                     ManualKind.Image -> FolderManual(file, listOf(file))
                     ManualKind.Text -> {
                         if (file.length() > MAX_TEXT) throw java.io.IOException("too long")
-                        Text(file, ManualText.pages(ManualText.parse(file.readText())))
+                        Text(file, ManualText.pages(ManualText.parse(file.readText())) { Tx.s(R.string.apps_manual_page_n, it) })
                     }
                     null -> null
                 }

@@ -21,7 +21,13 @@ import java.io.File
 import java.nio.file.Files
 
 /** Free and total space on one storage volume. */
-data class VolumeInfo(val label: String, val free: Long, val total: Long, val removable: Boolean) {
+data class VolumeInfo(val description: String?, val free: Long, val total: Long, val removable: Boolean, val primary: Boolean = false) {
+    /** Its name on screen, in the language of the moment: Internal, SD card, or what Android calls it. */
+    val label: String get() = when {
+        primary -> Tx.s(R.string.widgets_volume_internal)
+        removable -> Tx.s(R.string.widgets_volume_sd)
+        else -> description.orEmpty()
+    }
     val used: Long get() = (total - free).coerceAtLeast(0)
     val fraction: Float get() = if (total > 0) used.toFloat() / total else 0f
 }
@@ -67,7 +73,7 @@ object StorageInfo {
             val dir = v.directory ?: return@mapNotNull null
             runCatching {
                 val fs = StatFs(dir.path)
-                VolumeInfo(if (v.isPrimary) "Internal" else if (v.isRemovable) "SD card" else v.getDescription(ctx), fs.availableBytes, fs.totalBytes, v.isRemovable)
+                VolumeInfo(v.getDescription(ctx), fs.availableBytes, fs.totalBytes, v.isRemovable, v.isPrimary)
             }.getOrNull()
         }.filter { it.total > 0 }.sortedBy { if (it.removable) 1 else 0 }
     }

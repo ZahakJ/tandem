@@ -50,7 +50,9 @@ import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.PlayHistory
 import io.github.zahakj.tandem.data.PlaySession
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId
@@ -169,8 +171,9 @@ internal fun SessionArt(key: String, game: Game?) {
 
 private val zone: ZoneId get() = ZoneId.systemDefault()
 private fun at(ms: Long): ZonedDateTime = Instant.ofEpochMilli(ms).atZone(zone)
-private val dayFormat = DateTimeFormatter.ofPattern("EEE d MMM yyyy")
-private val timeFormat = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+// Made when used, in the language of the moment.
+private val dayFormat get() = DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_session), Lang.locale)
+private val timeFormat get() = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Lang.locale)
 
 /** The session popups, drawn over the Stats screen. */
 @Composable
@@ -188,7 +191,7 @@ private fun SessionHeader(s: PlaySession, game: Game?) {
         Column(Modifier.weight(1f)) {
             Text(sessionTitle(s.k, game), style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                "${at(s.s).format(dayFormat)} · ${at(s.s).format(timeFormat)} · ${formatPlayLong(s.d)}",
+                Tx.s(R.string.stats_session_header, at(s.s).format(dayFormat), at(s.s).format(timeFormat), formatPlayLong(s.d)),
                 style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
         }
@@ -217,31 +220,31 @@ private fun SessionMenu() {
                 Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 4.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(7.dp),
             ) {
-                MenuRow("Edit length", formatPlayLong(cur.d), "length", r, target, color) {
+                MenuRow(Tx.s(R.string.stats_session_edit_length), formatPlayLong(cur.d), "length", r, target, color) {
                     PlaySessions.menuFor = null; FocusMemory.forget(LENGTH); PlaySessions.lengthFor = cur
                 }
-                MenuRow("Change date and time", at(cur.s).format(DateTimeFormatter.ofPattern("d MMM, ")) + at(cur.s).format(timeFormat), "date", r, target, Palette.Sky) {
+                MenuRow(Tx.s(R.string.stats_session_change_date), Tx.s(R.string.stats_session_when, at(cur.s).format(DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_day_month), Lang.locale)), at(cur.s).format(timeFormat)), "date", r, target, Palette.Sky) {
                     PlaySessions.menuFor = null; FocusMemory.forget(DATE); PlaySessions.dateFor = cur
                 }
-                if (merge != null) MenuRow("Merge with next", "+ ${formatPlayLong(merge.d)}", "merge", r, target, Palette.Butter) {
+                if (merge != null) MenuRow(Tx.s(R.string.stats_session_merge), Tx.s(R.string.stats_session_merge_adds, formatPlayLong(merge.d)), "merge", r, target, Palette.Butter) {
                     PlaySessions.mergeNext(cur)
-                    Toasts.show("Merged into one session of ${formatPlayLong(cur.d + merge.d)}")
+                    Toasts.show(Tx.s(R.string.stats_session_merged, formatPlayLong(cur.d + merge.d)))
                     PlaySessions.close()
                 }
-                if (PlaySessions.only == null) MenuRow("Only this game", null, "only", r, target, Palette.Lavender) {
+                if (PlaySessions.only == null) MenuRow(Tx.s(R.string.stats_session_only_game), null, "only", r, target, Palette.Lavender) {
                     PlaySessions.only = cur.k
                     FocusMemory.remember(PlaySessions.ROUTE, PlaySessions.rowKey(cur))
                     PlaySessions.close()
                 }
-                HoldMenuRow("Delete", "delete", r, target, Palette.Peach) {
+                HoldMenuRow(Tx.s(R.string.stats_session_delete), "delete", r, target, Palette.Peach) {
                     PlaySessions.delete(cur)
-                    Toasts.show("Session deleted")
+                    Toasts.show(Tx.s(R.string.stats_session_deleted))
                     PlaySessions.close()
                 }
             }
             Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("A", "Choose", Palette.Mint)
-                ButtonHint("B", "Close", Palette.Lavender)
+                ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
+                ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)
             }
         }
     }
@@ -273,19 +276,19 @@ private fun LengthEditor() {
         PanelSurface(Modifier.width(470.dp)) {
             SessionHeader(cur, game)
             Spacer(Modifier.height(14.dp))
-            StepCard("Length", formatPlayLong(seconds), Palette.Mint, Modifier.takesFocus(LENGTH, "value", target == "value"), { step(it) }) {
-                ValueTrack(lengthFraction(seconds), Palette.Mint, start = "1 min", end = "24 h")
+            StepCard(Tx.s(R.string.stats_session_length), formatPlayLong(seconds), Palette.Mint, Modifier.takesFocus(LENGTH, "value", target == "value"), { step(it) }) {
+                ValueTrack(lengthFraction(seconds), Palette.Mint, start = Tx.s(R.string.stats_session_one_min), end = Tx.s(R.string.stats_session_one_day))
             }
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("◀▶", "1 min")
+                ButtonHint("◀▶", Tx.s(R.string.stats_session_one_min))
                 ButtonHint("L1", "")
-                ButtonHint("R1", "10 min")
+                ButtonHint("R1", Tx.s(R.string.stats_session_ten_min))
             }
             Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally)) {
-                PillButton("Cancel", Palette.Lavender, Modifier.takesFocus(LENGTH, "cancel", target == "cancel")) { PlaySessions.close() }
-                PillButton("Save", Palette.Mint, Modifier.takesFocus(LENGTH, "save", target == "save")) {
-                    if (seconds != cur.d) { PlaySessions.setLength(cur, seconds); Toasts.show("Length set to ${formatPlayLong(seconds)}") }
+                PillButton(Tx.s(R.string.stats_session_cancel), Palette.Lavender, Modifier.takesFocus(LENGTH, "cancel", target == "cancel")) { PlaySessions.close() }
+                PillButton(Tx.s(R.string.stats_session_save), Palette.Mint, Modifier.takesFocus(LENGTH, "save", target == "save")) {
+                    if (seconds != cur.d) { PlaySessions.setLength(cur, seconds); Toasts.show(Tx.s(R.string.stats_session_length_set, formatPlayLong(seconds))) }
                     PlaySessions.close()
                 }
             }
@@ -330,24 +333,24 @@ private fun DateEditor() {
                 Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()).padding(horizontal = 4.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                StepCard("Day", t.format(dayFormat), Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }, { row = "day" }) {
+                StepCard(Tx.s(R.string.stats_session_day), t.format(dayFormat), Palette.Sky, Modifier.takesFocus(DATE, "day", target == "day"), { step("day", it, false) }, { row = "day" }) {
                     WeekStrip(t, Palette.Sky)
                 }
-                StepCard("Time", t.format(timeFormat), Palette.Mint, Modifier.takesFocus(DATE, "time", target == "time"), { step("time", it, false) }, { row = "time" }) {
-                    ValueTrack((t.hour * 60 + t.minute) / 1440f, Palette.Mint, start = "Midnight", end = "Midnight")
+                StepCard(Tx.s(R.string.stats_session_time), t.format(timeFormat), Palette.Mint, Modifier.takesFocus(DATE, "time", target == "time"), { step("time", it, false) }, { row = "time" }) {
+                    ValueTrack((t.hour * 60 + t.minute) / 1440f, Palette.Mint, start = Tx.s(R.string.stats_session_midnight), end = Tx.s(R.string.stats_session_midnight))
                 }
             }
             Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                ButtonHint("◀▶", "Change")
+                ButtonHint("◀▶", Tx.s(R.string.stats_session_change))
                 ButtonHint("L1", "")
-                ButtonHint("R1", if (row == "day") "A week" else "An hour")
+                ButtonHint("R1", if (row == "day") Tx.s(R.string.stats_session_a_week) else Tx.s(R.string.stats_session_an_hour))
             }
             Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally)) {
-                PillButton("Cancel", Palette.Lavender, Modifier.takesFocus(DATE, "cancel", target == "cancel")) { PlaySessions.close() }
-                PillButton("Save", Palette.Mint, Modifier.takesFocus(DATE, "save", target == "save")) {
+                PillButton(Tx.s(R.string.stats_session_cancel), Palette.Lavender, Modifier.takesFocus(DATE, "cancel", target == "cancel")) { PlaySessions.close() }
+                PillButton(Tx.s(R.string.stats_session_save), Palette.Mint, Modifier.takesFocus(DATE, "save", target == "save")) {
                     if (start != cur.s) {
                         PlaySessions.moveTo(cur, start)
-                        Toasts.show("Moved to ${at(start).format(dayFormat)}, ${at(start).format(timeFormat)}")
+                        Toasts.show(Tx.s(R.string.stats_session_moved, at(start).format(dayFormat), at(start).format(timeFormat)))
                     }
                     PlaySessions.close()
                 }
@@ -411,12 +414,11 @@ private fun WeekStrip(t: ZonedDateTime, color: Color) {
     }
 }
 
-private val weekdayFormat = DateTimeFormatter.ofPattern("EEE")
+private val weekdayFormat get() = DateTimeFormatter.ofPattern(Tx.s(R.string.stats_date_weekday), Lang.locale)
 
 /** What "Clear all sessions" says about [these]. */
 internal fun clearDetail(these: List<PlaySession>, title: String?): String {
-    val what = plural(these.size, "session") + " (${formatPlayLong(these.sumOf { it.d })})"
-    val of = if (title != null) " of $title" else ""
-    return "$what$of will be removed, and play time, play count and last played worked out again from what's left. " +
-        "Play time imported from another frontend stays. This can't be undone."
+    val time = formatPlayLong(these.sumOf { it.d })
+    return if (title != null) Tx.p(R.plurals.stats_sessions_clear_detail_of, these.size, these.size, time, title)
+    else Tx.p(R.plurals.stats_sessions_clear_detail, these.size, these.size, time)
 }

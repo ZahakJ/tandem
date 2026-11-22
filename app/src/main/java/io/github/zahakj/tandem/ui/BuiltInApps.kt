@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.annotation.StringRes
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,8 @@ import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 
 /*
  * Tandem's built-in apps: each is a tile on the icon grid (key "tandem:<id>") that
@@ -49,9 +51,9 @@ import io.github.zahakj.tandem.plural
 
 class BuiltInApp(
     val id: String,
-    val title: String,
+    @StringRes private val titleRes: Int,
     /** One line about it, shown under its name on the other screen. */
-    val blurb: String,
+    @StringRes private val blurbRes: Int,
     val icon: TIcon,
     val color: Color,
     /** On the home grid by default (Settings is only there when put there, for example by the Cocoon import). */
@@ -59,25 +61,27 @@ class BuiltInApp(
     val open: (Context) -> Unit,
 ) {
     val key: String get() = "tandem:$id"
+    val title: String get() = Tx.s(titleRes)
+    val blurb: String get() = Tx.s(blurbRes)
     val art: TileArt get() = TileArt.Tandem(icon, color)
 }
 
 object BuiltInApps {
     val all: List<BuiltInApp> = listOf(
-        BuiltInApp("gallery", "Gallery", "Your screenshots, sorted by game", TIcon.Gallery, Color(0xFFF07F62)) { Nav.go(Route.Tool("gallery")) },
-        BuiltInApp("journal", "Journal", "Every play session, with your own notes", TIcon.Journal, Color(0xFFD9A03C)) { Nav.go(Route.Tool("journal")) },
-        BuiltInApp("notes", "Notes", "Notes for each game: text, checklists, sketches and screenshots", TIcon.Notes, Color(0xFF5FB58C)) {
+        BuiltInApp("gallery", R.string.apps_gallery_title, R.string.apps_gallery_blurb, TIcon.Gallery, Color(0xFFF07F62)) { Nav.go(Route.Tool("gallery")) },
+        BuiltInApp("journal", R.string.apps_journal_title, R.string.apps_journal_blurb, TIcon.Journal, Color(0xFFD9A03C)) { Nav.go(Route.Tool("journal")) },
+        BuiltInApp("notes", R.string.apps_notes_title, R.string.apps_notes_blurb, TIcon.Notes, Color(0xFF5FB58C)) {
             NotesUi.reset(); Nav.go(Route.Tool("notes"))
         },
-        BuiltInApp("themes", "Themes", "Themes, icon packs, layouts and looks", TIcon.Themes, Color(0xFF9A6CF0)) { Nav.go(Route.Appearance) },
-        BuiltInApp("stats", "Stats", "Play time, your library by status, streaks", TIcon.Stats, Color(0xFF2EB5A6)) { StatsTabs.tab = StatsTabs.OVERVIEW; Nav.go(Route.Stats) },
-        BuiltInApp("achievements", "Trophies", "Your trophies, finished games and RetroAchievements", TIcon.Trophy, Color(0xFFE6B92E)) {
+        BuiltInApp("themes", R.string.apps_themes_title, R.string.apps_themes_blurb, TIcon.Themes, Color(0xFF9A6CF0)) { Nav.go(Route.Appearance) },
+        BuiltInApp("stats", R.string.apps_stats_title, R.string.apps_stats_blurb, TIcon.Stats, Color(0xFF2EB5A6)) { StatsTabs.tab = StatsTabs.OVERVIEW; Nav.go(Route.Stats) },
+        BuiltInApp("achievements", R.string.apps_achievements_title, R.string.apps_achievements_blurb, TIcon.Trophy, Color(0xFFE6B92E)) {
             StatsTabs.tab = StatsTabs.TROPHIES; Nav.go(Route.Stats)
         },
-        BuiltInApp("upnext", "Up next", "Games you mean to play soon", TIcon.UpNext, Color(0xFF4F8CF2)) { Nav.go(Route.Tool("upnext")) },
-        BuiltInApp("files", "Files", "Browse and tidy your ROMs folder", TIcon.Files, Color(0xFF7C8AA8)) { Nav.go(Route.Tool("files")) },
-        BuiltInApp("pad", "Controller test", "Every button and stick, live", TIcon.Controller, Color(0xFF4FBF6A)) { Nav.go(Route.Tool("pad")) },
-        BuiltInApp("settings", "Settings", "Everything Tandem can do", TIcon.Gear, Color(0xFF8A94B8), onHome = false) { Nav.go(Route.Settings) },
+        BuiltInApp("upnext", R.string.apps_upnext_title, R.string.apps_upnext_blurb, TIcon.UpNext, Color(0xFF4F8CF2)) { Nav.go(Route.Tool("upnext")) },
+        BuiltInApp("files", R.string.apps_files_title, R.string.apps_files_blurb, TIcon.Files, Color(0xFF7C8AA8)) { Nav.go(Route.Tool("files")) },
+        BuiltInApp("pad", R.string.apps_pad_title, R.string.apps_pad_blurb, TIcon.Controller, Color(0xFF4FBF6A)) { Nav.go(Route.Tool("pad")) },
+        BuiltInApp("settings", R.string.apps_settings_title, R.string.apps_settings_blurb, TIcon.Gear, Color(0xFF8A94B8), onHome = false) { Nav.go(Route.Settings) },
     )
 
     fun byId(id: String): BuiltInApp? = all.firstOrNull { it.id == id }
@@ -93,7 +97,7 @@ fun ToolScreen(route: Route.Tool) {
         "upnext" -> UpNextScreen()
         "files" -> FilesScreen()
         "pad" -> ControllerTestScreen()
-        else -> PipNote("Nothing here", "This built-in app doesn't exist any more.", mood = 2)
+        else -> PipNote(Tx.s(R.string.apps_gone_title), Tx.s(R.string.apps_gone), mood = 2)
     }
 }
 
@@ -173,22 +177,22 @@ fun UpNextScreen() {
             Button.X -> { UpNext.ask(); true }
             Button.Y -> {
                 val i = keys.indexOf(FocusMemory.get(route))
-                entries.getOrNull(i)?.let { (e, g) -> UpNext.removeWithUndo(e, "Took ${g?.title ?: "the note"} off the list") }
+                entries.getOrNull(i)?.let { (e, g) -> UpNext.removeWithUndo(e, if (g != null) Tx.s(R.string.apps_upnext_took_off, g.title) else Tx.s(R.string.apps_upnext_took_off_note)) }
                 true
             }
-            Button.Select -> { val n = UpNext.clearPlayed(); Toasts.show(if (n == 0) "Nothing played yet" else "Cleared ${plural(n, "played game")}"); true }
+            Button.Select -> { val n = UpNext.clearPlayed(); Toasts.show(if (n == 0) Tx.s(R.string.apps_upnext_none_played) else Tx.p(R.plurals.apps_upnext_cleared, n)); true }
             else -> false
         }
     }
-    ToolScaffold(app, plural(entries.size, "entry", "entries"), hints = {
-        ButtonHint("A", "Play", Palette.Mint)
-        ButtonHint("X", "Add", Palette.Sky)
-        ButtonHint("Y", "Remove", Palette.Peach)
-        ButtonHint("Select", "Clear played", Palette.Lavender)
+    ToolScaffold(app, Tx.p(R.plurals.apps_upnext_entries, entries.size), hints = {
+        ButtonHint("A", Tx.s(R.string.apps_upnext_play), Palette.Mint)
+        ButtonHint("X", Tx.s(R.string.apps_upnext_add), Palette.Sky)
+        ButtonHint("Y", Tx.s(R.string.apps_upnext_remove), Palette.Peach)
+        ButtonHint("Select", Tx.s(R.string.apps_upnext_clear_played), Palette.Lavender)
     }) {
         if (entries.isEmpty()) {
             EmptyNote(
-                "Nothing lined up: add a game or a note, or Y › Add to Up next on any game", "Add one",
+                Tx.s(R.string.apps_upnext_empty), Tx.s(R.string.apps_upnext_add_one),
                 Modifier.takesFocus(route, "empty", true), Modifier.align(Alignment.Center), mood = 0,
             ) { UpNext.ask() }
         } else {
@@ -201,8 +205,8 @@ fun UpNextScreen() {
                 itemsIndexed(entries, key = { i, _ -> keys[i] }) { i, (e, g) ->
                     val played = UpNext.played(e, g)
                     ToolRow(
-                        g?.title ?: e.note.orEmpty(), g?.platform?.name ?: "Note", g?.let { SystemColors.of(it.platform.id) } ?: Palette.Butter,
-                        Modifier.takesFocus(route, keys[i], keys[i] == target), tag = if (played) "Played ✓" else "#${i + 1}",
+                        g?.title ?: e.note.orEmpty(), g?.platform?.name ?: Tx.s(R.string.apps_upnext_note), g?.let { SystemColors.of(it.platform.id) } ?: Palette.Butter,
+                        Modifier.takesFocus(route, keys[i], keys[i] == target), tag = if (played) Tx.s(R.string.apps_upnext_played) else "#${i + 1}",
                         onFocus = { Selection.current = if (g != null) Selected.GameItem(g) else Selected.Home },
                         onClick = { if (g != null) Launcher.launch(ctx, g) else UpNext.editNote(e) },
                     ) {

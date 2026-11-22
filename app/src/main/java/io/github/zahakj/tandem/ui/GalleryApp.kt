@@ -40,10 +40,12 @@ import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
-import io.github.zahakj.tandem.plural
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -115,11 +117,11 @@ fun GalleryScreen() {
     var group by remember { mutableStateOf("all") }
     var viewing by remember { mutableStateOf<Int?>(null) }
     val list = shots
-    val groups = remember(list) {
+    val groups = remember(list, Lang.revision.intValue) {
         val byGame = list.orEmpty().filter { it.game != null }.groupBy { it.game!!.key }
-        listOf("all" to "All · ${list.orEmpty().size}") +
-            byGame.entries.sortedByDescending { it.value.size }.take(10).map { (k, v) -> "g:$k" to "${v.first().game!!.title} · ${v.size}" } +
-            listOfNotNull(("other" to "Other").takeIf { list.orEmpty().any { it.game == null } })
+        listOf("all" to Tx.s(R.string.apps_gallery_all, list.orEmpty().size)) +
+            byGame.entries.sortedByDescending { it.value.size }.take(10).map { (k, v) -> "g:$k" to Tx.s(R.string.apps_gallery_game, v.first().game!!.title, v.size) } +
+            listOfNotNull(("other" to Tx.s(R.string.apps_gallery_other)).takeIf { list.orEmpty().any { it.game == null } })
     }
     val picking = ImagePick.request != null
     val shown = remember(list, group, picking) {
@@ -146,16 +148,16 @@ fun GalleryScreen() {
     }
     // Choosing a picture (an app's icon): A uses the screenshot; leaving the Gallery gives up.
     androidx.compose.runtime.DisposableEffect(Unit) { onDispose { ImagePick.cancel() } }
-    ToolScaffold(app, if (picking) ImagePick.request?.title else list?.let { plural(it.size, "screenshot") }, hints = {
-        ButtonHint("A", if (picking) "Use picture" else "View", Palette.Mint)
-        if (!picking) ButtonHint("X", "Share", Palette.Sky)
-        ButtonHint("Y", "Delete", Palette.Peach)
-        ButtonHint("B", "Back", Palette.Lavender)
+    ToolScaffold(app, if (picking) ImagePick.request?.title else list?.let { Tx.p(R.plurals.apps_gallery_count, it.size) }, hints = {
+        ButtonHint("A", if (picking) Tx.s(R.string.apps_gallery_use) else Tx.s(R.string.apps_gallery_view), Palette.Mint)
+        if (!picking) ButtonHint("X", Tx.s(R.string.apps_gallery_share), Palette.Sky)
+        ButtonHint("Y", Tx.s(R.string.apps_gallery_delete), Palette.Peach)
+        ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
     }) {
         when {
-            list == null -> PipNote("Looking for screenshots…", "Checking ROMs/\u2060screenshots, RetroArch, Pictures and DCIM.", mood = 1, modifier = Modifier.align(Alignment.Center))
+            list == null -> PipNote(Tx.s(R.string.apps_gallery_looking), Tx.s(R.string.apps_gallery_looking_where), mood = 1, modifier = Modifier.align(Alignment.Center))
             list.isEmpty() -> EmptyNote(
-                "No screenshots yet: take one in your emulator, or put pictures in ROMs/\u2060screenshots", "Look again",
+                Tx.s(R.string.apps_gallery_empty), Tx.s(R.string.apps_gallery_look_again),
                 Modifier.takesFocus(route, "empty", true), Modifier.align(Alignment.Center),
             ) { Gallery.version++ }
             else -> Column(Modifier.fillMaxSize()) {
@@ -172,13 +174,13 @@ fun GalleryScreen() {
                         FocusCard(
                             Modifier.aspectRatio(16f / 10f).takesFocus(route, s.file.path, s.file.path == target), glow = app.color,
                             shape = RoundedCornerShape(14.dp),
-                            onFocus = { Selection.current = s.game?.let { Selected.GameItem(it) } ?: Selected.Group(s.source, "Screenshot", emptyList(), app.color) },
+                            onFocus = { Selection.current = s.game?.let { Selected.GameItem(it) } ?: Selected.Group(s.source, Tx.s(R.string.apps_gallery_screenshot), emptyList(), app.color) },
                             entry = true,
                             onClick = { if (picking) ImagePick.pick(s.file) else viewing = i },
                         ) {
                             AsyncImage(rememberSizedRequest(s.file, 320), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
                             if (s.video) Text(
-                                "▶ Clip", Modifier.align(Alignment.TopEnd).padding(6.dp).darkChip().padding(horizontal = 8.dp, vertical = 2.dp),
+                                Tx.s(R.string.apps_gallery_clip), Modifier.align(Alignment.TopEnd).padding(6.dp).darkChip().padding(horizontal = 8.dp, vertical = 2.dp),
                                 style = MaterialTheme.typography.labelSmall, color = Palette.Peach, maxLines = 1,
                             )
                             Text(
@@ -207,7 +209,7 @@ private fun shareShot(ctx: android.content.Context, s: Shot) {
             androidx.core.content.FileProvider.getUriForFile(ctx, "${ctx.packageName}.shots", copy)
         }.getOrNull()
         android.os.Handler(android.os.Looper.getMainLooper()).post {
-            if (uri == null) { Toasts.show("Couldn't share it"); return@post }
+            if (uri == null) { Toasts.show(Tx.s(R.string.apps_gallery_share_failed)); return@post }
             val type = if (s.video) "video/mp4" else when (s.file.extension.lowercase()) {
                 "jpg", "jpeg" -> "image/jpeg"
                 "webp" -> "image/webp"
@@ -217,17 +219,19 @@ private fun shareShot(ctx: android.content.Context, s: Shot) {
                 .putExtra(android.content.Intent.EXTRA_STREAM, uri)
                 .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
             send.clipData = android.content.ClipData.newRawUri(s.file.name, uri)
-            val title = s.game?.title?.let { "Share $it" } ?: "Share"
+            val title = s.game?.title?.let { Tx.s(R.string.apps_gallery_share_game, it) } ?: Tx.s(R.string.apps_gallery_share_title)
             runCatching { ctx.startActivity(android.content.Intent.createChooser(send, title).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
-                .onFailure { Toasts.show("Nothing here can share it") }
+                .onFailure { Toasts.show(Tx.s(R.string.apps_gallery_share_none)) }
         }
     }, "tandem-share").start()
 }
 
 private fun deleteShot(s: Shot, after: () -> Unit = {}) {
-    val what = if (s.video) "clip" else "screenshot"
-    Confirm.hold("Delete this $what?", "${s.file.name} will be deleted from ${s.source}. This can't be undone.", "Delete") {
-        if (s.file.delete()) { Toasts.show("${what.replaceFirstChar { it.uppercase() }} deleted"); Gallery.version++; after() } else Toasts.show("Couldn't delete it")
+    val ask = Tx.s(if (s.video) R.string.apps_gallery_delete_clip_ask else R.string.apps_gallery_delete_shot_ask)
+    Confirm.hold(ask, Tx.s(R.string.apps_gallery_delete_detail, s.file.name, s.source), Tx.s(R.string.apps_gallery_delete)) {
+        if (s.file.delete()) {
+            Toasts.show(Tx.s(if (s.video) R.string.apps_gallery_clip_deleted else R.string.apps_gallery_shot_deleted)); Gallery.version++; after()
+        } else Toasts.show(Tx.s(R.string.apps_gallery_delete_failed))
     }
 }
 
@@ -271,8 +275,8 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
                     )
                     Text("${i + 1} / ${shots.size}", style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
                     ButtonHint("◀▶", "", Palette.Sky)
-                    ButtonHint("X", "Share", Palette.Sky)
-                    ButtonHint("Y", "Delete", Palette.Peach)
+                    ButtonHint("X", Tx.s(R.string.apps_gallery_share), Palette.Sky)
+                    ButtonHint("Y", Tx.s(R.string.apps_gallery_delete), Palette.Peach)
                 }
             }
         }

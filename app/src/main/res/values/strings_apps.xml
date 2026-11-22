@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tandem's built-in apps (BuiltInApps.kt): Gallery, Journal, Notes (NotesApp.kt, NoteEditor.kt, SketchPad.kt,
+     CompanionNotes.kt), Up next, Files, Controller test and the manual reader. Keys start with apps_, then the app.
+     See docs/TRANSLATING.md. -->
+<resources>
+    <!-- Each built-in app's name (a tile on the home grid: keep it short) and one line about it. -->
+    <string name="apps_gallery_title">Gallery</string>
+    <string name="apps_gallery_blurb">Your screenshots, sorted by game</string>
+    <string name="apps_journal_title">Journal</string>
+    <string name="apps_journal_blurb">Every play session, with your own notes</string>
+    <string name="apps_notes_title">Notes</string>
+    <string name="apps_notes_blurb">Notes for each game: text, checklists, sketches and screenshots</string>
+    <string name="apps_themes_title">Themes</string>
+    <string name="apps_themes_blurb">Themes, icon packs, layouts and looks</string>
+    <string name="apps_stats_title">Stats</string>
+    <string name="apps_stats_blurb">Play time, your library by status, streaks</string>
+    <string name="apps_achievements_title">Trophies</string>
+    <string name="apps_achievements_blurb">Your trophies, finished games and RetroAchievements</string>
+    <string name="apps_upnext_title">Up next</string>
+    <string name="apps_upnext_blurb">Games you mean to play soon</string>
+    <string name="apps_files_title">Files</string>
+    <string name="apps_files_blurb">Browse and tidy your ROMs folder</string>
+    <string name="apps_pad_title">Controller test</string>
+    <string name="apps_pad_blurb">Every button and stick, live</string>
+    <string name="apps_settings_title">Settings</string>
+    <string name="apps_settings_blurb">Everything Tandem can do</string>
+
+    <!-- A tile for a built-in app that was taken out of Tandem. -->
+    <string name="apps_gone_title">Nothing here</string>
+    <string name="apps_gone">This built-in app doesn\'t exist any more.</string>
+
+    <!-- Up next. Y takes an entry off; %1$s is a game's title. Shown with Undo. -->
+    <string name="apps_upnext_took_off">Took %1$s off the list</string>
+    <string name="apps_upnext_took_off_note">Took the note off the list</string>
+    <string name="apps_upnext_none_played">Nothing played yet</string>
+    <plurals name="apps_upnext_cleared">
+        <item quantity="one">Cleared %1$d played game</item>
+        <item quantity="other">Cleared %1$d played games</item>
+    </plurals>
+    <!-- How many games and notes are on the list. -->
+    <plurals name="apps_upnext_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <!-- Button hints. -->
+    <string name="apps_upnext_play">Play</string>
+    <string name="apps_upnext_add">Add</string>
+    <string name="apps_upnext_remove">Remove</string>
+    <string name="apps_upnext_clear_played">Clear played</string>
+    <!-- "Y › Add to Up next" names a menu item, as written there. -->
+    <string name="apps_upnext_empty">Nothing lined up: add a game or a note, or Y › Add to Up next on any game</string>
+    <string name="apps_upnext_add_one">Add one</string>
+    <!-- Under a note on the list, where a game shows its system. -->
+    <string name="apps_upnext_note">Note</string>
+    <!-- The tag on a game played since it was put on the list. -->
+    <string name="apps_upnext_played">Played ✓</string>
+
+    <!-- Gallery. The chips along the top: all screenshots, one game's, and those of no game; "All · 42". -->
+    <string name="apps_gallery_all">All · %1$d</string>
+    <!-- A game's chip: its title and how many screenshots: "Celeste · 12". -->
+    <string name="apps_gallery_game">%1$s · %2$d</string>
+    <string name="apps_gallery_other">Other</string>
+    <plurals name="apps_gallery_count">
+        <item quantity="one">%1$d screenshot</item>
+        <item quantity="other">%1$d screenshots</item>
+    </plurals>
+    <!-- Button hints. Use picture: when choosing a picture for an app's icon. -->
+    <string name="apps_gallery_use">Use picture</string>
+    <string name="apps_gallery_view">View</string>
+    <string name="apps_gallery_share">Share</string>
+    <string name="apps_gallery_delete">Delete</string>
+    <string name="apps_gallery_looking">Looking for screenshots…</string>
+    <!-- The folder names stay as they are. The invisible character after ROMs/ only keeps the path from breaking at the slash; keep it. -->
+    <string name="apps_gallery_looking_where">Checking ROMs/⁠screenshots, RetroArch, Pictures and DCIM.</string>
+    <string name="apps_gallery_empty">No screenshots yet: take one in your emulator, or put pictures in ROMs/⁠screenshots</string>
+    <string name="apps_gallery_look_again">Look again</string>
+    <!-- On the bottom screen, under where a screenshot of no game came from. -->
+    <string name="apps_gallery_screenshot">Screenshot</string>
+    <!-- On a video's thumbnail. -->
+    <string name="apps_gallery_clip">▶ Clip</string>
+    <string name="apps_gallery_share_failed">Couldn\'t share it</string>
+    <!-- The title of Android's share sheet: "Share Celeste", or just "Share". -->
+    <string name="apps_gallery_share_game">Share %1$s</string>
+    <string name="apps_gallery_share_title">Share</string>
+    <string name="apps_gallery_share_none">Nothing here can share it</string>
+    <string name="apps_gallery_delete_shot_ask">Delete this screenshot?</string>
+    <string name="apps_gallery_delete_clip_ask">Delete this clip?</string>
+    <!-- %1$s is the file name, %2$s where it came from ("RetroArch"). -->
+    <string name="apps_gallery_delete_detail">%1$s will be deleted from %2$s. This can\'t be undone.</string>
+    <string name="apps_gallery_shot_deleted">Screenshot deleted</string>
+    <string name="apps_gallery_clip_deleted">Clip deleted</string>
+    <string name="apps_gallery_delete_failed">Couldn\'t delete it</string>
+
+    <!-- Journal: day headings. -->
+    <string name="apps_journal_today">Today</string>
+    <string name="apps_journal_yesterday">Yesterday</string>
+    <!-- A date pattern (Android DateFormat letters): a weekday in the last week, "Saturday". -->
+    <string name="apps_journal_date_weekday">EEEE</string>
+    <!-- A date pattern (as above): an older day, "Saturday 21 November 2026". -->
+    <string name="apps_journal_date_long">EEEE d MMMM yyyy</string>
+    <!-- The chips along the top. -->
+    <string name="apps_journal_timeline">Timeline</string>
+    <string name="apps_journal_games">Games</string>
+    <string name="apps_journal_with_notes">With notes</string>
+    <!-- The keyboard's title for a session's note: "A note for Celeste (1 h 5 min)". -->
+    <string name="apps_journal_note_for">A note for %1$s (%2$s)</string>
+    <string name="apps_journal_note_about">A note about %1$s</string>
+    <!-- All play time in the journal: "12 h 5 min logged". -->
+    <string name="apps_journal_logged">%1$s logged</string>
+    <!-- Button hints. -->
+    <string name="apps_journal_note">Note</string>
+    <string name="apps_journal_game_note">Game note</string>
+    <string name="apps_journal_empty">Play something and each session shows up here, ready for a note</string>
+    <!-- A day heading with that day's play: "Today · 1 h 5 min". -->
+    <string name="apps_journal_day">%1$s · %2$s</string>
+    <!-- Under a session with no note: length, start time and system: "1 h 5 min · 21:05 · SNES". -->
+    <string name="apps_journal_session">%1$s · %2$s · %3$s</string>
+    <!-- Under a game with no note: "4 sessions · Super Nintendo". %2$s is the system. -->
+    <plurals name="apps_journal_game_sessions">
+        <item quantity="one">%1$d session · %2$s</item>
+        <item quantity="other">%1$d sessions · %2$s</item>
+    </plurals>
+
+    <!-- Files. Deleting: %1$s is a file or folder name. -->
+    <string name="apps_files_delete_ask">Delete %1$s?</string>
+    <!-- %1$s is a folder's name, %2$s its size ("1.2 GB"). -->
+    <string name="apps_files_delete_folder_size">This deletes the folder %1$s and everything in it (%2$s) from your storage. This can\'t be undone.</string>
+    <string name="apps_files_delete_folder">This deletes the folder %1$s and everything in it from your storage. This can\'t be undone.</string>
+    <string name="apps_files_delete_file_size">This deletes %1$s (%2$s) from your storage. This can\'t be undone.</string>
+    <string name="apps_files_delete_file">This deletes %1$s from your storage. This can\'t be undone.</string>
+    <string name="apps_files_delete">Delete</string>
+    <string name="apps_files_deleted">Deleted %1$s</string>
+    <!-- Button hints. Open · use…: when choosing a picture; %1$s is what is chosen ("picture"). -->
+    <string name="apps_files_open">Open</string>
+    <string name="apps_files_open_use">Open · use %1$s</string>
+    <string name="apps_files_up">Up</string>
+    <string name="apps_files_looking">Looking…</string>
+    <!-- %1$s is a folder's name. -->
+    <string name="apps_files_reading">Reading %1$s.</string>
+    <string name="apps_files_empty">Nothing in %1$s yet</string>
+    <string name="apps_files_go_back">Go back</string>
+    <string name="apps_files_up_folder">Up a folder</string>
+    <!-- Under a folder: its size, "1.2 GB · folder", or while it is measured. -->
+    <string name="apps_files_folder_size">%1$s · folder</string>
+    <string name="apps_files_folder_measuring">Measuring… · folder</string>
+    <!-- Under a file with no extension, and on the bottom screen. -->
+    <string name="apps_files_file">File</string>
+    <string name="apps_files_folder">Folder</string>
+    <!-- Pressing a file: "notes.txt · 2.1 kB". -->
+    <string name="apps_files_said">%1$s · %2$s</string>
+
+    <!-- Controller test. -->
+    <string name="apps_pad_press">Press anything: it lights up here.</string>
+    <string name="apps_pad_leave">Hold to leave (or tap)</string>
+    <string name="apps_pad_last">Last presses</string>
+    <!-- A key just pressed: "BUTTON A down" (the key's name is Android's, not translated). -->
+    <string name="apps_pad_down">%1$s down</string>
+    <string name="apps_pad_nothing">Nothing yet</string>
+    <string name="apps_pad_sticks">Sticks</string>
+    <!-- How far the triggers are pressed: "Triggers  0.00  0.85". Keep the numbers. -->
+    <string name="apps_pad_triggers">Triggers  %1$.2f  %2$.2f</string>
+    <plurals name="apps_pad_presses">
+        <item quantity="one">%1$d press</item>
+        <item quantity="other">%1$d presses</item>
+    </plurals>
+
+    <!-- Notes. The kinds of new note; also the start of a new note's name ("Checklist 3 Nov 14.02"). -->
+    <string name="apps_notes_kind_note">Note</string>
+    <string name="apps_notes_kind_checklist">Checklist</string>
+    <string name="apps_notes_kind_glossary">Glossary</string>
+    <string name="apps_notes_kind_sketch">Sketch</string>
+    <!-- A new glossary's two column headings. -->
+    <string name="apps_notes_glossary_symbol">Symbol</string>
+    <string name="apps_notes_glossary_meaning">Meaning</string>
+    <!-- The notebook for notes of no game (its folder on the drive keeps the English name). -->
+    <string name="apps_notes_general">General</string>
+    <string name="apps_notes_make_failed">Couldn\'t make a note in ROMs/notes</string>
+    <!-- One line about a note: "3 of 5 done", "4 entries", "2 pictures", joined with " · ". -->
+    <string name="apps_notes_tasks_done">%1$d of %2$d done</string>
+    <plurals name="apps_notes_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
+    </plurals>
+    <plurals name="apps_notes_pictures">
+        <item quantity="one">%1$d picture</item>
+        <item quantity="other">%1$d pictures</item>
+    </plurals>
+    <string name="apps_notes_empty_note">Empty</string>
+    <!-- The notebooks list. -->
+    <string name="apps_notes_search">Search notes</string>
+    <string name="apps_notes_new">New</string>
+    <string name="apps_notes_new_general">Note in General</string>
+    <string name="apps_notes_new_book">Notebook…</string>
+    <string name="apps_notes_name_book">Name the notebook</string>
+    <string name="apps_notes_name_taken">Pick another name: that one is taken or empty</string>
+    <plurals name="apps_notes_count">
+        <item quantity="one">%1$d note</item>
+        <item quantity="other">%1$d notes</item>
+    </plurals>
+    <!-- Button hints. -->
+    <string name="apps_notes_open">Open</string>
+    <string name="apps_notes_options">Options</string>
+    <string name="apps_notes_search_hint">Search</string>
+    <string name="apps_notes_notebooks">Notebooks</string>
+    <string name="apps_notes_opening">Opening your notes…</string>
+    <!-- The search chip while searching: "“door” · clear". %1$s is what was typed. -->
+    <string name="apps_notes_search_clear">“%1$s” · clear</string>
+    <string name="apps_notes_search_none">No note has “%1$s” in it</string>
+    <!-- A found note: its notebook and its line, "Celeste · 3 of 5 done". -->
+    <string name="apps_notes_found">%1$s · %2$s</string>
+    <string name="apps_notes_none_yet">No notes yet</string>
+    <!-- A notebook: how many notes and the newest one's name: "4 notes · Glossary 3 Nov". -->
+    <plurals name="apps_notes_book_line">
+        <item quantity="one">%1$d note · %2$s</item>
+        <item quantity="other">%1$d notes · %2$s</item>
+    </plurals>
+    <!-- The tag on the notebook of a game that is running. -->
+    <string name="apps_notes_playing">Playing</string>
+    <!-- On the bottom screen, under a notebook's name: "Notes · General". -->
+    <string name="apps_notes_selected">Notes · %1$s</string>
+    <!-- A notebook's menu. -->
+    <string name="apps_notes_new_here">New note here</string>
+    <string name="apps_notes_rename">Rename</string>
+    <string name="apps_notes_rename_book">Rename the notebook</string>
+    <string name="apps_notes_delete_book">Delete notebook</string>
+    <string name="apps_notes_book_deleted">Notebook deleted</string>
+    <string name="apps_notes_book_not_empty">It isn\'t empty any more</string>
+    <!-- A note's menu. -->
+    <string name="apps_notes_rename_note">Rename the note</string>
+    <string name="apps_notes_move">Move to…</string>
+    <string name="apps_notes_delete_note">Delete note</string>
+    <string name="apps_notes_note_deleted">Note deleted</string>
+    <string name="apps_notes_delete_failed">Couldn\'t delete it</string>
+    <string name="apps_notes_need_book">Make another notebook first (X on the notebooks)</string>
+    <!-- The title of the list of notebooks to move a note to; %1$s is the note. -->
+    <string name="apps_notes_move_to">Move %1$s to</string>
+    <string name="apps_notes_moved">Moved to %1$s</string>
+    <string name="apps_notes_move_failed">Couldn\'t move it</string>
+    <!-- A notebook: the chips to start a new note: "+ Checklist". -->
+    <string name="apps_notes_new_kind">+ %1$s</string>
+    <!-- The menu of new notes; %1$s is the notebook. -->
+    <string name="apps_notes_new_in">New in %1$s</string>
+    <string name="apps_notes_book_empty">No notes for %1$s yet: start one above, or X</string>
+
+    <!-- A note open. Button hints. -->
+    <string name="apps_note_edit">Edit</string>
+    <string name="apps_note_add">Add</string>
+    <string name="apps_note_notes">Notes</string>
+    <!-- Under the note's title: "Edited 5 minutes ago · A renames". -->
+    <string name="apps_note_edited">Edited %1$s · A renames</string>
+    <string name="apps_note_add_entry">+ Entry</string>
+    <string name="apps_note_empty">Empty: add text, a checklist, a glossary entry, a sketch or a picture</string>
+    <string name="apps_note_add_more">+ Add</string>
+    <!-- Keyboard titles. -->
+    <string name="apps_note_write">Write your note</string>
+    <string name="apps_note_rename_failed">Couldn\'t rename it</string>
+    <string name="apps_note_edit_text">Edit the text</string>
+    <string name="apps_note_new_item">New checklist item (leave it empty to stop)</string>
+    <string name="apps_note_picture_gone">That picture isn\'t there any more</string>
+    <!-- The sketch pad's title. -->
+    <string name="apps_note_sketch">Sketch</string>
+    <string name="apps_note_drawing">Drawing</string>
+    <string name="apps_note_draw_on">Draw on the picture</string>
+    <!-- The Add menu; %1$s is the note. -->
+    <string name="apps_note_add_to">Add to %1$s</string>
+    <string name="apps_note_add_text">Text</string>
+    <string name="apps_note_new_text">New text</string>
+    <string name="apps_note_add_tasks">Checklist items</string>
+    <string name="apps_note_add_glossary">Glossary entry</string>
+    <!-- Beside Glossary entry: what an entry is. -->
+    <string name="apps_note_add_glossary_what">Symbol · meaning</string>
+    <string name="apps_note_add_picture">Picture from the Gallery</string>
+    <!-- The Gallery's title while choosing; %1$s is the note. -->
+    <string name="apps_note_pick_picture">Pick a picture for %1$s</string>
+    <string name="apps_note_copy_failed">Couldn\'t copy that picture</string>
+    <!-- A part's menu. -->
+    <string name="apps_note_move_up">Move up</string>
+    <string name="apps_note_move_down">Move down</string>
+    <string name="apps_note_delete_text">Delete text</string>
+    <string name="apps_note_delete_item">Delete item</string>
+    <string name="apps_note_delete_picture">Delete picture</string>
+    <!-- Shown with Undo after deleting. -->
+    <string name="apps_note_deleted_text">Deleted the text</string>
+    <string name="apps_note_deleted_item">Deleted the item</string>
+    <string name="apps_note_deleted_picture">Deleted the picture</string>
+    <string name="apps_note_text">Text</string>
+    <string name="apps_note_task">Checklist item</string>
+    <string name="apps_note_untick">Untick</string>
+    <string name="apps_note_tick">Tick</string>
+    <string name="apps_note_edit_item">Edit the item</string>
+    <string name="apps_note_picture">Picture</string>
+    <string name="apps_note_draw_crop">Draw on it · crop</string>
+    <string name="apps_note_caption">Caption</string>
+    <string name="apps_note_glossary">Glossary</string>
+    <string name="apps_note_edit_entry">Edit entry</string>
+    <string name="apps_note_delete_entry">Delete entry</string>
+    <string name="apps_note_deleted_entry">Deleted the entry</string>
+    <string name="apps_note_edit_headings">Edit headings</string>
+    <string name="apps_note_add_column">Add a column</string>
+    <string name="apps_note_column_heading">Heading of the new column</string>
+    <string name="apps_note_delete_glossary">Delete the glossary</string>
+    <string name="apps_note_deleted_glossary">Deleted the glossary</string>
+    <!-- A glossary entry being edited: the keyboard's title for a heading, "Heading 2", or an unnamed column, "Column 2". -->
+    <string name="apps_note_heading_n">Heading %1$d</string>
+    <string name="apps_note_column_n">Column %1$d</string>
+    <!-- The sketch pad's title when drawing a cell: "Draw: Symbol". -->
+    <string name="apps_note_draw_cell">Draw: %1$s</string>
+    <!-- Used in the title above when the column has no heading. -->
+    <string name="apps_note_draw_symbol">symbol</string>
+    <string name="apps_note_headings">Headings</string>
+    <string name="apps_note_entry_n">Entry %1$d</string>
+    <!-- In an empty cell. -->
+    <string name="apps_note_type">Type</string>
+    <string name="apps_note_type_or_draw">Type, or draw (Y)</string>
+    <string name="apps_note_draw">Draw</string>
+    <string name="apps_note_done">Done</string>
+    <!-- The note keyboard's hints, and text in a note. -->
+    <string name="apps_note_cancel">Cancel</string>
+    <string name="apps_note_missing_picture">Missing picture</string>
+    <!-- A checklist item or line with no text. -->
+    <string name="apps_note_empty_line">(empty)</string>
+
+    <!-- Notes on the bottom screen while a game runs (CompanionNotes.kt). The header: "Notes · Celeste". -->
+    <string name="apps_cnotes_title">Notes · %1$s</string>
+    <!-- The back chip, "‹ Game": back to the game's page. -->
+    <string name="apps_cnotes_back_game">Game</string>
+    <!-- %1$s is the notebook's folder name. The invisible characters only keep the path from breaking; keep them. -->
+    <string name="apps_cnotes_empty">No notes for this game yet. Start one below; they\'re kept in ROMs/⁠notes/⁠%1$s.</string>
+    <!-- The buttons along the bottom, each adding something: "+ Note", "+ Screenshot". -->
+    <string name="apps_cnotes_add">+ %1$s</string>
+    <string name="apps_cnotes_screenshot">Screenshot</string>
+    <string name="apps_cnotes_shot_failed">Couldn\'t take the screenshot</string>
+    <!-- The back chip on a note, "‹ Notes". -->
+    <string name="apps_cnotes_back_notes">Notes</string>
+    <string name="apps_cnotes_note_empty">Empty: add something below. Tap a line to change it; hold it to move or delete it.</string>
+    <string name="apps_cnotes_text">Text</string>
+    <string name="apps_cnotes_item">Item</string>
+    <string name="apps_cnotes_entry">Entry</string>
+    <string name="apps_cnotes_draw_on">Draw on it</string>
+    <!-- A held line's buttons. -->
+    <string name="apps_cnotes_edit">Edit</string>
+    <string name="apps_cnotes_up">Up</string>
+    <string name="apps_cnotes_down">Down</string>
+    <string name="apps_cnotes_delete">Delete</string>
+    <!-- In an empty glossary cell: the first column is drawn, the others typed. -->
+    <string name="apps_cnotes_draw">Draw</string>
+    <string name="apps_cnotes_type">Type</string>
+    <string name="apps_cnotes_draw_symbol">Draw the symbol</string>
+    <string name="apps_cnotes_discard">Discard</string>
+
+    <!-- The sketch pad (drawing in a note). Its tools. -->
+    <string name="apps_sketch_pen">Pen</string>
+    <string name="apps_sketch_eraser">Eraser</string>
+    <string name="apps_sketch_crop">Crop</string>
+    <string name="apps_sketch_save_failed">Couldn\'t save the drawing</string>
+    <string name="apps_sketch_open_failed">Couldn\'t open that picture</string>
+    <!-- The chips beside the drawing. -->
+    <string name="apps_sketch_undo">Undo</string>
+    <string name="apps_sketch_redo">Redo</string>
+    <string name="apps_sketch_whole">Whole picture</string>
+    <string name="apps_sketch_clear">Clear</string>
+    <string name="apps_sketch_discard">Discard</string>
+    <string name="apps_sketch_done">Done</string>
+    <!-- Button hints: A draws with the tool, or lifts the pen while drawing; L1 the colour, R2 the line width. -->
+    <string name="apps_sketch_lift">Lift</string>
+    <string name="apps_sketch_tool">Tool</string>
+    <string name="apps_sketch_ink">Ink</string>
+    <string name="apps_sketch_width">Width</string>
+
+    <!-- What a manual file is, beside its name: "PDF · Zelda.pdf". -->
+    <string name="apps_manual_kind_pdf">PDF</string>
+    <string name="apps_manual_kind_zip">Pictures</string>
+    <string name="apps_manual_kind_image">Picture</string>
+    <string name="apps_manual_kind_text">Text</string>
+    <!-- A page of a text manual with no heading of its own: "Page 3". -->
+    <string name="apps_manual_page_n">Page %1$d</string>
+    <!-- The manual reader. -->
+    <string name="apps_manual_game_gone">That game isn\'t in the library any more</string>
+    <!-- %1$s is the game, %2$s the folder for its system's manuals ("ROMs/manuals/snes"). -->
+    <string name="apps_manual_none">No manual for %1$s: put one in %2$s</string>
+    <!-- %1$s is a file name. -->
+    <string name="apps_manual_unreadable">Couldn\'t read %1$s</string>
+    <string name="apps_manual_go_back">Go back</string>
+    <string name="apps_manual_opening">Opening %1$s…</string>
+    <string name="apps_manual_slow">A big manual takes a moment.</string>
+    <!-- Button hints: left and right turn a chapter (text) or a page; A zooms. -->
+    <string name="apps_manual_chapter">Chapter</string>
+    <string name="apps_manual_page">Page</string>
+    <string name="apps_manual_scroll">Scroll</string>
+    <string name="apps_manual_smaller_text">Smaller text</string>
+    <string name="apps_manual_larger_text">Larger text</string>
+    <string name="apps_manual_fit_page">Fit page</string>
+    <string name="apps_manual_fit_width">Fit width</string>
+    <string name="apps_manual_go_to">Go to page</string>
+    <!-- The keyboard's title: "Go to page (1 to 24)". -->
+    <string name="apps_manual_go_to_ask">Go to page (1 to %1$d)</string>
+    <string name="apps_manual_go_to_bad">Type a page number from 1 to %1$d</string>
+    <string name="apps_manual_empty_page">Nothing on this page.</string>
+    <!-- The manual on the bottom screen while a game runs. The back chip, "‹ Game". -->
+    <string name="apps_manual_back_game">‹ Game</string>
+    <string name="apps_manual_title">Manual</string>
+    <!-- The zoom chip on a text manual. -->
+    <string name="apps_manual_smaller">Smaller</string>
+    <string name="apps_manual_larger">Larger</string>
+    <string name="apps_manual_none_here">No manual for this game. Put one in ROMs/manuals.</string>
+    <string name="apps_manual_unreadable_here">Couldn\'t read %1$s.</string>
+    <!-- Under the page bar: "Tap the sides to turn, the middle to zoom. 24 pages." -->
+    <plurals name="apps_manual_touch">
+        <item quantity="one">Tap the sides to turn, the middle to zoom. %1$d page.</item>
+        <item quantity="other">Tap the sides to turn, the middle to zoom. %1$d pages.</item>
+    </plurals>
+</resources>

@@ -16,6 +16,8 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.GridShown
 import io.github.zahakj.tandem.data.GridSlots
 import io.github.zahakj.tandem.data.GridSpan
@@ -72,12 +74,12 @@ object GridWidgets {
      */
     fun addInFolder(kind: WidgetKind, folder: String, shown: GridShown, at: Int, options: Map<String, String> = emptyMap()): String? {
         if (!kind.available()) {
-            Toasts.show(kind.needs ?: "Not available yet")
+            Toasts.show(kind.needs ?: Tx.s(R.string.widgets_not_available))
             Sounds.error()
             return null
         }
         if (!fitsFolder(kind)) {
-            Toasts.show("${kind.name} needs more room than one spot. It fits on the home grid")
+            Toasts.show(Tx.s(R.string.widgets_grid_too_big, kind.name))
             Sounds.error()
             return null
         }
@@ -87,7 +89,7 @@ object GridWidgets {
         WidgetStore.updateWidgets { it + w }
         IconGridStore.addToFolder(key, folder, at, shown)
         Sounds.confirm()
-        Toasts.show("Added ${kind.label(w)}")
+        Toasts.show(Tx.s(R.string.widgets_added, kind.label(w)))
         return key
     }
 
@@ -101,14 +103,14 @@ object GridWidgets {
      */
     fun add(kind: WidgetKind, shown: GridShown, at: Int, usual: GridSpan = spanFor(kind.defaultSize), options: Map<String, String> = emptyMap()): String? {
         if (!kind.available()) {
-            Toasts.show(kind.needs ?: "Not available yet")
+            Toasts.show(kind.needs ?: Tx.s(R.string.widgets_not_available))
             Sounds.error()
             return null
         }
         if (!inCells) {
             val w = Widgets.add(kind, WidgetArea.Top, options = options)
             Sounds.confirm()
-            Toasts.show("Added ${kind.label(w)} to the widget row")
+            Toasts.show(Tx.s(R.string.widgets_added_row, kind.label(w)))
             return null
         }
         val id = WidgetStore.newId(kind.id)
@@ -122,7 +124,7 @@ object GridWidgets {
         IconGridStore.addWidgetAt(key, span, ext(span), shown, at)
         Sounds.confirm()
         val name = kind.label(w)
-        Toasts.show(if (span == usual) "Added $name" else "Added $name at ${span.label}: Y › Resize when there's room")
+        Toasts.show(if (span == usual) Tx.s(R.string.widgets_added, name) else Tx.s(R.string.widgets_added_at, name, span.label))
         return key
     }
 
@@ -156,14 +158,14 @@ object GridWidgets {
             Sounds.error()
             Toasts.show(
                 when {
-                    spans(kind).size <= 1 -> "${kind.name} comes in one size"
-                    to != null -> "No room for ${to.label} here"
-                    else -> "No room for another size here"
+                    spans(kind).size <= 1 -> Tx.s(R.string.widgets_one_size, kind.name)
+                    to != null -> Tx.s(R.string.widgets_no_room_for, to.label)
+                    else -> Tx.s(R.string.widgets_no_room)
                 },
             )
             return
         }
-        GridUndoUi.run("Resized ${kind.name} to ${found.first.label}") {
+        GridUndoUi.run(Tx.s(R.string.widgets_resized, kind.name, found.first.label)) {
             IconGridStore.setSpan(key, found.first, found.second, shown.lanes)
             Widgets.setSize(w.id, sizeFor(found.first))
         }
@@ -181,21 +183,21 @@ object GridWidgets {
         val found = next(spans(kind), now) { s -> GridSlots.resize(slots, shown.lanes, others + (mv.key to ext(now)), mv.key, ext(s), shown.page) }
         if (found == null) {
             Sounds.error()
-            Toasts.show(if (spans(kind).size <= 1) "${kind.name} comes in one size" else "No room for another size here")
+            Toasts.show(if (spans(kind).size <= 1) Tx.s(R.string.widgets_one_size, kind.name) else Tx.s(R.string.widgets_no_room))
             return
         }
         mv.span = found.first
         mv.order.clear()
         mv.order.addAll(found.second)
         Sounds.toggle()
-        Toasts.show("${kind.name}: ${found.first.label}")
+        Toasts.show(Tx.s(R.string.widgets_sized, kind.name, found.first.label))
     }
 
     /** Takes the widget off the grid and forgets it. */
     fun remove(key: String) {
-        val name = widget(key)?.let { w -> Widgets.kind(w)?.label?.invoke(w) } ?: "widget"
+        val name = widget(key)?.let { w -> Widgets.kind(w)?.label?.invoke(w) } ?: Tx.s(R.string.widgets_a_widget)
         // Undo brings it back with its size and options (IconGridStore keeps the grid's widgets with each step).
-        GridUndoUi.run("Removed $name") {
+        GridUndoUi.run(Tx.s(R.string.widgets_removed, name)) {
             IconGridStore.remove(key, default = false)
             idOf(key)?.let { Widgets.remove(it) }
         }
@@ -209,13 +211,13 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
     val key = item.key
     val span = GridWidgets.span(key)
     val actions = buildList {
-        add(MenuAction("options", "Widget options…", Glyph.Pencil, kind.accent, sub = kind.blurb) {
+        add(MenuAction("options", Tx.s(R.string.widgets_menu_options), Glyph.Pencil, kind.accent, sub = kind.blurb) {
             IconGrid.closeMenu()
             WidgetUi.openMenu(w.id, WidgetArea.Top, inEditor = false)
         })
-        add(MenuAction("move", "Move", Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(key, null, slots) })
+        add(MenuAction("move", Tx.s(R.string.widgets_menu_move), Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(key, null, slots) })
         // Every size, the one it has ticked; a size with no room says so when picked.
-        if (GridWidgets.spans(kind).size > 1) add(MenuAction("resize", "Resize", Glyph.Corners, Palette.Butter, value = span.label,
+        if (GridWidgets.spans(kind).size > 1) add(MenuAction("resize", Tx.s(R.string.widgets_menu_resize), Glyph.Corners, Palette.Butter, value = span.label,
             choices = GridWidgets.spans(kind).map { s -> MenuChoice(s.label, s == span) { GridWidgets.resize(key, s) } }) { GridWidgets.resize(key) })
         kind.actions(w).forEachIndexed { i, a ->
             add(MenuAction("act:$i", a.label, Glyph.Sparkle, a.color, value = a.value) {
@@ -223,21 +225,21 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
                 if (a.closes) IconGrid.closeMenu()
             })
         }
-        add(MenuAction("remove", "Remove widget", Glyph.Trash, Palette.Peach, more = true) {
+        add(MenuAction("remove", Tx.s(R.string.widgets_menu_remove), Glyph.Trash, Palette.Peach, more = true) {
             IconGrid.closeMenu()
             GridWidgets.remove(key)
         })
-        add(MenuAction("select", "Select", Glyph.Highlight, Palette.Sky, more = true, sub = "Mark several, then act on them all") {
+        add(MenuAction("select", Tx.s(R.string.widgets_menu_select), Glyph.Highlight, Palette.Sky, more = true, sub = Tx.s(R.string.widgets_menu_select_sub)) {
             IconGrid.closeMenu(); GridSelect.start(null, key)
         })
-        add(MenuAction("tidy", "Tidy up", Glyph.Sparkle, Palette.Mint, more = true) { IconGrid.closeMenu(); tidyHome() })
+        add(MenuAction("tidy", Tx.s(R.string.widgets_menu_tidy), Glyph.Sparkle, Palette.Mint, more = true) { IconGrid.closeMenu(); tidyHome() })
         GridUndoUi.action { IconGrid.closeMenu() }?.let { add(it) }
-        add(MenuAction("search", "Search", Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
-        add(MenuAction("swap", "Swap screens", Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) {
+        add(MenuAction("search", Tx.s(R.string.widgets_menu_search), Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
+        add(MenuAction("swap", Tx.s(R.string.widgets_menu_swap), Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) { // tx-ok: a button letter
             IconGrid.closeMenu(); ScreenRoles.toggle(ctx)
         })
     }
-    return MenuSpec(IconGrid.MENU_ROUTE + ":" + key, kind.label(w), "Widget · ${span.label}", kind.accent, actions, aspect = span.w.toFloat() / span.h) {
+    return MenuSpec(IconGrid.MENU_ROUTE + ":" + key, kind.label(w), Tx.s(R.string.widgets_menu_kind, span.label), kind.accent, actions, aspect = span.w.toFloat() / span.h) {
         WidgetView(w, GridWidgets.sizeFor(span), Modifier.fillMaxSize(), WidgetArea.Top, interactive = false, grid = true)
     }
 }
