@@ -26,6 +26,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.metrics.performance.JankStats
 import androidx.metrics.performance.PerformanceMetricsState
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicInteger
@@ -74,7 +76,7 @@ object DevTools {
             try {
                 for ((i, t) in themes.withIndex()) {
                     Themes.preview = t.id
-                    Toasts.show("Theme ${i + 1} of ${themes.size}: ${t.name}", 3000)
+                    Toasts.show(Tx.s(R.string.look_dev_tour_toast, i + 1, themes.size, t.name), 3000)
                     Log.i("TandemTheme", "${i + 1}/${themes.size} ${t.id}")
                     delay(3200)
                 }
@@ -98,24 +100,22 @@ private object FrameStats {
 
 /** The Developer group's rows (Data & about page). */
 @Composable
-fun developerSettings(): SettingSection = SettingSection(
-    "Developer",
-    listOf(
-        SettingRow(
-            "Frame timing overlay", onOff(DevTools.frameOverlay), Palette.Lavender, Glyph.Chart, toggle = DevTools.frameOverlay,
-            help = "Counts slow frames while you use Tandem and shows the totals in a corner. Each slow frame is also " +
-                "written to the system log (tag TandemJank) with the screen it happened on, for measuring smoothness.",
-            keywords = "developer performance jank stutter fps frames debug smooth",
-        ) { DevTools.showFrameOverlay(!DevTools.frameOverlay) },
-        SettingRow(
-            "Tour every theme", if (DevTools.touring) "Stop" else "${BuiltInThemes.list.size} + imported", Palette.Lavender, Glyph.Theme,
-            help = "Shows each built-in theme and the newest imported pack for a few seconds, to check colours and " +
-                "text. Your theme stays as it is.",
-            keywords = "developer themes contrast preview cycle debug",
-        ) { DevTools.tourThemes() },
-    ),
-    Glyph.Chart,
-)
+fun developerSettings(): SettingSection = SettingSection(Tx.s(R.string.look_dev), en = "Developer", icon = Glyph.Chart, rows = listOf(
+    SettingRow(
+        Tx.s(R.string.look_dev_frames), onOff(DevTools.frameOverlay), Palette.Lavender, Glyph.Chart, toggle = DevTools.frameOverlay,
+        help = Tx.s(R.string.look_dev_frames_help),
+        keywords = "developer performance jank stutter fps frames debug smooth",
+        en = "Frame timing overlay",
+    ) { DevTools.showFrameOverlay(!DevTools.frameOverlay) },
+    SettingRow(
+        Tx.s(R.string.look_dev_tour),
+        if (DevTools.touring) Tx.s(R.string.look_dev_tour_stop) else Tx.s(R.string.look_dev_tour_count, BuiltInThemes.list.size),
+        Palette.Lavender, Glyph.Theme,
+        help = Tx.s(R.string.look_dev_tour_help),
+        keywords = "developer themes contrast preview cycle debug",
+        en = "Tour every theme",
+    ) { DevTools.tourThemes() },
+))
 
 /** Composed in the app root; does nothing (and costs nothing) while the overlay is off. */
 @Composable
@@ -169,6 +169,7 @@ fun FrameTimingOverlay() {
         while (true) {
             val f = FrameStats.frames.get()
             val j = FrameStats.janky.get()
+            // tx-ok: a developer's measuring readout, matched against the log; it stays English
             value = "$f frames · $j slow (${pct1(j, f)}) · worst ${FrameStats.worstNs.get() / 1_000_000} ms" +
                 FrameStats.last.takeIf { it.isNotEmpty() }?.let { "\nlast slow: $it" }.orEmpty()
             delay(500)

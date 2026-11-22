@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Look & feel: themes, theme packs, colours, wallpapers, icons and motion, and the first-run welcome. Keys start
+     with look_. See docs/TRANSLATING.md. Option labels sit side by side on a row or on small picker cards: keep
+     them about as short as the English. -->
+<resources>
+    <!-- The built-in themes (Theme.kt): a name and a tagline. -->
+    <string name="look_theme_pastel_night">Pastel Night</string>
+    <string name="look_theme_pastel_night_tagline">Soft night sky, candy colours</string>
+    <string name="look_theme_oled">OLED Black</string>
+    <string name="look_theme_oled_tagline">True black, saves battery</string>
+    <string name="look_theme_paper">Paper</string>
+    <string name="look_theme_paper_tagline">Bright, calm, daylight friendly</string>
+    <!-- Where a theme comes from, beside it: a built-in one. -->
+    <string name="look_theme_built_in">Built in</string>
+
+    <!-- Theme packs (ThemePacks.kt). A pack's format. -->
+    <string name="look_pack_format_tandem">Tandem pack</string>
+    <string name="look_pack_format_cocoon">Cocoon pack</string>
+    <!-- A pack's tagline and author when its theme.json gives none. -->
+    <string name="look_pack_tandem">Theme pack</string>
+    <string name="look_pack_cocoon">Cocoon theme</string>
+    <!-- A theme pack's own UI sounds, among the sound choices: "Neon Dreams (theme)". -->
+    <string name="look_pack_sounds_name">%1$s (theme)</string>
+    <!-- An asset pack a theme pack uses and who made it: "Example - Smart Folders by Someone". -->
+    <string name="look_pack_credit">%1$s by %2$s</string>
+    <!-- What a pack brings, listed as "colours · 62 system icons · 60 heroes · wallpaper · 3 songs". -->
+    <string name="look_pack_has_colours">colours</string>
+    <plurals name="look_pack_has_icons">
+        <item quantity="one">%1$d system icon</item>
+        <item quantity="other">%1$d system icons</item>
+    </plurals>
+    <plurals name="look_pack_has_heroes">
+        <item quantity="one">%1$d hero</item>
+        <item quantity="other">%1$d heroes</item>
+    </plurals>
+    <plurals name="look_pack_has_collection_icons">
+        <item quantity="one">%1$d collection icon</item>
+        <item quantity="other">%1$d collection icons</item>
+    </plurals>
+    <plurals name="look_pack_has_frames">
+        <item quantity="one">%1$d cover frame</item>
+        <item quantity="other">%1$d cover frames</item>
+    </plurals>
+    <string name="look_pack_has_two_wallpapers">2 wallpapers</string>
+    <string name="look_pack_has_wallpaper">wallpaper</string>
+    <plurals name="look_pack_has_songs">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
+    </plurals>
+
+    <!-- Accent colour swatches. -->
+    <string name="look_swatch_mint">Mint</string>
+    <string name="look_swatch_peach">Peach</string>
+    <string name="look_swatch_lavender">Lavender</string>
+    <string name="look_swatch_sky">Sky</string>
+    <string name="look_swatch_butter">Butter</string>
+    <string name="look_swatch_sakura">Sakura</string>
+    <string name="look_swatch_coral">Coral</string>
+    <string name="look_swatch_hot_pink">Hot pink</string>
+    <string name="look_swatch_grape">Grape</string>
+    <string name="look_swatch_ocean">Ocean</string>
+    <string name="look_swatch_teal">Teal</string>
+    <string name="look_swatch_lime">Lime</string>
+    <string name="look_swatch_gold">Gold</string>
+    <string name="look_swatch_snow">Snow</string>
+
+    <!-- Highlight style options. -->
+    <string name="look_highlight_glow">Glow</string>
+    <string name="look_highlight_outline">Outline</string>
+    <string name="look_highlight_lift">Lift</string>
+    <string name="look_highlight_pulse">Pulse</string>
+
+    <!-- Surface options: what cards are made of. -->
+    <string name="look_surface_solid">Solid</string>
+    <string name="look_surface_frosted">Frosted glass</string>
+    <string name="look_surface_outlined">Outlined</string>
+
+    <!-- Animation style options. -->
+    <string name="look_motion_bouncy">Bouncy</string>
+    <string name="look_motion_smooth">Smooth</string>
+    <string name="look_motion_minimal">Minimal</string>
+    <string name="look_motion_off">Off</string>
+
+    <!-- Animated wallpapers (Wallpaper › Top screen, Bottom screen). -->
+    <string name="look_backdrop_blobs">Pastel blobs</string>
+    <string name="look_backdrop_starfield">Starfield</string>
+    <string name="look_backdrop_waves">Waves</string>
+    <string name="look_backdrop_synthwave">Synthwave</string>
+    <string name="look_backdrop_bubbles">Bubbles</string>
+    <string name="look_backdrop_petals">Petals</string>
+    <string name="look_backdrop_fireflies">Fireflies</string>
+    <string name="look_backdrop_pixels">8-bit evening</string>
+    <string name="look_backdrop_lcd">Pocket LCD</string>
+    <string name="look_backdrop_cubes">Floating cubes</string>
+    <string name="look_backdrop_towers">Boot towers</string>
+    <string name="look_backdrop_marquee">Neon marquee</string>
+    <string name="look_backdrop_shell">Clear shell</string>
+    <string name="look_backdrop_disc">Spinning disc</string>
+    <string name="look_backdrop_visor">Red wireframe</string>
+    <string name="look_backdrop_road">Sunset road</string>
+    <string name="look_backdrop_shooter">Space shooter</string>
+    <string name="look_backdrop_farm">Cozy fields</string>
+    <string name="look_backdrop_meadow">Tall grass</string>
+    <string name="look_backdrop_torch">Torchlit wall</string>
+    <string name="look_backdrop_rainbow">Rainbow road</string>
+    <string name="look_backdrop_plain">Plain</string>
+
+    <!-- Icon style options: how system icons are drawn. -->
+    <string name="look_icon_style_bubble">Glossy bubble</string>
+    <string name="look_icon_style_neon">Neon outline</string>
+    <string name="look_icon_style_pixel">Pixel</string>
+    <string name="look_icon_style_flat">Flat</string>
+    <string name="look_icon_style_plastic">Clear plastic</string>
+    <string name="look_icon_style_chrome">Chrome</string>
+    <string name="look_icon_style_lcd">LCD</string>
+    <string name="look_icon_style_sticker">Sticker</string>
+    <string name="look_icon_style_rune">Carved</string>
+
+    <!-- Settings rows built in Appearance.kt, by their groups. A group's title shows above its rows. -->
+    <string name="look_group_colour">Colour &amp; highlight</string>
+    <string name="look_group_icons">System icons</string>
+    <string name="look_group_motion">Motion</string>
+    <string name="look_group_wallpaper">Wallpaper</string>
+    <string name="look_group_layout">Layout</string>
+    <string name="look_group_icon_grid">Icon grid</string>
+    <string name="look_group_dock">Dock</string>
+    <string name="look_group_bottom">Bottom screen</string>
+    <string name="look_group_top_bar">Top bar</string>
+    <string name="look_group_controls">Controls</string>
+    <string name="look_group_screens">Screens</string>
+    <string name="look_group_extras">Extras</string>
+
+    <!-- The first option of a choice the theme decides by default, with what the theme picks: "Theme · Glow". -->
+    <string name="look_theme_decides">Theme · %1$s</string>
+
+    <string name="look_accent">Accent colour</string>
+    <string name="look_accent_help">Your own accent for toggles and highlights. Left and right try the swatches; A shows them all, and Type a colour… takes any, like #FF7AB6.</string>
+    <!-- The accent option that keeps the theme's own accent. -->
+    <string name="look_accent_theme">Theme</string>
+    <string name="look_accent_type">Type a colour…</string>
+    <!-- The keyboard's title when typing a colour like #FF7AB6. -->
+    <string name="look_accent_hex">Accent colour (hex)</string>
+    <string name="look_accent_bad">That doesn\'t look like a colour</string>
+    <string name="look_highlight">Highlight style</string>
+    <string name="look_highlight_help">How the highlighted card is marked: a soft glow, a crisp outline, a lift with a big shadow, or a gently pulsing ring.</string>
+    <string name="look_surface">Surface</string>
+    <string name="look_surface_help">What cards are made of: solid, frosted glass that lets the wallpaper glow through, or light outlines.</string>
+
+    <string name="look_icon_style">Icon style</string>
+    <string name="look_icon_style_help">How Tandem draws system icons when a theme pack doesn\'t bring its own: a little device of the right kind with the system\'s name, as glossy bubbles, neon tubes, pixels, LCD, chrome and more.</string>
+    <string name="look_icons_from">Icons from</string>
+    <string name="look_icons_from_help">Use a pack\'s system icons, heroes and logos with any theme, or always draw them. Auto uses the theme pack\'s own art; with a built-in theme it borrows the first Cocoon smart-folder pack in ROMs/assets/smart_folders. Drawn by Tandem shows the theme\'s icon style.</string>
+    <!-- Icons from options; the others are the names of installed packs. -->
+    <string name="look_icons_from_auto">Auto</string>
+    <string name="look_icons_from_drawn">Drawn by Tandem</string>
+
+    <string name="look_animation">Animation style</string>
+    <string name="look_animation_help">Bouncy is playful, Smooth glides without overshoot, Minimal is quick and subtle, Off changes things instantly.</string>
+    <string name="look_reduce_motion">Reduce motion</string>
+    <string name="look_reduce_motion_help">Turns off moving wallpapers, panning art and bouncy animations everywhere. Battery saver does the same for wallpapers.</string>
+
+    <!-- Wallpaper: Top screen and Bottom screen offer the backdrops (look_backdrop_…), these two and the user's own files. -->
+    <string name="look_wall_theme">Theme default</string>
+    <string name="look_wall_hero">Game art (blurred)</string>
+    <string name="look_wall_top">Top screen</string>
+    <string name="look_wall_top_help">An animated backdrop, the highlighted game\'s art, or your own picture or video: copy pictures (PNG, JPG, WebP) or videos (MP4, WebM) into ROMs/tandem/wallpapers and they show up here.</string>
+    <string name="look_wall_bottom">Bottom screen</string>
+    <string name="look_wall_bottom_help">The same choices for the second screen. Game art and videos look great down there.</string>
+    <string name="look_wall_dim">Picture dimming</string>
+    <string name="look_wall_dim_help">Darkens picture and video wallpapers so text on top stays easy to read.</string>
+
+    <string name="look_games_view">Games view</string>
+    <string name="look_games_view_help">How games show inside a system or collection: a grid of cards, a list with details (great for big libraries), a coverflow, spines on a bookshelf, or cartridges in a case.</string>
+    <string name="look_games_grid_size">Grid size</string>
+    <string name="look_games_grid_size_help">How big game cards are in a system, or a fixed number of columns.</string>
+    <string name="look_games_card_shape">Card shape</string>
+    <string name="look_games_card_shape_help">Rounded, square, circle, tall box-art cards, or wide cards for screenshots and banners.</string>
+    <string name="look_games_shelf_look">Shelf look</string>
+    <string name="look_games_shelf_look_help">The bookcase behind the Shelf view of a folder: warm wood, matte boards in the theme\'s colours, or open, with the cases on your wallpaper and only a thin shelf line.</string>
+    <string name="look_games_titles">Game titles</string>
+    <string name="look_games_titles_help">Write each game\'s name under its card.</string>
+    <string name="look_home_system_tiles">System tiles</string>
+    <string name="look_home_system_tiles_help">The look of the system tiles on the home screen.</string>
+    <string name="look_home_rows">Home rows</string>
+    <string name="look_home_rows_help">Which rows the home screen shows, and in what order.</string>
+    <string name="look_home_open_folders">Open folders</string>
+    <string name="look_home_open_folders_help">As a page, as a fullscreen page (the top bar slides away so the grid gets the whole screen), or as a popup over the screen you\'re on.</string>
+    <string name="look_home_open_folders_page">Page</string>
+    <string name="look_home_open_folders_fullscreen">Fullscreen</string>
+    <string name="look_home_open_folders_popup">Popup</string>
+    <string name="look_home_now_playing">Now playing</string>
+    <string name="look_home_now_playing_help">While a game runs in the background, show it at the top of the home screen so you can jump back in.</string>
+    <string name="look_corner_hints">Corner hints</string>
+    <string name="look_corner_hints_help">A small reminder of the buttons in the corner of the top screen.</string>
+
+    <string name="look_dock_apps">Apps dock</string>
+    <string name="look_dock_apps_help">Your favourite Android apps on the home screen. Press Y on one to move or remove it.</string>
+    <string name="look_dock_style">Dock style</string>
+    <string name="look_dock_style_help">A floating bar, a full-width shelf, or just the icons. Applies to every layout except Shelves.</string>
+    <string name="look_dock_top">Dock on top</string>
+    <string name="look_dock_top_help">Put the dock above the tiles instead of below them.</string>
+    <string name="look_dock_auto_hide">Auto-hide dock</string>
+    <string name="look_dock_auto_hide_help">The dock stays small and faded until you move into it.</string>
+
+    <!-- The bottom screen's style while you browse (Two screens › Other screen). -->
+    <string name="look_bottom_style">Style</string>
+    <string name="look_bottom_style_help">Details shows the game\'s art fading into its info. Art + info lets the moving art fill the screen with info on top. Animated art is pure eye candy. Clock keeps it calm.</string>
+    <string name="look_bottom_logo_size">Logo size</string>
+    <string name="look_bottom_logo_size_help">The size of the game\'s logo over its art.</string>
+    <string name="look_bottom_art_fade">Art fade</string>
+    <string name="look_bottom_art_fade_help">How the art blends into the background below it.</string>
+    <string name="look_bottom_video_snaps">Video snaps</string>
+    <string name="look_bottom_video_snaps_help">Plays a game\'s video (from ROMs/downloaded_media/&lt;system&gt;/videos) after you rest on it. Fast starts sooner; Saver waits longer so quick scrolling never decodes video. Always muted, and stopped while you play.</string>
+    <!-- Video snaps options: how soon a video starts. -->
+    <string name="look_bottom_video_snaps_fast">Fast</string>
+    <string name="look_bottom_video_snaps_balanced">Balanced</string>
+    <string name="look_bottom_video_snaps_saver">Saver</string>
+    <string name="look_bottom_moving_art">Moving art</string>
+    <string name="look_bottom_moving_art_help">Game art slowly pans and zooms, like a living poster.</string>
+
+    <string name="look_top_battery">Battery</string>
+    <string name="look_top_battery_help">Show the battery percentage next to the clock.</string>
+    <string name="look_top_clock">Clock</string>
+    <string name="look_top_clock_help">12-hour, 24-hour, whatever the system uses, or no clock at all.</string>
+    <string name="look_top_clock_system">System</string>
+    <string name="look_top_clock_12">12-hour</string>
+    <string name="look_top_clock_24">24-hour</string>
+    <string name="look_top_clock_hidden">Hidden</string>
+
+    <string name="look_controls_prompts">Button prompts</string>
+    <string name="look_controls_prompts_help">How buttons are drawn in hints: Tandem\'s pastels, or Xbox, PlayStation or Nintendo style.</string>
+    <string name="look_controls_swap_ab">Swap A and B</string>
+    <string name="look_controls_swap_ab_help">Confirm with B and go back with A, like on a Nintendo console. Hints follow along.</string>
+    <string name="look_controls_swap_xy">Swap X and Y</string>
+    <string name="look_controls_swap_xy_help">Search with Y and open options with X.</string>
+    <!-- What a button does, under it in the Swap A and B / Swap X and Y pictures. Short. -->
+    <string name="look_controls_does_open">Open</string>
+    <string name="look_controls_does_search">Search</string>
+    <string name="look_controls_does_options">Options</string>
+    <string name="look_controls_rebind">Rebind buttons</string>
+    <string name="look_controls_rebind_help">Give any of Tandem\'s commands another button, a chord of buttons pressed together, or a held button: open, back, the options menu, Start, the quick settings, the game switcher, the side panel, paging, hidden games, and a button for Favourite, Screenshot and Clip. Hints everywhere follow.</string>
+    <!-- Rebind buttons, when nothing is rebound. -->
+    <string name="look_controls_rebind_defaults">Defaults</string>
+    <!-- Rebind buttons: how many buttons are rebound. -->
+    <plurals name="look_controls_rebind_changes">
+        <item quantity="one">%1$d change</item>
+        <item quantity="other">%1$d changes</item>
+    </plurals>
+
+    <string name="look_screens_swap">Swap screens</string>
+    <string name="look_screens_swap_help">The library moves to the bottom (touch) screen and the details go on top, instantly. X does this on the icon grid. Games still open on the top screen.</string>
+    <string name="look_screens_rotation">Keep auto-rotate off</string>
+    <string name="look_screens_rotation_help">The Thor turns auto-rotate back on by itself now and then. Tandem switches it off again whenever you come back. Turn this off to choose yourself.</string>
+
+    <string name="look_reset">Reset look</string>
+    <string name="look_reset_help">Back to Tandem\'s original look: theme, layout, wallpapers, icons and motion. Your buttons, screens, sounds and music, library, favourites and play time aren\'t touched.</string>
+    <string name="look_reset_ask">Reset the whole look?</string>
+    <string name="look_reset_ask_body">Theme, layout, wallpapers, icons and motion go back to how Tandem first looked. Buttons, screens, sound and games stay.</string>
+    <string name="look_reset_ask_do">Reset</string>
+    <!-- After Reset look: the theme it went back to, "Back to Pastel Night". -->
+    <string name="look_reset_done">Back to %1$s</string>
+
+    <!-- Settings › Home & layout: the icon grid home (Appearance.kt). -->
+    <string name="look_grid_icon_size">Icon size</string>
+    <string name="look_grid_icon_size_help">How many icons fit across the screen, like the 3DS HOME menu\'s zoom. L1 and R1 change it on the grid too.</string>
+    <!-- An Icon size option: a size name and how many icons fit across, "Medium · 7 across". -->
+    <string name="look_grid_icon_size_option">%1$s · %2$d across</string>
+    <string name="look_grid_rows">Rows of icons</string>
+    <string name="look_grid_rows_help">Fix the number of rows and the icons grow to fill the screen. One row is the 3DS HOME menu zoomed all the way in: big icons with the highlighted item\'s details above them. Auto follows Icon size. L1 and R1 change the rows on the grid (L1 on Large icons goes on to fewer rows).</string>
+    <string name="look_grid_rows_auto">Auto</string>
+    <!-- A Rows of icons option: how many rows of icons the grid has. -->
+    <plurals name="look_grid_rows_n">
+        <item quantity="one">%1$d row</item>
+        <item quantity="other">%1$d rows</item>
+    </plurals>
+    <string name="look_grid_scrolling">Scrolling</string>
+    <string name="look_grid_scrolling_help">Sideways with a peek of what\'s next, a page at a time (like the 3DS), or up and down.</string>
+    <string name="look_grid_scrolling_sideways">Sideways</string>
+    <string name="look_grid_scrolling_pages">Pages</string>
+    <string name="look_grid_scrolling_vertical">Up and down</string>
+    <string name="look_grid_roundness">Icon roundness</string>
+    <string name="look_grid_roundness_help">From square corners to circles.</string>
+    <string name="look_grid_gap">Space between icons</string>
+    <string name="look_grid_gap_help">The gap between icons, as a share of an icon.</string>
+    <string name="look_grid_hero_split">Hero split</string>
+    <string name="look_grid_hero_split_help">Art of the highlighted icon above the grid. No split (the default) gives the icons the whole screen.</string>
+    <string name="look_grid_hero_split_none">No split</string>
+    <string name="look_grid_other_screen">Other screen</string>
+    <string name="look_grid_other_screen_help">Spotlight shows the highlighted icon big over its colour (or its icon pack art) and games full-screen. Classic shows Tandem\'s details.</string>
+    <string name="look_grid_other_screen_spotlight">Spotlight</string>
+    <string name="look_grid_other_screen_classic">Classic</string>
+    <string name="look_grid_folders">Folders open</string>
+    <string name="look_grid_folders_help">As a big rounded panel over the grid, or as a full page.</string>
+    <string name="look_grid_folders_popup">Over the grid</string>
+    <string name="look_grid_folders_page">Full page</string>
+    <string name="look_grid_x_button">X button</string>
+    <string name="look_grid_x_button_help">Swap the two screens with X on the icon grid and Orbit homes (search is in the Start panel and the grid\'s Y menu), everywhere, or keep X for search.</string>
+    <string name="look_grid_x_button_swap_grid">Swap on grid and Orbit</string>
+    <string name="look_grid_x_button_swap">Swap everywhere</string>
+    <string name="look_grid_x_button_search">Search</string>
+    <string name="look_grid_swap_animation">Swap animation</string>
+    <string name="look_grid_swap_animation_help">How the screens trade places on X. Scatter: the icons fly apart and land on the other screen. Push: each screen\'s new side slides in from the hinge. Flip: both screens turn over like cards. Depth: the old side sinks back as the new one comes forward.</string>
+    <!-- Swap animation options: how the two screens trade places. -->
+    <string name="look_swap_scatter">Scatter</string>
+    <string name="look_swap_push">Push</string>
+    <string name="look_swap_flip">Flip</string>
+    <string name="look_swap_depth">Depth</string>
+    <string name="look_swap_fade">Fade</string>
+    <string name="look_swap_instant">Instant</string>
+
+    <!-- Home rows: the rows of the Shelves home, listed in order like "Continue · Systems · Collections". -->
+    <string name="look_home_rows_continue">Continue</string>
+    <string name="look_home_rows_systems">Systems</string>
+    <string name="look_home_rows_collections">Collections</string>
+
+    <!-- The galleries on top of Look & feel and Home & layout: a heading and a short aside beside it. -->
+    <string name="look_gallery_themes">Themes</string>
+    <string name="look_gallery_themes_note">A uses one · packs below</string>
+    <string name="look_gallery_packs">Theme packs</string>
+    <string name="look_gallery_layouts">Home layout</string>
+    <string name="look_gallery_layouts_note">A switches</string>
+    <!-- The value beside a highlighted home layout that isn't the one in use. -->
+    <string name="look_gallery_layout_kind">Layout</string>
+    <!-- Beside a theme, layout or pack that is the one in use now. -->
+    <string name="look_in_use">In use</string>
+    <!-- A built-in theme in the side panel: its tagline, then what A does. -->
+    <string name="look_theme_uses_hint">%1$s. A uses it.</string>
+
+    <!-- The pack manager's card at the end of the theme packs. -->
+    <string name="look_packs_none">None yet</string>
+    <plurals name="look_packs_installed">
+        <item quantity="one">%1$d installed</item>
+        <item quantity="other">%1$d installed</item>
+    </plurals>
+    <string name="look_packs_manage_help">Import Tandem packs or Cocoon packs from a folder or a .zip: colours, wallpapers, system icons, heroes and logos. Packs Cocoon already downloaded to ROMs/themes show up by themselves. Choose which parts of a pack to use, or remove it.</string>
+    <!-- A theme pack in the side panel, sentence by sentence: who made it, what it has, the asset packs it uses. -->
+    <string name="look_pack_by_sentence">By %1$s.</string>
+    <!-- What a pack has, "Colours · 62 system icons · wallpaper", as a sentence. -->
+    <string name="look_pack_contents_sentence">%1$s.</string>
+    <!-- The asset packs a theme pack uses, "Art: Example - Smart Folders by Someone". -->
+    <string name="look_pack_art">Art: %1$s</string>
+    <string name="look_pack_uses_hint">A uses it; the pack manager chooses which parts.</string>
+
+    <!-- What each home layout is like (side panel). -->
+    <string name="look_layout_shelves_help">Rows you scroll through: continue playing, systems, collections and your apps. Tandem\'s classic home.</string>
+    <string name="look_layout_grid_help">Every system, folder, app and game as a square icon on one dense grid that scrolls sideways, with a pill dock. The other screen shows the highlighted icon big; X swaps the screens.</string>
+    <string name="look_layout_carousel_help">A coverflow: the highlighted card sits big in the middle and the others turn away to the sides.</string>
+    <string name="look_layout_list_help">Compact rows with a big preview beside them. Fast to scan, great for huge libraries.</string>
+    <string name="look_layout_console_help">A console-style dashboard: the highlighted item\'s art fills the screen with one row of big tiles along the bottom.</string>
+    <string name="look_layout_orbit_help">Tandem\'s own: your systems, collections and apps ride an orbit of round icons, the highlighted one big at the front. Above it its latest games fan out like cards in a hand, under a Continue ribbon. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.</string>
+    <string name="look_layout_spotlight_help">Game first: the highlighted game\'s art fills the screen, a rail of covers runs down one side and its logo, story and play time sit on the other. Up and Down move the rail, L1 and R1 change system or collection, X reads the whole story.</string>
+
+    <!-- Corner hints: the button reminders in the corner of the top screen. Short. -->
+    <string name="look_hints_play">Play</string>
+    <string name="look_hints_open">Open</string>
+    <string name="look_hints_options">Options</string>
+    <string name="look_hints_search">Search</string>
+    <string name="look_hints_menu">Menu</string>
+
+    <!-- Look & feel › Theme packs (ThemePacksScreen.kt). The three tiles that add packs: a label and a short line. -->
+    <string name="look_packs_import_folder">Import a folder</string>
+    <string name="look_packs_import_folder_detail">A pack folder</string>
+    <string name="look_packs_import_zip">Import a .zip</string>
+    <string name="look_packs_import_zip_detail">A zipped pack</string>
+    <string name="look_packs_reload">Look again</string>
+    <string name="look_packs_reload_detail">Find new packs</string>
+    <string name="look_packs_no_picker">No file picker on this device</string>
+    <string name="look_packs_importing">Importing…</string>
+    <!-- After importing: the pack's name. -->
+    <string name="look_packs_added">Added %1$s. Press A on it to use it</string>
+    <string name="look_packs_found_none">No theme packs found</string>
+    <plurals name="look_packs_found">
+        <item quantity="one">Found %1$d theme pack</item>
+        <item quantity="other">Found %1$d theme packs</item>
+    </plurals>
+    <string name="look_packs_none_yet">No packs yet</string>
+    <!-- The heading over the installed packs, with how many there are. -->
+    <plurals name="look_packs_installed_heading">
+        <item quantity="one">Installed · %1$d</item>
+        <item quantity="other">Installed · %1$d</item>
+    </plurals>
+    <string name="look_packs_empty">Cocoon packs you already downloaded appear here by themselves. Or import one above; it is copied into ROMs/tandem/themes.</string>
+    <!-- On a pack's picture: its icons are used with another theme. Short. -->
+    <string name="look_packs_its_icons">Its icons</string>
+    <!-- Who made a pack: "by Someone". -->
+    <string name="look_packs_by">by %1$s</string>
+    <!-- Who made a pack and its version: "by Someone · v1.2". -->
+    <string name="look_packs_by_version">by %1$s · v%2$s</string>
+    <!-- Where a pack lives: its folder name. -->
+    <string name="look_packs_stored">Stored in ROMs/tandem/themes/%1$s</string>
+    <string name="look_packs_stored_cocoon">Installed by Cocoon in ROMs/themes/%1$s. Tandem only reads it.</string>
+    <string name="look_packs_help">Packs bring colours, wallpapers and art for every system. Tandem reads its own packs and packs in the Cocoon format. Packs keep their author\'s credit; please share them the way their authors ask.</string>
+
+    <!-- A on a pack: its menu. -->
+    <string name="look_packs_use">Use this theme</string>
+    <string name="look_packs_icons_stop">Stop using its icons</string>
+    <string name="look_packs_icons_lend">Use its icons with my theme</string>
+    <string name="look_packs_brings">What it brings</string>
+    <!-- The parts of a pack, each switched on or off. Short: two sit side by side. -->
+    <string name="look_packs_part_colours">Colours</string>
+    <string name="look_packs_part_wallpaper">Wallpaper</string>
+    <string name="look_packs_part_icons">System icons</string>
+    <string name="look_packs_part_heroes">Heroes &amp; logos</string>
+    <string name="look_packs_part_frames">Cover frames</string>
+    <!-- The pack's music, with how many songs it has: "Music (3)". -->
+    <plurals name="look_packs_part_music">
+        <item quantity="one">Music (%1$d)</item>
+        <item quantity="other">Music (%1$d)</item>
+    </plurals>
+    <string name="look_packs_part_sounds">Sounds</string>
+    <string name="look_packs_remove">Remove pack</string>
+    <!-- Asking before removing a pack: its name, then its folder. -->
+    <string name="look_packs_remove_ask">Remove %1$s?</string>
+    <string name="look_packs_remove_ask_body">Deletes ROMs/tandem/themes/%1$s. You can import it again later.</string>
+    <string name="look_packs_remove_do">Remove</string>
+    <string name="look_packs_removed">Removed %1$s</string>
+    <string name="look_packs_remove_failed">Couldn\'t remove that pack</string>
+    <!-- The last card of the theme packs gallery, which opens the pack manager. -->
+    <string name="look_packs_add">Add theme packs</string>
+    <string name="look_packs_add_detail">Import a folder or .zip</string>
+    <string name="look_packs_manage">Manage packs</string>
+
+    <!-- Importing a pack (PackImport.kt): why it didn't work. -->
+    <string name="look_import_cant_open">Couldn\'t open that file</string>
+    <string name="look_import_too_big">That\'s too big for a theme pack</string>
+    <string name="look_import_too_many">That has too many files for a theme pack</string>
+    <string name="look_import_no_pack">No theme.json or icon folders in there</string>
+    <string name="look_import_failed">Couldn\'t import that</string>
+    <!-- The description given to an imported icon pack that has none. -->
+    <string name="look_import_icons_description">Icons</string>
+
+    <!-- Home & layout and Motion: floating titles, motion intensity, the Recently played strip and icon names
+         (Flair.kt). -->
+    <string name="look_flair_group">Motion &amp; home</string>
+    <string name="look_flair_floating">Floating titles</string>
+    <string name="look_flair_floating_help">Logos, icons and titles float gently and rise in when they change, and hero art drifts. Holds still with Reduce motion, animations Off or battery saver.</string>
+    <string name="look_flair_intensity">Motion intensity</string>
+    <string name="look_flair_intensity_help">How far things float and bounce.</string>
+    <!-- Motion intensity's options. Short. -->
+    <string name="look_flair_subtle">Subtle</string>
+    <string name="look_flair_normal">Normal</string>
+    <string name="look_flair_lively">Lively</string>
+    <string name="look_flair_recent">Recently played strip</string>
+    <string name="look_flair_recent_help">On the icon grid, a bar of your last games along the top. L2 shows and hides it; A resumes a game.</string>
+    <!-- Recently played strip's options: shown with the L2 button, or always (the third is Off). Short. -->
+    <string name="look_flair_recent_button">On L2</string>
+    <string name="look_flair_recent_always">Always</string>
+    <string name="look_flair_icon_names">Icon names</string>
+    <string name="look_flair_icon_names_help">Names under the icon grid\'s tiles: always, only for the highlighted icon, or never.</string>
+    <!-- Icon names' options (the third is Off). Short. -->
+    <string name="look_flair_icon_names_always">Always</string>
+    <string name="look_flair_icon_names_focus">Highlighted</string>
+
+    <!-- Play & system › For tinkerers (Perf.kt). -->
+    <string name="look_dev">Developer</string>
+    <string name="look_dev_frames">Frame timing overlay</string>
+    <!-- TandemJank is a log tag: leave it. -->
+    <string name="look_dev_frames_help">Counts slow frames while you use Tandem and shows the totals in a corner. Each slow frame is also written to the system log (tag TandemJank) with the screen it happened on, for measuring smoothness.</string>
+    <string name="look_dev_tour">Tour every theme</string>
+    <!-- Tour every theme's value while touring: A stops it. Short. -->
+    <string name="look_dev_tour_stop">Stop</string>
+    <!-- Tour every theme's value: how many built-in themes it shows, plus the imported ones. -->
+    <string name="look_dev_tour_count">%1$d + imported</string>
+    <string name="look_dev_tour_help">Shows each built-in theme and the newest imported pack for a few seconds, to check colours and text. Your theme stays as it is.</string>
+    <!-- While touring: %1$d is the theme's place, %2$d how many, %3$s its name. -->
+    <string name="look_dev_tour_toast">Theme %1$d of %2$d: %3$s</string>
+
+    <!-- The splash while Tandem starts (StartFlow.kt), under its name. -->
+    <plurals name="look_start_found">
+        <item quantity="one">Found %1$d game…</item>
+        <item quantity="other">Found %1$d games…</item>
+    </plurals>
+    <string name="look_start_gathering">Gathering your games…</string>
+
+    <!-- The first-run welcome (Welcome.kt): Pip asks a few quick questions, one step at a time. -->
+    <!-- The hint for B on the first step: it closes the whole welcome. -->
+    <string name="look_welcome_skip_all">Skip all</string>
+    <!-- Buttons that move on to the next step. Short. -->
+    <string name="look_welcome_next">Next</string>
+    <string name="look_welcome_skip_now">Skip for now</string>
+    <string name="look_welcome_not_now">Not now</string>
+    <!-- The first step: the language. The cards under it show each language's own name. -->
+    <string name="look_welcome_language">Which language do you prefer?</string>
+    <string name="look_welcome_language_detail">Tandem speaks it on both screens. Settings › Look &amp; feel › Language changes it any time.</string>
+    <!-- Step: pick a home. -->
+    <string name="look_welcome_home">Hi! Which home feels like yours?</string>
+    <string name="look_welcome_home_cocoon">I found Cocoon files on this device, so the icon grid is first. You can change this any time in Settings.</string>
+    <string name="look_welcome_home_detail">Pick one to start with. Settings › Home &amp; layout has more, any time.</string>
+    <!-- Step: what the Cocoon app left on the device. -->
+    <string name="look_welcome_cocoon">I found your Cocoon things</string>
+    <string name="look_welcome_cocoon_detail">Nothing to copy: Tandem reads them where Cocoon keeps them, and never changes them.</string>
+    <!-- %1$s is the backup's date as its folder writes it, like "2025-03-14". -->
+    <string name="look_welcome_cocoon_backup">Your Cocoon backup of %1$s: the same home, dock and theme in one press</string>
+    <!-- %1$d is how many theme packs, %2$s the first few names. -->
+    <plurals name="look_welcome_cocoon_themes">
+        <item quantity="one">%1$d theme pack: %2$s</item>
+        <item quantity="other">%1$d theme packs: %2$s</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_icons">
+        <item quantity="one">%1$d icon pack for systems and collections, used automatically</item>
+        <item quantity="other">%1$d icon packs for systems and collections, used automatically</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_platforms">
+        <item quantity="one">%1$d platform file: their emulators are ready in Systems</item>
+        <item quantity="other">%1$d platform files: their emulators are ready in Systems</item>
+    </plurals>
+    <string name="look_welcome_cocoon_gamelists">Game names, descriptions and art from Cocoon\'s gamelists come over by themselves</string>
+    <string name="look_welcome_cocoon_bring">Bring my Cocoon setup over</string>
+    <string name="look_welcome_cocoon_bringing">Bringing it over…</string>
+    <!-- Use a theme pack as the theme: %1$s is its name. -->
+    <string name="look_welcome_cocoon_wear">Wear %1$s</string>
+    <string name="look_welcome_cocoon_keep">Keep this theme</string>
+    <!-- Step: where artwork and details come from. -->
+    <string name="look_welcome_art">Artwork &amp; details</string>
+    <string name="look_welcome_art_detail">LaunchBox and libretro need no account. IGDB, SteamGridDB and ScreenScraper add more with a free key: pick one to see how.</string>
+    <!-- Download LaunchBox's games database: %1$d is its size in megabytes. -->
+    <string name="look_welcome_art_launchbox">Get LaunchBox (%1$d MB, Wi-Fi)</string>
+    <!-- Step: resuming running games through the Shizuku app. -->
+    <string name="look_welcome_resume">Pick up right where you left off</string>
+    <string name="look_welcome_resume_ready">Resume is ready</string>
+    <string name="look_welcome_resume_ready_detail">Picking a game that\'s still open brings it back instead of restarting it.</string>
+    <string name="look_welcome_resume_allow_detail">Allow Tandem in Shizuku and a game that\'s still running comes back as you left it, with the switcher (hold Select) to jump between games.</string>
+    <string name="look_welcome_resume_start_detail">With the Shizuku app running, Tandem can bring a game that\'s still open back instead of restarting it. Start Shizuku, then allow Tandem.</string>
+    <string name="look_welcome_resume_allow">Allow in Shizuku</string>
+    <string name="look_welcome_resume_how">How do I start Shizuku?</string>
+    <!-- Step: Tandem as Android's Home screen. -->
+    <string name="look_welcome_homescreen">Make Tandem your Home screen?</string>
+    <string name="look_welcome_homescreen_is">Tandem is your Home screen</string>
+    <string name="look_welcome_homescreen_detail">Press Home anywhere and you land back here, with your running game one button away. Your apps stay in the dock. You can switch back any time in Settings.</string>
+    <string name="look_welcome_homescreen_make">Make it my Home screen</string>
+    <string name="look_welcome_home_set">Tandem is your Home screen now ✨</string>
+    <!-- The last step: four buttons and what they do. -->
+    <string name="look_welcome_done">All set. Let\'s play!</string>
+    <string name="look_welcome_done_detail">Four buttons worth knowing, wherever you are:</string>
+    <string name="look_welcome_done_y">Options for anything</string>
+    <string name="look_welcome_done_x_swap">Swap screens on the home, search elsewhere</string>
+    <string name="look_welcome_done_start">Start panel, Settings inside (hold: quick panel)</string>
+    <string name="look_welcome_done_select">Surprise me (hold: switcher)</string>
+    <string name="look_welcome_play">Let\'s play</string>
+
+    <!-- Quick looks (Presets.kt): a name, a sentence, and what each changes, a line each. -->
+    <!-- %1$s is the quick look's name. -->
+    <string name="look_preset_on">%1$s is on. Press A on it again to undo</string>
+    <string name="look_preset_undone">Back to how it was</string>
+    <string name="look_preset_cozy">Cozy shelves</string>
+    <string name="look_preset_cozy_blurb">Tandem\'s own home: rows of recent games, systems and collections, with details and art on the bottom screen.</string>
+    <string name="look_preset_cozy_1">Shelves home</string>
+    <string name="look_preset_cozy_2">Grid of games inside systems</string>
+    <string name="look_preset_cozy_3">Details on the bottom screen</string>
+    <string name="look_preset_cozy_4">Floating apps dock</string>
+    <string name="look_preset_cozy_5">Library on the top screen</string>
+    <string name="look_preset_grid">Icon grid look</string>
+    <string name="look_preset_grid_blurb">One dense grid of icons that scrolls sideways, the highlighted icon big on the other screen, X swaps the screens.</string>
+    <string name="look_preset_grid_1">Icon grid home, 7 across, sideways</string>
+    <string name="look_preset_grid_2">Spotlight on the other screen</string>
+    <string name="look_preset_grid_3">X swaps the screens on the grid</string>
+    <string name="look_preset_grid_4">Folders open over the grid</string>
+    <string name="look_preset_grid_5">Pill dock with your apps</string>
+    <string name="look_preset_grid_6">Your Cocoon theme pack, if one is installed</string>
+    <string name="look_preset_grid_7">With a Cocoon backup: your exact home, dock and theme</string>
+    <string name="look_preset_orbit">Orbit</string>
+    <string name="look_preset_orbit_blurb">Tandem\'s own home: your systems, collections and apps on an orbit of round icons, the highlighted one\'s games fanned out above it.</string>
+    <string name="look_preset_orbit_1">Orbit home with systems, collections and apps</string>
+    <string name="look_preset_orbit_2">Continue ribbon over the spotlight</string>
+    <string name="look_preset_orbit_3">Round dock under the orbit</string>
+    <string name="look_preset_orbit_4">Details on the bottom screen</string>
+    <string name="look_preset_orbit_5">X swaps the screens on Orbit</string>
+    <string name="look_preset_minimal">Minimal</string>
+    <string name="look_preset_minimal_blurb">Calm and quick: a compact list, crisp outlines instead of glows, short animations, no music and fewer extras.</string>
+    <string name="look_preset_minimal_1">List home and list of games</string>
+    <string name="look_preset_minimal_2">Outline highlight, minimal motion</string>
+    <string name="look_preset_minimal_3">Music off</string>
+    <string name="look_preset_minimal_4">Icons-only dock that hides</string>
+    <string name="look_preset_minimal_5">No widgets row, no splash</string>
+</resources>

@@ -19,6 +19,10 @@ class HardcodedTextTest {
         "ui/QuickPanel.kt",
         "ui/SidePanel.kt",
         "ui/LanguageSettings.kt",
+        "ui/SettingsCatalog.kt", "ui/Settings.kt", "ui/SettingsSearch.kt", "ui/SettingsHome.kt", "ui/Choices.kt", "ui/Showcase.kt",
+        "ui/SoundSettings.kt", "ui/Sound.kt", "audio/Sfx.kt", "audio/Calm.kt", "audio/Meadow.kt", "audio/Tracks.kt", "audio/Song.kt",
+        "ui/Appearance.kt", "ui/Theme.kt", "ui/ThemeGallery.kt", "ui/ThemePacks.kt", "ui/ThemePacksScreen.kt", "ui/PackImport.kt",
+        "ui/Flair.kt", "ui/Presets.kt", "ui/Perf.kt", "ui/StartFlow.kt", "ui/Welcome.kt",
     )
 
     /** Calls that show their string arguments, and how many leading arguments are ids, not text. */

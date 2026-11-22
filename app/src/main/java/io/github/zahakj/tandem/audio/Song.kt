@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.audio
 
+import androidx.annotation.StringRes
+import io.github.zahakj.tandem.Tx
+
 /**
  * A song, written like a tiny tracker: instruments ([parts]), sections with chords and patterns, and a [form] that
  * strings sections together. [compile] turns it into a flat list of note events once; the player then only reads.
@@ -8,8 +11,10 @@ package io.github.zahakj.tandem.audio
  */
 class Song(
     val id: String,
+    /** A name: the same in every language. */
     val title: String,
-    val mood: String,
+    /** What the piece sounds like, in a few words (the now-playing card); [mood] says it in Tandem's language. */
+    @StringRes val moodRes: Int,
     val bpm: Double,
     val swing: Double = 0.0,
     val parts: List<Part>,
@@ -30,6 +35,7 @@ class Song(
     /** Orchestral chord voicing: no root inside major seventh chords, no minor seconds between neighbouring voices. */
     val openVoicing: Boolean = false,
 ) {
+    val mood: String get() = Tx.s(moodRes)
     val stepsPerBar: Int get() = beats * 4
     val bars: Int get() = form.sumOf { sections.getValue(it).bars }
     val seconds: Double get() = bars * beats * 60.0 / bpm
@@ -149,7 +155,7 @@ class DrumGen(
 
 // --- Building songs -------------------------------------------------------------------------------------------
 
-class SongBuilder(private val id: String, private val title: String, private val mood: String, private val bpm: Double, private val swing: Double) {
+class SongBuilder(private val id: String, private val title: String, @StringRes private val mood: Int, private val bpm: Double, private val swing: Double) {
     private val parts = ArrayList<Part>()
     private val sections = LinkedHashMap<String, Section>()
     private var form: List<String> = emptyList()
@@ -198,7 +204,7 @@ class SectionBuilder {
     ) { gens += DrumGen(part, lines, fills, crash, riser) }
 }
 
-fun song(id: String, title: String, mood: String, bpm: Double, swing: Double = 0.0, body: SongBuilder.() -> Unit): Song =
+fun song(id: String, title: String, @StringRes mood: Int, bpm: Double, swing: Double = 0.0, body: SongBuilder.() -> Unit): Song =
     SongBuilder(id, title, mood, bpm, swing).apply(body).build()
 
 // --- Compiling --------------------------------------------------------------------------------------------------

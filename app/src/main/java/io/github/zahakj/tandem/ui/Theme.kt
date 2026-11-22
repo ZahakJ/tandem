@@ -9,6 +9,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,63 +17,73 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Look
 import io.github.zahakj.tandem.data.Store
 import java.io.File
 
 /** How the highlighted card is marked. */
-enum class HighlightStyle(val id: String, val label: String) {
-    Glow("glow", "Glow"),
-    Outline("outline", "Outline"),
-    Lift("lift", "Lift"),
-    Pulse("pulse", "Pulse");
+enum class HighlightStyle(val id: String, @StringRes private val res: Int) {
+    Glow("glow", R.string.look_highlight_glow),
+    Outline("outline", R.string.look_highlight_outline),
+    Lift("lift", R.string.look_highlight_lift),
+    Pulse("pulse", R.string.look_highlight_pulse);
+
+    val label: String get() = Tx.s(res)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } }
 }
 
 /** What cards and panels are made of. */
-enum class SurfaceMaterial(val id: String, val label: String) {
-    Solid("solid", "Solid"),
-    Frosted("frosted", "Frosted glass"),
-    Outlined("outlined", "Outlined");
+enum class SurfaceMaterial(val id: String, @StringRes private val res: Int) {
+    Solid("solid", R.string.look_surface_solid),
+    Frosted("frosted", R.string.look_surface_frosted),
+    Outlined("outlined", R.string.look_surface_outlined);
+
+    val label: String get() = Tx.s(res)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } }
 }
 
 /** How things move. */
-enum class AnimationStyle(val id: String, val label: String) {
-    Bouncy("bouncy", "Bouncy"),
-    Smooth("smooth", "Smooth"),
-    Minimal("minimal", "Minimal"),
-    Off("off", "Off");
+enum class AnimationStyle(val id: String, @StringRes private val res: Int) {
+    Bouncy("bouncy", R.string.look_motion_bouncy),
+    Smooth("smooth", R.string.look_motion_smooth),
+    Minimal("minimal", R.string.look_motion_minimal),
+    Off("off", R.string.look_motion_off);
+
+    val label: String get() = Tx.s(res)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } }
 }
 
 /** The animated (or still) pictures drawn behind everything. */
-enum class BackdropStyle(val id: String, val label: String) {
-    Blobs("blobs", "Pastel blobs"),
-    Starfield("starfield", "Starfield"),
-    Waves("waves", "Waves"),
-    Synthwave("synthwave", "Synthwave"),
-    Bubbles("bubbles", "Bubbles"),
-    Petals("petals", "Petals"),
-    Fireflies("fireflies", "Fireflies"),
-    Pixels("pixels", "8-bit evening"),
-    Lcd("lcd", "Pocket LCD"),
-    Cubes("cubes", "Floating cubes"),
-    Towers("towers", "Boot towers"),
-    Marquee("marquee", "Neon marquee"),
-    Shell("shell", "Clear shell"),
-    Disc("disc", "Spinning disc"),
-    Visor("visor", "Red wireframe"),
-    Road("road", "Sunset road"),
-    Shooter("shooter", "Space shooter"),
-    Farm("farm", "Cozy fields"),
-    Meadow("meadow", "Tall grass"),
-    Torch("torch", "Torchlit wall"),
-    Rainbow("rainbow", "Rainbow road"),
-    Plain("plain", "Plain");
+enum class BackdropStyle(val id: String, @StringRes private val res: Int) {
+    Blobs("blobs", R.string.look_backdrop_blobs),
+    Starfield("starfield", R.string.look_backdrop_starfield),
+    Waves("waves", R.string.look_backdrop_waves),
+    Synthwave("synthwave", R.string.look_backdrop_synthwave),
+    Bubbles("bubbles", R.string.look_backdrop_bubbles),
+    Petals("petals", R.string.look_backdrop_petals),
+    Fireflies("fireflies", R.string.look_backdrop_fireflies),
+    Pixels("pixels", R.string.look_backdrop_pixels),
+    Lcd("lcd", R.string.look_backdrop_lcd),
+    Cubes("cubes", R.string.look_backdrop_cubes),
+    Towers("towers", R.string.look_backdrop_towers),
+    Marquee("marquee", R.string.look_backdrop_marquee),
+    Shell("shell", R.string.look_backdrop_shell),
+    Disc("disc", R.string.look_backdrop_disc),
+    Visor("visor", R.string.look_backdrop_visor),
+    Road("road", R.string.look_backdrop_road),
+    Shooter("shooter", R.string.look_backdrop_shooter),
+    Farm("farm", R.string.look_backdrop_farm),
+    Meadow("meadow", R.string.look_backdrop_meadow),
+    Torch("torch", R.string.look_backdrop_torch),
+    Rainbow("rainbow", R.string.look_backdrop_rainbow),
+    Plain("plain", R.string.look_backdrop_plain);
+
+    val label: String get() = Tx.s(res)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } }
 }
@@ -81,16 +92,18 @@ enum class BackdropStyle(val id: String, val label: String) {
  * How system tiles are drawn when no theme pack brings icons: the short name in a themed treatment over a simple
  * device silhouette. See SystemIcon.
  */
-enum class IconStyle(val id: String, val label: String) {
-    Bubble("bubble", "Glossy bubble"),
-    Neon("neon", "Neon outline"),
-    Pixel("pixel", "Pixel"),
-    Flat("flat", "Flat"),
-    Plastic("plastic", "Clear plastic"),
-    Chrome("chrome", "Chrome"),
-    Lcd("lcd", "LCD"),
-    Sticker("sticker", "Sticker"),
-    Rune("rune", "Carved");
+enum class IconStyle(val id: String, @StringRes private val res: Int) {
+    Bubble("bubble", R.string.look_icon_style_bubble),
+    Neon("neon", R.string.look_icon_style_neon),
+    Pixel("pixel", R.string.look_icon_style_pixel),
+    Flat("flat", R.string.look_icon_style_flat),
+    Plastic("plastic", R.string.look_icon_style_plastic),
+    Chrome("chrome", R.string.look_icon_style_chrome),
+    Lcd("lcd", R.string.look_icon_style_lcd),
+    Sticker("sticker", R.string.look_icon_style_sticker),
+    Rune("rune", R.string.look_icon_style_rune);
+
+    val label: String get() = Tx.s(res)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } }
 }
@@ -105,8 +118,14 @@ enum class ScreenOverlay { None, Scanlines, DotMatrix }
  */
 data class ThemeSpec(
     val id: String,
-    val name: String,
-    val tagline: String,
+    /**
+     * A pack's name and description, as its theme.json writes them. A built-in theme leaves them empty and gives
+     * [nameRes] and [taglineRes] instead, so its [name] and [tagline] follow the language (docs/TRANSLATING.md).
+     */
+    val rawName: String = "",
+    val rawTagline: String = "",
+    @StringRes val nameRes: Int = 0,
+    @StringRes val taglineRes: Int = 0,
     val dark: Boolean = true,
     val background: Color,
     val backgroundDeep: Color,
@@ -138,8 +157,9 @@ data class ThemeSpec(
     /** Picture or video wallpapers that come with a theme pack (absolute files). */
     val wallpaperTop: File? = null,
     val wallpaperBottom: File? = null,
-    /** Where it came from: "Built in", or the pack's author. */
-    val source: String = "Built in",
+    /** Where it came from: the pack's author, or empty for [sourceRes] ("Built in", "Theme pack"…). */
+    val author: String = "",
+    @StringRes val sourceRes: Int = R.string.look_theme_built_in,
     /** Grid size multiplier from a theme pack's icon_scale. */
     val iconScale: Float = 1f,
     val heroLogoScale: Float? = null,
@@ -151,6 +171,15 @@ data class ThemeSpec(
     /** For packs: it brings system or collection art. */
     val hasArt: Boolean = false,
 ) {
+    /** The theme's name, in the language for a built-in theme. */
+    val name: String get() = rawName.ifEmpty { if (nameRes != 0) Tx.s(nameRes) else id }
+
+    /** A line about it: a pack's own, or a built-in theme's in the language. */
+    val tagline: String get() = rawTagline.ifEmpty { if (taglineRes != 0) Tx.s(taglineRes) else "" }
+
+    /** Where it came from: "Built in", or the pack's author. */
+    val source: String get() = author.ifEmpty { Tx.s(sourceRes) }
+
     val accents: List<Color> get() = listOf(mint, peach, lavender, sky, butter)
 
     /** Colours blend smoothly; everything else switches at once. */
@@ -180,7 +209,7 @@ private fun c(hex: Long) = Color(0xFF000000 or hex)
  */
 object BuiltInThemes {
     val PastelNight = ThemeSpec(
-        id = "pastel-night", name = "Pastel Night", tagline = "Soft night sky, candy colours",
+        id = "pastel-night", nameRes = R.string.look_theme_pastel_night, taglineRes = R.string.look_theme_pastel_night_tagline,
         background = c(0x13121C), backgroundDeep = c(0x0B0A12), card = c(0x211F2E), cardHigh = c(0x2C2940),
         text = c(0xF6F3FF), muted = c(0xA7A2BF), onAccent = c(0x0B0A12),
         mint = c(0x8EECC8), peach = c(0xFFB4A2), lavender = c(0xB8A8FF), sky = c(0x8FD3FF), butter = c(0xFFE49A),
@@ -202,7 +231,7 @@ object BuiltInThemes {
     )
 
     val Oled = ThemeSpec(
-        id = "oled", name = "OLED Black", tagline = "True black, saves battery",
+        id = "oled", nameRes = R.string.look_theme_oled, taglineRes = R.string.look_theme_oled_tagline,
         background = c(0x000000), backgroundDeep = c(0x000000), card = c(0x111114), cardHigh = c(0x1C1C21),
         text = c(0xF5F5F7), muted = c(0x9A9AA6), onAccent = c(0x000000),
         mint = c(0x7CF2C4), peach = c(0xFF9F8A), lavender = c(0xA99BFF), sky = c(0x7CCBFF), butter = c(0xFFE07A),
@@ -211,7 +240,7 @@ object BuiltInThemes {
     )
 
     val Paper = ThemeSpec(
-        id = "paper", name = "Paper", tagline = "Bright, calm, daylight friendly",
+        id = "paper", nameRes = R.string.look_theme_paper, taglineRes = R.string.look_theme_paper_tagline,
         dark = false,
         background = c(0xF6F1E7), backgroundDeep = c(0xEAE2D1), card = c(0xFFFFFF), cardHigh = c(0xFFFFFF),
         text = c(0x2A2433), muted = c(0x6A6175), onAccent = c(0xFFFFFF),
@@ -222,12 +251,15 @@ object BuiltInThemes {
     val list: List<ThemeSpec> = listOf(PastelNight, Paper, Oled)
 }
 
-/** Picks colours for the accent picker. */
-val AccentSwatches: List<Pair<String, Color>> = listOf(
-    "Mint" to c(0x8EECC8), "Peach" to c(0xFFB4A2), "Lavender" to c(0xB8A8FF), "Sky" to c(0x8FD3FF),
-    "Butter" to c(0xFFE49A), "Sakura" to c(0xFFB7C5), "Coral" to c(0xFF7A6B), "Hot pink" to c(0xFF5DA2),
-    "Grape" to c(0x9B6BFF), "Ocean" to c(0x3EA8FF), "Teal" to c(0x2ED3B7), "Lime" to c(0xB8F25C),
-    "Gold" to c(0xFFC531), "Snow" to c(0xF2F2F7),
+/** Picks colours for the accent picker: each swatch's name (a string resource) and colour. */
+val AccentSwatches: List<Pair<Int, Color>> = listOf(
+    R.string.look_swatch_mint to c(0x8EECC8), R.string.look_swatch_peach to c(0xFFB4A2), R.string.look_swatch_lavender to c(0xB8A8FF),
+    R.string.look_swatch_sky to c(0x8FD3FF),
+    R.string.look_swatch_butter to c(0xFFE49A), R.string.look_swatch_sakura to c(0xFFB7C5), R.string.look_swatch_coral to c(0xFF7A6B),
+    R.string.look_swatch_hot_pink to c(0xFF5DA2),
+    R.string.look_swatch_grape to c(0x9B6BFF), R.string.look_swatch_ocean to c(0x3EA8FF), R.string.look_swatch_teal to c(0x2ED3B7),
+    R.string.look_swatch_lime to c(0xB8F25C),
+    R.string.look_swatch_gold to c(0xFFC531), R.string.look_swatch_snow to c(0xF2F2F7),
 )
 
 /** The live theme. Everything reads it through [Palette], so a change shows up everywhere at once. */
@@ -255,7 +287,8 @@ object Themes {
         val base = BuiltInThemes.byIdOrDefault(spec.baseId ?: return spec)
         var out = spec
         if (!parts.colors) out = base.copy(
-            id = spec.id, name = spec.name, tagline = spec.tagline, source = spec.source, baseId = spec.baseId,
+            id = spec.id, rawName = spec.rawName, rawTagline = spec.rawTagline, nameRes = spec.nameRes, taglineRes = spec.taglineRes,
+            author = spec.author, sourceRes = spec.sourceRes, baseId = spec.baseId,
             hasArt = spec.hasArt, wallpaperTop = spec.wallpaperTop, wallpaperBottom = spec.wallpaperBottom,
             backdrop = spec.backdrop, iconScale = spec.iconScale, heroLogoScale = spec.heroLogoScale,
             heroGradient = spec.heroGradient,

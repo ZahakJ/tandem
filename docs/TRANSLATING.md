@@ -236,7 +236,9 @@ All run in `testDebugUnitTest`:
 ## Trying a language on the handheld
 
 - **In Tandem:** Settings › Look & feel › Language. Both screens switch at once: the panel you were on stays open,
-  the highlight stays where it was, nothing restarts. On Android 13+ this is the same setting as Android's.
+  the highlight stays where it was, nothing restarts. On Android 13+ this is the same setting as Android's. A new
+  user picks it first thing too: the first-run welcome opens on the same language cards (`ui/Welcome.kt`), English
+  highlighted, and the rest of the welcome follows the pick.
 - **Android 13 and later:** Android Settings › Apps › Tandem › Language works too, and so does
   `adb shell cmd locale set-app-locales io.github.zahakj.tandem --locales ja` (`ar`, `zh-CN`, `fr`, `en`; an empty
   `--locales ""` follows the system). `adb shell cmd locale get-app-locales io.github.zahakj.tandem` shows it.

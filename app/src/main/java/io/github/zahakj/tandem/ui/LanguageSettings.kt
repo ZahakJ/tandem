@@ -36,9 +36,9 @@ fun languageSettings(): SettingSection {
     return SettingSection(label, listOf(row), en = "Language")
 }
 
-/** A greeting in [tag]'s own script and shapes; for System default, a gear (it follows Android's). */
+/** A greeting in [tag]'s own script and shapes; for System default, a gear (it follows Android's). The welcome's language cards show it too. */
 @Composable
-private fun LanguageLook(tag: String) {
+internal fun LanguageLook(tag: String) {
     Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.Center) {
         val text = Hello[tag]
         if (text == null) Box(Modifier.fillMaxSize(0.4f)) { TIconGlyph(TIcon.Gear, Palette.Sky) }

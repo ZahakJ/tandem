@@ -1,11 +1,14 @@
 package io.github.zahakj.tandem.ui
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.HomeSettings
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Look
@@ -22,17 +25,23 @@ import io.github.zahakj.tandem.data.WidgetStore
  */
 class LookPreset(
     val id: String,
-    val title: String,
+    @StringRes private val titleRes: Int,
     val color: Color,
     val icon: Glyph,
     /** Which home layout the preview card draws; empty for the one in use. */
     val layout: String,
-    val blurb: String,
-    val changes: List<String>,
+    @StringRes private val blurbRes: Int,
+    private val changeRes: List<Int>,
     /** True when the current settings already look like this preset. */
     val matches: (Look, Settings) -> Boolean,
     val apply: (Context) -> Unit,
-)
+) {
+    val title: String get() = Tx.s(titleRes)
+    val blurb: String get() = Tx.s(blurbRes)
+
+    /** What it changes, a line each. */
+    val changes: List<String> get() = changeRes.map { Tx.s(it) }
+}
 
 object Presets {
     private class Snapshot(val settings: Settings, val home: HomeSettings, val widgets: WidgetConfig, val grid: io.github.zahakj.tandem.data.IconGridConfig)
@@ -51,12 +60,12 @@ object Presets {
         if (undoable == p.id) { undo(ctx); return }
         // Undo always goes back to how things were before the first of a run of presets.
         if (undoable == null) before = Snapshot(Store.settings, HomeStore.settings, WidgetStore.config, io.github.zahakj.tandem.data.IconGridStore.config)
-        io.github.zahakj.tandem.data.Backups.auto(ctx, "Quick look")
+        io.github.zahakj.tandem.data.Backups.auto(ctx, "Quick look") // tx-ok: the reason is saved with the backup
         p.apply(ctx)
         undoable = p.id
         refresh(ctx)
         Sounds.confirm()
-        Toasts.show("${p.title} is on. Press A on it again to undo")
+        Toasts.show(Tx.s(R.string.look_preset_on, p.title))
     }
 
     fun undo(ctx: Context) {
@@ -68,7 +77,7 @@ object Presets {
         undoable = null
         before = null
         refresh(ctx)
-        Toasts.show("Back to how it was")
+        Toasts.show(Tx.s(R.string.look_preset_undone))
     }
 
     /** Applies [p] without the undo toast (the first-run welcome). */
@@ -82,9 +91,11 @@ object Presets {
     private fun look(change: (Look) -> Look) = Store.updateSettings { it.copy(look = change(it.look)) }
 
     private val Cozy = LookPreset(
-        "cozy", "Cozy shelves", Palette.Butter, Glyph.Home, "shelves",
-        "Tandem's own home: rows of recent games, systems and collections, with details and art on the bottom screen.",
-        listOf("Shelves home", "Grid of games inside systems", "Details on the bottom screen", "Floating apps dock", "Library on the top screen"),
+        "cozy", R.string.look_preset_cozy, Palette.Butter, Glyph.Home, "shelves", R.string.look_preset_cozy_blurb,
+        listOf(
+            R.string.look_preset_cozy_1, R.string.look_preset_cozy_2, R.string.look_preset_cozy_3, R.string.look_preset_cozy_4,
+            R.string.look_preset_cozy_5,
+        ),
         matches = { l, s -> l.homeLayout == "shelves" && !l.swapScreens && s.bottomMode == "details" },
     ) {
         look {
@@ -99,12 +110,10 @@ object Presets {
 
     private val Cocoon = LookPreset(
         // The id stays "cocoon" so saved settings and search keep finding it.
-        "cocoon", "Icon grid look", Palette.Sky, Glyph.Grid, "grid",
-        "One dense grid of icons that scrolls sideways, the highlighted icon big on the other screen, X swaps the screens.",
+        "cocoon", R.string.look_preset_grid, Palette.Sky, Glyph.Grid, "grid", R.string.look_preset_grid_blurb,
         listOf(
-            "Icon grid home, 7 across, sideways", "Spotlight on the other screen", "X swaps the screens on the grid",
-            "Folders open over the grid", "Pill dock with your apps", "Your Cocoon theme pack, if one is installed",
-            "With a Cocoon backup: your exact home, dock and theme",
+            R.string.look_preset_grid_1, R.string.look_preset_grid_2, R.string.look_preset_grid_3, R.string.look_preset_grid_4,
+            R.string.look_preset_grid_5, R.string.look_preset_grid_6, R.string.look_preset_grid_7,
         ),
         matches = { l, _ -> l.homeLayout == "grid" && l.gridDetails == "spotlight" },
     ) { ctx ->
@@ -125,11 +134,10 @@ object Presets {
     }
 
     private val OrbitLook = LookPreset(
-        "orbit", "Orbit", Palette.Lavender, Glyph.Sparkle, "orbit",
-        "Tandem's own home: your systems, collections and apps on an orbit of round icons, the highlighted one's games fanned out above it.",
+        "orbit", R.string.look_preset_orbit, Palette.Lavender, Glyph.Sparkle, "orbit", R.string.look_preset_orbit_blurb,
         listOf(
-            "Orbit home with systems, collections and apps", "Continue ribbon over the spotlight", "Round dock under the orbit",
-            "Details on the bottom screen", "X swaps the screens on Orbit",
+            R.string.look_preset_orbit_1, R.string.look_preset_orbit_2, R.string.look_preset_orbit_3, R.string.look_preset_orbit_4,
+            R.string.look_preset_orbit_5,
         ),
         matches = { l, _ -> l.homeLayout == "orbit" },
     ) {
@@ -144,9 +152,11 @@ object Presets {
     }
 
     private val Minimal = LookPreset(
-        "minimal", "Minimal", Palette.Lavender, Glyph.Sort, "list",
-        "Calm and quick: a compact list, crisp outlines instead of glows, short animations, no music and fewer extras.",
-        listOf("List home and list of games", "Outline highlight, minimal motion", "Music off", "Icons-only dock that hides", "No widgets row, no splash"),
+        "minimal", R.string.look_preset_minimal, Palette.Lavender, Glyph.Sort, "list", R.string.look_preset_minimal_blurb,
+        listOf(
+            R.string.look_preset_minimal_1, R.string.look_preset_minimal_2, R.string.look_preset_minimal_3, R.string.look_preset_minimal_4,
+            R.string.look_preset_minimal_5,
+        ),
         matches = { l, _ -> l.homeLayout == "list" && l.motion == AnimationStyle.Minimal.id },
     ) {
         look {

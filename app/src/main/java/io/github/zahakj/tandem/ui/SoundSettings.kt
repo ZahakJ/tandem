@@ -47,7 +47,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Screensaver
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.audio.SoundPack
 import io.github.zahakj.tandem.audio.Tracks
 import io.github.zahakj.tandem.data.Store
@@ -70,22 +72,22 @@ fun themePackAudioSettings(): SettingSection? {
     val rows = buildList {
         if (pack.music.isNotEmpty()) add(
             toggle(
-                "Theme pack music", Glyph.Music, Palette.Peach,
-                "${pack.name} has ${io.github.zahakj.tandem.plural(pack.music.size, "song")} of its own. On, they play while it is your theme, " +
-                    "instead of the music chosen below.",
+                Tx.s(R.string.sound_pack_music), Glyph.Music, Palette.Peach,
+                Tx.p(R.plurals.sound_pack_music_help, pack.music.size, pack.name, pack.music.size),
                 parts.music, preview = { NowPlayingCard(Modifier.fillMaxWidth()) },
+                en = "Theme pack music",
             ) { on -> setPackPart(pack.id) { it.copy(music = on) }; Music.refresh() },
         )
         if (pack.sounds != null) add(
             toggle(
-                "Theme pack sounds", Glyph.Bell, Palette.Butter,
-                "${pack.name} has recorded UI sounds of its own. On, they play while it is your theme, instead of the sound pack chosen below " +
-                    "(sounds it doesn't have still come from that pack).",
+                Tx.s(R.string.sound_pack_sounds), Glyph.Bell, Palette.Butter,
+                Tx.s(R.string.sound_pack_sounds_help, pack.name),
                 parts.sounds,
+                en = "Theme pack sounds",
             ) { on -> setPackPart(pack.id) { it.copy(sounds = on) }; Sounds.refreshFiles(); Sounds.select() },
         )
     }
-    return SettingSection("Theme pack", rows, note = pack.name)
+    return SettingSection(Tx.s(R.string.sound_group_theme_pack), rows, note = pack.name, en = "Theme pack")
 }
 
 /** Changes which parts of the theme pack [id] are used. */
@@ -102,26 +104,34 @@ fun soundSettings(trackCount: Int): SettingSection {
     val recorded = remember(ThemePacks.packs) { ThemePacks.customSounds() }
     val recordedNow = recorded.firstOrNull { it.first == look.soundFiles }
     val themeHasAudio = ThemePacks.byId(look.theme)?.let { it.music.isNotEmpty() || it.sounds != null } == true
-    val fallback = if (themeHasAudio) " Used when the theme pack's own is switched off above." else ""
+    // A row's help, and while the theme pack has audio of its own, that this is what plays when it's switched off.
+    fun withFallback(help: String) = if (themeHasAudio) Tx.s(R.string.sound_fallback, help) else help
     val nowCard: @Composable () -> Unit = { NowPlayingCard(Modifier.fillMaxWidth()) }
     // UI sounds and their pack are one choice: Off, one of Tandem's packs, or Custom (a recorded pack, picked below).
     val soundNow = when { !look.sounds -> "off"; recordedNow != null -> "custom"; else -> pack.id }
     // Music and where it comes from are one choice too: Off, your folder, or one of Tandem's soundtracks.
     val musicNow = when { !look.music -> "off"; look.myMusic -> "folder"; else -> look.soundtrackId }
-    return SettingSection(
-        "Sound & music",
-        listOf(
+    return SettingSection(en = "Sound & music",
+        title = Tx.s(R.string.sound_group),
+        rows = listOf(
             choice(
-                "UI sounds", Glyph.Bell, Palette.Butter,
-                "Clicks, chimes and the launch sound as you move around. " + when (soundNow) {
-                    "off" -> "Off, Tandem is quiet."
-                    "custom" -> "Custom: recorded sounds you have, from Cocoon's sound packs or a theme pack. Pick them below."
-                    else -> pack.blurb
-                } + fallback,
-                listOf("off" to "Off") + SoundPack.entries.map { it.id to it.label } + (if (recorded.isNotEmpty()) listOf("custom" to "Custom") else emptyList()),
+                Tx.s(R.string.sound_ui), Glyph.Bell, Palette.Butter,
+                withFallback(
+                    Tx.s(
+                        R.string.sound_ui_help,
+                        when (soundNow) {
+                            "off" -> Tx.s(R.string.sound_ui_off_help)
+                            "custom" -> Tx.s(R.string.sound_ui_custom_help)
+                            else -> pack.blurb
+                        },
+                    ),
+                ),
+                listOf("off" to Tx.s(R.string.common_off)) + SoundPack.entries.map { it.id to it.label } +
+                    (if (recorded.isNotEmpty()) listOf("custom" to Tx.s(R.string.sound_ui_custom)) else emptyList()),
                 soundNow,
                 preview = { SoundPackPreview(pack.takeIf { soundNow != "off" && soundNow != "custom" }, play = soundNow != "off" && recordedNow == null) },
                 look = { v -> PackCard(v) },
+                en = "UI sounds",
             ) { v ->
                 when (v) {
                     "off" -> updateLook { it.copy(sounds = false) }
@@ -133,51 +143,56 @@ fun soundSettings(trackCount: Int): SettingSection {
             }.copy(keywords = "sound pack recorded cocoon sfx clicks beeps effects mute quiet"),
         ) + (if (recordedNow == null || !look.sounds) emptyList() else listOf(
             choice(
-                "Custom sounds", Glyph.Sparkle, Palette.Butter,
-                "${recordedNow.second}. Sounds it doesn't have come from ${pack.label}." + fallback,
+                Tx.s(R.string.sound_custom), Glyph.Sparkle, Palette.Butter,
+                withFallback(Tx.s(R.string.sound_custom_help, recordedNow.second, pack.label)),
                 recorded.map { it.first to it.second }, recordedNow.first,
+                en = "Custom sounds",
             ) { v -> updateLook { it.copy(soundFiles = v) }; Sounds.refreshFiles(); Sounds.select() },
         )) + listOf(
             number(
-                "Sound volume", Glyph.Volume, Palette.Butter, "How loud the UI sounds are, compared with the system volume.",
+                Tx.s(R.string.sound_volume), Glyph.Volume, Palette.Butter, Tx.s(R.string.sound_volume_help),
                 look.soundVolume, 0.1f, 1f, 0.1f, ::pct,
+                en = "Sound volume",
             ) { v -> updateLook { it.copy(soundVolume = v ?: 0.5f) }; Sounds.select() },
         ) + listOf(
-            toggle("Pip's voice", Glyph.Heart, Palette.Lavender, "Pip babbles a little when it has something to tell you.", look.pipVoice,
-                preview = { PipVoicePreview(look.pipVoice) }) { on -> updateLook { it.copy(pipVoice = on) } },
+            toggle(Tx.s(R.string.sound_pip_voice), Glyph.Heart, Palette.Lavender, Tx.s(R.string.sound_pip_voice_help), look.pipVoice,
+                preview = { PipVoicePreview(look.pipVoice) }, en = "Pip's voice") { on -> updateLook { it.copy(pipVoice = on) } },
             choice(
-                "Music", Glyph.Music, Palette.Peach,
-                "Music while you browse; it fades out and stops while a game runs, and stays quiet when another app plays. " +
-                    "My music plays your own songs from ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV); " +
-                    (if (trackCount == 0) "it's empty right now, so the built-in soundtrack plays (${Tracks.soundtracks.first { it.first == look.soundtrackId }.second}). "
-                    else "${io.github.zahakj.tandem.plural(trackCount, "song")} found. ") +
-                    "Tandem's own: Calm, slow and soft piano, harp and celesta, or Meadow Tales, a small orchestra." + fallback,
-                listOf("off" to "Off", "folder" to "My music") + Tracks.soundtracks,
+                Tx.s(R.string.sound_music), Glyph.Music, Palette.Peach,
+                withFallback(
+                    if (trackCount == 0) Tx.s(R.string.sound_music_help_empty, Tracks.soundtracks.first { it.first == look.soundtrackId }.second)
+                    else Tx.p(R.plurals.sound_music_help_found, trackCount),
+                ),
+                // The soundtracks' names (Calm, Meadow Tales) are names, the same in every language.
+                listOf("off" to Tx.s(R.string.common_off), "folder" to Tx.s(R.string.sound_music_folder)) + Tracks.soundtracks,
                 musicNow,
                 preview = nowCard,
+                en = "Music",
             ) { v ->
                 when (v) {
                     "off" -> updateLook { it.copy(music = false) }
                     "folder" -> updateLook { it.copy(music = true, myMusic = true) }
                     else -> updateLook { it.copy(music = true, myMusic = false, soundtrack = v) }
                 }
-                if (v == "folder" && trackCount == 0) Toasts.show("Add songs to ROMs/tandem/music first")
+                if (v == "folder" && trackCount == 0) Toasts.show(Tx.s(R.string.sound_music_folder_empty))
             }.copy(keywords = "music from soundtrack bgm background folder songs built-in calm meadow tales mute quiet"),
-            toggle("Shuffle my music", Glyph.Refresh, Palette.Peach, "Play the music folder in a random order.", look.musicShuffle) { on ->
+            toggle(Tx.s(R.string.sound_shuffle), Glyph.Refresh, Palette.Peach, Tx.s(R.string.sound_shuffle_help), look.musicShuffle, en = "Shuffle my music") { on ->
                 updateLook { it.copy(musicShuffle = on) }
             },
             number(
-                "Music volume", Glyph.Volume, Palette.Peach, "How loud the music plays.",
+                Tx.s(R.string.sound_music_volume), Glyph.Volume, Palette.Peach, Tx.s(R.string.sound_music_volume_help),
                 look.musicVolume, 0.1f, 1f, 0.1f, ::pct, preview = nowCard,
+                en = "Music volume",
             ) { v -> updateLook { it.copy(musicVolume = v ?: 0.4f) } },
             SettingRow(
-                "Next song", Music.now?.title ?: "Nothing yet", Palette.Peach, Glyph.Music,
-                "Skip to another song. ${Music.source}.", preview = nowCard,
+                Tx.s(R.string.sound_next), Music.now?.title ?: Tx.s(R.string.sound_next_none), Palette.Peach, Glyph.Music,
+                Tx.s(R.string.sound_next_help, Music.source), preview = nowCard,
+                en = "Next song",
             ) {
-                if (!look.music) Toasts.show("Turn on music first") else Music.skip()
+                if (!look.music) Toasts.show(Tx.s(R.string.sound_music_off)) else Music.skip()
             },
         ),
-        note = if (bottomScreenMuted(LocalContext.current)) "Your handheld's bottom-screen volume is at zero, and it mutes Tandem too: raise it in Dual screen assistant (Bottom screen › Volume)." else null,
+        note = if (bottomScreenMuted(LocalContext.current)) Tx.s(R.string.sound_bottom_muted) else null,
     )
 }
 
@@ -226,7 +241,7 @@ fun SoundCues() {
     }
 
     val problem = LaunchFx.problem
-    LaunchedEffect(problem) { if (problem != null) { Sounds.error(); Sounds.pipSays("Oh no, that one won't start"); Music.gameClosed() } }
+    LaunchedEffect(problem) { if (problem != null) { Sounds.error(); Sounds.pipSays("Oh no, that one won't start"); Music.gameClosed() } } // tx-ok: never shown, it only shapes the babble
 
     // A game launched on the other screen has closed: the music may come back.
     val anyRunning = io.github.zahakj.tandem.RunningGames.list.isNotEmpty()
@@ -314,12 +329,12 @@ private fun DrawScope.drawPackWave(p: SoundPack, color: Color, phase: Float) {
 
 @Composable
 private fun PipVoicePreview(on: Boolean) {
-    LaunchedEffect(on) { if (on) { delay(300); Sounds.pipSays("Hi! I'm Pip, nice to meet you!") } }
+    LaunchedEffect(on) { if (on) { delay(300); Sounds.pipSays("Hi! I'm Pip, nice to meet you!") } } // tx-ok: never shown, it only shapes the babble
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Pip(84.dp, mood = if (on) 1 else 0)
         Spacer(Modifier.height(8.dp))
         Box(Modifier.clip(RoundedCornerShape(50)).background(Palette.CardHigh).padding(horizontal = 12.dp, vertical = 6.dp)) {
-            Text(if (on) "Hi! I'm Pip!" else "…", style = MaterialTheme.typography.titleSmall)
+            Text(if (on) Tx.s(R.string.sound_pip_hello) else "…", style = MaterialTheme.typography.titleSmall)
         }
     }
 }
@@ -338,7 +353,7 @@ fun NowPlayingCard(modifier: Modifier = Modifier) {
         else -> Music.trackId()
     }
     val song = Tracks.byId(id)
-    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: "Your music" else song?.title ?: Tracks.of(look.soundtrackId).first().title
+    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: Tx.s(R.string.sound_now_your_music) else song?.title ?: Tracks.of(look.soundtrackId).first().title
     val mood = if (ownFiles) Music.source else song?.mood.orEmpty()
     Column(modifier) {
         Box(Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(18.dp))) {
@@ -352,7 +367,7 @@ fun NowPlayingCard(modifier: Modifier = Modifier) {
                 Text(mood, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.width(8.dp))
-            Pill(if (!look.music) "Off" else if (Music.playing) "Playing" else "Paused", if (look.music) Palette.Peach else Palette.Muted)
+            Pill(Tx.s(if (!look.music) R.string.common_off else if (Music.playing) R.string.sound_now_playing else R.string.sound_now_paused), if (look.music) Palette.Peach else Palette.Muted)
         }
     }
 }

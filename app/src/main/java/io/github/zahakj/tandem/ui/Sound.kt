@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.audio.Sfx
 import io.github.zahakj.tandem.audio.SfxSynth
 import io.github.zahakj.tandem.audio.SoundPack
@@ -382,8 +384,12 @@ object Sounds {
     }
 }
 
-/** What the music player is doing, for the now-playing card. */
-data class NowPlaying(val id: String, val title: String, val mood: String, val own: Boolean)
+/**
+ * What the music player is doing, for the now-playing card. [title] is a song's name or a file's, never translated;
+ * the card says what the piece is like ([io.github.zahakj.tandem.audio.Song.mood]) or where it comes from
+ * ([Music.source]) as it shows, in the language of the moment.
+ */
+data class NowPlaying(val id: String, val title: String, val own: Boolean)
 
 /**
  * Background music: the theme pack's own music while it is the theme ([themeTracks]), else the user's files from
@@ -477,7 +483,7 @@ object Music {
             // The built-in soundtrack plays through its pieces: the next one each time a song comes round.
             SynthEngine.onLooped = { main.post { nextPiece() } }
             SynthEngine.play(ctx, song)
-            now = NowPlaying(song.id, song.title, song.mood, own = false)
+            now = NowPlaying(song.id, song.title, own = false)
         }
     }
 
@@ -511,8 +517,8 @@ object Music {
 
     /** Where the music comes from right now, in a few words (now-playing card, Sound & music). */
     val source: String
-        get() = themePack()?.let { "From ${it.name}, the theme pack" }
-            ?: if (files().isNotEmpty()) "From your music folder" else "Built-in soundtrack"
+        get() = themePack()?.let { Tx.s(R.string.sound_source_pack, it.name) }
+            ?: Tx.s(if (files().isNotEmpty()) R.string.sound_source_folder else R.string.sound_source_builtin)
 
     /** A game is starting: fade out now, and stay quiet until Tandem is back in front or the game has closed. */
     fun gameLaunched() { gameUp = true; stopAll(fast = true) }
@@ -600,7 +606,7 @@ object Music {
                 start()
             }
             fade = 0f
-            now = NowPlaying("file", file.nameWithoutExtension, themePack()?.let { "From ${it.name}" } ?: "From your music folder", own = true)
+            now = NowPlaying("file", file.nameWithoutExtension, own = true)
             fadeTo(1f)
         }.onFailure { Log.w("Tandem", "Couldn't play ${file.name}", it); stopFile() }
     }

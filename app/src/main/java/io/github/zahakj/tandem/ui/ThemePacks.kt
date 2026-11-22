@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,6 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.PackParts
 import io.github.zahakj.tandem.data.Store
 import org.json.JSONObject
@@ -14,7 +17,11 @@ import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 /** Which format a pack's theme.json is written in. */
-enum class PackFormat(val label: String) { Tandem("Tandem pack"), Cocoon("Cocoon pack") }
+enum class PackFormat(@StringRes private val res: Int) {
+    Tandem(R.string.look_pack_format_tandem), Cocoon(R.string.look_pack_format_cocoon);
+
+    val label: String get() = Tx.s(res)
+}
 
 /**
  * An installed theme pack: its theme, the art it brings and where it came from.
@@ -33,8 +40,8 @@ data class ThemePack(
     val spec: ThemeSpec,
     val art: PackArt,
     val preview: File?,
-    /** Asset packs this theme uses ("Example - Smart Folders by Someone"). */
-    val credits: List<String>,
+    /** Asset packs this theme uses, as (name, author): "Example - Smart Folders" by "Someone". See [creditLines]. */
+    val credits: List<Pair<String, String?>>,
     val removable: Boolean,
     /**
      * The pack's music, in order: audio files named by theme.json's "music", in its music/ folder, or in the Cocoon
@@ -49,17 +56,18 @@ data class ThemePack(
     /** "62 system icons · 60 heroes · wallpaper", for the pack list. */
     val contents: String
         get() = buildList {
-            add("colours")
-            if (art.iconCount > 0) add(plural(art.iconCount, "system icon"))
-            if (art.heroCount > 0) add(plural(art.heroCount, "hero", "heroes"))
-            if (art.collectionCount > 0) add(plural(art.collectionCount, "collection icon"))
-            if (art.overlayCount > 0) add(plural(art.overlayCount, "cover frame"))
-            if (spec.wallpaperTop != null && spec.wallpaperBottom != null) add("2 wallpapers")
-            else if (hasWallpaper) add("wallpaper")
-            if (music.isNotEmpty()) add(plural(music.size, "song"))
+            add(Tx.s(R.string.look_pack_has_colours))
+            if (art.iconCount > 0) add(Tx.p(R.plurals.look_pack_has_icons, art.iconCount))
+            if (art.heroCount > 0) add(Tx.p(R.plurals.look_pack_has_heroes, art.heroCount))
+            if (art.collectionCount > 0) add(Tx.p(R.plurals.look_pack_has_collection_icons, art.collectionCount))
+            if (art.overlayCount > 0) add(Tx.p(R.plurals.look_pack_has_frames, art.overlayCount))
+            if (spec.wallpaperTop != null && spec.wallpaperBottom != null) add(Tx.s(R.string.look_pack_has_two_wallpapers))
+            else if (hasWallpaper) add(Tx.s(R.string.look_pack_has_wallpaper))
+            if (music.isNotEmpty()) add(Tx.p(R.plurals.look_pack_has_songs, music.size))
         }.joinToString(" · ")
 
-    private fun plural(n: Int, one: String, many: String = one + "s") = "$n ${if (n == 1) one else many}"
+    /** The asset packs it uses, each as "Name by Author" (or just its name), for its Art: line. */
+    fun creditLines(): List<String> = credits.map { (name, author) -> if (author != null) Tx.s(R.string.look_pack_credit, name, author) else name }
 }
 
 /**
@@ -261,7 +269,7 @@ object ThemePacks {
 
     /** Everything "Icons from" can choose: (Look.iconPack value, label). */
     fun iconSources(): List<Pair<String, String>> =
-        listOf("auto" to "Auto", ICONS_DRAWN to "Drawn by Tandem") +
+        listOf("auto" to Tx.s(R.string.look_icons_from_auto), ICONS_DRAWN to Tx.s(R.string.look_icons_from_drawn)) +
             packs.filter { it.art.iconCount > 0 || it.art.collectionCount > 0 }.map { it.id to it.name } +
             assetPacks.map { it.dir.name to it.name }
 
@@ -401,7 +409,7 @@ object ThemePacks {
     fun customSounds(): List<Triple<String, String, File>> {
         val cocoon = soundPacks()
         val seen = cocoon.map { it.third.canonicalPath }.toMutableSet()
-        val themes = packs.mapNotNull { p -> p.sounds?.takeIf { seen.add(it.canonicalPath) }?.let { Triple("theme:" + p.id, p.name + " (theme)", it) } }
+        val themes = packs.mapNotNull { p -> p.sounds?.takeIf { seen.add(it.canonicalPath) }?.let { Triple("theme:" + p.id, Tx.s(R.string.look_pack_sounds_name, p.name), it) } }
         return cocoon + themes
     }
 
@@ -426,11 +434,11 @@ object ThemePacks {
     }
 
     /** Finds a pack's art: inside its own folder, and for Cocoon packs in the asset packs `asset_refs` names. */
-    private fun findArt(dir: File, o: JSONObject): Pair<PackArt, List<String>> {
+    private fun findArt(dir: File, o: JSONObject): Pair<PackArt, List<Pair<String, String?>>> {
         val systems = mutableListOf<File>()
         val collections = mutableListOf<File>()
         val overlays = mutableListOf<File>()
-        val credits = mutableListOf<String>()
+        val credits = mutableListOf<Pair<String, String?>>()
         fun addSmartFolders(root: File) {
             val byPlatform = findDir(root, "by_platform", 3)
             if (byPlatform != null) { systems += byPlatform; collections += byPlatform.parentFile!! }
@@ -458,7 +466,7 @@ object ThemePacks {
             val meta = assetMeta(folder)
             val name = meta?.optString("name")?.ifBlank { null } ?: ref.optString("name").ifBlank { folder.name }
             val author = meta?.optString("author")?.ifBlank { null }
-            credits += if (author != null) "$name by $author" else name
+            credits += name to author
         }
         return PackArt(systems.distinct(), collections.distinct(), overlays.distinct()) to credits
     }
@@ -498,9 +506,10 @@ object ThemePacks {
         val accent = color("accent", b.accent)
         val dark = when (o.optString("mode").lowercase()) { "light" -> false; "dark", "oled" -> true; else -> b.dark }
         return b.copy(
-            name = o.optString("name").ifBlank { dir.name },
-            tagline = o.optString("description").ifBlank { "Theme pack" }.lineSequence().first().take(60),
-            source = o.optString("author").ifBlank { "Theme pack" },
+            rawName = o.optString("name").ifBlank { dir.name }, nameRes = 0,
+            // Without a description or an author, it says "Theme pack" in the language.
+            rawTagline = o.optString("description").takeIf { it.isNotBlank() }?.lineSequence()?.first()?.take(60).orEmpty(), taglineRes = R.string.look_pack_tandem,
+            author = o.optString("author").takeIf { it.isNotBlank() }.orEmpty(), sourceRes = R.string.look_pack_tandem,
             baseId = b.id,
             dark = dark,
             background = color("background", b.background),
@@ -556,9 +565,10 @@ object ThemePacks {
         val dark = (bg.red + bg.green + bg.blue) / 3f < 0.5f
         val roundness = s.optDouble("icon_roundness", Double.NaN)
         return b.copy(
-            name = o.optString("name").ifBlank { dir.name },
-            tagline = o.optString("description").ifBlank { "Cocoon theme" }.lineSequence().first().trim().take(60),
-            source = o.optString("author").ifBlank { "Cocoon theme" },
+            rawName = o.optString("name").ifBlank { dir.name }, nameRes = 0,
+            // Without a description or an author, it says "Cocoon theme" in the language.
+            rawTagline = o.optString("description").takeIf { it.isNotBlank() }?.lineSequence()?.first()?.trim()?.take(60).orEmpty(), taglineRes = R.string.look_pack_cocoon,
+            author = o.optString("author").takeIf { it.isNotBlank() }.orEmpty(), sourceRes = R.string.look_pack_cocoon,
             baseId = b.id,
             dark = dark,
             background = bg,

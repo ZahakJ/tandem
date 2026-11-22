@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.audio
 
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.audio.Drum.HatClosed
 import io.github.zahakj.tandem.audio.Drum.Kick
 import io.github.zahakj.tandem.audio.Drum.Snare
@@ -18,6 +19,7 @@ import io.github.zahakj.tandem.audio.Drum.Wood
 object Meadow {
     val all: List<Song> by lazy { listOf(hillsideBreeze(), lanternTown(), seasideTrain(), forestSpiritsWaltz(), summerRainWindow(), flyingHome()) }
 
+    // tx-ok: song titles are names, the same in every language
     val names: List<Pair<String, String>> = listOf(
         "hillside-breeze" to "Hillside Breeze", "lantern-town" to "Lantern Town", "seaside-train" to "Seaside Train",
         "forest-spirits" to "Forest Spirits Waltz", "summer-rain" to "Summer Rain Window", "flying-home" to "Flying Home",
@@ -94,7 +96,7 @@ object Meadow {
 
     // --- Hillside Breeze: the home theme. F major, 4/4, flute and piano over strings ------------------------------
 
-    private fun hillsideBreeze() = song("hillside-breeze", "Hillside Breeze", "Flute and piano on a sunny, windy hill", bpm = 76.0) {
+    private fun hillsideBreeze() = song("hillside-breeze", "Hillside Breeze", R.string.sound_mood_hillside_breeze, bpm = 76.0) {
         rubato = 0.05
         openVoicing = true
         part("piano", piano(gain = 0.15f))
@@ -190,7 +192,7 @@ object Meadow {
 
     // --- Lantern Town: a little town waltz. D minor and F major, 3/4, accordion and mandolin ---------------------
 
-    private fun lanternTown() = song("lantern-town", "Lantern Town", "An accordion waltz in a lamplit little town", bpm = 132.0) {
+    private fun lanternTown() = song("lantern-town", "Lantern Town", R.string.sound_mood_lantern_town, bpm = 132.0) {
         beats = 3
         rubato = 0.06
         openVoicing = true
@@ -282,7 +284,7 @@ object Meadow {
 
     // --- Seaside Train: a slow train along the coast. D major, 4/4, piano ostinato and brushes --------------------
 
-    private fun seasideTrain() = song("seaside-train", "Seaside Train", "A little train along the coast, waves out of the window", bpm = 92.0) {
+    private fun seasideTrain() = song("seaside-train", "Seaside Train", R.string.sound_mood_seaside_train, bpm = 92.0) {
         rubato = 0.03
         openVoicing = true
         part("piano", piano(gain = 0.127f))
@@ -367,7 +369,7 @@ object Meadow {
 
     // --- Forest Spirits Waltz: E Dorian and G major, 3/4, pizzicato, celesta and flute ---------------------------
 
-    private fun forestSpiritsWaltz() = song("forest-spirits", "Forest Spirits Waltz", "Little spirits dancing between the old trees", bpm = 144.0) {
+    private fun forestSpiritsWaltz() = song("forest-spirits", "Forest Spirits Waltz", R.string.sound_mood_forest_spirits, bpm = 144.0) {
         beats = 3
         rubato = 0.06
         openVoicing = true
@@ -455,7 +457,7 @@ object Meadow {
 
     // --- Summer Rain Window: piano by a rainy window. Ab major and F minor, 4/4 ----------------------------------
 
-    private fun summerRainWindow() = song("summer-rain", "Summer Rain Window", "Piano and soft rain on a lazy summer afternoon", bpm = 66.0) {
+    private fun summerRainWindow() = song("summer-rain", "Summer Rain Window", R.string.sound_mood_summer_rain, bpm = 66.0) {
         rubato = 0.07
         openVoicing = true
         part("piano", piano(gain = 0.36f, pan = 0.05f))
@@ -518,7 +520,7 @@ object Meadow {
 
     // --- Flying Home: soaring over the fields. Bb major rising to C major, 4/4, horns and full strings ------------
 
-    private fun flyingHome() = song("flying-home", "Flying Home", "Soaring over the fields on the way home", bpm = 100.0) {
+    private fun flyingHome() = song("flying-home", "Flying Home", R.string.sound_mood_flying_home, bpm = 100.0) {
         rubato = 0.04
         openVoicing = true
         part("horn", horn(gain = 0.285f))

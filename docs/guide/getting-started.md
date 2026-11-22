@@ -112,20 +112,21 @@ Then Tandem scans your folders. The first time, it also looks for ES-DE gamelist
 
 After the first scan, Pip walks you through a few choices. Every step can be skipped: <kbd>A</kbd> chooses, <kbd>B</kbd> goes back a step (on the first step, **Skip all**). It shows once, and everything in it is in Settings later.
 
-1. **Which home feels like yours?** Four starting looks, drawn live:
+1. **Which language do you prefer?** English, العربية, 日本語, 简体中文 or Français, each card greeting you in its own script. English starts highlighted. Picking one switches both screens at once, so the rest of the welcome is in that language; **Settings › Look & feel › Language** changes it later (and also offers System default).
+2. **Which home feels like yours?** Four starting looks, drawn live:
    - **Cozy shelves**: rows of recent games, systems and collections.
    - **Icon grid look**: a dense grid of icons like the 3DS (first when Cocoon files are found).
    - **Orbit**: systems on an orbit of round icons.
    - **Minimal**: a compact list, no music.
 
    **Settings › Home & layout** has all seven layouts any time.
-2. **I found your Cocoon things** (only when Cocoon files are on the device): **Bring my Cocoon setup over** copies your Cocoon home, dock and theme from its newest backup, or **Wear** its theme pack.
-3. **Artwork & details**: the art sources, no-account ones first. **Get LaunchBox (105 MB, Wi-Fi)** downloads LaunchBox's index for art with no account; <kbd>A</kbd> on a source shows how to set it up. Skipping is fine: see [Get artwork](#get-artwork).
-4. **Pick up right where you left off**: allow Tandem in Shizuku for [resume](resume.md), or **Skip for now**.
-5. **Make Tandem your Home screen?** Then <kbd>Home</kbd> always brings you back to Tandem. Android asks you to confirm.
-6. **All set. Let's play!** The four buttons worth knowing: <kbd>Y</kbd> options, <kbd>X</kbd> search (or swap screens on the home), <kbd>Start</kbd> the Start panel (hold it for quick settings), <kbd>Select</kbd> surprise me (hold it for the game switcher).
+3. **I found your Cocoon things** (only when Cocoon files are on the device): **Bring my Cocoon setup over** copies your Cocoon home, dock and theme from its newest backup, or **Wear** its theme pack.
+4. **Artwork & details**: the art sources, no-account ones first. **Get LaunchBox (105 MB, Wi-Fi)** downloads LaunchBox's index for art with no account; <kbd>A</kbd> on a source shows how to set it up. Skipping is fine: see [Get artwork](#get-artwork).
+5. **Pick up right where you left off**: allow Tandem in Shizuku for [resume](resume.md), or **Skip for now**.
+6. **Make Tandem your Home screen?** Then <kbd>Home</kbd> always brings you back to Tandem. Android asks you to confirm.
+7. **All set. Let's play!** The four buttons worth knowing: <kbd>Y</kbd> options, <kbd>X</kbd> search (or swap screens on the home), <kbd>Start</kbd> the Start panel (hold it for quick settings), <kbd>Select</kbd> surprise me (hold it for the game switcher).
 
-![The welcome's first step: Which home feels like yours?, with four homes drawn side by side.](../../site/assets/screenshots/guide/welcome-home.webp "The welcome: pick a home")
+![The welcome's home step: Which home feels like yours?, with four homes drawn side by side.](../../site/assets/screenshots/guide/welcome-home.webp "The welcome: pick a home")
 ![The welcome's Artwork & details step: six source tiles, LaunchBox and libretro ready with no account, the others needing a key or turned off, and Next.](../../site/assets/screenshots/guide/welcome-art.webp "The welcome: artwork sources")
 
 ## Get artwork

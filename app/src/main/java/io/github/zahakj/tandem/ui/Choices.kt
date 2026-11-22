@@ -53,8 +53,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 
 /*
  * Choices that show their options, the one kit every screen uses, so none is a blind ‹ value › stepper:
@@ -256,7 +258,7 @@ fun ValueTrack(
                 Modifier.clip(RoundedCornerShape(50))
                     .then(if (themed) Modifier.background(color) else Modifier.border(1.dp, Palette.Muted.copy(alpha = 0.5f), RoundedCornerShape(50)))
                     .padding(horizontal = 8.dp, vertical = 2.dp),
-            ) { Text("Theme", style = MaterialTheme.typography.labelMedium, color = if (themed) Palette.OnAccent else Palette.Muted, maxLines = 1) }
+            ) { Text(Tx.s(R.string.settings_slider_theme), style = MaterialTheme.typography.labelMedium, color = if (themed) Palette.OnAccent else Palette.Muted, maxLines = 1) }
             Spacer(Modifier.width(8.dp))
         }
         Column(if (trackWidth != null) Modifier.width(trackWidth) else Modifier.weight(1f)) {
@@ -345,13 +347,13 @@ fun <T> ChoicePopup(
                     glyph?.let { GlyphChip(it, color, 40.dp); Spacer(Modifier.width(12.dp)) }
                     Column(Modifier.weight(1f)) {
                         Text(title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        if (now != null) Text("Now: $now", style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (now != null) Text(Tx.s(R.string.settings_picker_now, now), style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     }
                     Spacer(Modifier.width(12.dp))
-                    ButtonHint("A", "Choose", color)
+                    ButtonHint("A", Tx.s(R.string.common_choose), color)
                     Spacer(Modifier.width(12.dp))
-                    ButtonHint("B", "Back", Palette.Lavender)
+                    ButtonHint("B", Tx.s(R.string.common_back), Palette.Lavender)
                 }
                 Spacer(Modifier.height(6.dp))
                 // The space left under the title, so picture cards can be sized to fit it.
@@ -483,8 +485,8 @@ fun ChoicePickerOverlay() {
         open != null, r.label, null, choices, r.selected, r.color, ChoicePicker.ROUTE,
         onClose = { ChoicePicker.close() }, glyph = r.icon, extra = r.pickerExtra,
         onFocus = { c ->
-            Selection.current = if (c != null) Selected.Setting(r.label, c.label, r.help, r.color, "Choose")
-            else Selected.Setting(r.label, r.pickerExtra?.first.orEmpty(), r.help, r.color, "Open")
+            Selection.current = if (c != null) Selected.Setting(r.label, c.label, r.help, r.color, Tx.s(R.string.common_choose))
+            else Selected.Setting(r.label, r.pickerExtra?.first.orEmpty(), r.help, r.color, Tx.s(R.string.settings_a_open))
         },
     ) { id -> if (id != r.selected) r.pick?.invoke(id) }
 }

@@ -1,5 +1,8 @@
 package io.github.zahakj.tandem.audio
 
+import androidx.annotation.StringRes
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.exp
@@ -12,18 +15,21 @@ enum class Sfx {
     Achievement, Found, Key, SaverIn, SaverOut, Page, Swap,
 }
 
-/** A family of UI sounds that belong together. */
-enum class SoundPack(val id: String, val label: String, val blurb: String) {
-    Modern("modern", "Modern", "Soft taps and gentle tones, short and quiet, like a current console. Tandem's own sound."),
+/** A family of UI sounds that belong together. [id] is what is saved; [label] and [blurb] are in Tandem's language. */
+enum class SoundPack(val id: String, @StringRes private val labelRes: Int, @StringRes private val blurbRes: Int) {
+    Modern("modern", R.string.sound_pack_modern, R.string.sound_pack_modern_blurb),
     // The old "soft" id (the default until Modern) is left unmatched, so it moves to Modern with everyone else.
-    Playful("playful", "Playful", "Glassy marimba taps and warm chimes: Tandem's original, cheerful set."),
-    Chiptune("chip", "Chiptune", "Square-wave blips and coin-box fanfares, like an 8-bit console."),
-    Bubbly("bubbly", "Bubbly", "Round water-drop bloops and fizzy sparkles."),
-    Minimal("minimal", "Minimal", "Quiet, short and subtle. Barely there."),
-    Studio("studio", "Studio", "Felt and wood: low, warm taps with a soft thump, like a well-made keyboard."),
-    Glass("glass", "Glass", "Clean, bright crystal tones that ring a little longer. Crisp and polished."),
-    Air("air", "Air", "Soft breaths and pure, rounded tones. Calm and spacious."),
+    Playful("playful", R.string.sound_pack_playful, R.string.sound_pack_playful_blurb),
+    Chiptune("chip", R.string.sound_pack_chiptune, R.string.sound_pack_chiptune_blurb),
+    Bubbly("bubbly", R.string.sound_pack_bubbly, R.string.sound_pack_bubbly_blurb),
+    Minimal("minimal", R.string.sound_pack_minimal, R.string.sound_pack_minimal_blurb),
+    Studio("studio", R.string.sound_pack_studio, R.string.sound_pack_studio_blurb),
+    Glass("glass", R.string.sound_pack_glass, R.string.sound_pack_glass_blurb),
+    Air("air", R.string.sound_pack_air, R.string.sound_pack_air_blurb),
     ;
+
+    val label: String get() = Tx.s(labelRes)
+    val blurb: String get() = Tx.s(blurbRes)
 
     companion object { fun of(id: String?) = entries.firstOrNull { it.id == id } ?: Modern }
 }

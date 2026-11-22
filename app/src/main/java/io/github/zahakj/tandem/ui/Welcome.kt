@@ -44,8 +44,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.Lang
 import io.github.zahakj.tandem.Library
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Shell
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.LaunchBoxDb
 import io.github.zahakj.tandem.data.ScrapeSource
 import io.github.zahakj.tandem.data.Store
@@ -55,7 +58,7 @@ import java.io.File
 
 /*
  * The first-run welcome: once the games are found, Pip asks a few quick questions instead of leaving a new user
- * to dig through Settings. Pick a home (with live sketches; the icon grid comes first when Cocoon's files are on
+ * to dig through Settings. Pick a language (the rest of the welcome then speaks it), a home (with live sketches; the icon grid comes first when Cocoon's files are on
  * the device), bring over Cocoon's files (backup, theme packs, icon packs, platform files), set up where artwork
  * and details come from (LaunchBox and libretro need no account; the rest take a free key), allow resuming games
  * through Shizuku, and make Tandem the Home screen. Every step can be skipped; B goes back a step, and B on the
@@ -98,6 +101,7 @@ fun WelcomeOverlay() {
     }
     val found = cocoon?.any == true
     val steps = buildList {
+        add("language")
         add("home")
         if (found) add("cocoon")
         add("art")
@@ -113,7 +117,7 @@ fun WelcomeOverlay() {
     var homeTick by remember { mutableIntStateOf(0) }
     val askHome = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         homeTick++
-        if (HomeMode.isDefault(ctx)) Toasts.show("Tandem is your Home screen now ✨")
+        if (HomeMode.isDefault(ctx)) Toasts.show(Tx.s(R.string.look_welcome_home_set))
         next()
     }
 
@@ -128,6 +132,7 @@ fun WelcomeOverlay() {
             ) { id ->
                 Column {
                     when (id) {
+                        "language" -> LanguageStep { tag -> Lang.choose(tag); next() }
                         "home" -> HomeStep(found) { p -> Presets.applyQuietly(ctx, p); next() }
                         "cocoon" -> cocoon?.let { CocoonStep(it, ::next) }
                         "art" -> ArtStep(::next)
@@ -147,9 +152,9 @@ fun WelcomeOverlay() {
                     Box(Modifier.padding(end = 6.dp).size(if (i == step) 18.dp else 7.dp, 7.dp).clip(CircleShape).background(if (i <= step) Palette.Accent else Palette.Muted.copy(alpha = 0.35f)))
                 }
                 Spacer(Modifier.weight(1f))
-                ButtonHint("A", "Choose", Palette.Mint)
+                ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
                 Spacer(Modifier.width(14.dp))
-                ButtonHint("B", if (step == 0) "Skip all" else "Back", Palette.Lavender)
+                ButtonHint("B", Tx.s(if (step == 0) R.string.look_welcome_skip_all else R.string.common_back), Palette.Lavender)
             }
         }
     }
@@ -168,7 +173,46 @@ private fun StepTitle(title: String, detail: String, mood: Int = 1) {
     Spacer(Modifier.height(14.dp))
 }
 
-/** Step 1: four homes side by side, drawn live in the current theme. */
+/**
+ * Step 1: the language, one card per language with a greeting in its own script (the same miniature as Settings ›
+ * Look & feel › Language), English first and highlighted. Picking one switches both screens at once, so the rest of
+ * the welcome speaks it, and keeps it like the Settings row does. System default isn't offered here: Settings has it.
+ */
+@Composable
+private fun LanguageStep(pick: (String) -> Unit) {
+    val route = "welcome:language"
+    val options = Lang.offered
+    // English starts highlighted, unless a language was already picked (Android's own per-app setting, say).
+    remember { if (FocusMemory.get(route) == null && options.any { it.tag == Lang.chosen }) FocusMemory.remember(route, Lang.chosen) }
+    val target = rememberFocusTarget(route, options.map { it.tag })
+    StepTitle(Tx.s(R.string.look_welcome_language), Tx.s(R.string.look_welcome_language_detail))
+    Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        options.forEach { o ->
+            val inUse = o.tag == Lang.chosen
+            FocusCard(
+                Modifier.weight(1f).height(168.dp).takesFocus(route, o.tag, target == o.tag),
+                glow = Palette.Sky, shape = RoundedCornerShape(20.dp), onClick = { pick(o.tag) },
+            ) {
+                Column(Modifier.fillMaxSize()) {
+                    Box(Modifier.fillMaxWidth().weight(1f).background(Palette.NightDeep)) { LanguageLook(o.tag) }
+                    Row(
+                        Modifier.fillMaxWidth().background(lerp(Palette.Sky, Palette.Night, 0.8f)).padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        // Each name in its own language and script, never translated, so anyone finds theirs.
+                        Text(
+                            o.name, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium.copy(localeList = androidx.compose.ui.text.intl.LocaleList(o.tag)),
+                            maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        )
+                        if (inUse) Box(Modifier.size(9.dp).clip(CircleShape).background(Palette.Sky))
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** Step 2: four homes side by side, drawn live in the current theme. */
 @Composable
 private fun HomeStep(cocoonFound: Boolean, pick: (LookPreset) -> Unit) {
     val route = "welcome:home"
@@ -181,8 +225,8 @@ private fun HomeStep(cocoonFound: Boolean, pick: (LookPreset) -> Unit) {
     )
     val target = rememberFocusTarget(route, options.map { it.id })
     StepTitle(
-        "Hi! Which home feels like yours?",
-        if (cocoonFound) "I found Cocoon files on this device, so the icon grid is first. You can change this any time in Settings." else "Pick one to start with. Settings › Home & layout has more, any time.",
+        Tx.s(R.string.look_welcome_home),
+        Tx.s(if (cocoonFound) R.string.look_welcome_home_cocoon else R.string.look_welcome_home_detail),
     )
     Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         options.forEach { p ->
@@ -219,26 +263,28 @@ private fun CocoonStep(c: CocoonThings, next: () -> Unit) {
     val pack = ThemePacks.newest(c.themePacks)
     val keys = listOfNotNull("import".takeIf { c.backup != null }, "use".takeIf { pack != null && !usingPack && c.backup == null }, "keep")
     val target = rememberFocusTarget(route, keys)
-    StepTitle("I found your Cocoon things", "Nothing to copy: Tandem reads them where Cocoon keeps them, and never changes them.")
+    StepTitle(Tx.s(R.string.look_welcome_cocoon), Tx.s(R.string.look_welcome_cocoon_detail))
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        if (c.backup != null) FoundLine(Palette.Sky, "Your Cocoon backup of ${CocoonSetup.backupDate(c.backup)}: the same home, dock and theme in one press")
-        if (c.themePacks.isNotEmpty()) FoundLine(Palette.Accent, "${io.github.zahakj.tandem.plural(c.themePacks.size, "theme pack")}: " + c.themePacks.take(3).joinToString(", ") { it.name })
-        if (c.iconPacks > 0) FoundLine(Palette.Sky, "${io.github.zahakj.tandem.plural(c.iconPacks, "icon pack")} for systems and collections, used automatically")
-        if (c.platformFiles > 0) FoundLine(Palette.Butter, "${io.github.zahakj.tandem.plural(c.platformFiles, "platform file")}: their emulators are ready in Systems")
-        FoundLine(Palette.Mint, "Game names, descriptions and art from Cocoon's gamelists come over by themselves")
+        if (c.backup != null) FoundLine(Palette.Sky, Tx.s(R.string.look_welcome_cocoon_backup, CocoonSetup.backupDate(c.backup)))
+        if (c.themePacks.isNotEmpty()) {
+            FoundLine(Palette.Accent, Tx.p(R.plurals.look_welcome_cocoon_themes, c.themePacks.size, c.themePacks.size, c.themePacks.take(3).joinToString(", ") { it.name }))
+        }
+        if (c.iconPacks > 0) FoundLine(Palette.Sky, Tx.p(R.plurals.look_welcome_cocoon_icons, c.iconPacks))
+        if (c.platformFiles > 0) FoundLine(Palette.Butter, Tx.p(R.plurals.look_welcome_cocoon_platforms, c.platformFiles))
+        FoundLine(Palette.Mint, Tx.s(R.string.look_welcome_cocoon_gamelists))
     }
     Spacer(Modifier.height(14.dp))
     Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if ("import" in keys) {
             val ctx = LocalContext.current
-            PillButton(if (CocoonSetup.busy) "Bringing it over…" else "Bring my Cocoon setup over", Palette.Sky, Modifier.takesFocus(route, "import", target == "import")) {
+            PillButton(Tx.s(if (CocoonSetup.busy) R.string.look_welcome_cocoon_bringing else R.string.look_welcome_cocoon_bring), Palette.Sky, Modifier.takesFocus(route, "import", target == "import")) {
                 CocoonSetup.run(ctx) { ok -> if (ok) next() }
             }
         }
         if ("use" in keys && pack != null) {
-            PillButton("Wear ${pack.name}", Palette.Accent, Modifier.takesFocus(route, "use", target == "use")) { applyTheme(pack.id); next() }
+            PillButton(Tx.s(R.string.look_welcome_cocoon_wear, pack.name), Palette.Accent, Modifier.takesFocus(route, "use", target == "use")) { applyTheme(pack.id); next() }
         }
-        PillButton(if (usingPack) "Next" else "Keep this theme", Palette.Lavender, Modifier.takesFocus(route, "keep", target == "keep")) { next() }
+        PillButton(Tx.s(if (usingPack) R.string.look_welcome_next else R.string.look_welcome_cocoon_keep), Palette.Lavender, Modifier.takesFocus(route, "keep", target == "keep")) { next() }
     }
 }
 
@@ -268,8 +314,8 @@ private fun ArtStep(next: () -> Unit) {
     val buttons = listOfNotNull("lb".takeIf { !lbReady }, "next")
     val target = rememberFocusTarget(route, buttons + tiles.map { it.name })
     StepTitle(
-        "Artwork & details",
-        "LaunchBox and libretro need no account. IGDB, SteamGridDB and ScreenScraper add more with a free key: pick one to see how.",
+        Tx.s(R.string.look_welcome_art),
+        Tx.s(R.string.look_welcome_art_detail),
     )
     // The same tiles as the setup list, without the order (that is the list's business) or the two lines on what
     // each gives, so the step fits under its title.
@@ -277,11 +323,11 @@ private fun ArtStep(next: () -> Unit) {
     Spacer(Modifier.height(12.dp))
     Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if ("lb" in buttons) {
-            PillButton("Get LaunchBox (${LaunchBoxDb.APPROX_MB} MB, Wi-Fi)", Palette.Butter, Modifier.takesFocus(route, "lb", target == "lb")) {
+            PillButton(Tx.s(R.string.look_welcome_art_launchbox, LaunchBoxDb.APPROX_MB), Palette.Butter, Modifier.takesFocus(route, "lb", target == "lb")) {
                 ArtSetup.downloadLaunchBox(ctx)
             }
         }
-        PillButton("Next", Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
+        PillButton(Tx.s(R.string.look_welcome_next), Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
     }
 }
 
@@ -294,17 +340,23 @@ private fun ResumeStep(next: () -> Unit) {
     val keys = if (ready) listOf("next") else listOf("allow", "next")
     val target = rememberFocusTarget(route, keys)
     StepTitle(
-        if (ready) "Resume is ready" else "Pick up right where you left off",
-        when {
-            ready -> "Picking a game that's still open brings it back instead of restarting it."
-            alive -> "Allow Tandem in Shizuku and a game that's still running comes back as you left it, with the switcher (hold Select) to jump between games."
-            else -> "With the Shizuku app running, Tandem can bring a game that's still open back instead of restarting it. Start Shizuku, then allow Tandem."
-        },
+        Tx.s(if (ready) R.string.look_welcome_resume_ready else R.string.look_welcome_resume),
+        Tx.s(
+            when {
+                ready -> R.string.look_welcome_resume_ready_detail
+                alive -> R.string.look_welcome_resume_allow_detail
+                else -> R.string.look_welcome_resume_start_detail
+            },
+        ),
         mood = if (ready) 1 else 0,
     )
     Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (!ready) PillButton(if (alive) "Allow in Shizuku" else "How do I start Shizuku?", Palette.Mint, Modifier.takesFocus(route, "allow", target == "allow")) { askShizuku() }
-        PillButton(if (ready) "Next" else "Skip for now", Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
+        if (!ready) {
+            PillButton(Tx.s(if (alive) R.string.look_welcome_resume_allow else R.string.look_welcome_resume_how), Palette.Mint, Modifier.takesFocus(route, "allow", target == "allow")) {
+                askShizuku()
+            }
+        }
+        PillButton(Tx.s(if (ready) R.string.look_welcome_next else R.string.look_welcome_skip_now), Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
     }
 }
 
@@ -315,12 +367,12 @@ private fun HomeScreenStep(isHome: Boolean, next: () -> Unit, ask: () -> Unit) {
     val keys = if (isHome) listOf("next") else listOf("make", "next")
     val target = rememberFocusTarget(route, keys)
     StepTitle(
-        if (isHome) "Tandem is your Home screen" else "Make Tandem your Home screen?",
-        "Press Home anywhere and you land back here, with your running game one button away. Your apps stay in the dock. You can switch back any time in Settings.",
+        Tx.s(if (isHome) R.string.look_welcome_homescreen_is else R.string.look_welcome_homescreen),
+        Tx.s(R.string.look_welcome_homescreen_detail),
     )
     Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (!isHome) PillButton("Make it my Home screen", Palette.Mint, Modifier.takesFocus(route, "make", target == "make")) { ask() }
-        PillButton(if (isHome) "Next" else "Not now", Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
+        if (!isHome) PillButton(Tx.s(R.string.look_welcome_homescreen_make), Palette.Mint, Modifier.takesFocus(route, "make", target == "make")) { ask() }
+        PillButton(Tx.s(if (isHome) R.string.look_welcome_next else R.string.look_welcome_not_now), Palette.Lavender, Modifier.takesFocus(route, "next", target == "next")) { next() }
     }
 }
 
@@ -330,16 +382,16 @@ private fun HomeScreenStep(isHome: Boolean, next: () -> Unit, ask: () -> Unit) {
 private fun DoneStep(done: () -> Unit) {
     val route = "welcome:done"
     val target = rememberFocusTarget(route, listOf("go"))
-    StepTitle("All set. Let's play!", "Four buttons worth knowing, wherever you are:")
+    StepTitle(Tx.s(R.string.look_welcome_done), Tx.s(R.string.look_welcome_done_detail))
     FlowRow(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         // A legend, not controls: tapping these does nothing.
-        ButtonHint("Y", "Options for anything", Palette.Butter, tappable = false)
+        ButtonHint("Y", Tx.s(R.string.look_welcome_done_y), Palette.Butter, tappable = false)
         val layout = Store.settings.look.homeLayout
         val homeX = (layout == "grid" || layout == "orbit") && Store.settings.look.xButton != "search"
-        ButtonHint("X", if (homeX) "Swap screens on the home, search elsewhere" else "Search", Palette.Sky, tappable = false)
-        ButtonHint("Start", "Start panel, Settings inside (hold: quick panel)", Palette.Lavender, tappable = false)
-        ButtonHint("Select", "Surprise me (hold: switcher)", Palette.Peach, tappable = false)
+        ButtonHint("X", Tx.s(if (homeX) R.string.look_welcome_done_x_swap else R.string.settings_hint_search), Palette.Sky, tappable = false)
+        ButtonHint("Start", Tx.s(R.string.look_welcome_done_start), Palette.Lavender, tappable = false)
+        ButtonHint("Select", Tx.s(R.string.look_welcome_done_select), Palette.Peach, tappable = false)
     }
     Spacer(Modifier.height(14.dp))
-    PillButton("Let's play", Palette.Mint, Modifier.takesFocus(route, "go", target == "go")) { done() }
+    PillButton(Tx.s(R.string.look_welcome_play), Palette.Mint, Modifier.takesFocus(route, "go", target == "go")) { done() }
 }

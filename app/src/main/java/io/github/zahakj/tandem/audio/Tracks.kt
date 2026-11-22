@@ -7,7 +7,7 @@ package io.github.zahakj.tandem.audio
  * in turn.
  */
 object Tracks {
-    /** The soundtracks by id, with their names: Calm first, the default (Look.soundtrack). */
+    /** The soundtracks by id, with their names (names, the same in every language): Calm first, the default (Look.soundtrack). */
     val soundtracks: List<Pair<String, String>> = listOf("calm" to "Calm", "meadow" to "Meadow Tales")
 
     /** The pieces of soundtrack [id] (an unknown id is Calm). */

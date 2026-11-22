@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Libraries
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import java.io.File
 
@@ -107,8 +109,14 @@ fun PackThemeRow(current: String, target: String?, onFocusKey: (String) -> Unit)
                 Column(Modifier.fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     GlyphChip(Glyph.Download, Palette.Accent, 40.dp)
                     Spacer(Modifier.height(8.dp))
-                    Text(if (packs.isEmpty()) "Add theme packs" else "Manage packs", style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(if (packs.isEmpty()) "Import a folder or .zip" else "${packs.size} installed", style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
+                    Text(
+                        Tx.s(if (packs.isEmpty()) R.string.look_packs_add else R.string.look_packs_manage),
+                        style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        if (packs.isEmpty()) Tx.s(R.string.look_packs_add_detail) else Tx.p(R.plurals.look_packs_installed, packs.size),
+                        style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1,
+                    )
                 }
             }
         }
@@ -170,7 +178,7 @@ private fun ThemeCard(
                 Column(Modifier.weight(1f)) {
                     Text(t.name, style = MaterialTheme.typography.labelLarge, color = t.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (pack != null && pack.author.isNotBlank()) {
-                        Text("by ${pack.author}", style = MaterialTheme.typography.labelSmall, color = t.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(Tx.s(R.string.look_packs_by, pack.author), style = MaterialTheme.typography.labelSmall, color = t.muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
                 if (inUse) Box(Modifier.size(9.dp).clip(CircleShape).background(t.accent))

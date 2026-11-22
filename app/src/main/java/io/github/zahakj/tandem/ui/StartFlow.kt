@@ -42,8 +42,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Library
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -246,7 +247,7 @@ private fun SplashFace(moving: Boolean) {
                 ) { Pip(112.dp, mood = eyes, bounce = eyes == 1) }
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "Tandem",
+                    "Tandem", // tx-ok: the app's name
                     Modifier.graphicsLayer {
                         alpha = word.value
                         translationY = (1f - word.value) * 14.dp.toPx()
@@ -256,7 +257,7 @@ private fun SplashFace(moving: Boolean) {
                 Spacer(Modifier.height(6.dp))
             }
             Text(
-                if (counted > 0) "Found ${plural(counted, "game")}…" else "Gathering your games…",
+                if (counted > 0) Tx.p(R.plurals.look_start_found, counted) else Tx.s(R.string.look_start_gathering),
                 Modifier.graphicsLayer { alpha = hint.value },
                 style = MaterialTheme.typography.titleSmall.onArt(), color = Palette.Muted,
                 maxLines = 1, overflow = TextOverflow.Ellipsis,

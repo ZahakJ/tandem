@@ -26,6 +26,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ExtrasStore
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.delay
@@ -49,7 +51,8 @@ object Flair {
     /** How far and how much: subtle, normal, lively. */
     val amount: Float get() = when (ExtrasStore.settings.intensity) { 0 -> 0.5f; 2 -> 1.65f; else -> 1f }
 
-    val intensityNames = listOf("Subtle", "Normal", "Lively")
+    val intensityNames: List<String>
+        get() = listOf(Tx.s(R.string.look_flair_subtle), Tx.s(R.string.look_flair_normal), Tx.s(R.string.look_flair_lively))
 }
 
 /** True while the activity hosting this screen is resumed (ambient motion stops otherwise). */
@@ -157,49 +160,54 @@ fun Modifier.drift(seed: Int = 0, distance: Dp = 10.dp, periodMs: Int = 9000): M
     }
 }
 
-private val RECENT_MODES = listOf("button" to "On L2", "always" to "Always", "off" to "Off")
+/** Recently played strip's options (ids are saved). */
+private val RECENT_MODES = listOf("button", "always", "off")
+
+private fun recentModes() = listOf(
+    "button" to Tx.s(R.string.look_flair_recent_button), "always" to Tx.s(R.string.look_flair_recent_always), "off" to Tx.s(R.string.common_off),
+)
 
 /** The "Motion & home" settings: floating titles, how lively they are, Recently played, icon names. */
 @Composable
 fun flairSettings(): SettingSection {
     val x = ExtrasStore.settings
     val look = Store.settings.look
-    return SettingSection(
-        "Motion & home",
-        listOf(
-            toggle(
-                "Floating titles", Glyph.Motion, Palette.Lavender,
-                "Logos, icons and titles float gently and rise in when they change, and hero art drifts. " +
-                    "Holds still with Reduce motion, animations Off or battery saver.",
-                x.floating, look = { on -> FloatScene(on, x.intensity) },
-            ) { on -> ExtrasStore.update { it.copy(floating = on) } },
-            choice(
-                "Motion intensity", Glyph.Sparkle, Palette.Lavender, "How far things float and bounce.",
-                Flair.intensityNames.mapIndexed { i, name -> i.toString() to name }, x.intensity.coerceIn(0, 2).toString(),
-                look = { v -> FloatScene(true, v.toInt()) },
-            ) { v -> ExtrasStore.update { it.copy(intensity = v.toInt()) } },
-            choice(
-                "Recently played strip", Glyph.Clock, Palette.Mint,
-                "On the icon grid, a bar of your last games along the top. L2 shows and hides it; A resumes a game.",
-                RECENT_MODES, x.recentStrip.takeIf { s -> RECENT_MODES.any { it.first == s } } ?: "button",
-                look = { v ->
-                    LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, strip = when (v) { "always" -> 1f; "button" -> 0.4f; else -> 0f })
-                },
-            ) { v -> ExtrasStore.update { it.copy(recentStrip = v) } },
-            choice(
-                "Icon names", Glyph.Text, Palette.Sky, "Names under the icon grid's tiles: always, only for the highlighted icon, or never.",
-                listOf("always" to "Always", "focus" to "Highlighted", "off" to "Off"),
-                if (look.gridLabels) "always" else if (x.focusLabels) "focus" else "off",
-                look = { v ->
-                    LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, look = look.copy(gridLabels = v == "always"), focusLabel = v == "focus")
-                },
-            ) { v ->
-                Store.updateSettings { it.copy(look = it.look.copy(gridLabels = v == "always")) }
-                if (v != "always") ExtrasStore.update { it.copy(focusLabels = v == "focus") }
+    return SettingSection(Tx.s(R.string.look_flair_group), en = "Motion & home", icon = Glyph.Motion, rows = listOf(
+        toggle(
+            Tx.s(R.string.look_flair_floating), Glyph.Motion, Palette.Lavender, Tx.s(R.string.look_flair_floating_help),
+            x.floating, look = { on -> FloatScene(on, x.intensity) },
+            en = "Floating titles",
+        ) { on -> ExtrasStore.update { it.copy(floating = on) } },
+        choice(
+            Tx.s(R.string.look_flair_intensity), Glyph.Sparkle, Palette.Lavender, Tx.s(R.string.look_flair_intensity_help),
+            Flair.intensityNames.mapIndexed { i, name -> i.toString() to name }, x.intensity.coerceIn(0, 2).toString(),
+            look = { v -> FloatScene(true, v.toInt()) },
+            en = "Motion intensity",
+        ) { v -> ExtrasStore.update { it.copy(intensity = v.toInt()) } },
+        choice(
+            Tx.s(R.string.look_flair_recent), Glyph.Clock, Palette.Mint, Tx.s(R.string.look_flair_recent_help),
+            recentModes(), x.recentStrip.takeIf { it in RECENT_MODES } ?: "button", // tx-ok: an option id
+            look = { v ->
+                LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, strip = when (v) { "always" -> 1f; "button" -> 0.4f; else -> 0f })
             },
-        ),
-        icon = Glyph.Motion,
-    )
+            en = "Recently played strip",
+        ) { v -> ExtrasStore.update { it.copy(recentStrip = v) } },
+        choice(
+            Tx.s(R.string.look_flair_icon_names), Glyph.Text, Palette.Sky, Tx.s(R.string.look_flair_icon_names_help),
+            listOf(
+                "always" to Tx.s(R.string.look_flair_icon_names_always), "focus" to Tx.s(R.string.look_flair_icon_names_focus),
+                "off" to Tx.s(R.string.common_off),
+            ),
+            if (look.gridLabels) "always" else if (x.focusLabels) "focus" else "off", // tx-ok: option ids
+            look = { v ->
+                LayoutPreview("grid", Modifier.fillMaxSize(), rounded = false, look = look.copy(gridLabels = v == "always"), focusLabel = v == "focus")
+            },
+            en = "Icon names",
+        ) { v ->
+            Store.updateSettings { it.copy(look = it.look.copy(gridLabels = v == "always")) }
+            if (v != "always") ExtrasStore.update { it.copy(focusLabels = v == "focus") }
+        },
+    ))
 }
 
 /** What Pip is reacting to: a glance the way the D-pad moved (it settles back after a moment) and launch cheers. */

@@ -39,8 +39,10 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 
 /*
@@ -90,13 +92,15 @@ fun SettingsScreen() {
                 FocusCard(
                     Modifier.fillMaxWidth().height(42.dp).takesFocus(routeKey, SEARCH_KEY, target == SEARCH_KEY),
                     glow = Palette.Sky, shape = RoundedCornerShape(50),
-                    onFocus = { onFocus(SEARCH_KEY, "Search settings", "", "Find any setting by name, or by what it does: \"bigger icons\", \"nintendo buttons\", \"music\".", Palette.Sky, "Search") },
+                    onFocus = {
+                        onFocus(SEARCH_KEY, Tx.s(R.string.settings_home_search), "", Tx.s(R.string.settings_home_search_help), Palette.Sky, Tx.s(R.string.settings_hint_search))
+                    },
                     onClick = { SettingsSearch.show() },
                 ) {
                     Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                         GlyphIcon(Glyph.Search, Palette.Muted, Modifier.size(20.dp))
                         Spacer(Modifier.width(10.dp))
-                        Text("Search settings", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = Palette.Muted, maxLines = 1)
+                        Text(Tx.s(R.string.settings_home_search), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = Palette.Muted, maxLines = 1)
                         ButtonHint("X", "")
                     }
                 }
@@ -108,7 +112,7 @@ fun SettingsScreen() {
                             val key = "cat:${c.id}"
                             CategoryTile(
                                 c, Modifier.weight(1f).height(128.dp).takesFocus(routeKey, key, key == target),
-                                onFocus = { onFocus(key, c.title, c.summary, c.blurb, c.color, "Open") },
+                                onFocus = { onFocus(key, c.title, c.summary, c.blurb, c.color, Tx.s(R.string.settings_a_open)) },
                             ) { Nav.go(c.route) }
                         }
                     }
@@ -142,7 +146,7 @@ fun SettingsPage(id: String) {
     }
     // While nothing on the page has published a row yet (the first frames, a gallery without a row), the details
     // screen explains the page itself instead of falling back to the idle greeting.
-    val summary = Selected.Setting(cat.title, cat.summary, cat.blurb, cat.color, "Choose")
+    val summary = Selected.Setting(cat.title, cat.summary, cat.blurb, cat.color, Tx.s(R.string.common_choose))
     SettingsIdle.Publish(summary, cat.route)
     SettingsLayout(
         routeKey, cat.sections,
@@ -194,15 +198,15 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
         }
         if (!inside) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ButtonHint("A", "Open", c.color)
-                ButtonHint("X", "Search", Palette.Sky)
-                ButtonHint("B", "Back", Palette.Muted)
+                ButtonHint("A", Tx.s(R.string.settings_a_open), c.color)
+                ButtonHint("X", Tx.s(R.string.settings_hint_search), Palette.Sky)
+                ButtonHint("B", Tx.s(R.string.common_back), Palette.Muted)
             }
         } else {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 ButtonHint("L1", "")
-                ButtonHint("R1", "Pages", Palette.Lavender)
-                ButtonHint("X", "Search", Palette.Sky)
+                ButtonHint("R1", Tx.s(R.string.settings_home_pages), Palette.Lavender)
+                ButtonHint("X", Tx.s(R.string.settings_hint_search), Palette.Sky)
                 // A subpage goes back to its page.
                 if (c.parent != null) ButtonHint("B", SettingsCategories.title(c.parent), Palette.Muted)
             }
@@ -217,17 +221,16 @@ private fun SearchPanel() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             GlyphChip(Glyph.Search, Palette.Sky, 40.dp)
             Spacer(Modifier.width(12.dp))
-            Text("Search settings", style = MaterialTheme.typography.titleLarge, maxLines = 1)
+            Text(Tx.s(R.string.settings_home_search), style = MaterialTheme.typography.titleLarge, maxLines = 1)
         }
         Spacer(Modifier.height(10.dp))
         Text(
-            "Type a few letters of a setting, or what you want: \"bigger icons\", \"nintendo\", \"quiet\", \"cocoon\". " +
-                "A result takes you straight to it and shows where it lives. X searches from any Settings page.",
+            Tx.s(R.string.settings_home_search_panel),
             Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, overflow = TextOverflow.Ellipsis,
         )
         FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ButtonHint("A", "Search", Palette.Sky)
-            ButtonHint("B", "Back", Palette.Muted)
+            ButtonHint("A", Tx.s(R.string.settings_hint_search), Palette.Sky)
+            ButtonHint("B", Tx.s(R.string.common_back), Palette.Muted)
         }
     }
 }

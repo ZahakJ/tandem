@@ -3,7 +3,6 @@ package io.github.zahakj.tandem.ui
 import io.github.zahakj.tandem.FileChecks
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -135,11 +134,11 @@ data class SettingRow(
 
     /** What A does, for the hints. */
     val aLabel: String get() = action ?: when (kind) {
-        RowKind.Toggle -> "Switch"
-        RowKind.Choice -> if (picker) "Choose" else "Next"
-        RowKind.Slider -> "Next"
-        RowKind.Link -> "Open"
-        RowKind.Action -> "Do it"
+        RowKind.Toggle -> Tx.s(R.string.settings_a_switch)
+        RowKind.Choice -> Tx.s(if (picker) R.string.common_choose else R.string.settings_a_next)
+        RowKind.Slider -> Tx.s(R.string.settings_a_next)
+        RowKind.Link -> Tx.s(R.string.settings_a_open)
+        RowKind.Action -> Tx.s(R.string.settings_a_do)
     }
 
     /** The value as words (switches read On/Off). */
@@ -218,90 +217,96 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
     val scanning = settingsScanning()
     // Recomposes only when the number changes, not on every change to a game's details (a scrape makes many).
     val gameCount by remember { androidx.compose.runtime.derivedStateOf { io.github.zahakj.tandem.Collections.visibleGames().size } }
-    return SettingSection(
-        "Library",
-        listOf(
-            choice(
-                "Sort games by", Glyph.Sort, Palette.Mint, "The order games appear in inside each system and collection.",
-                SortOrder.entries.map { it.name to it.label }, s.sort.name,
-            ) { v -> Store.updateSettings { it.copy(sort = SortOrder.valueOf(v)) } }.copy(keywords = "order alphabetical recent"),
-            SettingRow(
-                "Show hidden games", if (io.github.zahakj.tandem.Privacy.enabled) "Private" else onOff(s.showHidden), Palette.Lavender, Glyph.Eye,
-                toggle = if (io.github.zahakj.tandem.Privacy.enabled) null else s.showHidden,
-                help = "Games, folders and systems you hid with Y stay out of sight unless this is on; then they show, dimmed. " +
-                    "Start › Hidden lists everything hidden, each with Unhide. In private mode it asks for your PIN.",
-                keywords = "unhide hidden folders systems tuck away list",
-            ) { toggleShowHidden() },
-            SettingRow(
-                "Rescan games",
-                if (scanning) "Looking…" else plural(gameCount, "game") + when (val n = io.github.zahakj.tandem.Manuals.count) { 0 -> ""; else -> " · " + plural(n, "manual") },
-                Palette.Mint, Glyph.Refresh,
-                help = "Look through your game folders again, for games you just copied over, and for manuals. Tandem also checks " +
-                    "by itself whenever you come back to it. Manuals and guides go in ROMs/manuals/<system>/ named like the game " +
-                    "(Pokemon Red.pdf for Pokemon Red.gb): a PDF, a zip or folder of pictures, or a text or Markdown file. Read them " +
-                    "from a game's Y menu and on the bottom screen while it plays, or pick one under Y › Edit details › Manual.",
-                keywords = "refresh scan reload find new games manual guide pdf cbz walkthrough instructions booklet faq book read",
-                onClick = onRescan,
-            ),
+    val manuals = io.github.zahakj.tandem.Manuals.count
+    return SettingSection(Tx.s(R.string.settings_library), en = "Library", rows = listOf(
+        choice(
+            Tx.s(R.string.settings_library_sort), Glyph.Sort, Palette.Mint, Tx.s(R.string.settings_library_sort_help),
+            SortOrder.entries.map { it.name to it.label }, s.sort.name,
+            en = "Sort games by",
+        ) { v -> Store.updateSettings { it.copy(sort = SortOrder.valueOf(v)) } }.copy(keywords = "order alphabetical recent"),
+        SettingRow(
+            Tx.s(R.string.settings_library_hidden),
+            if (io.github.zahakj.tandem.Privacy.enabled) Tx.s(R.string.settings_library_hidden_private) else onOff(s.showHidden), Palette.Lavender, Glyph.Eye,
+            toggle = if (io.github.zahakj.tandem.Privacy.enabled) null else s.showHidden,
+            help = Tx.s(R.string.settings_library_hidden_help),
+            keywords = "unhide hidden folders systems tuck away list",
+            en = "Show hidden games",
+        ) { toggleShowHidden() },
+        SettingRow(
+            Tx.s(R.string.settings_library_rescan),
+            when {
+                scanning -> Tx.s(R.string.settings_library_rescan_looking)
+                manuals == 0 -> Tx.p(R.plurals.settings_library_games, gameCount)
+                else -> Tx.s(R.string.settings_library_games_manuals, Tx.p(R.plurals.settings_library_games, gameCount), Tx.p(R.plurals.settings_library_manuals, manuals))
+            },
+            Palette.Mint, Glyph.Refresh,
+            help = Tx.s(R.string.settings_library_rescan_help),
+            keywords = "refresh scan reload find new games manual guide pdf cbz walkthrough instructions booklet faq book read",
+            en = "Rescan games",
+            onClick = onRescan,
         ),
-    )
+    ))
 }
 
 @Composable
 fun dataSettings(): SettingSection {
-    return SettingSection(
-        "Your data",
-        listOf(
-            SettingRow(
-                "Import details", if (DataJobs.busy == "import") "Importing…" else "Cocoon · ES-DE", Palette.Sky, icon = Glyph.Download,
-                help = "Fill in names, descriptions and artwork links from gamelist.xml files (ES-DE, Cocoon backups). Only blanks are filled: what you changed in Tandem stays.",
-                keywords = "gamelist xml es-de emulationstation metadata",
-            ) {
-                DataJobs.run("import", "Importing details…", { Importer.importAll(Libraries.all.orEmpty()).games }) { n ->
-                    if (n > 0) "Filled in details for ${plural(n, "game")}" else "No gamelist.xml files found"
-                }
-            },
-            SettingRow(
-                "Back up", if (DataJobs.busy == "backup") "Saving…" else "ROMs/tandem/backup", Palette.Sky, icon = Glyph.Save,
-                help = "Saves a new backup next to your games: game data, look, layout and folders, systems and emulators. " +
-                    "Older backups stay, so you can go back to any of them after a reinstall.",
-                keywords = "back up tandem backup export save copy snapshot layout folders",
-                opens = true,
-            ) { BackupUi.openBackUp() },
-            SettingRow(
-                "Restore", if (DataJobs.busy == "restore") "Restoring…" else "Pick a backup", Palette.Sky, icon = Glyph.Restore,
-                help = "Pick a backup, newest first, then what to put back. Tandem saves an automatic backup of how things are now before it restores.",
-                keywords = "restore backup import load snapshot undo",
-                opens = true,
-            ) { BackupUi.openRestore() },
-        ),
-    )
+    return SettingSection(Tx.s(R.string.settings_data), en = "Your data", rows = listOf(
+        SettingRow(
+            Tx.s(R.string.settings_data_import),
+            if (DataJobs.busy == "import") Tx.s(R.string.settings_data_importing) else "Cocoon · ES-DE", // tx-ok: app names
+            Palette.Sky, icon = Glyph.Download,
+            help = Tx.s(R.string.settings_data_import_help),
+            keywords = "gamelist xml es-de emulationstation metadata",
+            en = "Import details",
+        ) {
+            DataJobs.run("import", Tx.s(R.string.settings_data_importing_details), { Importer.importAll(Libraries.all.orEmpty()).games }) { n ->
+                if (n > 0) Tx.p(R.plurals.settings_data_imported, n) else Tx.s(R.string.settings_data_import_none)
+            }
+        },
+        SettingRow(
+            Tx.s(R.string.settings_data_back_up),
+            if (DataJobs.busy == "backup") Tx.s(R.string.settings_data_saving) else "ROMs/tandem/backup", // tx-ok: a folder
+            Palette.Sky, icon = Glyph.Save,
+            help = Tx.s(R.string.settings_data_back_up_help),
+            keywords = "back up tandem backup export save copy snapshot layout folders",
+            opens = true,
+            en = "Back up",
+        ) { BackupUi.openBackUp() },
+        SettingRow(
+            Tx.s(R.string.settings_data_restore),
+            Tx.s(if (DataJobs.busy == "restore") R.string.settings_data_restoring else R.string.settings_data_restore_pick),
+            Palette.Sky, icon = Glyph.Restore,
+            help = Tx.s(R.string.settings_data_restore_help),
+            keywords = "restore backup import load snapshot undo",
+            opens = true,
+            en = "Restore",
+        ) { BackupUi.openRestore() },
+    ))
 }
 
 @Composable
 fun aboutSettings(): SettingSection {
     // Follows Shizuku starting, stopping and the permission answer, not just coming back to Tandem.
     val ready = remember(ShizukuWatch.version) { Shell.ready() }
-    return SettingSection(
-        "About",
+    return SettingSection(Tx.s(R.string.settings_about), en = "About", rows = listOf(
+        SettingRow(
+            Tx.s(R.string.settings_about_resume), Tx.s(if (ready) R.string.settings_about_resume_ready else R.string.settings_about_resume_allow),
+            Palette.Lavender, icon = Glyph.Gamepad,
+            help = Tx.s(R.string.settings_about_resume_help),
+            keywords = "shizuku continue suspend",
+            en = "Resume running games",
+        ) { askShizuku() },
+    ) + updateRows().ifEmpty {
         listOf(
             SettingRow(
-                "Resume running games", if (ready) "Ready" else "Allow in Shizuku", Palette.Lavender, icon = Glyph.Gamepad,
-                help = "With Shizuku running, picking a game that is still open brings it back instead of restarting it.",
-                keywords = "shizuku continue suspend",
-            ) { askShizuku() },
-        ) + updateRows().ifEmpty {
-            listOf(
-                SettingRow(
-                    "About Tandem", "Version ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME} · GPL-3.0", Palette.Lavender, icon = Glyph.Heart,
-                    help = AboutHelp, keywords = "version license open source credits",
-                ) { Toasts.show("Made with love, free forever. Hi from Pip!") },
-            )
-        },
-    )
+                Tx.s(R.string.settings_about_tandem), Tx.s(R.string.settings_about_version, io.github.zahakj.tandem.BuildConfig.VERSION_NAME),
+                Palette.Lavender, icon = Glyph.Heart,
+                help = Tx.s(R.string.settings_about_help), keywords = "version license open source credits",
+                en = "About Tandem",
+            ) { Toasts.show(Tx.s(R.string.settings_about_hi)) },
+        )
+    })
 }
-
-private const val AboutHelp = "Free and open source (GPL-3.0). No ads, no accounts, no tracking. Your data stays on your device."
 
 /**
  * Updates (this version, where an update stands, and A to check) and Check automatically (Updates.kt), standing in
@@ -315,19 +320,16 @@ private fun updateRows(): List<SettingRow> {
     val found = updates.found
     return listOf(
         SettingRow(
-            "Updates", updates.statusLine(), Palette.Lavender, icon = Glyph.Download,
-            help = "This is Tandem ${io.github.zahakj.tandem.BuildConfig.VERSION_NAME}. A asks GitHub whether a newer one is out. Update downloads it, checks it is the real release (its " +
-                "checksum and Tandem's signing key) and installs it; Tandem restarts. With Shizuku it installs without a question; " +
-                "otherwise Android asks once to allow installs from Tandem. $AboutHelp",
+            Tx.s(R.string.settings_updates), updates.statusLine(), Palette.Lavender, icon = Glyph.Download,
+            help = Tx.s(R.string.settings_updates_help, io.github.zahakj.tandem.BuildConfig.VERSION_NAME, Tx.s(R.string.settings_about_help)),
             keywords = "update upgrade new version release download install github check now about license open source credits",
-            action = if (found != null) "See update" else "Check",
+            action = Tx.s(if (found != null) R.string.settings_updates_see else R.string.settings_updates_check),
+            en = "Updates",
         ) { if (found != null) UpdatePopup.show() else updates.check(ctx) },
         toggle(
-            "Check automatically", Glyph.Refresh, Palette.Lavender,
-            "Look for a new Tandem once a day while Tandem is open, and say so once with a message and in the Start panel. It only " +
-                "asks GitHub for the latest version number; nothing installs until you press Update. Off, nothing is checked or " +
-                "shown until you check with A on Updates. Private mode skips it.",
+            Tx.s(R.string.settings_updates_auto), Glyph.Refresh, Palette.Lavender, Tx.s(R.string.settings_updates_auto_help),
             Store.settings.checkUpdates,
+            en = "Check automatically",
         ) { on -> Store.updateSettings { it.copy(checkUpdates = on) } }.copy(keywords = "check for updates automatic daily github notification notify"),
     )
 }
@@ -336,9 +338,9 @@ private fun updateRows(): List<SettingRow> {
 fun askShizuku() {
     val alive = runCatching { rikka.shizuku.Shizuku.pingBinder() }.getOrDefault(false)
     when {
-        Shell.ready() -> Toasts.show("Resume is on: games pick up right where you left them")
+        Shell.ready() -> Toasts.show(Tx.s(R.string.settings_shizuku_on))
         alive -> rikka.shizuku.Shizuku.requestPermission(1)
-        else -> Toasts.show("Start the Shizuku app first, then come back here")
+        else -> Toasts.show(Tx.s(R.string.settings_shizuku_start))
     }
 }
 
@@ -354,13 +356,13 @@ object DataJobs {
         private set
 
     fun <T> run(id: String, starting: String, work: () -> T, done: (T) -> String) {
-        if (busy != null) { Toasts.show("One moment, still working…"); return }
+        if (busy != null) { Toasts.show(Tx.s(R.string.settings_job_busy)); return }
         busy = id
         Toasts.show(starting)
         kotlinx.coroutines.MainScope().launch {
             val result = runCatching { withContext(Dispatchers.IO) { work() } }
             busy = null
-            Toasts.show(result.fold(done) { "That didn't work: ${it.message ?: "unknown problem"}" })
+            Toasts.show(result.fold(done) { Tx.s(R.string.settings_job_failed, it.message ?: Tx.s(R.string.settings_job_unknown)) })
         }
     }
 }
@@ -460,7 +462,7 @@ private fun SettingsSide(focusedKey: androidx.compose.runtime.State<String?>, li
 @Composable
 fun SettingsHeader(title: String, note: String? = null) {
     Row(Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 2.dp, start = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(title.uppercase(), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, letterSpacing = androidx.compose.ui.unit.TextUnit(1.4f, androidx.compose.ui.unit.TextUnitType.Sp), maxLines = 1)
+        Text(title.uppercase(io.github.zahakj.tandem.Lang.locale), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, letterSpacing = androidx.compose.ui.unit.TextUnit(1.4f, androidx.compose.ui.unit.TextUnitType.Sp), maxLines = 1)
         Spacer(Modifier.width(10.dp))
         Box(Modifier.weight(1f).height(1.dp).background(Palette.Muted.copy(alpha = 0.22f)))
         if (note != null) {
@@ -649,9 +651,11 @@ private fun SidePanelContent(r: SettingRow) {
 fun SettingsHints(r: SettingRow?) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (r != null) ButtonHint("A", r.aLabel, r.color)
-        if (r != null && (r.onLeft != null || r.onRight != null)) ButtonHint("◀▶", if (r.kind == RowKind.Slider) "Adjust" else "Change", r.color)
-        ButtonHint("X", "Search", Palette.Sky)
-        ButtonHint("B", "Back", Palette.Muted)
+        if (r != null && (r.onLeft != null || r.onRight != null)) {
+            ButtonHint("◀▶", Tx.s(if (r.kind == RowKind.Slider) R.string.settings_hint_adjust else R.string.settings_hint_change), r.color)
+        }
+        ButtonHint("X", Tx.s(R.string.settings_hint_search), Palette.Sky)
+        ButtonHint("B", Tx.s(R.string.common_back), Palette.Muted)
     }
 }
 
@@ -683,7 +687,7 @@ private fun AboutPanel() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Pip(104.dp)
         Spacer(Modifier.height(10.dp))
-        Text("Tandem", style = MaterialTheme.typography.titleLarge)
-        Text("Open source · no tracking", style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center)
+        Text("Tandem", style = MaterialTheme.typography.titleLarge) // tx-ok: the app's name
+        Text(Tx.s(R.string.settings_about_panel), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, textAlign = TextAlign.Center)
     }
 }

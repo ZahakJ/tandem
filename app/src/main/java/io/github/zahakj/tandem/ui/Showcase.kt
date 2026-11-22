@@ -55,6 +55,9 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.zahakj.tandem.Lang
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.Store
 import kotlinx.coroutines.delay
 import java.text.DateFormat
@@ -119,7 +122,7 @@ fun Showcase(labels: List<String>, current: Int, modifier: Modifier = Modifier, 
 /** A switch's two looks, Off then On. */
 @Composable
 fun ToggleShowcase(on: Boolean, color: Color, modifier: Modifier = Modifier, frame: @Composable (Boolean) -> Unit) =
-    Showcase(listOf("Off", "On"), if (on) 1 else 0, modifier, color) { frame(it == 1) }
+    Showcase(listOf(Tx.s(R.string.common_off), Tx.s(R.string.common_on)), if (on) 1 else 0, modifier, color) { frame(it == 1) }
 
 /** A choice's options, in order, by id. */
 @Composable
@@ -157,7 +160,7 @@ private fun Caption(label: String, inUse: Boolean, color: Color, modifier: Modif
         if (inUse) {
             Spacer(Modifier.width(8.dp))
             Box(Modifier.clip(RoundedCornerShape(50)).background(color).padding(horizontal = 7.dp, vertical = 1.dp)) {
-                Text("In use", style = MaterialTheme.typography.labelMedium, color = Palette.OnAccent, maxLines = 1)
+                Text(Tx.s(R.string.settings_showcase_in_use), style = MaterialTheme.typography.labelMedium, color = Palette.OnAccent, maxLines = 1)
             }
         }
     }
@@ -763,7 +766,9 @@ internal fun DimScene(dim: Float) {
 internal fun PromptsScene(style: String) {
     Box(Modifier.fillMaxSize().background(Palette.Night), contentAlignment = Alignment.Center) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("A" to "Play", "B" to "Back", "X" to "Search", "Y" to "Options").forEach { (b, what) -> Badge(Prompts.physical(b, style), what) }
+            listOf(
+                "A" to R.string.settings_showcase_play, "B" to R.string.common_back, "X" to R.string.settings_hint_search, "Y" to R.string.settings_showcase_options,
+            ).forEach { (b, what) -> Badge(Prompts.physical(b, style), Tx.s(what)) }
         }
     }
 }
@@ -909,8 +914,12 @@ internal fun HomeRowsScene(order: List<String>) {
     val t = Themes.live
     Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(t.background, t.backgroundDeep))).padding(10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         order.forEach { id ->
-            val (name, c) = when (id) { "continue" -> "Continue" to t.mint; "systems" -> "Systems" to t.lavender; else -> "Collections" to t.peach }
-            Text(name, style = MaterialTheme.typography.labelMedium, color = c, maxLines = 1)
+            val (name, c) = when (id) {
+                "continue" -> R.string.settings_showcase_continue to t.mint
+                "systems" -> R.string.settings_showcase_systems to t.lavender
+                else -> R.string.settings_showcase_collections to t.peach
+            }
+            Text(Tx.s(name), style = MaterialTheme.typography.labelMedium, color = c, maxLines = 1)
             Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 val n = if (id == "continue") 3 else 5
                 repeat(n) { i ->
@@ -1043,8 +1052,8 @@ internal fun TopBarScene(clock: String, battery: Boolean) {
     val now by rememberMinute()
     val text = when (clock) {
         "off" -> null
-        "12" -> SimpleDateFormat("h:mm a", Locale.getDefault()).format(now)
-        "24" -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(now)
+        "12" -> SimpleDateFormat("h:mm a", Lang.locale).format(now)
+        "24" -> SimpleDateFormat("HH:mm", Lang.locale).format(now)
         else -> DateFormat.getTimeInstance(DateFormat.SHORT).format(now)
     }
     Box(Modifier.fillMaxSize()) {
@@ -1055,10 +1064,10 @@ internal fun TopBarScene(clock: String, battery: Boolean) {
         ) {
             Box(Modifier.size(10.dp).clip(CircleShape).background(Palette.Mint))
             Spacer(Modifier.width(8.dp))
-            Text("Home", style = MaterialTheme.typography.titleSmall, color = Palette.Text, maxLines = 1)
+            Text(Tx.s(R.string.settings_showcase_home), style = MaterialTheme.typography.titleSmall, color = Palette.Text, maxLines = 1)
             Spacer(Modifier.weight(1f))
             if (battery) {
-                Text("87%", style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1)
+                Text(Tx.s(R.string.common_percent, 87), style = MaterialTheme.typography.titleSmall, color = Palette.Muted, maxLines = 1)
                 Spacer(Modifier.width(10.dp))
             }
             if (text != null) Text(text, style = MaterialTheme.typography.titleMedium, color = Palette.Text, maxLines = 1)
@@ -1076,7 +1085,8 @@ internal fun CornerHintsScene(on: Boolean) {
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically,
         ) {
-            listOf("A" to "Open", "X" to "Search", "Start" to "Menu").forEach { (b, what) ->
+            listOf("A" to R.string.settings_a_open, "X" to R.string.settings_hint_search, "Start" to R.string.settings_showcase_menu).forEach { (b, res) ->
+                val what = Tx.s(res)
                 val p = Prompts.physical(b, Store.settings.look.prompts)
                 Box(Modifier.height(14.dp).widthIn(min = 14.dp).clip(RoundedCornerShape(50)).background(p.color ?: Palette.Mint).padding(horizontal = 3.dp), contentAlignment = Alignment.Center) {
                     Text(p.glyph, style = MaterialTheme.typography.labelSmall, color = p.onColor ?: Palette.OnAccent, maxLines = 1)

@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.util.Log
+import io.github.zahakj.tandem.R
+import io.github.zahakj.tandem.Tx
 import org.json.JSONObject
 import java.io.File
 import java.io.InputStream
@@ -33,16 +35,16 @@ object PackImport {
 
     /** Unpacks a picked .zip. Call off the main thread. */
     fun fromZip(ctx: Context, zip: Uri): Result = into(ctx, guessName(ctx, zip, folder = false)) { dest ->
-        val input = ctx.contentResolver.openInputStream(zip) ?: error("Couldn't open that file")
+        val input = ctx.contentResolver.openInputStream(zip) ?: error(Tx.s(R.string.look_import_cant_open))
         input.use { unzip(it, dest) }
     }
 
     private class Budget(var bytes: Long = 0, var files: Int = 0) {
         fun add(n: Long) {
             bytes += n
-            if (bytes > MAX_BYTES) error("That's too big for a theme pack")
+            if (bytes > MAX_BYTES) error(Tx.s(R.string.look_import_too_big))
         }
-        fun file() { if (++files > MAX_FILES) error("That has too many files for a theme pack") }
+        fun file() { if (++files > MAX_FILES) error(Tx.s(R.string.look_import_too_many)) }
     }
 
     private fun into(ctx: Context, name: String, copy: (File) -> Unit): Result {
@@ -50,7 +52,7 @@ object PackImport {
         return try {
             staging.mkdirs()
             copy(staging)
-            val root = packRoot(staging) ?: return Result.Failed("No theme.json or icon folders in there")
+            val root = packRoot(staging) ?: return Result.Failed(Tx.s(R.string.look_import_no_pack))
             ensureThemeJson(root, name)
             val finalName = safeName(readName(root) ?: name)
             ThemePacks.tandemDir.mkdirs()
@@ -61,7 +63,7 @@ object PackImport {
             Result.Done(readName(dest) ?: finalName, dest)
         } catch (e: Exception) {
             Log.w(TAG, "Theme pack import failed", e)
-            Result.Failed(e.message ?: "Couldn't import that")
+            Result.Failed(e.message ?: Tx.s(R.string.look_import_failed))
         } finally {
             staging.deleteRecursively()
         }
@@ -93,7 +95,8 @@ object PackImport {
         val o = JSONObject()
             .put("name", meta?.optString("name")?.ifBlank { null } ?: fallbackName)
             .put("author", meta?.optString("author") ?: "")
-            .put("description", meta?.optString("description")?.ifBlank { null } ?: "Icons")
+            // Written into the pack's theme.json, so it stays in the language it was imported in.
+            .put("description", meta?.optString("description")?.ifBlank { null } ?: Tx.s(R.string.look_import_icons_description))
             .put("version", meta?.optString("version") ?: "")
             .put("base", "pastel-night")
         f.writeText(o.toString(2))
@@ -103,7 +106,7 @@ object PackImport {
         runCatching { JSONObject(File(dir, "theme.json").readText()).optString("name").takeIf { it.isNotBlank() } }.getOrNull()
 
     fun safeName(s: String): String =
-        s.replace(Regex("[\\\\/:*?\"<>|\\x00-\\x1F]"), " ").replace(Regex("\\s+"), " ").trim().trim('.').take(60).ifBlank { "Theme pack" }
+        s.replace(Regex("[\\\\/:*?\"<>|\\x00-\\x1F]"), " ").replace(Regex("\\s+"), " ").trim().trim('.').take(60).ifBlank { "Theme pack" } // tx-ok: a folder name
 
     private fun guessName(ctx: Context, uri: Uri, folder: Boolean): String {
         val display = runCatching {
@@ -112,7 +115,7 @@ object PackImport {
                 if (c.moveToFirst()) c.getString(0) else null
             }
         }.getOrNull()
-        return (display ?: "Theme pack").removeSuffix(".zip").removeSuffix(".ZIP")
+        return (display ?: "Theme pack").removeSuffix(".zip").removeSuffix(".ZIP") // tx-ok: a folder name
     }
 
     private fun copyTree(ctx: Context, tree: Uri, doc: Uri, dest: File, budget: Budget) {

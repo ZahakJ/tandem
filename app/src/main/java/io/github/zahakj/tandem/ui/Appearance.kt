@@ -60,8 +60,10 @@ import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Bindings
 import io.github.zahakj.tandem.Command
 import io.github.zahakj.tandem.MainActivity
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.ControllerStore
 import io.github.zahakj.tandem.data.Look
 import io.github.zahakj.tandem.data.Store
@@ -158,7 +160,7 @@ internal fun toggle(
     onClick = { set(!on) },
 )
 
-internal fun pct(v: Float) = "${Math.round(v * 100)}%"
+internal fun pct(v: Float) = Tx.s(R.string.common_percent, Math.round(v * 100))
 
 /** [Look]'s defaults for everything about how Tandem looks, keeping [old]'s buttons, screens, sounds and music. */
 internal fun resetLook(old: Look): Look = Look().copy(
@@ -180,7 +182,10 @@ private val HomeRowOrders = listOf(
 )
 
 private fun homeLabel(ids: List<String>) = ids.joinToString(" · ") {
-    when (it) { "continue" -> "Continue"; "systems" -> "Systems"; "collections" -> "Collections"; else -> it }
+    when (it) {
+        "continue" -> Tx.s(R.string.look_home_rows_continue); "systems" -> Tx.s(R.string.look_home_rows_systems)
+        "collections" -> Tx.s(R.string.look_home_rows_collections); else -> it
+    }
 }
 
 /** The icon grid home's settings (the "grid" layout). */
@@ -192,57 +197,70 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
     }
     return listOf(
         choice(
-            "Icon size", Glyph.Grid, Palette.Sky,
-            "How many icons fit across the screen, like the 3DS HOME menu's zoom. L1 and R1 change it on the grid too.",
-            (5..9).map { "$it" to "${IconGrid.sizeName(it)} · $it across" }, look.gridAcross.toString(),
+            Tx.s(R.string.look_grid_icon_size), Glyph.Grid, Palette.Sky, Tx.s(R.string.look_grid_icon_size_help),
+            (5..9).map { "$it" to Tx.s(R.string.look_grid_icon_size_option, IconGrid.sizeName(it), it) }, look.gridAcross.toString(),
             look = { v -> grid(look.copy(gridAcross = v.toInt(), gridRows = 0)) },
+            en = "Icon size",
         ) { v -> updateLook { it.copy(gridAcross = v.toInt()) } },
         choice(
-            "Rows of icons", Glyph.Grid, Palette.Sky,
-            "Fix the number of rows and the icons grow to fill the screen. One row is the 3DS HOME menu zoomed all the way in: big icons with the highlighted item's details above them. Auto follows Icon size. L1 and R1 change the rows on the grid (L1 on Large icons goes on to fewer rows).",
-            listOf("0" to "Auto", "1" to "1 row") + (2..5).map { "$it" to "$it rows" }, look.gridRows.toString(),
+            Tx.s(R.string.look_grid_rows), Glyph.Grid, Palette.Sky, Tx.s(R.string.look_grid_rows_help),
+            listOf("0" to Tx.s(R.string.look_grid_rows_auto)) + (1..5).map { "$it" to Tx.p(R.plurals.look_grid_rows_n, it) }, look.gridRows.toString(),
             look = { v -> grid(look.copy(gridRows = v.toInt())) },
+            en = "Rows of icons",
         ) { v -> updateLook { it.copy(gridRows = v.toInt()) } },
         choice(
-            "Scrolling", Glyph.Motion, Palette.Sky,
-            "Sideways with a peek of what's next, a page at a time (like the 3DS), or up and down.",
-            listOf("horizontal" to "Sideways", "paged" to "Pages", "vertical" to "Up and down"), look.gridScroll,
+            Tx.s(R.string.look_grid_scrolling), Glyph.Motion, Palette.Sky, Tx.s(R.string.look_grid_scrolling_help),
+            listOf(
+                "horizontal" to Tx.s(R.string.look_grid_scrolling_sideways), "paged" to Tx.s(R.string.look_grid_scrolling_pages),
+                "vertical" to Tx.s(R.string.look_grid_scrolling_vertical),
+            ),
+            look.gridScroll,
             look = { v -> grid(look.copy(gridScroll = v)) },
+            en = "Scrolling",
         ) { v -> updateLook { it.copy(gridScroll = v) } },
         number(
-            "Icon roundness", Glyph.Corners, Palette.Sky, "From square corners to circles.",
-            look.gridRoundness, 0f, 0.5f, 0.05f, ::pct, preview = preview,
+            Tx.s(R.string.look_grid_roundness), Glyph.Corners, Palette.Sky, Tx.s(R.string.look_grid_roundness_help),
+            look.gridRoundness, 0f, 0.5f, 0.05f, ::pct, preview = preview, en = "Icon roundness",
         ) { v -> updateLook { it.copy(gridRoundness = v ?: 0.2f) } },
         number(
-            "Space between icons", Glyph.Grid, Palette.Sky, "The gap between icons, as a share of an icon.",
-            look.gridGap, 0.1f, 0.5f, 0.04f, ::pct, preview = preview,
+            Tx.s(R.string.look_grid_gap), Glyph.Grid, Palette.Sky, Tx.s(R.string.look_grid_gap_help),
+            look.gridGap, 0.1f, 0.5f, 0.04f, ::pct, preview = preview, en = "Space between icons",
         ) { v -> updateLook { it.copy(gridGap = v ?: 0.26f) } },
         number(
-            "Hero split", Glyph.Screens, Palette.Sky,
-            "Art of the highlighted icon above the grid. No split (the default) gives the icons the whole screen.",
-            look.gridHeroSplit, 0f, 0.5f, 0.05f, { if (it <= 0f) "No split" else pct(it) }, preview = preview,
+            Tx.s(R.string.look_grid_hero_split), Glyph.Screens, Palette.Sky, Tx.s(R.string.look_grid_hero_split_help),
+            look.gridHeroSplit, 0f, 0.5f, 0.05f, { if (it <= 0f) Tx.s(R.string.look_grid_hero_split_none) else pct(it) }, preview = preview,
+            en = "Hero split",
         ) { v -> updateLook { it.copy(gridHeroSplit = v ?: 0f) } },
         choice(
-            "Other screen", Glyph.Screens, Palette.Sky,
-            "Spotlight shows the highlighted icon big over its colour (or its icon pack art) and games full-screen. Classic shows Tandem's details.",
-            listOf("spotlight" to "Spotlight", "classic" to "Classic"), look.gridDetails,
+            Tx.s(R.string.look_grid_other_screen), Glyph.Screens, Palette.Sky, Tx.s(R.string.look_grid_other_screen_help),
+            listOf("spotlight" to Tx.s(R.string.look_grid_other_screen_spotlight), "classic" to Tx.s(R.string.look_grid_other_screen_classic)), look.gridDetails,
             look = { v -> DeviceScene(Shows.Library, if (v == "spotlight") Shows.Spotlight else Shows.Details) },
+            en = "Other screen",
         ) { v -> updateLook { it.copy(gridDetails = v) } },
         choice(
-            "Folders open", Glyph.Folder, Palette.Sky, "As a big rounded panel over the grid, or as a full page.",
-            listOf("popup" to "Over the grid", "fullscreen" to "Full page"), look.gridFolders,
+            Tx.s(R.string.look_grid_folders), Glyph.Folder, Palette.Sky, Tx.s(R.string.look_grid_folders_help),
+            listOf("popup" to Tx.s(R.string.look_grid_folders_popup), "fullscreen" to Tx.s(R.string.look_grid_folders_page)), look.gridFolders,
             look = { v -> FolderOpenScene(v) },
+            en = "Folders open",
         ) { v -> updateLook { it.copy(gridFolders = v) } },
         choice(
-            "X button", Glyph.Swap, Palette.Sky,
-            "Swap the two screens with X on the icon grid and Orbit homes (search is in the Start panel and the grid's Y menu), everywhere, or keep X for search.",
-            listOf("swap-grid" to "Swap on grid and Orbit", "swap" to "Swap everywhere", "search" to "Search"), look.xButton,
+            Tx.s(R.string.look_grid_x_button), Glyph.Swap, Palette.Sky, Tx.s(R.string.look_grid_x_button_help),
+            listOf(
+                "swap-grid" to Tx.s(R.string.look_grid_x_button_swap_grid), "swap" to Tx.s(R.string.look_grid_x_button_swap),
+                "search" to Tx.s(R.string.look_grid_x_button_search),
+            ),
+            look.xButton,
+            en = "X button",
         ) { v -> updateLook { it.copy(xButton = v) } },
         choice(
-            "Swap animation", Glyph.Swap, Palette.Sky,
-            "How the screens trade places on X. Scatter: the icons fly apart and land on the other screen. Push: each screen's new side slides in from the hinge. Flip: both screens turn over like cards. Depth: the old side sinks back as the new one comes forward.",
-            listOf("scatter" to "Scatter", "push" to "Push", "flip" to "Flip", "depth" to "Depth", "fade" to "Fade", "instant" to "Instant"), look.swapStyle,
+            Tx.s(R.string.look_grid_swap_animation), Glyph.Swap, Palette.Sky, Tx.s(R.string.look_grid_swap_animation_help),
+            listOf(
+                "scatter" to Tx.s(R.string.look_swap_scatter), "push" to Tx.s(R.string.look_swap_push), "flip" to Tx.s(R.string.look_swap_flip),
+                "depth" to Tx.s(R.string.look_swap_depth), "fade" to Tx.s(R.string.look_swap_fade), "instant" to Tx.s(R.string.look_swap_instant),
+            ),
+            look.swapStyle,
             look = { v -> SwapScene(v) },
+            en = "Swap animation",
         ) { v -> updateLook { it.copy(swapStyle = v) } },
     )
 }
@@ -283,304 +301,295 @@ fun appearanceSections(): List<SettingSection> {
     val trackCount = Facts.musicTracks
 
     val wallOptions = buildList {
-        add("theme" to "Theme default")
+        add("theme" to Tx.s(R.string.look_wall_theme))
         BackdropStyle.entries.forEach { add(it.id to it.label) }
-        add("hero" to "Game art (blurred)")
+        add("hero" to Tx.s(R.string.look_wall_hero))
         wallFiles.forEach { add("file:${it.path}" to it.name) }
     }
-    val accentOptions = listOf("" to "Theme") + AccentSwatches.map { it.second.toHex() to it.first } +
+    val accentOptions = listOf("" to Tx.s(R.string.look_accent_theme)) + AccentSwatches.map { it.second.toHex() to Tx.s(it.first) } +
         (look.accent?.takeIf { a -> AccentSwatches.none { it.second.toHex() == a } }?.let { listOf(it to it) } ?: emptyList())
 
     return listOf(
-        SettingSection(
-            "Colour & highlight",
-            listOf(
-                choice(
-                    "Accent colour", Glyph.Sparkle, Palette.Accent,
-                    "Your own accent for toggles and highlights. Left and right try the swatches; A shows them all, and Type a colour… takes any, like #FF7AB6.",
-                    accentOptions, look.accent ?: "",
-                    preview = { AccentPreview() },
-                    look = { id -> AccentScene(Themes.resolve(look.copy(accent = id.ifEmpty { null })).accent) },
-                    extra = "Type a colour…" to {
-                        TextEntry.ask("Accent colour (hex)", look.accent ?: "#") { text ->
-                            val c = parseColor(text)
-                            if (c == null) { Toasts.show("That doesn't look like a colour"); Sounds.error() }
-                            else updateLook { it.copy(accent = c.toHex(), highlightColor = "accent") }
-                        }
-                    },
-                ) { id ->
-                    if (id.isEmpty()) updateLook { it.copy(accent = null, highlightColor = "item") }
-                    else updateLook { it.copy(accent = id, highlightColor = "accent") }
-                },
-                choice(
-                    "Highlight style", Glyph.Highlight, Palette.Lavender,
-                    "How the highlighted card is marked: a soft glow, a crisp outline, a lift with a big shadow, or a gently pulsing ring.",
-                    listOf("" to "Theme · ${base.highlight.label}") + HighlightStyle.entries.map { it.id to it.label }, look.highlight ?: "",
-                    look = { v -> HighlightScene(HighlightStyle.of(v) ?: base.highlight) },
-                ) { v -> updateLook { it.copy(highlight = v.ifEmpty { null }) } },
-                choice(
-                    "Surface", Glyph.Layers, Palette.Sky,
-                    "What cards are made of: solid, frosted glass that lets the wallpaper glow through, or light outlines.",
-                    listOf("" to "Theme · ${base.material.label}") + SurfaceMaterial.entries.map { it.id to it.label }, look.material ?: "",
-                    look = { v -> SurfaceScene(SurfaceMaterial.of(v) ?: base.material) },
-                ) { v -> updateLook { it.copy(material = v.ifEmpty { null }) } },
-            ),
-        ),
-        SettingSection(
-            "System icons",
-            listOf(
-                choice(
-                    "Icon style", Glyph.Gamepad, Palette.Accent,
-                    "How Tandem draws system icons when a theme pack doesn't bring its own: a little device of the right kind with the system's name, as glossy bubbles, neon tubes, pixels, LCD, chrome and more.",
-                    listOf("" to "Theme · ${base.iconStyle.label}") + IconStyle.entries.map { it.id to it.label }, look.iconStyle ?: "",
-                    look = { v -> IconStyleScene(IconStyle.of(v) ?: base.iconStyle) },
-                ) { v -> updateLook { it.copy(iconStyle = v.ifEmpty { null }) } },
-                choice(
-                    "Icons from", Glyph.Image, Palette.Accent,
-                    "Use a pack's system icons, heroes and logos with any theme, or always draw them. Auto uses the theme pack's own art; with a built-in theme it borrows the first Cocoon smart-folder pack in ROMs/assets/smart_folders. Drawn by Tandem shows the theme's icon style.",
-                    ThemePacks.iconSources(), look.iconPack,
-                    preview = { IconsPreview() },
-                ) { v -> updateLook { it.copy(iconPack = v) } },
-            ),
-        ),
-        SettingSection(
-            "Motion",
-            listOf(
-                choice(
-                    "Animation style", Glyph.Motion, Palette.Mint,
-                    "Bouncy is playful, Smooth glides without overshoot, Minimal is quick and subtle, Off changes things instantly.",
-                    listOf("" to "Theme · ${base.animation.label}") + AnimationStyle.entries.map { it.id to it.label }, look.motion ?: "",
-                    look = { v -> MotionStyleScene(AnimationStyle.of(v) ?: base.animation) },
-                ) { v -> updateLook { it.copy(motion = v.ifEmpty { null }) } },
-                toggle(
-                    "Reduce motion", Glyph.Motion, Palette.Mint,
-                    "Turns off moving wallpapers, panning art and bouncy animations everywhere. Battery saver does the same for wallpapers.",
-                    settings.reduceMotion,
-                    look = { on -> StillnessScene(on) },
-                ) { on -> Store.updateSettings { it.copy(reduceMotion = on) } },
-            ),
-        ),
-        SettingSection(
-            "Wallpaper",
-            listOf(
-                choice(
-                    "Top screen", Glyph.Image, Palette.Peach,
-                    "An animated backdrop, the highlighted game's art, or your own picture or video: copy pictures (PNG, JPG, WebP) or videos (MP4, WebM) into ROMs/tandem/wallpapers and they show up here.",
-                    wallOptions, look.wallTop.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme",
-                    preview = { WallpaperPreview(look.wallTop, ScreenSlot.Top) },
-                    look = { v -> WallpaperArt(v, ScreenSlot.Top, moving = false) },
-                ) { v -> updateLook { it.copy(wallTop = v) } },
-                choice(
-                    "Bottom screen", Glyph.Image, Palette.Peach,
-                    "The same choices for the second screen. Game art and videos look great down there.",
-                    wallOptions, look.wallBottom.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme",
-                    preview = { WallpaperPreview(look.wallBottom, ScreenSlot.Bottom) },
-                    look = { v -> WallpaperArt(v, ScreenSlot.Bottom, moving = false) },
-                ) { v -> updateLook { it.copy(wallBottom = v) } },
-                number(
-                    "Picture dimming", Glyph.Image, Palette.Peach, "Darkens picture and video wallpapers so text on top stays easy to read.",
-                    look.wallDim, 0f, 0.8f, 0.05f, ::pct,
-                    preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { DimScene(look.wallDim) } },
-                ) { v -> updateLook { it.copy(wallDim = v ?: 0.35f) } },
-            ),
-        ),
-        SettingSection(
-            "Layout",
-            listOf(
-                choice(
-                    "Games view", Glyph.Grid, Palette.Butter,
-                    "How games show inside a system or collection: a grid of cards, a list with details (great for big libraries), a coverflow, spines on a bookshelf, or cartridges in a case.",
-                    GameViews, look.gameView,
-                    look = { v -> LayoutPreview("view-$v", Modifier.fillMaxSize(), rounded = false) },
-                ) { v -> updateLook { it.copy(gameView = v) } },
-                choice(
-                    "Grid size", Glyph.Grid, Palette.Butter, "How big game cards are in a system, or a fixed number of columns.",
-                    Grid.sizes, look.gridSize,
-                    look = { v -> GridPreview(size = v) },
-                ) { v -> updateLook { it.copy(gridSize = v) } },
-                choice(
-                    "Card shape", Glyph.Corners, Palette.Butter,
-                    "Rounded, square, circle, tall box-art cards, or wide cards for screenshots and banners.",
-                    Grid.shapes, look.cardShape,
-                    look = { v -> GridPreview(shape = v) },
-                ) { v -> updateLook { it.copy(cardShape = v) } },
-                choice(
-                    "Shelf look", Glyph.Layers, Palette.Butter,
-                    "The bookcase behind the Shelf view of a folder: warm wood, matte boards in the theme's colours, or open, with the cases on your wallpaper and only a thin shelf line.",
-                    ShelfLooks.choices, ShelfLooks.current(),
-                    look = { v -> LayoutPreview("view-shelf", Modifier.fillMaxSize(), rounded = false, look = look.copy(shelfLook = v)) },
-                ) { v -> updateLook { it.copy(shelfLook = v) } },
-                choice(
-                    "System tiles", Glyph.Highlight, Palette.Butter, "The look of the system tiles on the home screen.",
-                    Grid.tileStyles, look.systemTiles,
-                    look = { v -> SystemTilesScene(v) },
-                ) { v -> updateLook { it.copy(systemTiles = v) } },
-                toggle(
-                    "Game titles", Glyph.Text, Palette.Butter, "Write each game's name under its card.", settings.showTitles,
-                    look = { on -> GridPreview(titles = on) },
-                ) { on -> Store.updateSettings { it.copy(showTitles = on) } },
-                choice(
-                    "Home rows", Glyph.Home, Palette.Butter, "Which rows the home screen shows, and in what order.",
-                    HomeRowOrders.map { it.joinToString(",") to homeLabel(it) }, look.homeSections.joinToString(","),
-                    look = { v -> HomeRowsScene(v.split(",")) },
-                ) { v -> updateLook { it.copy(homeSections = v.split(",")) } },
-                choice(
-                    "Open folders", Glyph.Folder, Palette.Butter,
-                    "As a page, as a fullscreen page (the top bar slides away so the grid gets the whole screen), or as a popup over the screen you're on.",
-                    listOf("page" to "Page", "fullscreen" to "Fullscreen", "popup" to "Popup"),
-                    when { look.folderPopup -> "popup"; look.fullscreenFolders -> "fullscreen"; else -> "page" },
-                    look = { v -> FolderOpenScene(v) },
-                ) { v -> updateLook { it.copy(folderPopup = v == "popup", fullscreenFolders = v == "fullscreen") } },
-                toggle(
-                    "Now playing", Glyph.Gamepad, Palette.Butter,
-                    "While a game runs in the background, show it at the top of the home screen so you can jump back in.", look.nowPlaying,
-                    look = { on -> NowPlayingScene(on) },
-                ) { on -> updateLook { it.copy(nowPlaying = on) } },
-                toggle(
-                    "Corner hints", Glyph.Gamepad, Palette.Butter, "A small reminder of the buttons in the corner of the top screen.",
-                    look.cornerHints,
-                    look = { on -> CornerHintsScene(on) },
-                ) { on -> updateLook { it.copy(cornerHints = on) } },
-            ),
-        ),
-        SettingSection(
-            "Icon grid",
-            iconGridSettingRows(look),
-        ),
-        SettingSection(
-            "Dock",
-            listOf(
-                toggle(
-                    "Apps dock", Glyph.Grid, Palette.Lavender, "Your favourite Android apps on the home screen. Press Y on one to move or remove it.",
-                    io.github.zahakj.tandem.data.HomeStore.settings.showDock,
-                    look = { on -> DockScene(on, look.dockStyle, look.dockTop, look.dockAutoHide) },
-                ) { on -> io.github.zahakj.tandem.data.HomeStore.updateSettings { it.copy(showDock = on) } },
-                choice(
-                    "Dock style", Glyph.Layers, Palette.Lavender, "A floating bar, a full-width shelf, or just the icons. Applies to every layout except Shelves.",
-                    DockStyles, look.dockStyle,
-                    look = { v -> DockScene(true, v, look.dockTop, look.dockAutoHide) },
-                ) { v -> updateLook { it.copy(dockStyle = v) } },
-                toggle(
-                    "Dock on top", Glyph.Swap, Palette.Lavender, "Put the dock above the tiles instead of below them.", look.dockTop,
-                    look = { on -> DockScene(true, look.dockStyle, on, look.dockAutoHide) },
-                ) { on -> updateLook { it.copy(dockTop = on) } },
-                toggle(
-                    "Auto-hide dock", Glyph.Eye, Palette.Lavender, "The dock stays small and faded until you move into it.", look.dockAutoHide,
-                    look = { on -> DockScene(true, look.dockStyle, look.dockTop, on) },
-                ) { on -> updateLook { it.copy(dockAutoHide = on) } },
-            ),
-        ),
-        SettingSection(
-            "Bottom screen",
-            listOf(
-                choice(
-                    "Style", Glyph.Screens, Palette.Sky,
-                    "Details shows the game's art fading into its info. Art + info lets the moving art fill the screen with info on top. Animated art is pure eye candy. Clock keeps it calm.",
-                    BottomModes, settings.bottomMode,
-                    look = { v -> BottomPreview(v) },
-                ) { v -> Store.updateSettings { it.copy(bottomMode = v) } },
-                number(
-                    "Logo size", Glyph.Image, Palette.Sky, "The size of the game's logo over its art.",
-                    look.heroLogoScale, 0.3f, 1f, 0.1f, ::pct,
-                    preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { LogoScene(look.heroLogoScale) } },
-                ) { v -> updateLook { it.copy(heroLogoScale = v ?: 0.7f) } },
-                choice(
-                    "Art fade", Glyph.Layers, Palette.Sky, "How the art blends into the background below it.",
-                    Hero.gradients, look.heroGradient,
-                    look = { v -> ArtFadeScene(v) },
-                ) { v -> updateLook { it.copy(heroGradient = v) } },
-                choice(
-                    "Video snaps", Glyph.Image, Palette.Sky,
-                    "Plays a game's video (from ROMs/downloaded_media/<system>/videos) after you rest on it. Fast starts sooner; Saver waits longer so quick scrolling never decodes video. Always muted, and stopped while you play.",
-                    listOf("off" to "Off", "350" to "Fast", "650" to "Balanced", "1500" to "Saver"),
-                    if (!look.videoSnaps) "off" else look.videoDelayMs.toString().takeIf { it in setOf("350", "650", "1500") } ?: "650",
-                    look = { v -> VideoSnapScene(v.toIntOrNull()) },
-                ) { v -> updateLook { if (v == "off") it.copy(videoSnaps = false) else it.copy(videoSnaps = true, videoDelayMs = v.toInt()) } },
-                toggle(
-                    "Moving art", Glyph.Motion, Palette.Sky, "Game art slowly pans and zooms, like a living poster.", look.kenBurns,
-                    look = { on -> MovingArtScene(on) },
-                ) { on -> updateLook { it.copy(kenBurns = on) } },
-            ),
-        ),
-        SettingSection(
-            "Top bar",
-            listOf(
-                toggle(
-                    "Battery", Glyph.Battery, Palette.Mint, "Show the battery percentage next to the clock.", look.battery,
-                    look = { on -> TopBarScene(look.clock, on) },
-                ) { on -> updateLook { it.copy(battery = on) } },
-                choice(
-                    "Clock", Glyph.Clock, Palette.Mint, "12-hour, 24-hour, whatever the system uses, or no clock at all.",
-                    listOf("system" to "System", "12" to "12-hour", "24" to "24-hour", "off" to "Hidden"), look.clock,
-                    look = { v -> TopBarScene(v, look.battery) },
-                ) { v -> updateLook { it.copy(clock = v) } },
-            ),
-        ),
-        SettingSection(
-            "Controls",
-            listOf(
-                choice(
-                    "Button prompts", Glyph.Gamepad, Palette.Lavender, "How buttons are drawn in hints: Tandem's pastels, or Xbox, PlayStation or Nintendo style.",
-                    Prompts.styles, look.prompts,
-                    look = { v -> PromptsScene(v) },
-                ) { v -> updateLook { it.copy(prompts = v) } },
-                // The swaps are bindings (Bindings.swap): Open on B and Back on A, Options on X and Action on Y.
-                toggle(
-                    "Swap A and B", Glyph.Swap, Palette.Lavender, "Confirm with B and go back with A, like on a Nintendo console. Hints follow along.",
-                    Bindings.swapped(bindings, Command.Open, Command.Back),
-                    look = { on -> SwapButtonsScene(on, "A", "B", "Open", "Back") },
-                ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Open, Command.Back, on)) },
-                toggle(
-                    "Swap X and Y", Glyph.Swap, Palette.Lavender, "Search with Y and open options with X.",
-                    Bindings.swapped(bindings, Command.Options, Command.Action),
-                    look = { on -> SwapButtonsScene(on, "X", "Y", "Search", "Options") },
-                ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Options, Command.Action, on)) },
-                SettingRow(
-                    "Rebind buttons", if (rebound == 0) "Defaults" else io.github.zahakj.tandem.plural(rebound, "change"), Palette.Lavender, Glyph.Gamepad,
-                    "Give any of Tandem's commands another button, a chord of buttons pressed together, or a held button: " +
-                        "open, back, the options menu, Start, the quick settings, the game switcher, the side panel, paging, " +
-                        "hidden games, and a button for Favourite, Screenshot and Clip. Hints everywhere follow.",
-                    opens = true, keywords = "remap mapping custom controls chord hold shortcut keys buttons favourite screenshot clip side panel",
-                ) { Nav.go(Route.Rebind) },
-            ),
-        ),
-        SettingSection(
-            "Screens",
-            listOf(
-                toggle(
-                    "Swap screens", Glyph.Swap, Palette.Peach,
-                    "The library moves to the bottom (touch) screen and the details go on top, instantly. X does this on the icon grid. Games still open on the top screen.",
-                    look.swapScreens,
-                    look = { on -> DeviceScene(if (on) Shows.Details else Shows.Library, if (on) Shows.Library else Shows.Details) },
-                ) { on -> updateLook { it.copy(swapScreens = on) }; activity?.applyScreenRoles() },
-                toggle(
-                    "Keep auto-rotate off", Glyph.Screens, Palette.Peach,
-                    "The Thor turns auto-rotate back on by itself now and then. Tandem switches it off again whenever you come back. Turn this off to choose yourself.",
-                    io.github.zahakj.tandem.data.SystemPrefs.data.keepRotationOff,
-                ) { on -> io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(keepRotationOff = on) } },
-            ),
-        ),
-        soundSettings(trackCount),
-        SettingSection(
-            "Extras",
-            listOf(
-                SettingRow(
-                    "Reset look", "Pastel Night", Palette.Peach, Glyph.Restore,
-                    "Back to Tandem's original look: theme, layout, wallpapers, icons and motion. Your buttons, screens, sounds and music, " +
-                        "library, favourites and play time aren't touched.",
-                    keywords = "default factory start over appearance",
-                ) {
-                    // Every look setting at once can't be undone, so it asks first.
-                    Confirm.hold("Reset the whole look?", "Theme, layout, wallpapers, icons and motion go back to how Tandem first looked. Buttons, screens, sound and games stay.", "Reset") {
-                        io.github.zahakj.tandem.data.Backups.auto(ctx, "reset look")
-                        Store.updateSettings { it.copy(look = resetLook(it.look), reduceMotion = false) }
-                        activity?.applyScreenRoles()
-                        Music.refresh()
-                        Toasts.show("Back to Pastel Night")
+        SettingSection(Tx.s(R.string.look_group_colour), en = "Colour & highlight", rows = listOf(
+            choice(
+                Tx.s(R.string.look_accent), Glyph.Sparkle, Palette.Accent, Tx.s(R.string.look_accent_help),
+                accentOptions, look.accent ?: "",
+                preview = { AccentPreview() },
+                look = { id -> AccentScene(Themes.resolve(look.copy(accent = id.ifEmpty { null })).accent) },
+                extra = Tx.s(R.string.look_accent_type) to {
+                    TextEntry.ask(Tx.s(R.string.look_accent_hex), look.accent ?: "#") { text ->
+                        val c = parseColor(text)
+                        if (c == null) { Toasts.show(Tx.s(R.string.look_accent_bad)); Sounds.error() }
+                        else updateLook { it.copy(accent = c.toHex(), highlightColor = "accent") }
                     }
                 },
-            ),
-        ),
+                en = "Accent colour",
+            ) { id ->
+                if (id.isEmpty()) updateLook { it.copy(accent = null, highlightColor = "item") }
+                else updateLook { it.copy(accent = id, highlightColor = "accent") }
+            },
+            choice(
+                Tx.s(R.string.look_highlight), Glyph.Highlight, Palette.Lavender, Tx.s(R.string.look_highlight_help),
+                listOf("" to Tx.s(R.string.look_theme_decides, base.highlight.label)) + HighlightStyle.entries.map { it.id to it.label }, look.highlight ?: "",
+                look = { v -> HighlightScene(HighlightStyle.of(v) ?: base.highlight) },
+                en = "Highlight style",
+            ) { v -> updateLook { it.copy(highlight = v.ifEmpty { null }) } },
+            choice(
+                Tx.s(R.string.look_surface), Glyph.Layers, Palette.Sky, Tx.s(R.string.look_surface_help),
+                listOf("" to Tx.s(R.string.look_theme_decides, base.material.label)) + SurfaceMaterial.entries.map { it.id to it.label }, look.material ?: "",
+                look = { v -> SurfaceScene(SurfaceMaterial.of(v) ?: base.material) },
+                en = "Surface",
+            ) { v -> updateLook { it.copy(material = v.ifEmpty { null }) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_icons), en = "System icons", rows = listOf(
+            choice(
+                Tx.s(R.string.look_icon_style), Glyph.Gamepad, Palette.Accent, Tx.s(R.string.look_icon_style_help),
+                listOf("" to Tx.s(R.string.look_theme_decides, base.iconStyle.label)) + IconStyle.entries.map { it.id to it.label }, look.iconStyle ?: "",
+                look = { v -> IconStyleScene(IconStyle.of(v) ?: base.iconStyle) },
+                en = "Icon style",
+            ) { v -> updateLook { it.copy(iconStyle = v.ifEmpty { null }) } },
+            choice(
+                Tx.s(R.string.look_icons_from), Glyph.Image, Palette.Accent, Tx.s(R.string.look_icons_from_help),
+                ThemePacks.iconSources(), look.iconPack,
+                preview = { IconsPreview() },
+                en = "Icons from",
+            ) { v -> updateLook { it.copy(iconPack = v) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_motion), en = "Motion", rows = listOf(
+            choice(
+                Tx.s(R.string.look_animation), Glyph.Motion, Palette.Mint, Tx.s(R.string.look_animation_help),
+                listOf("" to Tx.s(R.string.look_theme_decides, base.animation.label)) + AnimationStyle.entries.map { it.id to it.label }, look.motion ?: "",
+                look = { v -> MotionStyleScene(AnimationStyle.of(v) ?: base.animation) },
+                en = "Animation style",
+            ) { v -> updateLook { it.copy(motion = v.ifEmpty { null }) } },
+            toggle(
+                Tx.s(R.string.look_reduce_motion), Glyph.Motion, Palette.Mint, Tx.s(R.string.look_reduce_motion_help),
+                settings.reduceMotion,
+                look = { on -> StillnessScene(on) },
+                en = "Reduce motion",
+            ) { on -> Store.updateSettings { it.copy(reduceMotion = on) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_wallpaper), en = "Wallpaper", rows = listOf(
+            choice(
+                Tx.s(R.string.look_wall_top), Glyph.Image, Palette.Peach, Tx.s(R.string.look_wall_top_help),
+                wallOptions, look.wallTop.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme", // tx-ok: an option id
+                preview = { WallpaperPreview(look.wallTop, ScreenSlot.Top) },
+                look = { v -> WallpaperArt(v, ScreenSlot.Top, moving = false) },
+                en = "Top screen",
+            ) { v -> updateLook { it.copy(wallTop = v) } },
+            choice(
+                Tx.s(R.string.look_wall_bottom), Glyph.Image, Palette.Peach, Tx.s(R.string.look_wall_bottom_help),
+                wallOptions, look.wallBottom.takeIf { w -> wallOptions.any { it.first == w } } ?: "theme", // tx-ok: an option id
+                preview = { WallpaperPreview(look.wallBottom, ScreenSlot.Bottom) },
+                look = { v -> WallpaperArt(v, ScreenSlot.Bottom, moving = false) },
+                en = "Bottom screen",
+            ) { v -> updateLook { it.copy(wallBottom = v) } },
+            number(
+                Tx.s(R.string.look_wall_dim), Glyph.Image, Palette.Peach, Tx.s(R.string.look_wall_dim_help),
+                look.wallDim, 0f, 0.8f, 0.05f, ::pct,
+                preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { DimScene(look.wallDim) } },
+                en = "Picture dimming",
+            ) { v -> updateLook { it.copy(wallDim = v ?: 0.35f) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_layout), en = "Layout", rows = listOf(
+            choice(
+                Tx.s(R.string.look_games_view), Glyph.Grid, Palette.Butter, Tx.s(R.string.look_games_view_help),
+                GameViews, look.gameView,
+                look = { v -> LayoutPreview("view-$v", Modifier.fillMaxSize(), rounded = false) },
+                en = "Games view",
+            ) { v -> updateLook { it.copy(gameView = v) } },
+            choice(
+                Tx.s(R.string.look_games_grid_size), Glyph.Grid, Palette.Butter, Tx.s(R.string.look_games_grid_size_help),
+                Grid.sizes, look.gridSize,
+                look = { v -> GridPreview(size = v) },
+                en = "Grid size",
+            ) { v -> updateLook { it.copy(gridSize = v) } },
+            choice(
+                Tx.s(R.string.look_games_card_shape), Glyph.Corners, Palette.Butter, Tx.s(R.string.look_games_card_shape_help),
+                Grid.shapes, look.cardShape,
+                look = { v -> GridPreview(shape = v) },
+                en = "Card shape",
+            ) { v -> updateLook { it.copy(cardShape = v) } },
+            choice(
+                Tx.s(R.string.look_games_shelf_look), Glyph.Layers, Palette.Butter, Tx.s(R.string.look_games_shelf_look_help),
+                ShelfLooks.choices, ShelfLooks.current(),
+                look = { v -> LayoutPreview("view-shelf", Modifier.fillMaxSize(), rounded = false, look = look.copy(shelfLook = v)) },
+                en = "Shelf look",
+            ) { v -> updateLook { it.copy(shelfLook = v) } },
+            choice(
+                Tx.s(R.string.look_home_system_tiles), Glyph.Highlight, Palette.Butter, Tx.s(R.string.look_home_system_tiles_help),
+                Grid.tileStyles, look.systemTiles,
+                look = { v -> SystemTilesScene(v) },
+                en = "System tiles",
+            ) { v -> updateLook { it.copy(systemTiles = v) } },
+            toggle(
+                Tx.s(R.string.look_games_titles), Glyph.Text, Palette.Butter, Tx.s(R.string.look_games_titles_help), settings.showTitles,
+                look = { on -> GridPreview(titles = on) },
+                en = "Game titles",
+            ) { on -> Store.updateSettings { it.copy(showTitles = on) } },
+            choice(
+                Tx.s(R.string.look_home_rows), Glyph.Home, Palette.Butter, Tx.s(R.string.look_home_rows_help),
+                HomeRowOrders.map { it.joinToString(",") to homeLabel(it) }, look.homeSections.joinToString(","),
+                look = { v -> HomeRowsScene(v.split(",")) },
+                en = "Home rows",
+            ) { v -> updateLook { it.copy(homeSections = v.split(",")) } },
+            choice(
+                Tx.s(R.string.look_home_open_folders), Glyph.Folder, Palette.Butter, Tx.s(R.string.look_home_open_folders_help),
+                listOf(
+                    "page" to Tx.s(R.string.look_home_open_folders_page), "fullscreen" to Tx.s(R.string.look_home_open_folders_fullscreen),
+                    "popup" to Tx.s(R.string.look_home_open_folders_popup),
+                ),
+                when { look.folderPopup -> "popup"; look.fullscreenFolders -> "fullscreen"; else -> "page" },
+                look = { v -> FolderOpenScene(v) },
+                en = "Open folders",
+            ) { v -> updateLook { it.copy(folderPopup = v == "popup", fullscreenFolders = v == "fullscreen") } },
+            toggle(
+                Tx.s(R.string.look_home_now_playing), Glyph.Gamepad, Palette.Butter, Tx.s(R.string.look_home_now_playing_help), look.nowPlaying,
+                look = { on -> NowPlayingScene(on) },
+                en = "Now playing",
+            ) { on -> updateLook { it.copy(nowPlaying = on) } },
+            toggle(
+                Tx.s(R.string.look_corner_hints), Glyph.Gamepad, Palette.Butter, Tx.s(R.string.look_corner_hints_help),
+                look.cornerHints,
+                look = { on -> CornerHintsScene(on) },
+                en = "Corner hints",
+            ) { on -> updateLook { it.copy(cornerHints = on) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_icon_grid), iconGridSettingRows(look), en = "Icon grid"),
+        SettingSection(Tx.s(R.string.look_group_dock), en = "Dock", rows = listOf(
+            toggle(
+                Tx.s(R.string.look_dock_apps), Glyph.Grid, Palette.Lavender, Tx.s(R.string.look_dock_apps_help),
+                io.github.zahakj.tandem.data.HomeStore.settings.showDock,
+                look = { on -> DockScene(on, look.dockStyle, look.dockTop, look.dockAutoHide) },
+                en = "Apps dock",
+            ) { on -> io.github.zahakj.tandem.data.HomeStore.updateSettings { it.copy(showDock = on) } },
+            choice(
+                Tx.s(R.string.look_dock_style), Glyph.Layers, Palette.Lavender, Tx.s(R.string.look_dock_style_help),
+                DockStyles, look.dockStyle,
+                look = { v -> DockScene(true, v, look.dockTop, look.dockAutoHide) },
+                en = "Dock style",
+            ) { v -> updateLook { it.copy(dockStyle = v) } },
+            toggle(
+                Tx.s(R.string.look_dock_top), Glyph.Swap, Palette.Lavender, Tx.s(R.string.look_dock_top_help), look.dockTop,
+                look = { on -> DockScene(true, look.dockStyle, on, look.dockAutoHide) },
+                en = "Dock on top",
+            ) { on -> updateLook { it.copy(dockTop = on) } },
+            toggle(
+                Tx.s(R.string.look_dock_auto_hide), Glyph.Eye, Palette.Lavender, Tx.s(R.string.look_dock_auto_hide_help), look.dockAutoHide,
+                look = { on -> DockScene(true, look.dockStyle, look.dockTop, on) },
+                en = "Auto-hide dock",
+            ) { on -> updateLook { it.copy(dockAutoHide = on) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_bottom), en = "Bottom screen", rows = listOf(
+            choice(
+                Tx.s(R.string.look_bottom_style), Glyph.Screens, Palette.Sky, Tx.s(R.string.look_bottom_style_help),
+                BottomModes, settings.bottomMode,
+                look = { v -> BottomPreview(v) },
+                en = "Style",
+            ) { v -> Store.updateSettings { it.copy(bottomMode = v) } },
+            number(
+                Tx.s(R.string.look_bottom_logo_size), Glyph.Image, Palette.Sky, Tx.s(R.string.look_bottom_logo_size_help),
+                look.heroLogoScale, 0.3f, 1f, 0.1f, ::pct,
+                preview = { Box(Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp))) { LogoScene(look.heroLogoScale) } },
+                en = "Logo size",
+            ) { v -> updateLook { it.copy(heroLogoScale = v ?: 0.7f) } },
+            choice(
+                Tx.s(R.string.look_bottom_art_fade), Glyph.Layers, Palette.Sky, Tx.s(R.string.look_bottom_art_fade_help),
+                Hero.gradients, look.heroGradient,
+                look = { v -> ArtFadeScene(v) },
+                en = "Art fade",
+            ) { v -> updateLook { it.copy(heroGradient = v) } },
+            choice(
+                Tx.s(R.string.look_bottom_video_snaps), Glyph.Image, Palette.Sky, Tx.s(R.string.look_bottom_video_snaps_help),
+                listOf(
+                    "off" to Tx.s(R.string.common_off), "350" to Tx.s(R.string.look_bottom_video_snaps_fast),
+                    "650" to Tx.s(R.string.look_bottom_video_snaps_balanced), "1500" to Tx.s(R.string.look_bottom_video_snaps_saver),
+                ),
+                if (!look.videoSnaps) "off" else look.videoDelayMs.toString().takeIf { it in setOf("350", "650", "1500") } ?: "650", // tx-ok: option ids
+                look = { v -> VideoSnapScene(v.toIntOrNull()) },
+                en = "Video snaps",
+            ) { v -> updateLook { if (v == "off") it.copy(videoSnaps = false) else it.copy(videoSnaps = true, videoDelayMs = v.toInt()) } },
+            toggle(
+                Tx.s(R.string.look_bottom_moving_art), Glyph.Motion, Palette.Sky, Tx.s(R.string.look_bottom_moving_art_help), look.kenBurns,
+                look = { on -> MovingArtScene(on) },
+                en = "Moving art",
+            ) { on -> updateLook { it.copy(kenBurns = on) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_top_bar), en = "Top bar", rows = listOf(
+            toggle(
+                Tx.s(R.string.look_top_battery), Glyph.Battery, Palette.Mint, Tx.s(R.string.look_top_battery_help), look.battery,
+                look = { on -> TopBarScene(look.clock, on) },
+                en = "Battery",
+            ) { on -> updateLook { it.copy(battery = on) } },
+            choice(
+                Tx.s(R.string.look_top_clock), Glyph.Clock, Palette.Mint, Tx.s(R.string.look_top_clock_help),
+                listOf(
+                    "system" to Tx.s(R.string.look_top_clock_system), "12" to Tx.s(R.string.look_top_clock_12),
+                    "24" to Tx.s(R.string.look_top_clock_24), "off" to Tx.s(R.string.look_top_clock_hidden),
+                ),
+                look.clock,
+                look = { v -> TopBarScene(v, look.battery) },
+                en = "Clock",
+            ) { v -> updateLook { it.copy(clock = v) } },
+        )),
+        SettingSection(Tx.s(R.string.look_group_controls), en = "Controls", rows = listOf(
+            choice(
+                Tx.s(R.string.look_controls_prompts), Glyph.Gamepad, Palette.Lavender, Tx.s(R.string.look_controls_prompts_help),
+                Prompts.styles, look.prompts,
+                look = { v -> PromptsScene(v) },
+                en = "Button prompts",
+            ) { v -> updateLook { it.copy(prompts = v) } },
+            // The swaps are bindings (Bindings.swap): Open on B and Back on A, Options on X and Action on Y.
+            toggle(
+                Tx.s(R.string.look_controls_swap_ab), Glyph.Swap, Palette.Lavender, Tx.s(R.string.look_controls_swap_ab_help),
+                Bindings.swapped(bindings, Command.Open, Command.Back),
+                look = { on -> SwapButtonsScene(on, "A", "B", Tx.s(R.string.look_controls_does_open), Tx.s(R.string.common_back)) },
+                en = "Swap A and B",
+            ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Open, Command.Back, on)) },
+            toggle(
+                Tx.s(R.string.look_controls_swap_xy), Glyph.Swap, Palette.Lavender, Tx.s(R.string.look_controls_swap_xy_help),
+                Bindings.swapped(bindings, Command.Options, Command.Action),
+                look = { on -> SwapButtonsScene(on, "X", "Y", Tx.s(R.string.look_controls_does_search), Tx.s(R.string.look_controls_does_options)) },
+                en = "Swap X and Y",
+            ) { on -> ControllerStore.setBindings(Bindings.swap(bindings, Command.Options, Command.Action, on)) },
+            SettingRow(
+                Tx.s(R.string.look_controls_rebind),
+                if (rebound == 0) Tx.s(R.string.look_controls_rebind_defaults) else Tx.p(R.plurals.look_controls_rebind_changes, rebound),
+                Palette.Lavender, Glyph.Gamepad, Tx.s(R.string.look_controls_rebind_help),
+                opens = true, keywords = "remap mapping custom controls chord hold shortcut keys buttons favourite screenshot clip side panel",
+                en = "Rebind buttons",
+            ) { Nav.go(Route.Rebind) },
+        )),
+        SettingSection(Tx.s(R.string.look_group_screens), en = "Screens", rows = listOf(
+            toggle(
+                Tx.s(R.string.look_screens_swap), Glyph.Swap, Palette.Peach, Tx.s(R.string.look_screens_swap_help),
+                look.swapScreens,
+                look = { on -> DeviceScene(if (on) Shows.Details else Shows.Library, if (on) Shows.Library else Shows.Details) },
+                en = "Swap screens",
+            ) { on -> updateLook { it.copy(swapScreens = on) }; activity?.applyScreenRoles() },
+            toggle(
+                Tx.s(R.string.look_screens_rotation), Glyph.Screens, Palette.Peach, Tx.s(R.string.look_screens_rotation_help),
+                io.github.zahakj.tandem.data.SystemPrefs.data.keepRotationOff,
+                en = "Keep auto-rotate off",
+            ) { on -> io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(keepRotationOff = on) } },
+        )),
+        soundSettings(trackCount),
+        SettingSection(Tx.s(R.string.look_group_extras), en = "Extras", rows = listOf(
+            SettingRow(
+                Tx.s(R.string.look_reset), BuiltInThemes.PastelNight.name, Palette.Peach, Glyph.Restore, Tx.s(R.string.look_reset_help),
+                keywords = "default factory start over appearance",
+                en = "Reset look",
+            ) {
+                // Every look setting at once can't be undone, so it asks first.
+                Confirm.hold(Tx.s(R.string.look_reset_ask), Tx.s(R.string.look_reset_ask_body), Tx.s(R.string.look_reset_ask_do)) {
+                    io.github.zahakj.tandem.data.Backups.auto(ctx, "reset look") // tx-ok: the reason is saved with the backup
+                    Store.updateSettings { it.copy(look = resetLook(it.look), reduceMotion = false) }
+                    activity?.applyScreenRoles()
+                    Music.refresh()
+                    Toasts.show(Tx.s(R.string.look_reset_done, BuiltInThemes.PastelNight.name))
+                }
+            },
+        )),
     ) + listOfNotNull(themePackAudioSettings())
 }
 
@@ -595,14 +604,14 @@ fun lookHeader(routeKey: String): SettingsHeaderSpec = SettingsHeaderSpec(
         val look = Store.settings.look
         item(key = "gallery") {
             Column(Modifier.showsFromTop(FocusRoom)) {
-                SettingsHeader("Themes", "A uses one · packs below")
+                SettingsHeader(Tx.s(R.string.look_gallery_themes), Tx.s(R.string.look_gallery_themes_note))
                 Spacer(Modifier.height(8.dp))
                 PaddedScrolling { BuiltInThemeRow(look.theme, target, onFocusKey) }
             }
         }
         item(key = "packs") {
             Column(Modifier.showsFromTop()) {
-                SettingsHeader("Theme packs", "Cocoon · Tandem")
+                SettingsHeader(Tx.s(R.string.look_gallery_packs), "Cocoon · Tandem") // tx-ok: the two pack formats' names
                 Spacer(Modifier.height(8.dp))
                 PaddedScrolling { PackThemeRow(look.theme, target, onFocusKey) }
             }
@@ -617,7 +626,7 @@ fun layoutHeader(routeKey: String): SettingsHeaderSpec = SettingsHeaderSpec(
     content = { target, onFocusKey ->
         item(key = "layouts") {
             Column(Modifier.showsFromTop(FocusRoom)) {
-                SettingsHeader("Home layout", "A switches")
+                SettingsHeader(Tx.s(R.string.look_gallery_layouts), Tx.s(R.string.look_gallery_layouts_note))
                 Spacer(Modifier.height(8.dp))
                 PaddedScrolling { LayoutGallery(routeKey, Store.settings.look.homeLayout, target, onFocusKey) }
             }
@@ -628,8 +637,9 @@ fun layoutHeader(routeKey: String): SettingsHeaderSpec = SettingsHeaderSpec(
         val id = key.removePrefix("layout:")
         val look = Store.settings.look
         SettingRow(
-            HomeLayouts.firstOrNull { it.first == id }?.second ?: id, if (id == look.homeLayout) "In use" else "Layout",
-            Palette.Butter, Glyph.Home, LayoutBlurbs[id],
+            HomeLayouts.firstOrNull { it.first == id }?.second ?: id,
+            Tx.s(if (id == look.homeLayout) R.string.look_in_use else R.string.look_gallery_layout_kind),
+            Palette.Butter, Glyph.Home, LayoutBlurbs[id]?.let { Tx.s(it) },
             preview = { LayoutPreview(id, Modifier.fillMaxWidth().aspectRatio(1.6f)) },
         ) {}
     },
@@ -640,9 +650,9 @@ private fun themeGalleryRow(key: String): SettingRow? {
     val look = Store.settings.look
     if (key == MANAGE_PACKS_KEY) {
         return SettingRow(
-            "Theme packs", if (ThemePacks.packs.isEmpty()) "None yet" else "${ThemePacks.packs.size} installed", Palette.Accent, Glyph.Download,
-            "Import Tandem packs or Cocoon packs from a folder or a .zip: colours, wallpapers, system icons, heroes and logos. " +
-                "Packs Cocoon already downloaded to ROMs/themes show up by themselves. Choose which parts of a pack to use, or remove it.",
+            Tx.s(R.string.look_gallery_packs),
+            if (ThemePacks.packs.isEmpty()) Tx.s(R.string.look_packs_none) else Tx.p(R.plurals.look_packs_installed, ThemePacks.packs.size),
+            Palette.Accent, Glyph.Download, Tx.s(R.string.look_packs_manage_help),
             opens = true,
         ) {}
     }
@@ -651,13 +661,13 @@ private fun themeGalleryRow(key: String): SettingRow? {
     ThemePacks.byId(id)?.let { p ->
         val spec = Themes.withParts(p.spec, look)
         return SettingRow(
-            p.name, if (p.id == look.theme) "In use" else p.format.label, spec.accent, Glyph.Theme,
+            p.name, if (p.id == look.theme) Tx.s(R.string.look_in_use) else p.format.label, spec.accent, Glyph.Theme,
             listOfNotNull(
                 p.description.lineSequence().firstOrNull()?.take(140)?.ifBlank { null },
-                p.author.ifBlank { null }?.let { "By $it." },
-                p.contents.replaceFirstChar { it.uppercase() } + ".",
-                p.credits.takeIf { it.isNotEmpty() }?.joinToString(", ", prefix = "Art: "),
-                "A uses it; the pack manager chooses which parts.",
+                p.author.ifBlank { null }?.let { Tx.s(R.string.look_pack_by_sentence, it) },
+                Tx.s(R.string.look_pack_contents_sentence, p.contents.replaceFirstChar { it.uppercase() }),
+                p.creditLines().takeIf { it.isNotEmpty() }?.let { Tx.s(R.string.look_pack_art, it.joinToString(", ")) },
+                Tx.s(R.string.look_pack_uses_hint),
             ).joinToString("  "),
             // One miniature, scaled to the panel: two stacked previews would spill over the hints.
             preview = { ThemeMiniature(spec, p, Modifier.fillMaxWidth().aspectRatio(1.6f).clip(RoundedCornerShape(16.dp)), moving = true, tile = 56.dp) },
@@ -665,8 +675,8 @@ private fun themeGalleryRow(key: String): SettingRow? {
     }
     val t = Themes.byId(id) ?: return null
     return SettingRow(
-        t.name, if (t.id == look.theme) "In use" else t.source, t.accent, Glyph.Theme,
-        t.tagline + ". A uses it.",
+        t.name, if (t.id == look.theme) Tx.s(R.string.look_in_use) else t.source, t.accent, Glyph.Theme,
+        Tx.s(R.string.look_theme_uses_hint, t.tagline),
         preview = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 ThemeMiniature(t, null, Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(16.dp)), moving = true, tile = 56.dp)
@@ -902,16 +912,15 @@ private fun PreviewLines() {
 }
 
 
+/** What each home layout is like, for the side panel (layout id to string). */
 private val LayoutBlurbs = mapOf(
-    "shelves" to "Rows you scroll through: continue playing, systems, collections and your apps. Tandem's classic home.",
-    "grid" to "Every system, folder, app and game as a square icon on one dense grid that scrolls sideways, with a pill dock. The other screen shows the highlighted icon big; X swaps the screens.",
-    "carousel" to "A coverflow: the highlighted card sits big in the middle and the others turn away to the sides.",
-    "list" to "Compact rows with a big preview beside them. Fast to scan, great for huge libraries.",
-    "console" to "A console-style dashboard: the highlighted item's art fills the screen with one row of big tiles along the bottom.",
-    "orbit" to "Tandem's own: your systems, collections and apps ride an orbit of round icons, the highlighted one big at the front. " +
-        "Above it its latest games fan out like cards in a hand, under a Continue ribbon. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.",
-    "spotlight" to "Game first: the highlighted game's art fills the screen, a rail of covers runs down one side and its logo, story and play time sit on the other. " +
-        "Up and Down move the rail, L1 and R1 change system or collection, X reads the whole story.",
+    "shelves" to R.string.look_layout_shelves_help,
+    "grid" to R.string.look_layout_grid_help,
+    "carousel" to R.string.look_layout_carousel_help,
+    "list" to R.string.look_layout_list_help,
+    "console" to R.string.look_layout_console_help,
+    "orbit" to R.string.look_layout_orbit_help,
+    "spotlight" to R.string.look_layout_spotlight_help,
 )
 
 /** Every home layout as a live sketch in the current theme. A switches to it. */
@@ -1265,10 +1274,10 @@ fun CornerHints() {
             Modifier.clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.82f)).padding(horizontal = 12.dp, vertical = 7.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
         ) {
-            ButtonHint("A", if (game) "Play" else "Open", Palette.Mint)
-            if (game) ButtonHint("Y", "Options", Palette.Butter)
-            ButtonHint("X", "Search", Palette.Sky)
-            ButtonHint("Start", "Menu", Palette.Lavender)
+            ButtonHint("A", Tx.s(if (game) R.string.look_hints_play else R.string.look_hints_open), Palette.Mint)
+            if (game) ButtonHint("Y", Tx.s(R.string.look_hints_options), Palette.Butter)
+            ButtonHint("X", Tx.s(R.string.look_hints_search), Palette.Sky)
+            ButtonHint("Start", Tx.s(R.string.look_hints_menu), Palette.Lavender)
         }
     }
 }

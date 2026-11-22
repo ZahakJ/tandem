@@ -1,5 +1,7 @@
 package io.github.zahakj.tandem.audio
 
+import io.github.zahakj.tandem.R
+
 /**
  * "Calm": Tandem's default soundtrack, the first music a new user hears. Two short, slow pieces for soft piano,
  * celesta and harp over a warm pad: few notes, long rests, low and gentle, so it sits behind browsing rather than in
@@ -10,6 +12,7 @@ package io.github.zahakj.tandem.audio
 object Calm {
     val all: List<Song> by lazy { listOf(stillWater(), softMorning()) }
 
+    // tx-ok: song titles are names, the same in every language
     val names: List<Pair<String, String>> = listOf("still-water" to "Still Water", "soft-morning" to "Soft Morning")
 
     // --- The instruments: soft and far away -----------------------------------------------------------------------
@@ -40,7 +43,7 @@ object Calm {
 
     // --- Still Water: D major, 4/4, piano over a pad, a few celesta notes -----------------------------------------
 
-    private fun stillWater() = song("still-water", "Still Water", "Soft piano on a quiet lake at dusk", bpm = 64.0) {
+    private fun stillWater() = song("still-water", "Still Water", R.string.sound_mood_still_water, bpm = 64.0) {
         rubato = 0.04
         openVoicing = true
         part("piano", piano())
@@ -81,7 +84,7 @@ object Calm {
 
     // --- Soft Morning: F major, 4/4, harp and celesta, the piano low -----------------------------------------------
 
-    private fun softMorning() = song("soft-morning", "Soft Morning", "Harp and celesta as the light comes in", bpm = 60.0) {
+    private fun softMorning() = song("soft-morning", "Soft Morning", R.string.sound_mood_soft_morning, bpm = 60.0) {
         rubato = 0.04
         openVoicing = true
         part("harp", harp())
