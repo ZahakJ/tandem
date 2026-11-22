@@ -149,7 +149,7 @@
     <string name="look_icon_style">Style des icônes</string>
     <string name="look_icon_style_help">Comment Tandem dessine les icônes des systèmes quand un pack de thème n’apporte pas les siennes : une petite console du bon genre avec le nom du système, en bulles brillantes, tubes néon, pixels, LCD, chrome et plus encore.</string>
     <string name="look_icons_from">Icônes de</string>
-    <string name="look_icons_from_help">Utilise les icônes de systèmes, bannières et logos d’un pack avec n’importe quel thème, ou fais-les toujours dessiner. Auto prend les visuels du pack de thème ; avec un thème intégré, il emprunte le premier pack de dossiers intelligents Cocoon trouvé dans ROMs/assets/smart_folders. Dessinées par Tandem suit le style des icônes du thème.</string>
+    <string name="look_icons_from_help">Utilise les icônes de systèmes, bannières et logos d’un pack avec n’importe quel thème, ou fais-les toujours dessiner. « Auto » prend les visuels du pack de thème ; avec un thème intégré, il emprunte le premier pack de dossiers intelligents Cocoon trouvé dans ROMs/assets/smart_folders. « Dessinées par Tandem » suit le style des icônes du thème.</string>
     <!-- Icons from options; the others are the names of installed packs. -->
     <string name="look_icons_from_auto">Auto</string>
     <string name="look_icons_from_drawn">Dessinées par Tandem</string>
@@ -176,7 +176,7 @@
     <string name="look_games_card_shape">Forme des cartes</string>
     <string name="look_games_card_shape_help">Arrondies, carrées, rondes, hautes comme des jaquettes, ou larges pour les captures et les bannières.</string>
     <string name="look_games_shelf_look">Style de l’étagère</string>
-    <string name="look_games_shelf_look_help">Le meuble derrière la vue Étagère d’un dossier : bois chaleureux, planches mates aux couleurs du thème, ou ouverte, avec les boîtiers posés sur ton fond d’écran et juste une fine ligne d’étagère.</string>
+    <string name="look_games_shelf_look_help">Le meuble derrière la vue Étagère d’un dossier : bois chaleureux, planches mates aux couleurs du thème, ou ouvert, avec les boîtiers posés sur ton fond d’écran et juste une fine ligne d’étagère.</string>
     <string name="look_games_titles">Titres des jeux</string>
     <string name="look_games_titles_help">Écrit le nom de chaque jeu sous sa carte.</string>
     <string name="look_home_system_tiles">Vignettes des systèmes</string>
@@ -199,7 +199,7 @@
     <string name="look_dock_style_help">Une barre flottante, une tablette sur toute la largeur, ou juste les icônes. S’applique à toutes les dispositions sauf Rayons.</string>
     <string name="look_dock_top">Dock en haut</string>
     <string name="look_dock_top_help">Place le dock au-dessus des vignettes plutôt qu’en dessous.</string>
-    <string name="look_dock_auto_hide">Masquer le dock</string>
+    <string name="look_dock_auto_hide">Dock rétractable</string>
     <string name="look_dock_auto_hide_help">Le dock reste petit et discret jusqu’à ce que tu y ailles.</string>
 
     <!-- The bottom screen's style while you browse (Two screens › Other screen). -->
@@ -250,7 +250,7 @@
     <string name="look_screens_swap">Inverser les écrans</string>
     <string name="look_screens_swap_help">La bibliothèque passe sur l’écran du bas (tactile) et les infos en haut, instantanément. X fait la même chose sur la grille d’icônes. Les jeux s’ouvrent toujours sur l’écran du haut.</string>
     <string name="look_screens_rotation">Bloquer la rotation auto</string>
-    <string name="look_screens_rotation_help">La Thor réactive la rotation automatique toute seule de temps en temps. Tandem la recoupe chaque fois que tu reviens. Désactive ceci pour choisir toi-même.</string>
+    <string name="look_screens_rotation_help">La Thor réactive la rotation automatique toute seule de temps en temps. Tandem la recoupe chaque fois que tu reviens. Désactive cette option pour choisir toi-même.</string>
 
     <string name="look_reset">Réinitialiser le look</string>
     <string name="look_reset_help">Retour au look d’origine de Tandem : thème, disposition, fonds d’écran, icônes et animations. Tes boutons, écrans, sons et musique, ta bibliothèque, tes favoris et ton temps de jeu ne bougent pas.</string>
@@ -362,7 +362,7 @@
     <string name="look_packs_import_folder_detail">Un dossier de pack</string>
     <string name="look_packs_import_zip">Importer un .zip</string>
     <string name="look_packs_import_zip_detail">Un pack compressé</string>
-    <string name="look_packs_reload">Rechercher</string>
+    <string name="look_packs_reload">Actualiser</string>
     <string name="look_packs_reload_detail">Trouver de nouveaux packs</string>
     <string name="look_packs_no_picker">Pas de sélecteur de fichiers sur cet appareil</string>
     <string name="look_packs_importing">Importation…</string>
@@ -490,7 +490,7 @@
     <string name="look_welcome_cocoon">J’ai trouvé tes affaires Cocoon</string>
     <string name="look_welcome_cocoon_detail">Rien à copier : Tandem les lit là où Cocoon les range, et n’y touche jamais.</string>
     <!-- %1$s is the backup's date as its folder writes it, like "2025-03-14". -->
-    <string name="look_welcome_cocoon_backup">Ta sauvegarde Cocoon du %1$s : le même accueil, le même dock et le même thème en un clic</string>
+    <string name="look_welcome_cocoon_backup">Ta sauvegarde Cocoon du %1$s : le même accueil, le même dock et le même thème d’une seule pression</string>
     <!-- %1$d is how many theme packs, %2$s the first few names. -->
     <plurals name="look_welcome_cocoon_themes">
         <item quantity="one">%1$d pack de thème : %2$s</item>
@@ -504,7 +504,7 @@
         <item quantity="one">%1$d fichier de plateformes : ses émulateurs sont prêts dans Systèmes</item>
         <item quantity="other">%1$d fichiers de plateformes : leurs émulateurs sont prêts dans Systèmes</item>
     </plurals>
-    <string name="look_welcome_cocoon_gamelists">Noms, descriptions et visuels des jeux venus des gamelists de Cocoon suivent tout seuls</string>
+    <string name="look_welcome_cocoon_gamelists">Noms, descriptions et visuels des jeux venus des gamelists de Cocoon arrivent tout seuls</string>
     <string name="look_welcome_cocoon_bring">Récupérer ma config Cocoon</string>
     <string name="look_welcome_cocoon_bringing">Récupération…</string>
     <!-- Use a theme pack as the theme: %1$s is its name. -->
@@ -516,8 +516,8 @@
     <!-- Download LaunchBox's games database: %1$d is its size in megabytes. -->
     <string name="look_welcome_art_launchbox">Télécharger LaunchBox (%1$d Mo, Wi-Fi)</string>
     <!-- Step: resuming running games through the Shizuku app. -->
-    <string name="look_welcome_resume">Reprends pile là où tu t’étais arrêté</string>
-    <string name="look_welcome_resume_ready">Reprendre est prêt</string>
+    <string name="look_welcome_resume">Reprends pile là où tu en étais</string>
+    <string name="look_welcome_resume_ready">La reprise est prête</string>
     <string name="look_welcome_resume_ready_detail">Choisir un jeu encore ouvert le ramène au lieu de le relancer.</string>
     <string name="look_welcome_resume_allow_detail">Autorise Tandem dans Shizuku et un jeu encore lancé revient comme tu l’as laissé, avec le sélecteur (maintiens Select) pour sauter d’un jeu à l’autre.</string>
     <string name="look_welcome_resume_start_detail">Avec l’appli Shizuku lancée, Tandem peut ramener un jeu encore ouvert au lieu de le relancer. Lance Shizuku, puis autorise Tandem.</string>
@@ -534,13 +534,13 @@
     <string name="look_welcome_done_detail">Quatre boutons à connaître, où que tu sois :</string>
     <string name="look_welcome_done_y">Des options pour tout</string>
     <string name="look_welcome_done_x_swap">Inverse les écrans sur l’accueil, cherche ailleurs</string>
-    <string name="look_welcome_done_start">Panneau Start, Paramètres dedans (maintenir : réglages rapides)</string>
+    <string name="look_welcome_done_start">Panneau Start, avec les Paramètres (maintenir : réglages rapides)</string>
     <string name="look_welcome_done_select">Surprends-moi (maintenir : sélecteur)</string>
     <string name="look_welcome_play">On joue !</string>
 
     <!-- Quick looks (Presets.kt): a name, a sentence, and what each changes, a line each. -->
     <!-- %1$s is the quick look's name. -->
-    <string name="look_preset_on">%1$s activé. Appuie encore sur A pour annuler</string>
+    <string name="look_preset_on">%1$s : c’est parti. Appuie encore sur A pour annuler</string>
     <string name="look_preset_undone">Retour à l’état d’avant</string>
     <string name="look_preset_cozy">Rayons douillets</string>
     <string name="look_preset_cozy_blurb">L’accueil maison de Tandem : des rayons de jeux récents, systèmes et collections, avec infos et visuels sur l’écran du bas.</string>

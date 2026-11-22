@@ -151,7 +151,7 @@
 
     <!-- Controller test. -->
     <string name="apps_pad_press">Appuie sur n’importe quoi : ça s’allume ici.</string>
-    <string name="apps_pad_leave">Maintiens pour quitter (ou touche)</string>
+    <string name="apps_pad_leave">Maintiens pour quitter (ou touche l’écran)</string>
     <string name="apps_pad_last">Derniers appuis</string>
     <!-- A key just pressed: "BUTTON A down" (the key's name is Android's, not translated). -->
     <string name="apps_pad_down">%1$s enfoncé</string>
@@ -247,7 +247,7 @@
     <string name="apps_note_add">Ajouter</string>
     <string name="apps_note_notes">Notes</string>
     <!-- Under the note's title: "Edited 5 minutes ago · A renames". -->
-    <string name="apps_note_edited">Modifiée %1$s · A pour renommer</string>
+    <string name="apps_note_edited">Modifiée : %1$s · A pour renommer</string>
     <string name="apps_note_add_entry">+ Entrée</string>
     <string name="apps_note_empty">Vide : ajoute du texte, une liste, une entrée de glossaire, un croquis ou une image</string>
     <string name="apps_note_add_more">+ Ajouter</string>

@@ -117,7 +117,7 @@
     <string name="scrape_setup_folder_detail">Un seul de ses dossiers</string>
     <string name="scrape_setup_all_folders">Tous les dossiers</string>
     <string name="scrape_setup_mode">Mode</string>
-    <string name="scrape_setup_locked">Remplacer le verrouillé</string>
+    <string name="scrape_setup_locked">Ignorer les verrous</string>
     <string name="scrape_setup_locked_on">Remplace aussi ce que tu as modifié ou choisi à la main</string>
     <string name="scrape_setup_locked_off">Ce que tu as modifié ou choisi à la main reste</string>
     <string name="scrape_setup_artwork">Visuels</string>

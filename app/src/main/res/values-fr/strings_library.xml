@@ -44,7 +44,7 @@
     <string name="library_settings_systems_help">Active ou désactive des systèmes, choisis l’émulateur de chacun et l’écran où ses jeux démarrent, et ajoute des dossiers en plus.</string>
     <string name="library_settings_apps">Applis Android</string>
     <string name="library_settings_apps_value">Jeux et applis</string>
-    <string name="library_settings_apps_help">Toutes les applis de l’appareil. Marque celles qui sont des jeux pour qu’elles apparaissent dans le système Jeux Android.</string>
+    <string name="library_settings_apps_help">Toutes les applis de l’appareil. Marque celles qui sont des jeux pour qu’elles apparaissent dans le système Android Games.</string>
     <string name="library_settings_single">Un seul écran</string>
     <string name="library_settings_single_one">Activé · un écran</string>
     <string name="library_settings_single_help">Laisse le second écran tranquille (ou éteint) et n’utilise que celui du haut. Les jeux démarrent aussi toujours en haut.</string>
@@ -87,8 +87,8 @@
     <!-- %1$s is an emulator. -->
     <string name="library_system_no_store">Impossible d’ouvrir une boutique pour %1$s</string>
     <string name="library_system_start_on">Démarrer les jeux sur</string>
-    <string name="library_system_start_single">Le mode un seul écran est activé, les jeux restent donc en haut pour l’instant</string>
-    <string name="library_system_start_note">Le réglage Démarrer sur d’un jeu (Y › Plus) passe avant</string>
+    <string name="library_system_start_single">Le mode « Un seul écran » est activé, les jeux restent donc en haut pour l’instant</string>
+    <string name="library_system_start_note">Le réglage « Démarrer sur » d’un jeu (Y › Plus) passe avant</string>
     <string name="library_system_bottom">Écran du bas pendant le jeu</string>
     <string name="library_system_bottom_note">Pour les jeux de ce système ; un jeu peut quand même avoir le sien</string>
     <string name="library_system_folders">Dossiers</string>
@@ -249,7 +249,7 @@
     <!-- %1$s is a kind of art. -->
     <string name="library_art_automatic_again">%1$s : de retour en automatique</string>
     <string name="library_art_updated">%1$s : tout beau, tout neuf ✨</string>
-    <string name="library_art_download_failed">Impossible de télécharger celle-ci, essaie une autre</string>
+    <string name="library_art_download_failed">Impossible de télécharger celle-ci, essaies-en une autre</string>
     <string name="library_art_looking">Je fouille toutes les sources…</string>
     <string name="library_art_nothing">Rien trouvé en ligne pour celui-ci. Ajoute un compte ScreenScraper ou SteamGridDB dans les Paramètres pour en trouver plus.</string>
     <!-- %1$s is why a source had nothing, before library_art_nothing. -->
@@ -311,10 +311,10 @@
     <string name="library_ra_ask">ID du jeu sur RetroAchievements (le nombre dans l’adresse de sa page)</string>
     <string name="library_ra_not_id">Ce n’est pas un ID de jeu : c’est un nombre entier, comme 1234</string>
     <string name="library_ra_matched_id">Associé au jeu #%1$d</string>
-    <string name="library_ra_hidden">Les jeux masqués ne sont jamais recherchés. Saisis un ID ou choisis Pas de succès.</string>
+    <string name="library_ra_hidden">Les jeux masqués ne sont jamais recherchés. Saisis un ID ou choisis « Pas de succès ».</string>
     <string name="library_ra_signed_out">Connecte-toi à RetroAchievements (Paramètres › Bibliothèque et visuels › Comptes) pour voir des suggestions. Tu peux toujours saisir un ID.</string>
     <!-- %1$s is a system's name. -->
-    <string name="library_ra_unsupported">RetroAchievements n’a pas de liste pour %1$s que Tandem connaisse.</string>
+    <string name="library_ra_unsupported">Tandem ne connaît pas de liste RetroAchievements pour %1$s.</string>
     <string name="library_ra_not_matched">Pas encore associé.</string>
     <string name="library_ra_currently_none">Actuellement : pas de succès.</string>
     <!-- %1$s is the matched game's title (or library_ra_game), %2$d its id. -->
@@ -445,9 +445,9 @@
     <!-- %1$s is a version, like "2.4.1". -->
     <string name="library_app_version">Version %1$s</string>
     <!-- %1$s is when, like "3 days ago". -->
-    <string name="library_app_updated">mise à jour %1$s</string>
+    <string name="library_app_updated">mise à jour : %1$s</string>
     <string name="library_app_running">● Lancée</string>
-    <string name="library_app_in_android_games">Dans Jeux Android</string>
+    <string name="library_app_in_android_games">Dans Android Games</string>
     <!-- More systems than fit: "+3 more". -->
     <string name="library_app_more">+%1$d autres</string>
     <!-- Facts: a name over a value. -->

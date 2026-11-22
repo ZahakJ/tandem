@@ -27,7 +27,7 @@
     <!-- %1$s says more about the option in use: sound_ui_off_help, sound_ui_custom_help or the pack's description. -->
     <string name="sound_ui_help">Clics, carillons et son de lancement pendant que tu te balades dans les menus. %1$s</string>
     <string name="sound_ui_off_help">Désactivé, Tandem reste muet.</string>
-    <string name="sound_ui_custom_help">Perso : des sons enregistrés que tu as, venant des packs de sons de Cocoon ou d’un pack de thème. Choisis-les plus bas.</string>
+    <string name="sound_ui_custom_help">Perso : tes propres sons enregistrés, tirés des packs de sons de Cocoon ou d’un pack de thème. Choisis-les plus bas.</string>
     <!-- An option of UI sounds: recorded sounds. Short. -->
     <string name="sound_ui_custom">Perso</string>
     <string name="sound_custom">Sons perso</string>
@@ -45,11 +45,11 @@
     <!-- An option of Music: your own songs from the music folder. Short. -->
     <string name="sound_music_folder">Ma musique</string>
     <!-- Music's help while the music folder is empty: %1$s is the built-in soundtrack that plays instead ("Calm"). -->
-    <string name="sound_music_help_empty">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; le dossier est vide pour l’instant, alors c’est la bande-son intégrée qui joue (%1$s). Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</string>
+    <string name="sound_music_help_empty">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; le dossier est vide pour l’instant, alors c’est la bande-son intégrée qui joue (%1$s). Côté Tandem : Calm, piano, harpe et célesta tout en douceur, ou Meadow Tales, un petit orchestre.</string>
     <!-- Music's help: %1$d is how many songs the music folder has. -->
     <plurals name="sound_music_help_found">
-        <item quantity="one">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceau trouvé. Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</item>
-        <item quantity="other">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceaux trouvés. Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</item>
+        <item quantity="one">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceau trouvé. Côté Tandem : Calm, piano, harpe et célesta tout en douceur, ou Meadow Tales, un petit orchestre.</item>
+        <item quantity="other">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceaux trouvés. Côté Tandem : Calm, piano, harpe et célesta tout en douceur, ou Meadow Tales, un petit orchestre.</item>
     </plurals>
     <string name="sound_music_folder_empty">Ajoute d’abord des morceaux dans ROMs/tandem/music</string>
     <string name="sound_shuffle">Ma musique en aléatoire</string>
@@ -79,7 +79,7 @@
 
     <!-- The UI sound packs: a name (short, one word if possible) and a sentence about how it sounds. -->
     <string name="sound_pack_modern">Moderne</string>
-    <string name="sound_pack_modern_blurb">Petites tapes douces et notes légères, brèves et discrètes, comme sur une console d’aujourd’hui. Le son maison de Tandem.</string>
+    <string name="sound_pack_modern_blurb">Petits tapotements doux et notes légères, brefs et discrets, comme sur une console d’aujourd’hui. Le son maison de Tandem.</string>
     <string name="sound_pack_playful">Ludique</string>
     <string name="sound_pack_playful_blurb">Notes de marimba cristallines et carillons chaleureux : le jeu d’origine de Tandem, plein de bonne humeur.</string>
     <string name="sound_pack_chiptune">Chiptune</string>
@@ -89,7 +89,7 @@
     <string name="sound_pack_minimal">Minimal</string>
     <string name="sound_pack_minimal_blurb">Discret, bref et subtil. À peine là.</string>
     <string name="sound_pack_studio">Studio</string>
-    <string name="sound_pack_studio_blurb">Feutre et bois : des tapes graves et chaudes, avec un petit bruit sourd, comme un clavier bien fait.</string>
+    <string name="sound_pack_studio_blurb">Feutre et bois : des tapotements graves et chaleureux, avec un petit bruit mat, comme un clavier bien fait.</string>
     <string name="sound_pack_glass">Cristal</string>
     <string name="sound_pack_glass_blurb">Des notes de cristal claires et lumineuses qui résonnent un peu plus longtemps. Net et soigné.</string>
     <string name="sound_pack_air">Brise</string>

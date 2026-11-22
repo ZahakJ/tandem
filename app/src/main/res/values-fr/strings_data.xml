@@ -12,11 +12,11 @@
 
     <!-- Where a game stands (GameStatus.kt): a short name and a line on it. -->
     <string name="data_status_backlog">À jouer</string>
-    <string name="data_status_backlog_blurb">Sur la pile, pour un jour</string>
+    <string name="data_status_backlog_blurb">À faire un de ces jours</string>
     <string name="data_status_playing">En cours</string>
     <string name="data_status_playing_blurb">En pleine partie</string>
     <string name="data_status_finished">Terminé</string>
-    <string name="data_status_finished_blurb">Générique de fin vu</string>
+    <string name="data_status_finished_blurb">Jusqu’au générique</string>
     <string name="data_status_completed">Complété</string>
     <string name="data_status_completed_blurb">Tout fait, 100 %</string>
     <string name="data_status_shelved">En pause</string>
@@ -53,7 +53,7 @@
     <!-- How a restore went, joined with " · ". %1$s lists what: "Restored Look, Layout & folders". -->
     <string name="data_backup_restored">Restauré : %1$s</string>
     <!-- %1$s is what, %2$s why: "Game data failed: couldn't read library.json". -->
-    <string name="data_backup_failed">%1$s : échec, %2$s</string>
+    <string name="data_backup_failed">%1$s : échec (%2$s)</string>
     <string name="data_backup_missing">%1$s : absent de cette sauvegarde</string>
     <string name="data_backup_nothing">Rien à restaurer</string>
     <!-- %1$s is a folder's or a file's name. -->
@@ -114,7 +114,7 @@
     <string name="data_backup_restore_detail">Choisis une sauvegarde, puis ce que tu veux récupérer.</string>
     <string name="data_backup_looking">Je fouille dans ROMs/tandem/backup…</string>
     <string name="data_backup_none">Aucune sauvegarde pour l’instant</string>
-    <string name="data_backup_none_detail">Sauvegarder en crée une dans ROMs/tandem/backup.</string>
+    <string name="data_backup_none_detail">« Sauvegarder » en crée une dans ROMs/tandem/backup.</string>
     <string name="data_backup_now">Sauvegarder maintenant</string>
     <string name="data_backup_put_back">Récupérer depuis cette sauvegarde</string>
     <string name="data_backup_keep_here">Garde ce qui est là</string>

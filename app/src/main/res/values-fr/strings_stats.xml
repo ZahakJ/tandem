@@ -10,7 +10,7 @@
     <string name="stats_tab_sessions">Sessions</string>
     <string name="stats_tab_achievements">Succès</string>
     <!-- The R1 button hint beside the tabs. -->
-    <string name="stats_hint_switch_tab">Onglet suivant</string>
+    <string name="stats_hint_switch_tab">Changer d’onglet</string>
 
     <!-- Overview, with nothing played yet. The button under it goes back. -->
     <string name="stats_overview_empty">Lance un jeu et je compte tout ici, sans que rien ne quitte la console</string>
@@ -64,7 +64,7 @@
 
     <!-- Overview: Pip's one-line fact about when you play the most. -->
     <string name="stats_fact_morning">Toi, tu es du matin : c’est là que tu joues le plus.</string>
-    <string name="stats_fact_afternoon">Aventurier de l’après-midi : c’est ton créneau préféré.</string>
+    <string name="stats_fact_afternoon">L’après-midi, c’est l’heure de l’aventure : c’est là que tu joues le plus.</string>
     <string name="stats_fact_evening">Le soir, c’est l’heure du jeu. Bien au chaud !</string>
     <string name="stats_fact_night">Un vrai oiseau de nuit. Tu joues surtout après 23 h.</string>
     <!-- Pressing the fact. -->
@@ -135,7 +135,7 @@
     <!-- Under Backlog: how long the backlog takes to beat, like "about 40h to clear". -->
     <string name="stats_library_backlog_left">environ %1$s pour en venir à bout</string>
     <!-- The same when some backlog games have no time known: "about 40h to clear+". -->
-    <string name="stats_library_backlog_left_more">environ %1$s et plus pour en venir à bout</string>
+    <string name="stats_library_backlog_left_more">plus de %1$s pour en venir à bout</string>
     <string name="stats_library_backlog_none">jeux en attente</string>
     <string name="stats_library_finished">Terminé</string>
     <!-- Under Finished: games finished this calendar year. -->
@@ -203,7 +203,7 @@
     <string name="stats_sorter_title">Trie tes jeux joués</string>
     <!-- Button hints: A sets the highlighted status, B stops. -->
     <string name="stats_sorter_set">Valider</string>
-    <string name="stats_sorter_stop">Pause</string>
+    <string name="stats_sorter_stop">Plus tard</string>
     <!-- Where you are: "3 of 12". -->
     <string name="stats_sorter_progress">%1$d sur %2$d</string>
     <string name="stats_sorter_skip">Passer celui-ci</string>
@@ -257,7 +257,7 @@
     <string name="stats_trophy_ten_hours_how">Joue 10 heures au total</string>
     <string name="stats_trophy_hundred_hours">Centurion</string>
     <string name="stats_trophy_hundred_hours_how">Joue 100 heures au total</string>
-    <string name="stats_trophy_thousand_hours">À vie</string>
+    <string name="stats_trophy_thousand_hours">Vétéran</string>
     <string name="stats_trophy_thousand_hours_how">Joue 1 000 heures au total</string>
     <string name="stats_trophy_marathon">Marathon</string>
     <string name="stats_trophy_marathon_how">Joue 3 heures d’affilée</string>
@@ -270,7 +270,7 @@
     <string name="stats_trophy_month">Inarrêtable</string>
     <string name="stats_trophy_month_how">Joue 30 jours d’affilée</string>
     <string name="stats_trophy_regular">Habitué</string>
-    <string name="stats_trophy_regular_how">Joue 100 sessions</string>
+    <string name="stats_trophy_regular_how">Atteins 100 sessions de jeu</string>
     <string name="stats_trophy_night_owl">Oiseau de nuit</string>
     <string name="stats_trophy_night_owl_how">Lance un jeu entre 2 h et 5 h du matin</string>
     <string name="stats_trophy_early_bird">Lève-tôt</string>
@@ -296,9 +296,9 @@
     <string name="stats_trophy_monthly">Un jeu par mois</string>
     <string name="stats_trophy_monthly_how">Termine 12 jeux en une année</string>
     <string name="stats_trophy_collector">Collectionneur</string>
-    <string name="stats_trophy_collector_how">Aie 100 jeux dans ta bibliothèque</string>
+    <string name="stats_trophy_collector_how">Atteins 100 jeux dans ta bibliothèque</string>
     <string name="stats_trophy_archivist">Archiviste</string>
-    <string name="stats_trophy_archivist_how">Aie 500 jeux dans ta bibliothèque</string>
+    <string name="stats_trophy_archivist_how">Atteins 500 jeux dans ta bibliothèque</string>
     <string name="stats_trophy_master">Maître Tandem</string>
     <string name="stats_trophy_master_how">Décroche tous les autres trophées</string>
 
@@ -339,7 +339,7 @@
     <string name="stats_session_a_week">Une semaine</string>
     <string name="stats_session_an_hour">Une heure</string>
     <!-- %1$s is the day, %2$s the time: "Moved to Sat 21 Nov 2026, 21:05". -->
-    <string name="stats_session_moved">Déplacée au %1$s, %2$s</string>
+    <string name="stats_session_moved">Déplacée au %1$s à %2$s</string>
     <!-- Clearing sessions, under "Clear all sessions?": %1$d sessions, %2$s their play time ("3 h 10 min"). -->
     <plurals name="stats_sessions_clear_detail">
         <item quantity="one">%1$d session (%2$s) sera supprimée ; le temps de jeu, le nombre de parties et la dernière partie seront recalculés à partir du reste. Le temps de jeu importé d’un autre frontend reste. Impossible de revenir en arrière.</item>

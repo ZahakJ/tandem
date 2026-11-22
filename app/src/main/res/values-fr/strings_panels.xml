@@ -5,7 +5,7 @@
 <resources>
     <!-- Start: the button hints. -->
     <string name="panels_start_hint_unhide">Réafficher</string>
-    <string name="panels_start_hint_hide_again">Re-masquer</string>
+    <string name="panels_start_hint_hide_again">Masquer</string>
     <string name="panels_start_hint_show_here">Afficher ici</string>
 
     <!-- Start: the main page. -->
@@ -106,7 +106,7 @@
     <string name="panels_side_morning">Bonjour !</string>
     <string name="panels_side_afternoon">Bon après-midi !</string>
     <string name="panels_side_evening">Bonsoir !</string>
-    <string name="panels_side_late">Encore debout ? Moi aussi.</string>
+    <string name="panels_side_late">Tu veilles ? Moi aussi.</string>
     <!-- A greeting from above, then: "Good morning! All quiet." -->
     <string name="panels_side_all_quiet">%1$s Rien à signaler.</string>
     <!-- How many notifications there are. -->

@@ -123,7 +123,7 @@
     </plurals>
     <!-- %1$s is a tile's name. -->
     <string name="grid_sel_removed">Retrait de %1$s</string>
-    <string name="grid_sel_removed_it">Retrait</string>
+    <string name="grid_sel_removed_it">Retrait de la vignette</string>
     <plurals name="grid_sel_removed_tiles">
         <item quantity="one">Retrait de %1$d vignette</item>
         <item quantity="other">Retrait de %1$d vignettes</item>
@@ -170,7 +170,7 @@
     <!-- Tidy up: tiles packed to the front, closing the gaps. -->
     <string name="grid_tidy_already">Déjà rangé</string>
     <!-- Undo labels. %1$s is a folder's name. -->
-    <string name="grid_tidy_done">Rangement</string>
+    <string name="grid_tidy_done">Rangement de la grille</string>
     <string name="grid_tidy_done_folder">Rangement de %1$s</string>
     <!-- A folder kept in an order (%1$s: "A–Z", "Most played"…) has no gaps to close. -->
     <string name="grid_tidy_sorted">Trié (%1$s) : toujours bien rangé</string>
@@ -264,7 +264,7 @@
     <string name="grid_form_genres_help">Les jeux qui ont l’un de ces genres (d’après les infos scrapées, ou le sous-dossier où ils se trouvent).</string>
     <!-- A rule on the game's name: the text it must contain. -->
     <string name="grid_form_pattern">Titre contient</string>
-    <string name="grid_form_pattern_anything">N’importe quoi</string>
+    <string name="grid_form_pattern_anything">Peu importe</string>
     <string name="grid_form_pattern_help">Seulement les titres qui contiennent ce texte, majuscules ou non. En regex, il est cherché n’importe où dans le titre.</string>
     <string name="grid_form_match">Lire comme</string>
     <!-- ^Super|Kart$ is an example regular expression: keep it as it is. -->
@@ -331,8 +331,8 @@
     <!-- %1$s is a size: Small, Medium, Large or Huge. -->
     <string name="grid_zoom_games">Taille des jeux : %1$s</string>
     <plurals name="grid_zoom_rows">
-        <item quantity="one">Icônes : %1$d ligne</item>
-        <item quantity="other">Icônes : %1$d lignes</item>
+        <item quantity="one">Icônes : %1$d rangée</item>
+        <item quantity="other">Icônes : %1$d rangées</item>
     </plurals>
     <!-- %1$s is one of the icon sizes below. -->
     <string name="grid_zoom_icons">Taille des icônes : %1$s</string>
@@ -346,7 +346,7 @@
     <string name="grid_blurb_fav">Les jeux que tu as mis en favoris. Y › Ajouter aux favoris sur n’importe quel jeu</string>
     <string name="grid_blurb_most">Tes jeux les plus joués, par temps de jeu</string>
     <string name="grid_blurb_added">Les derniers arrivés dans ta bibliothèque</string>
-    <string name="grid_blurb_continue">Reprends là où tu t’étais arrêté</string>
+    <string name="grid_blurb_continue">Reprends là où tu en étais</string>
     <string name="grid_blurb_unplayed">Des aventures toutes neuves, encore jamais lancées</string>
     <string name="grid_blurb_playing">Les jeux que tu as en cours</string>
     <string name="grid_blurb_backlog">Les jeux qui attendent leur tour (oui, la pile de la honte). Y › Statut › À jouer sur n’importe quel jeu</string>
@@ -367,7 +367,7 @@
 
     <!-- The home grid with nothing on it. -->
     <string name="grid_empty_title">Ta grille d’accueil est vide</string>
-    <string name="grid_empty_help">Appuie sur Y et choisis Ajouter à l’accueil, ou active Afficher les jeux masqués dans les Paramètres.</string>
+    <string name="grid_empty_help">Appuie sur Y et choisis « Ajouter à l’accueil », ou active « Afficher les jeux masqués » dans les Paramètres.</string>
     <string name="grid_no_games_help">Choisis le dossier où sont tes jeux, rangés comme tu veux.</string>
     <string name="grid_rescan">Réanalyser</string>
     <!-- A small badge on the tile of a game that is running. Keep it short. -->
@@ -382,7 +382,7 @@
     <string name="grid_move_how_widget">Déplace avec la croix · A pour poser · Y pour redimensionner</string>
     <!-- Undo labels. %1$s is a tile's name. -->
     <string name="grid_move_resized">Redimensionnement de %1$s</string>
-    <string name="grid_move_resized_it">Redimensionnement</string>
+    <string name="grid_move_resized_it">Redimensionnement du widget</string>
     <!-- Button hints while moving: short words, they share the narrow bottom screen. -->
     <string name="grid_hint_paste">Coller sur une case vide</string>
     <string name="grid_hint_cancel">Annuler</string>
@@ -569,7 +569,7 @@
     <!-- Moving tiles by dragging. Undo labels: %1$s is the tile's name, %2$s the folder's. -->
     <string name="grid_drag_made_folder">Création du dossier %1$s</string>
     <string name="grid_drag_moved">Déplacement de %1$s</string>
-    <string name="grid_drag_moved_it">Déplacement</string>
+    <string name="grid_drag_moved_it">Déplacement de la vignette</string>
     <string name="grid_drag_moved_into">Déplacement de %1$s dans %2$s</string>
     <string name="grid_drag_moved_into_folder">Déplacement de %1$s dans le dossier</string>
     <string name="grid_drag_moved_it_into">Déplacement dans %1$s</string>

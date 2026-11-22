@@ -10,9 +10,9 @@
     <!-- Settings › Play & system › Performance & sleep › Screen off. -->
     <string name="screens_off_group">Écran éteint</string>
     <string name="screens_off_while_playing">Écran du bas en jeu</string>
-    <string name="screens_off_while_playing_help">Ce qu’affiche l’écran du bas pendant qu’un jeu tourne sur celui du haut : les visuels du jeu, l’acolyte de Tandem, Écran éteint (noir et immobile jusqu’à ce que tu le touches, le plus économe en batterie) ou rien du tout, pour un émulateur qui y dessine lui-même. Les émulateurs 3DS et DS gardent leur propre écran quoi qu’il arrive. Y sur un système ou un jeu choisit pour lui seul.</string>
+    <string name="screens_off_while_playing_help">Ce qu’affiche l’écran du bas pendant qu’un jeu tourne sur celui du haut : les visuels du jeu, l’acolyte de Tandem, « Écran éteint » (noir et immobile jusqu’à ce que tu le touches, le plus économe en batterie) ou rien du tout, pour un émulateur qui y dessine lui-même. Les émulateurs 3DS et DS gardent leur propre écran, quel que soit ce réglage. Y sur un système ou un jeu choisit pour lui seul.</string>
     <string name="screens_off_after">Éteindre après</string>
-    <string name="screens_off_after_help">Les minutes sans toucher l’écran du bas avant qu’il s’éteigne en jeu, quoi qu’il affiche, jusqu’à ce que tu le touches. Jamais garde les visuels assombris ou l’acolyte allumés toute la partie. Avec Écran éteint, c’est aussi le temps pendant lequel une touche rallume l’écran.</string>
+    <string name="screens_off_after_help">Les minutes sans toucher l’écran du bas avant qu’il s’éteigne en jeu, quoi qu’il affiche, jusqu’à ce que tu le touches. « Jamais » laisse les visuels assombris ou l’acolyte allumés toute la partie. Avec « Écran éteint », c’est aussi le temps pendant lequel une touche rallume l’écran.</string>
     <string name="screens_off_never">Jamais</string>
     <plurals name="screens_off_after_minutes">
         <item quantity="one">Après %1$d min</item>
@@ -77,7 +77,7 @@
     <string name="screens_good_morning">Bonjour !</string>
     <string name="screens_good_afternoon">Bon après-midi !</string>
     <string name="screens_good_evening">Bonsoir !</string>
-    <string name="screens_up_late">Encore debout ? Moi aussi.</string>
+    <string name="screens_up_late">Tu veilles ? Moi aussi.</string>
     <string name="screens_no_games">Allez, on va chercher des jeux</string>
     <plurals name="screens_games_ready">
         <item quantity="one">%1$d jeu qui n’attend que toi</item>
@@ -129,8 +129,8 @@
     <!-- %1$s an app's name. -->
     <string name="screens_home_move_here">Amener %1$s ici</string>
     <!-- Swapping the two screens. -->
-    <string name="screens_swap_single">Le mode Un seul écran est activé : pas d’autre écran avec qui échanger</string>
-    <string name="screens_swap_no_second">Il n’y a pas de second écran avec qui échanger</string>
+    <string name="screens_swap_single">« Un seul écran » est activé : pas d’autre écran avec lequel inverser</string>
+    <string name="screens_swap_no_second">Pas de second écran avec lequel inverser</string>
     <string name="screens_swap_busy">L’écran du bas est occupé. Réessaie dans un instant</string>
     <string name="screens_swap_failed">L’écran du bas n’a pas pu prendre les commandes, les écrans restent comme avant</string>
     <!-- A game's status (Y › Status). %1$s a game's title. -->

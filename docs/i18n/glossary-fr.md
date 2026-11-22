@@ -9,7 +9,7 @@ The words Tandem uses in French, chosen once and used everywhere. Read this befo
   Never corporate, never « veuillez ». The user is **tu**, everywhere, without exception (« Appuie sur Y »,
   « Ta bibliothèque »). Settings help text is conversational second person: « Choisis… », « Tu peux… ».
 - **Pip:** a small, cheerful robot. Pip says *je*, talks to *tu*, short lines, the odd « ! »: « Bonjour ! »,
-  « Rien à signaler. », « Encore debout ? Moi aussi. ». Playful, never childish, no slang heavier than « trop
+  « Rien à signaler. », « Tu veilles ? Moi aussi. ». Playful, never childish, no slang heavier than « trop
   bien » or « nickel ».
 - **Labels:** sentence case (« Modifier la grille », never « Modifier La Grille »), infinitive for actions
   (« Masquer ce jeu », « Choisir les visuels »), as short as the English where they sit in chips, tiles, segmented
@@ -26,7 +26,9 @@ The words Tandem uses in French, chosen once and used everywhere. Read this befo
   - The path arrow `›` and the dot `·` stay as in English, with a space each side.
   - Numbers: « 12 jeux », « 87 % », « 1,5 Go ». Sizes are Go / Mo / Ko (Android formats them itself).
 - **Menu paths quoted in text** use exactly the words of the menu items, as listed under
-  [Menu items quoted elsewhere](#menu-items-quoted-elsewhere).
+  [Menu items quoted elsewhere](#menu-items-quoted-elsewhere). An option or menu item named inside a sentence goes
+  in « » when it would otherwise read as part of the sentence (« Active « Afficher les jeux masqués » dans les
+  Paramètres »); paths with `›` (« Start › Masqués ») and capitalised option lists don't need them.
 - **Search examples** stay in English inside « »: the search keyboard types Latin letters and search matches English
   names as well as French ones.
 - **Plurals:** `one` and `other` (and `many` only if wanted; not used so far). French `one` covers 0 and 1: write
@@ -38,7 +40,8 @@ Tandem, Pip, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, 
 SteamGridDB, ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, game
 titles, song titles and soundtrack names (Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG,
 CSV), button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), « USB », « Wi-Fi », « Bluetooth »,
-« GPL-3.0 », « PIN » (« code PIN »). System names come from `platforms.json` and stay as they are there. Steam's
+« GPL-3.0 », « PIN » (« code PIN »). System names come from `platforms.json` and stay as they are there (the
+Android Games system too: its name is fixed in the code, so text says « Android Games », not « Jeux Android »). Steam's
 website menus are quoted the way Steam France writes them.
 
 ## Android's own words (match the device)
@@ -335,3 +338,9 @@ Rainbow road is Route arc-en-ciel, Mario Kart's French name; Tall grass is Haute
 | In use / Built in (theme) | Actif / Intégré | |
 | Song (count) | Morceau | |
 | Hold-to-confirm hint | « Maintiens A (ou reste appuyé) pour %1$s »: the label passed in is an infinitive (« supprimer », « les effacer ») | |
+| Auto-hide dock | Dock rétractable | « Masquer le dock » read as hiding it for good |
+| Look again (theme packs) | Actualiser | « Rechercher » clashed with Search |
+| In use (controller in games) | Active | « En jeu » is Now playing |
+| Replace locked fields (scrape) | Ignorer les verrous | |
+| Rows (icon grid) | Rangées | Everywhere on the icon grid, zoom toast included; « Rayons » is the Shelves home |
+| Undo labels (grid) | Nouns: « Déplacement de… », « Retrait de la vignette » | They also follow « Annulé : » with the first letter lowered, so they never start with a name |

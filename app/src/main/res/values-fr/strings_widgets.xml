@@ -76,7 +76,7 @@
     <string name="widgets_opt_pool_unplayed">Jamais lancés</string>
     <string name="widgets_opt_pool_any">Tout</string>
     <string name="widgets_opt_pool_favorites">Favoris</string>
-    <string name="widgets_opt_talk">Bulle de texte</string>
+    <string name="widgets_opt_talk">Bulle de dialogue</string>
     <string name="widgets_opt_mood">Humeur</string>
     <string name="widgets_opt_mood_auto">Auto</string>
     <string name="widgets_opt_mood_happy">Content</string>
@@ -130,7 +130,7 @@
     <string name="widgets_home_help">Affiche tes widgets en haut de l’écran d’accueil.</string>
     <string name="widgets_grid">Widgets sur la grille</string>
     <!-- "Add here › Widget…" names a menu item, as written there. -->
-    <string name="widgets_grid_help">Où Ajouter ici › Widget… place un nouveau widget sur la grille d’icônes : dans sa propre case, de 1 à 2 cellules dans chaque sens, ou dans la rangée de widgets. Les widgets déjà placés restent où ils sont.</string>
+    <string name="widgets_grid_help">Où « Ajouter ici › Widget… » place un nouveau widget sur la grille d’icônes : dans sa propre case, de 1 à 2 cellules dans chaque sens, ou dans la rangée de widgets. Les widgets déjà placés restent où ils sont.</string>
     <string name="widgets_grid_cells">En cases</string>
     <string name="widgets_grid_row">En rangée</string>
     <string name="widgets_bottom">Écran du bas au repos</string>
@@ -186,7 +186,7 @@
     <string name="widgets_np_start">Lance un jeu, il t’attendra ici</string>
     <string name="widgets_np_shizuku">Autorise Tandem dans Shizuku pour voir les jeux lancés</string>
     <string name="widgets_np_nothing">Rien de lancé</string>
-    <string name="widgets_np_cant_see">Jeux invisibles</string>
+    <string name="widgets_np_cant_see">Je ne vois rien</string>
     <string name="widgets_np_wait">Les jeux laissés ouverts t’attendent ici</string>
     <string name="widgets_np_needs">Requiert Shizuku</string>
     <string name="widgets_np_running">● Lancé</string>
@@ -243,14 +243,14 @@
     <string name="widgets_ach_latest">🏆 Dernier succès</string>
 
     <!-- What Pip says: one line at a time, A for the next. -->
-    <string name="widgets_pip_late">Encore debout ? Moi aussi.</string>
+    <string name="widgets_pip_late">Tu veilles ? Moi aussi.</string>
     <string name="widgets_pip_bed">Encore un niveau, et au lit ?</string>
     <string name="widgets_pip_morning">Bonjour ! Une petite partie avant de commencer la journée ?</string>
     <string name="widgets_pip_afternoon">Pause de l’aprèm ? Je te garde ta place au chaud.</string>
     <string name="widgets_pip_evening">Soirée cocooning. On joue à quoi ?</string>
     <plurals name="widgets_pip_streak">
-        <item quantity="one">%1$d jour d’affilée ! Quelle forme.</item>
-        <item quantity="other">%1$d jours d’affilée ! Quelle forme.</item>
+        <item quantity="one">%1$d jour d’affilée ! Quelle forme !</item>
+        <item quantity="other">%1$d jours d’affilée ! Quelle forme !</item>
     </plurals>
     <plurals name="widgets_pip_keep_streak">
         <item quantity="one">Joue aujourd’hui pour garder ta série de %1$d jour !</item>
@@ -287,8 +287,8 @@
     <string name="widgets_hello_evening">Bonsoir !</string>
     <!-- How many games, and a shorter form for narrow cells: "120 games ready to play", "120 games". -->
     <plurals name="widgets_greeting_ready">
-        <item quantity="one">%1$d jeu prêt à jouer</item>
-        <item quantity="other">%1$d jeux prêts à jouer</item>
+        <item quantity="one">%1$d jeu qui n’attend que toi</item>
+        <item quantity="other">%1$d jeux qui n’attendent que toi</item>
     </plurals>
     <plurals name="widgets_greeting_games">
         <item quantity="one">%1$d jeu</item>
@@ -319,7 +319,7 @@
     <string name="widgets_menu_resize">Redimensionner</string>
     <string name="widgets_menu_remove">Retirer le widget</string>
     <string name="widgets_menu_select">Sélectionner</string>
-    <string name="widgets_menu_select_sub">Coches-en plusieurs, puis agis sur tous</string>
+    <string name="widgets_menu_select_sub">En cocher plusieurs, puis agir sur tous</string>
     <string name="widgets_menu_tidy">Ranger</string>
     <string name="widgets_menu_search">Rechercher</string>
     <string name="widgets_menu_swap">Inverser les écrans</string>
@@ -344,7 +344,7 @@
     <string name="widgets_ed_options">Options</string>
     <string name="widgets_ed_switch">Changer d’écran</string>
     <string name="widgets_ed_home">Écran d’accueil</string>
-    <string name="widgets_ed_row_off">La rangée de widgets est désactivée. Active Sur l’accueil pour la voir.</string>
+    <string name="widgets_ed_row_off">La rangée de widgets est désactivée. Active « Sur l’accueil » pour la voir.</string>
     <string name="widgets_ed_none">Pas encore de widgets ici</string>
     <string name="widgets_ed_none_detail">Ajoute une horloge, ton stockage, tes stats de jeu et plus.</string>
     <string name="widgets_ed_greeting">Le salut de Pip s’affiche ici.</string>
@@ -369,7 +369,7 @@
     <!-- Android's own widgets, hosted. %1$s is a widget's name. -->
     <string name="widgets_app_gone">%1$s n’est plus disponible, il a donc été retiré</string>
     <string name="widgets_app_unavailable">Les widgets Android ne sont pas disponibles pour l’instant</string>
-    <string name="widgets_app_no_ask">Android n’a pas voulu demander pour ce widget</string>
+    <string name="widgets_app_no_ask">Android n’a pas affiché la demande pour ce widget</string>
     <string name="widgets_app_not_allowed">Android n’a pas autorisé le widget</string>
     <string name="widgets_app_set_up">Configurer…</string>
     <string name="widgets_app_set_up_failed">Son écran de configuration ne s’ouvre pas</string>

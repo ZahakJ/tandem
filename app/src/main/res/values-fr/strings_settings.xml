@@ -254,10 +254,10 @@
     <!-- %1$s is the version, like "0.8.0"; GPL-3.0 is the licence's name. -->
     <string name="settings_about_version">Version %1$s · GPL-3.0</string>
     <string name="settings_about_help">Libre et open source (GPL-3.0). Pas de pubs, pas de compte, pas de pistage. Tes données restent sur ton appareil.</string>
-    <string name="settings_about_hi">Fait avec amour, gratuit pour toujours. Coucou de la part de Pip !</string>
+    <string name="settings_about_hi">Fait avec amour, gratuit pour toujours. Pip te fait coucou !</string>
     <string name="settings_updates">Mises à jour</string>
     <!-- %1$s is this version, like "0.8.0"; %2$s is settings_about_help. "Update" names the button that installs. -->
-    <string name="settings_updates_help">Tu as Tandem %1$s. A demande à GitHub si une version plus récente est sortie. Mettre à jour la télécharge, vérifie que c’est bien la version officielle (sa somme de contrôle et la clé de signature de Tandem) et l’installe ; Tandem redémarre. Avec Shizuku, l’installation se fait sans question ; sinon Android demande une fois d’autoriser les installations depuis Tandem. %2$s</string>
+    <string name="settings_updates_help">Tu as Tandem %1$s. A demande à GitHub si une version plus récente est sortie. « Mettre à jour » la télécharge, vérifie que c’est bien la version officielle (sa somme de contrôle et la clé de signature de Tandem) et l’installe ; Tandem redémarre. Avec Shizuku, l’installation se fait sans rien demander ; sinon Android demande une fois d’autoriser les installations depuis Tandem. %2$s</string>
     <!-- What A does on Updates: open the update found, or check for one. Short. -->
     <string name="settings_updates_see">Voir la mise à jour</string>
     <string name="settings_updates_check">Vérifier</string>
@@ -312,7 +312,7 @@
     </plurals>
     <!-- %1$s is what was typed. -->
     <string name="settings_search_nothing">Rien ne s’appelle « %1$s »</string>
-    <string name="settings_search_try">Essaie ce que ça fait : « bigger », « quiet », « buttons »</string>
+    <string name="settings_search_try">Décris ce que ça fait : « bigger », « quiet », « buttons »</string>
     <!-- Where a result lives, under its name. -->
     <string name="settings_search_where_settings">Paramètres</string>
     <!-- A place inside another: "Home & layout › Dock & widgets", %1$s the outer, %2$s the inner. -->
@@ -342,5 +342,5 @@
     <string name="settings_search_stats_help">Ton temps de jeu par jour, par système et par jeu, chaque session jouée, et tes succès. Exporte-les dans Jeu et système › Tes données.</string>
     <!-- An art source's result: %1$s says what it gives, like "Box art, logos and videos". -->
     <string name="settings_search_source_help">%1$s.</string>
-    <string name="settings_updates_auto_help">Cherche une nouvelle version de Tandem une fois par jour quand Tandem est ouvert, et te prévient une fois par un message et dans le panneau Start. Seul le numéro de la dernière version est demandé à GitHub ; rien ne s’installe tant que tu n’appuies pas sur Mettre à jour. Désactivé, rien n’est vérifié ni affiché tant que tu ne vérifies pas avec A sur Mises à jour. Le mode privé s’en passe.</string>
+    <string name="settings_updates_auto_help">Cherche une nouvelle version de Tandem une fois par jour quand Tandem est ouvert, et te prévient une fois par un message et dans le panneau Start. Seul le numéro de la dernière version est demandé à GitHub ; rien ne s’installe tant que tu n’appuies pas sur « Mettre à jour ». Désactivé, rien n’est vérifié ni affiché tant que tu ne vérifies pas avec A sur Mises à jour. En mode privé, rien n’est vérifié.</string>
 </resources>

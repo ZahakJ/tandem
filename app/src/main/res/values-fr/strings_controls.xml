@@ -41,7 +41,7 @@
     <string name="controls_link_auto">Toujours la manette connectée</string>
     <string name="controls_link_auto_help">Toujours utiliser une manette connectée : dès qu’elle se connecte, elle remplace les commandes intégrées, sans rien demander. Laisse désactivé pour jouer à deux : la manette reste alors une manette à part, et l’émulateur doit la configurer comme Joueur 2.</string>
     <!-- Beside the group title: the controller playing now. -->
-    <string name="controls_link_in_use">En jeu : %1$s</string>
+    <string name="controls_link_in_use">Active : %1$s</string>
 
     <!-- Button bindings in words. A button held: "Hold Start". -->
     <string name="controls_binding_hold">Maintenir %1$s</string>
@@ -73,21 +73,21 @@
     <string name="controls_command_switcher">Jeux lancés</string>
     <string name="controls_command_switcher_help">Tous les jeux ouverts, pour les reprendre ou les fermer.</string>
     <string name="controls_command_switcher_chord">Jeux lancés, en combo</string>
-    <string name="controls_command_switcher_chord_help">Encore le sélecteur de jeux, avec des boutons pressés ensemble : Select et Start, sauf si tu changes.</string>
+    <string name="controls_command_switcher_chord_help">Encore le sélecteur de jeux, avec des boutons pressés ensemble : Select et Start, sauf si tu les changes.</string>
     <string name="controls_command_surprise">Surprends-moi</string>
-    <string name="controls_command_surprise_help">Saute vers un jeu au hasard auquel tu n’as jamais joué. Sert aussi à Annuler sur un message, et de Select dans les applis.</string>
+    <string name="controls_command_surprise_help">Saute vers un jeu au hasard auquel tu n’as jamais joué. Sert aussi à annuler depuis un message, et de bouton Select dans les applis.</string>
     <string name="controls_command_hidden">Jeux masqués</string>
     <string name="controls_command_hidden_help">Mode privé désactivé : l’active aussitôt. Activé : affiche les jeux masqués après ton code PIN, ou les range en douce.</string>
-    <string name="controls_command_previous">Onglet ou page précédente</string>
+    <string name="controls_command_previous">Page ou onglet précédent</string>
     <string name="controls_command_previous_help">Le système, la collection, la page des paramètres ou l’onglet de stats précédent ; des icônes plus grandes sur la grille.</string>
-    <string name="controls_command_next">Onglet ou page suivante</string>
+    <string name="controls_command_next">Page ou onglet suivant</string>
     <string name="controls_command_next_help">Le système, la collection, la page des paramètres ou l’onglet de stats suivant ; des icônes plus petites sur la grille.</string>
     <string name="controls_command_page_up">Page précédente</string>
     <string name="controls_command_page_up_help">Dans une liste de jeux, la lettre précédente (ou l’année, la note) ; ailleurs, une page plus haut ; sur la grille, le bandeau Joués récemment.</string>
     <string name="controls_command_page_down">Page suivante</string>
     <string name="controls_command_page_down_help">Dans une liste de jeux, la lettre suivante (ou l’année, la note) ; ailleurs, une page plus bas.</string>
     <string name="controls_command_side_panel">Panneau latéral</string>
-    <string name="controls_command_side_panel_help">Sur l’accueil : Pip, les réglages rapides et tes notifications. Partage son bouton avec Page suivante, sauf si tu changes.</string>
+    <string name="controls_command_side_panel_help">Sur l’accueil : Pip, les réglages rapides et tes notifications. Partage son bouton avec Page suivante, sauf si tu le changes.</string>
     <string name="controls_command_favourite">Favori</string>
     <string name="controls_command_favourite_help">Ajoute le jeu sélectionné à tes favoris, ou l’en retire. Aucun bouton tant que tu ne lui en donnes pas un.</string>
     <string name="controls_command_screenshot">Capture d’écran</string>
@@ -128,7 +128,7 @@
     <string name="controls_rebind_rebind">Réassigner</string>
     <string name="controls_rebind_none_hint">Aucun bouton</string>
     <string name="controls_rebind_already_default">Tous les boutons sont déjà d’origine</string>
-    <string name="controls_rebind_reset_done">Tous les boutons sont revenus d’origine</string>
+    <string name="controls_rebind_reset_done">Boutons remis d’origine</string>
     <string name="controls_rebind_commands">Commandes</string>
     <!-- On a command whose button isn't its default. Short. -->
     <string name="controls_rebind_changed">Modifié</string>
@@ -163,8 +163,8 @@
     <!-- Chips switching the bottom screen to the game's art or the companion. Short. -->
     <string name="controls_deck_game_art">Visuels</string>
     <string name="controls_deck_companion">Acolyte</string>
-    <string name="controls_deck_game_below">Le Deck tape dans un jeu sur l’écran du haut. Ce jeu-ci tourne sur celui du bas, alors il n’a rien à faire ici.</string>
-    <string name="controls_deck_sticky">Touche Shift, Ctrl ou Alt pour la touche suivante ; maintiens pour la verrouiller</string>
+    <string name="controls_deck_game_below">Le Deck sert à taper dans un jeu sur l’écran du haut. Ce jeu-ci tourne sur celui du bas, alors il n’a rien à faire ici.</string>
+    <string name="controls_deck_sticky">Appuie sur Shift, Ctrl ou Alt pour la touche suivante ; maintiens pour verrouiller</string>
     <!-- The layouts. Short: they are chips on the Deck. -->
     <string name="controls_deck_layout_full">Clavier complet</string>
     <string name="controls_deck_layout_game">Touches de jeu</string>
@@ -183,7 +183,7 @@
     <string name="controls_deck_sensitivity">Sensibilité du pavé tactile</string>
     <string name="controls_deck_sensitivity_help">La distance parcourue par le pointeur du jeu quand ton doigt bouge sur le pavé tactile du Deck. Un geste rapide va toujours plus loin qu’un geste lent et précis.</string>
     <string name="controls_deck_default_layout">Disposition par défaut</string>
-    <string name="controls_deck_default_layout_help">Le clavier qu’affiche le Deck à l’ouverture : le clavier complet, ou le compact avec le bloc WASD et les boutons de souris. Tu peux changer à tout moment avec les puces du Deck.</string>
+    <string name="controls_deck_default_layout_help">Le clavier qu’affiche le Deck à l’ouverture : le clavier complet, ou le compact avec le bloc WASD et les boutons de souris. Tu peux changer à tout moment avec les boutons du Deck.</string>
     <string name="controls_deck_sounds">Son des touches</string>
     <string name="controls_deck_sounds_help">Un petit clic doux à chaque touche et chaque tapotement sur le Deck.</string>
     <string name="controls_deck_haptics">Vibration des touches</string>

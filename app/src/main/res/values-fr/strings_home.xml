@@ -134,7 +134,7 @@
     <string name="home_shelves_systems_card">Systèmes</string>
     <string name="home_shelves_systems_card_detail">Émulateurs et dossiers</string>
     <!-- The Shelves home with no games. -->
-    <string name="home_empty_hidden_help">Active Afficher les jeux masqués dans les Paramètres (Start) pour les voir.</string>
+    <string name="home_empty_hidden_help">Active « Afficher les jeux masqués » dans les Paramètres (Start) pour les voir.</string>
     <string name="home_empty_none_help">Choisis le dossier où sont tes jeux, rangés comme tu veux : un dossier par système, le dossier d’un seul système, ou tout en vrac.</string>
     <string name="home_empty_looking">Je cherche…</string>
     <string name="home_empty_rescan">Réanalyser</string>
@@ -183,7 +183,7 @@
     <string name="home_none_smart_edit">Modifier les règles</string>
     <string name="home_none_favorites">Pas encore de favoris</string>
     <!-- "Add to favorites" names a menu item, as written there. -->
-    <string name="home_none_favorites_detail">Appuie sur Y sur un jeu et choisis Ajouter aux favoris.</string>
+    <string name="home_none_favorites_detail">Appuie sur Y sur un jeu et choisis « Ajouter aux favoris ».</string>
     <string name="home_none_played">Rien de joué pour l’instant</string>
     <string name="home_none_played_detail">Les jeux auxquels tu joues apparaissent ici.</string>
     <string name="home_none_played_system_detail">Les jeux auxquels tu joues sur ce système apparaissent ici, les plus joués d’abord.</string>

@@ -73,7 +73,7 @@
     <string name="menus_game_folder_hidden_help">Son dossier est masqué, alors il reste masqué avec lui, quoi qu’indique ce réglage.</string>
     <string name="menus_game_sessions">Sessions de jeu…</string>
     <string name="menus_game_reset">Effacer l’historique de jeu</string>
-    <string name="menus_game_reset_help">Le temps de jeu jusqu’ici. L’effacer l’oublie, avec le nombre de parties et les sessions.</string>
+    <string name="menus_game_reset_help">Ton temps de jeu jusqu’ici. L’effacer supprime aussi le nombre de parties et les sessions.</string>
     <string name="menus_game_reset_title">Effacer l’historique de jeu ?</string>
     <!-- %1$s is the game's title. -->
     <string name="menus_game_reset_detail">Le temps de jeu, le nombre de parties et les sessions de %1$s seront oubliés. Impossible de revenir en arrière.</string>
@@ -231,7 +231,7 @@
     <string name="menus_app_drawer_hide">Masquer du tiroir</string>
     <string name="menus_app_drawer_shown">De retour dans Toutes les applis</string>
     <!-- "Show hidden apps" names a setting. -->
-    <string name="menus_app_drawer_hidden">Masquée de Toutes les applis. Afficher les applis masquées la fait revenir</string>
+    <string name="menus_app_drawer_hidden">Masquée de Toutes les applis. « Afficher les applis masquées » la fait revenir</string>
     <string name="menus_app_info">Infos sur l’appli</string>
     <string name="menus_app_uninstall">Désinstaller…</string>
     <!-- The dock's rows: move the app one place. -->

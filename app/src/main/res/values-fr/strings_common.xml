@@ -15,5 +15,5 @@
     <!-- Settings › Play & system › Language. The options are each language's name in itself, never translated. -->
     <string name="common_language">Langue</string>
     <string name="common_language_system">Langue du système</string>
-    <string name="common_language_help">La langue que parle Tandem. Langue du système suit celle d’Android. Là où une traduction manque encore, le texte s’affiche en anglais.</string>
+    <string name="common_language_help">La langue que parle Tandem. « Langue du système » suit celle d’Android. Là où une traduction manque encore, le texte s’affiche en anglais.</string>
 </resources>

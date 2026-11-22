@@ -276,10 +276,10 @@
     <string name="accounts_steam_under_1">moins de 1 %</string>
     <string name="accounts_steam_percent">%1$s %%</string>
     <!-- Pip's toasts for new achievements. %1$s the achievement's name, %2$s a share like "2.3 %", %3$s the game. -->
-    <string name="accounts_steam_got_rare">Tu as eu « %1$s » ! Seulement %2$s des joueurs l’ont !</string>
-    <string name="accounts_steam_got">Tu as eu « %1$s » ! %2$s des joueurs l’ont.</string>
-    <string name="accounts_steam_got_in">Tu as eu « %1$s » ! Dans %2$s.</string>
-    <string name="accounts_steam_got_plain">Tu as eu « %1$s » !</string>
+    <string name="accounts_steam_got_rare">Tu as décroché « %1$s » ! Seulement %2$s des joueurs l’ont !</string>
+    <string name="accounts_steam_got">Tu as décroché « %1$s » ! %2$s des joueurs l’ont.</string>
+    <string name="accounts_steam_got_in">Tu as décroché « %1$s » dans %2$s !</string>
+    <string name="accounts_steam_got_plain">Tu as décroché « %1$s » !</string>
     <plurals name="accounts_steam_more_in">
         <item quantity="one">…et %1$d autre succès dans %2$s. Quelle session !</item>
         <item quantity="other">…et %1$d autres succès dans %2$s. Quelle session !</item>

@@ -44,7 +44,7 @@
     <string name="play_shot_needs_shizuku">Les captures d’écran nécessitent Shizuku</string>
     <string name="play_shot_no_screen">Impossible de trouver l’écran du jeu</string>
     <string name="play_shot_failed">Impossible de prendre la capture</string>
-    <string name="play_no_game">Lance d’abord un jeu : ceci capture le jeu sur l’autre écran</string>
+    <string name="play_no_game">Lance d’abord un jeu : c’est le jeu de l’autre écran qui est capturé</string>
     <string name="play_clip_needs_shizuku">Les clips nécessitent Shizuku</string>
     <string name="play_clip_busy">Un clip est déjà en cours d’enregistrement</string>
     <string name="play_clip_failed">Impossible d’enregistrer le clip</string>
@@ -65,12 +65,12 @@
     <string name="play_problem_rescan">Réanalyser</string>
     <string name="play_problem_hide">Le masquer</string>
     <!-- "Android Games" is the system of Android games in the library. -->
-    <string name="play_problem_hidden">Masqué des jeux Android</string>
+    <string name="play_problem_hidden">Masqué d’Android Games</string>
     <string name="play_problem_start_anyway">Lancer quand même</string>
     <string name="play_problem_ok">OK</string>
     <!-- Titles and explanations. %1$s an emulator, %2$s a system like "Game Boy Advance", %3$s a game. -->
     <string name="play_problem_not_installed">%1$s n’est pas installé</string>
-    <string name="play_problem_not_installed_text">Je lance les jeux %2$s avec %1$s. Installe-le, ouvre-le une fois pour le configurer, puis appuie à nouveau sur A sur %3$s.</string>
+    <string name="play_problem_not_installed_text">Je lance les jeux %2$s avec %1$s. Installe-le, ouvre-le une fois pour le configurer, puis relance %3$s avec A.</string>
     <!-- %1$s a system. -->
     <string name="play_problem_no_emulator">Pas encore d’émulateur pour %1$s</string>
     <string name="play_problem_no_emulator_text">Ajoutes-en un dans ROMs/tandem/platforms.json, ou dépose un fichier de plateforme Cocoon dans ROMs/platforms.</string>
@@ -87,7 +87,7 @@
     <string name="play_problem_shortcut_text">%1$s : %2$s. Les fichiers Vita .dpt ont besoin d’une ligne comme « [vita_game_id] PCSA00011 » ; les fichiers Windows .pcgame contiennent l’identifiant d’appli GameNative.</string>
     <!-- %1$s a game (an Android app). -->
     <string name="play_problem_app_missing">%1$s n’est plus installé</string>
-    <string name="play_problem_app_missing_text">Réinstalle-le depuis sa boutique, ou masque-le des jeux Android.</string>
+    <string name="play_problem_app_missing_text">Réinstalle-le depuis sa boutique, ou masque-le d’Android Games.</string>
     <string name="play_problem_not_offline">Impossible de passer hors ligne, jeu non lancé</string>
     <string name="play_problem_not_offline_text">Le mode Avion ne s’est pas activé, donc rien n’a été lancé. Vérifie que Shizuku tourne, ou lance quand même.</string>
 
