@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="settings_page_look">外观与风格</string>
+    <string name="settings_page_home">主页与布局</string>
+    <string name="settings_page_screens">双屏</string>
+    <string name="settings_page_sound">声音与音乐</string>
+    <string name="settings_page_controls">操控</string>
+    <string name="settings_page_library">游戏库与图片</string>
+    <string name="settings_page_play">游玩与系统</string>
+
+    <string name="settings_page_look_blurb">主题和主题包、颜色、壁纸、平台图标、动态效果和语言。</string>
+    <string name="settings_page_home_blurb">主页布局和它的屏幕、平台里游戏的显示方式、程序坞和小组件、时钟和屏保。</string>
+    <string name="settings_page_screens_blurb">浏览和游玩时每块屏幕显示什么：单屏还是双屏、交换屏幕、另一屏的图片，以及在两屏之间移动应用。</string>
+    <string name="settings_page_sound_blurb">主题包自带的音乐和音效、操作音效、Pip 的声音，以及你的音乐或内置原声。</string>
+    <string name="settings_page_controls_blurb">按键图标、交换 A/B 和 X/Y、任意按键映射、你的手柄和 Deck。</string>
+    <string name="settings_page_library_blurb">游戏文件夹、重新扫描和排序、平台和模拟器、图片及其来源，以及你的 RetroAchievements 和 Steam 账号。</string>
+    <string name="settings_page_library_blurb_discord">游戏文件夹、重新扫描和排序、平台和模拟器、图片及其来源，以及你的 RetroAchievements、Steam 和 Discord 账号。</string>
+    <string name="settings_page_play_blurb">继续和关闭游戏、性能、隐私和隐藏的游戏、备份、把 Tandem 设为主屏幕，以及更新。</string>
+
+    <string name="settings_page_look_own_accent">自定强调色</string>
+    <string name="settings_page_look_still">静止</string>
+    <string name="settings_page_home_shelves">陈列架</string>
+    <string name="settings_page_home_across">每行 %1$d 个</string>
+    <string name="settings_page_home_of_games">游戏%1$s</string>
+    <string name="settings_page_home_grid">网格</string>
+    <string name="settings_page_screens_single">仅上屏</string>
+    <string name="settings_page_screens_swapped">游戏库在下屏</string>
+    <string name="settings_page_screens_details">下屏资料 · %1$s</string>
+    <string name="settings_page_screens_details_mode">资料</string>
+    <string name="settings_page_sound_pack">使用 %1$s 的音频</string>
+    <string name="settings_page_sound_sounds">%1$s音效</string>
+    <string name="settings_page_sound_sounds_off">音效关</string>
+    <string name="settings_page_sound_music_on">音乐开</string>
+    <string name="settings_page_sound_music_off">音乐关</string>
+    <string name="settings_page_controls_prompts">%1$s 按键图标</string>
+    <string name="settings_page_controls_swapped">A/B 已交换</string>
+    <plurals name="settings_page_controls_rebound">
+        <item quantity="other">%1$d 个按键已映射</item>
+    </plurals>
+    <string name="settings_page_library_no_games">还没有游戏</string>
+    <plurals name="settings_page_library_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <plurals name="settings_page_library_systems">
+        <item quantity="other">%1$d 个平台</item>
+    </plurals>
+    <plurals name="settings_page_library_sources">
+        <item quantity="other">%1$d 个来源已开启</item>
+    </plurals>
+    <string name="settings_page_play_resume_ready">可继续游戏</string>
+    <string name="settings_page_play_resume_shizuku">继续游戏需要 Shizuku</string>
+    <string name="settings_page_play_home">主屏幕</string>
+    <string name="settings_page_play_not_home">不是主屏幕</string>
+
+    <string name="settings_sub_wallpaper">壁纸</string>
+    <string name="settings_sub_wallpaper_help">每块屏幕的壁纸，以及图片和视频壁纸的调暗程度。</string>
+    <string name="settings_sub_motion">动态效果</string>
+    <string name="settings_sub_motion_help">东西怎么动：动画风格、减弱动态效果、漂浮标题、动感强弱，以及屏幕交换的方式。</string>
+    <string name="settings_sub_grid">网格形状</string>
+    <string name="settings_sub_grid_help">图标网格的行数、图标的圆角、图标间距，以及网格上方的图片。</string>
+    <string name="settings_sub_games">游戏显示方式</string>
+    <string name="settings_sub_games_help">平台或合集里游戏的显示方式：视图、大小、卡片形状、书架和标题。</string>
+    <string name="settings_sub_dock">程序坞与小组件</string>
+    <string name="settings_sub_dock_help">主页上的应用程序坞，以及上面的小组件。</string>
+    <string name="settings_sub_art">图片与视频</string>
+    <string name="settings_sub_art_help">另一屏上的图片：预览视频、动态画面、标志大小和图片的渐隐方式。</string>
+    <string name="settings_sub_pads">已连接的手柄</string>
+    <string name="settings_sub_pads_help">蓝牙和 USB 手柄：每个手柄的任天堂按键布局，以及它们的 Home 键功能。</string>
+    <string name="settings_sub_deck">Deck</string>
+    <string name="settings_sub_deck_help">Deck：下屏上的键盘和触控板，用于 PC 游戏和串流。</string>
+    <string name="settings_sub_accounts">账号</string>
+    <string name="settings_sub_accounts_help">RetroAchievements 和 Steam 成就，以及你的 Discord 状态。</string>
+    <string name="settings_sub_perf">性能与休眠</string>
+    <string name="settings_sub_perf_help">游戏时的性能模式、风扇和刷新率，以及掌机休眠时暂停游戏。</string>
+    <string name="settings_sub_privacy">隐私与隐藏</string>
+    <string name="settings_sub_privacy_help">隐私模式和它的 PIN、显示隐藏的游戏，以及玩隐藏游戏时断网。</string>
+    <string name="settings_sub_data">我的数据</string>
+    <string name="settings_sub_data_help">备份和恢复、导入你的 Cocoon 配置和 gamelist.xml 资料，以及导出游玩统计。</string>
+    <string name="settings_sub_dev">折腾党专区</string>
+    <string name="settings_sub_dev_help">测流畅度、检查主题的小工具。一般用不上。</string>
+
+    <string name="settings_sub_grid_auto">自动行数</string>
+    <string name="settings_sub_dock_off">程序坞关</string>
+    <string name="settings_sub_art_videos">视频：%1$s</string>
+    <string name="settings_sub_pads_none">未连接</string>
+    <plurals name="settings_sub_pads_connected">
+        <item quantity="other">已连接 %1$d 个</item>
+    </plurals>
+    <string name="settings_sub_accounts_none">未登录</string>
+    <string name="settings_sub_privacy_on">隐私模式开</string>
+    <string name="settings_sub_privacy_off">隐私模式关</string>
+    <string name="settings_sub_data_summary">备份与导入</string>
+    <plurals name="settings_sub_dev_tools">
+        <item quantity="other">%1$d 个工具</item>
+    </plurals>
+
+    <string name="settings_group_colour">颜色</string>
+    <string name="settings_group_wallpaper_icons">壁纸、图标与动态</string>
+    <string name="settings_group_language">语言</string>
+    <string name="settings_group_start_over">从头再来</string>
+    <string name="settings_group_home_screen">主页</string>
+    <string name="settings_group_around_home">主页周边</string>
+    <string name="settings_group_screens">屏幕</string>
+    <string name="settings_group_other_screen">另一屏</string>
+    <string name="settings_group_while_playing">游戏时</string>
+    <string name="settings_group_sounds">音效</string>
+    <string name="settings_group_music">音乐</string>
+    <string name="settings_group_buttons">按键</string>
+    <string name="settings_group_controllers">手柄</string>
+    <string name="settings_group_games_systems">游戏与平台</string>
+    <string name="settings_group_artwork_accounts">图片与账号</string>
+    <string name="settings_group_playing">游玩</string>
+    <string name="settings_group_tandem">Tandem</string>
+    <string name="settings_group_wallpaper">壁纸</string>
+    <string name="settings_group_motion">动态效果</string>
+    <string name="settings_group_grid_shape">网格形状</string>
+    <string name="settings_group_how_games_show">游戏显示方式</string>
+    <string name="settings_group_dock">程序坞</string>
+    <string name="settings_group_widgets">小组件</string>
+    <string name="settings_group_art_video">图片与视频</string>
+    <string name="settings_group_game_controllers">游戏手柄</string>
+    <string name="settings_group_home_button">手柄 Home 键</string>
+    <string name="settings_group_deck">Deck</string>
+    <string name="settings_group_retroachievements">RetroAchievements</string>
+    <string name="settings_group_steam">Steam</string>
+    <string name="settings_group_discord">Discord</string>
+    <string name="settings_group_perf_sleep">性能与休眠</string>
+    <string name="settings_group_privacy_hidden">隐私与隐藏</string>
+    <string name="settings_group_your_data">我的数据</string>
+    <string name="settings_group_tinkerers">折腾党专区</string>
+    <string name="settings_group_theme_pack">主题包</string>
+    <string name="settings_group_not_placed">未归类</string>
+    <string name="settings_group_other">其他</string>
+    <string name="settings_group_buttons_note">长按 Select：游戏切换器 · 长按 Start：快速设置</string>
+    <string name="settings_group_pads_note">开：任天堂布局</string>
+    <string name="settings_buttons_note">%1$s：游戏切换器 · %2$s：快速设置</string>
+    <string name="settings_buttons_none">无按键</string>
+
+    <string name="settings_resume_page">继续游戏页</string>
+    <string name="settings_resume_page_help">还在运行的游戏会在网格左边多出一个“继续游戏页”，一按就能接着玩。“优先打开”：游戏运行时回到 Tandem，会直接来到这一页。关闭时，运行中的游戏没有专属页面。</string>
+    <string name="settings_resume_page_land">优先打开</string>
+
+    <string name="settings_a_switch">切换</string>
+    <string name="settings_a_next">下一个</string>
+    <string name="settings_a_open">打开</string>
+    <string name="settings_a_do">执行</string>
+    <string name="settings_hint_adjust">调节</string>
+    <string name="settings_hint_change">更改</string>
+    <string name="settings_hint_search">搜索</string>
+    <string name="settings_about_panel">开源 · 无追踪</string>
+
+    <string name="settings_library">游戏库</string>
+    <string name="settings_library_sort">游戏排序方式</string>
+    <string name="settings_library_sort_help">每个平台和合集里游戏的排列顺序。</string>
+    <string name="settings_library_hidden">显示隐藏的游戏</string>
+    <string name="settings_library_hidden_private">隐私</string>
+    <string name="settings_library_hidden_help">用 Y 隐藏的游戏、文件夹和平台平时不会出现；开启后它们会变暗显示。Start › 已隐藏 会列出所有隐藏内容，每项都能取消隐藏。隐私模式下需要输入 PIN。</string>
+    <string name="settings_library_rescan">重新扫描游戏</string>
+    <string name="settings_library_rescan_looking">正在查找…</string>
+    <plurals name="settings_library_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <plurals name="settings_library_manuals">
+        <item quantity="other">%1$d 份说明书</item>
+    </plurals>
+    <string name="settings_library_games_manuals">%1$s · %2$s</string>
+    <string name="settings_library_rescan_help">重新查看你的游戏文件夹，找出刚拷进来的游戏和说明书。每次回到 Tandem 时它也会自己检查。说明书和攻略放在 ROMs/manuals/&lt;平台&gt;/ 里，文件名与游戏相同（Pokemon Red.gb 配 Pokemon Red.pdf）：可以是 PDF、图片压缩包或图片文件夹、文本或 Markdown 文件。在游戏的 Y 菜单里和游戏时的下屏上都能阅读，也可以在 Y › 编辑资料 › 说明书 里自己指定。</string>
+
+    <string name="settings_data">我的数据</string>
+    <string name="settings_data_import">导入资料</string>
+    <string name="settings_data_importing">正在导入…</string>
+    <string name="settings_data_import_help">从 gamelist.xml 文件（ES-DE、Cocoon 备份）补全名称、简介和图片链接。只填空白的部分：你在 Tandem 里改过的内容保持不变。</string>
+    <string name="settings_data_importing_details">正在导入资料…</string>
+    <plurals name="settings_data_imported">
+        <item quantity="other">已为 %1$d 款游戏补全资料</item>
+    </plurals>
+    <string name="settings_data_import_none">没有找到 gamelist.xml 文件</string>
+    <string name="settings_data_back_up">备份</string>
+    <string name="settings_data_saving">正在保存…</string>
+    <string name="settings_data_back_up_help">在你的游戏旁边保存一份新备份：游戏数据、外观、布局和文件夹、平台和模拟器。旧备份会保留，重装后可以回到其中任何一份。</string>
+    <string name="settings_data_restore">恢复</string>
+    <string name="settings_data_restoring">正在恢复…</string>
+    <string name="settings_data_restore_pick">选择一份备份</string>
+    <string name="settings_data_restore_help">选择一份备份（最新的在前），再选要恢复哪些内容。恢复前，Tandem 会先把当前状态自动备份一份。</string>
+    <string name="settings_job_busy">稍等，还在忙…</string>
+    <string name="settings_job_failed">没成功：%1$s</string>
+    <string name="settings_job_unknown">未知问题</string>
+
+    <string name="settings_about">关于</string>
+    <string name="settings_about_resume">继续运行中的游戏</string>
+    <string name="settings_about_resume_ready">就绪</string>
+    <string name="settings_about_resume_allow">在 Shizuku 中授权</string>
+    <string name="settings_about_resume_help">Shizuku 运行时，选择还开着的游戏会直接回到游戏里，而不是重新启动。</string>
+    <string name="settings_shizuku_on">继续游戏已开启：游戏会从你离开的地方接着玩</string>
+    <string name="settings_shizuku_start">请先启动 Shizuku 应用，再回到这里</string>
+    <string name="settings_about_tandem">关于 Tandem</string>
+    <string name="settings_about_version">版本 %1$s · GPL-3.0</string>
+    <string name="settings_about_help">免费开源（GPL-3.0）。没有广告，不用注册，不做追踪。你的数据只留在你的设备上。</string>
+    <string name="settings_about_hi">用爱制作，永远免费。Pip 向你问好！</string>
+    <string name="settings_updates">更新</string>
+    <string name="settings_updates_help">当前是 Tandem %1$s。按 A 会向 GitHub 询问有没有新版本。按“更新”会下载新版、确认它是正式发布的版本（校验和以及 Tandem 的签名密钥），然后安装；Tandem 会重新启动。有 Shizuku 时直接安装，不会询问；否则 Android 会询问一次是否允许 Tandem 安装应用。%2$s</string>
+    <string name="settings_updates_see">查看更新</string>
+    <string name="settings_updates_check">检查</string>
+    <string name="settings_updates_auto">自动检查</string>
+    <string name="settings_slider_theme">主题</string>
+    <string name="settings_picker_now">当前：%1$s</string>
+
+    <string name="settings_showcase_in_use">使用中</string>
+    <string name="settings_showcase_play">开玩</string>
+    <string name="settings_showcase_options">选项</string>
+    <string name="settings_showcase_menu">菜单</string>
+    <string name="settings_showcase_continue">继续游玩</string>
+    <string name="settings_showcase_systems">平台</string>
+    <string name="settings_showcase_collections">合集</string>
+    <string name="settings_showcase_home">主页</string>
+
+    <string name="settings_home_search">搜索设置</string>
+    <string name="settings_home_search_help">按名称或用途找到任意设置：“bigger icons”“nintendo buttons”“music”。</string>
+    <string name="settings_home_search_panel">输入设置名称的几个字母，或者你想做的事：“bigger icons”“nintendo”“quiet”“cocoon”。点结果会直接跳过去，并告诉你它在哪里。在任意设置页按 X 都能搜索。</string>
+    <string name="settings_home_pages">翻页</string>
+
+    <string name="settings_search_box">⌕ 搜索设置</string>
+    <string name="settings_search_space">空格</string>
+    <string name="settings_search_delete">删除</string>
+    <string name="settings_search_results">结果</string>
+    <string name="settings_search_go">前往</string>
+    <string name="settings_search_keys">键盘</string>
+    <string name="settings_search_popular">热门</string>
+    <plurals name="settings_search_found">
+        <item quantity="other">找到 %1$d 项</item>
+    </plurals>
+    <plurals name="settings_search_found_more">
+        <item quantity="other">找到 %1$d+ 项</item>
+    </plurals>
+    <string name="settings_search_nothing">没有叫“%1$s”的设置</string>
+    <string name="settings_search_try">试试用途：“bigger”“quiet”“buttons”</string>
+    <string name="settings_search_where_settings">设置</string>
+    <string name="settings_search_where_in">%1$s › %2$s</string>
+    <string name="settings_search_where_themes">外观与风格 › 主题</string>
+    <string name="settings_search_where_packs">外观与风格 › 主题包</string>
+    <string name="settings_search_where_layouts">主页与布局 › 布局</string>
+    <string name="settings_search_where_scrape">游戏库与图片 › 刮削游戏库</string>
+    <string name="settings_search_where_sources">游戏库与图片 › 配置来源</string>
+    <string name="settings_search_where_stats">Start › 统计与奖杯</string>
+    <string name="settings_search_theme">主题</string>
+    <string name="settings_search_layout">布局</string>
+    <string name="settings_search_kinds">要下载的图片</string>
+    <plurals name="settings_search_kinds_value">
+        <item quantity="other">%1$d 种</item>
+    </plurals>
+    <string name="settings_search_kinds_help">刮削时下载哪些图片：封面、标志、主视觉图、截图、实体包装、视频。在“刮削游戏库”页面中。</string>
+    <string name="settings_search_region">首选地区</string>
+    <string name="settings_search_region_help">优先选用这个地区的封面和名称。在“刮削游戏库”页面的“地区与语言”中。</string>
+    <string name="settings_search_language">首选语言</string>
+    <string name="settings_search_language_help">来源有这种语言时，简介和类型会用它显示。在“刮削游戏库”页面的“地区与语言”中。</string>
+    <string name="settings_search_stats">游玩统计</string>
+    <string name="settings_search_stats_help">按日期、平台和游戏统计的游玩时长、每一次游玩记录，以及你的成就。可在 游玩与系统 › 我的数据 中导出。</string>
+    <string name="settings_search_source_help">%1$s。</string>
+    <string name="settings_updates_auto_help">Tandem 打开时每天检查一次有没有新版本，有的话用一条消息和 Start 面板提醒你一次。它只向 GitHub 询问最新版本号；在你按“更新”之前什么都不会安装。关闭后不会检查也不会提示，除非你在“更新”上按 A 手动检查。隐私模式下会跳过。</string>
+</resources>

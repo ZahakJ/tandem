@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="common_back">返回</string>
+    <string name="common_close">关闭</string>
+    <string name="common_choose">选择</string>
+    <string name="common_on">开</string>
+    <string name="common_off">关</string>
+    <string name="common_clear">清除</string>
+    <string name="common_size_free">可用 %1$s</string>
+    <string name="common_percent">%1$d%%</string>
+
+    <string name="common_language">语言</string>
+    <string name="common_language_system">跟随系统</string>
+    <string name="common_language_help">Tandem 使用的语言。“跟随系统”会和 Android 保持一致。还没翻译到的文字会显示为英文。</string>
+</resources>

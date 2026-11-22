@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="panels_start_hint_unhide">取消隐藏</string>
+    <string name="panels_start_hint_hide_again">重新隐藏</string>
+    <string name="panels_start_hint_show_here">在此显示</string>
+
+    <string name="panels_start_switch_games">切换游戏</string>
+    <string name="panels_start_all_apps">所有应用</string>
+    <string name="panels_start_search">搜索</string>
+    <string name="panels_start_stats">统计与奖杯</string>
+    <string name="panels_start_new">新建</string>
+    <string name="panels_start_sort">排序</string>
+    <string name="panels_start_edit_grid">编辑网格</string>
+    <string name="panels_start_undo">撤销</string>
+    <string name="panels_start_edit_widgets">编辑小组件</string>
+    <string name="panels_start_hidden">已隐藏</string>
+    <string name="panels_start_settings">设置</string>
+    <string name="panels_start_update">Tandem %1$s 已发布</string>
+    <plurals name="panels_start_trophies">
+        <item quantity="other">%1$d 个奖杯</item>
+    </plurals>
+    <plurals name="panels_start_playing">
+        <item quantity="other">%1$d 款在玩</item>
+    </plurals>
+
+    <string name="panels_start_new_folder">新建文件夹…</string>
+    <string name="panels_start_new_smart_folder">智能文件夹…</string>
+    <string name="panels_start_new_add_home">添加到主页…</string>
+    <string name="panels_start_new_widget">小组件…</string>
+    <string name="panels_start_name_folder">给文件夹起个名字</string>
+    <string name="panels_start_folder_default">新文件夹</string>
+    <string name="panels_start_folder_unnamed">文件夹</string>
+    <string name="panels_start_folder_made">已创建文件夹 %1$s。在任意图块上按 Y › 移到文件夹</string>
+
+    <string name="panels_start_sort_tidy">主页：填补空位</string>
+    <string name="panels_start_sort_home_name">主页：按名称</string>
+    <string name="panels_start_sort_home_recent">主页：最近玩过</string>
+    <string name="panels_start_sort_home_most">主页：最常玩</string>
+    <string name="panels_start_sort_home_kind">主页：平台优先</string>
+    <string name="panels_start_sort_games">游戏：%1$s</string>
+    <string name="panels_start_sorted_games">游戏已排序：%1$s</string>
+    <string name="panels_start_sorted_home_name">主页已按名称排序</string>
+    <string name="panels_start_sorted_home_recent">主页已按最近玩过排序</string>
+    <string name="panels_start_sorted_home_most">主页已按最常玩排序</string>
+    <string name="panels_start_sorted_home_kind">平台已排在前面</string>
+    <string name="panels_start_edit_grid_pick">先选中一个图块，再按 Start › 编辑网格</string>
+
+    <string name="panels_start_hidden_tuck">藏起来</string>
+    <string name="panels_start_hidden_show_all">全部显示</string>
+    <string name="panels_start_hidden_showing">显示中</string>
+    <string name="panels_start_hidden_some_showing">部分显示中</string>
+    <string name="panels_start_hidden_tucked">隐藏的游戏已藏好</string>
+    <string name="panels_start_hidden_shown">隐藏的游戏正在显示</string>
+    <string name="panels_start_hidden_none_left">%1$s。没有其他隐藏内容了</string>
+    <string name="panels_start_hidden_all_showing">隐藏的内容已经全部显示了</string>
+    <string name="panels_start_hidden_peek">会一直显示，直到你把隐藏的游戏藏起来</string>
+    <string name="panels_start_hidden_again">已重新隐藏</string>
+
+    <string name="panels_quick_title">快速设置</string>
+    <string name="panels_quick_brightness">亮度</string>
+    <string name="panels_quick_brightness_auto">自动</string>
+    <string name="panels_quick_volume">音量</string>
+    <string name="panels_quick_muted">静音</string>
+    <string name="panels_quick_wifi">Wi-Fi</string>
+    <string name="panels_quick_bluetooth">蓝牙</string>
+    <string name="panels_quick_airplane">飞行模式</string>
+    <string name="panels_quick_controller">手柄</string>
+    <string name="panels_quick_controller_builtin">内置</string>
+    <string name="panels_quick_discord_showing">显示中</string>
+    <string name="panels_quick_discord_paused">已暂停</string>
+    <string name="panels_quick_battery_saver">省电模式</string>
+    <string name="panels_quick_private">隐私模式</string>
+    <string name="panels_quick_screensaver">屏保</string>
+    <string name="panels_quick_screensaver_start">立即开始</string>
+    <string name="panels_quick_android">Android</string>
+    <string name="panels_quick_android_settings">设置</string>
+    <string name="panels_quick_shizuku_note">有了 Shizuku，Wi-Fi、蓝牙和飞行模式都能直接在这里开关。</string>
+    <string name="panels_quick_allow_write">请允许 Tandem 修改系统设置，然后回到这里</string>
+    <string name="panels_quick_saver_on">省电模式已开启：画面静止，音乐暂停</string>
+    <string name="panels_quick_saver_off">省电模式已关闭</string>
+
+    <string name="panels_side_morning">早上好！</string>
+    <string name="panels_side_afternoon">下午好！</string>
+    <string name="panels_side_evening">晚上好！</string>
+    <string name="panels_side_late">熬夜呢？我也是。</string>
+    <string name="panels_side_all_quiet">%1$s一切安好。</string>
+    <plurals name="panels_side_things">
+        <item quantity="other">有 %1$d 条消息给你。</item>
+    </plurals>
+    <string name="panels_side_notifications">通知</string>
+    <string name="panels_side_clear_all">全部清除</string>
+    <string name="panels_side_allow_title">让 Pip 帮你显示通知</string>
+    <string name="panels_side_allow_detail">通知只留在这台设备上，Tandem 只在这里显示它们。</string>
+    <string name="panels_side_nothing_new">没有新消息。</string>
+    <string name="panels_side_on_device">设备状态</string>
+    <string name="panels_side_status">状态</string>
+    <string name="panels_side_cant_clear">这条无法清除</string>
+    <string name="panels_side_allow_access">在这里开启 Tandem，然后回来</string>
+    <string name="panels_side_private">隐私模式下已隐藏</string>
+</resources>

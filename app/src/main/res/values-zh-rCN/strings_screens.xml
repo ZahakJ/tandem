@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="screens_companion_art">游戏图片</string>
+    <string name="screens_companion_tandem">Tandem 游戏助手</string>
+    <string name="screens_companion_dark">熄屏</string>
+    <string name="screens_companion_off">交给模拟器</string>
+    <string name="screens_companion_deck">Deck：键盘和触控板</string>
+    <string name="screens_off_group">熄屏</string>
+    <string name="screens_off_while_playing">游戏时的下屏</string>
+    <string name="screens_off_while_playing_help">游戏在上屏运行时，下屏显示什么：游戏图片、Tandem 的游戏助手、熄屏（全黑静止，点按才亮，这块屏幕最省电的选择），或者什么都不显示，留给自己会在那里绘制画面的模拟器。3DS 和 DS 模拟器无论怎么设都会用自己的屏幕。在平台或游戏上按 Y 可以单独设置。</string>
+    <string name="screens_off_after">多久后熄屏</string>
+    <string name="screens_off_after_help">游戏时下屏多少分钟没被触摸就变暗，无论显示什么，直到你点按它。“从不”会让暗下来的图片或游戏助手整局都亮着。选“熄屏”时，这也是点按后屏幕亮多久。</string>
+    <string name="screens_off_never">从不</string>
+    <plurals name="screens_off_after_minutes">
+        <item quantity="other">%1$d 分钟后</item>
+    </plurals>
+    <string name="screens_running">● 运行中</string>
+    <string name="screens_ttb_complete">100%% 需 %1$s</string>
+    <string name="screens_ttb_chip">⏱ %1$s</string>
+    <string name="screens_favorite">♥ 收藏</string>
+    <string name="screens_hint_resume">继续</string>
+    <string name="screens_hint_play">开玩</string>
+    <string name="screens_hint_options">选项</string>
+    <string name="screens_hint_more">更多</string>
+    <string name="screens_hint_search">搜索</string>
+    <string name="screens_hint_open">打开</string>
+    <string name="screens_switch_systems">平台</string>
+    <string name="screens_switch_genres">类型</string>
+    <string name="screens_switch_lists">列表</string>
+    <string name="screens_switch_groups">分组</string>
+    <string name="screens_switch_rows">行</string>
+    <string name="screens_fact_times_played">游玩次数</string>
+    <string name="screens_fact_not_yet">还没有</string>
+    <string name="screens_fact_play_time">游玩时长</string>
+    <string name="screens_fact_time_to_beat">通关时长</string>
+    <string name="screens_ttb_main">主线 %1$s</string>
+    <string name="screens_ttb_extras">支线 %1$s</string>
+    <string name="screens_ttb_100">100%% %1$s</string>
+    <string name="screens_fact_last_played">上次游玩</string>
+    <string name="screens_fact_added">添加于</string>
+    <string name="screens_fact_folder">文件夹</string>
+    <string name="screens_fact_file">文件</string>
+    <string name="screens_players_one">1 名玩家</string>
+    <string name="screens_players">%1$s 名玩家</string>
+    <string name="screens_just_now">刚刚</string>
+    <string name="screens_not_played">还没玩过：一场新冒险等着你！</string>
+    <string name="screens_played_time">玩了 %1$s</string>
+    <plurals name="screens_played_times">
+        <item quantity="other">玩了 %1$d 次</item>
+    </plurals>
+    <string name="screens_played">玩过</string>
+    <string name="screens_played_when">%1$s · %2$s</string>
+    <string name="screens_played_in_here">在这里玩了 %1$s</string>
+    <plurals name="screens_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <string name="screens_good_morning">早上好！</string>
+    <string name="screens_good_afternoon">下午好！</string>
+    <string name="screens_good_evening">晚上好！</string>
+    <string name="screens_up_late">熬夜呢？我也是。</string>
+    <string name="screens_no_games">一起去找些游戏吧</string>
+    <plurals name="screens_games_ready">
+        <item quantity="other">%1$d 款游戏整装待发</item>
+    </plurals>
+    <string name="screens_comp_just_started">刚开始</string>
+    <string name="screens_comp_playing">已玩 %1$s</string>
+    <string name="screens_comp_in_total">总计 %1$s</string>
+    <string name="screens_comp_first_time">第一次玩</string>
+    <string name="screens_comp_back">回到 Tandem</string>
+    <string name="screens_comp_screenshot">截图</string>
+    <string name="screens_comp_notes">笔记</string>
+    <string name="screens_comp_companion">游戏助手</string>
+    <string name="screens_comp_game_screen">游戏画面</string>
+    <string name="screens_comp_manual">说明书</string>
+    <string name="screens_comp_clip">片段</string>
+    <string name="screens_comp_stop_clip">停止录制 · %1$d 秒</string>
+    <plurals name="screens_comp_legendary">
+        <item quantity="other">%1$d 小时！传说级的一局</item>
+    </plurals>
+    <plurals name="screens_comp_stretch">
+        <item quantity="other">已经 %1$d 小时了。喝口水，伸个懒腰？</item>
+    </plurals>
+    <string name="screens_comp_hour">已经一小时了！玩得开心吗？</string>
+    <string name="screens_comp_half_hour">半小时了，节奏不错！</string>
+    <string name="screens_comp_charging">充电中 %1$d%%</string>
+    <string name="screens_comp_game_art">游戏图片</string>
+    <string name="screens_comp_tap_to_close">点按关闭</string>
+    <string name="screens_comp_close_game">关闭游戏</string>
+    <string name="screens_comp_light">亮度</string>
+    <string name="screens_comp_volume">音量</string>
+    <string name="screens_comp_wifi_on">Wi-Fi 开</string>
+    <string name="screens_comp_wifi_off">Wi-Fi 关</string>
+    <string name="screens_home_android_apps">Android 应用</string>
+    <string name="screens_home_open_on_top">在上屏打开</string>
+    <string name="screens_home_home_brings_back">按 Home 回到 Tandem</string>
+    <string name="screens_home_moving">正在移动…</string>
+    <string name="screens_home_move_here">把 %1$s 移到这里</string>
+    <string name="screens_swap_single">单屏模式已开启，没有另一块屏幕可交换</string>
+    <string name="screens_swap_no_second">没有第二块屏幕可交换</string>
+    <string name="screens_swap_busy">下屏现在正忙。稍后再试</string>
+    <string name="screens_swap_failed">下屏没能接管操控，屏幕保持原样</string>
+    <string name="screens_status_cleared">状态已清除</string>
+    <string name="screens_status_finished">%1$s 通关啦！🎉</string>
+    <string name="screens_status_completed">%1$s 完美通关，100%% ★</string>
+    <string name="screens_status_set">%1$s：%2$s</string>
+    <string name="screens_status">状态</string>
+    <string name="screens_status_none">无</string>
+    <string name="screens_status_help">待玩、在玩、已通关… 待玩的游戏玩上一阵子后，会自动变成“在玩”。</string>
+    <string name="screens_status_no_status">无状态</string>
+    <string name="screens_status_progress">%1$s / 约 %2$s</string>
+</resources>

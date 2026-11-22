@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="home_grid_size_small">小</string>
+    <string name="home_grid_size_medium">中</string>
+    <string name="home_grid_size_large">大</string>
+    <string name="home_grid_size_huge">超大</string>
+    <plurals name="home_grid_size_columns">
+        <item quantity="other">%1$d 列</item>
+    </plurals>
+    <string name="home_card_shape_rounded">圆角</string>
+    <string name="home_card_shape_square">方形</string>
+    <string name="home_card_shape_circle">圆形</string>
+    <string name="home_card_shape_portrait">封面（竖版）</string>
+    <string name="home_card_shape_landscape">宽幅</string>
+    <string name="home_tile_style_pastel">马卡龙</string>
+    <string name="home_tile_style_solid">纯色</string>
+    <string name="home_tile_style_glass">玻璃</string>
+    <string name="home_tile_style_mono">简约</string>
+
+    <string name="home_bottom_details">资料</string>
+    <string name="home_bottom_both">图片 + 信息</string>
+    <string name="home_bottom_art">动态图片</string>
+    <string name="home_bottom_clock">时钟</string>
+    <string name="home_hero_gradient_fade">柔和渐隐</string>
+    <string name="home_hero_gradient_strong">强烈渐隐</string>
+    <string name="home_hero_gradient_vignette">暗角</string>
+    <string name="home_hero_gradient_none">无</string>
+    <string name="home_hero_running">● 运行中</string>
+    <string name="home_clock_all_apps">所有应用</string>
+    <string name="home_clock_date">M月d日 EEEE</string>
+    <string name="home_clock_battery">电量 %1$d%%</string>
+
+    <string name="home_resume_continue">继续游玩</string>
+    <string name="home_resume_session">本次已玩 %1$s</string>
+    <string name="home_resume_hint_resume">继续</string>
+    <string name="home_resume_hint_switch">切换</string>
+    <string name="home_resume_close_again">再按一次 Y 关闭 %1$s</string>
+    <string name="home_recent_off">“最近玩过”栏已关闭。设置 › 主页与布局</string>
+    <string name="home_recent_title">最近玩过</string>
+    <string name="home_recent_hint_hide">隐藏</string>
+    <string name="home_recent_running">● 运行中</string>
+
+    <string name="home_find_also">还找到了</string>
+    <string name="home_find_system">平台</string>
+    <string name="home_find_app">应用</string>
+    <string name="home_find_open">打开</string>
+    <string name="home_jump_unknown_year">年份未知</string>
+    <string name="home_jump_unrated">未评分</string>
+    <string name="home_jump_page">第 %1$d 页</string>
+    <string name="home_jump_hint">L2 · R2 快速跳转</string>
+
+    <string name="home_layout_shelves">陈列架</string>
+    <string name="home_layout_grid">图标网格</string>
+    <string name="home_layout_carousel">轮播</string>
+    <string name="home_layout_list">列表</string>
+    <string name="home_layout_console">主机风</string>
+    <string name="home_layout_orbit">轨道</string>
+    <string name="home_layout_spotlight">聚光灯</string>
+    <string name="home_view_grid">网格</string>
+    <string name="home_view_list">列表</string>
+    <string name="home_view_carousel">轮播</string>
+    <string name="home_view_shelf">书架</string>
+    <string name="home_view_case">卡带盒</string>
+    <string name="home_dock_style_bar">悬浮栏</string>
+    <string name="home_dock_style_shelf">搁板</string>
+    <string name="home_dock_style_minimal">仅图标</string>
+    <string name="home_genres">类型</string>
+    <plurals name="home_genres_count">
+        <item quantity="other">%1$d 种类型</item>
+    </plurals>
+    <plurals name="home_games_count">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_games_count_hidden">
+        <item quantity="other">已隐藏 · %1$d 款游戏</item>
+    </plurals>
+    <string name="home_entry_continue">继续 · %1$s</string>
+    <string name="home_entry_collection">合集</string>
+    <string name="home_empty_hidden">所有游戏都隐藏了</string>
+    <string name="home_empty_none">还没有游戏</string>
+    <string name="home_empty_hidden_detail">设置 › 游玩与系统 › 隐私与隐藏 › 显示隐藏的游戏</string>
+    <string name="home_empty_none_detail">按 A 选择你放游戏的文件夹</string>
+    <string name="home_empty_hidden_kind">已隐藏</string>
+    <string name="home_empty_none_kind">选择你的游戏文件夹</string>
+    <string name="home_empty_hidden_action">设置</string>
+    <string name="home_empty_none_action">选择</string>
+
+    <string name="home_shelves_continue">继续游玩</string>
+    <string name="home_shelves_systems">平台</string>
+    <string name="home_shelves_collections">合集</string>
+    <string name="home_shelves_apps">应用</string>
+    <string name="home_shelves_apps_card">应用</string>
+    <string name="home_shelves_apps_card_detail">所有已安装的</string>
+    <string name="home_shelves_systems_card">平台</string>
+    <string name="home_shelves_systems_card_detail">模拟器和文件夹</string>
+    <string name="home_empty_hidden_help">在设置（Start）里打开“显示隐藏的游戏”就能看到它们。</string>
+    <string name="home_empty_none_help">选择你放游戏的文件夹，怎么摆放都行：每个平台一个文件夹、只放一个平台的文件夹，或者全都放在一起。</string>
+    <string name="home_empty_looking">正在查找…</string>
+    <string name="home_empty_rescan">重新扫描</string>
+    <string name="home_empty_pick">选择你的游戏文件夹</string>
+
+    <plurals name="home_folder_subtitle">
+        <item quantity="other">%2$s · %1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_folder_subtitle_hidden">
+        <item quantity="other">%2$s · 已隐藏 · %1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_genre_subtitle">
+        <item quantity="other">类型 · %1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_genres_subtitle">
+        <item quantity="other">%1$d 种类型</item>
+    </plurals>
+    <string name="home_grid_folders">文件夹</string>
+    <string name="home_grid_games">游戏</string>
+    <string name="home_shelf_games">游戏</string>
+
+    <string name="home_none_go_back">返回</string>
+    <string name="home_none_system_gone">这个平台不见了</string>
+    <string name="home_none_system_gone_detail">上次扫描时没找到它的文件夹。</string>
+    <string name="home_none_folder">这里空空的</string>
+    <string name="home_none_folder_detail">把游戏拷进这个文件夹，然后重新扫描。</string>
+    <string name="home_none_rescan">重新扫描</string>
+    <string name="home_none_tucked">这里没什么可显示的</string>
+    <string name="home_none_tucked_detail">这里的游戏都藏起来了。</string>
+    <string name="home_none_hidden">这里的游戏都隐藏了</string>
+    <string name="home_none_hidden_detail">隐藏的游戏不会出现，除非你让它们显示。</string>
+    <string name="home_none_show_hidden">显示隐藏的游戏</string>
+    <string name="home_none_smart">没有匹配的游戏</string>
+    <string name="home_none_smart_detail">游戏库里没有符合这个文件夹规则的游戏。</string>
+    <string name="home_none_smart_edit">编辑规则</string>
+    <string name="home_none_favorites">还没有收藏</string>
+    <string name="home_none_favorites_detail">在游戏上按 Y，选择“收藏”。</string>
+    <string name="home_none_played">还没玩过任何游戏</string>
+    <string name="home_none_played_detail">玩过的游戏会出现在这里。</string>
+    <string name="home_none_played_system_detail">你在这个平台玩过的游戏会出现在这里，玩得最多的在前。</string>
+    <string name="home_none_unplayed">真·全都玩过了！</string>
+    <string name="home_none_unplayed_detail">每一款都上手试过了。佩服佩服。</string>
+    <string name="home_none_playing">手头没有在玩的</string>
+    <string name="home_none_playing_detail">玩上一阵子的游戏会自己出现在这里。</string>
+    <string name="home_none_backlog">待玩清单清空啦</string>
+    <string name="home_none_backlog_detail">在游戏上按 Y › 状态 › 待玩，就会放到这里。</string>
+    <string name="home_none_finished">还没有通关的游戏</string>
+    <string name="home_none_finished_detail">看到制作人员名单时，按 Y › 状态 › 已通关。</string>
+    <string name="home_none_added">还没有游戏</string>
+    <string name="home_none_added_detail">新游戏会在重新扫描后出现在这里。</string>
+    <string name="home_none_genre">这个类型里没有游戏</string>
+    <string name="home_none_genre_detail">它的游戏被隐藏或移除了。</string>
+    <string name="home_none_genres">还没有类型</string>
+    <string name="home_none_genres_detail">刮削游戏资料或导入 gamelist 后，游戏会自动按类型归类。</string>
+    <string name="home_none_genres_scrape">刮削资料</string>
+
+    <string name="home_spot_game">游戏</string>
+    <string name="home_spot_system">平台</string>
+    <string name="home_spot_folder">文件夹</string>
+    <string name="home_spot_genre">类型</string>
+    <string name="home_spot_collection">合集</string>
+    <string name="home_spot_app">应用</string>
+    <string name="home_spot_empty">空位</string>
+    <string name="home_spot_empty_paste">按 A 把拿着的图块粘贴到这里</string>
+    <string name="home_spot_empty_add">按 A 在这里添加文件夹、游戏、应用或小组件</string>
+    <string name="home_spot_running">● 运行中</string>
+    <string name="home_spot_hint_paste">粘贴</string>
+    <string name="home_spot_hint_add">添加到这里</string>
+    <string name="home_spot_hint_options">选项</string>
+    <string name="home_spot_hint_swap">交换</string>
+    <string name="home_spot_hint_open">打开</string>
+    <string name="home_spot_hint_resume">继续</string>
+    <string name="home_spot_hint_play">开玩</string>
+
+    <string name="home_spotlight_apps">应用</string>
+    <string name="home_spotlight_hidden">所有游戏都隐藏了</string>
+    <string name="home_spotlight_none">还没有游戏。选择你放游戏的文件夹吧</string>
+    <string name="home_spotlight_show_hidden">显示隐藏的游戏</string>
+    <string name="home_spotlight_pick">选择你的游戏文件夹</string>
+    <string name="home_spotlight_running">● 运行中</string>
+    <string name="home_spotlight_one_player">1 名玩家</string>
+    <string name="home_spotlight_players">%1$s 名玩家</string>
+    <string name="home_spotlight_played">已玩</string>
+    <string name="home_spotlight_last_played">上次游玩</string>
+    <plurals name="home_spotlight_sessions">
+        <item quantity="other">游玩次数</item>
+    </plurals>
+    <string name="home_spotlight_status">状态</string>
+    <string name="home_spotlight_achievements">成就</string>
+    <string name="home_spotlight_not_played">还没玩过</string>
+    <string name="home_spotlight_just_now">刚刚</string>
+    <string name="home_spotlight_hint_resume">继续</string>
+    <string name="home_spotlight_hint_play">开玩</string>
+    <string name="home_spotlight_hint_open">打开</string>
+    <string name="home_spotlight_hint_menu">菜单</string>
+    <string name="home_spotlight_hint_less">收起</string>
+    <string name="home_spotlight_hint_more">展开</string>
+    <string name="home_spotlight_hint_groups">分组</string>
+    <string name="home_spotlight_settings">聚光灯</string>
+    <string name="home_spotlight_rail">聚光灯封面栏</string>
+    <string name="home_spotlight_rail_help">封面栏放在哪一侧。游戏资料占另一侧。</string>
+    <string name="home_spotlight_rail_left">左</string>
+    <string name="home_spotlight_rail_right">右</string>
+    <string name="home_spotlight_backdrop">聚光灯背景</string>
+    <string name="home_spotlight_backdrop_help">选中游戏背后铺满屏幕的是什么：它的主视觉图、模糊的封面，或者只用主题色。</string>
+    <string name="home_spotlight_backdrop_art">主视觉</string>
+    <string name="home_spotlight_backdrop_blur">模糊封面</string>
+    <string name="home_spotlight_backdrop_dim">暗色</string>
+    <string name="home_spotlight_motion">聚光灯动效</string>
+    <string name="home_spotlight_motion_help">游戏背后的图片会非常缓慢地漂移和放大。开启“减弱动态效果”时也会关闭。</string>
+
+    <string name="home_shelf_look_wood">木纹</string>
+    <string name="home_shelf_look_matte">哑光</string>
+    <string name="home_shelf_look_open">开放式</string>
+
+    <string name="home_running_outside">在 Tandem 之外打开</string>
+    <string name="home_running_running">运行中</string>
+    <string name="home_running_played">%1$s · 本次已玩 %2$s</string>
+    <string name="home_running_app">%1$s · %2$s</string>
+    <string name="home_running_closed">已关闭 %1$s</string>
+    <string name="home_running_close_failed">关不掉。Shizuku 在运行吗？</string>
+    <string name="home_running_close_again">再按一次 X 关闭 %1$s</string>
+    <string name="home_running_close_all_again">再按一次 Y 关闭所有游戏</string>
+    <plurals name="home_running_closed_all">
+        <item quantity="other">已关闭 %1$d 款游戏。清清爽爽！</item>
+    </plurals>
+    <string name="home_running_close_all_failed">关不掉它们。Shizuku 在运行吗？</string>
+    <string name="home_running_title">正在运行</string>
+    <plurals name="home_running_open">
+        <item quantity="other">%1$d 个运行中</item>
+    </plurals>
+    <string name="home_running_no_access">我还看不到其他应用</string>
+    <string name="home_running_no_access_detail">启动 Shizuku 并给 Tandem 授权，我就能把所有运行中的游戏列在这里。</string>
+    <string name="home_running_nothing">没有在运行的游戏</string>
+    <string name="home_running_nothing_detail">开一局游戏，它就会在这里等你。</string>
+    <string name="home_running_close_all_armed">再按一次\n全部关闭</string>
+    <string name="home_running_close_all">全部关闭</string>
+    <string name="home_running_hint_resume">继续</string>
+    <string name="home_running_hint_close">关闭</string>
+    <string name="home_running_hint_close_all">全部关闭</string>
+    <string name="home_running_save_first">关闭游戏就像关掉主机：记得先存档！</string>
+    <string name="home_running_pill">● 运行中</string>
+    <string name="home_running_close_armed">再按 X\n即可关闭</string>
+    <string name="home_now_title">正在玩</string>
+    <string name="home_now_paused_in">● 已在 %1$s 中暂停</string>
+    <string name="home_now_more">更多</string>
+    <string name="home_now_chip">● 正在玩</string>
+    <string name="home_now_tap">点按继续</string>
+    <plurals name="home_top_open">
+        <item quantity="other">▶ %1$d 个运行中</item>
+    </plurals>
+    <string name="home_top_view">▦ %1$s</string>
+    <string name="home_top_stats">★ 统计</string>
+    <string name="home_top_quick">◐ 快速</string>
+
+    <string name="home_scan_already">已经在找游戏了…</string>
+    <string name="home_scan_looking">正在找游戏…</string>
+    <plurals name="home_scan_found">
+        <item quantity="other">找到 %1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_scan_imported">
+        <item quantity="other">已搬来 %1$d 款游戏的资料 ✨</item>
+    </plurals>
+    <string name="home_favourite_needs_game">先选中一款游戏再收藏</string>
+    <string name="home_surprise">来一局 %1$s 怎么样？</string>
+
+    <string name="home_crumb_games">游戏</string>
+    <string name="home_crumb_genres">类型</string>
+    <string name="home_crumb_settings">设置</string>
+    <string name="home_crumb_systems">平台</string>
+    <string name="home_crumb_apps">应用</string>
+    <string name="home_crumb_look">外观与风格</string>
+    <string name="home_crumb_theme_packs">主题包</string>
+    <string name="home_crumb_library">游戏库与图片</string>
+    <string name="home_crumb_game_folders">游戏文件夹</string>
+    <string name="home_crumb_scrape">图片与资料</string>
+    <string name="home_crumb_stats">游玩统计</string>
+    <string name="home_crumb_widgets">小组件</string>
+    <string name="home_crumb_controls">操控</string>
+    <string name="home_crumb_rebind">按键映射</string>
+    <string name="home_crumb_manual">说明书</string>
+    <string name="home_splash_gathering">正在召集你的游戏…</string>
+
+    <string name="home_setup_hi">嗨，我是 Pip！</string>
+    <string name="home_setup_lets_find">一起来找你的游戏吧。</string>
+    <string name="home_setup_files">读取你的游戏</string>
+    <string name="home_setup_files_detail">请允许访问所有文件，这样我才能翻看你的游戏和它们的图片。</string>
+    <string name="home_setup_tree">选择你的游戏文件夹</string>
+    <string name="home_setup_tree_detail">选择你放游戏的文件夹（怎么摆放都行），然后点“使用此文件夹”。选 ROMs 也可以。有些模拟器只能打开用这种方式共享的游戏。</string>
+    <string name="home_setup_step_one_first">请先完成第 1 步，再来这一步</string>
+    <string name="home_setup_shizuku">继续游戏（可选）</string>
+    <string name="home_setup_shizuku_detail">在 Shizuku 里给我授权，我就能把游戏带回你离开时的那一刻。</string>
+    <string name="home_setup_done">完成 ✓</string>
+    <string name="home_setup_todo">去设置</string>
+
+    <string name="home_dock_removed">已从程序坞移除</string>
+    <string name="home_dock_added">已加入程序坞 ★</string>
+    <string name="home_app_wont_open">这个应用打不开</string>
+    <string name="home_dock_all_apps">所有应用</string>
+
+    <string name="home_apps_title">所有应用</string>
+    <string name="home_apps_hint_open">打开</string>
+    <string name="home_apps_hint_options">选项</string>
+    <string name="home_apps_hint_search">搜索</string>
+    <string name="home_apps_search">搜索应用</string>
+    <string name="home_apps_show_hidden">显示隐藏的应用</string>
+    <string name="home_apps_gathering">正在收集应用…</string>
+    <string name="home_apps_gathering_detail">稍等一下。</string>
+    <string name="home_apps_on_dock">程序坞中</string>
+    <string name="home_apps_all">所有应用</string>
+    <string name="home_apps_none">没有可显示的应用</string>
+    <string name="home_apps_no_match">没有和“%1$s”匹配的应用</string>
+    <string name="home_apps_hidden_match">有一个你从应用列表里隐藏的应用匹配。</string>
+    <string name="home_apps_try_other">试试少输几个字母，或换个名字。</string>
+    <string name="home_apps_clear_search">清除搜索</string>
+    <string name="home_apps_stock_home">Android 主屏幕（系统桌面）</string>
+    <string name="home_apps_stock_home_value">按 Home 会回到这里</string>
+    <string name="home_apps_stock_home_failed">Android 自带的主屏幕打不开</string>
+
+    <string name="home_explainer_done">Tandem 现在是你的主屏幕了 ✨</string>
+    <string name="home_explainer_title">把 Tandem 设为主屏幕</string>
+    <string name="home_explainer_body">在任何地方按 Home，都会直接回到这里，运行中的游戏只差一个按键。其他应用仍在程序坞和“所有应用”里。随时可以换回去。</string>
+    <string name="home_explainer_is_home">Tandem 是你的主屏幕</string>
+    <string name="home_explainer_on">已开启 ✓</string>
+    <string name="home_explainer_other">使用其他主屏幕应用</string>
+    <string name="home_explainer_make">把 Tandem 设为我的主屏幕</string>
+    <string name="home_explainer_settings">打开 Android 的主屏幕应用设置</string>
+    <string name="home_explainer_not_now">以后再说</string>
+
+    <string name="home_play_title">主页与游玩</string>
+    <string name="home_play_use_home">把 Tandem 设为主屏幕</string>
+    <string name="home_play_use_home_help">让 Home 键带你回到 Tandem，就像游戏主机一样。随时可以换回原来的桌面。</string>
+    <string name="home_play_needs_shizuku">需要 Shizuku</string>
+    <string name="home_play_needs_shizuku_toast">这需要 Shizuku 正在运行，并已授权 Tandem</string>
+    <string name="home_play_close_previous">关闭上一个游戏</string>
+    <string name="home_play_close_previous_help">启动另一款游戏时，先关掉还在后台运行的那款，免得它占内存、耗电。需要 Shizuku。</string>
+    <string name="home_play_ask_closing">关闭游戏前询问</string>
+    <string name="home_play_ask_closing_help">启动游戏会关掉一款还在运行的游戏时，Tandem 会先问你：继续玩它，还是关掉它开新的。需要 Shizuku。</string>
+    <string name="home_play_immersion">沉浸模式</string>
+    <string name="home_play_immersion_needs">需要勿扰模式权限</string>
+    <string name="home_play_immersion_help">游戏时自动开启勿扰模式：没有通知弹窗、提示音和振动，只有闹钟会响。回到 Tandem 时恢复原样。需要在“勿扰模式权限”中允许 Tandem；有 Shizuku 时 Tandem 会自己授权。</string>
+    <string name="home_play_immersion_allow">允许</string>
+    <string name="home_play_immersion_on">沉浸模式已开启</string>
+    <string name="home_play_immersion_come_back">请允许 Tandem，然后回来</string>
+    <string name="home_play_dock">选择程序坞应用</string>
+    <plurals name="home_play_dock_count">
+        <item quantity="other">%1$d 个应用</item>
+    </plurals>
+    <string name="home_play_dock_help">选择哪些应用放在程序坞里，以及它们的顺序。</string>
+    <string name="home_play_screensaver">屏保</string>
+    <string name="home_play_screensaver_help">一段时间没按键后，你的游戏封面会在夜空中缓缓飘过，Pip 在一旁打盹，也不会烧屏。按任意键唤醒。</string>
+    <plurals name="home_play_screensaver_after">
+        <item quantity="other">%1$d 分钟后</item>
+    </plurals>
+    <string name="home_play_freeze">休眠时暂停游戏</string>
+    <string name="home_play_needs_root">需要 root 模式的 Shizuku</string>
+    <string name="home_play_freeze_help">熄屏一分钟后，开着的游戏会被暂停，掌机才能真正休眠，不会因为模拟器的音频一直耗电。唤醒后游戏会从原处接着运行。需要以 root 运行 Shizuku。</string>
+    <string name="home_play_needs_root_toast">这需要以 root 运行 Shizuku</string>
+    <string name="home_play_private">隐私模式</string>
+    <string name="home_play_private_help">隐藏的游戏、文件夹和平台会一直藏着，直到用 %1$s 加上你的 PIN 把它们请出来；Tandem 也会保持离线。关闭隐私模式需要 PIN。隐私模式关闭时，按 %1$s 会立刻开启它。</string>
+    <string name="home_play_offline">玩隐藏游戏时断网</string>
+    <string name="home_play_offline_closes">直到关闭</string>
+    <string name="home_play_offline_plays">游戏时</string>
+    <string name="home_play_offline_help">隐私模式下，玩隐藏的游戏时会开启飞行模式，游戏里的任何东西都连不上网。“游戏时”：回到 Tandem 就恢复联网。“直到关闭”：游戏在后台开着（可能同步）时仍保持离线，直到它的应用关闭，或你把隐藏的游戏藏起来。你自己开的飞行模式不受影响。需要 Shizuku。</string>
+    <string name="home_play_offline_help_off">隐私模式下，玩隐藏的游戏时会开启飞行模式，游戏里的任何东西都连不上网。“游戏时”：回到 Tandem 就恢复联网。“直到关闭”：游戏在后台开着（可能同步）时仍保持离线，直到它的应用关闭，或你把隐藏的游戏藏起来。你自己开的飞行模式不受影响。需要 Shizuku。仅在隐私模式下生效。</string>
+    <string name="home_play_pin">隐私模式 PIN</string>
+    <string name="home_play_pin_set">已设置</string>
+    <string name="home_play_pin_not_set">未设置</string>
+    <string name="home_play_pin_help">更改用来显示隐藏游戏和关闭隐私模式的 4 到 6 位 PIN。忘了？在 PIN 键盘上按 Y 开始 24 小时等待，之后就能设置新的 PIN。</string>
+    <string name="home_play_pin_change">更改</string>
+    <string name="home_play_export">导出游玩统计</string>
+    <string name="home_play_export_help">把你的游玩记录写成表格文件（CSV），保存到 ROMs/tandem。</string>
+
+    <string name="home_collection_playing">在玩</string>
+    <string name="home_collection_backlog">待玩</string>
+    <string name="home_collection_finished">已通关</string>
+    <string name="home_collection_favorites">收藏</string>
+    <string name="home_collection_most_played">最常玩</string>
+    <string name="home_collection_recently_added">最近添加</string>
+    <string name="home_collection_never_played">从没玩过</string>
+    <string name="home_collection_continue">继续游玩</string>
+    <string name="home_collection_system_most">%1$s · 最常玩</string>
+    <plurals name="home_collection_more_systems_most">
+        <item quantity="other">另外 %1$d 个平台 · 最常玩</item>
+    </plurals>
+</resources>

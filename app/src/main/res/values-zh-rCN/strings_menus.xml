@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="menus_hidden_away">已藏好</string>
+    <string name="menus_hidden_still_shows">已隐藏。显示隐藏游戏时它仍会出现</string>
+    <string name="menus_hidden_listed">已隐藏。可在 Start › 已隐藏 中找到</string>
+    <string name="menus_hidden_back">已回到你的游戏库</string>
+
+    <string name="menus_game_resume">继续</string>
+    <string name="menus_game_play">开玩</string>
+    <string name="menus_game_unfavorite">取消收藏</string>
+    <string name="menus_game_favorite">收藏</string>
+    <string name="menus_game_upnext_remove">移出“接下来玩”</string>
+    <string name="menus_game_upnext_add">加入“接下来玩”</string>
+    <string name="menus_game_unpin_home">从主页取消固定</string>
+    <string name="menus_game_pin_home">固定到主页</string>
+    <string name="menus_game_native">构建原生版本</string>
+    <string name="menus_game_native_help">Peanuts Native 会把它重新构建成不需要模拟器的版本，只需一次（5 到 40 分钟）。之后“开玩”会以原生方式启动它。</string>
+    <string name="menus_game_native_building">正在原生构建</string>
+    <string name="menus_game_notes">笔记</string>
+    <string name="menus_game_notes_help">这款游戏的笔记，保存在 ROMs/notes。</string>
+    <string name="menus_game_manual">说明书</string>
+    <string name="menus_game_manual_pictures">图片</string>
+    <string name="menus_game_manual_help">游戏的说明书或攻略，一页一页翻：%1$s</string>
+    <string name="menus_game_achievements">成就</string>
+    <string name="menus_game_achievements_help">这款游戏的全部 Steam 成就，以及每个成就的稀有程度。</string>
+    <string name="menus_game_edit">编辑资料</string>
+    <plurals name="menus_game_edit_locked">
+        <item quantity="other">%1$d 项已锁定</item>
+    </plurals>
+    <string name="menus_game_edit_help">锁定的资料会保持你设定的样子：刮削和导入 gamelist 都不会改动它们。</string>
+    <string name="menus_game_emulator">模拟器</string>
+    <string name="menus_game_emulator_none">未安装</string>
+    <string name="menus_game_emulator_help">这款游戏用哪个模拟器启动。按 A 显示所有已安装的模拟器；第一个是平台的默认选择。</string>
+    <string name="menus_game_emulator_system">平台默认</string>
+    <string name="menus_game_emulator_get">去“平台”里为 %1$s 获取模拟器</string>
+    <string name="menus_game_emulator_switch">再装一个模拟器才能切换</string>
+    <string name="menus_game_screen">启动屏幕</string>
+    <string name="menus_game_screen_top">上屏</string>
+    <string name="menus_game_screen_bottom">下屏</string>
+    <string name="menus_game_screen_system">平台默认屏幕</string>
+    <string name="menus_game_screen_help">这款游戏在哪块屏幕上打开。改回平台默认屏幕后，它会重新跟随平台设置。</string>
+    <string name="menus_game_companion">游戏时的下屏</string>
+    <string name="menus_game_companion_help">这款游戏在上屏运行时，下屏显示什么。</string>
+    <string name="menus_game_companion_help_deck">这款游戏在上屏运行时，下屏显示什么。Deck 是给这款游戏用的键盘和触控板。</string>
+    <string name="menus_game_companion_system">平台默认</string>
+    <string name="menus_game_art">选择图片</string>
+    <string name="menus_game_scrape">刮削这款游戏</string>
+    <string name="menus_game_unhide">取消隐藏这款游戏</string>
+    <string name="menus_game_hide">隐藏这款游戏</string>
+    <string name="menus_game_folder_hidden">文件夹已隐藏</string>
+    <string name="menus_game_folder_hidden_help">它所在的文件夹被隐藏了，所以无论这里怎么设，它都会跟着隐藏。</string>
+    <string name="menus_game_sessions">游玩记录…</string>
+    <string name="menus_game_reset">重置游玩记录</string>
+    <string name="menus_game_reset_help">目前的游玩时长。重置会把它连同游玩次数和每次记录一起清掉。</string>
+    <string name="menus_game_reset_title">要重置游玩记录吗？</string>
+    <string name="menus_game_reset_detail">%1$s 的游玩时长、游玩次数和记录都会被清除。此操作无法撤销。</string>
+    <string name="menus_game_reset_yes">重置</string>
+    <string name="menus_game_reset_done">游玩记录已清除</string>
+    <string name="menus_game_uninstall">卸载应用…</string>
+    <string name="menus_game_delete">删除游戏…</string>
+    <string name="menus_game_running">运行中</string>
+    <string name="menus_game_running_help">这款游戏还在运行。</string>
+    <string name="menus_game_view">显示选项</string>
+    <string name="menus_game_view_value">排序、标题…</string>
+
+    <string name="menus_fav_removed">已取消收藏</string>
+    <string name="menus_fav_added">已收藏 ♥</string>
+
+    <string name="menus_group_games">游戏</string>
+    <string name="menus_group_collection">合集</string>
+    <string name="menus_group_genres">类型</string>
+    <string name="menus_group_view">显示</string>
+    <string name="menus_group_subtitle">显示选项</string>
+    <string name="menus_group_open">打开</string>
+    <string name="menus_group_rescan">重新扫描游戏</string>
+    <string name="menus_group_looking">正在查找…</string>
+    <string name="menus_group_scrape">刮削这些游戏</string>
+    <string name="menus_group_unhide_system">取消隐藏这个平台</string>
+    <string name="menus_group_hide_system">隐藏这个平台</string>
+    <string name="menus_group_unhide_folder">取消隐藏这个文件夹</string>
+    <string name="menus_group_hide_folder">隐藏这个文件夹</string>
+    <string name="menus_group_sort">排序方式</string>
+    <string name="menus_group_own_order">自有顺序</string>
+    <string name="menus_group_own_order_help">这个列表有自己的顺序。</string>
+    <string name="menus_group_own_order_toast">这个列表有自己的顺序。排序只对平台和其他列表生效</string>
+    <string name="menus_group_sort_help">每个平台和列表里游戏的排序方式。点一下换下一种。</string>
+    <string name="menus_group_titles">游戏标题</string>
+    <string name="menus_group_titles_help">在所有网格里，游戏卡片下方显示名称。</string>
+    <string name="menus_group_hidden">显示隐藏的游戏</string>
+    <string name="menus_group_private">隐私</string>
+    <string name="menus_group_private_help">隐私模式会把隐藏的游戏藏好，输入 PIN 才会显示。</string>
+    <string name="menus_group_hidden_help">开启时，隐藏的游戏会变暗显示。</string>
+
+    <string name="menus_action_more_title">更多</string>
+    <string name="menus_action_options">选项</string>
+    <string name="menus_action_more">更多…</string>
+
+    <string name="menus_confirm_cancel">取消</string>
+
+    <string name="menus_search_prompt">⌕ 游戏、应用、设置</string>
+    <string name="menus_search_results">结果</string>
+    <string name="menus_search_empty">输入几个字母</string>
+    <string name="menus_search_none">没有和“%1$s”匹配的结果</string>
+    <string name="menus_search_accents">不用管重音符号和标点</string>
+    <plurals name="menus_search_matches">
+        <item quantity="other">%1$d 个结果</item>
+    </plurals>
+    <plurals name="menus_search_matches_more">
+        <item quantity="other">%1$d+ 个结果</item>
+    </plurals>
+    <string name="menus_search_play">开玩</string>
+    <string name="menus_search_options">选项</string>
+    <string name="menus_search_keys">键盘</string>
+
+    <string name="menus_keyboard_space">空格</string>
+    <string name="menus_keyboard_done">完成</string>
+    <string name="menus_keyboard_type">输入</string>
+    <string name="menus_keyboard_delete">删除</string>
+    <string name="menus_keyboard_cancel">取消</string>
+
+    <string name="menus_time_short_under">不到 1 分</string>
+    <plurals name="menus_time_short_minutes">
+        <item quantity="other">%1$d 分</item>
+    </plurals>
+    <plurals name="menus_time_short_hours">
+        <item quantity="other">%1$d 时 %2$d 分</item>
+    </plurals>
+    <string name="menus_time_long_under">不到一分钟</string>
+    <plurals name="menus_time_long_minutes">
+        <item quantity="other">%1$d 分钟</item>
+    </plurals>
+    <plurals name="menus_time_long_hours">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <plurals name="menus_time_long_hours_minutes">
+        <item quantity="other">%1$d 小时 %2$d 分钟</item>
+    </plurals>
+
+    <string name="menus_hold_hint">长按 A 或按住不放，即可%1$s</string>
+    <string name="menus_undo">撤销</string>
+    <string name="menus_undone">已撤销</string>
+
+    <string name="menus_selected_change">更改</string>
+
+    <string name="menus_app_open">打开</string>
+    <string name="menus_app_open_bottom">下屏</string>
+    <string name="menus_app_open_top">上屏</string>
+    <string name="menus_app_open_help">它现在会在这块屏幕上打开。</string>
+    <string name="menus_app_open_on_top">在上屏打开</string>
+    <string name="menus_app_open_on_bottom">在下屏打开</string>
+    <string name="menus_app_screen">总在此屏打开</string>
+    <string name="menus_app_screen_auto">自动</string>
+    <string name="menus_app_screen_default">默认</string>
+    <string name="menus_app_screen_help">这个应用总是在哪块屏幕上打开：上屏、下屏，或跟随所有应用的默认设置。</string>
+    <string name="menus_app_screen_like_all">与所有应用相同：%1$s</string>
+    <string name="menus_app_screen_top">上屏</string>
+    <string name="menus_app_screen_bottom">下屏</string>
+    <string name="menus_app_home_remove">从主页移除</string>
+    <string name="menus_app_home_add">添加到主页</string>
+    <string name="menus_app_home_removed">已从主页网格移除</string>
+    <string name="menus_app_home_added">已放上主页网格 ★</string>
+    <string name="menus_app_dock_unpin">从程序坞取消固定</string>
+    <string name="menus_app_dock_pin">固定到程序坞</string>
+    <string name="menus_app_rename">重命名</string>
+    <string name="menus_app_yours">自定义</string>
+    <string name="menus_app_icon">选择图标</string>
+    <string name="menus_app_game">视为游戏</string>
+    <string name="menus_app_drawer_show">在应用列表中显示</string>
+    <string name="menus_app_drawer_hide">从应用列表中隐藏</string>
+    <string name="menus_app_drawer_shown">已回到“所有应用”</string>
+    <string name="menus_app_drawer_hidden">已从“所有应用”中隐藏。打开“显示隐藏的应用”可以找回</string>
+    <string name="menus_app_info">应用信息</string>
+    <string name="menus_app_uninstall">卸载…</string>
+    <string name="menus_app_move_left">左移</string>
+    <string name="menus_app_move_right">右移</string>
+    <string name="menus_app_kind_game">Android 游戏</string>
+    <string name="menus_app_kind_app">应用</string>
+    <string name="menus_app_game_off">已把 %1$s 移出 Android Games</string>
+    <string name="menus_app_game_on">%1$s 已加入 Android Games</string>
+    <string name="menus_app_rename_title">给 %1$s 起个名字</string>
+    <string name="menus_app_renamed_own">已恢复原名</string>
+    <string name="menus_app_renamed">已重命名为 %1$s</string>
+    <string name="menus_app_icon_own_back">已恢复应用自带图标</string>
+    <string name="menus_app_icon_new">%1$s 换上了新图标</string>
+    <string name="menus_app_uninstaller_failed">Android 的卸载程序打不开</string>
+    <string name="menus_app_icon_pick_title">为 %1$s 挑选图标</string>
+    <string name="menus_app_icon_title">%1$s 的图标</string>
+    <string name="menus_app_icon_files">从“文件”选择</string>
+    <string name="menus_app_icon_gallery">从“相册”选择</string>
+    <string name="menus_app_icon_own">应用自带图标</string>
+    <string name="menus_app_icon_packs_looking">正在翻找你的图标包…</string>
+    <string name="menus_app_icon_packs_none">没有找到图标包。带平台图标的主题包会在这里显示它们的图标</string>
+    <string name="menus_app_icon_packs">来自你的图标包</string>
+    <string name="menus_pick_picture">图片</string>
+</resources>

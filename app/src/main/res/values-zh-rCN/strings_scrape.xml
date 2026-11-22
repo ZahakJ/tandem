@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="scrape_kind_box">封面</string>
+    <string name="scrape_kind_hero">主视觉图 / 背景图</string>
+    <string name="scrape_kind_logo">标志</string>
+    <string name="scrape_kind_title">标题画面</string>
+    <string name="scrape_kind_gameplay">游戏截图</string>
+    <string name="scrape_kind_video">预览视频</string>
+    <string name="scrape_kind_front">实体包装正面</string>
+    <string name="scrape_kind_spine">包装侧脊</string>
+
+    <string name="scrape_meta_name">名称</string>
+    <string name="scrape_meta_name_detail">用游戏的正式名称代替文件名</string>
+    <string name="scrape_meta_description">简介</string>
+    <string name="scrape_meta_description_detail">几段关于游戏的介绍</string>
+    <string name="scrape_meta_genres">类型</string>
+    <string name="scrape_meta_genres_detail">把游戏归入各个类型列表</string>
+    <string name="scrape_meta_credits">开发商与发行商</string>
+    <string name="scrape_meta_credits_detail">谁做的，谁发行的</string>
+    <string name="scrape_meta_year">发行年份</string>
+    <string name="scrape_meta_year_detail">用于按年份排序</string>
+    <string name="scrape_meta_players">玩家人数</string>
+    <string name="scrape_meta_players_detail">最多几人同时玩</string>
+    <string name="scrape_meta_rating">评分</string>
+    <string name="scrape_meta_rating_detail">社区评分，以星级显示</string>
+    <string name="scrape_meta_time">通关时长</string>
+    <string name="scrape_meta_time_detail">主线、主线 + 支线和 100%（HowLongToBeat）</string>
+
+    <string name="scrape_mode_basics">补缺基础</string>
+    <string name="scrape_mode_basics_detail">只处理缺封面或简介的游戏，也只补这两样</string>
+    <string name="scrape_mode_missing">补缺所选</string>
+    <string name="scrape_mode_missing_detail">补上你选的项目中游戏还没有的部分</string>
+    <string name="scrape_mode_refresh">全部重刮</string>
+    <string name="scrape_mode_refresh_detail">把你选的项目全部重新获取并替换</string>
+    <string name="scrape_mode_line">%1$s：%2$s</string>
+
+    <string name="scrape_source_libretro">libretro 缩略图</string>
+    <string name="scrape_source_ss_gives">按文件本身匹配：封面、标志、背景图、截图、视频和资料</string>
+    <string name="scrape_source_lb_gives">一个庞大的免费游戏数据库，保存在本机：封面、标志、背景图、截图和资料</string>
+    <string name="scrape_source_igdb_gives">Twitch 的游戏数据库：封面、美术图、截图和资料，新游戏尤其全</string>
+    <string name="scrape_source_sgdb_gives">社区制作的封面、主视觉图和标志，PC 和 Switch 游戏的最佳选择</string>
+    <string name="scrape_source_libretro_gives">经典平台的封面（真实包装扫描）、标题画面和截图</string>
+    <string name="scrape_source_hltb_gives">一款游戏要玩多久：主线、主线 + 支线和 100%</string>
+
+    <string name="scrape_region_us">美国</string>
+    <string name="scrape_region_eu">欧洲</string>
+    <string name="scrape_region_jp">日本</string>
+    <string name="scrape_region_world">全球</string>
+
+    <string name="scrape_size_kb">%1$d KB</string>
+    <string name="scrape_size_mb">%1$s MB</string>
+    <string name="scrape_size_gb">%1$s GB</string>
+
+    <string name="scrape_hidden_never_sent">隐藏的游戏绝不会被发送到任何地方</string>
+    <string name="scrape_offline">隐私模式让 Tandem 保持离线：不会刮削，也不会查找图片</string>
+    <string name="scrape_busy">Pip 正忙着刮削呢。等这一轮结束再试吧</string>
+    <string name="scrape_looking_for">正在查找 %1$s…</string>
+    <string name="scrape_cant_start">启动不了，是不是已经有刮削在运行？</string>
+    <string name="scrape_lb_ask_title">要下载 LaunchBox 的游戏数据库吗？</string>
+    <string name="scrape_lb_ask_text">LaunchBox 不需要账号：Tandem 只下载一次它的数据库（约 %1$d MB），只保留你有的平台，在本机上查找游戏。每月在 Wi-Fi 下更新一次。</string>
+    <string name="scrape_lb_ask_text_metered">LaunchBox 不需要账号：Tandem 只下载一次它的数据库（约 %1$d MB，你现在用的是按流量计费的网络），只保留你有的平台，在本机上查找游戏。每月在 Wi-Fi 下更新一次。</string>
+    <string name="scrape_lb_ask_yes">下载并刮削</string>
+    <string name="scrape_lb_ask_skip">跳过 LaunchBox</string>
+    <string name="scrape_background_top">正在后台刮削：进度显示在上屏</string>
+    <string name="scrape_background_bottom">正在后台刮削：进度显示在下屏</string>
+
+    <string name="scrape_scope_all">所有平台</string>
+    <string name="scrape_scope_one">单款游戏</string>
+
+    <string name="scrape_tile_hero">主视觉</string>
+    <string name="scrape_tile_gameplay">截图</string>
+    <string name="scrape_tile_video">视频</string>
+    <string name="scrape_tile_physical">实体包装</string>
+    <string name="scrape_tile_box_detail">每张卡片上的封面</string>
+    <string name="scrape_tile_hero_detail">下屏用的宽幅图</string>
+    <string name="scrape_tile_logo_detail">叠在主视觉上的游戏名</string>
+    <string name="scrape_tile_title_detail">游戏的标题画面</string>
+    <string name="scrape_tile_gameplay_detail">游戏中的一个瞬间</string>
+    <string name="scrape_tile_video_detail">一段短片，每款约 3 MB</string>
+    <string name="scrape_tile_physical_detail">包装和侧脊，给书架用</string>
+    <string name="scrape_tile_video_size">共约 %1$s</string>
+
+    <string name="scrape_where_box">封面：每张游戏卡片、陈列架和游戏资料里的封面。所有布局都会用到的那张图。</string>
+    <string name="scrape_where_hero">主视觉：宽幅的主视觉图。它铺在下屏游戏资料的背后，也用作聚光灯背景和选中游戏背后的图片。</string>
+    <string name="scrape_where_logo">标志：画成图片的游戏名，在下屏和聚光灯里叠在主视觉上，代替纯文字。</string>
+    <string name="scrape_where_title">标题画面：游戏没有主视觉时显示在它背后，也是下屏挑选图片的来源之一。</string>
+    <string name="scrape_where_gameplay">截图：游戏中的一张静帧。游戏没有主视觉和标题画面时显示在它背后，也是下屏挑选图片的来源之一。它不会动：会动的是视频。</string>
+    <string name="scrape_where_video">视频：开启 外观与风格 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片。</string>
+    <string name="scrape_where_video_off">视频：开启 外观与风格 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片（现在是关闭的）。</string>
+    <string name="scrape_where_physical">实体包装：包装正面和侧脊的真实扫描，用于书架视图和包装形状的封面。</string>
+
+    <string name="scrape_setup_what">要刮削什么</string>
+    <string name="scrape_setup_games">游戏</string>
+    <string name="scrape_setup_games_all">所有有游戏的平台</string>
+    <string name="scrape_setup_games_one">单个平台</string>
+    <string name="scrape_setup_folder">文件夹</string>
+    <string name="scrape_setup_folder_detail">只刮它的一个文件夹</string>
+    <string name="scrape_setup_all_folders">所有文件夹</string>
+    <string name="scrape_setup_mode">模式</string>
+    <string name="scrape_setup_locked">替换已锁定的项</string>
+    <string name="scrape_setup_locked_on">你手动编辑或挑选的内容也会被替换</string>
+    <string name="scrape_setup_locked_off">你手动编辑或挑选的内容保持不变</string>
+    <string name="scrape_setup_artwork">图片</string>
+    <string name="scrape_setup_details">资料</string>
+    <string name="scrape_setup_game_details">游戏资料</string>
+    <string name="scrape_setup_game_details_detail">名称、简介、类型、年份、玩家人数…</string>
+    <string name="scrape_setup_game_details_needs">需要来源：在下方开启 LaunchBox、ScreenScraper 或 IGDB</string>
+    <string name="scrape_setup_needs_hltb">需要 HowLongToBeat</string>
+    <string name="scrape_setup_region_language">地区与语言</string>
+    <string name="scrape_setup_region">地区</string>
+    <string name="scrape_setup_region_detail">优先选用的封面</string>
+    <string name="scrape_setup_language">语言</string>
+    <string name="scrape_setup_language_detail">用于简介和类型</string>
+    <string name="scrape_setup_sources">来源</string>
+    <string name="scrape_setup_counting">正在统计游戏…</string>
+    <string name="scrape_setup_none">这里没有可刮削的游戏</string>
+    <plurals name="scrape_setup_to_check">
+        <item quantity="other">%1$d 款游戏待检查</item>
+    </plurals>
+    <string name="scrape_setup_all_complete">每一款都已经有封面和简介了</string>
+    <string name="scrape_setup_all_have_box">都有封面 · %1$s</string>
+    <plurals name="scrape_setup_no_box_yet">
+        <item quantity="other">%1$d 款还没有封面</item>
+    </plurals>
+    <plurals name="scrape_setup_no_box">
+        <item quantity="other">%1$d 款没有封面</item>
+    </plurals>
+    <plurals name="scrape_setup_no_text">
+        <item quantity="other">%1$d 款没有简介</item>
+    </plurals>
+    <string name="scrape_setup_no_both">%1$s · %2$s</string>
+    <plurals name="scrape_setup_hidden_skipped">
+        <item quantity="other">已跳过 %1$d 款隐藏的游戏，绝不外传</item>
+    </plurals>
+    <string name="scrape_setup_want_something">至少开启一种图片或资料</string>
+    <string name="scrape_setup_want_source">请在“来源”里至少开启一个来源</string>
+    <string name="scrape_setup_start">开始刮削</string>
+    <string name="scrape_setup_leave_card">我会在后台干活，在另一块屏幕上显示进度，你玩游戏时我就先停一停。</string>
+    <string name="scrape_setup_leave">你可以离开这个页面。我会继续干活，你玩游戏时我就先停一停。</string>
+    <plurals name="scrape_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <string name="scrape_pick_scope_title">哪些游戏</string>
+    <string name="scrape_pick_scope_detail">刮削所有平台，或只刮一个</string>
+    <string name="scrape_pick_folder_title">哪个文件夹</string>
+    <string name="scrape_pick_language_detail">简介和类型用这种语言（ScreenScraper 有的话）</string>
+    <string name="scrape_sources_order">每款游戏先问第一个开启的来源，还缺什么再问下一个</string>
+    <string name="scrape_sources_set_up">配置来源</string>
+
+    <string name="scrape_run_lb_ready">正在准备 LaunchBox：%1$d%%</string>
+    <plurals name="scrape_run_done_of">
+        <item quantity="other">%1$d / %2$d 款游戏</item>
+    </plurals>
+    <plurals name="scrape_run_got_art">
+        <item quantity="other">%1$d 款有了新图片</item>
+    </plurals>
+    <plurals name="scrape_run_got_details">
+        <item quantity="other">%1$d 款有了资料</item>
+    </plurals>
+    <plurals name="scrape_run_complete">
+        <item quantity="other">%1$d 款本来就齐全</item>
+    </plurals>
+    <plurals name="scrape_run_not_found">
+        <item quantity="other">%1$d 款没找到</item>
+    </plurals>
+    <plurals name="scrape_run_failed">
+        <item quantity="other">%1$d 款下载失败，稍后再试</item>
+    </plurals>
+    <string name="scrape_run_stop">停止</string>
+    <string name="scrape_run_resume">继续</string>
+    <string name="scrape_run_pause">暂停</string>
+    <string name="scrape_run_keep_browsing">继续浏览</string>
+    <string name="scrape_run_done">完成</string>
+    <string name="scrape_run_new">新的刮削</string>
+    <string name="scrape_run_covers">封面</string>
+    <string name="scrape_run_missed">没找到</string>
+    <string name="scrape_run_missed_title">没找到：手动挑选图片</string>
+    <string name="scrape_run_new_artwork">新图片</string>
+    <string name="scrape_run_just_found">刚找到</string>
+    <string name="scrape_run_nothing_new">这次没有新东西</string>
+    <string name="scrape_run_covers_soon">我一找到封面，就会在这里冒出来</string>
+    <string name="scrape_run_getting_ready">正在准备…</string>
+    <string name="scrape_run_finding">正在找图片…</string>
+    <string name="scrape_run_paused">已暂停</string>
+    <string name="scrape_run_paused_play">你在玩游戏，先暂停一下</string>
+    <string name="scrape_run_all_done">全部搞定！</string>
+    <string name="scrape_run_stopped">已停止</string>
+    <string name="scrape_run_eta_under_minute">剩不到一分钟</string>
+    <string name="scrape_run_eta_minute">还剩约一分钟</string>
+    <plurals name="scrape_run_eta_minutes">
+        <item quantity="other">还剩约 %1$d 分钟</item>
+    </plurals>
+    <plurals name="scrape_run_summary_art">
+        <item quantity="other">%1$d 款游戏有了新图片</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details_too">
+        <item quantity="other">%1$d 款有了资料</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details">
+        <item quantity="other">%1$d 款游戏有了新资料</item>
+    </plurals>
+    <string name="scrape_pill_paused">⏸ 刮削已暂停</string>
+    <string name="scrape_pill_one">✦ 正在刮削…</string>
+    <string name="scrape_pill_count">✦ 正在刮削 %1$d/%2$d</string>
+    <string name="scrape_card_last_found">刚找到：%1$s</string>
+    <plurals name="scrape_card_found">
+        <item quantity="other">找到 %1$d</item>
+    </plurals>
+    <plurals name="scrape_card_details">
+        <item quantity="other">资料 %1$d</item>
+    </plurals>
+    <plurals name="scrape_card_missing">
+        <item quantity="other">缺失 %1$d</item>
+    </plurals>
+    <plurals name="scrape_card_failed">
+        <item quantity="other">失败 %1$d</item>
+    </plurals>
+    <plurals name="scrape_card_complete">
+        <item quantity="other">齐全 %1$d</item>
+    </plurals>
+    <string name="scrape_card_cancel">取消</string>
+    <string name="scrape_one_that_game">那款游戏</string>
+    <string name="scrape_one_art_details">%1$s 有了新图片和新资料 ✨</string>
+    <string name="scrape_one_art">%1$s 有了新图片 ✨</string>
+    <string name="scrape_one_details">%1$s 有了新资料 ✨</string>
+    <string name="scrape_one_nothing">没能为 %1$s 找到新东西</string>
+    <plurals name="scrape_done_toast">
+        <item quantity="other">刮削完成：%1$d 款游戏有了新图片 ✨</item>
+    </plurals>
+
+    <string name="scrape_settings_title">图片与资料</string>
+    <string name="scrape_settings_scrape">刮削游戏库</string>
+    <string name="scrape_settings_scrape_value">图片与资料</string>
+    <string name="scrape_settings_scrape_help">为你的游戏下载封面、标志、主视觉图、视频和简介，来源有 LaunchBox 和 libretro（无需账号）、ScreenScraper、IGDB、SteamGridDB 和 HowLongToBeat。</string>
+    <string name="scrape_settings_sources_value">已开启 %1$d / %2$d</string>
+    <string name="scrape_settings_sources_help">图片与资料来源设置：每个来源提供什么、哪些需要账号、去哪里拿免费密钥，每个来源还有“测试”按钮。也能调整询问它们的顺序。</string>
+    <string name="scrape_settings_clear">清除已下载的媒体</string>
+    <string name="scrape_settings_clear_none">还没有</string>
+    <plurals name="scrape_settings_clear_files">
+        <item quantity="other">%1$d 个文件 · %2$s</item>
+    </plurals>
+    <string name="scrape_settings_clear_help">删除刮削下载的内容（单个平台或全部），腾出空间。删除前会先询问。</string>
+    <string name="scrape_settings_wait">请等刮削结束</string>
+    <string name="scrape_settings_nothing">还没下载任何东西</string>
+
+    <string name="scrape_lb_already">已经在下载了</string>
+    <string name="scrape_lb_none_of_yours">LaunchBox 的数据库里没有你的任何平台</string>
+    <string name="scrape_lb_download_title">要下载 LaunchBox 的数据库吗？</string>
+    <plurals name="scrape_lb_download_text">
+        <item quantity="other">约 %1$d MB。Tandem 只保留你的 %2$d 个平台，在本机上查找游戏。</item>
+    </plurals>
+    <plurals name="scrape_lb_download_text_metered">
+        <item quantity="other">约 %1$d MB，你现在用的是按流量计费的网络：最好用 Wi-Fi。Tandem 只保留你的 %2$d 个平台，在本机上查找游戏。</item>
+    </plurals>
+    <string name="scrape_lb_download">下载</string>
+    <string name="scrape_lb_downloading">正在下载 LaunchBox 的数据库…</string>
+    <string name="scrape_lb_ready">LaunchBox 已就绪：%1$s 款游戏 ✨</string>
+    <string name="scrape_lb_failed">LaunchBox 的数据库下载失败。连上 Wi-Fi 再试试</string>
+
+    <string name="scrape_guide_no_account">无需账号</string>
+    <string name="scrape_guide_lb_1">Tandem 会下载一次 LaunchBox 的免费游戏数据库（约 %1$d MB，建议用 Wi-Fi），只保留你有的平台。</string>
+    <string name="scrape_guide_lb_2">游戏在本机上查找。每月在 Wi-Fi 下刮削时更新一次。</string>
+    <string name="scrape_guide_lb_sends">不发送你游戏的任何信息。图片来自 images.launchbox-app.com。</string>
+    <string name="scrape_guide_ss_account">免费账号 + 开发者 ID</string>
+    <string name="scrape_guide_ss_1">在 screenscraper.fr 注册一个免费账号。</string>
+    <string name="scrape_guide_ss_2">在他们的论坛（“Demande d\'accès à l\'API”）申请 API 权限，拿到开发者 ID 和密码。Tandem 没法内置一个。</string>
+    <string name="scrape_guide_ss_3">把两者都填在下面。你自己的登录信息是可选的，但能让每日额度更多。</string>
+    <string name="scrape_guide_ss_sends">你的登录信息、开发者 ID，以及每款游戏的文件名、大小、平台和校验和。</string>
+    <string name="scrape_guide_igdb_account">免费 Twitch 账号</string>
+    <string name="scrape_guide_igdb_1">在 dev.twitch.tv/console/apps 登录（Twitch 会先要求开启两步验证）。</string>
+    <string name="scrape_guide_igdb_2">点 Register Your Application：名称随意，OAuth 重定向网址填 http://localhost，类别选 Application Integration，客户端类型选 Confidential。</string>
+    <string name="scrape_guide_igdb_3">复制 Client ID，点 New Secret，再复制 Client Secret。</string>
+    <string name="scrape_guide_igdb_sends">你的客户端 ID 和密钥（发给 Twitch），以及每款游戏的标题。</string>
+    <string name="scrape_guide_sgdb_account">免费账号</string>
+    <string name="scrape_guide_sgdb_1">在 steamgriddb.com 登录（用你的 Steam 账号）。</string>
+    <string name="scrape_guide_sgdb_2">打开 steamgriddb.com/profile/preferences/api。</string>
+    <string name="scrape_guide_sgdb_3">生成一个 API 密钥，填在下面。</string>
+    <string name="scrape_guide_sgdb_sends">你的 API 密钥和每款游戏的标题。</string>
+    <string name="scrape_guide_libretro_1">随时可用。经典平台的好帮手；不过没有 Switch、Wii U 和 PC 游戏的图片。</string>
+    <string name="scrape_guide_libretro_sends">由每款游戏的文件名或标题生成的图片名。</string>
+    <string name="scrape_guide_hltb_1">用的是和 howlongtobeat.com 网站一样的搜索。它不是官方 API，网站改版时可能失效；那时刮削会直接跳过它。</string>
+    <string name="scrape_guide_hltb_2">时长显示在下屏。</string>
+    <string name="scrape_guide_hltb_sends">每款游戏的标题。</string>
+
+    <string name="scrape_status_testing">测试中…</string>
+    <string name="scrape_status_downloading">下载中 %1$d%%</string>
+    <string name="scrape_status_off">已关闭</string>
+    <string name="scrape_status_needs_key">需要密钥</string>
+    <string name="scrape_status_not_downloaded">未下载</string>
+    <string name="scrape_status_failed">✗ 测试失败</string>
+    <string name="scrape_status_works">✓ 可用</string>
+    <string name="scrape_status_ready">就绪</string>
+    <string name="scrape_needs_none">无需账号</string>
+    <string name="scrape_needs_ss">账号 + 开发者 ID</string>
+    <string name="scrape_needs_igdb">免费 Twitch 密钥</string>
+    <string name="scrape_needs_key">免费密钥</string>
+    <string name="scrape_tagline_ss">按文件本身匹配：图片、视频和资料</string>
+    <string name="scrape_tagline_lb">封面、标志、背景图和资料，保存在本机</string>
+    <string name="scrape_tagline_igdb">封面、美术图和资料，新游戏尤其全</string>
+    <string name="scrape_tagline_sgdb">社区制作的封面、主视觉图和标志，PC 和 Switch 专长</string>
+    <string name="scrape_tagline_libretro">经典平台的真实包装扫描和标题画面</string>
+    <string name="scrape_tagline_hltb">一款游戏要玩多久：主线、支线和 100%</string>
+
+    <string name="scrape_setup_title">图片与资料来源设置</string>
+    <string name="scrape_setup_intro">刮削时从左到右依次询问，每个来源只补还缺的部分。LaunchBox 和 libretro 不需要账号。</string>
+    <string name="scrape_setup_hint_set_up">设置</string>
+    <string name="scrape_setup_hint_order">提前 / 延后询问</string>
+    <string name="scrape_setup_hint_done">完成</string>
+
+    <string name="scrape_key_dev_id">开发者 ID</string>
+    <string name="scrape_key_dev_id_ask">ScreenScraper 开发者 ID</string>
+    <string name="scrape_key_dev_pw">开发者密码</string>
+    <string name="scrape_key_dev_pw_ask">ScreenScraper 开发者密码</string>
+    <string name="scrape_key_login">你的用户名</string>
+    <string name="scrape_key_login_ask">你的 ScreenScraper 用户名（可选）</string>
+    <string name="scrape_key_pw">你的密码</string>
+    <string name="scrape_key_pw_ask">你的 ScreenScraper 密码</string>
+    <string name="scrape_key_client_id">Client ID</string>
+    <string name="scrape_key_client_id_ask">Twitch Client ID（dev.twitch.tv/console/apps）</string>
+    <string name="scrape_key_secret">Client Secret</string>
+    <string name="scrape_key_secret_ask">Twitch Client Secret</string>
+    <string name="scrape_key_api">API 密钥</string>
+    <string name="scrape_key_api_ask">SteamGridDB API 密钥（steamgriddb.com › Preferences › API）</string>
+    <string name="scrape_key_optional">可选</string>
+    <string name="scrape_key_not_set">未设置</string>
+    <string name="scrape_key_saved">已保存 ✓</string>
+    <string name="scrape_card_turn_off">关闭</string>
+    <string name="scrape_card_turn_on">开启</string>
+    <string name="scrape_card_download">下载（%1$d MB）</string>
+    <string name="scrape_card_download_again">重新下载</string>
+    <string name="scrape_card_test">测试</string>
+    <string name="scrape_card_gives">提供</string>
+    <string name="scrape_card_gives_text">%1$s。</string>
+    <string name="scrape_card_sends">发送</string>
+    <string name="scrape_card_on_device">在本机上</string>
+    <string name="scrape_card_downloading">下载中… %1$d%%</string>
+    <string name="scrape_card_not_downloaded">还没下载。</string>
+    <plurals name="scrape_card_lb_info">
+        <item quantity="other">%1$s 款游戏，覆盖 %2$d 个平台，%3$s下载。</item>
+    </plurals>
+
+    <string name="scrape_note_stopped_early">出了点问题，我提前停下了</string>
+    <string name="scrape_now_ss_sign_in">正在登录 ScreenScraper…</string>
+    <string name="scrape_note_ss_unavailable">ScreenScraper 不可用</string>
+    <string name="scrape_note_ss_unreachable">连不上 ScreenScraper，改用其他来源</string>
+    <string name="scrape_now_igdb_sign_in">正在登录 IGDB…</string>
+    <string name="scrape_note_igdb_unavailable">IGDB 不可用</string>
+    <string name="scrape_note_igdb_unreachable">连不上 IGDB，改用其他来源</string>
+    <string name="scrape_note_details_need">要获取资料，需要开启 LaunchBox、ScreenScraper 或 IGDB</string>
+    <string name="scrape_now_lb_downloading">正在下载 LaunchBox 数据库…</string>
+    <string name="scrape_now_lb_refreshing">正在更新 LaunchBox 数据库…</string>
+    <string name="scrape_now_lb_progress">LaunchBox 数据库：%1$d%%</string>
+    <string name="scrape_note_lb_offline">没有网络：连上 Wi-Fi 才能下载 LaunchBox 数据库</string>
+    <string name="scrape_note_lb_failed">LaunchBox 数据库下载失败</string>
+    <string name="scrape_note_lb_refresh_failed">LaunchBox 数据库更新失败，先用手头这份</string>
+    <string name="scrape_note_lb_needs">LaunchBox 需要它的数据库：设置 › 游戏库与图片 › 配置来源 › LaunchBox</string>
+    <string name="scrape_note_lb_missing_systems">有些平台还不在已下载的 LaunchBox 数据里；重新下载一次就能加上</string>
+    <string name="scrape_now_lb_looking">正在 LaunchBox 里查找游戏…</string>
+    <string name="scrape_note_lb_unreadable">读取不了 LaunchBox 数据库</string>
+    <string name="scrape_note_igdb_short">连不上 IGDB</string>
+    <string name="scrape_note_ss_short">连不上 ScreenScraper</string>
+    <string name="scrape_note_sgdb_short">连不上 SteamGridDB</string>
+
+    <string name="scrape_down_twitch_pass">Twitch 没有发放 IGDB 通行证</string>
+    <string name="scrape_down_twitch_keys">Twitch 不接受这个 IGDB 客户端 ID 或密钥</string>
+    <string name="scrape_down_igdb_refused">IGDB 拒绝了请求；请检查客户端 ID 和密钥</string>
+    <string name="scrape_down_hltb_slow">HowLongToBeat 让 Tandem 慢一点；暂时跳过它</string>
+    <string name="scrape_down_hltb_changed">HowLongToBeat 改了搜索方式，所以我跳过了它</string>
+    <string name="scrape_down_ss_login">ScreenScraper 不接受你的登录信息</string>
+    <string name="scrape_down_ss_quota">你的账号今天在 ScreenScraper 的额度用完了</string>
+    <string name="scrape_down_ss_unknown">ScreenScraper 暂停了查询：今天未知游戏太多了</string>
+    <string name="scrape_down_ss_closed">ScreenScraper 现在关闭或过载了</string>
+    <string name="scrape_down_ss_dev">ScreenScraper 不接受这个开发者 ID 或登录信息</string>
+    <string name="scrape_down_ss_version">ScreenScraper 屏蔽了这个应用版本</string>
+    <string name="scrape_down_sgdb_key">SteamGridDB 不接受这个 API 密钥</string>
+
+    <string name="scrape_test_said_no">它拒绝了</string>
+    <string name="scrape_test_timeout">没有及时响应。检查一下 Wi-Fi 再试试</string>
+    <string name="scrape_test_http">它返回了一个错误（%1$d）</string>
+    <string name="scrape_test_unreachable">连不上。检查一下 Wi-Fi 再试试</string>
+    <string name="scrape_test_lb_not_downloaded">还没下载：请按“下载”</string>
+    <string name="scrape_test_lb_no_systems">下载的数据里没有你的平台；请重新下载</string>
+    <string name="scrape_test_lb_not_found">在下载的数据里找不到 %1$s</string>
+    <plurals name="scrape_test_lb_found">
+        <item quantity="other">在本机找到了 %1$s（%2$s），共 %3$d 张图片</item>
+    </plurals>
+    <plurals name="scrape_test_lb_games">
+        <item quantity="other">本机上有你的平台的 %1$s 款游戏</item>
+    </plurals>
+    <string name="scrape_test_ss_needs">需要开发者 ID 和开发者密码</string>
+    <string name="scrape_test_nothing_signed_in">已登录，但什么也没搜到</string>
+    <string name="scrape_test_found">找到了 %1$s</string>
+    <string name="scrape_test_found_as">找到了 %1$s，已登录为 %2$s</string>
+    <string name="scrape_test_igdb_needs">需要 Twitch 客户端 ID 和客户端密钥</string>
+    <plurals name="scrape_test_igdb_found">
+        <item quantity="other">找到了 %1$s，共 %2$d 张图片</item>
+    </plurals>
+    <plurals name="scrape_test_igdb_found_year">
+        <item quantity="other">找到了 %1$s（%2$s），共 %3$d 张图片</item>
+    </plurals>
+    <string name="scrape_test_sgdb_needs">需要 API 密钥</string>
+    <string name="scrape_test_sgdb_nothing">密钥可用，但什么也没搜到</string>
+    <plurals name="scrape_test_sgdb_found">
+        <item quantity="other">找到了 %1$s，共 %2$d 张主视觉图</item>
+    </plurals>
+    <string name="scrape_test_libretro_found">找到了 Super Mario World 的封面</string>
+    <string name="scrape_test_libretro_failed">读取不了缩略图列表</string>
+    <string name="scrape_test_nothing">什么也没搜到</string>
+    <string name="scrape_test_hltb_found">%1$s：主线 %2$s，100%% 需 %3$s</string>
+</resources>

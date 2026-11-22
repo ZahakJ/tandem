@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="look_theme_pastel_night">粉彩之夜</string>
+    <string name="look_theme_pastel_night_tagline">柔和夜空，糖果配色</string>
+    <string name="look_theme_oled">OLED 纯黑</string>
+    <string name="look_theme_oled_tagline">真·纯黑，还省电</string>
+    <string name="look_theme_paper">纸张</string>
+    <string name="look_theme_paper_tagline">明亮安静，白天看着舒服</string>
+    <string name="look_theme_built_in">内置</string>
+
+    <string name="look_pack_format_tandem">Tandem 主题包</string>
+    <string name="look_pack_format_cocoon">Cocoon 主题包</string>
+    <string name="look_pack_tandem">主题包</string>
+    <string name="look_pack_cocoon">Cocoon 主题</string>
+    <string name="look_pack_sounds_name">%1$s（主题）</string>
+    <string name="look_pack_credit">%1$s，作者 %2$s</string>
+    <string name="look_pack_has_colours">配色</string>
+    <plurals name="look_pack_has_icons">
+        <item quantity="other">%1$d 个平台图标</item>
+    </plurals>
+    <plurals name="look_pack_has_heroes">
+        <item quantity="other">%1$d 张主视觉图</item>
+    </plurals>
+    <plurals name="look_pack_has_collection_icons">
+        <item quantity="other">%1$d 个合集图标</item>
+    </plurals>
+    <plurals name="look_pack_has_frames">
+        <item quantity="other">%1$d 个封面边框</item>
+    </plurals>
+    <string name="look_pack_has_two_wallpapers">2 张壁纸</string>
+    <string name="look_pack_has_wallpaper">壁纸</string>
+    <plurals name="look_pack_has_songs">
+        <item quantity="other">%1$d 首曲子</item>
+    </plurals>
+
+    <string name="look_swatch_mint">薄荷绿</string>
+    <string name="look_swatch_peach">蜜桃</string>
+    <string name="look_swatch_lavender">薰衣草</string>
+    <string name="look_swatch_sky">天空蓝</string>
+    <string name="look_swatch_butter">奶油黄</string>
+    <string name="look_swatch_sakura">樱花粉</string>
+    <string name="look_swatch_coral">珊瑚橙</string>
+    <string name="look_swatch_hot_pink">亮粉</string>
+    <string name="look_swatch_grape">葡萄紫</string>
+    <string name="look_swatch_ocean">海洋蓝</string>
+    <string name="look_swatch_teal">青碧</string>
+    <string name="look_swatch_lime">青柠</string>
+    <string name="look_swatch_gold">金色</string>
+    <string name="look_swatch_snow">雪白</string>
+
+    <string name="look_highlight_glow">发光</string>
+    <string name="look_highlight_outline">描边</string>
+    <string name="look_highlight_lift">浮起</string>
+    <string name="look_highlight_pulse">脉动</string>
+
+    <string name="look_surface_solid">实色</string>
+    <string name="look_surface_frosted">毛玻璃</string>
+    <string name="look_surface_outlined">线框</string>
+
+    <string name="look_motion_bouncy">Q 弹</string>
+    <string name="look_motion_smooth">顺滑</string>
+    <string name="look_motion_minimal">简约</string>
+    <string name="look_motion_off">关</string>
+
+    <string name="look_backdrop_blobs">粉彩泡泡</string>
+    <string name="look_backdrop_starfield">星空</string>
+    <string name="look_backdrop_waves">波浪</string>
+    <string name="look_backdrop_synthwave">合成器浪潮</string>
+    <string name="look_backdrop_bubbles">气泡</string>
+    <string name="look_backdrop_petals">花瓣</string>
+    <string name="look_backdrop_fireflies">萤火虫</string>
+    <string name="look_backdrop_pixels">8 位黄昏</string>
+    <string name="look_backdrop_lcd">掌机液晶</string>
+    <string name="look_backdrop_cubes">漂浮方块</string>
+    <string name="look_backdrop_towers">开机高塔</string>
+    <string name="look_backdrop_marquee">霓虹招牌</string>
+    <string name="look_backdrop_shell">透明壳</string>
+    <string name="look_backdrop_disc">旋转光盘</string>
+    <string name="look_backdrop_visor">红色线框</string>
+    <string name="look_backdrop_road">日落公路</string>
+    <string name="look_backdrop_shooter">太空射击</string>
+    <string name="look_backdrop_farm">田园时光</string>
+    <string name="look_backdrop_meadow">草丛</string>
+    <string name="look_backdrop_torch">火把石墙</string>
+    <string name="look_backdrop_rainbow">彩虹之路</string>
+    <string name="look_backdrop_plain">纯色</string>
+
+    <string name="look_icon_style_bubble">光泽泡泡</string>
+    <string name="look_icon_style_neon">霓虹描边</string>
+    <string name="look_icon_style_pixel">像素</string>
+    <string name="look_icon_style_flat">扁平</string>
+    <string name="look_icon_style_plastic">透明塑料</string>
+    <string name="look_icon_style_chrome">镀铬</string>
+    <string name="look_icon_style_lcd">液晶</string>
+    <string name="look_icon_style_sticker">贴纸</string>
+    <string name="look_icon_style_rune">雕刻</string>
+
+    <string name="look_group_colour">颜色与选中效果</string>
+    <string name="look_group_icons">平台图标</string>
+    <string name="look_group_motion">动态效果</string>
+    <string name="look_group_wallpaper">壁纸</string>
+    <string name="look_group_layout">布局</string>
+    <string name="look_group_icon_grid">图标网格</string>
+    <string name="look_group_dock">程序坞</string>
+    <string name="look_group_bottom">下屏</string>
+    <string name="look_group_top_bar">顶栏</string>
+    <string name="look_group_controls">操控</string>
+    <string name="look_group_screens">屏幕</string>
+    <string name="look_group_extras">其他</string>
+
+    <string name="look_theme_decides">主题 · %1$s</string>
+
+    <string name="look_accent">强调色</string>
+    <string name="look_accent_help">用你自己的强调色来点缀开关和选中项。左右键试色板；按 A 看全部颜色，“输入颜色…”可以填任意颜色，比如 #FF7AB6。</string>
+    <string name="look_accent_theme">主题</string>
+    <string name="look_accent_type">输入颜色…</string>
+    <string name="look_accent_hex">强调色（十六进制）</string>
+    <string name="look_accent_bad">这看起来不像颜色</string>
+    <string name="look_highlight">选中样式</string>
+    <string name="look_highlight_help">选中的卡片怎么标出来：柔和的光晕、利落的描边、带大阴影的浮起，或是轻轻脉动的光圈。</string>
+    <string name="look_surface">卡片材质</string>
+    <string name="look_surface_help">卡片是什么做的：实色、透出壁纸光彩的毛玻璃，或是轻盈的线框。</string>
+
+    <string name="look_icon_style">图标画风</string>
+    <string name="look_icon_style_help">主题包没有自带平台图标时，Tandem 怎么画它们：一台对应类型的小设备配上平台名，有光泽泡泡、霓虹灯管、像素、液晶、镀铬等多种画风。</string>
+    <string name="look_icons_from">图标来源</string>
+    <string name="look_icons_from_help">在任何主题下使用某个图标包的平台图标、主视觉图和标志，或者一律由 Tandem 绘制。“自动”使用主题包自带的图片；用内置主题时，会借用 ROMs/assets/smart_folders 里的第一个 Cocoon 智能文件夹图标包。“Tandem 绘制”使用主题的图标画风。</string>
+    <string name="look_icons_from_auto">自动</string>
+    <string name="look_icons_from_drawn">Tandem 绘制</string>
+
+    <string name="look_animation">动画风格</string>
+    <string name="look_animation_help">Q 弹活泼俏皮，顺滑流畅不回弹，简约快速低调，关闭则瞬间切换。</string>
+    <string name="look_reduce_motion">减弱动态效果</string>
+    <string name="look_reduce_motion_help">关闭所有动态壁纸、平移的图片和弹跳动画。省电模式也会让壁纸静止。</string>
+
+    <string name="look_wall_theme">主题默认</string>
+    <string name="look_wall_hero">游戏图片（模糊）</string>
+    <string name="look_wall_top">上屏</string>
+    <string name="look_wall_top_help">动态背景、选中游戏的图片，或者你自己的图片或视频：把图片（PNG、JPG、WebP）或视频（MP4、WebM）拷进 ROMs/tandem/wallpapers，就会出现在这里。</string>
+    <string name="look_wall_bottom">下屏</string>
+    <string name="look_wall_bottom_help">第二块屏幕的同样选项。游戏图片和视频放在下面特别好看。</string>
+    <string name="look_wall_dim">图片调暗</string>
+    <string name="look_wall_dim_help">调暗图片和视频壁纸，让上面的文字更清楚。</string>
+
+    <string name="look_games_view">游戏视图</string>
+    <string name="look_games_view_help">平台或合集里游戏的显示方式：卡片网格、带资料的列表（游戏多时特别好用）、封面轮播、书架上的书脊，或卡带盒里的卡带。</string>
+    <string name="look_games_grid_size">网格大小</string>
+    <string name="look_games_grid_size_help">平台里游戏卡片的大小，或固定列数。</string>
+    <string name="look_games_card_shape">卡片形状</string>
+    <string name="look_games_card_shape_help">圆角、方形、圆形、竖版封面卡片，或适合截图和横幅的宽幅卡片。</string>
+    <string name="look_games_shelf_look">书架样式</string>
+    <string name="look_games_shelf_look_help">文件夹书架视图后面的书柜：温暖的木纹、主题色的哑光隔板，或开放式，卡带盒直接立在壁纸上，只留一道细细的隔板线。</string>
+    <string name="look_games_titles">游戏标题</string>
+    <string name="look_games_titles_help">在每张卡片下方写上游戏名称。</string>
+    <string name="look_home_system_tiles">平台图块</string>
+    <string name="look_home_system_tiles_help">主页上平台图块的样式。</string>
+    <string name="look_home_rows">主页行</string>
+    <string name="look_home_rows_help">主页显示哪些行，以及它们的顺序。</string>
+    <string name="look_home_open_folders">打开文件夹</string>
+    <string name="look_home_open_folders_help">以页面打开、以全屏页面打开（顶栏滑走，网格占满整个屏幕），或以弹窗盖在当前屏幕上。</string>
+    <string name="look_home_open_folders_page">页面</string>
+    <string name="look_home_open_folders_fullscreen">全屏</string>
+    <string name="look_home_open_folders_popup">弹窗</string>
+    <string name="look_home_now_playing">正在玩</string>
+    <string name="look_home_now_playing_help">游戏在后台运行时，把它显示在主页顶部，方便你马上回去接着玩。</string>
+    <string name="look_corner_hints">角落提示</string>
+    <string name="look_corner_hints_help">在上屏角落显示小小的按键提示。</string>
+
+    <string name="look_dock_apps">应用程序坞</string>
+    <string name="look_dock_apps_help">把你最爱的 Android 应用放在主页上。在应用上按 Y 可以移动或移除它。</string>
+    <string name="look_dock_style">程序坞样式</string>
+    <string name="look_dock_style_help">悬浮栏、通栏搁板，或只显示图标。对“陈列架”以外的所有布局生效。</string>
+    <string name="look_dock_top">程序坞置顶</string>
+    <string name="look_dock_top_help">把程序坞放到图块上方，而不是下方。</string>
+    <string name="look_dock_auto_hide">自动隐藏程序坞</string>
+    <string name="look_dock_auto_hide_help">程序坞平时缩小变淡，移过去时才展开。</string>
+
+    <string name="look_bottom_style">样式</string>
+    <string name="look_bottom_style_help">“资料”让游戏图片渐渐融入它的信息。“图片 + 信息”让动态图片铺满屏幕，信息叠在上面。“动态图片”纯粹养眼。“时钟”安安静静。</string>
+    <string name="look_bottom_logo_size">标志大小</string>
+    <string name="look_bottom_logo_size_help">游戏标志叠在图片上的大小。</string>
+    <string name="look_bottom_art_fade">图片渐隐</string>
+    <string name="look_bottom_art_fade_help">图片如何融入下方的背景。</string>
+    <string name="look_bottom_video_snaps">预览视频</string>
+    <string name="look_bottom_video_snaps_help">在游戏上停留片刻后播放它的视频（来自 ROMs/downloaded_media/&lt;平台&gt;/videos）。“快速”开始得更早；“省电”等得更久，快速滚动时绝不解码视频。始终静音，游戏时停止。</string>
+    <string name="look_bottom_video_snaps_fast">快速</string>
+    <string name="look_bottom_video_snaps_balanced">均衡</string>
+    <string name="look_bottom_video_snaps_saver">省电</string>
+    <string name="look_bottom_moving_art">动态画面</string>
+    <string name="look_bottom_moving_art_help">游戏图片缓缓平移和缩放，像一张会呼吸的海报。</string>
+
+    <string name="look_top_battery">电量</string>
+    <string name="look_top_battery_help">在时钟旁显示电量百分比。</string>
+    <string name="look_top_clock">时钟</string>
+    <string name="look_top_clock_help">12 小时制、24 小时制、跟随系统，或者不显示时钟。</string>
+    <string name="look_top_clock_system">跟随系统</string>
+    <string name="look_top_clock_12">12 小时制</string>
+    <string name="look_top_clock_24">24 小时制</string>
+    <string name="look_top_clock_hidden">隐藏</string>
+
+    <string name="look_controls_prompts">按键图标</string>
+    <string name="look_controls_prompts_help">提示里的按键怎么画：Tandem 的粉彩风格，或 Xbox、PlayStation、任天堂风格。</string>
+    <string name="look_controls_swap_ab">交换 A 和 B</string>
+    <string name="look_controls_swap_ab_help">用 B 确认、用 A 返回，和任天堂主机一样。提示也会跟着变。</string>
+    <string name="look_controls_swap_xy">交换 X 和 Y</string>
+    <string name="look_controls_swap_xy_help">用 Y 搜索，用 X 打开选项。</string>
+    <string name="look_controls_does_open">打开</string>
+    <string name="look_controls_does_search">搜索</string>
+    <string name="look_controls_does_options">选项</string>
+    <string name="look_controls_rebind">按键映射</string>
+    <string name="look_controls_rebind_help">给 Tandem 的任意指令换一个按键、一组同时按下的组合键，或长按某个键：打开、返回、选项菜单、Start、快速设置、游戏切换器、侧边栏、翻页、隐藏的游戏，还有收藏、截图和录屏片段的按键。所有提示都会跟着变。</string>
+    <string name="look_controls_rebind_defaults">默认</string>
+    <plurals name="look_controls_rebind_changes">
+        <item quantity="other">%1$d 处更改</item>
+    </plurals>
+
+    <string name="look_screens_swap">交换屏幕</string>
+    <string name="look_screens_swap_help">游戏库移到下屏（触屏），资料放到上屏，瞬间完成。在图标网格上按 X 也一样。游戏仍在上屏打开。</string>
+    <string name="look_screens_rotation">保持自动旋转关闭</string>
+    <string name="look_screens_rotation_help">Thor 时不时会自己把自动旋转打开。每次你回到 Tandem，它都会再关掉。关闭此项，就由你自己决定。</string>
+
+    <string name="look_reset">重置外观</string>
+    <string name="look_reset_help">回到 Tandem 最初的外观：主题、布局、壁纸、图标和动态效果。你的按键、屏幕、音效和音乐、游戏库、收藏和游玩时长都不会动。</string>
+    <string name="look_reset_ask">要重置整个外观吗？</string>
+    <string name="look_reset_ask_body">主题、布局、壁纸、图标和动态效果会回到 Tandem 最初的样子。按键、屏幕、声音和游戏保持不变。</string>
+    <string name="look_reset_ask_do">重置</string>
+    <string name="look_reset_done">已恢复为 %1$s</string>
+
+    <string name="look_grid_icon_size">图标大小</string>
+    <string name="look_grid_icon_size_help">一行能放几个图标，就像 3DS HOME 菜单的缩放。在网格上按 L1 和 R1 也能调。</string>
+    <string name="look_grid_icon_size_option">%1$s · 每行 %2$d 个</string>
+    <string name="look_grid_rows">图标行数</string>
+    <string name="look_grid_rows_help">固定行数后，图标会放大填满屏幕。一行就是 3DS HOME 菜单放到最大：大大的图标，上方显示选中项的资料。“自动”跟随图标大小。在网格上按 L1 和 R1 可以改行数（图标为“大”时再按 L1 会继续减少行数）。</string>
+    <string name="look_grid_rows_auto">自动</string>
+    <plurals name="look_grid_rows_n">
+        <item quantity="other">%1$d 行</item>
+    </plurals>
+    <string name="look_grid_scrolling">滚动方式</string>
+    <string name="look_grid_scrolling_help">横向滚动并露出下一屏的一角、一次翻一页（像 3DS 那样），或上下滚动。</string>
+    <string name="look_grid_scrolling_sideways">横向</string>
+    <string name="look_grid_scrolling_pages">翻页</string>
+    <string name="look_grid_scrolling_vertical">上下</string>
+    <string name="look_grid_roundness">图标圆角</string>
+    <string name="look_grid_roundness_help">从直角到圆形。</string>
+    <string name="look_grid_gap">图标间距</string>
+    <string name="look_grid_gap_help">图标之间的空隙，按图标大小的比例计算。</string>
+    <string name="look_grid_hero_split">主视觉分屏</string>
+    <string name="look_grid_hero_split_help">在网格上方显示选中图标的图片。“不分屏”（默认）让图标占满整个屏幕。</string>
+    <string name="look_grid_hero_split_none">不分屏</string>
+    <string name="look_grid_other_screen">另一屏</string>
+    <string name="look_grid_other_screen_help">“聚光灯”把选中的图标放大显示在它的颜色上（或图标包的图片上），游戏则全屏显示。“经典”显示 Tandem 的资料。</string>
+    <string name="look_grid_other_screen_spotlight">聚光灯</string>
+    <string name="look_grid_other_screen_classic">经典</string>
+    <string name="look_grid_folders">文件夹打开方式</string>
+    <string name="look_grid_folders_help">以大圆角面板盖在网格上，或以整页打开。</string>
+    <string name="look_grid_folders_popup">盖在网格上</string>
+    <string name="look_grid_folders_page">整页</string>
+    <string name="look_grid_x_button">X 键</string>
+    <string name="look_grid_x_button_help">在图标网格和轨道主页上用 X 交换两块屏幕（搜索在 Start 面板和网格的 Y 菜单里）、在所有地方都用来交换，或者让 X 保持搜索。</string>
+    <string name="look_grid_x_button_swap_grid">网格和轨道上交换</string>
+    <string name="look_grid_x_button_swap">处处交换</string>
+    <string name="look_grid_x_button_search">搜索</string>
+    <string name="look_grid_swap_animation">交换动画</string>
+    <string name="look_grid_swap_animation_help">按 X 时两块屏幕怎么换位。散落：图标四散飞开，落到另一块屏幕上。推入：每块屏幕的新内容从转轴处滑进来。翻转：两块屏幕像卡片一样翻面。纵深：旧画面往后沉，新画面迎面而来。</string>
+    <string name="look_swap_scatter">散落</string>
+    <string name="look_swap_push">推入</string>
+    <string name="look_swap_flip">翻转</string>
+    <string name="look_swap_depth">纵深</string>
+    <string name="look_swap_fade">淡入淡出</string>
+    <string name="look_swap_instant">瞬间</string>
+
+    <string name="look_home_rows_continue">继续游玩</string>
+    <string name="look_home_rows_systems">平台</string>
+    <string name="look_home_rows_collections">合集</string>
+
+    <string name="look_gallery_themes">主题</string>
+    <string name="look_gallery_themes_note">按 A 使用 · 主题包在下方</string>
+    <string name="look_gallery_packs">主题包</string>
+    <string name="look_gallery_layouts">主页布局</string>
+    <string name="look_gallery_layouts_note">按 A 切换</string>
+    <string name="look_gallery_layout_kind">布局</string>
+    <string name="look_in_use">使用中</string>
+    <string name="look_theme_uses_hint">%1$s。按 A 使用。</string>
+
+    <string name="look_packs_none">还没有</string>
+    <plurals name="look_packs_installed">
+        <item quantity="other">已安装 %1$d 个</item>
+    </plurals>
+    <string name="look_packs_manage_help">从文件夹或 .zip 导入 Tandem 主题包或 Cocoon 主题包：配色、壁纸、平台图标、主视觉图和标志。Cocoon 已经下载到 ROMs/themes 的主题包会自动出现。可以选择使用主题包的哪些部分，也可以移除它。</string>
+    <string name="look_pack_by_sentence">作者：%1$s。</string>
+    <string name="look_pack_contents_sentence">%1$s。</string>
+    <string name="look_pack_art">图片：%1$s</string>
+    <string name="look_pack_uses_hint">按 A 使用；在主题包管理里选择用哪些部分。</string>
+
+    <string name="look_layout_shelves_help">一行行滚动浏览：继续游玩、平台、合集和你的应用。Tandem 的经典主页。</string>
+    <string name="look_layout_grid_help">所有平台、文件夹、应用和游戏都是方形图标，排在一张横向滚动的密集网格上，配一个胶囊程序坞。另一屏放大显示选中的图标；按 X 交换屏幕。</string>
+    <string name="look_layout_carousel_help">封面轮播：选中的卡片大大地立在中间，其他卡片向两侧转开。</string>
+    <string name="look_layout_list_help">紧凑的列表，旁边配一张大预览。一眼扫过，游戏再多也不怕。</string>
+    <string name="look_layout_console_help">主机风格的仪表盘：选中项的图片铺满屏幕，底部一排大图块。</string>
+    <string name="look_layout_orbit_help">Tandem 独创：你的平台、合集和应用化作一圈圆形图标绕着轨道转，选中的那个在最前面放大。它上方是最近玩的游戏，像手里的扑克牌一样展开，顶上还有一条“继续游玩”飘带。左右键转动轨道，L1 和 R1 在分组之间跳转，X 交换屏幕。</string>
+    <string name="look_layout_spotlight_help">游戏优先：选中游戏的图片铺满屏幕，一侧是一列封面，另一侧是它的标志、剧情简介和游玩时长。上下键移动封面栏，L1 和 R1 切换平台或合集，X 阅读完整简介。</string>
+
+    <string name="look_hints_play">开玩</string>
+    <string name="look_hints_open">打开</string>
+    <string name="look_hints_options">选项</string>
+    <string name="look_hints_search">搜索</string>
+    <string name="look_hints_menu">菜单</string>
+
+    <string name="look_packs_import_folder">导入文件夹</string>
+    <string name="look_packs_import_folder_detail">主题包文件夹</string>
+    <string name="look_packs_import_zip">导入 .zip</string>
+    <string name="look_packs_import_zip_detail">压缩的主题包</string>
+    <string name="look_packs_reload">再找找</string>
+    <string name="look_packs_reload_detail">查找新主题包</string>
+    <string name="look_packs_no_picker">这台设备上没有文件选择器</string>
+    <string name="look_packs_importing">正在导入…</string>
+    <string name="look_packs_added">已添加 %1$s。在它上面按 A 即可使用</string>
+    <string name="look_packs_found_none">没有找到主题包</string>
+    <plurals name="look_packs_found">
+        <item quantity="other">找到 %1$d 个主题包</item>
+    </plurals>
+    <string name="look_packs_none_yet">还没有主题包</string>
+    <plurals name="look_packs_installed_heading">
+        <item quantity="other">已安装 · %1$d</item>
+    </plurals>
+    <string name="look_packs_empty">你已经下载的 Cocoon 主题包会自动出现在这里。也可以在上方导入一个，它会被复制到 ROMs/tandem/themes。</string>
+    <string name="look_packs_its_icons">用它的图标</string>
+    <string name="look_packs_by">作者 %1$s</string>
+    <string name="look_packs_by_version">作者 %1$s · v%2$s</string>
+    <string name="look_packs_stored">保存在 ROMs/tandem/themes/%1$s</string>
+    <string name="look_packs_stored_cocoon">由 Cocoon 安装在 ROMs/themes/%1$s。Tandem 只读取它。</string>
+    <string name="look_packs_help">主题包带来配色、壁纸和每个平台的图片。Tandem 能读取自己的主题包和 Cocoon 格式的主题包。主题包会保留作者署名；分享时请遵守作者的要求。</string>
+
+    <string name="look_packs_use">使用这个主题</string>
+    <string name="look_packs_icons_stop">不再使用它的图标</string>
+    <string name="look_packs_icons_lend">在我的主题里用它的图标</string>
+    <string name="look_packs_brings">包含内容</string>
+    <string name="look_packs_part_colours">配色</string>
+    <string name="look_packs_part_wallpaper">壁纸</string>
+    <string name="look_packs_part_icons">平台图标</string>
+    <string name="look_packs_part_heroes">主视觉与标志</string>
+    <string name="look_packs_part_frames">封面边框</string>
+    <plurals name="look_packs_part_music">
+        <item quantity="other">音乐（%1$d）</item>
+    </plurals>
+    <string name="look_packs_part_sounds">音效</string>
+    <string name="look_packs_remove">移除主题包</string>
+    <string name="look_packs_remove_ask">要移除 %1$s 吗？</string>
+    <string name="look_packs_remove_ask_body">会删除 ROMs/tandem/themes/%1$s。之后可以重新导入。</string>
+    <string name="look_packs_remove_do">移除</string>
+    <string name="look_packs_removed">已移除 %1$s</string>
+    <string name="look_packs_remove_failed">无法移除这个主题包</string>
+    <string name="look_packs_add">添加主题包</string>
+    <string name="look_packs_add_detail">导入文件夹或 .zip</string>
+    <string name="look_packs_manage">管理主题包</string>
+
+    <string name="look_import_cant_open">打不开这个文件</string>
+    <string name="look_import_too_big">这对主题包来说太大了</string>
+    <string name="look_import_too_many">这里面的文件太多，不像主题包</string>
+    <string name="look_import_no_pack">里面没有 theme.json 或图标文件夹</string>
+    <string name="look_import_failed">导入失败</string>
+    <string name="look_import_icons_description">图标</string>
+
+    <string name="look_flair_group">动态与主页</string>
+    <string name="look_flair_floating">漂浮标题</string>
+    <string name="look_flair_floating_help">标志、图标和标题会轻轻漂浮，切换时缓缓升起，主视觉图也会慢慢漂移。开启“减弱动态效果”、动画关闭或省电模式时保持静止。</string>
+    <string name="look_flair_intensity">动态幅度</string>
+    <string name="look_flair_intensity_help">东西漂浮和弹跳的幅度。</string>
+    <string name="look_flair_subtle">轻微</string>
+    <string name="look_flair_normal">正常</string>
+    <string name="look_flair_lively">活泼</string>
+    <string name="look_flair_recent">“最近玩过”栏</string>
+    <string name="look_flair_recent_help">在图标网格顶部显示一排你最近玩的游戏。按 L2 显示或隐藏；按 A 继续游戏。</string>
+    <string name="look_flair_recent_button">按 L2</string>
+    <string name="look_flair_recent_always">始终</string>
+    <string name="look_flair_icon_names">图标名称</string>
+    <string name="look_flair_icon_names_help">图标网格图块下方的名称：始终显示、只显示选中的图标，或从不显示。</string>
+    <string name="look_flair_icon_names_always">始终</string>
+    <string name="look_flair_icon_names_focus">选中时</string>
+
+    <string name="look_dev">开发者</string>
+    <string name="look_dev_frames">帧时间浮层</string>
+    <string name="look_dev_frames_help">在你使用 Tandem 时统计卡顿的帧，并在角落显示总数。每个卡顿帧也会连同发生的界面一起写进系统日志（标签 TandemJank），用来测量流畅度。</string>
+    <string name="look_dev_tour">巡览所有主题</string>
+    <string name="look_dev_tour_stop">停止</string>
+    <string name="look_dev_tour_count">%1$d + 导入的</string>
+    <string name="look_dev_tour_help">每个内置主题和最新导入的主题包各展示几秒，用来检查颜色和文字。你的主题保持不变。</string>
+    <string name="look_dev_tour_toast">主题 %1$d / %2$d：%3$s</string>
+
+    <plurals name="look_start_found">
+        <item quantity="other">找到 %1$d 款游戏…</item>
+    </plurals>
+    <string name="look_start_gathering">正在召集你的游戏…</string>
+
+    <string name="look_welcome_skip_all">全部跳过</string>
+    <string name="look_welcome_next">下一步</string>
+    <string name="look_welcome_skip_now">暂时跳过</string>
+    <string name="look_welcome_not_now">以后再说</string>
+    <string name="look_welcome_language">你想用哪种语言？</string>
+    <string name="look_welcome_language_detail">Tandem 会在两块屏幕上都使用它。随时可以在 设置 › 外观与风格 › 语言 中更改。</string>
+    <string name="look_welcome_home">嗨！哪个主页最合你心意？</string>
+    <string name="look_welcome_home_cocoon">我在这台设备上发现了 Cocoon 的文件，所以把图标网格排在了第一个。随时可以在设置里更改。</string>
+    <string name="look_welcome_home_detail">先挑一个开始吧。设置 › 主页与布局 里还有更多，随时可换。</string>
+    <string name="look_welcome_cocoon">我找到了你的 Cocoon 家当</string>
+    <string name="look_welcome_cocoon_detail">什么都不用复制：Tandem 直接在 Cocoon 存放它们的地方读取，而且从不修改。</string>
+    <string name="look_welcome_cocoon_backup">你 %1$s 的 Cocoon 备份：一键还原同样的主页、程序坞和主题</string>
+    <plurals name="look_welcome_cocoon_themes">
+        <item quantity="other">%1$d 个主题包：%2$s</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_icons">
+        <item quantity="other">%1$d 个平台和合集图标包，自动启用</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_platforms">
+        <item quantity="other">%1$d 个平台文件：它们的模拟器已在“平台”中就绪</item>
+    </plurals>
+    <string name="look_welcome_cocoon_gamelists">Cocoon gamelist 里的游戏名称、简介和图片会自动搬过来</string>
+    <string name="look_welcome_cocoon_bring">把我的 Cocoon 配置搬过来</string>
+    <string name="look_welcome_cocoon_bringing">正在搬家…</string>
+    <string name="look_welcome_cocoon_wear">换上 %1$s</string>
+    <string name="look_welcome_cocoon_keep">保留这个主题</string>
+    <string name="look_welcome_art">图片与资料</string>
+    <string name="look_welcome_art_detail">LaunchBox 和 libretro 不需要账号。IGDB、SteamGridDB 和 ScreenScraper 用免费密钥能找到更多：选一个看看怎么弄。</string>
+    <string name="look_welcome_art_launchbox">获取 LaunchBox（%1$d MB，建议 Wi-Fi）</string>
+    <string name="look_welcome_resume">从你离开的地方接着玩</string>
+    <string name="look_welcome_resume_ready">继续游戏已就绪</string>
+    <string name="look_welcome_resume_ready_detail">选择还开着的游戏会直接回到游戏里，而不是重新启动。</string>
+    <string name="look_welcome_resume_allow_detail">在 Shizuku 里授权 Tandem，还在运行的游戏就能原样回来；用游戏切换器（长按 Select）还能在游戏之间来回跳。</string>
+    <string name="look_welcome_resume_start_detail">Shizuku 应用运行时，Tandem 能把还开着的游戏直接带回来，而不是重新启动。先启动 Shizuku，再授权 Tandem。</string>
+    <string name="look_welcome_resume_allow">在 Shizuku 中授权</string>
+    <string name="look_welcome_resume_how">怎么启动 Shizuku？</string>
+    <string name="look_welcome_homescreen">把 Tandem 设为主屏幕？</string>
+    <string name="look_welcome_homescreen_is">Tandem 是你的主屏幕</string>
+    <string name="look_welcome_homescreen_detail">在任何地方按 Home，都会回到这里，运行中的游戏只差一个按键。你的应用仍在程序坞里。随时可以在设置里换回去。</string>
+    <string name="look_welcome_homescreen_make">设为我的主屏幕</string>
+    <string name="look_welcome_home_set">Tandem 现在是你的主屏幕了 ✨</string>
+    <string name="look_welcome_done">一切就绪，开玩吧！</string>
+    <string name="look_welcome_done_detail">无论在哪，这四个按键都值得记住：</string>
+    <string name="look_welcome_done_y">万物皆有选项</string>
+    <string name="look_welcome_done_x_swap">主页上交换屏幕，其他地方搜索</string>
+    <string name="look_welcome_done_start">Start 面板，设置在里面（长按：快速设置）</string>
+    <string name="look_welcome_done_select">随机来一款（长按：游戏切换器）</string>
+    <string name="look_welcome_play">开玩吧</string>
+
+    <string name="look_preset_on">已启用 %1$s。再在它上面按一次 A 可撤销</string>
+    <string name="look_preset_undone">已恢复原样</string>
+    <string name="look_preset_cozy">温馨陈列架</string>
+    <string name="look_preset_cozy_blurb">Tandem 自家的主页：一行行最近玩的游戏、平台和合集，下屏显示资料和图片。</string>
+    <string name="look_preset_cozy_1">陈列架主页</string>
+    <string name="look_preset_cozy_2">平台里用游戏网格</string>
+    <string name="look_preset_cozy_3">下屏显示资料</string>
+    <string name="look_preset_cozy_4">悬浮应用程序坞</string>
+    <string name="look_preset_cozy_5">游戏库在上屏</string>
+    <string name="look_preset_grid">图标网格风</string>
+    <string name="look_preset_grid_blurb">一张横向滚动的密集图标网格，选中的图标在另一屏放大显示，按 X 交换屏幕。</string>
+    <string name="look_preset_grid_1">图标网格主页，每行 7 个，横向滚动</string>
+    <string name="look_preset_grid_2">另一屏用聚光灯</string>
+    <string name="look_preset_grid_3">在网格上按 X 交换屏幕</string>
+    <string name="look_preset_grid_4">文件夹盖在网格上打开</string>
+    <string name="look_preset_grid_5">放着你应用的胶囊程序坞</string>
+    <string name="look_preset_grid_6">你的 Cocoon 主题包（如果装了的话）</string>
+    <string name="look_preset_grid_7">有 Cocoon 备份时：原样还原你的主页、程序坞和主题</string>
+    <string name="look_preset_orbit">轨道</string>
+    <string name="look_preset_orbit_blurb">Tandem 独创的主页：你的平台、合集和应用排成一圈圆形图标，选中那个的游戏在上方展开。</string>
+    <string name="look_preset_orbit_1">轨道主页，含平台、合集和应用</string>
+    <string name="look_preset_orbit_2">聚光灯上方的“继续游玩”飘带</string>
+    <string name="look_preset_orbit_3">轨道下方的圆形程序坞</string>
+    <string name="look_preset_orbit_4">下屏显示资料</string>
+    <string name="look_preset_orbit_5">在轨道上按 X 交换屏幕</string>
+    <string name="look_preset_minimal">极简</string>
+    <string name="look_preset_minimal_blurb">安静又利落：紧凑的列表，用清爽的描边代替光晕，动画短促，不放音乐，花样也更少。</string>
+    <string name="look_preset_minimal_1">列表主页和游戏列表</string>
+    <string name="look_preset_minimal_2">描边选中效果，简约动画</string>
+    <string name="look_preset_minimal_3">关闭音乐</string>
+    <string name="look_preset_minimal_4">会自动隐藏的纯图标程序坞</string>
+    <string name="look_preset_minimal_5">没有小组件行，没有启动画面</string>
+</resources>

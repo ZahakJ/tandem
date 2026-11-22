@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="data_logo_auto">自动</string>
+    <string name="data_logo_left">左</string>
+    <string name="data_logo_centre">居中</string>
+    <string name="data_logo_right">右</string>
+    <string name="data_logo_top">上</string>
+    <string name="data_logo_bottom">下</string>
+
+    <string name="data_status_backlog">待玩</string>
+    <string name="data_status_backlog_blurb">总有一天会玩</string>
+    <string name="data_status_playing">在玩</string>
+    <string name="data_status_playing_blurb">正在攻略中</string>
+    <string name="data_status_finished">已通关</string>
+    <string name="data_status_finished_blurb">看过制作人员名单了</string>
+    <string name="data_status_completed">完美通关</string>
+    <string name="data_status_completed_blurb">全部搞定，100%</string>
+    <string name="data_status_shelved">搁置</string>
+    <string name="data_status_shelved_blurb">先放一放</string>
+    <string name="data_status_endless">无尽</string>
+    <string name="data_status_endless_blurb">没有结局：玩就完事了</string>
+
+    <string name="data_sort_name">名称</string>
+    <string name="data_sort_recent">最近玩过</string>
+    <string name="data_sort_most">最常玩</string>
+    <string name="data_sort_year">发行年份</string>
+    <string name="data_sort_rating">评分</string>
+    <string name="data_sort_added">最近添加</string>
+
+    <string name="data_time_minutes">%1$d 分钟</string>
+    <string name="data_time_hours">%1$s 小时</string>
+
+    <string name="data_screen_auto">自动</string>
+    <string name="data_screen_top">上屏</string>
+    <string name="data_screen_bottom">下屏</string>
+
+    <string name="data_backup_games">游戏数据</string>
+    <string name="data_backup_games_blurb">收藏、资料、游玩时长、游玩记录、日记和隐藏的文件夹</string>
+    <string name="data_backup_look">外观</string>
+    <string name="data_backup_look_blurb">主题、颜色、壁纸、音效和动态效果</string>
+    <string name="data_backup_layout">布局与文件夹</string>
+    <string name="data_backup_layout_blurb">图标网格、文件夹、程序坞和小组件</string>
+    <string name="data_backup_systems">平台与模拟器</string>
+    <string name="data_backup_systems_blurb">模拟器选择、平台文件夹、手柄和刮削</string>
+    <string name="data_backup_restored">已恢复%1$s</string>
+    <string name="data_backup_failed">%1$s失败：%2$s</string>
+    <string name="data_backup_missing">这份备份里没有%1$s</string>
+    <string name="data_backup_nothing">没有可恢复的内容</string>
+    <string name="data_backup_cant_write_to">无法写入 %1$s</string>
+    <string name="data_backup_cant_finish">备份没能完成</string>
+    <string name="data_backup_cant_read">无法读取 %1$s</string>
+    <string name="data_backup_cant_restore">无法恢复</string>
+    <string name="data_backup_cant_write">无法写入 %1$s</string>
+    <plurals name="data_backup_count_games">
+        <item quantity="other">%1$s 款游戏</item>
+    </plurals>
+    <plurals name="data_backup_count_tiles">
+        <item quantity="other">%1$s 个图块</item>
+    </plurals>
+    <plurals name="data_backup_count_folders">
+        <item quantity="other">%1$s 个文件夹</item>
+    </plurals>
+    <plurals name="data_backup_count_widgets">
+        <item quantity="other">%1$s 个小组件</item>
+    </plurals>
+    <string name="data_backup_pick_one">至少选一项来备份</string>
+    <string name="data_backup_backing_up">正在备份…</string>
+    <string name="data_backup_backed_up">已备份到 ROMs/tandem/backup/%1$s</string>
+    <string name="data_backup_pick_restore">至少选一项来恢复</string>
+    <string name="data_backup_restore_ask">要恢复%1$s吗？</string>
+    <string name="data_backup_restore_text">Tandem 现在的这些内容会被替换。替换前会先自动备份当前状态。</string>
+    <string name="data_backup_restore">恢复</string>
+    <string name="data_backup_restoring">正在恢复…</string>
+    <string name="data_backup_reason_restoring">恢复</string>
+    <string name="data_backup_delete_ask">要删除这份备份吗？</string>
+    <string name="data_backup_delete_text">%1$s · %2$s。此操作无法撤销。</string>
+    <string name="data_backup_delete">删除</string>
+    <string name="data_backup_deleted">备份已删除</string>
+    <string name="data_backup_delete_failed">无法删除这份备份</string>
+    <string name="data_backup_older_title">较早的备份</string>
+    <string name="data_backup_older">较早</string>
+    <string name="data_backup_automatic">自动</string>
+    <string name="data_backup_manual">手动</string>
+    <string name="data_backup_before">%1$s之前</string>
+    <string name="data_backup_back_up">备份</string>
+    <string name="data_backup_back_up_detail">在本机的 ROMs/tandem/backup 里新建一份备份。旧的会保留。</string>
+    <string name="data_backup_keys">账号密钥和登录信息</string>
+    <string name="data_backup_keys_detail">刮削、RetroAchievements 和 Steam。备份文件夹可以被其他应用读取。</string>
+    <string name="data_backup_cancel">取消</string>
+    <string name="data_backup_restore_detail">选择一份备份，再选要恢复哪些内容。</string>
+    <string name="data_backup_looking">正在查看 ROMs/tandem/backup…</string>
+    <string name="data_backup_none">还没有备份</string>
+    <string name="data_backup_none_detail">按“备份”会在 ROMs/tandem/backup 里保存一份。</string>
+    <string name="data_backup_now">立即备份</string>
+    <string name="data_backup_put_back">从这份备份恢复</string>
+    <string name="data_backup_keep_here">保留现有内容</string>
+    <string name="data_backup_not_in">不在这份备份里</string>
+    <string name="data_backup_has_keys">包含账号密钥。</string>
+    <string name="data_backup_no_keys">本机上的账号密钥保持不变。</string>
+    <string name="data_backup_just_now">刚刚</string>
+    <string name="data_backup_minute_ago">1 分钟前</string>
+    <plurals name="data_backup_minutes_ago">
+        <item quantity="other">%1$d 分钟前</item>
+    </plurals>
+    <string name="data_backup_hour_ago">1 小时前</string>
+    <plurals name="data_backup_hours_ago">
+        <item quantity="other">%1$d 小时前</item>
+    </plurals>
+    <string name="data_backup_yesterday">昨天</string>
+    <plurals name="data_backup_days_ago">
+        <item quantity="other">%1$d 天前</item>
+    </plurals>
+</resources>

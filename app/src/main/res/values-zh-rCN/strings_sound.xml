@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="sound_group">声音与音乐</string>
+    <string name="sound_group_theme_pack">主题包</string>
+
+    <string name="sound_pack_music">主题包音乐</string>
+    <plurals name="sound_pack_music_help">
+        <item quantity="other">%1$s 自带 %2$d 首曲子。开启后，使用这个主题时会播放它们，代替下面选的音乐。</item>
+    </plurals>
+    <string name="sound_pack_sounds">主题包音效</string>
+    <string name="sound_pack_sounds_help">%1$s 自带一套录制的操作音效。开启后，使用这个主题时会播放它们，代替下面选的音效包（它没有的音效仍由那个音效包提供）。</string>
+    <string name="sound_fallback">%1$s关闭上方的主题包自带音频时使用。</string>
+
+    <string name="sound_ui">操作音效</string>
+    <string name="sound_ui_help">移动和打开时的点击声、提示音和启动音效。%1$s</string>
+    <string name="sound_ui_off_help">关闭时，Tandem 静悄悄的。</string>
+    <string name="sound_ui_custom_help">自定义：使用你已有的录制音效，来自 Cocoon 的音效包或主题包。在下方挑选。</string>
+    <string name="sound_ui_custom">自定义</string>
+    <string name="sound_custom">自定义音效</string>
+    <string name="sound_custom_help">%1$s。它没有的音效由 %2$s 提供。</string>
+    <string name="sound_volume">音效音量</string>
+    <string name="sound_volume_help">操作音效相对于系统音量的大小。</string>
+    <string name="sound_pip_voice">Pip 的声音</string>
+    <string name="sound_pip_voice_help">Pip 有话要说时，会叽叽咕咕地念叨两句。</string>
+    <string name="sound_pip_hello">嗨！我是 Pip！</string>
+
+    <string name="sound_music">背景音乐</string>
+    <string name="sound_music_folder">我的音乐</string>
+    <string name="sound_music_help_empty">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；那里现在是空的，所以播放内置原声（%1$s）。Tandem 自带的有：Calm，舒缓轻柔的钢琴、竖琴与钢片琴；以及 Meadow Tales，一支小型管弦乐队。</string>
+    <plurals name="sound_music_help_found">
+        <item quantity="other">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；已找到 %1$d 首。Tandem 自带的有：Calm，舒缓轻柔的钢琴、竖琴与钢片琴；以及 Meadow Tales，一支小型管弦乐队。</item>
+    </plurals>
+    <string name="sound_music_folder_empty">请先把歌曲放进 ROMs/tandem/music</string>
+    <string name="sound_shuffle">随机播放我的音乐</string>
+    <string name="sound_shuffle_help">按随机顺序播放音乐文件夹里的歌。</string>
+    <string name="sound_music_volume">音乐音量</string>
+    <string name="sound_music_volume_help">音乐播放的音量。</string>
+    <string name="sound_next">下一首</string>
+    <string name="sound_next_none">还没有播放</string>
+    <string name="sound_next_help">跳到另一首歌。%1$s。</string>
+    <string name="sound_music_off">请先开启背景音乐</string>
+    <string name="sound_bottom_muted">掌机的下屏音量调到了零，Tandem 也会因此静音：请在“双屏助手”（下屏 › 音量）中调高。</string>
+
+    <string name="sound_source_pack">来自主题包 %1$s</string>
+    <string name="sound_source_folder">来自你的音乐文件夹</string>
+    <string name="sound_source_builtin">内置原声</string>
+
+    <string name="sound_now_your_music">你的音乐</string>
+    <string name="sound_now_playing">播放中</string>
+    <string name="sound_now_paused">已暂停</string>
+
+    <string name="sound_pack_modern">现代</string>
+    <string name="sound_pack_modern_blurb">柔和的轻触声和温和的音调，短促安静，就像当下的游戏主机。Tandem 的招牌音效。</string>
+    <string name="sound_pack_playful">欢快</string>
+    <string name="sound_pack_playful_blurb">清脆的马林巴琴和温暖的风铃声：Tandem 最初的那套开心音效。</string>
+    <string name="sound_pack_chiptune">芯片音乐</string>
+    <string name="sound_pack_chiptune_blurb">方波哔哔声和吃金币般的小号角，就像 8 位机。</string>
+    <string name="sound_pack_bubbly">泡泡</string>
+    <string name="sound_pack_bubbly_blurb">圆润的水滴“啵”声和冒泡的闪光音。</string>
+    <string name="sound_pack_minimal">极简</string>
+    <string name="sound_pack_minimal_blurb">安静、短促、低调。几乎听不见。</string>
+    <string name="sound_pack_studio">录音棚</string>
+    <string name="sound_pack_studio_blurb">毛毡与木头：低沉温暖的敲击，带一点柔软的回弹，像一把做工精良的键盘。</string>
+    <string name="sound_pack_glass">玻璃</string>
+    <string name="sound_pack_glass_blurb">干净明亮的水晶音色，余音稍长。清脆又精致。</string>
+    <string name="sound_pack_air">空气</string>
+    <string name="sound_pack_air_blurb">轻柔的气息和纯净圆润的音色。平静而开阔。</string>
+
+    <string name="sound_mood_still_water">黄昏时分，静谧湖面上的轻柔钢琴</string>
+    <string name="sound_mood_soft_morning">晨光洒进来时的竖琴与钢片琴</string>
+    <string name="sound_mood_hillside_breeze">阳光与风中的山坡上，长笛与钢琴</string>
+    <string name="sound_mood_lantern_town">灯火小镇里的一支手风琴圆舞曲</string>
+    <string name="sound_mood_seaside_train">沿海岸行驶的小火车，窗外是海浪</string>
+    <string name="sound_mood_forest_spirits">小精灵们在古树之间起舞</string>
+    <string name="sound_mood_summer_rain">慵懒夏日午后的钢琴与细雨</string>
+    <string name="sound_mood_flying_home">在回家的路上，飞越田野</string>
+</resources>
