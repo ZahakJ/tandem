@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The two screens: the bottom screen, the companion, the second home, screen roles, the screen-off and the status line. Keys start with screens_. See docs/TRANSLATING.md. Names (Tandem, Pip, Discord, Steam, RetroAchievements, Shizuku) stay as they are. -->
+<resources>
+    <!-- What the bottom screen shows while a game plays on the top one. Short: they are choices on a row. -->
+    <string name="screens_companion_art">Visuels du jeu</string>
+    <string name="screens_companion_tandem">Acolyte Tandem</string>
+    <string name="screens_companion_dark">Écran éteint</string>
+    <string name="screens_companion_off">Laisser à l’émulateur</string>
+    <string name="screens_companion_deck">Deck : clavier et pavé tactile</string>
+    <!-- Settings › Play & system › Performance & sleep › Screen off. -->
+    <string name="screens_off_group">Écran éteint</string>
+    <string name="screens_off_while_playing">Écran du bas en jeu</string>
+    <string name="screens_off_while_playing_help">Ce qu’affiche l’écran du bas pendant qu’un jeu tourne sur celui du haut : les visuels du jeu, l’acolyte de Tandem, Écran éteint (noir et immobile jusqu’à ce que tu le touches, le plus économe en batterie) ou rien du tout, pour un émulateur qui y dessine lui-même. Les émulateurs 3DS et DS gardent leur propre écran quoi qu’il arrive. Y sur un système ou un jeu choisit pour lui seul.</string>
+    <string name="screens_off_after">Éteindre après</string>
+    <string name="screens_off_after_help">Les minutes sans toucher l’écran du bas avant qu’il s’éteigne en jeu, quoi qu’il affiche, jusqu’à ce que tu le touches. Jamais garde les visuels assombris ou l’acolyte allumés toute la partie. Avec Écran éteint, c’est aussi le temps pendant lequel une touche rallume l’écran.</string>
+    <string name="screens_off_never">Jamais</string>
+    <plurals name="screens_off_after_minutes">
+        <item quantity="one">Après %1$d min</item>
+        <item quantity="other">Après %1$d min</item>
+    </plurals>
+    <!-- The bottom screen while browsing: details of what is highlighted on the top one. -->
+    <!-- On a game that is still open. Short. -->
+    <string name="screens_running">● Lancé</string>
+    <!-- HowLongToBeat in a chip: "⏱ 12h · 30h for 100%". %1$s a time like "30h". -->
+    <string name="screens_ttb_complete">%1$s pour 100 %%</string>
+    <!-- %1$s the times above, joined. -->
+    <string name="screens_ttb_chip">⏱ %1$s</string>
+    <string name="screens_favorite">♥ Favori</string>
+    <!-- Button hints. Short. -->
+    <string name="screens_hint_resume">Reprendre</string>
+    <string name="screens_hint_play">Jouer</string>
+    <string name="screens_hint_options">Options</string>
+    <string name="screens_hint_more">Plus</string>
+    <string name="screens_hint_search">Rechercher</string>
+    <string name="screens_hint_open">Ouvrir</string>
+    <!-- What L1 and R1 switch between. Short. -->
+    <string name="screens_switch_systems">Systèmes</string>
+    <string name="screens_switch_genres">Genres</string>
+    <string name="screens_switch_lists">Listes</string>
+    <string name="screens_switch_groups">Groupes</string>
+    <string name="screens_switch_rows">Rayons</string>
+    <!-- A game's facts, label above value. -->
+    <string name="screens_fact_times_played">Parties</string>
+    <string name="screens_fact_not_yet">Pas encore</string>
+    <string name="screens_fact_play_time">Temps de jeu</string>
+    <string name="screens_fact_time_to_beat">Durée de vie</string>
+    <!-- Time to beat parts. %1$s a time like "12h". -->
+    <string name="screens_ttb_main">%1$s histoire</string>
+    <string name="screens_ttb_extras">%1$s + extras</string>
+    <string name="screens_ttb_100">%1$s 100 %%</string>
+    <string name="screens_fact_last_played">Dernière partie</string>
+    <string name="screens_fact_added">Ajouté</string>
+    <string name="screens_fact_folder">Dossier</string>
+    <string name="screens_fact_file">Fichier</string>
+    <!-- How many play, from the game's metadata: "1–4 players"; %1$s may be a range. -->
+    <string name="screens_players_one">1 joueur</string>
+    <string name="screens_players">%1$s joueurs</string>
+    <string name="screens_just_now">à l’instant</string>
+    <!-- The line under a game. -->
+    <string name="screens_not_played">Jamais lancé : une aventure toute neuve !</string>
+    <!-- %1$s a play time like "3 h 20 min". -->
+    <string name="screens_played_time">%1$s de jeu</string>
+    <plurals name="screens_played_times">
+        <item quantity="one">Lancé %1$d fois</item>
+        <item quantity="other">Lancé %1$d fois</item>
+    </plurals>
+    <string name="screens_played">Déjà joué</string>
+    <!-- %1$s the line above, %2$s when ("3 minutes ago"). -->
+    <string name="screens_played_when">%1$s · %2$s</string>
+    <!-- Under a system or folder. %1$s a play time. -->
+    <string name="screens_played_in_here">%1$s de jeu ici</string>
+    <plurals name="screens_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <!-- Pip's greeting on the bottom screen. -->
+    <string name="screens_good_morning">Bonjour !</string>
+    <string name="screens_good_afternoon">Bon après-midi !</string>
+    <string name="screens_good_evening">Bonsoir !</string>
+    <string name="screens_up_late">Encore debout ? Moi aussi.</string>
+    <string name="screens_no_games">Allez, on va chercher des jeux</string>
+    <plurals name="screens_games_ready">
+        <item quantity="one">%1$d jeu qui n’attend que toi</item>
+        <item quantity="other">%1$d jeux qui n’attendent que toi</item>
+    </plurals>
+    <!-- The in-game companion on the bottom screen while a game plays on the top one. -->
+    <string name="screens_comp_just_started">ça commence</string>
+    <!-- %1$s how long this session has run: "0:12:34" or "12 min". -->
+    <string name="screens_comp_playing">En jeu : %1$s</string>
+    <!-- %1$s a play time. -->
+    <string name="screens_comp_in_total">%1$s au total</string>
+    <string name="screens_comp_first_time">Première partie</string>
+    <!-- Chips and buttons. Short. -->
+    <string name="screens_comp_back">Retour à Tandem</string>
+    <string name="screens_comp_screenshot">Capture</string>
+    <string name="screens_comp_notes">Notes</string>
+    <string name="screens_comp_companion">Acolyte</string>
+    <string name="screens_comp_game_screen">Écran du jeu</string>
+    <string name="screens_comp_manual">Notice</string>
+    <string name="screens_comp_clip">Clip</string>
+    <!-- %1$d seconds left of the clip. -->
+    <string name="screens_comp_stop_clip">Arrêter · %1$d s</string>
+    <!-- Pip cheering at milestones of one session. %1$d hours. -->
+    <plurals name="screens_comp_legendary">
+        <item quantity="one">%1$d heure ! Une partie légendaire</item>
+        <item quantity="other">%1$d heures ! Une partie légendaire</item>
+    </plurals>
+    <plurals name="screens_comp_stretch">
+        <item quantity="one">%1$d heure de jeu. Un verre d’eau et on s’étire ?</item>
+        <item quantity="other">%1$d heures de jeu. Un verre d’eau et on s’étire ?</item>
+    </plurals>
+    <string name="screens_comp_hour">Déjà une heure ! Ça te plaît ?</string>
+    <string name="screens_comp_half_hour">Une demi-heure. Joli rythme !</string>
+    <!-- The battery: "Charging 80%". -->
+    <string name="screens_comp_charging">En charge %1$d %%</string>
+    <string name="screens_comp_game_art">Visuels du jeu</string>
+    <string name="screens_comp_tap_to_close">Touche pour fermer</string>
+    <string name="screens_comp_close_game">Fermer le jeu</string>
+    <!-- Steppers: the screen's brightness and the volume. Short. -->
+    <string name="screens_comp_light">Lumière</string>
+    <string name="screens_comp_volume">Volume</string>
+    <string name="screens_comp_wifi_on">Wi-Fi activé</string>
+    <string name="screens_comp_wifi_off">Wi-Fi désactivé</string>
+    <!-- The second home: Tandem on the bottom screen while an app or game is on the top one. -->
+    <string name="screens_home_android_apps">Applis Android</string>
+    <string name="screens_home_open_on_top">Ouvrir sur l’écran du haut</string>
+    <string name="screens_home_home_brings_back">Home ramène Tandem</string>
+    <string name="screens_home_moving">Déplacement…</string>
+    <!-- %1$s an app's name. -->
+    <string name="screens_home_move_here">Amener %1$s ici</string>
+    <!-- Swapping the two screens. -->
+    <string name="screens_swap_single">Le mode Un seul écran est activé : pas d’autre écran avec qui échanger</string>
+    <string name="screens_swap_no_second">Il n’y a pas de second écran avec qui échanger</string>
+    <string name="screens_swap_busy">L’écran du bas est occupé. Réessaie dans un instant</string>
+    <string name="screens_swap_failed">L’écran du bas n’a pas pu prendre les commandes, les écrans restent comme avant</string>
+    <!-- A game's status (Y › Status). %1$s a game's title. -->
+    <string name="screens_status_cleared">Statut retiré</string>
+    <string name="screens_status_finished">%1$s terminé ! 🎉</string>
+    <string name="screens_status_completed">%1$s complété à 100 %% ★</string>
+    <!-- %1$s a game's title, %2$s its new status. -->
+    <string name="screens_status_set">%1$s : %2$s</string>
+    <string name="screens_status">Statut</string>
+    <string name="screens_status_none">Aucun</string>
+    <string name="screens_status_help">À jouer, En cours, Terminé… Un jeu «  À jouer  » passe tout seul à «  En cours  » une fois que tu y as joué un moment.</string>
+    <string name="screens_status_no_status">Sans statut</string>
+    <!-- Play time against HowLongToBeat: "12 h of ~40 h". %1$s and %2$s are times. -->
+    <string name="screens_status_progress">%1$s sur ~%2$s</string>
+</resources>

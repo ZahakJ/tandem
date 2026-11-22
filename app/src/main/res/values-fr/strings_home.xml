@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The home screens and what sits on them: the layouts (HomeMode.kt, Layouts.kt, Screens.kt, Spotlight, Bookshelf),
+     the hero and the bottom screen's styles (HeroArt.kt), the Resume card and Recently played strip (HomeExtras.kt),
+     the switcher (Switcher.kt), search's extras (QuickFind.kt, QuickJump.kt), the setup screen and top bar (App.kt) and
+     the collections of games (Collections.kt). Keys start with home_. See docs/TRANSLATING.md. -->
+<resources>
+    <!-- Settings › Home & layout: the size of game cards, then a fixed number of columns. Short: they sit in a picker. -->
+    <string name="home_grid_size_small">Petite</string>
+    <string name="home_grid_size_medium">Moyenne</string>
+    <string name="home_grid_size_large">Grande</string>
+    <string name="home_grid_size_huge">Énorme</string>
+    <!-- A grid with this many columns of game cards. -->
+    <plurals name="home_grid_size_columns">
+        <item quantity="one">%1$d colonne</item>
+        <item quantity="other">%1$d colonnes</item>
+    </plurals>
+    <!-- The shape of game cards. "Box art (tall)": tall like a game's box. -->
+    <string name="home_card_shape_rounded">Arrondie</string>
+    <string name="home_card_shape_square">Carrée</string>
+    <string name="home_card_shape_circle">Ronde</string>
+    <string name="home_card_shape_portrait">Jaquette (haute)</string>
+    <string name="home_card_shape_landscape">Large</string>
+    <!-- How a system's tile is painted. -->
+    <string name="home_tile_style_pastel">Pastel</string>
+    <string name="home_tile_style_solid">Couleur unie</string>
+    <string name="home_tile_style_glass">Verre</string>
+    <string name="home_tile_style_mono">Sobre</string>
+
+    <!-- The bottom screen's styles (Settings): game details, art with details, the game's animated art, a clock. -->
+    <string name="home_bottom_details">Infos</string>
+    <string name="home_bottom_both">Visuel + infos</string>
+    <string name="home_bottom_art">Visuel animé</string>
+    <string name="home_bottom_clock">Horloge</string>
+    <!-- How the hero art fades into the screen behind it. -->
+    <string name="home_hero_gradient_fade">Fondu doux</string>
+    <string name="home_hero_gradient_strong">Fondu marqué</string>
+    <string name="home_hero_gradient_vignette">Vignettage</string>
+    <string name="home_hero_gradient_none">Aucun</string>
+    <!-- On the art of a game that is running now. Keep the dot. -->
+    <string name="home_hero_running">● Lancé</string>
+    <!-- The bottom screen's clock style: what is highlighted when it's the All apps tile. -->
+    <string name="home_clock_all_apps">Toutes les applis</string>
+    <!-- The bottom screen's clock style: the date under the clock, a date pattern (java SimpleDateFormat):
+         EEEE the weekday, d the day, MMMM the month. Reorder them as your language writes a date. -->
+    <string name="home_clock_date">EEEE d MMMM</string>
+    <!-- The battery level under the clock: "87% battery". -->
+    <string name="home_clock_battery">%1$d %% de batterie</string>
+
+    <!-- The Resume card (the home page of a running game). Shown in capitals on purpose. -->
+    <string name="home_resume_continue">CONTINUER</string>
+    <!-- Under the running game's name: how long it has been played now, "1h 20m this session". -->
+    <string name="home_resume_session">%1$s cette session</string>
+    <string name="home_resume_hint_resume">Reprendre</string>
+    <string name="home_resume_hint_switch">Changer</string>
+    <!-- Y once on the Resume card: "Press Y again to close Celeste". -->
+    <string name="home_resume_close_again">Appuie encore sur Y pour fermer %1$s</string>
+    <!-- L2 with the Recently played strip turned off. "Settings › Home & layout" names where to turn it on. -->
+    <string name="home_recent_off">Le bandeau Joués récemment est désactivé. Paramètres › Accueil et disposition</string>
+    <string name="home_recent_title">Joués récemment</string>
+    <string name="home_recent_hint_hide">Masquer</string>
+    <!-- Under a recently played game that is running now. Keep the dot. -->
+    <string name="home_recent_running">● Lancé</string>
+
+    <!-- Search: systems, apps and settings found besides games. The kind of thing under each name. -->
+    <string name="home_find_also">Trouvé aussi</string>
+    <string name="home_find_system">Système</string>
+    <string name="home_find_app">Appli</string>
+    <string name="home_find_open">Ouvrir</string>
+    <!-- Jumping through a long list with L2 and R2: the group shown in a bubble. -->
+    <string name="home_jump_unknown_year">Année inconnue</string>
+    <string name="home_jump_unrated">Sans note</string>
+    <!-- A page of a list in an order with no letters to jump by: "Page 3". -->
+    <string name="home_jump_page">Page %1$d</string>
+    <string name="home_jump_hint">L2 · R2 pour sauter</string>
+
+    <!-- The home layouts (Settings › Home & layout). Names of styles: short. -->
+    <string name="home_layout_shelves">Rayons</string>
+    <string name="home_layout_grid">Grille d’icônes</string>
+    <string name="home_layout_carousel">Carrousel</string>
+    <string name="home_layout_list">Liste</string>
+    <string name="home_layout_console">Console</string>
+    <string name="home_layout_orbit">Orbite</string>
+    <string name="home_layout_spotlight">Vedette</string>
+    <!-- How the games inside a system or collection show. Short: also on a small button over the games. -->
+    <string name="home_view_grid">Grille</string>
+    <string name="home_view_list">Liste</string>
+    <string name="home_view_carousel">Carrousel</string>
+    <string name="home_view_shelf">Étagère</string>
+    <!-- Games shown as game cases standing side by side. -->
+    <string name="home_view_case">Boîtier</string>
+    <!-- How the dock of apps looks. -->
+    <string name="home_dock_style_bar">Barre flottante</string>
+    <string name="home_dock_style_shelf">Tablette</string>
+    <string name="home_dock_style_minimal">Icônes seules</string>
+    <!-- Every genre, as a folder of folders. -->
+    <string name="home_genres">Genres</string>
+    <!-- How many genres there are. -->
+    <plurals name="home_genres_count">
+        <item quantity="one">%1$d genre</item>
+        <item quantity="other">%1$d genres</item>
+    </plurals>
+    <!-- How many games are in a system, folder or collection. -->
+    <plurals name="home_games_count">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <!-- The same, for a hidden folder shown while hidden things are showing. -->
+    <plurals name="home_games_count_hidden">
+        <item quantity="one">Masqué · %1$d jeu</item>
+        <item quantity="other">Masqué · %1$d jeux</item>
+    </plurals>
+    <!-- Under a game to play again: "Continue · Super Nintendo". -->
+    <string name="home_entry_continue">Continuer · %1$s</string>
+    <!-- What a collection is, under its name. -->
+    <string name="home_entry_collection">Collection</string>
+    <!-- The home screen with nothing to show. -->
+    <string name="home_empty_hidden">Tous les jeux sont masqués</string>
+    <string name="home_empty_none">Pas encore de jeux</string>
+    <string name="home_empty_hidden_detail">Paramètres › Jeu et système › Confidentialité et masqués › Afficher les jeux masqués</string>
+    <string name="home_empty_none_detail">Choisis avec A le dossier où sont tes jeux</string>
+    <string name="home_empty_hidden_kind">Masqués</string>
+    <string name="home_empty_none_kind">Choisis ton dossier de jeux</string>
+    <!-- What A does there: open Settings, or pick the folder. -->
+    <string name="home_empty_hidden_action">Paramètres</string>
+    <string name="home_empty_none_action">Choisir</string>
+
+    <!-- The Shelves home: the rows' titles and the two cards at the end of Systems. -->
+    <string name="home_shelves_continue">Continuer à jouer</string>
+    <string name="home_shelves_systems">Systèmes</string>
+    <string name="home_shelves_collections">Collections</string>
+    <string name="home_shelves_apps">Applis</string>
+    <string name="home_shelves_apps_card">Applis</string>
+    <string name="home_shelves_apps_card_detail">Tout ce qui est installé</string>
+    <string name="home_shelves_systems_card">Systèmes</string>
+    <string name="home_shelves_systems_card_detail">Émulateurs et dossiers</string>
+    <!-- The Shelves home with no games. -->
+    <string name="home_empty_hidden_help">Active Afficher les jeux masqués dans les Paramètres (Start) pour les voir.</string>
+    <string name="home_empty_none_help">Choisis le dossier où sont tes jeux, rangés comme tu veux : un dossier par système, le dossier d’un seul système, ou tout en vrac.</string>
+    <string name="home_empty_looking">Je cherche…</string>
+    <string name="home_empty_rescan">Réanalyser</string>
+    <string name="home_empty_pick">Choisis ton dossier de jeux</string>
+
+    <!-- A folder inside a system: "SNES · 12 games", %2$s is the system's short name. -->
+    <plurals name="home_folder_subtitle">
+        <item quantity="one">%2$s · %1$d jeu</item>
+        <item quantity="other">%2$s · %1$d jeux</item>
+    </plurals>
+    <!-- The same for a hidden folder, shown while hidden games are showing. -->
+    <plurals name="home_folder_subtitle_hidden">
+        <item quantity="one">%2$s · Masqué · %1$d jeu</item>
+        <item quantity="other">%2$s · Masqué · %1$d jeux</item>
+    </plurals>
+    <!-- A genre, under its name. -->
+    <plurals name="home_genre_subtitle">
+        <item quantity="one">Genre · %1$d jeu</item>
+        <item quantity="other">Genre · %1$d jeux</item>
+    </plurals>
+    <!-- How many genres, under Genres. -->
+    <plurals name="home_genres_subtitle">
+        <item quantity="one">%1$d genre</item>
+        <item quantity="other">%1$d genres</item>
+    </plurals>
+    <!-- Headings over a grid with both folders and games. -->
+    <string name="home_grid_folders">Dossiers</string>
+    <string name="home_grid_games">Jeux</string>
+    <!-- The first shelf's title when its games are from several systems. -->
+    <string name="home_shelf_games">Jeux</string>
+
+    <!-- A system, folder or collection with nothing in it: a title, a line, and what the button does. -->
+    <string name="home_none_go_back">Revenir</string>
+    <string name="home_none_system_gone">Ce système a disparu</string>
+    <string name="home_none_system_gone_detail">Son dossier est introuvable depuis la dernière analyse.</string>
+    <string name="home_none_folder">C’est vide par ici</string>
+    <string name="home_none_folder_detail">Copie des jeux dans ce dossier, puis réanalyse.</string>
+    <string name="home_none_rescan">Réanalyser</string>
+    <string name="home_none_tucked">Rien à montrer ici</string>
+    <string name="home_none_tucked_detail">Ses jeux sont rangés en douce.</string>
+    <string name="home_none_hidden">Tous les jeux d’ici sont masqués</string>
+    <string name="home_none_hidden_detail">Les jeux masqués restent hors de vue jusqu’à ce que tu les affiches.</string>
+    <string name="home_none_show_hidden">Afficher les jeux masqués</string>
+    <string name="home_none_smart">Aucun jeu ne correspond</string>
+    <string name="home_none_smart_detail">Rien dans ta bibliothèque ne colle aux règles de ce dossier.</string>
+    <string name="home_none_smart_edit">Modifier les règles</string>
+    <string name="home_none_favorites">Pas encore de favoris</string>
+    <!-- "Add to favorites" names a menu item, as written there. -->
+    <string name="home_none_favorites_detail">Appuie sur Y sur un jeu et choisis Ajouter aux favoris.</string>
+    <string name="home_none_played">Rien de joué pour l’instant</string>
+    <string name="home_none_played_detail">Les jeux auxquels tu joues apparaissent ici.</string>
+    <string name="home_none_played_system_detail">Les jeux auxquels tu joues sur ce système apparaissent ici, les plus joués d’abord.</string>
+    <string name="home_none_unplayed">Tu les as tous lancés !</string>
+    <string name="home_none_unplayed_detail">Chaque jeu a eu sa chance. Respect.</string>
+    <string name="home_none_playing">Rien en cours</string>
+    <string name="home_none_playing_detail">Les jeux auxquels tu joues un moment arrivent ici tout seuls.</string>
+    <string name="home_none_backlog">La pile de la honte est vide</string>
+    <!-- "Y › Status › Backlog" names a menu path, as written there. -->
+    <string name="home_none_backlog_detail">Y › Statut › À jouer sur un jeu l’ajoute ici.</string>
+    <string name="home_none_finished">Rien de terminé pour l’instant</string>
+    <string name="home_none_finished_detail">Y › Statut › Terminé quand le générique défile.</string>
+    <string name="home_none_added">Pas encore de jeux</string>
+    <string name="home_none_added_detail">Les nouveaux jeux arrivent ici après une analyse.</string>
+    <string name="home_none_genre">Rien dans ce genre</string>
+    <string name="home_none_genre_detail">Ses jeux ont été masqués ou retirés.</string>
+    <string name="home_none_genres">Pas encore de genres</string>
+    <string name="home_none_genres_detail">Scrape les infos des jeux, ou importe une gamelist, et ils se rangent tout seuls par genre.</string>
+    <string name="home_none_genres_scrape">Scraper les infos</string>
+
+    <!-- The icon grid's spotlight (the big details beside the highlighted tile): what kind of thing it is. -->
+    <string name="home_spot_game">Jeu</string>
+    <string name="home_spot_system">Système</string>
+    <string name="home_spot_folder">Dossier</string>
+    <string name="home_spot_genre">Genre</string>
+    <string name="home_spot_collection">Collection</string>
+    <string name="home_spot_app">Appli</string>
+    <string name="home_spot_empty">Case vide</string>
+    <string name="home_spot_empty_paste">A colle ici la vignette que tu déplaces</string>
+    <string name="home_spot_empty_add">A ajoute ici un dossier, un jeu, une appli ou un widget</string>
+    <!-- On a running game's art. Keep the dot. -->
+    <string name="home_spot_running">● Lancé</string>
+    <!-- Button hints under the spotlight. Short. -->
+    <string name="home_spot_hint_paste">Coller</string>
+    <string name="home_spot_hint_add">Ajouter ici</string>
+    <string name="home_spot_hint_options">Options</string>
+    <string name="home_spot_hint_swap">Inverser</string>
+    <string name="home_spot_hint_open">Ouvrir</string>
+    <string name="home_spot_hint_resume">Reprendre</string>
+    <string name="home_spot_hint_play">Jouer</string>
+
+    <!-- The Spotlight home layout: a rail of covers, the highlighted game's details on the other side. -->
+    <string name="home_spotlight_apps">Applis</string>
+    <string name="home_spotlight_hidden">Tous les jeux sont masqués</string>
+    <string name="home_spotlight_none">Pas encore de jeux. Choisis le dossier où ils sont</string>
+    <string name="home_spotlight_show_hidden">Afficher les jeux masqués</string>
+    <string name="home_spotlight_pick">Choisis ton dossier de jeux</string>
+    <!-- On the highlighted game while it runs. Keep the dot. -->
+    <string name="home_spotlight_running">● Lancé</string>
+    <string name="home_spotlight_one_player">1 joueur</string>
+    <!-- How many can play: %1$s is the number or range from the game's details ("2", "1–4"). -->
+    <string name="home_spotlight_players">%1$s joueurs</string>
+    <!-- Play stats under a game: each a value, then this label under it. -->
+    <string name="home_spotlight_played">Temps de jeu</string>
+    <string name="home_spotlight_last_played">Dernière partie</string>
+    <!-- Under the number of play sessions (the number is shown above it, not in this text). -->
+    <plurals name="home_spotlight_sessions">
+        <item quantity="one">Session</item>
+        <item quantity="other">Sessions</item>
+    </plurals>
+    <string name="home_spotlight_status">Statut</string>
+    <string name="home_spotlight_achievements">Succès</string>
+    <string name="home_spotlight_not_played">Jamais lancé</string>
+    <string name="home_spotlight_just_now">À l’instant</string>
+    <!-- Button hints under the details. "Less" and "More" show less or more of the game's story. Short. -->
+    <string name="home_spotlight_hint_resume">Reprendre</string>
+    <string name="home_spotlight_hint_play">Jouer</string>
+    <string name="home_spotlight_hint_open">Ouvrir</string>
+    <string name="home_spotlight_hint_menu">Menu</string>
+    <string name="home_spotlight_hint_less">Moins</string>
+    <string name="home_spotlight_hint_more">Plus</string>
+    <string name="home_spotlight_hint_groups">Groupes</string>
+    <!-- Settings › Home & layout › Home screen, while Spotlight is the layout. -->
+    <string name="home_spotlight_settings">Vedette</string>
+    <string name="home_spotlight_rail">Bandeau de jaquettes</string>
+    <string name="home_spotlight_rail_help">De quel côté défile le bandeau de jaquettes. Les infos du jeu prennent l’autre côté.</string>
+    <string name="home_spotlight_rail_left">Gauche</string>
+    <string name="home_spotlight_rail_right">Droite</string>
+    <string name="home_spotlight_backdrop">Fond de la vedette</string>
+    <string name="home_spotlight_backdrop_help">Ce qui remplit l’écran derrière le jeu sélectionné : son visuel, sa jaquette floutée, ou juste la couleur du thème.</string>
+    <string name="home_spotlight_backdrop_art">Visuel</string>
+    <string name="home_spotlight_backdrop_blur">Jaquette floue</string>
+    <string name="home_spotlight_backdrop_dim">Uni</string>
+    <string name="home_spotlight_motion">Mouvement de la vedette</string>
+    <string name="home_spotlight_motion_help">Le visuel derrière le jeu dérive et zoome tout doucement. Désactivé aussi avec Réduire les animations.</string>
+
+    <!-- The bookcase's looks (Shelf look). -->
+    <string name="home_shelf_look_wood">Bois</string>
+    <string name="home_shelf_look_matte">Mate</string>
+    <string name="home_shelf_look_open">Ouverte</string>
+
+    <!-- The switcher (running games) and Now playing. A running game's line under its name. -->
+    <string name="home_running_outside">Ouvert en dehors de Tandem</string>
+    <string name="home_running_running">Lancé</string>
+    <!-- "SNES · played 25m this time": %1$s the system, %2$s how long this session has been. -->
+    <string name="home_running_played">%1$s · %2$s de jeu cette fois</string>
+    <!-- "SNES · RetroArch": %1$s the system, %2$s the emulator app. -->
+    <string name="home_running_app">%1$s · %2$s</string>
+    <!-- %1$s is a game's name. -->
+    <string name="home_running_closed">%1$s est fermé</string>
+    <string name="home_running_close_failed">Impossible de le fermer. Shizuku est bien lancé ?</string>
+    <!-- X once on a running game: %1$s is its name. -->
+    <string name="home_running_close_again">Appuie encore sur X pour fermer %1$s</string>
+    <string name="home_running_close_all_again">Appuie encore sur Y pour fermer tous les jeux</string>
+    <plurals name="home_running_closed_all">
+        <item quantity="one">%1$d jeu fermé. Place nette !</item>
+        <item quantity="other">%1$d jeux fermés. Place nette !</item>
+    </plurals>
+    <string name="home_running_close_all_failed">Impossible de les fermer. Shizuku est bien lancé ?</string>
+    <string name="home_running_title">En ce moment</string>
+    <!-- How many games are open, in a small pill. -->
+    <plurals name="home_running_open">
+        <item quantity="one">%1$d ouvert</item>
+        <item quantity="other">%1$d ouverts</item>
+    </plurals>
+    <string name="home_running_no_access">Je ne vois pas encore les autres applis</string>
+    <string name="home_running_no_access_detail">Lance Shizuku et autorise Tandem dedans : je te montrerai ici chaque jeu lancé.</string>
+    <string name="home_running_nothing">Rien de lancé</string>
+    <string name="home_running_nothing_detail">Lance un jeu, il t’attendra ici.</string>
+    <!-- On the Close all card, after X once: two short lines. -->
+    <string name="home_running_close_all_armed">Encore pour\ntout fermer</string>
+    <string name="home_running_close_all">Tout fermer</string>
+    <string name="home_running_hint_resume">Reprendre</string>
+    <string name="home_running_hint_close">Fermer</string>
+    <string name="home_running_hint_close_all">Tout fermer</string>
+    <string name="home_running_save_first">Fermer un jeu, c’est comme éteindre la console : sauvegarde d’abord !</string>
+    <!-- On a running game's card. Keep the dot. -->
+    <string name="home_running_pill">● Lancé</string>
+    <!-- On a running game's card after X once: two short lines. -->
+    <string name="home_running_close_armed">Encore X\npour fermer</string>
+    <string name="home_now_title">En jeu</string>
+    <!-- Over a running game's name: %1$s is the emulator app ("RetroArch"). Shown in capitals. Keep the dot. -->
+    <string name="home_now_paused_in">● En pause dans %1$s</string>
+    <!-- Under "+2": more games are running. -->
+    <string name="home_now_more">autres</string>
+    <!-- A small chip on the bottom screen. Keep the dot. -->
+    <string name="home_now_chip">● En jeu</string>
+    <string name="home_now_tap">Touche pour reprendre</string>
+    <!-- The top bar's small buttons. Keep the symbol in front. "▶ 2 open": running games. -->
+    <plurals name="home_top_open">
+        <item quantity="one">▶ %1$d ouvert</item>
+        <item quantity="other">▶ %1$d ouverts</item>
+    </plurals>
+    <!-- How games show here ("▦ Grid"); %1$s is a view's name. -->
+    <string name="home_top_view">▦ %1$s</string>
+    <string name="home_top_stats">★ Stats</string>
+    <!-- Opens the quick settings. -->
+    <string name="home_top_quick">◐ Réglages</string>
+
+    <!-- Looking for games (a library scan). -->
+    <string name="home_scan_already">Je cherche déjà des jeux…</string>
+    <string name="home_scan_looking">Je cherche tes jeux…</string>
+    <plurals name="home_scan_found">
+        <item quantity="one">%1$d jeu trouvé</item>
+        <item quantity="other">%1$d jeux trouvés</item>
+    </plurals>
+    <!-- Details (play time, favourites) imported from another frontend on the first scan. Keep the sparkle. -->
+    <plurals name="home_scan_imported">
+        <item quantity="one">Infos récupérées pour %1$d jeu ✨</item>
+        <item quantity="other">Infos récupérées pour %1$d jeux ✨</item>
+    </plurals>
+    <string name="home_favourite_needs_game">Sélectionne un jeu pour l’ajouter aux favoris</string>
+    <!-- Surprise me: a game picked at random, %1$s is its name. -->
+    <string name="home_surprise">Et pourquoi pas %1$s ?</string>
+
+    <!-- The top bar's path to the page that is open, its parts joined with › . Each is one page's name. -->
+    <string name="home_crumb_games">Jeux</string>
+    <string name="home_crumb_genres">Genres</string>
+    <string name="home_crumb_settings">Paramètres</string>
+    <string name="home_crumb_systems">Systèmes</string>
+    <string name="home_crumb_apps">Applis</string>
+    <string name="home_crumb_look">Apparence</string>
+    <string name="home_crumb_theme_packs">Packs de thèmes</string>
+    <string name="home_crumb_library">Bibliothèque et visuels</string>
+    <string name="home_crumb_game_folders">Dossiers de jeux</string>
+    <string name="home_crumb_scrape">Visuels et infos</string>
+    <string name="home_crumb_stats">Stats de jeu</string>
+    <string name="home_crumb_widgets">Widgets</string>
+    <string name="home_crumb_controls">Commandes</string>
+    <string name="home_crumb_rebind">Réassigner les boutons</string>
+    <!-- A game's manual. -->
+    <string name="home_crumb_manual">Notice</string>
+    <string name="home_splash_gathering">Je rassemble tes jeux…</string>
+
+    <!-- The first-run setup screen. Pip is the mascot's name. -->
+    <string name="home_setup_hi">Salut, moi c’est Pip !</string>
+    <string name="home_setup_lets_find">Allons chercher tes jeux.</string>
+    <!-- Steps: a number or a symbol is shown before each title. -->
+    <string name="home_setup_files">Lire tes jeux</string>
+    <string name="home_setup_files_detail">Autorise l’accès à tous les fichiers pour que je puisse parcourir tes jeux et leurs visuels.</string>
+    <string name="home_setup_tree">Choisis ton dossier de jeux</string>
+    <!-- "Use this folder" is the button in Android's folder picker: write it as Android does in your language. -->
+    <string name="home_setup_tree_detail">Choisis le dossier où sont tes jeux, rangés comme tu veux, puis touche «  Utiliser ce dossier  ». ROMs marche aussi. Certains émulateurs n’ouvrent que les jeux partagés de cette façon.</string>
+    <string name="home_setup_step_one_first">D’abord l’étape 1, puis celle-ci</string>
+    <string name="home_setup_shizuku">Reprendre les jeux (facultatif)</string>
+    <string name="home_setup_shizuku_detail">Autorise-moi dans Shizuku, et je ramènerai un jeu pile là où tu l’avais laissé.</string>
+    <string name="home_setup_done">C’est fait ✓</string>
+    <string name="home_setup_todo">Configurer</string>
+
+    <!-- The dock (a row of apps on some home layouts) and opening apps. Keep the star. -->
+    <string name="home_dock_removed">Retirée du dock</string>
+    <string name="home_dock_added">Ajoutée au dock ★</string>
+    <string name="home_app_wont_open">Cette appli refuse de s’ouvrir</string>
+    <string name="home_dock_all_apps">Toutes les applis</string>
+
+    <!-- The All apps drawer. -->
+    <string name="home_apps_title">Toutes les applis</string>
+    <string name="home_apps_hint_open">Ouvrir</string>
+    <string name="home_apps_hint_options">Options</string>
+    <string name="home_apps_hint_search">Rechercher</string>
+    <!-- The search box's keyboard title, and its placeholder while empty. -->
+    <string name="home_apps_search">Rechercher une appli</string>
+    <string name="home_apps_show_hidden">Afficher les applis masquées</string>
+    <string name="home_apps_gathering">Je rassemble les applis…</string>
+    <string name="home_apps_gathering_detail">Un petit instant.</string>
+    <string name="home_apps_on_dock">Dans le dock</string>
+    <!-- The heading over every app, below the dock's apps. -->
+    <string name="home_apps_all">Toutes les applis</string>
+    <string name="home_apps_none">Aucune appli à afficher</string>
+    <!-- %1$s is what was typed in the search. -->
+    <string name="home_apps_no_match">Aucune appli pour «  %1$s  »</string>
+    <string name="home_apps_hidden_match">Une appli masquée du tiroir correspond.</string>
+    <string name="home_apps_try_other">Essaie avec moins de lettres, ou un autre nom.</string>
+    <string name="home_apps_clear_search">Effacer la recherche</string>
+    <string name="home_apps_stock_home">Accueil Android (le lanceur du système)</string>
+    <string name="home_apps_stock_home_value">Home revient ici</string>
+    <string name="home_apps_stock_home_failed">L’écran d’accueil d’Android refuse de s’ouvrir</string>
+
+    <!-- The popup about using Tandem as Android's Home screen. -->
+    <string name="home_explainer_done">Tandem est maintenant ton écran d’accueil ✨</string>
+    <string name="home_explainer_title">Tandem comme écran d’accueil</string>
+    <string name="home_explainer_body">Appuie sur Home n’importe où et tu reviens direct ici, ton jeu en cours à un bouton près. Tes autres applis restent dans le dock et dans Toutes les applis. Tu peux revenir en arrière quand tu veux.</string>
+    <string name="home_explainer_is_home">Tandem est ton écran d’accueil</string>
+    <string name="home_explainer_on">Activé ✓</string>
+    <string name="home_explainer_other">Utiliser une autre appli d’accueil</string>
+    <string name="home_explainer_make">Faire de Tandem mon écran d’accueil</string>
+    <string name="home_explainer_settings">Ouvrir les paramètres d’accueil d’Android</string>
+    <string name="home_explainer_not_now">Plus tard</string>
+
+    <!-- Settings › Home & play: running games, the Home screen, the screensaver and privacy. -->
+    <string name="home_play_title">Accueil et jeu</string>
+    <string name="home_play_use_home">Tandem comme écran d’accueil</string>
+    <string name="home_play_use_home_help">Le bouton Home te ramène à Tandem, comme sur une console. Tu peux revenir au lanceur habituel quand tu veux.</string>
+    <!-- A row's value while the setting can't work without the Shizuku app. -->
+    <string name="home_play_needs_shizuku">Requiert Shizuku</string>
+    <string name="home_play_needs_shizuku_toast">Il faut que Shizuku tourne, avec Tandem autorisé</string>
+    <string name="home_play_close_previous">Fermer le jeu précédent</string>
+    <string name="home_play_close_previous_help">Quand tu lances un autre jeu, celui qui tourne encore en arrière-plan est d’abord fermé, pour ne pas gaspiller mémoire et batterie. Requiert Shizuku.</string>
+    <string name="home_play_ask_closing">Demander avant de fermer</string>
+    <string name="home_play_ask_closing_help">Quand lancer un jeu fermerait celui qui tourne encore, Tandem te demande d’abord : le reprendre, ou le fermer et lancer le nouveau. Requiert Shizuku.</string>
+    <string name="home_play_immersion">Mode immersion</string>
+    <string name="home_play_immersion_needs">Requiert l’accès à Ne pas déranger</string>
+    <string name="home_play_immersion_help">Pendant que tu joues, Ne pas déranger est activé : pas de notifications qui surgissent, ni sons ni vibrations, seulement les alarmes. Tout redevient comme avant quand tu reviens sur Tandem. Tandem doit être autorisé dans l’accès à Ne pas déranger ; avec Shizuku, il s’autorise tout seul.</string>
+    <!-- What A does on Immersion mode before Tandem is allowed. -->
+    <string name="home_play_immersion_allow">Autoriser</string>
+    <string name="home_play_immersion_on">Mode immersion activé</string>
+    <string name="home_play_immersion_come_back">Autorise Tandem, puis reviens</string>
+    <string name="home_play_dock">Choisir les applis du dock</string>
+    <!-- How many apps are on the dock. -->
+    <plurals name="home_play_dock_count">
+        <item quantity="one">%1$d appli</item>
+        <item quantity="other">%1$d applis</item>
+    </plurals>
+    <string name="home_play_dock_help">Choisis quelles applis vont dans le dock, et dans quel ordre.</string>
+    <string name="home_play_screensaver">Économiseur d’écran</string>
+    <string name="home_play_screensaver_help">Après un moment sans toucher aux boutons, tes jaquettes dérivent doucement dans un ciel étoilé pendant que Pip fait la sieste, pour que rien ne marque l’écran. N’importe quel bouton le réveille.</string>
+    <!-- A screensaver option: it starts after this many minutes without a button press. -->
+    <plurals name="home_play_screensaver_after">
+        <item quantity="one">Après %1$d min</item>
+        <item quantity="other">Après %1$d min</item>
+    </plurals>
+    <string name="home_play_freeze">Pause des jeux en veille</string>
+    <string name="home_play_needs_root">Requiert Shizuku en root</string>
+    <string name="home_play_freeze_help">Une minute après l’extinction de l’écran, les jeux restés ouverts sont mis en pause : la console dort vraiment au lieu de se vider pour le son d’un émulateur. Ils reprennent exactement où ils en étaient à son réveil. Requiert Shizuku en root.</string>
+    <string name="home_play_needs_root_toast">Il faut que Shizuku tourne en root</string>
+    <string name="home_play_private">Mode privé</string>
+    <!-- %1$s is the button combination that shows hidden games, like "L1 + R1 + Select". -->
+    <string name="home_play_private_help">Les jeux, dossiers et systèmes masqués restent cachés jusqu’à ce que %1$s et ton code PIN les fassent sortir, et Tandem reste hors ligne. Le désactiver demande le code PIN. Tant qu’il est désactivé, %1$s l’active aussitôt.</string>
+    <string name="home_play_offline">Hors ligne pour les masqués</string>
+    <string name="home_play_offline_closes">Jusqu’à la fermeture</string>
+    <string name="home_play_offline_plays">Pendant la partie</string>
+    <string name="home_play_offline_help">En mode privé, le Mode Avion s’active pendant qu’un jeu masqué tourne, pour que rien dans le jeu ne puisse se connecter. Pendant la partie : retour en ligne dès que tu reviens sur Tandem. Jusqu’à la fermeture : toujours hors ligne tant que le jeu reste ouvert en arrière-plan, où il pourrait se synchroniser, jusqu’à ce que son appli soit fermée ou que tu ranges les jeux masqués. Si tu avais activé le Mode Avion toi-même, il reste activé. Requiert Shizuku.</string>
+    <!-- The same, while private mode is off. -->
+    <string name="home_play_offline_help_off">En mode privé, le Mode Avion s’active pendant qu’un jeu masqué tourne, pour que rien dans le jeu ne puisse se connecter. Pendant la partie : retour en ligne dès que tu reviens sur Tandem. Jusqu’à la fermeture : toujours hors ligne tant que le jeu reste ouvert en arrière-plan, où il pourrait se synchroniser, jusqu’à ce que son appli soit fermée ou que tu ranges les jeux masqués. Si tu avais activé le Mode Avion toi-même, il reste activé. Requiert Shizuku. Seulement en mode privé.</string>
+    <string name="home_play_pin">Code PIN du mode privé</string>
+    <string name="home_play_pin_set">Défini</string>
+    <string name="home_play_pin_not_set">Non défini</string>
+    <string name="home_play_pin_help">Change le code PIN de 4 à 6 chiffres qui affiche les jeux masqués et désactive le mode privé. Oublié ? Y sur le pavé du code lance une attente de 24 heures, puis tu en choisis un nouveau.</string>
+    <!-- What A does on the PIN row. -->
+    <string name="home_play_pin_change">Changer</string>
+    <string name="home_play_export">Exporter les stats de jeu</string>
+    <!-- ROMs/tandem is a folder's name: keep it. -->
+    <string name="home_play_export_help">Enregistre tes sessions de jeu dans un fichier tableur (CSV), dans ROMs/tandem.</string>
+
+    <!-- Collections of games (home rows, smart lists). -->
+    <string name="home_collection_playing">En cours</string>
+    <string name="home_collection_backlog">À jouer</string>
+    <string name="home_collection_finished">Terminés</string>
+    <string name="home_collection_favorites">Favoris</string>
+    <string name="home_collection_most_played">Les plus joués</string>
+    <string name="home_collection_recently_added">Ajoutés récemment</string>
+    <string name="home_collection_never_played">Jamais joués</string>
+    <string name="home_collection_continue">Continuer à jouer</string>
+    <!-- Stats › By system: the games of a system, most played first. %1$s is a system's short name ("SNES"). -->
+    <string name="home_collection_system_most">%1$s · les plus joués</string>
+    <!-- The same for the box the smallest systems share: "4 more systems · most played". -->
+    <plurals name="home_collection_more_systems_most">
+        <item quantity="one">%1$d autre système · les plus joués</item>
+        <item quantity="other">%1$d autres systèmes · les plus joués</item>
+    </plurals>
+
+    <!-- The Orbit home: orbs (systems, collections, apps) on a ring, the highlighted one's games as covers inside it. -->
+    <!-- The line under a system's orb: "130 games · 1 playing". -->
+    <plurals name="home_orbit_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <plurals name="home_orbit_playing">
+        <item quantity="one">%1$d en cours</item>
+        <item quantity="other">%1$d en cours</item>
+    </plurals>
+    <string name="home_orbit_empty_hidden">Tous les jeux sont masqués</string>
+    <string name="home_orbit_empty_none">Pas encore de jeux. Choisis le dossier où ils sont</string>
+    <string name="home_orbit_empty_show">Afficher les jeux masqués</string>
+    <string name="home_orbit_empty_pick">Choisis ton dossier de jeux</string>
+    <!-- The label over the Continue card (the last game played); Resume while that game still runs. -->
+    <string name="home_orbit_continue">Continuer</string>
+    <string name="home_orbit_resume">Reprendre</string>
+    <!-- The line under the orbit while the Continue card is highlighted. %1$s is the game's system ("Nintendo 3DS"). -->
+    <string name="home_orbit_caption_continue">Continuer · %1$s</string>
+    <string name="home_orbit_caption_resume">Reprendre · %1$s</string>
+    <string name="home_orbit_all_apps">Toutes les applis</string>
+    <!-- The line under an app's name when an app's card is highlighted. -->
+    <string name="home_orbit_app">Appli</string>
+    <string name="home_orbit_note_pin">Épingle des applis au dock pour les voir ici</string>
+    <!-- Settings › Home & layout › Home screen, while Orbit is the layout. -->
+    <string name="home_orbit_settings">Orbite</string>
+    <string name="home_orbit_holds">Sur l’orbite</string>
+    <string name="home_orbit_holds_help">Ce qui tourne sur l’orbite : tes systèmes, tes collections et les applis de Tandem, ou seulement une partie. L1 et R1 sautent d’un groupe à l’autre.</string>
+    <string name="home_orbit_holds_all">Systèmes, collections, applis</string>
+    <string name="home_orbit_holds_games">Systèmes et collections</string>
+    <string name="home_orbit_holds_systems">Systèmes seulement</string>
+    <string name="home_orbit_continue_card">Carte Continuer</string>
+    <string name="home_orbit_continue_card_help">Ton dernier jeu, en carte posée à gauche des jaquettes. A le relance (Reprendre s’il tourne encore).</string>
+</resources>

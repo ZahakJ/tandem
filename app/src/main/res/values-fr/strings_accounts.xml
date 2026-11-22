@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Accounts and the online side: the private-mode PIN, Tandem's updater, Discord, RetroAchievements and Steam. Keys start with accounts_. See docs/TRANSLATING.md. Names (Tandem, Pip, Discord, Steam, RetroAchievements, Shizuku) stay as they are. -->
+<resources>
+    <!-- A wait, rounded up: "25 s", "4 min", "23 h". Used alone and inside the PIN pad's sentences below. -->
+    <plurals name="accounts_wait_seconds">
+        <item quantity="one">%1$d s</item>
+        <item quantity="other">%1$d s</item>
+    </plurals>
+    <plurals name="accounts_wait_minutes">
+        <item quantity="one">%1$d min</item>
+        <item quantity="other">%1$d min</item>
+    </plurals>
+    <plurals name="accounts_wait_hours">
+        <item quantity="one">%1$d h</item>
+        <item quantity="other">%1$d h</item>
+    </plurals>
+
+    <!-- Private mode: hidden games behind a PIN. The PIN pad's titles. -->
+    <string name="accounts_pin_choose_private">Choisis un code PIN pour le mode privé</string>
+    <string name="accounts_pin_turn_off">Désactiver le mode privé</string>
+    <string name="accounts_pin_show_hidden">Afficher les jeux masqués</string>
+    <string name="accounts_pin_enter_current">Saisis ton code PIN actuel</string>
+    <string name="accounts_pin_choose_new">Choisis un nouveau code PIN</string>
+    <string name="accounts_pin_again">Saisis-le encore une fois</string>
+    <string name="accounts_pin_forgot_title">Code PIN oublié ?</string>
+    <!-- %1$s a button or buttons, like "L1+R1+Select". -->
+    <string name="accounts_private_on">Mode privé activé. %1$s puis ton code PIN affichent les jeux masqués</string>
+    <string name="accounts_private_off">Mode privé désactivé</string>
+    <string name="accounts_private_showing">Psst… les jeux masqués sont visibles</string>
+    <!-- The line under the title. %1$d and %2$d are the fewest and most digits a PIN has. -->
+    <string name="accounts_pin_wait_over">L’attente est finie. Choisis un nouveau code PIN</string>
+    <string name="accounts_pin_length">Ton code PIN fait de %1$d à %2$d chiffres</string>
+    <!-- %1$s a wait, like "30 s". -->
+    <string name="accounts_pin_wrong_wait">Code PIN incorrect. Attends %1$s avant le prochain essai</string>
+    <string name="accounts_pin_wrong">Code PIN incorrect</string>
+    <string name="accounts_pin_pick_length">Choisis de %1$d à %2$d chiffres</string>
+    <string name="accounts_pin_mismatch">Les deux ne correspondent pas. Recommence</string>
+    <string name="accounts_pin_set">Code PIN enregistré. Garde-le en lieu sûr</string>
+    <!-- %1$s a wait, like "24 h". -->
+    <string name="accounts_pin_new_in">Tu pourras choisir un nouveau code PIN dans %1$s</string>
+    <string name="accounts_pin_checking">Vérification…</string>
+    <string name="accounts_pin_too_many">Trop d’essais ratés. Attends %1$s</string>
+    <string name="accounts_pin_new_possible">Nouveau code PIN possible dans %1$s</string>
+    <string name="accounts_pin_enter">Saisis ton code PIN</string>
+    <string name="accounts_pin_digits">De %1$d à %2$d chiffres</string>
+    <!-- Button hints and the keypad's OK key. Short. -->
+    <string name="accounts_pin_delete">Effacer</string>
+    <string name="accounts_pin_ok">OK</string>
+    <string name="accounts_pin_forgot">Oublié</string>
+    <string name="accounts_pin_cancel">Annuler</string>
+    <!-- Forgot your PIN? %1$s a wait, like "24 h". -->
+    <string name="accounts_pin_forgot_how">Tout ce qui est masqué reste masqué. Après %1$s d’attente, tu pourras choisir un nouveau code PIN ici. Si tu saisis le bon code PIN d’ici là, l’attente est annulée.</string>
+    <string name="accounts_pin_start_wait">Lancer l’attente</string>
+    <!-- The updater: Tandem's new versions from GitHub (Settings › Play & system › Updates, the update popup). -->
+    <!-- %1$s a version, like "0.8.0". -->
+    <string name="accounts_update_out_toast">Tandem %1$s est sorti · ouvre Start pour le mettre à jour</string>
+    <string name="accounts_update_offline">Hors ligne en mode privé</string>
+    <!-- %1$d an HTTP status code, like 503. -->
+    <string name="accounts_update_github_said">GitHub a répondu %1$d</string>
+    <string name="accounts_update_unreachable">Impossible de joindre GitHub</string>
+    <string name="accounts_update_failed">Ça n’a pas marché</string>
+    <!-- The Updates row's value. %1$s this version, like "0.8.0". -->
+    <string name="accounts_update_checking">%1$s · Vérification…</string>
+    <!-- %1$d a percentage. -->
+    <string name="accounts_update_downloading">Téléchargement %1$d %%</string>
+    <string name="accounts_update_verifying">Vérification</string>
+    <string name="accounts_update_installing">Installation</string>
+    <!-- %1$s the new version. -->
+    <string name="accounts_update_available">%1$s disponible</string>
+    <!-- %1$s this version. -->
+    <string name="accounts_update_up_to_date">%1$s · À jour</string>
+    <!-- Why a downloaded update wasn't installed. %1$s the file's name. -->
+    <string name="accounts_update_not_listed">%1$s ne figure pas dans SHA256SUMS</string>
+    <string name="accounts_update_damaged">Téléchargement abîmé (la somme de contrôle diffère)</string>
+    <string name="accounts_update_unreadable">APK illisible</string>
+    <string name="accounts_update_not_tandem">Ce n’est pas un APK de Tandem</string>
+    <string name="accounts_update_not_newer">Pas plus récent que ce Tandem</string>
+    <string name="accounts_update_debug_build">Impossible d’installer par-dessus une version debug</string>
+    <string name="accounts_update_wrong_key">Pas signé avec la clé de Tandem : non installé</string>
+    <string name="accounts_update_no_question">Android n’a pas proposé l’installation</string>
+    <string name="accounts_update_no_installer">Impossible d’ouvrir l’installateur d’Android</string>
+    <string name="accounts_update_no_space">Pas assez d’espace pour installer</string>
+    <string name="accounts_update_not_installed">Android ne l’a pas installé</string>
+    <!-- The update popup. -->
+    <string name="accounts_update_no_notes">Aucune note de version pour celle-ci.</string>
+    <!-- %1$s the new version. -->
+    <string name="accounts_update_title">Tandem %1$s</string>
+    <!-- %1$s the version installed. -->
+    <string name="accounts_update_you_have">Tu as la %1$s</string>
+    <string name="accounts_update_debug_note">C’est une version debug : la version officielle ne peut pas s’installer par-dessus</string>
+    <!-- The buttons. Short. %1$d a percentage. -->
+    <string name="accounts_update_not_now">Plus tard</string>
+    <string name="accounts_update_percent">%1$d %%</string>
+    <string name="accounts_update_verifying_now">Vérification…</string>
+    <string name="accounts_update_try_again">Réessayer</string>
+    <string name="accounts_update_update">Mettre à jour</string>
+
+    <!-- Settings › Library & art › Accounts › Discord: what you play as your Discord status. -->
+    <string name="accounts_discord_status">Statut Discord</string>
+    <string name="accounts_discord_connected">Connecté</string>
+    <string name="accounts_discord_connect">Connecter</string>
+    <string name="accounts_discord_status_help">Pendant que tu joues, ton statut Discord affiche le jeu, son système et depuis combien de temps tu y joues. Jamais pour les jeux masqués, et rien du tout quand le mode privé est activé.</string>
+    <!-- "Disconnect Discord" names the row below it. -->
+    <string name="accounts_discord_connected_toast">Connecté. «  Déconnecter Discord  » est juste en dessous</string>
+    <string name="accounts_discord_ask_title">Montrer à quoi tu joues sur Discord ?</string>
+    <string name="accounts_discord_ask_text">Discord s’ouvre et te demande d’autoriser Tandem. Ensuite, ton statut affiche le jeu auquel tu joues, le temps de la partie. Tu peux te déconnecter ici quand tu veux.</string>
+    <string name="accounts_discord_disconnect">Déconnecter Discord</string>
+    <string name="accounts_discord_disconnect_help">Arrêter d’afficher à quoi tu joues, et oublier le lien avec ton compte Discord sur cet appareil.</string>
+    <string name="accounts_discord_disconnected">Déconnecté de Discord</string>
+    <string name="accounts_discord_linked">Discord connecté. Ton statut affiche à quoi tu joues</string>
+    <string name="accounts_discord_cancelled">Discord n’a pas été connecté</string>
+    <string name="accounts_discord_link_failed">Impossible de se connecter à Discord. Réessaie dans un instant</string>
+    <!-- RetroAchievements (a service's name, never translated): signing in, Settings › Library & art › Accounts. -->
+    <string name="accounts_ra_offline">Le mode privé garde Tandem hors ligne. Désactive-le pour te connecter</string>
+    <!-- The keyboard's titles. "retroachievements.org › Settings › Keys" is where the key is on their website. -->
+    <string name="accounts_ra_username">Nom d’utilisateur RetroAchievements</string>
+    <string name="accounts_ra_key">Clé Web API (retroachievements.org › Settings › Keys)</string>
+    <string name="accounts_ra_checking">Vérification auprès de RetroAchievements…</string>
+    <string name="accounts_ra_sign_in_failed">Ça n’a pas marché. Vérifie le nom, la clé et ta connexion</string>
+    <!-- %1$s the username. -->
+    <string name="accounts_ra_signed_in">Connecté en tant que %1$s 🏆</string>
+    <string name="accounts_ra_account">Compte</string>
+    <string name="accounts_ra_sign_in">Se connecter</string>
+    <string name="accounts_ra_account_help">Connecte-toi avec ton nom d’utilisateur RetroAchievements et ta clé Web API (retroachievements.org › Settings › Keys) pour voir tes trophées ici, dans les stats et sur l’écran du bas. Jamais pour les jeux masqués.</string>
+    <string name="accounts_ra_show">Afficher les succès</string>
+    <string name="accounts_ra_show_help">Affiche les succès d’un jeu et ta progression. Désactivé, Tandem ne parle plus du tout à RetroAchievements.</string>
+    <string name="accounts_ra_rematch">Réassocier les jeux</string>
+    <!-- How many of your games were matched to a RetroAchievements game. -->
+    <plurals name="accounts_ra_matched">
+        <item quantity="one">%1$d associé</item>
+        <item quantity="other">%1$d associés</item>
+    </plurals>
+    <string name="accounts_ra_rematch_help">Oublie à quel jeu RetroAchievements chacun des tiens correspondait, et refait les correspondances au fil de ta navigation. Pratique après avoir remplacé des fichiers ROM.</string>
+    <string name="accounts_ra_rematch_toast">Je réassocie tes jeux au fil de ta navigation</string>
+    <string name="accounts_ra_sign_out">Se déconnecter</string>
+    <string name="accounts_ra_sign_out_help">Oublier ton compte RetroAchievements sur cet appareil.</string>
+    <string name="accounts_ra_signed_out">Déconnecté de RetroAchievements</string>
+    <!-- One unlock in the recent list: "10 pts · hardcore · 2024-05-01". %2$s the date. -->
+    <plurals name="accounts_ra_unlock_line">
+        <item quantity="one">%1$d pt · %2$s</item>
+        <item quantity="other">%1$d pts · %2$s</item>
+    </plurals>
+    <plurals name="accounts_ra_unlock_line_hardcore">
+        <item quantity="one">%1$d pt · hardcore · %2$s</item>
+        <item quantity="other">%1$d pts · hardcore · %2$s</item>
+    </plurals>
+    <!-- Stats › Achievements, nobody signed in. -->
+    <string name="accounts_achievements_bring">Ramène tes succès</string>
+    <string name="accounts_achievements_bring_text">Connecte-toi à RetroAchievements avec ton nom d’utilisateur et ta clé Web API, ou relie Steam avec ta propre clé Web API et ton compte.\nTandem ne leur parle que si c’est activé, et jamais des jeux masqués.</string>
+    <string name="accounts_ra_turn_on">Activer RetroAchievements</string>
+    <!-- The profile card. -->
+    <string name="accounts_ra_unreachable">Impossible de joindre RetroAchievements. A pour réessayer</string>
+    <string name="accounts_ra_loading">Chargement de ton profil…</string>
+    <!-- %1$s a date. -->
+    <string name="accounts_ra_member_since">Membre depuis %1$s</string>
+    <plurals name="accounts_ra_points">
+        <item quantity="one">🏆 %1$d point</item>
+        <item quantity="other">🏆 %1$d points</item>
+    </plurals>
+    <plurals name="accounts_ra_softcore">
+        <item quantity="one">%1$d en softcore</item>
+        <item quantity="other">%1$d en softcore</item>
+    </plurals>
+    <string name="accounts_achievements_recent">Gagnés ces 30 derniers jours</string>
+    <string name="accounts_achievements_failed">Impossible de récupérer tes trophées</string>
+    <string name="accounts_achievements_failed_text">Vérifie ta connexion, puis appuie sur A sur ton profil pour réessayer.</string>
+    <string name="accounts_achievements_loading">Récupération de tes trophées…</string>
+    <string name="accounts_achievements_loading_text">Un instant.</string>
+    <string name="accounts_achievements_none">Rien de neuf ce mois-ci</string>
+    <string name="accounts_achievements_none_text">Ton prochain succès brillera juste ici.</string>
+    <string name="accounts_steam_games">Jeux Steam</string>
+    <!-- A game's achievements: all earned. Short. -->
+    <string name="accounts_achievements_mastered">Maîtrisé ✨</string>
+    <!-- Steam achievements (Steam is a name, never translated). Settings › Library & art › Accounts › Steam. -->
+    <string name="accounts_steam_key">Clé Web API Steam</string>
+    <!-- The key's value. Short. -->
+    <string name="accounts_steam_key_set">Définie</string>
+    <string name="accounts_steam_key_not_set">Non définie</string>
+    <string name="accounts_steam_key_help">Ta propre clé, sur steamcommunity.com/dev/apikey (n’importe quel nom de domaine fera l’affaire). Tandem ne l’envoie qu’à Steam, avec l’identifiant de ton compte et ceux de tes jeux Steam, pour lire tes succès. Elle reste sur cet appareil, hors des sauvegardes d’Android.</string>
+    <string name="accounts_steam_account">Compte Steam</string>
+    <string name="accounts_steam_account_help">Ton SteamID64, l’adresse de ton profil ou ton nom de profil (recherché via Steam). Les détails de tes jeux doivent être publics dans les paramètres de confidentialité de Steam. Jamais pour les jeux masqués, et rien en mode privé.</string>
+    <string name="accounts_steam_look_up">Chercher les succès</string>
+    <string name="accounts_steam_looking">Recherche…</string>
+    <!-- How many Steam games are known. -->
+    <plurals name="accounts_steam_games_count">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <string name="accounts_steam_look_up_help">Interroge Steam tout de suite sur chaque jeu Steam de ta bibliothèque. Sinon, un jeu est vérifié quand tu le sélectionnes ou quand tu reviens d’une partie.</string>
+    <string name="accounts_steam_sign_out_help">Oublier ta clé et ton compte Steam sur cet appareil, ainsi que les succès récupérés avec.</string>
+    <string name="accounts_steam_signed_out">Déconnecté de Steam</string>
+    <!-- The keyboard's titles. -->
+    <string name="accounts_steam_key_ask">Clé Web API Steam (steamcommunity.com/dev/apikey)</string>
+    <string name="accounts_steam_key_saved_next">Clé enregistrée. Ajoute maintenant ton compte Steam</string>
+    <string name="accounts_steam_key_saved">Clé enregistrée</string>
+    <string name="accounts_steam_account_ask">Ton SteamID64, l’adresse ou le nom de ton profil</string>
+    <string name="accounts_steam_not_account">Ça ne ressemble pas à un compte Steam. Essaie ton SteamID64 ou l’adresse de ton profil</string>
+    <string name="accounts_steam_asking">Je demande à Steam…</string>
+    <!-- %1$s the profile name typed. -->
+    <string name="accounts_steam_no_profile">Steam ne connaît aucun profil nommé «  %1$s  ». Essaie ton SteamID64</string>
+    <string name="accounts_steam_unreachable_key">Impossible de joindre Steam. Vérifie la clé et ta connexion</string>
+    <string name="accounts_steam_refused">Steam a refusé la clé ou le compte. Vérifie les deux et réessaie</string>
+    <!-- %1$s the Steam name. -->
+    <string name="accounts_steam_signed_in">Connecté à Steam en tant que %1$s 🏆</string>
+    <string name="accounts_steam_offline">Le mode privé garde Tandem hors ligne</string>
+    <string name="accounts_steam_still_looking">Je cherche encore…</string>
+    <string name="accounts_steam_looking_up">Je cherche tes succès Steam…</string>
+    <string name="accounts_steam_no_games">Pas encore de jeux Steam dans ta bibliothèque. Les jeux Steam sont des raccourcis .steam dans ROMs/windows</string>
+    <!-- After looking everything up: "Looked up 12 Steam games: 40 achievements unlocked". -->
+    <plurals name="accounts_steam_looked_up_games">
+        <item quantity="one">%1$d jeu Steam</item>
+        <item quantity="other">%1$d jeux Steam</item>
+    </plurals>
+    <plurals name="accounts_steam_looked_up_achievements">
+        <item quantity="one">%1$d succès débloqué</item>
+        <item quantity="other">%1$d succès débloqués</item>
+    </plurals>
+    <!-- %1$s the games ("12 Steam games"), %2$s the achievements ("40 achievements"). -->
+    <string name="accounts_steam_looked_up">Vérification faite pour %1$s : %2$s</string>
+    <!-- Added after the line above when some failed: " · 2 games couldn't be looked up". -->
+    <plurals name="accounts_steam_looked_up_failed">
+        <item quantity="one">%1$s · %2$d jeu n’a pas pu être vérifié</item>
+        <item quantity="other">%1$s · %2$d jeux n’ont pas pu être vérifiés</item>
+    </plurals>
+    <!-- Why Steam said no. "Settings › Library &amp; art › Accounts" and Steam's own menu path. -->
+    <string name="accounts_steam_bad_key">Steam a refusé la clé API. Vérifie-la dans Paramètres › Bibliothèque et visuels › Comptes</string>
+    <string name="accounts_steam_private">Steam dit que les détails de tes jeux sont privés. Dans Steam : Profil › Modifier le profil › Paramètres de confidentialité › Détails des jeux › Public</string>
+    <!-- A game's progress: all unlocked. Short. -->
+    <string name="accounts_steam_all_done">Tout débloqué ✨</string>
+    <!-- A game's achievements popup. -->
+    <string name="accounts_steam_asking_again">Je redemande à Steam…</string>
+    <string name="accounts_steam_unreachable">Impossible de joindre Steam</string>
+    <!-- %1$d unlocked, %2$d in all. -->
+    <string name="accounts_steam_up_to_date">À jour : %1$d sur %2$d débloqués</string>
+    <string name="accounts_steam_none_listed">Steam ne liste aucun succès pour ce jeu</string>
+    <!-- %3$s a date. -->
+    <string name="accounts_steam_unlocked_looked">%1$d sur %2$d débloqués · vérifié le %3$s</string>
+    <string name="accounts_steam_fetching">Récupération des succès…</string>
+    <string name="accounts_steam_nothing">Rien à débloquer ici</string>
+    <string name="accounts_steam_nothing_text">Steam ne liste aucun succès pour ce jeu.</string>
+    <!-- Button hints. Short. -->
+    <string name="accounts_steam_details">Détails</string>
+    <string name="accounts_steam_look_again">Revérifier</string>
+    <string name="accounts_steam_hidden">Secret jusqu’à ce que tu le débloques</string>
+    <!-- %1$s a share of players, like "2.3 %". -->
+    <string name="accounts_steam_players_have_it">%1$s des joueurs l’ont</string>
+    <string name="accounts_steam_of_players">%1$s des joueurs</string>
+    <!-- An achievement. %1$s a date. -->
+    <string name="accounts_steam_unlocked">Débloqué</string>
+    <string name="accounts_steam_unlocked_on">Débloqué · %1$s</string>
+    <string name="accounts_steam_locked">Verrouillé</string>
+    <!-- A Steam game without a name. %1$d its app id. -->
+    <string name="accounts_steam_app">Appli Steam %1$d</string>
+    <!-- The Steam account card on Stats › Achievements. -->
+    <string name="accounts_steam_looking_games">Je cherche tes jeux…</string>
+    <string name="accounts_steam_no_achievements">Pas encore de jeux Steam avec des succès. A pour les chercher</string>
+    <!-- "40 of 120 achievements across 6 games". %1$d unlocked, %2$d in all, %3$s the games ("6 games"). -->
+    <string name="accounts_steam_across">%1$d succès sur %2$d, répartis sur %3$s. A pour revérifier</string>
+    <!-- The same with the games at 100%: %4$s like "2 games". -->
+    <string name="accounts_steam_across_perfect">%1$d succès sur %2$d, répartis sur %3$s · %4$s à 100 %%. A pour revérifier</string>
+    <plurals name="accounts_steam_unlocked_pill">
+        <item quantity="one">🏆 %1$d débloqué</item>
+        <item quantity="other">🏆 %1$d débloqués</item>
+    </plurals>
+    <!-- Games with every achievement. -->
+    <plurals name="accounts_steam_perfect_pill">
+        <item quantity="one">%1$d à 100 %%</item>
+        <item quantity="other">%1$d à 100 %%</item>
+    </plurals>
+    <string name="accounts_steam_not_in_library">Ce jeu n’est plus dans ta bibliothèque</string>
+    <!-- A game card: "12 of 40 · 30%" or "40 of 40 · All done ✨". -->
+    <string name="accounts_steam_card_progress">%1$d sur %2$d · %3$d %%</string>
+    <string name="accounts_steam_card_done">%1$d sur %2$d · Tout débloqué ✨</string>
+    <string name="accounts_steam_connect">Connecter Steam</string>
+    <!-- How many players have an achievement: under 1 %, or "2.3 %" (%1$s the number). -->
+    <string name="accounts_steam_under_1">moins de 1 %</string>
+    <string name="accounts_steam_percent">%1$s %%</string>
+    <!-- Pip's toasts for new achievements. %1$s the achievement's name, %2$s a share like "2.3 %", %3$s the game. -->
+    <string name="accounts_steam_got_rare">Tu as eu «  %1$s  » ! Seulement %2$s des joueurs l’ont !</string>
+    <string name="accounts_steam_got">Tu as eu «  %1$s  » ! %2$s des joueurs l’ont.</string>
+    <string name="accounts_steam_got_in">Tu as eu «  %1$s  » ! Dans %2$s.</string>
+    <string name="accounts_steam_got_plain">Tu as eu «  %1$s  » !</string>
+    <plurals name="accounts_steam_more_in">
+        <item quantity="one">…et %1$d autre succès dans %2$s. Quelle session !</item>
+        <item quantity="other">…et %1$d autres succès dans %2$s. Quelle session !</item>
+    </plurals>
+    <plurals name="accounts_steam_more">
+        <item quantity="one">…et %1$d autre succès. Quelle session !</item>
+        <item quantity="other">…et %1$d autres succès. Quelle session !</item>
+    </plurals>
+</resources>

@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scraping: the Scrape library screen (ScrapeScreen.kt), the Artwork & details setup (ArtSetup.kt), and what the
+     scraper and its sources say (data/Scrape*.kt, Scraper.kt, SourceTests.kt, LaunchBoxDb.kt). Keys start with
+     scrape_. See docs/TRANSLATING.md. Source names (ScreenScraper, LaunchBox, IGDB, SteamGridDB, libretro,
+     HowLongToBeat, Twitch, Steam) are brands: leave them as they are. -->
+<resources>
+    <!-- Kinds of artwork (MediaKind). -->
+    <string name="scrape_kind_box">Jaquette</string>
+    <string name="scrape_kind_hero">Bannière / fanart</string>
+    <string name="scrape_kind_logo">Logo</string>
+    <string name="scrape_kind_title">Écran titre</string>
+    <string name="scrape_kind_gameplay">Capture de jeu</string>
+    <string name="scrape_kind_video">Aperçu vidéo</string>
+    <string name="scrape_kind_front">Face de la boîte</string>
+    <string name="scrape_kind_spine">Tranche de la boîte</string>
+
+    <!-- Kinds of game details (MetaType): a short name, then a line on it. -->
+    <string name="scrape_meta_name">Nom</string>
+    <string name="scrape_meta_name_detail">Le vrai nom du jeu au lieu du nom de fichier</string>
+    <string name="scrape_meta_description">Description</string>
+    <string name="scrape_meta_description_detail">Quelques paragraphes sur le jeu</string>
+    <string name="scrape_meta_genres">Genres</string>
+    <string name="scrape_meta_genres_detail">Range les jeux dans les listes de genres</string>
+    <string name="scrape_meta_credits">Développeur et éditeur</string>
+    <string name="scrape_meta_credits_detail">Qui l’a fait et qui l’a sorti</string>
+    <string name="scrape_meta_year">Année de sortie</string>
+    <string name="scrape_meta_year_detail">Pour trier par année</string>
+    <string name="scrape_meta_players">Joueurs</string>
+    <string name="scrape_meta_players_detail">Combien peuvent jouer en même temps</string>
+    <string name="scrape_meta_rating">Note</string>
+    <string name="scrape_meta_rating_detail">La note de la communauté, en étoiles</string>
+    <string name="scrape_meta_time">Durée de vie</string>
+    <string name="scrape_meta_time_detail">Histoire, + extras et 100 % (HowLongToBeat)</string>
+
+    <!-- Scrape modes, three segments side by side: keep the names short. -->
+    <string name="scrape_mode_basics">L’essentiel</string>
+    <string name="scrape_mode_basics_detail">Seulement les jeux sans jaquette ou sans description, et seulement ces deux-là</string>
+    <string name="scrape_mode_missing">Ce qui manque</string>
+    <string name="scrape_mode_missing_detail">Complète ce que tu as choisi et qu’un jeu n’a pas encore</string>
+    <string name="scrape_mode_refresh">Tout refaire</string>
+    <string name="scrape_mode_refresh_detail">Récupère à nouveau tout ce que tu as choisi et le remplace</string>
+    <!-- Under the Start button: a mode and what it does, "Force all: fetch everything you picked again…". -->
+    <string name="scrape_mode_line">%1$s : %2$s</string>
+
+    <!-- The sources: one line on what each gives. -->
+    <string name="scrape_source_libretro">Miniatures libretro</string>
+    <string name="scrape_source_ss_gives">Reconnaît le fichier lui-même : jaquettes, logos, fanarts, captures, vidéos et infos</string>
+    <string name="scrape_source_lb_gives">Une grosse base de jeux gratuite, gardée sur l’appareil : jaquettes, logos, fanarts, captures et infos</string>
+    <string name="scrape_source_igdb_gives">La base de jeux de Twitch : jaquettes, visuels, captures et infos, top pour les jeux récents</string>
+    <string name="scrape_source_sgdb_gives">Jaquettes, bannières et logos faits par la communauté, le must pour les jeux PC et Switch</string>
+    <string name="scrape_source_libretro_gives">Jaquettes (vrais scans de boîtes), écrans titres et captures pour les systèmes rétro</string>
+    <string name="scrape_source_hltb_gives">Le temps qu’il faut pour finir un jeu : histoire, histoire + extras et 100 %</string>
+
+    <!-- Regions to prefer box art from, four segments side by side. -->
+    <string name="scrape_region_us">US</string>
+    <string name="scrape_region_eu">Europe</string>
+    <string name="scrape_region_jp">Japon</string>
+    <string name="scrape_region_world">Monde</string>
+
+    <!-- Sizes of downloads. -->
+    <string name="scrape_size_kb">%1$d Ko</string>
+    <!-- %1$s is a number with one or two decimals. -->
+    <string name="scrape_size_mb">%1$s Mo</string>
+    <string name="scrape_size_gb">%1$s Go</string>
+
+    <!-- "Scrape this game" from the game menu, and starting a scrape. -->
+    <string name="scrape_hidden_never_sent">Les jeux masqués ne sont jamais envoyés nulle part</string>
+    <string name="scrape_offline">Le mode privé garde Tandem hors ligne : pas de scraping ni de recherche de visuels</string>
+    <string name="scrape_busy">Pip est déjà occupé à scraper. Réessaie quand ce sera fini</string>
+    <!-- %1$s is a game's title. -->
+    <string name="scrape_looking_for">Je cherche %1$s…</string>
+    <string name="scrape_cant_start">Impossible de démarrer, un scraping est-il déjà en cours ?</string>
+    <string name="scrape_lb_ask_title">Télécharger la base de jeux de LaunchBox ?</string>
+    <!-- %1$d is the download's size in MB. -->
+    <string name="scrape_lb_ask_text">LaunchBox ne demande aucun compte : Tandem télécharge sa base une fois (environ %1$d Mo), ne garde que tes systèmes et cherche les jeux directement sur l’appareil. Elle se met à jour une fois par mois en Wi-Fi.</string>
+    <string name="scrape_lb_ask_text_metered">LaunchBox ne demande aucun compte : Tandem télécharge sa base une fois (environ %1$d Mo, et ta connexion est limitée), ne garde que tes systèmes et cherche les jeux directement sur l’appareil. Elle se met à jour une fois par mois en Wi-Fi.</string>
+    <string name="scrape_lb_ask_yes">Télécharger et scraper</string>
+    <string name="scrape_lb_ask_skip">Passer LaunchBox</string>
+    <string name="scrape_background_top">Scraping en arrière-plan : la progression s’affiche sur l’écran du haut</string>
+    <string name="scrape_background_bottom">Scraping en arrière-plan : la progression s’affiche sur l’écran du bas</string>
+
+    <!-- Which games a scrape covers. -->
+    <string name="scrape_scope_all">Tous les systèmes</string>
+    <string name="scrape_scope_one">Un seul jeu</string>
+
+    <!-- The art tiles on the scrape screen: a short name and a line on it. -->
+    <string name="scrape_tile_hero">Bannière</string>
+    <string name="scrape_tile_gameplay">Gameplay</string>
+    <string name="scrape_tile_video">Vidéo</string>
+    <string name="scrape_tile_physical">Boîte</string>
+    <string name="scrape_tile_box_detail">La jaquette de chaque carte</string>
+    <string name="scrape_tile_hero_detail">Grand visuel pour l’écran du bas</string>
+    <string name="scrape_tile_logo_detail">Le nom, sur la bannière</string>
+    <string name="scrape_tile_title_detail">L’écran titre du jeu</string>
+    <string name="scrape_tile_gameplay_detail">Un instant de partie</string>
+    <string name="scrape_tile_video_detail">Un court clip, 3 Mo par jeu</string>
+    <string name="scrape_tile_physical_detail">Face et tranche, pour l’Étagère</string>
+    <!-- On the Video tile: roughly how much all the clips take, "~120 MB in all". -->
+    <string name="scrape_tile_video_size">~%1$s au total</string>
+
+    <!-- Beside the art tiles: where the highlighted kind of art shows up in Tandem. -->
+    <string name="scrape_where_box">Jaquette : la couverture sur chaque carte de jeu, dans les rayons et sur la fiche du jeu. La seule image utilisée par toutes les dispositions.</string>
+    <string name="scrape_where_hero">Bannière : le grand visuel du jeu. Il remplit l’écran du bas derrière la fiche du jeu, sert de fond à la Vedette et s’affiche derrière le jeu sélectionné.</string>
+    <string name="scrape_where_logo">Logo : le nom du jeu dessiné, posé sur la bannière sur l’écran du bas et dans la Vedette au lieu d’un simple texte.</string>
+    <string name="scrape_where_title">Écran titre : affiché derrière un jeu qui n’a pas de bannière, et l’une des images que l’écran du bas fait défiler.</string>
+    <string name="scrape_where_gameplay">Gameplay : une image fixe d’une partie. Affichée derrière un jeu sans bannière ni écran titre, et l’une des images que l’écran du bas fait défiler. Elle ne bouge pas : les clips, c’est Vidéo.</string>
+    <string name="scrape_where_video">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Apparence › Aperçus vidéo est activé.</string>
+    <string name="scrape_where_video_off">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Apparence › Aperçus vidéo est activé (pour l’instant, c’est désactivé).</string>
+    <string name="scrape_where_physical">Boîte : de vrais scans de la face et de la tranche de la boîte, pour la vue Étagère et les jaquettes en forme de boîte.</string>
+
+    <!-- The scrape screen's setup. -->
+    <string name="scrape_setup_what">Quoi scraper</string>
+    <string name="scrape_setup_games">Jeux</string>
+    <string name="scrape_setup_games_all">Tous les systèmes avec des jeux</string>
+    <string name="scrape_setup_games_one">Un seul système</string>
+    <string name="scrape_setup_folder">Dossier</string>
+    <string name="scrape_setup_folder_detail">Un seul de ses dossiers</string>
+    <string name="scrape_setup_all_folders">Tous les dossiers</string>
+    <string name="scrape_setup_mode">Mode</string>
+    <string name="scrape_setup_locked">Remplacer le verrouillé</string>
+    <string name="scrape_setup_locked_on">Remplace aussi ce que tu as modifié ou choisi à la main</string>
+    <string name="scrape_setup_locked_off">Ce que tu as modifié ou choisi à la main reste</string>
+    <string name="scrape_setup_artwork">Visuels</string>
+    <string name="scrape_setup_details">Infos</string>
+    <string name="scrape_setup_game_details">Infos du jeu</string>
+    <string name="scrape_setup_game_details_detail">Noms, descriptions, genres, année, joueurs…</string>
+    <string name="scrape_setup_game_details_needs">Il faut une source : active LaunchBox, ScreenScraper ou IGDB plus bas</string>
+    <!-- A small badge on the Time to beat chip. -->
+    <string name="scrape_setup_needs_hltb">HowLongToBeat requis</string>
+    <string name="scrape_setup_region_language">Région et langue</string>
+    <string name="scrape_setup_region">Région</string>
+    <string name="scrape_setup_region_detail">Jaquettes à privilégier</string>
+    <string name="scrape_setup_language">Langue</string>
+    <string name="scrape_setup_language_detail">Pour les descriptions et les genres</string>
+    <string name="scrape_setup_sources">Sources</string>
+    <string name="scrape_setup_counting">Je compte les jeux…</string>
+    <string name="scrape_setup_none">Aucun jeu à scraper ici</string>
+    <plurals name="scrape_setup_to_check">
+        <item quantity="one">%1$d jeu à vérifier</item>
+        <item quantity="other">%1$d jeux à vérifier</item>
+    </plurals>
+    <string name="scrape_setup_all_complete">Tous ont déjà une jaquette et une description</string>
+    <!-- %1$s is scrape_setup_no_text: "All have box art · 3 without a description". -->
+    <string name="scrape_setup_all_have_box">Tous ont une jaquette · %1$s</string>
+    <plurals name="scrape_setup_no_box_yet">
+        <item quantity="one">%1$d encore sans jaquette</item>
+        <item quantity="other">%1$d encore sans jaquette</item>
+    </plurals>
+    <plurals name="scrape_setup_no_box">
+        <item quantity="one">%1$d sans jaquette</item>
+        <item quantity="other">%1$d sans jaquette</item>
+    </plurals>
+    <plurals name="scrape_setup_no_text">
+        <item quantity="one">%1$d sans description</item>
+        <item quantity="other">%1$d sans description</item>
+    </plurals>
+    <!-- Both counts: "5 without box art · 3 without a description" (scrape_setup_no_box, scrape_setup_no_text). -->
+    <string name="scrape_setup_no_both">%1$s · %2$s</string>
+    <plurals name="scrape_setup_hidden_skipped">
+        <item quantity="one">%1$d jeu masqué ignoré, jamais envoyé nulle part</item>
+        <item quantity="other">%1$d jeux masqués ignorés, jamais envoyés nulle part</item>
+    </plurals>
+    <string name="scrape_setup_want_something">Active au moins un type de visuel ou d’info</string>
+    <string name="scrape_setup_want_source">Active au moins une source dans Sources</string>
+    <string name="scrape_setup_start">Lancer le scraping</string>
+    <string name="scrape_setup_leave_card">Je bosse en arrière-plan et je te montre où j’en suis sur l’autre écran, en pause pendant que tu joues.</string>
+    <string name="scrape_setup_leave">Tu peux quitter cet écran. Je continue et je me mets en pause pendant que tu joues.</string>
+    <plurals name="scrape_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <string name="scrape_pick_scope_title">Quels jeux</string>
+    <string name="scrape_pick_scope_detail">Scraper tous les systèmes, ou un seul</string>
+    <string name="scrape_pick_folder_title">Quel dossier</string>
+    <string name="scrape_pick_language_detail">Descriptions et genres dans cette langue, quand ScreenScraper l’a</string>
+    <string name="scrape_sources_order">Chaque jeu interroge la première source activée, puis la suivante seulement pour ce qui manque encore</string>
+    <string name="scrape_sources_set_up">Configurer les sources</string>
+
+    <!-- A scrape under way. -->
+    <!-- %1$d is how far the download is, in percent. -->
+    <string name="scrape_run_lb_ready">Préparation de LaunchBox : %1$d %%</string>
+    <!-- "12 of 140 games": %1$d is how many are done, %2$d how many in all (which picks the form). -->
+    <plurals name="scrape_run_done_of">
+        <item quantity="one">%1$d jeu sur %2$d</item>
+        <item quantity="other">%1$d jeux sur %2$d</item>
+    </plurals>
+    <plurals name="scrape_run_got_art">
+        <item quantity="one">%1$d avec de nouveaux visuels</item>
+        <item quantity="other">%1$d avec de nouveaux visuels</item>
+    </plurals>
+    <plurals name="scrape_run_got_details">
+        <item quantity="one">%1$d avec des infos</item>
+        <item quantity="other">%1$d avec des infos</item>
+    </plurals>
+    <plurals name="scrape_run_complete">
+        <item quantity="one">%1$d déjà complet</item>
+        <item quantity="other">%1$d déjà complets</item>
+    </plurals>
+    <plurals name="scrape_run_not_found">
+        <item quantity="one">%1$d introuvable</item>
+        <item quantity="other">%1$d introuvables</item>
+    </plurals>
+    <plurals name="scrape_run_failed">
+        <item quantity="one">%1$d échec de téléchargement, réessaie plus tard</item>
+        <item quantity="other">%1$d échecs de téléchargement, réessaie plus tard</item>
+    </plurals>
+    <string name="scrape_run_stop">Arrêter</string>
+    <string name="scrape_run_resume">Reprendre</string>
+    <string name="scrape_run_pause">Pause</string>
+    <string name="scrape_run_keep_browsing">Continuer à naviguer</string>
+    <string name="scrape_run_done">OK</string>
+    <string name="scrape_run_new">Nouveau scraping</string>
+    <!-- Switches the right side between the covers found and the games not found. -->
+    <string name="scrape_run_covers">Jaquettes</string>
+    <string name="scrape_run_missed">Ratés</string>
+    <string name="scrape_run_missed_title">Introuvables : choisis les visuels à la main</string>
+    <string name="scrape_run_new_artwork">Nouveaux visuels</string>
+    <string name="scrape_run_just_found">Tout juste trouvés</string>
+    <string name="scrape_run_nothing_new">Rien de neuf cette fois</string>
+    <string name="scrape_run_covers_soon">Les jaquettes vont apparaître ici au fur et à mesure</string>
+    <string name="scrape_run_getting_ready">Préparation…</string>
+    <string name="scrape_run_finding">Je cherche des visuels…</string>
+    <string name="scrape_run_paused">En pause</string>
+    <string name="scrape_run_paused_play">En pause pendant que tu joues</string>
+    <string name="scrape_run_all_done">Et voilà, c’est fini !</string>
+    <string name="scrape_run_stopped">Arrêté</string>
+    <string name="scrape_run_eta_under_minute">moins d’une minute restante</string>
+    <string name="scrape_run_eta_minute">environ une minute restante</string>
+    <plurals name="scrape_run_eta_minutes">
+        <item quantity="one">environ %1$d min restante</item>
+        <item quantity="other">environ %1$d min restantes</item>
+    </plurals>
+    <!-- The end of a scrape, its facts joined with " · ": "New art for 12 games · details for 30 · 8.1 MB". Each is
+         written in lowercase, as it can follow another; the first letter of the line is made a capital. -->
+    <plurals name="scrape_run_summary_art">
+        <item quantity="one">nouveaux visuels pour %1$d jeu</item>
+        <item quantity="other">nouveaux visuels pour %1$d jeux</item>
+    </plurals>
+    <!-- After "new art for 12 games": how many got details too. -->
+    <plurals name="scrape_run_summary_details_too">
+        <item quantity="one">infos pour %1$d</item>
+        <item quantity="other">infos pour %1$d</item>
+    </plurals>
+    <plurals name="scrape_run_summary_details">
+        <item quantity="one">nouvelles infos pour %1$d jeu</item>
+        <item quantity="other">nouvelles infos pour %1$d jeux</item>
+    </plurals>
+    <!-- The pill in the top bar while a scrape runs. -->
+    <string name="scrape_pill_paused">⏸ Scraping en pause</string>
+    <string name="scrape_pill_one">✦ Scraping…</string>
+    <!-- "✦ Scraping 12/140". -->
+    <string name="scrape_pill_count">✦ Scraping %1$d/%2$d</string>
+    <!-- The progress card on the details screen. %1$s is a game's title. -->
+    <string name="scrape_card_last_found">Dernier trouvé : %1$s</string>
+    <!-- Counts on the progress card, short: "12 found". -->
+    <plurals name="scrape_card_found">
+        <item quantity="one">%1$d trouvé</item>
+        <item quantity="other">%1$d trouvés</item>
+    </plurals>
+    <plurals name="scrape_card_details">
+        <item quantity="one">%1$d avec infos</item>
+        <item quantity="other">%1$d avec infos</item>
+    </plurals>
+    <plurals name="scrape_card_missing">
+        <item quantity="one">%1$d manquant</item>
+        <item quantity="other">%1$d manquants</item>
+    </plurals>
+    <plurals name="scrape_card_failed">
+        <item quantity="one">%1$d échec</item>
+        <item quantity="other">%1$d échecs</item>
+    </plurals>
+    <plurals name="scrape_card_complete">
+        <item quantity="one">%1$d complet</item>
+        <item quantity="other">%1$d complets</item>
+    </plurals>
+    <string name="scrape_card_cancel">Annuler</string>
+    <!-- After scraping one game. %1$s is its title. -->
+    <string name="scrape_one_that_game">ce jeu</string>
+    <string name="scrape_one_art_details">Nouveaux visuels et infos pour %1$s ✨</string>
+    <string name="scrape_one_art">Nouveaux visuels pour %1$s ✨</string>
+    <string name="scrape_one_details">Nouvelles infos pour %1$s ✨</string>
+    <string name="scrape_one_nothing">Rien de neuf trouvé pour %1$s</string>
+    <plurals name="scrape_done_toast">
+        <item quantity="one">Scraping terminé : nouveaux visuels pour %1$d jeu ✨</item>
+        <item quantity="other">Scraping terminé : nouveaux visuels pour %1$d jeux ✨</item>
+    </plurals>
+
+    <!-- Settings › Library & art › Artwork & details. -->
+    <string name="scrape_settings_title">Visuels et infos</string>
+    <string name="scrape_settings_scrape">Scraper la bibliothèque</string>
+    <string name="scrape_settings_scrape_value">Visuels et infos</string>
+    <string name="scrape_settings_scrape_help">Télécharge jaquettes, logos, bannières, vidéos et descriptions pour tes jeux, depuis LaunchBox et libretro (sans compte), ScreenScraper, IGDB, SteamGridDB et HowLongToBeat.</string>
+    <!-- "4 of 6 on": how many sources are on. -->
+    <string name="scrape_settings_sources_value">%1$d sur %2$d activées</string>
+    <string name="scrape_settings_sources_help">La configuration des visuels et infos : ce que donne chaque source, lesquelles demandent un compte, où obtenir une clé gratuite, et un bouton Tester pour chacune. Tu peux aussi changer l’ordre dans lequel elles sont interrogées.</string>
+    <string name="scrape_settings_clear">Effacer les médias téléchargés</string>
+    <string name="scrape_settings_clear_none">Rien pour l’instant</string>
+    <!-- "1,204 files · 2.31 GB". (The English has always said "files", even for one.) -->
+    <plurals name="scrape_settings_clear_files">
+        <item quantity="one">%1$d fichier · %2$s</item>
+        <item quantity="other">%1$d fichiers · %2$s</item>
+    </plurals>
+    <string name="scrape_settings_clear_help">Supprime ce que le scraping a téléchargé, pour un système ou pour tous, afin de libérer de la place. Demande d’abord confirmation.</string>
+    <string name="scrape_settings_wait">Attends d’abord la fin du scraping</string>
+    <string name="scrape_settings_nothing">Rien de téléchargé pour l’instant</string>
+
+    <!-- Artwork & details setup (ArtSetup.kt): downloading LaunchBox. -->
+    <string name="scrape_lb_already">Téléchargement déjà en cours</string>
+    <string name="scrape_lb_none_of_yours">Aucun de tes systèmes n’est dans la base de LaunchBox</string>
+    <string name="scrape_lb_download_title">Télécharger la base de LaunchBox ?</string>
+    <!-- %1$d is the size in MB, %2$d how many systems the user has. -->
+    <plurals name="scrape_lb_download_text">
+        <item quantity="one">Environ %1$d Mo. Tandem ne garde que ton système et cherche les jeux directement sur l’appareil.</item>
+        <item quantity="other">Environ %1$d Mo. Tandem ne garde que tes %2$d systèmes et cherche les jeux directement sur l’appareil.</item>
+    </plurals>
+    <plurals name="scrape_lb_download_text_metered">
+        <item quantity="one">Environ %1$d Mo, et ta connexion est limitée : mieux vaut le Wi-Fi. Tandem ne garde que ton système et cherche les jeux directement sur l’appareil.</item>
+        <item quantity="other">Environ %1$d Mo, et ta connexion est limitée : mieux vaut le Wi-Fi. Tandem ne garde que tes %2$d systèmes et cherche les jeux directement sur l’appareil.</item>
+    </plurals>
+    <string name="scrape_lb_download">Télécharger</string>
+    <string name="scrape_lb_downloading">Téléchargement de la base LaunchBox…</string>
+    <!-- %1$s is a number of games, already formatted: "LaunchBox is ready: 108,512 games ✨". -->
+    <string name="scrape_lb_ready">LaunchBox est prêt : %1$s jeux ✨</string>
+    <string name="scrape_lb_failed">Impossible de télécharger la base LaunchBox. Réessaie en Wi-Fi</string>
+
+    <!-- How to set each source up: whether it needs an account, the steps (or notes), and what it sends. -->
+    <string name="scrape_guide_no_account">Aucun compte requis</string>
+    <!-- %1$d is the download's size in MB. -->
+    <string name="scrape_guide_lb_1">Tandem télécharge une fois la base de jeux gratuite de LaunchBox (environ %1$d Mo, Wi-Fi conseillé) et ne garde que tes systèmes.</string>
+    <string name="scrape_guide_lb_2">Les jeux sont cherchés directement sur l’appareil. La base se met à jour une fois par mois, quand tu scrapes en Wi-Fi.</string>
+    <string name="scrape_guide_lb_sends">Rien sur tes jeux. Les images viennent de images.launchbox-app.com.</string>
+    <string name="scrape_guide_ss_account">Compte gratuit + ID développeur</string>
+    <string name="scrape_guide_ss_1">Crée un compte gratuit sur screenscraper.fr.</string>
+    <!-- "Demande d'accès à l'API" is the name of a forum section on the French site: keep it in French. -->
+    <string name="scrape_guide_ss_2">Demande un accès à l’API sur leur forum («   Demande d’accès à l’API   ») pour obtenir un ID et un mot de passe développeur. Tandem ne peut pas en fournir.</string>
+    <string name="scrape_guide_ss_3">Saisis-les tous les deux ci-dessous. Ton propre identifiant est facultatif, mais il t’offre un plus gros quota par jour.</string>
+    <string name="scrape_guide_ss_sends">Ton identifiant, l’ID développeur, et pour chaque jeu le nom du fichier, sa taille, son système et sa somme de contrôle.</string>
+    <string name="scrape_guide_igdb_account">Compte Twitch gratuit</string>
+    <string name="scrape_guide_igdb_1">Connecte-toi sur dev.twitch.tv/console/apps (Twitch demande d’abord la double authentification).</string>
+    <!-- Register Your Application, Application Integration, Confidential, Client ID, New Secret and Client Secret are
+         what Twitch's website calls things, in English. -->
+    <string name="scrape_guide_igdb_2">Register Your Application : n’importe quel nom, URL de redirection http://localhost, catégorie Application Integration, type de client Confidential.</string>
+    <string name="scrape_guide_igdb_3">Copie le Client ID, appuie sur New Secret, puis copie le Client Secret.</string>
+    <string name="scrape_guide_igdb_sends">Ton ID client et ton secret (à Twitch), et le titre de chaque jeu.</string>
+    <string name="scrape_guide_sgdb_account">Compte gratuit</string>
+    <string name="scrape_guide_sgdb_1">Connecte-toi sur steamgriddb.com (avec ton compte Steam).</string>
+    <string name="scrape_guide_sgdb_2">Ouvre steamgriddb.com/profile/preferences/api.</string>
+    <string name="scrape_guide_sgdb_3">Génère une clé API et saisis-la ci-dessous.</string>
+    <string name="scrape_guide_sgdb_sends">Ta clé API et le titre de chaque jeu.</string>
+    <string name="scrape_guide_libretro_1">Toujours prêt. Parfait pour les systèmes rétro ; rien en revanche pour les jeux Switch, Wii U ou PC.</string>
+    <string name="scrape_guide_libretro_sends">Des noms d’images tirés du nom de fichier ou du titre de chaque jeu.</string>
+    <string name="scrape_guide_hltb_1">Utilise la même recherche que le site howlongtobeat.com. Ce n’est pas une API officielle, elle peut donc cesser de marcher si le site change ; le scraping la saute alors, tout simplement.</string>
+    <string name="scrape_guide_hltb_2">Les durées s’affichent sur l’écran du bas.</string>
+    <string name="scrape_guide_hltb_sends">Le titre de chaque jeu.</string>
+
+    <!-- A source's state, two or three words on a pill. -->
+    <string name="scrape_status_testing">Test…</string>
+    <!-- %1$d is how far the download is, in percent. -->
+    <string name="scrape_status_downloading">Téléchargement %1$d %%</string>
+    <string name="scrape_status_off">Désactivée</string>
+    <string name="scrape_status_needs_key">Clé requise</string>
+    <string name="scrape_status_not_downloaded">Pas téléchargée</string>
+    <string name="scrape_status_failed">✗ Test raté</string>
+    <string name="scrape_status_works">✓ Ça marche</string>
+    <string name="scrape_status_ready">Prête</string>
+    <!-- What a source needs, shortest form, under its name on a tile. -->
+    <string name="scrape_needs_none">Sans compte</string>
+    <string name="scrape_needs_ss">Compte + ID dév</string>
+    <string name="scrape_needs_igdb">Clé Twitch gratuite</string>
+    <string name="scrape_needs_key">Clé gratuite</string>
+    <!-- What a source gives, two lines on its tile at most. -->
+    <string name="scrape_tagline_ss">Reconnaît le fichier lui-même : visuels, vidéos et infos</string>
+    <string name="scrape_tagline_lb">Jaquettes, logos, fanarts et infos, gardés sur l’appareil</string>
+    <string name="scrape_tagline_igdb">Jaquettes, visuels et infos, top pour les jeux récents</string>
+    <string name="scrape_tagline_sgdb">Jaquettes, bannières et logos de la communauté pour PC et Switch</string>
+    <string name="scrape_tagline_libretro">Vrais scans de boîtes et écrans titres pour les systèmes rétro</string>
+    <string name="scrape_tagline_hltb">Le temps pour finir un jeu : histoire, extras et 100 %</string>
+
+    <!-- The list of sources. -->
+    <string name="scrape_setup_title">Configuration des visuels et infos</string>
+    <string name="scrape_setup_intro">Le scraping les interroge de gauche à droite, chacune seulement pour ce qui manque encore. LaunchBox et libretro ne demandent aucun compte.</string>
+    <string name="scrape_setup_hint_set_up">Configurer</string>
+    <!-- Beside the L1 and R1 hints: they move the highlighted source. -->
+    <string name="scrape_setup_hint_order">Plus tôt / plus tard</string>
+    <string name="scrape_setup_hint_done">OK</string>
+
+    <!-- One source's card: its keys. -->
+    <string name="scrape_key_dev_id">ID développeur</string>
+    <string name="scrape_key_dev_id_ask">ID développeur ScreenScraper</string>
+    <string name="scrape_key_dev_pw">Mot de passe dév</string>
+    <string name="scrape_key_dev_pw_ask">Mot de passe développeur ScreenScraper</string>
+    <string name="scrape_key_login">Ton identifiant</string>
+    <string name="scrape_key_login_ask">Ton nom d’utilisateur ScreenScraper (facultatif)</string>
+    <string name="scrape_key_pw">Ton mot de passe</string>
+    <string name="scrape_key_pw_ask">Ton mot de passe ScreenScraper</string>
+    <string name="scrape_key_client_id">ID client</string>
+    <string name="scrape_key_client_id_ask">Client ID Twitch (dev.twitch.tv/console/apps)</string>
+    <string name="scrape_key_secret">Secret client</string>
+    <string name="scrape_key_secret_ask">Client Secret Twitch</string>
+    <string name="scrape_key_api">Clé API</string>
+    <!-- Preferences and API are the names on SteamGridDB's website. -->
+    <string name="scrape_key_api_ask">Clé API SteamGridDB (steamgriddb.com › Preferences › API)</string>
+    <string name="scrape_key_optional">Facultatif</string>
+    <string name="scrape_key_not_set">Non défini</string>
+    <string name="scrape_key_saved">Enregistré ✓</string>
+    <!-- One source's card: its buttons, sharing one row. -->
+    <string name="scrape_card_turn_off">Désactiver</string>
+    <string name="scrape_card_turn_on">Activer</string>
+    <!-- %1$d is the size in MB. -->
+    <string name="scrape_card_download">Télécharger (%1$d Mo)</string>
+    <string name="scrape_card_download_again">Retélécharger</string>
+    <string name="scrape_card_test">Tester</string>
+    <!-- One source's card: small labelled boxes. -->
+    <string name="scrape_card_gives">Fournit</string>
+    <!-- What the source gives, as a sentence: %1$s is its line, "Box art (real box scans)… for classic systems." -->
+    <string name="scrape_card_gives_text">%1$s.</string>
+    <string name="scrape_card_sends">Envoie</string>
+    <string name="scrape_card_on_device">Sur l’appareil</string>
+    <string name="scrape_card_downloading">Téléchargement… %1$d %%</string>
+    <string name="scrape_card_not_downloaded">Pas encore téléchargée.</string>
+    <!-- "108,512 games for 12 systems, from 3 days ago." %1$s is the number of games, already formatted, %2$d the
+         systems, %3$s when it was made ("3 days ago", from Android, in lowercase). -->
+    <plurals name="scrape_card_lb_info">
+        <item quantity="one">%1$s jeux pour %2$d système, datant de %3$s.</item>
+        <item quantity="other">%1$s jeux pour %2$d systèmes, datant de %3$s.</item>
+    </plurals>
+
+    <!-- What the scraper says while it works (the line under the progress bar) and its notes (why a source was
+         skipped), on the scrape screen and the progress card. -->
+    <string name="scrape_note_stopped_early">Quelque chose a coincé, alors j’ai arrêté plus tôt</string>
+    <string name="scrape_now_ss_sign_in">Connexion à ScreenScraper…</string>
+    <string name="scrape_note_ss_unavailable">ScreenScraper est indisponible</string>
+    <string name="scrape_note_ss_unreachable">ScreenScraper injoignable, je passe aux autres sources</string>
+    <string name="scrape_now_igdb_sign_in">Connexion à IGDB…</string>
+    <string name="scrape_note_igdb_unavailable">IGDB est indisponible</string>
+    <string name="scrape_note_igdb_unreachable">IGDB injoignable, je passe aux autres sources</string>
+    <string name="scrape_note_details_need">Pour les infos, active LaunchBox, ScreenScraper ou IGDB</string>
+    <string name="scrape_now_lb_downloading">Téléchargement de la base LaunchBox…</string>
+    <string name="scrape_now_lb_refreshing">Mise à jour de la base LaunchBox…</string>
+    <!-- %1$d is how far the download is, in percent. -->
+    <string name="scrape_now_lb_progress">Base LaunchBox : %1$d %%</string>
+    <string name="scrape_note_lb_offline">Pas de connexion Internet : connecte-toi au Wi-Fi pour télécharger la base LaunchBox</string>
+    <string name="scrape_note_lb_failed">Impossible de télécharger la base LaunchBox</string>
+    <string name="scrape_note_lb_refresh_failed">Impossible de mettre à jour la base LaunchBox, j’utilise celle que j’ai</string>
+    <!-- Settings › Library & art › Set up sources › LaunchBox names screens, as written there. -->
+    <string name="scrape_note_lb_needs">LaunchBox a besoin de sa base : Paramètres › Bibliothèque et visuels › Configurer les sources › LaunchBox</string>
+    <string name="scrape_note_lb_missing_systems">Certains systèmes ne sont pas encore dans la base LaunchBox téléchargée ; retélécharge-la pour les ajouter</string>
+    <string name="scrape_now_lb_looking">Je cherche les jeux dans LaunchBox…</string>
+    <string name="scrape_note_lb_unreadable">Impossible de lire la base LaunchBox</string>
+    <!-- Notes in the art chooser. -->
+    <string name="scrape_note_igdb_short">IGDB injoignable</string>
+    <string name="scrape_note_ss_short">ScreenScraper injoignable</string>
+    <string name="scrape_note_sgdb_short">SteamGridDB injoignable</string>
+
+    <!-- Why a source turned a lookup away (shown as a note, or after a Test). -->
+    <string name="scrape_down_twitch_pass">Twitch n’a pas délivré d’accès IGDB</string>
+    <string name="scrape_down_twitch_keys">Twitch a refusé l’ID client ou le secret IGDB</string>
+    <string name="scrape_down_igdb_refused">IGDB a refusé la requête ; vérifie l’ID client et le secret</string>
+    <string name="scrape_down_hltb_slow">HowLongToBeat demande à Tandem de ralentir ; je le saute pour l’instant</string>
+    <string name="scrape_down_hltb_changed">HowLongToBeat a changé le fonctionnement de sa recherche, alors je l’ai sauté</string>
+    <string name="scrape_down_ss_login">ScreenScraper a refusé ton identifiant</string>
+    <string name="scrape_down_ss_quota">Le quota quotidien de ton compte ScreenScraper est épuisé</string>
+    <string name="scrape_down_ss_unknown">ScreenScraper a mis les recherches en pause : trop de jeux inconnus aujourd’hui</string>
+    <string name="scrape_down_ss_closed">ScreenScraper est fermé ou surchargé en ce moment</string>
+    <string name="scrape_down_ss_dev">ScreenScraper a refusé l’ID développeur ou l’identifiant</string>
+    <string name="scrape_down_ss_version">ScreenScraper a bloqué cette version de l’appli</string>
+    <string name="scrape_down_sgdb_key">SteamGridDB a refusé la clé API</string>
+
+    <!-- A source's Test button: what happened. Super Mario Odyssey and Super Mario World are game titles. -->
+    <string name="scrape_test_said_no">Elle a dit non</string>
+    <string name="scrape_test_timeout">Pas de réponse à temps. Vérifie le Wi-Fi et réessaie</string>
+    <!-- %1$d is an HTTP error code, like 500. -->
+    <string name="scrape_test_http">Elle a répondu par une erreur (%1$d)</string>
+    <string name="scrape_test_unreachable">Injoignable. Vérifie le Wi-Fi et réessaie</string>
+    <string name="scrape_test_lb_not_downloaded">Pas encore téléchargée : appuie sur Télécharger</string>
+    <string name="scrape_test_lb_no_systems">La base téléchargée ne contient aucun de tes systèmes ; retélécharge-la</string>
+    <!-- %1$s is a game's title. -->
+    <string name="scrape_test_lb_not_found">%1$s introuvable dans la base téléchargée</string>
+    <!-- "Found Super Mario Odyssey (2017) with 42 pictures, on this device": %1$s the title, %2$s the year (or ?),
+         %3$d how many pictures. -->
+    <plurals name="scrape_test_lb_found">
+        <item quantity="one">Trouvé : %1$s (%2$s) avec %3$d image, sur l’appareil</item>
+        <item quantity="other">Trouvé : %1$s (%2$s) avec %3$d images, sur l’appareil</item>
+    </plurals>
+    <!-- %1$s is a number of games, already formatted ("108,512"). -->
+    <plurals name="scrape_test_lb_games">
+        <item quantity="one">%1$s jeu pour tes systèmes, sur l’appareil</item>
+        <item quantity="other">%1$s jeux pour tes systèmes, sur l’appareil</item>
+    </plurals>
+    <string name="scrape_test_ss_needs">Il faut un ID et un mot de passe développeur</string>
+    <string name="scrape_test_nothing_signed_in">Connecté, mais la recherche n’a rien donné</string>
+    <!-- %1$s is a game's title. -->
+    <string name="scrape_test_found">Trouvé : %1$s</string>
+    <!-- %2$s is the ScreenScraper username. -->
+    <string name="scrape_test_found_as">Trouvé : %1$s, connecté en tant que %2$s</string>
+    <string name="scrape_test_igdb_needs">Il faut un ID client et un secret client Twitch</string>
+    <!-- "Found Super Mario Odyssey (2017) with 12 pictures": %1$s the title, %2$d how many pictures. -->
+    <plurals name="scrape_test_igdb_found">
+        <item quantity="one">Trouvé : %1$s avec %2$d image</item>
+        <item quantity="other">Trouvé : %1$s avec %2$d images</item>
+    </plurals>
+    <!-- %2$s is the year. -->
+    <plurals name="scrape_test_igdb_found_year">
+        <item quantity="one">Trouvé : %1$s (%2$s) avec %3$d image</item>
+        <item quantity="other">Trouvé : %1$s (%2$s) avec %3$d images</item>
+    </plurals>
+    <string name="scrape_test_sgdb_needs">Il faut une clé API</string>
+    <string name="scrape_test_sgdb_nothing">La clé marche, mais la recherche n’a rien donné</string>
+    <plurals name="scrape_test_sgdb_found">
+        <item quantity="one">Trouvé : %1$s avec %2$d bannière</item>
+        <item quantity="other">Trouvé : %1$s avec %2$d bannières</item>
+    </plurals>
+    <string name="scrape_test_libretro_found">Jaquette de Super Mario World trouvée</string>
+    <string name="scrape_test_libretro_failed">Impossible de lire la liste des miniatures</string>
+    <string name="scrape_test_nothing">La recherche n’a rien donné</string>
+    <!-- "Super Mario Odyssey: 12½ h main story, 60 h for 100%": %1$s the title, %2$s and %3$s times. -->
+    <string name="scrape_test_hltb_found">%1$s : %2$s pour l’histoire, %3$s pour le 100 %%</string>
+</resources>

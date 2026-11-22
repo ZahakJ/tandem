@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sound and music: Settings › Sound & music (SoundSettings.kt), the music player (Sound.kt), the UI sound packs
+     (audio/Sfx.kt) and the built-in soundtracks' pieces (audio/Calm.kt, audio/Meadow.kt). Keys start with sound_.
+     See docs/TRANSLATING.md. Song titles (Still Water, Lantern Town…) and the soundtracks' names (Calm, Meadow Tales)
+     are names: they stay as they are and are not here. -->
+<resources>
+    <!-- Settings › Sound & music: the group titles. -->
+    <string name="sound_group">Son et musique</string>
+    <!-- The group of the theme pack's own audio; its aside is the pack's name. -->
+    <string name="sound_group_theme_pack">Pack de thème</string>
+
+    <!-- The theme pack's own music and sounds. -->
+    <string name="sound_pack_music">Musique du pack de thème</string>
+    <!-- %1$s is the theme pack's name, %2$d how many songs it has. -->
+    <plurals name="sound_pack_music_help">
+        <item quantity="one">%1$s a %2$d morceau à lui. Activé, il joue tant que c’est ton thème, à la place de la musique choisie plus bas.</item>
+        <item quantity="other">%1$s a %2$d morceaux à lui. Activé, ils jouent tant que c’est ton thème, à la place de la musique choisie plus bas.</item>
+    </plurals>
+    <string name="sound_pack_sounds">Sons du pack de thème</string>
+    <!-- %1$s is the theme pack's name. -->
+    <string name="sound_pack_sounds_help">%1$s a ses propres sons d’interface enregistrés. Activé, ils jouent tant que c’est ton thème, à la place du pack de sons choisi plus bas (les sons qui lui manquent viennent toujours de ce pack).</string>
+    <!-- Added after a sound or music row's help while the theme pack has audio of its own: %1$s is that help. -->
+    <string name="sound_fallback">%1$s Utilisé quand celui du pack de thème est désactivé plus haut.</string>
+
+    <!-- UI sounds: Off, one of the packs (sound_pack_… below) or Custom. -->
+    <string name="sound_ui">Sons de l’interface</string>
+    <!-- %1$s says more about the option in use: sound_ui_off_help, sound_ui_custom_help or the pack's description. -->
+    <string name="sound_ui_help">Clics, carillons et son de lancement pendant que tu te balades dans les menus. %1$s</string>
+    <string name="sound_ui_off_help">Désactivé, Tandem reste muet.</string>
+    <string name="sound_ui_custom_help">Perso : des sons enregistrés que tu as, venant des packs de sons de Cocoon ou d’un pack de thème. Choisis-les plus bas.</string>
+    <!-- An option of UI sounds: recorded sounds. Short. -->
+    <string name="sound_ui_custom">Perso</string>
+    <string name="sound_custom">Sons perso</string>
+    <!-- %1$s is the recorded set's name, %2$s the sound pack the missing sounds come from ("Modern"). -->
+    <string name="sound_custom_help">%1$s. Les sons qui lui manquent viennent de %2$s.</string>
+    <string name="sound_volume">Volume des sons</string>
+    <string name="sound_volume_help">Le volume des sons de l’interface, par rapport au volume du système.</string>
+    <string name="sound_pip_voice">Voix de Pip</string>
+    <string name="sound_pip_voice_help">Pip babille un peu quand il a quelque chose à te dire.</string>
+    <!-- Pip's speech bubble in the Pip's voice preview. -->
+    <string name="sound_pip_hello">Salut ! Moi, c’est Pip !</string>
+
+    <!-- Music: Off, My music (the music folder), or a built-in soundtrack (Calm, Meadow Tales: names). -->
+    <string name="sound_music">Musique</string>
+    <!-- An option of Music: your own songs from the music folder. Short. -->
+    <string name="sound_music_folder">Ma musique</string>
+    <!-- Music's help while the music folder is empty: %1$s is the built-in soundtrack that plays instead ("Calm"). -->
+    <string name="sound_music_help_empty">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; le dossier est vide pour l’instant, alors c’est la bande-son intégrée qui joue (%1$s). Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</string>
+    <!-- Music's help: %1$d is how many songs the music folder has. -->
+    <plurals name="sound_music_help_found">
+        <item quantity="one">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceau trouvé. Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</item>
+        <item quantity="other">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceaux trouvés. Celles de Tandem : Calm, piano, harpe et célesta lents et doux, ou Meadow Tales, un petit orchestre.</item>
+    </plurals>
+    <string name="sound_music_folder_empty">Ajoute d’abord des morceaux dans ROMs/tandem/music</string>
+    <string name="sound_shuffle">Ma musique en aléatoire</string>
+    <string name="sound_shuffle_help">Lit le dossier de musique dans le désordre.</string>
+    <string name="sound_music_volume">Volume de la musique</string>
+    <string name="sound_music_volume_help">Le volume de la musique.</string>
+    <string name="sound_next">Morceau suivant</string>
+    <!-- Next song's value before any song has played. -->
+    <string name="sound_next_none">Rien pour l’instant</string>
+    <!-- %1$s is where the music comes from (sound_source_…). -->
+    <string name="sound_next_help">Passe à un autre morceau. %1$s.</string>
+    <string name="sound_music_off">Active d’abord la musique</string>
+    <!-- The Sound & music group's aside on AYN handhelds whose bottom-screen volume is at zero. -->
+    <string name="sound_bottom_muted">Le volume de l’écran du bas de ta console est à zéro, et ça coupe aussi Tandem : monte-le dans Dual screen assistant (Bottom screen › Volume).</string>
+
+    <!-- Where the music comes from now (the now-playing card, Next song). %1$s is the theme pack's name. -->
+    <string name="sound_source_pack">De %1$s, le pack de thème</string>
+    <string name="sound_source_folder">De ton dossier de musique</string>
+    <string name="sound_source_builtin">Bande-son intégrée</string>
+
+    <!-- The now-playing card. -->
+    <!-- The title while songs from the music folder play but none has started yet. -->
+    <string name="sound_now_your_music">Ta musique</string>
+    <!-- The music's state, in a small tag. Short. -->
+    <string name="sound_now_playing">Lecture</string>
+    <string name="sound_now_paused">En pause</string>
+
+    <!-- The UI sound packs: a name (short, one word if possible) and a sentence about how it sounds. -->
+    <string name="sound_pack_modern">Moderne</string>
+    <string name="sound_pack_modern_blurb">Petites tapes douces et notes légères, brèves et discrètes, comme sur une console d’aujourd’hui. Le son maison de Tandem.</string>
+    <string name="sound_pack_playful">Ludique</string>
+    <string name="sound_pack_playful_blurb">Notes de marimba cristallines et carillons chaleureux : le jeu d’origine de Tandem, plein de bonne humeur.</string>
+    <string name="sound_pack_chiptune">Chiptune</string>
+    <string name="sound_pack_chiptune_blurb">Bips en signal carré et fanfares de bloc à pièces, comme sur une console 8 bits.</string>
+    <string name="sound_pack_bubbly">Pétillant</string>
+    <string name="sound_pack_bubbly_blurb">Des «  bloups  » ronds comme des gouttes d’eau et des étincelles pétillantes.</string>
+    <string name="sound_pack_minimal">Minimal</string>
+    <string name="sound_pack_minimal_blurb">Discret, bref et subtil. À peine là.</string>
+    <string name="sound_pack_studio">Studio</string>
+    <string name="sound_pack_studio_blurb">Feutre et bois : des tapes graves et chaudes, avec un petit bruit sourd, comme un clavier bien fait.</string>
+    <string name="sound_pack_glass">Cristal</string>
+    <string name="sound_pack_glass_blurb">Des notes de cristal claires et lumineuses qui résonnent un peu plus longtemps. Net et soigné.</string>
+    <string name="sound_pack_air">Brise</string>
+    <string name="sound_pack_air_blurb">Souffles légers et notes pures et rondes. Calme et aérien.</string>
+
+    <!-- The mood of each built-in piece, under its title on the now-playing card. Calm: -->
+    <string name="sound_mood_still_water">Piano doux sur un lac tranquille au crépuscule</string>
+    <string name="sound_mood_soft_morning">Harpe et célesta aux premières lueurs</string>
+    <!-- Meadow Tales: -->
+    <string name="sound_mood_hillside_breeze">Flûte et piano sur une colline ensoleillée et venteuse</string>
+    <string name="sound_mood_lantern_town">Une valse à l’accordéon dans un petit village éclairé de lanternes</string>
+    <string name="sound_mood_seaside_train">Un petit train qui longe la côte, les vagues à la fenêtre</string>
+    <string name="sound_mood_forest_spirits">De petits esprits qui dansent entre les vieux arbres</string>
+    <string name="sound_mood_summer_rain">Piano et pluie douce, un après-midi d’été paresseux</string>
+    <string name="sound_mood_flying_home">Survoler les champs sur le chemin du retour</string>
+</resources>

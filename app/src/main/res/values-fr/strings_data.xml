@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- What Tandem keeps (data/): backups, a game's status, its logo's place, the library's sort orders and app
+     screens. Keys start with data_. See docs/TRANSLATING.md. -->
+<resources>
+    <!-- Where a game's logo sits over its art (Edit details › Logo › Place). -->
+    <string name="data_logo_auto">Auto</string>
+    <string name="data_logo_left">Gauche</string>
+    <string name="data_logo_centre">Centre</string>
+    <string name="data_logo_right">Droite</string>
+    <string name="data_logo_top">Haut</string>
+    <string name="data_logo_bottom">Bas</string>
+
+    <!-- Where a game stands (GameStatus.kt): a short name and a line on it. -->
+    <string name="data_status_backlog">À jouer</string>
+    <string name="data_status_backlog_blurb">Sur la pile, pour un jour</string>
+    <string name="data_status_playing">En cours</string>
+    <string name="data_status_playing_blurb">En pleine partie</string>
+    <string name="data_status_finished">Terminé</string>
+    <string name="data_status_finished_blurb">Générique de fin vu</string>
+    <string name="data_status_completed">Complété</string>
+    <string name="data_status_completed_blurb">Tout fait, 100 %</string>
+    <string name="data_status_shelved">En pause</string>
+    <string name="data_status_shelved_blurb">Mis de côté pour l’instant</string>
+    <string name="data_status_endless">Sans fin</string>
+    <string name="data_status_endless_blurb">Pas de fin : on y joue pour le plaisir</string>
+
+    <!-- Orders for the games in a system. -->
+    <string name="data_sort_name">Nom</string>
+    <string name="data_sort_recent">Joués récemment</string>
+    <string name="data_sort_most">Les plus joués</string>
+    <string name="data_sort_year">Année de sortie</string>
+    <string name="data_sort_rating">Note</string>
+    <string name="data_sort_added">Ajoutés récemment</string>
+
+    <!-- How long a game takes (HowLongToBeat): "45 min", "12½ h". %1$s is a number, maybe with ½. -->
+    <string name="data_time_minutes">%1$d min</string>
+    <string name="data_time_hours">%1$s h</string>
+
+    <!-- Which screen an app opens on: short, three side by side. -->
+    <string name="data_screen_auto">Auto</string>
+    <string name="data_screen_top">Haut</string>
+    <string name="data_screen_bottom">Bas</string>
+
+    <!-- Backups (Backup.kt): what a backup holds, a name and a line on it. -->
+    <string name="data_backup_games">Données de jeu</string>
+    <string name="data_backup_games_blurb">Favoris, infos, temps de jeu, sessions, journal et dossiers masqués</string>
+    <string name="data_backup_look">Apparence</string>
+    <string name="data_backup_look_blurb">Thème, couleurs, fonds d’écran, sons et animations</string>
+    <string name="data_backup_layout">Disposition et dossiers</string>
+    <string name="data_backup_layout_blurb">Grille d’icônes, dossiers, dock et widgets</string>
+    <string name="data_backup_systems">Systèmes et émulateurs</string>
+    <string name="data_backup_systems_blurb">Choix d’émulateurs, dossiers des systèmes, manettes et scraping</string>
+    <!-- How a restore went, joined with " · ". %1$s lists what: "Restored Look, Layout & folders". -->
+    <string name="data_backup_restored">Restauré : %1$s</string>
+    <!-- %1$s is what, %2$s why: "Game data failed: couldn't read library.json". -->
+    <string name="data_backup_failed">%1$s : échec, %2$s</string>
+    <string name="data_backup_missing">%1$s : absent de cette sauvegarde</string>
+    <string name="data_backup_nothing">Rien à restaurer</string>
+    <!-- %1$s is a folder's or a file's name. -->
+    <string name="data_backup_cant_write_to">Impossible d’écrire dans %1$s</string>
+    <string name="data_backup_cant_finish">Impossible de terminer la sauvegarde</string>
+    <!-- Why a restore failed, after "Game data failed: ". %1$s is a file's name. -->
+    <string name="data_backup_cant_read">impossible de lire %1$s</string>
+    <string name="data_backup_cant_restore">restauration impossible</string>
+    <string name="data_backup_cant_write">Impossible d’écrire %1$s</string>
+    <!-- What a backup holds, joined with " · ": "1,204 games · 38 tiles · 6 folders". %1$s is the number, formatted. -->
+    <plurals name="data_backup_count_games">
+        <item quantity="one">%1$s jeu</item>
+        <item quantity="other">%1$s jeux</item>
+    </plurals>
+    <plurals name="data_backup_count_tiles">
+        <item quantity="one">%1$s vignette</item>
+        <item quantity="other">%1$s vignettes</item>
+    </plurals>
+    <plurals name="data_backup_count_folders">
+        <item quantity="one">%1$s dossier</item>
+        <item quantity="other">%1$s dossiers</item>
+    </plurals>
+    <plurals name="data_backup_count_widgets">
+        <item quantity="one">%1$s widget</item>
+        <item quantity="other">%1$s widgets</item>
+    </plurals>
+    <!-- Settings › Your data › Back up and Restore (BackupScreen.kt). ROMs/tandem/backup is a folder: leave it. -->
+    <string name="data_backup_pick_one">Choisis au moins une chose à sauvegarder</string>
+    <string name="data_backup_backing_up">Sauvegarde en cours…</string>
+    <!-- %1$s is the new backup's folder name. -->
+    <string name="data_backup_backed_up">Sauvegardé dans ROMs/tandem/backup/%1$s</string>
+    <string name="data_backup_pick_restore">Choisis au moins une chose à restaurer</string>
+    <!-- %1$s lists what: "Restore Look, Layout & folders?" -->
+    <string name="data_backup_restore_ask">Restaurer %1$s ?</string>
+    <string name="data_backup_restore_text">Ce que Tandem a en ce moment pour ces éléments sera remplacé. Une sauvegarde automatique de l’état actuel est faite avant, au cas où.</string>
+    <string name="data_backup_restore">Restaurer</string>
+    <string name="data_backup_restoring">Restauration…</string>
+    <!-- What the automatic backup was made before: "Before restoring". Saved with the backup. -->
+    <string name="data_backup_reason_restoring">restauration</string>
+    <string name="data_backup_delete_ask">Supprimer cette sauvegarde ?</string>
+    <!-- %1$s is the backup's date, %2$s what it holds. -->
+    <string name="data_backup_delete_text">%1$s · %2$s. Impossible de revenir en arrière.</string>
+    <string name="data_backup_delete">Supprimer</string>
+    <string name="data_backup_deleted">Sauvegarde supprimée</string>
+    <string name="data_backup_delete_failed">Impossible de supprimer cette sauvegarde</string>
+    <string name="data_backup_older_title">Ancienne sauvegarde</string>
+    <!-- What kind of backup, on a pill. -->
+    <string name="data_backup_older">Ancienne</string>
+    <string name="data_backup_automatic">Auto</string>
+    <string name="data_backup_manual">Manuelle</string>
+    <!-- %1$s is what it was made before: "Before Quick look". -->
+    <string name="data_backup_before">Avant %1$s</string>
+    <string name="data_backup_back_up">Sauvegarder</string>
+    <string name="data_backup_back_up_detail">Une nouvelle sauvegarde dans ROMs/tandem/backup sur cet appareil. Les anciennes restent.</string>
+    <string name="data_backup_keys">Clés de compte et identifiants</string>
+    <string name="data_backup_keys_detail">Scraping, RetroAchievements et Steam. Les autres applis peuvent lire le dossier de sauvegarde.</string>
+    <string name="data_backup_cancel">Annuler</string>
+    <string name="data_backup_restore_detail">Choisis une sauvegarde, puis ce que tu veux récupérer.</string>
+    <string name="data_backup_looking">Je fouille dans ROMs/tandem/backup…</string>
+    <string name="data_backup_none">Aucune sauvegarde pour l’instant</string>
+    <string name="data_backup_none_detail">Sauvegarder en crée une dans ROMs/tandem/backup.</string>
+    <string name="data_backup_now">Sauvegarder maintenant</string>
+    <string name="data_backup_put_back">Récupérer depuis cette sauvegarde</string>
+    <string name="data_backup_keep_here">Garde ce qui est là</string>
+    <string name="data_backup_not_in">Absent de cette sauvegarde</string>
+    <string name="data_backup_has_keys">Clés de compte incluses.</string>
+    <string name="data_backup_no_keys">Les clés de compte de cet appareil restent telles quelles.</string>
+    <!-- When a backup was made, in lowercase as it follows the counts. -->
+    <string name="data_backup_just_now">à l’instant</string>
+    <string name="data_backup_minute_ago">il y a une minute</string>
+    <plurals name="data_backup_minutes_ago">
+        <item quantity="one">il y a %1$d minute</item>
+        <item quantity="other">il y a %1$d minutes</item>
+    </plurals>
+    <string name="data_backup_hour_ago">il y a une heure</string>
+    <plurals name="data_backup_hours_ago">
+        <item quantity="one">il y a %1$d heure</item>
+        <item quantity="other">il y a %1$d heures</item>
+    </plurals>
+    <string name="data_backup_yesterday">hier</string>
+    <plurals name="data_backup_days_ago">
+        <item quantity="one">il y a %1$d jour</item>
+        <item quantity="other">il y a %1$d jours</item>
+    </plurals>
+</resources>

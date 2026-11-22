@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Settings: its pages and groups (SettingsCatalog.kt), the frame every row is drawn in (Settings.kt, Choices.kt),
+     the first screen (SettingsHome.kt), search (SettingsSearch.kt) and the side panel's showcases (Showcase.kt).
+     Keys start with settings_. See docs/TRANSLATING.md. Page, group and row names sit on one line: keep them about
+     as short as the English. -->
+<resources>
+    <!-- The seven pages: their tiles on the first Settings screen, their titles, and the top bar. -->
+    <string name="settings_page_look">Apparence</string>
+    <string name="settings_page_home">Accueil et disposition</string>
+    <string name="settings_page_screens">Deux écrans</string>
+    <string name="settings_page_sound">Son et musique</string>
+    <string name="settings_page_controls">Commandes</string>
+    <string name="settings_page_library">Bibliothèque et visuels</string>
+    <string name="settings_page_play">Jeu et système</string>
+
+    <!-- What each page holds, in a sentence (the side panel beside its tile). -->
+    <string name="settings_page_look_blurb">Thèmes et packs de thèmes, couleurs, fonds d’écran, icônes des systèmes, animations et langue.</string>
+    <string name="settings_page_home_blurb">La disposition de ton accueil et son écran, l’affichage des jeux dans un système, le dock et les widgets, l’horloge et l’économiseur d’écran.</string>
+    <string name="settings_page_screens_blurb">Ce que montre chaque écran, quand tu navigues et quand tu joues : un écran ou deux, les inverser, les visuels de l’autre écran, et déplacer des applis de l’un à l’autre.</string>
+    <string name="settings_page_sound_blurb">La musique et les sons du pack de thème, les sons de l’interface, la voix de Pip, et ta musique ou la bande-son intégrée.</string>
+    <string name="settings_page_controls_blurb">Icônes des boutons, A/B et X/Y inversés, réassigner n’importe quel bouton, tes manettes et le Deck.</string>
+    <string name="settings_page_library_blurb">Dossiers de jeux, analyse et tri, systèmes et émulateurs, visuels et leurs sources, et tes comptes RetroAchievements et Steam.</string>
+    <!-- The same, in builds with Discord. -->
+    <string name="settings_page_library_blurb_discord">Dossiers de jeux, analyse et tri, systèmes et émulateurs, visuels et leurs sources, et tes comptes RetroAchievements, Steam et Discord.</string>
+    <string name="settings_page_play_blurb">Reprendre et fermer les jeux, performances, confidentialité et jeux masqués, sauvegardes, Tandem comme écran d’accueil, et mises à jour.</string>
+
+    <!-- A page tile's summary: a few short parts the app joins with " · ", like "Midnight · own accent · still".
+         Each part is a phrase on its own. -->
+    <!-- Look & feel: after the theme's name, when an accent colour of your own is set. -->
+    <string name="settings_page_look_own_accent">accent perso</string>
+    <!-- Look & feel: when Reduce motion is on. -->
+    <string name="settings_page_look_still">immobile</string>
+    <!-- Home & layout: the layout's name when it isn't known. -->
+    <string name="settings_page_home_shelves">Rayons</string>
+    <!-- Home & layout, with the icon grid: how many icons a row holds. -->
+    <string name="settings_page_home_across">%1$d par ligne</string>
+    <!-- Home & layout: how games show inside a system, %1$s a view like "Grid" or "List". -->
+    <string name="settings_page_home_of_games">%1$s de jeux</string>
+    <string name="settings_page_home_grid">Grille</string>
+    <string name="settings_page_screens_single">Écran du haut seul</string>
+    <string name="settings_page_screens_swapped">Bibliothèque en bas</string>
+    <!-- %1$s is what the bottom screen shows, like "Details" or "Art". -->
+    <string name="settings_page_screens_details">Infos en bas · %1$s</string>
+    <string name="settings_page_screens_details_mode">Infos</string>
+    <!-- Sound & music, when the theme pack brings its own audio: "Using Retro Wave's audio". -->
+    <string name="settings_page_sound_pack">Son de %1$s</string>
+    <!-- %1$s is a sound pack's name: "Soft sounds". -->
+    <string name="settings_page_sound_sounds">Sons %1$s</string>
+    <string name="settings_page_sound_sounds_off">Sons coupés</string>
+    <string name="settings_page_sound_music_on">musique activée</string>
+    <string name="settings_page_sound_music_off">musique coupée</string>
+    <!-- %1$s is a kind of button prompts: "Xbox prompts". -->
+    <string name="settings_page_controls_prompts">Boutons %1$s</string>
+    <string name="settings_page_controls_swapped">A/B inversés</string>
+    <plurals name="settings_page_controls_rebound">
+        <item quantity="one">%1$d bouton réassigné</item>
+        <item quantity="other">%1$d boutons réassignés</item>
+    </plurals>
+    <string name="settings_page_library_no_games">Pas encore de jeux</string>
+    <plurals name="settings_page_library_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <plurals name="settings_page_library_systems">
+        <item quantity="one">%1$d système</item>
+        <item quantity="other">%1$d systèmes</item>
+    </plurals>
+    <!-- How many artwork sources are switched on. -->
+    <plurals name="settings_page_library_sources">
+        <item quantity="one">%1$d source active</item>
+        <item quantity="other">%1$d sources actives</item>
+    </plurals>
+    <!-- Resume: picking a running game brings it back (it needs the Shizuku app). -->
+    <string name="settings_page_play_resume_ready">Reprise prête</string>
+    <string name="settings_page_play_resume_shizuku">Reprise : il faut Shizuku</string>
+    <!-- Whether Tandem is Android's Home screen. -->
+    <string name="settings_page_play_home">Écran d’accueil</string>
+    <string name="settings_page_play_not_home">pas l’écran d’accueil</string>
+
+    <!-- Subpages: short pages of rarer settings, each opened from one row on its page. The name is both the row's
+         and the page's; the help shows beside it. -->
+    <string name="settings_sub_wallpaper">Fond d’écran</string>
+    <string name="settings_sub_wallpaper_help">Le fond d’écran de chaque écran, et à quel point les images et vidéos sont assombries.</string>
+    <string name="settings_sub_motion">Animations</string>
+    <string name="settings_sub_motion_help">Comment tout bouge : le style d’animation, Réduire les animations, les titres flottants, l’énergie de l’ensemble et la façon dont les écrans s’inversent.</string>
+    <string name="settings_sub_grid">Forme de la grille</string>
+    <string name="settings_sub_grid_help">Les lignes de la grille d’icônes, l’arrondi des icônes, l’espace entre elles et les visuels au-dessus de la grille.</string>
+    <string name="settings_sub_games">Affichage des jeux</string>
+    <string name="settings_sub_games_help">Comment les jeux s’affichent dans un système ou une collection : la vue, sa taille, la forme des cartes, l’étagère et les titres.</string>
+    <string name="settings_sub_dock">Dock et widgets</string>
+    <string name="settings_sub_dock_help">Le dock d’applis le long de l’écran d’accueil, et ses widgets.</string>
+    <string name="settings_sub_art">Visuels et vidéo</string>
+    <string name="settings_sub_art_help">Les visuels de l’autre écran : aperçus vidéo, visuels animés, taille du logo et fondu des visuels.</string>
+    <string name="settings_sub_pads">Manettes connectées</string>
+    <string name="settings_sub_pads_help">Manettes Bluetooth et USB : boutons façon Nintendo pour chacune, et le rôle de leur bouton Home.</string>
+    <string name="settings_sub_deck">Deck</string>
+    <string name="settings_sub_deck_help">Le Deck : le clavier et le pavé tactile sur l’écran du bas, pour les jeux PC et le streaming.</string>
+    <string name="settings_sub_accounts">Comptes</string>
+    <string name="settings_sub_accounts_help">Les succès RetroAchievements et Steam, et ton statut Discord.</string>
+    <string name="settings_sub_perf">Performances et veille</string>
+    <string name="settings_sub_perf_help">Mode performance, ventilateur et fréquence d’actualisation pendant le jeu, et la mise en pause des jeux quand la console est en veille.</string>
+    <string name="settings_sub_privacy">Confidentialité et masqués</string>
+    <string name="settings_sub_privacy_help">Le mode privé et son code PIN, l’affichage des jeux masqués, et passer hors ligne pendant qu’un jeu masqué tourne.</string>
+    <string name="settings_sub_data">Tes données</string>
+    <string name="settings_sub_data_help">Sauvegarder et restaurer, récupérer ta config Cocoon et les infos des fichiers gamelist.xml, et exporter tes stats de jeu.</string>
+    <string name="settings_sub_dev">Pour les bidouilleurs</string>
+    <string name="settings_sub_dev_help">Des outils pour mesurer la fluidité et vérifier les thèmes. Tu n’en auras pas besoin.</string>
+
+    <!-- A subpage's row says what it holds, in a few words. -->
+    <!-- Grid shape, when the number of rows follows the icon size. -->
+    <string name="settings_sub_grid_auto">Lignes auto</string>
+    <string name="settings_sub_dock_off">Dock désactivé</string>
+    <!-- Art & video: %1$s is how video snaps play, like "Always". -->
+    <string name="settings_sub_art_videos">Vidéos : %1$s</string>
+    <string name="settings_sub_pads_none">Aucune connectée</string>
+    <plurals name="settings_sub_pads_connected">
+        <item quantity="one">%1$d connectée</item>
+        <item quantity="other">%1$d connectées</item>
+    </plurals>
+    <string name="settings_sub_accounts_none">Non connecté</string>
+    <string name="settings_sub_privacy_on">Mode privé activé</string>
+    <string name="settings_sub_privacy_off">Mode privé désactivé</string>
+    <string name="settings_sub_data_summary">Sauvegardes et imports</string>
+    <plurals name="settings_sub_dev_tools">
+        <item quantity="one">%1$d outil</item>
+        <item quantity="other">%1$d outils</item>
+    </plurals>
+
+    <!-- Group headings on the pages, shown in capitals. -->
+    <string name="settings_group_colour">Couleur</string>
+    <string name="settings_group_wallpaper_icons">Fond, icônes et animations</string>
+    <string name="settings_group_language">Langue</string>
+    <string name="settings_group_start_over">Repartir de zéro</string>
+    <string name="settings_group_home_screen">Écran d’accueil</string>
+    <string name="settings_group_around_home">Autour de l’accueil</string>
+    <string name="settings_group_screens">Écrans</string>
+    <string name="settings_group_other_screen">Autre écran</string>
+    <string name="settings_group_while_playing">Pendant le jeu</string>
+    <string name="settings_group_sounds">Sons</string>
+    <string name="settings_group_music">Musique</string>
+    <string name="settings_group_buttons">Boutons</string>
+    <string name="settings_group_controllers">Manettes</string>
+    <string name="settings_group_games_systems">Jeux et systèmes</string>
+    <string name="settings_group_artwork_accounts">Visuels et comptes</string>
+    <string name="settings_group_playing">En jeu</string>
+    <string name="settings_group_tandem">Tandem</string>
+    <string name="settings_group_wallpaper">Fond d’écran</string>
+    <string name="settings_group_motion">Animations</string>
+    <string name="settings_group_grid_shape">Forme de la grille</string>
+    <string name="settings_group_how_games_show">Affichage des jeux</string>
+    <string name="settings_group_dock">Dock</string>
+    <string name="settings_group_widgets">Widgets</string>
+    <string name="settings_group_art_video">Visuels et vidéo</string>
+    <string name="settings_group_game_controllers">Manettes de jeu</string>
+    <string name="settings_group_home_button">Bouton Home des manettes</string>
+    <string name="settings_group_deck">Deck</string>
+    <string name="settings_group_retroachievements">RetroAchievements</string>
+    <string name="settings_group_steam">Steam</string>
+    <string name="settings_group_discord">Discord</string>
+    <string name="settings_group_perf_sleep">Performances et veille</string>
+    <string name="settings_group_privacy_hidden">Confidentialité et masqués</string>
+    <string name="settings_group_your_data">Tes données</string>
+    <string name="settings_group_tinkerers">Pour les bidouilleurs</string>
+    <!-- Sound & music: the theme pack's own music and sounds, with the pack's name beside it. -->
+    <string name="settings_group_theme_pack">Pack de thème</string>
+    <!-- Rows no page places yet (only after an update forgot one). -->
+    <string name="settings_group_not_placed">Sans place</string>
+    <string name="settings_group_other">Autres</string>
+    <!-- Beside Controls › Buttons: what each hold opens (shown before the live buttons are known). -->
+    <string name="settings_group_buttons_note">Maintenir Select : sélecteur de jeux · Maintenir Start : réglages rapides</string>
+    <!-- Beside Connected controllers › Game controllers: a switch on means Nintendo button labels. -->
+    <string name="settings_group_pads_note">Activé : boutons Nintendo</string>
+    <!-- Beside Controls › Buttons: what opens the game switcher (%1$s) and the quick settings (%2$s), as bound now,
+         like "Hold Select". -->
+    <string name="settings_buttons_note">%1$s : sélecteur de jeux · %2$s : réglages rapides</string>
+    <!-- In that note, for something no button opens. -->
+    <string name="settings_buttons_none">Aucun bouton</string>
+
+    <!-- Home & layout: the icon grid's Resume page. -->
+    <string name="settings_resume_page">Page Reprendre</string>
+    <string name="settings_resume_page_help">Un jeu encore lancé a sa page Reprendre à gauche de la grille, à une pression de la suite. En premier : revenir sur Tandem pendant qu’il tourne t’amène direct sur cette page. Désactivé, un jeu lancé n’a pas de page à lui.</string>
+    <!-- The option after Off and On: the page opens first when you come back. Keep it short. -->
+    <string name="settings_resume_page_land">En premier</string>
+
+    <!-- What A does on a row, in the button hints: flip a switch, step to the next option, open a page, run an
+         action. Short. -->
+    <string name="settings_a_switch">Basculer</string>
+    <string name="settings_a_next">Suivant</string>
+    <string name="settings_a_open">Ouvrir</string>
+    <string name="settings_a_do">Lancer</string>
+    <!-- The other hints under the side panel: Left/Right on a slider, Left/Right on a choice, X. -->
+    <string name="settings_hint_adjust">Régler</string>
+    <string name="settings_hint_change">Changer</string>
+    <string name="settings_hint_search">Rechercher</string>
+    <!-- The side panel with nothing highlighted, under the app's name. -->
+    <string name="settings_about_panel">Open source · zéro pistage</string>
+
+    <!-- Library & art: the library rows. -->
+    <string name="settings_library">Bibliothèque</string>
+    <string name="settings_library_sort">Trier les jeux par</string>
+    <string name="settings_library_sort_help">L’ordre des jeux dans chaque système et chaque collection.</string>
+    <string name="settings_library_hidden">Afficher les jeux masqués</string>
+    <!-- Show hidden games' value while private mode is on (it asks for the PIN instead of switching). -->
+    <string name="settings_library_hidden_private">Privé</string>
+    <string name="settings_library_hidden_help">Les jeux, dossiers et systèmes masqués avec Y restent cachés, sauf si cette option est activée : ils apparaissent alors, en grisé. Start › Masqués les liste tous, chacun avec Réafficher. En mode privé, ton code PIN est demandé.</string>
+    <string name="settings_library_rescan">Réanalyser les jeux</string>
+    <string name="settings_library_rescan_looking">Recherche…</string>
+    <plurals name="settings_library_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+    <plurals name="settings_library_manuals">
+        <item quantity="one">%1$d notice</item>
+        <item quantity="other">%1$d notices</item>
+    </plurals>
+    <!-- Rescan games' value: how many games (%1$s, "12 games") and manuals (%2$s, "3 manuals") were found. -->
+    <string name="settings_library_games_manuals">%1$s · %2$s</string>
+    <string name="settings_library_rescan_help">Refait le tour de tes dossiers de jeux, pour les jeux que tu viens de copier et pour les notices. Tandem vérifie aussi tout seul chaque fois que tu reviens dessus. Les notices et guides vont dans ROMs/manuals/&lt;système&gt;/, avec le nom du jeu (Pokemon Red.pdf pour Pokemon Red.gb) : un PDF, un zip ou un dossier d’images, ou un fichier texte ou Markdown. Lis-les depuis le menu Y d’un jeu et sur l’écran du bas pendant la partie, ou choisis-en une dans Y › Modifier les infos › Notice.</string>
+
+    <!-- Play & system › Your data. -->
+    <string name="settings_data">Tes données</string>
+    <string name="settings_data_import">Importer les infos</string>
+    <string name="settings_data_importing">Import…</string>
+    <string name="settings_data_import_help">Complète les noms, descriptions et liens vers les visuels à partir des fichiers gamelist.xml (ES-DE, sauvegardes Cocoon). Seuls les champs vides sont remplis : ce que tu as modifié dans Tandem reste.</string>
+    <string name="settings_data_importing_details">Import des infos…</string>
+    <plurals name="settings_data_imported">
+        <item quantity="one">Infos complétées pour %1$d jeu</item>
+        <item quantity="other">Infos complétées pour %1$d jeux</item>
+    </plurals>
+    <string name="settings_data_import_none">Aucun fichier gamelist.xml trouvé</string>
+    <string name="settings_data_back_up">Sauvegarder</string>
+    <string name="settings_data_saving">Sauvegarde…</string>
+    <string name="settings_data_back_up_help">Crée une nouvelle sauvegarde à côté de tes jeux : données des jeux, apparence, disposition et dossiers, systèmes et émulateurs. Les anciennes restent, pour pouvoir revenir à n’importe laquelle après une réinstallation.</string>
+    <string name="settings_data_restore">Restaurer</string>
+    <string name="settings_data_restoring">Restauration…</string>
+    <string name="settings_data_restore_pick">Choisis une sauvegarde</string>
+    <string name="settings_data_restore_help">Choisis une sauvegarde, la plus récente en haut, puis ce qu’il faut remettre. Avant de restaurer, Tandem sauvegarde automatiquement l’état actuel.</string>
+    <!-- Slow data work (import, backup, restore). -->
+    <string name="settings_job_busy">Un instant, ça mouline encore…</string>
+    <!-- %1$s is what went wrong, or settings_job_unknown. -->
+    <string name="settings_job_failed">Ça n’a pas marché : %1$s</string>
+    <string name="settings_job_unknown">problème inconnu</string>
+
+    <!-- Play & system: resuming games, About and updates. -->
+    <string name="settings_about">À propos</string>
+    <string name="settings_about_resume">Reprendre les jeux lancés</string>
+    <string name="settings_about_resume_ready">Prêt</string>
+    <!-- Shizuku is an app's name. -->
+    <string name="settings_about_resume_allow">Autoriser dans Shizuku</string>
+    <string name="settings_about_resume_help">Avec Shizuku lancé, choisir un jeu encore ouvert le reprend au lieu de le relancer.</string>
+    <string name="settings_shizuku_on">Reprise activée : tes jeux repartent pile là où tu les as laissés</string>
+    <string name="settings_shizuku_start">Lance d’abord l’appli Shizuku, puis reviens ici</string>
+    <string name="settings_about_tandem">À propos de Tandem</string>
+    <!-- %1$s is the version, like "0.8.0"; GPL-3.0 is the licence's name. -->
+    <string name="settings_about_version">Version %1$s · GPL-3.0</string>
+    <string name="settings_about_help">Libre et open source (GPL-3.0). Pas de pubs, pas de compte, pas de pistage. Tes données restent sur ton appareil.</string>
+    <string name="settings_about_hi">Fait avec amour, gratuit pour toujours. Coucou de la part de Pip !</string>
+    <string name="settings_updates">Mises à jour</string>
+    <!-- %1$s is this version, like "0.8.0"; %2$s is settings_about_help. "Update" names the button that installs. -->
+    <string name="settings_updates_help">Tu as Tandem %1$s. A demande à GitHub si une version plus récente est sortie. Mettre à jour la télécharge, vérifie que c’est bien la version officielle (sa somme de contrôle et la clé de signature de Tandem) et l’installe ; Tandem redémarre. Avec Shizuku, l’installation se fait sans question ; sinon Android demande une fois d’autoriser les installations depuis Tandem. %2$s</string>
+    <!-- What A does on Updates: open the update found, or check for one. Short. -->
+    <string name="settings_updates_see">Voir la mise à jour</string>
+    <string name="settings_updates_check">Vérifier</string>
+    <string name="settings_updates_auto">Vérifier automatiquement</string>
+    <!-- A number row the theme can decide: the stop before its lowest value, filled while the theme decides. Short. -->
+    <string name="settings_slider_theme">Thème</string>
+    <!-- The picker of a choice row: the option in use, %1$s its name. -->
+    <string name="settings_picker_now">Actuel : %1$s</string>
+
+    <!-- The side panel's showcases: miniatures of what a setting does. -->
+    <!-- Beside the caption of the look that is the setting now. Short. -->
+    <string name="settings_showcase_in_use">Actuel</string>
+    <!-- What the face buttons do, in the button prompts miniature (Back and Search are elsewhere). Short. -->
+    <string name="settings_showcase_play">Jouer</string>
+    <string name="settings_showcase_options">Options</string>
+    <!-- The corner hints miniature: Start opens the menu. Short. -->
+    <string name="settings_showcase_menu">Menu</string>
+    <!-- The shelves home miniature's rows. Short. -->
+    <string name="settings_showcase_continue">Continuer</string>
+    <string name="settings_showcase_systems">Systèmes</string>
+    <string name="settings_showcase_collections">Collections</string>
+    <!-- The top bar miniature's title. Short. -->
+    <string name="settings_showcase_home">Accueil</string>
+
+    <!-- The first Settings screen: the search bar over the page tiles. -->
+    <string name="settings_home_search">Rechercher un paramètre</string>
+    <string name="settings_home_search_help">Trouve n’importe quel paramètre par son nom ou par ce qu’il fait : «  bigger icons  », «  nintendo buttons  », «  music  ».</string>
+    <string name="settings_home_search_panel">Tape quelques lettres d’un paramètre, ou ce que tu cherches : «  bigger icons  », «  nintendo  », «  quiet  », «  cocoon  ». Un résultat t’y emmène direct et montre où il se trouve. X lance la recherche depuis n’importe quelle page des Paramètres.</string>
+    <!-- Hint on a page: L1 and R1 step through the pages. -->
+    <string name="settings_home_pages">Pages</string>
+
+    <!-- Settings search (X in Settings): an on-screen keyboard and the results beside it. -->
+    <!-- The empty search box. ⌕ is a magnifier sign. -->
+    <string name="settings_search_box">⌕ Rechercher un paramètre</string>
+    <!-- Keyboard keys. Short. -->
+    <string name="settings_search_space">Espace</string>
+    <!-- Hints: X deletes a letter, Left/Right go to the results, A goes to a result, B back to the keys. -->
+    <string name="settings_search_delete">Effacer</string>
+    <string name="settings_search_results">Résultats</string>
+    <string name="settings_search_go">Y aller</string>
+    <string name="settings_search_keys">Clavier</string>
+    <!-- Over the results before anything is typed. -->
+    <string name="settings_search_popular">Populaires</string>
+    <plurals name="settings_search_found">
+        <item quantity="one">%1$d résultat</item>
+        <item quantity="other">%1$d résultats</item>
+    </plurals>
+    <!-- When there are more results than the list shows (it shows 40): "40+ found". -->
+    <plurals name="settings_search_found_more">
+        <item quantity="one">%1$d+ résultat</item>
+        <item quantity="other">%1$d+ résultats</item>
+    </plurals>
+    <!-- %1$s is what was typed. -->
+    <string name="settings_search_nothing">Rien ne s’appelle «  %1$s  »</string>
+    <string name="settings_search_try">Essaie ce que ça fait : «  bigger  », «  quiet  », «  buttons  »</string>
+    <!-- Where a result lives, under its name. -->
+    <string name="settings_search_where_settings">Paramètres</string>
+    <!-- A place inside another: "Home & layout › Dock & widgets", %1$s the outer, %2$s the inner. -->
+    <string name="settings_search_where_in">%1$s › %2$s</string>
+    <string name="settings_search_where_themes">Apparence › Thèmes</string>
+    <string name="settings_search_where_packs">Apparence › Packs de thèmes</string>
+    <string name="settings_search_where_layouts">Accueil et disposition › Dispositions</string>
+    <string name="settings_search_where_scrape">Bibliothèque et visuels › Scraper la bibliothèque</string>
+    <string name="settings_search_where_sources">Bibliothèque et visuels › Configurer les sources</string>
+    <string name="settings_search_where_stats">Start › Stats et trophées</string>
+    <!-- What a theme or layout result is, in its value tag. -->
+    <string name="settings_search_theme">Thème</string>
+    <string name="settings_search_layout">Disposition</string>
+    <!-- Settings that live on a screen of their own, found by search. -->
+    <string name="settings_search_kinds">Visuels à télécharger</string>
+    <!-- How many kinds of artwork a scrape fetches. -->
+    <plurals name="settings_search_kinds_value">
+        <item quantity="one">%1$d type</item>
+        <item quantity="other">%1$d types</item>
+    </plurals>
+    <string name="settings_search_kinds_help">Les images que récupère le scraping : jaquettes, logos, bannières, captures d’écran, boîtes physiques, vidéos. Sur l’écran Scraper la bibliothèque.</string>
+    <string name="settings_search_region">Région préférée</string>
+    <string name="settings_search_region_help">Les jaquettes et les noms de cette région passent en premier. Sur l’écran Scraper la bibliothèque, dans Région et langue.</string>
+    <string name="settings_search_language">Langue préférée</string>
+    <string name="settings_search_language_help">Les descriptions et les genres arrivent dans cette langue quand la source l’a. Sur l’écran Scraper la bibliothèque, dans Région et langue.</string>
+    <string name="settings_search_stats">Stats de jeu</string>
+    <string name="settings_search_stats_help">Ton temps de jeu par jour, par système et par jeu, chaque session jouée, et tes succès. Exporte-les dans Jeu et système › Tes données.</string>
+    <!-- An art source's result: %1$s says what it gives, like "Box art, logos and videos". -->
+    <string name="settings_search_source_help">%1$s.</string>
+    <string name="settings_updates_auto_help">Cherche une nouvelle version de Tandem une fois par jour quand Tandem est ouvert, et te prévient une fois par un message et dans le panneau Start. Seul le numéro de la dernière version est demandé à GitHub ; rien ne s’installe tant que tu n’appuies pas sur Mettre à jour. Désactivé, rien n’est vérifié ni affiché tant que tu ne vérifies pas avec A sur Mises à jour. Le mode privé s’en passe.</string>
+</resources>

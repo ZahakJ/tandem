@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Controls: controllers, button prompts, the clock format, rebinding buttons, the Deck (a keyboard and mouse on the
+     bottom screen) and playing with an external controller. Keys start with controls_. See docs/TRANSLATING.md.
+     Button letters (A, B, X, Y, L1, R1, Start, Select, Home) stay as they are in every language. -->
+<resources>
+    <!-- Settings › Controls: group titles. -->
+    <string name="controls_group_home_button">Bouton Home des manettes</string>
+    <string name="controls_group_controllers">Manettes de jeu</string>
+    <string name="controls_group_pad_link">Jouer avec une manette</string>
+
+    <!-- Settings › Controls › Controller Home button. -->
+    <string name="controls_home_button">Bouton Home des manettes</string>
+    <!-- "Tandem: Controller Home button" is the name Android shows in its Accessibility settings (strings.xml). -->
+    <string name="controls_home_button_help">En mode X-input, beaucoup de manettes envoient leur bouton Home (guide) comme un bouton qu’Android ignore. Dans Tandem, il fait toujours office de Home. Pour qu’il marche aussi dans les jeux et les autres applis, active «  Tandem: Controller Home button  » dans les paramètres d’accessibilité d’Android (A les ouvre ; si l’option est grisée, autorise d’abord les paramètres restreints dans les infos sur l’appli de Tandem). Tandem ne regarde alors que ce bouton-là, et seulement sur les manettes externes : les commandes intégrées ne sont jamais touchées.</string>
+    <!-- What A does on a row that opens another screen. Short. -->
+    <string name="controls_open">Ouvrir</string>
+    <string name="controls_hold_home">Maintenir le bouton Home</string>
+    <string name="controls_hold_home_help">Ce que fait un appui long sur le bouton Home d’une manette : le sélecteur de jeux de Tandem, ou les applis récentes d’Android (il faut que le bouton Home des manettes soit activé ; sinon, c’est le sélecteur de jeux).</string>
+    <string name="controls_hold_home_switcher">Sélecteur de jeux</string>
+    <string name="controls_hold_home_recents">Applis récentes</string>
+
+    <!-- Settings › Controls › Game controllers: one switch per connected controller, named after it. -->
+    <string name="controls_pad_nintendo_help">Disposition Nintendo : inverse A/B et X/Y pour cette manette seulement, pour que le bouton marqué A valide. Idéal pour les manettes façon Switch en mode X-input. Ça s’applique dans Tandem ; les commandes intégrées et les autres manettes ne changent pas, et «  Inverser A et B  » plus haut s’ajoute par-dessus. Les émulateurs ont leur propre configuration des boutons par manette dans leurs paramètres.</string>
+    <!-- The name of a controller that doesn't give one. -->
+    <string name="controls_pad_unnamed">Manette</string>
+    <!-- Two controllers with the same name are numbered: "Xbox Wireless Controller 2". -->
+    <string name="controls_pad_numbered">%1$s %2$d</string>
+    <string name="controls_no_pads">Aucune autre manette</string>
+    <string name="controls_no_pads_value">Branches-en une</string>
+    <string name="controls_no_pads_help">Associe une manette Bluetooth ou branche-la, et elle apparaît ici, avec son propre interrupteur de disposition Nintendo (A/B et X/Y inversés pour cette manette seulement). Les commandes intégrées suivent «  Inverser A et B  » plus haut.</string>
+    <string name="controls_no_pads_toast">Associe ou branche une manette, elle apparaîtra ici</string>
+    <!-- Beside the Game controllers title: what a switch being on means. -->
+    <string name="controls_pads_note">Activé : disposition Nintendo</string>
+
+    <!-- Settings › Controls › Play with a controller (an external controller playing as the built-in one). -->
+    <string name="controls_link">Manette en jeu</string>
+    <string name="controls_link_unavailable">Indisponible</string>
+    <string name="controls_link_help">La manette qui joue à la place des commandes intégrées, dans tous les émulateurs, même en pleine partie : les jeux continuent d’écouter les commandes intégrées, et Tandem leur transmet les boutons et les sticks de la manette choisie. Les commandes intégrées marchent toujours (aussi dans les réglages rapides). Une manette qui se connecte en cours de partie se propose sur l’écran du bas : appuie sur son A ou son Start. Si tu la déconnectes, on repasse aux commandes intégrées.</string>
+    <!-- The option for the handheld's own controls. -->
+    <string name="controls_link_builtin">Intégrée</string>
+    <string name="controls_link_auto">Toujours la manette connectée</string>
+    <string name="controls_link_auto_help">Toujours utiliser une manette connectée : dès qu’elle se connecte, elle remplace les commandes intégrées, sans rien demander. Laisse désactivé pour jouer à deux : la manette reste alors une manette à part, et l’émulateur doit la configurer comme Joueur 2.</string>
+    <!-- Beside the group title: the controller playing now. -->
+    <string name="controls_link_in_use">En jeu : %1$s</string>
+
+    <!-- Button bindings in words. A button held: "Hold Start". -->
+    <string name="controls_binding_hold">Maintenir %1$s</string>
+    <!-- Inside a sentence: a command with no button ("Surprise me is on no button"). -->
+    <string name="controls_binding_none">aucun bouton</string>
+    <!-- On its own, as a value: a command with no button. -->
+    <string name="controls_binding_none_value">Aucun bouton</string>
+
+    <!-- Settings › Look & feel › Clock: the formats. -->
+    <string name="controls_clock_system">Comme le système</string>
+    <string name="controls_clock_12">12 h</string>
+    <string name="controls_clock_24">24 h</string>
+    <string name="controls_clock_off">Masquée</string>
+
+    <!-- The commands Tandem has on buttons (Settings › Controls › Rebind buttons), and what each does. -->
+    <string name="controls_command_open">Ouvrir / Valider</string>
+    <string name="controls_command_open_help">Ouvre l’élément sélectionné ou lance le jeu ; A sur les boutons et les lignes.</string>
+    <string name="controls_command_back">Retour</string>
+    <string name="controls_command_back_help">Revient en arrière, ou ferme un menu ou un panneau.</string>
+    <string name="controls_command_options">Options du jeu</string>
+    <string name="controls_command_options_help">Le menu d’options du jeu, du système, du dossier ou de l’appli sélectionné ; un appui long sur l’écran tactile.</string>
+    <string name="controls_command_action">Inverser les écrans / Rechercher</string>
+    <!-- "X button" names the setting Settings › Controls › X button. -->
+    <string name="controls_command_action_help">Rechercher, ou inverser les deux écrans sur la grille d’icônes, selon le réglage Bouton X. Efface une lettre sur le clavier.</string>
+    <string name="controls_command_start">Menu Start</string>
+    <string name="controls_command_start_help">Le panneau Start ; dans les paramètres, il les ferme, et dans les formulaires, il valide.</string>
+    <string name="controls_command_quick">Réglages rapides</string>
+    <string name="controls_command_quick_help">Luminosité, volume, Wi-Fi, Économiseur de batterie et les autres raccourcis.</string>
+    <string name="controls_command_switcher">Jeux lancés</string>
+    <string name="controls_command_switcher_help">Tous les jeux ouverts, pour les reprendre ou les fermer.</string>
+    <string name="controls_command_switcher_chord">Jeux lancés, en combo</string>
+    <string name="controls_command_switcher_chord_help">Encore le sélecteur de jeux, avec des boutons pressés ensemble : Select et Start, sauf si tu changes.</string>
+    <string name="controls_command_surprise">Surprends-moi</string>
+    <string name="controls_command_surprise_help">Saute vers un jeu au hasard auquel tu n’as jamais joué. Sert aussi à Annuler sur un message, et de Select dans les applis.</string>
+    <string name="controls_command_hidden">Jeux masqués</string>
+    <string name="controls_command_hidden_help">Mode privé désactivé : l’active aussitôt. Activé : affiche les jeux masqués après ton code PIN, ou les range en douce.</string>
+    <string name="controls_command_previous">Onglet ou page précédente</string>
+    <string name="controls_command_previous_help">Le système, la collection, la page des paramètres ou l’onglet de stats précédent ; des icônes plus grandes sur la grille.</string>
+    <string name="controls_command_next">Onglet ou page suivante</string>
+    <string name="controls_command_next_help">Le système, la collection, la page des paramètres ou l’onglet de stats suivant ; des icônes plus petites sur la grille.</string>
+    <string name="controls_command_page_up">Page précédente</string>
+    <string name="controls_command_page_up_help">Dans une liste de jeux, la lettre précédente (ou l’année, la note) ; ailleurs, une page plus haut ; sur la grille, le bandeau Joués récemment.</string>
+    <string name="controls_command_page_down">Page suivante</string>
+    <string name="controls_command_page_down_help">Dans une liste de jeux, la lettre suivante (ou l’année, la note) ; ailleurs, une page plus bas.</string>
+    <string name="controls_command_side_panel">Panneau latéral</string>
+    <string name="controls_command_side_panel_help">Sur l’accueil : Pip, les réglages rapides et tes notifications. Partage son bouton avec Page suivante, sauf si tu changes.</string>
+    <string name="controls_command_favourite">Favori</string>
+    <string name="controls_command_favourite_help">Ajoute le jeu sélectionné à tes favoris, ou l’en retire. Aucun bouton tant que tu ne lui en donnes pas un.</string>
+    <string name="controls_command_screenshot">Capture d’écran</string>
+    <string name="controls_command_screenshot_help">Une capture du jeu en cours sur l’autre écran, enregistrée dans ROMs/screenshots, comme le bouton Capture de l’acolyte. Marche quand Tandem est au premier plan.</string>
+    <string name="controls_command_clip">Clip</string>
+    <string name="controls_command_clip_help">Un clip de 15 secondes du jeu en cours sur l’autre écran, ou arrête celui qui s’enregistre, comme le bouton Clip de l’acolyte. Marche quand Tandem est au premier plan.</string>
+    <string name="controls_command_home">Home de la manette</string>
+    <string name="controls_command_home_help">Le bouton Home (guide) d’une manette dans Tandem : un appui, c’est Home ; un appui long fait ce que dit «  Maintenir le bouton Home  ».</string>
+
+    <!-- Why a button can't be given to a command. %1$s is always a command's name above; bindings are like "L1+R1"
+         or "Hold Start"; a button is like "L1". -->
+    <string name="controls_refused_hold_chord">Un appui long, c’est un seul bouton</string>
+    <string name="controls_refused_single">%1$s veut un seul bouton, pas de combo ni d’appui long</string>
+    <!-- %1$s a button, %2$s a command, %3$s that command's binding. -->
+    <string name="controls_refused_part_of">%1$s fait partie de %2$s (%3$s)</string>
+    <!-- %1$s a button, %2$s a command. -->
+    <string name="controls_refused_is_pass">%1$s, c’est %2$s : il ne peut pas faire partie d’un combo ni d’un appui long</string>
+    <!-- %1$s a binding, %2$s a command, %3$s that command's binding. -->
+    <string name="controls_refused_overlaps">%1$s chevauche %2$s (%3$s)</string>
+    <string name="controls_refused_essential">%1$s a toujours besoin d’un bouton</string>
+    <!-- %1$s a binding, %2$s the command that has it. -->
+    <string name="controls_refused_essential_swap">%1$s, c’est %2$s, qui a toujours besoin d’un bouton : donne d’abord un autre bouton à %2$s</string>
+    <!-- %1$s a command, %2$s a binding, %3$s one of the reasons above. -->
+    <string name="controls_refused_exchange">%1$s ne peut pas prendre %2$s en échange : %3$s</string>
+
+    <!-- Settings › Controls › Rebind buttons. -->
+    <string name="controls_rebind_title">Réassigner les boutons</string>
+    <!-- Beside the title: how many commands are off their default button. -->
+    <plurals name="controls_rebind_changes">
+        <item quantity="one">%1$d changement</item>
+        <item quantity="other">%1$d changements</item>
+    </plurals>
+    <string name="controls_rebind_reset_all">Tout réinitialiser</string>
+    <string name="controls_rebind_reset_all_help">Chaque commande revient sur son bouton d’origine.</string>
+    <string name="controls_rebind_reset_all_detail">Chaque commande revient sur son bouton d’origine, «  Inverser A et B  » et «  Inverser X et Y  » compris. Annuler te rend tes boutons.</string>
+    <!-- What A, X and Y do. Short. -->
+    <string name="controls_rebind_reset">Réinitialiser</string>
+    <string name="controls_rebind_rebind">Réassigner</string>
+    <string name="controls_rebind_none_hint">Aucun bouton</string>
+    <string name="controls_rebind_already_default">Tous les boutons sont déjà d’origine</string>
+    <string name="controls_rebind_reset_done">Tous les boutons sont revenus d’origine</string>
+    <string name="controls_rebind_commands">Commandes</string>
+    <!-- On a command whose button isn't its default. Short. -->
+    <string name="controls_rebind_changed">Modifié</string>
+    <!-- %1$s the command's default binding. -->
+    <string name="controls_rebind_default">Par défaut : %1$s</string>
+    <!-- After a change: "Surprise me: L1+R1". -->
+    <string name="controls_rebind_set">%1$s : %2$s</string>
+    <string name="controls_rebind_set_none">%1$s : aucun bouton</string>
+    <string name="controls_rebind_set_swapped">%1$s : %2$s, échangés</string>
+    <string name="controls_rebind_same">%1$s est déjà dessus</string>
+    <string name="controls_rebind_nothing_pressed">Rien n’a été pressé : %1$s ne change pas</string>
+    <!-- The listening popup. -->
+    <string name="controls_rebind_listen_title">Réassigner %1$s</string>
+    <string name="controls_rebind_listen_how">Appuie sur le nouveau bouton, ou sur plusieurs à la fois pour un combo. Maintiens un bouton pour un appui long.</string>
+    <string name="controls_rebind_waiting">J’écoute…</string>
+    <!-- Seconds left to press a button. Short. -->
+    <string name="controls_rebind_seconds">%1$d s</string>
+    <string name="controls_rebind_cancel">Annuler</string>
+    <!-- Two commands named together: "Back and Side panel". -->
+    <string name="controls_rebind_and">%1$s et %2$s</string>
+    <!-- The swap question. %1$s one command, or several joined as above. -->
+    <string name="controls_rebind_swap_title">Échanger avec %1$s ?</string>
+    <!-- %1$s the new binding, %2$s the commands that have it, %3$s the command being rebound, %4$s its old binding. -->
+    <string name="controls_rebind_swap_moves">%1$s, c’est %2$s. Si tu échanges, %3$s le prend et %2$s passe sur %4$s.</string>
+    <!-- As above, when the command being rebound had no button. -->
+    <string name="controls_rebind_swap_none">%1$s, c’est %2$s. Si tu échanges, %3$s le prend et %2$s se retrouve sans bouton.</string>
+    <string name="controls_rebind_swap">Échanger</string>
+    <!-- The Deck: a keyboard and trackpad on the bottom screen that type into a PC game on the top one. Its key caps
+         stay as on a US PC keyboard (DeckKeys.kt). -->
+    <!-- The feature's name, the Deck's title and the Settings group. -->
+    <string name="controls_deck">Deck</string>
+    <!-- Chips switching the bottom screen to the game's art or the companion. Short. -->
+    <string name="controls_deck_game_art">Visuels</string>
+    <string name="controls_deck_companion">Acolyte</string>
+    <string name="controls_deck_game_below">Le Deck tape dans un jeu sur l’écran du haut. Ce jeu-ci tourne sur celui du bas, alors il n’a rien à faire ici.</string>
+    <string name="controls_deck_sticky">Touche Shift, Ctrl ou Alt pour la touche suivante ; maintiens pour la verrouiller</string>
+    <!-- The layouts. Short: they are chips on the Deck. -->
+    <string name="controls_deck_layout_full">Clavier complet</string>
+    <string name="controls_deck_layout_game">Touches de jeu</string>
+    <!-- The status chip: how keys reach the game. Short. -->
+    <string name="controls_deck_direct">Direct</string>
+    <string name="controls_deck_shell">Shell</string>
+    <string name="controls_deck_no_shizuku">Shizuku requis</string>
+    <string name="controls_deck_connecting">Connexion…</string>
+    <!-- What the status chip says when tapped. -->
+    <string name="controls_deck_direct_said">Les touches et le pointeur vont directement au service de saisie d’Android, en quelques millisecondes</string>
+    <string name="controls_deck_shell_said">Android a tenu Tandem à l’écart du service de saisie : chaque touche lance donc une commande input. Ça prend un instant, et les clics tombent là où pointe le curseur du pavé</string>
+    <string name="controls_deck_no_shizuku_said">Lance Shizuku et autorise Tandem, puis rouvre le Deck</string>
+    <string name="controls_deck_connecting_said">Je demande à Shizuku…</string>
+    <string name="controls_deck_trackpad_hint">Glisse pour pointer · touche pour cliquer · deux doigts pour un clic droit ou pour défiler</string>
+    <!-- Settings › Controls › Deck. -->
+    <string name="controls_deck_sensitivity">Sensibilité du pavé tactile</string>
+    <string name="controls_deck_sensitivity_help">La distance parcourue par le pointeur du jeu quand ton doigt bouge sur le pavé tactile du Deck. Un geste rapide va toujours plus loin qu’un geste lent et précis.</string>
+    <string name="controls_deck_default_layout">Disposition par défaut</string>
+    <string name="controls_deck_default_layout_help">Le clavier qu’affiche le Deck à l’ouverture : le clavier complet, ou le compact avec le bloc WASD et les boutons de souris. Tu peux changer à tout moment avec les puces du Deck.</string>
+    <string name="controls_deck_sounds">Son des touches</string>
+    <string name="controls_deck_sounds_help">Un petit clic doux à chaque touche et chaque tapotement sur le Deck.</string>
+    <string name="controls_deck_haptics">Vibration des touches</string>
+    <string name="controls_deck_haptics_help">Une minuscule vibration à chaque touche et chaque tapotement sur le Deck.</string>
+
+    <!-- Playing with an external controller as the built-in one, on the bottom screen during a game. -->
+    <!-- %1$s a controller's name. -->
+    <string name="controls_padlink_offer">Jouer avec %1$s ?</string>
+    <string name="controls_padlink_offer_how">Appuie sur son A ou son Start. Elle prend la place des commandes intégrées dans ce jeu.</string>
+    <!-- Button hints. Short. -->
+    <string name="controls_padlink_accept">Jouer avec</string>
+    <string name="controls_padlink_decline">Pas maintenant</string>
+    <!-- The offer as Android's own message, when no Tandem screen is up. %1$s a controller's name. -->
+    <string name="controls_padlink_offer_toast">Appuie sur A ou Start sur %1$s pour jouer avec</string>
+    <string name="controls_padlink_no_pads">Connecte d’abord une manette</string>
+    <!-- Why it can't be used (Settings › Controls › Controller in games). -->
+    <string name="controls_padlink_no_helper">Cette version de Tandem n’a pas l’assistant manette.</string>
+    <string name="controls_padlink_no_builtin">Cet appareil n’a pas de manette intégrée à remplacer.</string>
+    <string name="controls_padlink_needs_shizuku">Shizuku ou root requis : un jeu ne lit que la manette intégrée, et eux seuls peuvent l’alimenter.</string>
+    <!-- Notices. %1$s a controller's name. -->
+    <string name="controls_padlink_builtin">Retour aux commandes intégrées</string>
+    <string name="controls_padlink_playing">On joue avec %1$s</string>
+    <string name="controls_padlink_failed">Impossible de prendre la main sur %1$s</string>
+    <string name="controls_padlink_failed_unknown">Impossible de prendre la main sur la manette</string>
+</resources>

@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The library: Systems (SystemsScreen.kt, SystemPage.kt), Game folders, editing and deleting games, apps, the
+     Cocoon import and the library's own helpers. Keys start with library_. See docs/TRANSLATING.md. System and
+     emulator names come from platforms.json and are never translated. -->
+<resources>
+    <!-- Counts of games, used all over the library: "12 games". -->
+    <plurals name="library_games">
+        <item quantity="one">%1$d jeu</item>
+        <item quantity="other">%1$d jeux</item>
+    </plurals>
+
+    <!-- Systems: the tabs, long and short (the short ones on a narrow screen). -->
+    <string name="library_systems_tab_library">Dans ta bibliothèque</string>
+    <string name="library_systems_tab_library_short">Bibliothèque</string>
+    <string name="library_systems_tab_off">Désactivés</string>
+    <string name="library_systems_tab_off_short">Désactivés</string>
+    <string name="library_systems_tab_more">Autres systèmes</string>
+    <string name="library_systems_tab_more_short">Autres</string>
+    <string name="library_folder_unusable">Ce dossier ne peut pas être utilisé, essaie-en un sur l’appareil ou la carte SD</string>
+    <!-- %1$s is a folder's name. -->
+    <string name="library_folder_added">%1$s ajouté, je cherche les jeux…</string>
+    <string name="library_systems_checking">Je vérifie tes systèmes…</string>
+    <string name="library_systems_search">Chercher un système ou une marque</string>
+    <!-- The search field on a narrow screen. -->
+    <string name="library_systems_search_short">Rechercher</string>
+    <!-- %1$s is what was typed. -->
+    <string name="library_systems_no_match">Aucun système ne correspond à «  %1$s  »</string>
+    <string name="library_systems_none_off">Rien n’est désactivé. Un système que tu désactives t’attend ici, jeux compris</string>
+    <string name="library_systems_none_more">Tous les systèmes que Tandem connaît ont déjà des jeux</string>
+    <string name="library_systems_none">Pas encore de jeux. Ouvre un système dans Autres systèmes et ajoute son dossier</string>
+    <!-- Small badges over a system's art. -->
+    <string name="library_systems_badge_off">Désactivé</string>
+    <string name="library_systems_badge_no_emulator">Sans émulateur</string>
+    <string name="library_systems_badge_bottom">En bas</string>
+    <string name="library_systems_no_games">Pas encore de jeux</string>
+
+    <!-- Settings › Systems & launching. -->
+    <string name="library_settings_systems_title">Systèmes et lancement</string>
+    <string name="library_settings_systems">Systèmes et émulateurs</string>
+    <plurals name="library_settings_systems_value">
+        <item quantity="one">%1$d système</item>
+        <item quantity="other">%1$d systèmes</item>
+    </plurals>
+    <string name="library_settings_systems_help">Active ou désactive des systèmes, choisis l’émulateur de chacun et l’écran où ses jeux démarrent, et ajoute des dossiers en plus.</string>
+    <string name="library_settings_apps">Applis Android</string>
+    <string name="library_settings_apps_value">Jeux et applis</string>
+    <string name="library_settings_apps_help">Toutes les applis de l’appareil. Marque celles qui sont des jeux pour qu’elles apparaissent dans le système Jeux Android.</string>
+    <string name="library_settings_single">Un seul écran</string>
+    <string name="library_settings_single_one">Activé · un écran</string>
+    <string name="library_settings_single_help">Laisse le second écran tranquille (ou éteint) et n’utilise que celui du haut. Les jeux démarrent aussi toujours en haut.</string>
+    <string name="library_settings_single_only_one">Un seul écran trouvé, les jeux démarrent donc toujours dessus</string>
+    <string name="library_settings_single_off">Les deux écrans servent</string>
+    <string name="library_settings_single_on">Seulement l’écran du haut désormais, les jeux y démarrent aussi</string>
+    <string name="library_settings_apps_open">Ouvrir les applis sur</string>
+    <string name="library_settings_apps_open_help">L’écran où une appli s’ouvre, sauf si elle a le sien (Y › Toujours ouvrir sur). Auto : l’écran d’où tu la lances. Un appui sur l’écran du bas l’ouvre en bas ; à la manette, elle s’ouvre là où se trouve la bibliothèque. Les jeux gardent leur propre écran.</string>
+    <string name="library_settings_apps_open_one">Haut · un écran</string>
+    <string name="library_settings_apps_open_only_one">Un seul écran trouvé, les applis s’ouvrent donc dessus</string>
+    <string name="library_settings_move">Maintenir Retour pour déplacer</string>
+    <string name="library_settings_move_needs_shizuku">Shizuku requis</string>
+    <string name="library_settings_move_needs_home">Service du bouton Home requis</string>
+    <!-- Toasts when the row is pressed without what it needs. -->
+    <string name="library_settings_move_shizuku_toast">Il faut Shizuku pour ça</string>
+    <string name="library_settings_move_home_toast">Il faut le service du bouton Home pour ça</string>
+    <string name="library_settings_move_off">Non</string>
+    <string name="library_settings_move_apps">Applis</string>
+    <string name="library_settings_move_games">Applis + jeux</string>
+    <string name="library_settings_move_help">Maintiens Retour un instant pendant qu’une appli est ouverte : elle passe sur l’autre écran et s’y ouvrira désormais. Maintiens-le de nouveau peu après pour annuler. Applis + jeux : un jeu au premier plan bouge aussi ; avec Applis, un jeu reste toujours où il est. Nécessite Shizuku et le service du bouton Home des manettes (Commandes).</string>
+    <string name="library_settings_voice">Ta voix dans les clips</string>
+    <string name="library_settings_voice_help">Un clip lancé depuis l’acolyte du jeu (Clip, sur l’écran du bas) enregistre ta voix au micro en plus du son du jeu. Désactivé, il n’enregistre que le jeu. Rien n’est écouté en dehors d’un clip.</string>
+    <string name="library_settings_launch">Animation de lancement</string>
+    <string name="library_settings_launch_help">Le visuel du jeu s’agrandit avec un petit effet pendant que l’émulateur démarre. Désactivée, les jeux se lancent direct.</string>
+    <!-- In the game menu: the screen a game starts on. -->
+    <string name="library_start_on">Démarrer sur</string>
+    <string name="library_bottom_screen">Écran du bas</string>
+    <string name="library_top_screen">Écran du haut</string>
+
+    <!-- A system's page. %1$s is the system's short name, like "GBA". -->
+    <string name="library_system_hidden">%1$s est masqué dans ta bibliothèque. Il t’attend dans Désactivés</string>
+    <string name="library_system_back">%1$s est de retour dans ta bibliothèque</string>
+    <string name="library_system_emulators">Émulateurs</string>
+    <string name="library_system_emulators_none">Aucun prévu pour ce système</string>
+    <string name="library_system_emulators_none_installed">Aucun installé pour l’instant : A sur l’un d’eux pour l’obtenir</string>
+    <string name="library_system_emulators_default">A en fait l’émulateur par défaut</string>
+    <!-- %1$s is an emulator, %2$s a system's short name. -->
+    <string name="library_system_already_plays">%1$s lance déjà les jeux %2$s</string>
+    <string name="library_system_now_plays">%1$s lance maintenant les jeux %2$s</string>
+    <!-- %1$s is an emulator. -->
+    <string name="library_system_no_store">Impossible d’ouvrir une boutique pour %1$s</string>
+    <string name="library_system_start_on">Démarrer les jeux sur</string>
+    <string name="library_system_start_single">Le mode un seul écran est activé, les jeux restent donc en haut pour l’instant</string>
+    <string name="library_system_start_note">Le réglage Démarrer sur d’un jeu (Y › Plus) passe avant</string>
+    <string name="library_system_bottom">Écran du bas pendant le jeu</string>
+    <string name="library_system_bottom_note">Pour les jeux de ce système ; un jeu peut quand même avoir le sien</string>
+    <string name="library_system_folders">Dossiers</string>
+    <!-- %1$s is a system's short name. -->
+    <string name="library_system_folders_note">Où les jeux %1$s sont lus, en plus de tes dossiers de jeux</string>
+    <string name="library_system_folder_added">Ajouté · A le retire</string>
+    <string name="library_system_folder_built_in">Intégré</string>
+    <!-- %1$s is a folder\'s path. -->
+    <string name="library_system_folder_games">Les jeux de %1$s apparaissent ici</string>
+    <!-- %1$s is a folder\'s name; offered with Undo. -->
+    <string name="library_system_folder_took_out">%1$s retiré</string>
+    <string name="library_system_also_looks">Cherche aussi dans</string>
+    <string name="library_system_not_there">Pas encore là</string>
+    <!-- %1$s is a folder's path, %2$s a system's short name. -->
+    <string name="library_system_make_folder">Crée %1$s et mets-y tes jeux %2$s</string>
+    <string name="library_system_add_folder">Ajouter un dossier…</string>
+    <string name="library_system_add_folder_detail">Rien que pour les jeux de ce système</string>
+    <string name="library_system_add_folder_pick">Choisir</string>
+    <string name="library_system_show">Afficher dans la bibliothèque</string>
+    <string name="library_system_show_off">Non · dans Désactivés</string>
+    <string name="library_system_bottom_detail">Pratique pour les jeux tactiles</string>
+    <string name="library_system_top_detail">Le grand écran</string>
+    <!-- What the bottom screen shows while a game plays, a few words under each choice. -->
+    <string name="library_system_mode_art">Ses visuels et infos</string>
+    <string name="library_system_mode_tandem">Horloge et raccourcis</string>
+    <string name="library_system_mode_dark">Noir jusqu’au toucher</string>
+    <string name="library_system_mode_deck">Clavier et pavé tactile</string>
+    <string name="library_system_mode_emulator">L’émulateur prend les deux</string>
+    <!-- An emulator card's state. -->
+    <string name="library_system_emu_default">Par défaut</string>
+    <string name="library_system_emu_make_default">A : par défaut</string>
+    <string name="library_system_emu_installed">Installé</string>
+    <string name="library_system_emu_get">L’obtenir</string>
+    <!-- %1$s is where it comes from, like "Play Store". -->
+    <string name="library_system_emu_get_from">L’obtenir · %1$s</string>
+    <!-- Under a system's hero on the bottom screen: %1$s is a play time, "3 h 20 min". -->
+    <string name="library_system_played_in">%1$s de jeu ici</string>
+
+    <!-- Where a game folder is (LibraryRoots.kt). %1$s is the card's volume name, like "1234-ABCD". -->
+    <string name="library_roots_sd_card">Carte SD %1$s</string>
+    <string name="library_roots_internal">Stockage interne</string>
+
+    <!-- Settings › Library & art › Game folders. ROMs is a folder's name: leave it. -->
+    <!-- %1$s is a folder's name; offered with Undo. -->
+    <string name="library_folders_took_out">%1$s retiré. Ses jeux ne s’affichent plus ; leurs infos sont gardées</string>
+    <string name="library_folders_where">Où vivent tes jeux</string>
+    <string name="library_folders_roms_detail">Le dossier de Tandem · toujours inclus</string>
+    <string name="library_folders_roms_help">Le dossier de Tandem sur le stockage interne, où il range ses données. Il est toujours parcouru pour trouver des jeux aussi, mais rien n’oblige à en mettre dedans.</string>
+    <!-- What A does on a folder, in the side panel's hints. -->
+    <string name="library_folders_options">Options</string>
+    <string name="library_folders_roms_always">Le dossier ROMs est toujours inclus. Ajoute tes dossiers de jeux à côté</string>
+    <string name="library_folders_not_there">Absent pour le moment</string>
+    <!-- A folder whose games are all copies of games another folder already gives. -->
+    <string name="library_folders_copies_only">Que des copies</string>
+    <string name="library_folders_help_there">Les jeux sont repérés grâce aux dossiers de leur système (3DS, gba, PlayStation 2…) ou à leur type de fichier. Y retire le dossier.</string>
+    <string name="library_folders_help_gone">La carte ou le dossier n’est pas monté. Ses jeux reviendront tout seuls dès qu’il le sera.</string>
+    <string name="library_folders_no_games">Aucun jeu trouvé pour l’instant</string>
+    <string name="library_folders_pick">Choisis ton dossier de jeux</string>
+    <string name="library_folders_pick_value">Carte SD ou appareil</string>
+    <string name="library_folders_pick_help">Choisis le dossier où sont tes jeux : un dossier par système, le dossier d’un seul système, ou tous les jeux mélangés.</string>
+    <!-- What A does on the card that adds a folder. -->
+    <string name="library_folders_pick_action">Choisir</string>
+    <string name="library_folders_rescan">Rechercher les jeux à nouveau</string>
+    <string name="library_folders_looking">Je cherche les jeux…</string>
+    <string name="library_folders_take_out">Le retirer</string>
+    <string name="library_folders_take_out_note">Le retirer masque ses jeux ; leurs infos sont gardées, et Annuler (pendant quelques secondes) le remet.</string>
+    <string name="library_folders_roms_tree_internal">Les émulateurs peuvent maintenant ouvrir des jeux partout sur le stockage interne. Choisis aussi ton dossier de jeux si ce n’est pas ROMs</string>
+    <string name="library_folders_roms_tree">ROMs est toujours inclus. Les émulateurs peuvent maintenant ouvrir ses jeux</string>
+    <string name="library_folders_is_roms">C’est le dossier ROMs, il est toujours inclus</string>
+    <!-- %1$s is a folder's name. -->
+    <string name="library_folders_inside_roms">%1$s est dans le dossier ROMs, ses jeux sont donc déjà trouvés</string>
+    <string name="library_folders_above_roms">%1$s contient le dossier ROMs, ses jeux apparaîtraient en double. Choisis le dossier où sont tes jeux</string>
+    <string name="library_folders_already">%1$s est déjà inclus</string>
+    <string name="library_folders_no_picker">Pas de sélecteur de dossier sur cet appareil</string>
+    <!-- "3 games already in ROMs": %2$s is the folder the games are listed from, or library_folders_other. -->
+    <plurals name="library_folders_copies">
+        <item quantity="one">%1$d jeu déjà dans %2$s</item>
+        <item quantity="other">%1$d jeux déjà dans %2$s</item>
+    </plurals>
+    <string name="library_folders_other">d’autres dossiers</string>
+    <string name="library_folders_pick_card">Choisir ton dossier de jeux…</string>
+    <string name="library_folders_pick_card_detail">Sur l’appareil ou une carte SD, rangé comme tu veux</string>
+    <string name="library_folders_sd_out">La carte SD est retirée. Ses jeux sont masqués jusqu’à son retour, puis reviennent tout seuls.</string>
+    <string name="library_folders_gone">Le dossier est introuvable pour le moment. Ses jeux sont masqués jusqu’à son retour.</string>
+    <!-- %1$s is where the games are listed from. -->
+    <string name="library_folders_copy_one">Le jeu d’ici est déjà dans %1$s : c’est le même fichier, il n’apparaît donc qu’une fois, depuis là-bas. Rien n’est perdu ; retire la copie de l’un des dossiers si tu veux.</string>
+    <!-- %1$d is how many games, %2$s where they are listed from. -->
+    <plurals name="library_folders_copy_many">
+        <item quantity="one">Le jeu d’ici est déjà dans %2$s : c’est le même fichier, il n’apparaît donc qu’une fois, depuis là-bas. Rien n’est perdu ; retire la copie de l’un des dossiers si tu veux.</item>
+        <item quantity="other">Les %1$d jeux d’ici sont déjà dans %2$s : ce sont les mêmes fichiers, chacun n’apparaît donc qu’une fois, depuis là-bas. Rien n’est perdu ; retire les copies de l’un des dossiers si tu veux.</item>
+    </plurals>
+    <string name="library_folders_none_here">Aucun jeu trouvé ici pour l’instant. Les jeux sont repérés dans les dossiers qui portent le nom de leur système (3DS, GBA, PS2…), et les fichiers qu’un seul système lit (.3ds, .nsp, .gba…) sont trouvés n’importe où.</string>
+    <!-- %1$s is library_folders_copies: "Plus 3 games already in ROMs, listed from there." -->
+    <string name="library_folders_plus_copies">Plus %1$s, affichés depuis là-bas.</string>
+    <string name="library_folders_art_note">Les visuels sont lus d’abord dans le downloaded_media de ce dossier, puis dans ROMs/downloaded_media. Y retire le dossier ; les infos de ses jeux sont gardées.</string>
+    <string name="library_folders_title">Dossiers de jeux</string>
+    <plurals name="library_folders_intro_roms">
+        <item quantity="one">Indique à Tandem le dossier où sont tes jeux, sur l’appareil ou une carte SD, rangé comme tu veux : un dossier par système, le dossier d’un seul système, ou tout mélangé. Leurs jeux rejoignent les mêmes systèmes. Pour l’instant, il n’y a que ROMs, avec %1$d jeu.</item>
+        <item quantity="other">Indique à Tandem le dossier où sont tes jeux, sur l’appareil ou une carte SD, rangé comme tu veux : un dossier par système, le dossier d’un seul système, ou tout mélangé. Leurs jeux rejoignent les mêmes systèmes. Pour l’instant, il n’y a que ROMs, avec %1$d jeux.</item>
+    </plurals>
+    <plurals name="library_folders_intro_more">
+        <item quantity="one">Indique à Tandem le dossier où sont tes jeux, sur l’appareil ou une carte SD, rangé comme tu veux : un dossier par système, le dossier d’un seul système, ou tout mélangé. Leurs jeux rejoignent les mêmes systèmes. Pour l’instant, il y a ROMs et %1$d autre dossier.</item>
+        <item quantity="other">Indique à Tandem le dossier où sont tes jeux, sur l’appareil ou une carte SD, rangé comme tu veux : un dossier par système, le dossier d’un seul système, ou tout mélangé. Leurs jeux rejoignent les mêmes systèmes. Pour l’instant, il y a ROMs et %1$d autres dossiers.</item>
+    </plurals>
+    <string name="library_folders_roms_only">ROMs seulement</string>
+    <plurals name="library_folders_roms_plus">
+        <item quantity="one">ROMs + %1$d dossier</item>
+        <item quantity="other">ROMs + %1$d dossiers</item>
+    </plurals>
+    <string name="library_folders_help">Les dossiers où sont tes jeux : choisis n’importe quel dossier, sur l’appareil ou une carte SD, rangé comme tu veux. ROMs, le dossier de Tandem, est toujours inclus. Leurs jeux rejoignent les mêmes systèmes, et un dossier absent (carte retirée) est ignoré jusqu’à son retour.</string>
+    <string name="library_folders_watch">Surveiller les dossiers de jeux</string>
+    <string name="library_folders_watch_help">Repère les jeux copiés par USB ou MTP, ou une carte SD remise en place, et les affiche quelques secondes plus tard sans réanalyse. Seulement quand Tandem est à l’écran ; rien ne tourne en arrière-plan.</string>
+
+    <!-- Edit details (GameEditor.kt): the fields, as labels and as the keyboard's title. -->
+    <string name="library_edit_title_field">Titre</string>
+    <string name="library_edit_year">Année</string>
+    <string name="library_edit_year_ask">Année de sortie (ex. 1998)</string>
+    <string name="library_edit_genres">Genres</string>
+    <string name="library_edit_genres_ask">Genres, séparés par des virgules</string>
+    <string name="library_edit_developer">Développeur</string>
+    <string name="library_edit_publisher">Éditeur</string>
+    <string name="library_edit_players">Joueurs</string>
+    <string name="library_edit_players_ask">Joueurs (ex. 1-4)</string>
+    <string name="library_edit_description">Description</string>
+    <string name="library_edit_hidden_art">Les jeux masqués ne sont jamais envoyés nulle part. Réaffiche-le pour chercher des visuels</string>
+    <string name="library_edit_unlocked">Déverrouillé : le scraping peut le mettre à jour</string>
+    <string name="library_edit_locked">Verrouillé : le scraping n’y touchera pas</string>
+    <string name="library_edit_heading">Modifier les infos</string>
+    <string name="library_edit_heading_app">Appli acolyte</string>
+    <string name="library_edit_heading_ra">Correspondance RetroAchievements</string>
+    <!-- %1$s is a field's name, in lowercase: "That doesn't look right for year". -->
+    <string name="library_edit_invalid">Hum, ça ne colle pas pour le champ %1$s</string>
+    <!-- %1$s is a field's name: "Year cleared". -->
+    <string name="library_edit_cleared">%1$s : champ vidé</string>
+    <string name="library_edit_saved">%1$s : enregistré et verrouillé</string>
+    <string name="library_edit_not_set">Non renseigné</string>
+    <string name="library_edit_locked_pill">Verrouillé</string>
+    <string name="library_edit_everything_unlocked">Tout est déverrouillé</string>
+    <string name="library_edit_unlock_all">Tout déverrouiller</string>
+    <plurals name="library_edit_locked_count">
+        <item quantity="one">%1$d verrouillé</item>
+        <item quantity="other">%1$d verrouillés</item>
+    </plurals>
+    <string name="library_edit_hint_edit">Modifier</string>
+    <string name="library_edit_hint_lock">Verrouiller</string>
+
+    <!-- Choose artwork. %1$s is a kind of art: "Box art updated from your picture". -->
+    <string name="library_art_from_picture">%1$s : ton image est en place</string>
+    <string name="library_art_bad_picture">Impossible d’utiliser cette image</string>
+    <!-- Where the current picture goes, when there is none. -->
+    <string name="library_art_none">Aucun</string>
+    <string name="library_art_title">Choisir les visuels</string>
+    <!-- %1$s is a game's title. -->
+    <string name="library_art_locked">%1$s · ton choix est verrouillé</string>
+    <string name="library_art_saving">Enregistrement…</string>
+    <string name="library_art_from_device">Depuis cet appareil</string>
+    <string name="library_art_automatic">Revenir en automatique</string>
+    <!-- %1$s is a kind of art. -->
+    <string name="library_art_automatic_again">%1$s : de retour en automatique</string>
+    <string name="library_art_updated">%1$s : tout beau, tout neuf ✨</string>
+    <string name="library_art_download_failed">Impossible de télécharger celle-ci, essaie une autre</string>
+    <string name="library_art_looking">Je fouille toutes les sources…</string>
+    <string name="library_art_nothing">Rien trouvé en ligne pour celui-ci. Ajoute un compte ScreenScraper ou SteamGridDB dans les Paramètres pour en trouver plus.</string>
+    <!-- %1$s is why a source had nothing, before library_art_nothing. -->
+    <string name="library_art_nothing_note">%1$s. Rien trouvé en ligne pour celui-ci. Ajoute un compte ScreenScraper ou SteamGridDB dans les Paramètres pour en trouver plus.</string>
+    <plurals name="library_art_found">
+        <item quantity="one">%1$d trouvé</item>
+        <item quantity="other">%1$d trouvés</item>
+    </plurals>
+    <!-- %1$s is "12 found", with any notes after it. -->
+    <string name="library_art_found_line">%1$s · ton choix est verrouillé, le scraping le garde</string>
+
+    <!-- Clear downloaded media. %1$d is how many files, %2$s their size in MB ("12.4"). -->
+    <string name="library_clear_title">Effacer les médias téléchargés ?</string>
+    <plurals name="library_clear_text">
+        <item quantity="one">Cela supprime l’image ou le clip que Tandem a téléchargé (%2$s Mo). Les visuels choisis à la main et ceux des autres applis restent.</item>
+        <item quantity="other">Cela supprime les %1$d images et clips que Tandem a téléchargés (%2$s Mo). Les visuels choisis à la main et ceux des autres applis restent.</item>
+    </plurals>
+    <string name="library_clear_keep">Les garder</string>
+    <string name="library_clear_clearing">Nettoyage…</string>
+    <string name="library_clear_clear">Effacer</string>
+    <!-- Finishes "Hold A, or press and hold, to …". -->
+    <string name="library_clear_hold">les effacer</string>
+    <!-- A manual that is a folder of pictures, before its name: "Folder of pictures · Zelda". -->
+    <string name="library_manual_pictures">Dossier d’images</string>
+
+    <!-- Edit details › Extras (GameExtrasEditor.kt). -->
+    <string name="library_extras_companion_badge">▣ Appli acolyte</string>
+    <string name="library_extras_native_badge">⚡ Natif</string>
+    <string name="library_extras_title">Bonus</string>
+    <string name="library_extras_none">Aucune</string>
+    <!-- %1$s is an app's name. -->
+    <string name="library_extras_app_closes">%1$s · se ferme après le jeu</string>
+    <string name="library_extras_app_keeps">%1$s · reste ouverte</string>
+    <string name="library_extras_app">Appli acolyte</string>
+    <string name="library_extras_choose_app">Choisir l’appli</string>
+    <string name="library_extras_change">Changer</string>
+    <string name="library_extras_close_on">Fermer après : oui</string>
+    <string name="library_extras_close_off">Fermer après : non</string>
+    <string name="library_extras_remove">Retirer</string>
+    <string name="library_extras_no_app">Aucune appli acolyte choisie</string>
+    <string name="library_extras_app_note">Démarre sur l’autre écran avec le jeu et y prend la place de l’acolyte de Tandem. Pas en mode un seul écran, ni avec un jeu sur l’écran du bas, ni pour un système laissé à son émulateur.</string>
+    <string name="library_extras_reading_apps">Je lis tes applis…</string>
+    <!-- %1$s is an app, %2$s a game. -->
+    <string name="library_extras_app_starts">%1$s démarre avec %2$s</string>
+    <!-- RetroAchievements: the game's match. %1$d is a RetroAchievements game id. -->
+    <string name="library_ra_none_chosen">Pas de succès (ton choix)</string>
+    <string name="library_ra_chosen">#%1$d · ton choix</string>
+    <!-- %1$s is the matched game's title. -->
+    <string name="library_ra_chosen_title">%1$s · #%2$d · ton choix</string>
+    <string name="library_ra_auto_unknown">Automatique · pas encore cherché</string>
+    <string name="library_ra_auto_none">Automatique · aucune correspondance</string>
+    <string name="library_ra_auto">#%1$d · automatique</string>
+    <string name="library_ra_auto_title">%1$s · #%2$d · automatique</string>
+    <string name="library_ra_row">Succès</string>
+    <string name="library_ra_find">Trouver le jeu</string>
+    <string name="library_ra_type">Saisir l’ID</string>
+    <string name="library_ra_no">Pas de succès</string>
+    <string name="library_ra_automatic">Automatique</string>
+    <string name="library_ra_ask">ID du jeu sur RetroAchievements (le nombre dans l’adresse de sa page)</string>
+    <string name="library_ra_not_id">Ce n’est pas un ID de jeu : c’est un nombre entier, comme 1234</string>
+    <string name="library_ra_matched_id">Associé au jeu #%1$d</string>
+    <string name="library_ra_hidden">Les jeux masqués ne sont jamais recherchés. Saisis un ID ou choisis Pas de succès.</string>
+    <string name="library_ra_signed_out">Connecte-toi à RetroAchievements (Paramètres › Bibliothèque et visuels › Comptes) pour voir des suggestions. Tu peux toujours saisir un ID.</string>
+    <!-- %1$s is a system's name. -->
+    <string name="library_ra_unsupported">RetroAchievements n’a pas de liste pour %1$s que Tandem connaisse.</string>
+    <string name="library_ra_not_matched">Pas encore associé.</string>
+    <string name="library_ra_currently_none">Actuellement : pas de succès.</string>
+    <!-- %1$s is the matched game's title (or library_ra_game), %2$d its id. -->
+    <string name="library_ra_currently">Actuellement : %1$s · #%2$d</string>
+    <string name="library_ra_game">jeu</string>
+    <string name="library_ra_type_long">Saisir un ID de jeu</string>
+    <string name="library_ra_auto_from_now">Trouvé automatiquement à partir de maintenant</string>
+    <string name="library_ra_looking">Je parcours la liste…</string>
+    <string name="library_ra_no_close">Aucun titre proche dans la liste.</string>
+    <!-- %1$s is a game's title. -->
+    <string name="library_ra_matched">Associé à %1$s</string>
+    <string name="library_ra_same_file">Même fichier</string>
+    <string name="library_ra_current">Actuel</string>
+    <!-- The game's manual. %1$s describes the file: "PDF · Pokemon Red.pdf". -->
+    <string name="library_manual_copying">Copie en cours…</string>
+    <string name="library_manual_yours">Ton choix · %1$s</string>
+    <string name="library_manual_gone">Ton choix a disparu</string>
+    <!-- %1$s is a file name. -->
+    <string name="library_manual_gone_using">Ton choix a disparu · %1$s utilisé</string>
+    <string name="library_manual_found">Trouvée · %1$s</string>
+    <!-- %1$s is a folder, like "ROMs/manuals/gb". -->
+    <string name="library_manual_none">Aucune · mets-en une dans %1$s</string>
+    <!-- %1$s is a file name, %2$s a game. -->
+    <string name="library_manual_now">%1$s est maintenant la notice de %2$s</string>
+    <string name="library_manual_bad_file">Impossible d’utiliser ce fichier comme notice</string>
+    <string name="library_manual_row">Notice</string>
+    <string name="library_manual_change">Changer de fichier</string>
+    <string name="library_manual_choose">Choisir un fichier</string>
+    <string name="library_manual_no_picker">Pas de sélecteur de fichiers sur cet appareil</string>
+    <string name="library_manual_read">Lire</string>
+    <string name="library_manual_use_found">Utiliser celle trouvée</string>
+    <string name="library_manual_forget">Oublier mon choix</string>
+    <!-- %1$s is a file name. -->
+    <string name="library_manual_reading_again">Je relis %1$s</string>
+    <string name="library_manual_forgotten">Choix oublié. Le fichier est toujours dans ROMs/manuals</string>
+    <!-- The logo's size and place. %1$d is its size in percent, %2$s its place ("Auto", "Left"…). -->
+    <string name="library_logo_row">Logo</string>
+    <string name="library_logo_value">%1$d %% · %2$s · regarde l’autre écran</string>
+    <!-- With the logo nudged: %3$d and %4$d are how far, sideways and up or down. -->
+    <string name="library_logo_value_moved">%1$d %% · %2$s · décalé de %3$d, %4$d · regarde l’autre écran</string>
+    <string name="library_logo_smaller">− Plus petit</string>
+    <string name="library_logo_bigger">+ Plus grand</string>
+    <!-- %1$s is the place: "Place: Auto". -->
+    <string name="library_logo_place">Placer : %1$s</string>
+    <string name="library_logo_reset">Réinitialiser</string>
+    <!-- Delete game: why Tandem won't delete it (GameDelete.kt). %1$s is a file's name. -->
+    <string name="library_delete_no_roots">Tandem ne connaît pas encore tes dossiers de jeux</string>
+    <string name="library_delete_gone">Le fichier du jeu n’est plus là</string>
+    <string name="library_delete_where">Tandem n’a pas réussi à savoir où se trouve le jeu</string>
+    <string name="library_delete_outside">Il n’est pas dans tes dossiers de jeux, Tandem n’y touche donc pas</string>
+    <string name="library_delete_link_outside">C’est un lien vers un endroit hors de tes dossiers de jeux, Tandem n’y touche donc pas</string>
+    <string name="library_delete_system_folder">C’est le dossier entier d’un système, Tandem ne le supprimera pas</string>
+    <string name="library_delete_other_games">Son dossier contient aussi d’autres jeux, Tandem ne le supprimera pas</string>
+    <string name="library_delete_inner_link">%1$s, à l’intérieur, pointe hors de tes dossiers de jeux, Tandem n’y touche donc pas</string>
+    <string name="library_delete_part_outside">%1$s est hors de tes dossiers de jeux, Tandem n’y touche donc pas</string>
+    <string name="library_delete_part_link">%1$s pointe hors de tes dossiers de jeux, Tandem n’y touche donc pas</string>
+    <string name="library_delete_cant_look">Impossible d’examiner ses fichiers</string>
+
+    <!-- Delete game (DeleteGame.kt). -->
+    <!-- What a toast calls a game kept hidden in private mode: "Deleted a hidden game". -->
+    <string name="library_delete_hidden_name">un jeu masqué</string>
+    <!-- Where a PC game is really installed; the three are apps' names. -->
+    <string name="library_delete_pc_apps">GameNative, Winlator ou DroidDeck (jeux Steam)</string>
+    <string name="library_delete_its_emulator">son émulateur</string>
+    <string name="library_delete_show_hidden">Affiche d’abord les jeux masqués pour en supprimer un</string>
+    <string name="library_delete_close_first">Le fermer d’abord ?</string>
+    <!-- %1$s is a game. -->
+    <string name="library_delete_running">%1$s est lancé. Tandem peut le fermer, puis le supprimer. Ta progression non sauvegardée sera perdue.</string>
+    <string name="library_delete_close_game">Fermer le jeu</string>
+    <!-- %1$s is why. -->
+    <string name="library_delete_nothing_deleted">Rien n’a été supprimé. %1$s</string>
+    <!-- %1$s is a game, %2$s a size ("1.2 GB"). -->
+    <string name="library_delete_done">Supprimé : %1$s (%2$s libérés)</string>
+    <!-- %3$d is how many files couldn't be removed. -->
+    <plurals name="library_delete_done_failed">
+        <item quantity="one">Supprimé : %1$s (%2$s libérés), mais %3$d fichier n’a pas pu être retiré</item>
+        <item quantity="other">Supprimé : %1$s (%2$s libérés), mais %3$d fichiers n’ont pas pu être retirés</item>
+    </plurals>
+    <string name="library_delete_no_uninstaller">Android n’a pas voulu ouvrir son écran de désinstallation</string>
+    <string name="library_delete_uninstalled">%1$s désinstallé</string>
+    <string name="library_delete_ask_uninstall">Désinstaller %1$s ?</string>
+    <string name="library_delete_ask">Supprimer %1$s ?</string>
+    <!-- A size: "1.2 GB freed". -->
+    <string name="library_delete_freed">%1$s libérés</string>
+    <string name="library_delete_app_note">Android supprime l’appli et tout ce qu’elle garde, sauvegardes comprises, après une dernière confirmation. Tandem l’oublie ensuite : favori, À suivre, grille de l’accueil et listes de masqués.</string>
+    <string name="library_delete_looking">J’examine ses fichiers…</string>
+    <!-- %1$s is why it can't be deleted. -->
+    <string name="library_delete_refused">%1$s. Rien ne sera supprimé.</string>
+    <string name="library_delete_files">Fichiers du jeu</string>
+    <plurals name="library_delete_more">
+        <item quantity="one">et %1$d autre</item>
+        <item quantity="other">et %1$d autres</item>
+    </plurals>
+    <!-- %1$s is where the game is installed (library_delete_pc_apps, or an emulator). -->
+    <string name="library_delete_shortcut">Ce n’est que le raccourci de Tandem. Le jeu lui-même est installé dans %1$s : désinstalle-le là-bas pour libérer sa place.</string>
+    <!-- %1$s is a list of file names. -->
+    <string name="library_delete_kept">Gardé, un autre jeu s’en sert : %1$s</string>
+    <!-- %1$d is how many files. -->
+    <string name="library_delete_art">Visuels téléchargés (%1$d)</string>
+    <!-- %1$s is a size. -->
+    <string name="library_delete_art_delete">Supprimer · %1$s</string>
+    <string name="library_delete_art_keep">Garder</string>
+    <string name="library_delete_art_shared">Les visuels téléchargés restent : un autre jeu du même nom s’en sert.</string>
+    <string name="library_delete_no_art">Aucun visuel téléchargé.</string>
+    <string name="library_delete_saves">Les sauvegardes restent dans l’émulateur : Tandem ne sait pas où chacun les range.</string>
+    <string name="library_delete_forgets">Tandem oublie le jeu : favori, À suivre, grille de l’accueil, collections et listes de masqués.</string>
+    <string name="library_delete_keep_stats">Garder les stats de jeu</string>
+    <string name="library_delete_android_asks">Android demande confirmation avant de désinstaller.</string>
+    <string name="library_delete_cant_undo">Impossible de revenir en arrière.</string>
+    <string name="library_delete_cancel">Annuler</string>
+    <string name="library_delete_ok">OK</string>
+    <string name="library_delete_uninstall_app">Désinstaller l’appli</string>
+    <string name="library_delete_deleting">Suppression…</string>
+    <string name="library_delete_delete">Supprimer</string>
+    <!-- Finishes "Hold A, or press and hold, to …". -->
+    <string name="library_delete_hold">le supprimer</string>
+    <!-- An app's details (AppDetails.kt). -->
+    <string name="library_app_just_now">à l’instant</string>
+    <string name="library_app_all_apps">Toutes les applis</string>
+    <!-- What kind of app it is, shown in capitals above its name. -->
+    <string name="library_app_kind_tandem">Appli Tandem</string>
+    <string name="library_app_kind_drawer">Tiroir d’applis</string>
+    <string name="library_app_kind_emulator">Émulateur</string>
+    <string name="library_app_kind_game">Jeu Android</string>
+    <string name="library_app_kind_system">Appli système</string>
+    <string name="library_app_kind_app">Appli Android</string>
+    <string name="library_app_drawer_blurb">Toutes les applis de cet appareil. Épingle tes préférées au dock avec Y.</string>
+    <!-- %1$s is a version, like "2.4.1". -->
+    <string name="library_app_version">Version %1$s</string>
+    <!-- %1$s is when, like "3 days ago". -->
+    <string name="library_app_updated">mise à jour %1$s</string>
+    <string name="library_app_running">● Lancée</string>
+    <string name="library_app_in_android_games">Dans Jeux Android</string>
+    <!-- More systems than fit: "+3 more". -->
+    <string name="library_app_more">+%1$d autres</string>
+    <!-- Facts: a name over a value. -->
+    <string name="library_app_apps">Applis</string>
+    <string name="library_app_in_dock">Dans le dock</string>
+    <string name="library_app_played">Lancé</string>
+    <plurals name="library_app_times">
+        <item quantity="one">%1$d fois</item>
+        <item quantity="other">%1$d fois</item>
+    </plurals>
+    <string name="library_app_not_yet">Pas encore</string>
+    <string name="library_app_last_played">Dernière partie</string>
+    <string name="library_app_games_played">Jeux lancés</string>
+    <string name="library_app_none_yet">Aucun pour l’instant</string>
+    <string name="library_app_time_played">Temps de jeu</string>
+    <string name="library_app_last_used">Dernière utilisation</string>
+    <string name="library_app_installed">Installée</string>
+    <string name="library_app_hint_open">Ouvrir</string>
+    <string name="library_app_hint_pin">Épingler au dock</string>
+    <string name="library_app_hint_options">Options</string>
+    <string name="library_app_hint_swap">Inverser</string>
+    <!-- %1$s is an emulator's name. -->
+    <string name="library_app_recently_in">Joués récemment dans %1$s</string>
+
+    <!-- Settings › Android apps (AppsScreen.kt). -->
+    <string name="library_apps_search">Chercher une appli</string>
+    <string name="library_apps_finding">Je cherche tes applis…</string>
+    <string name="library_apps_all">Toutes les applis</string>
+    <string name="library_apps_games">Jeux</string>
+    <!-- %1$s is what was typed. -->
+    <string name="library_apps_no_match">Aucune appli ne correspond à «  %1$s  »</string>
+    <string name="library_apps_no_games">Aucun jeu marqué pour l’instant. Passe sur Toutes les applis et appuie sur Y sur un jeu pour l’ajouter</string>
+    <string name="library_apps_none">Aucune appli trouvée</string>
+    <string name="library_apps_game">Jeu Android</string>
+    <string name="library_apps_app">Appli Android</string>
+    <!-- A badge on a game's icon. -->
+    <string name="library_apps_badge_game">Jeu</string>
+    <!-- Bringing a Cocoon setup over (CocoonSetup.kt). Cocoon is another launcher's name. -->
+    <!-- The name of an imported folder that had none. Saved with the folder, in the language of the day. -->
+    <string name="library_cocoon_folder">Dossier</string>
+    <string name="library_cocoon_no_backup">Je n’ai trouvé aucune sauvegarde Cocoon dans ROMs/backups. Crées-en d’abord une dans les paramètres de Cocoon</string>
+    <!-- What an automatic backup was made before: "Before Cocoon import". Saved with the backup. -->
+    <string name="library_cocoon_backup_reason">import Cocoon</string>
+    <string name="library_cocoon_here">Ta config Cocoon a emménagé ✨ Paramètres › Jeu et système › Tes données › Annuler l’import Cocoon la remet comme avant</string>
+    <string name="library_cocoon_in">Ton accueil et ton thème Cocoon sont là ✨</string>
+    <!-- %1$s lists what had no match in Tandem. -->
+    <string name="library_cocoon_in_skipped">Ton accueil et ton thème Cocoon sont là ✨ (pas d’équivalent pour %1$s)</string>
+    <string name="library_cocoon_undo">Annuler</string>
+    <!-- What the home grid's Undo takes back. Saved with the grid. -->
+    <string name="library_cocoon_undo_label">Import de l’accueil Cocoon</string>
+    <string name="library_cocoon_nothing_to_undo">Aucun import Cocoon à annuler</string>
+    <string name="library_cocoon_undone">Tout est revenu comme avant l’import Cocoon</string>
+    <string name="library_cocoon_import">Importer ma config Cocoon</string>
+    <string name="library_cocoon_reading">Lecture…</string>
+    <string name="library_cocoon_no_backup_value">Aucune sauvegarde trouvée</string>
+    <!-- %1$s is the backup's date. -->
+    <string name="library_cocoon_backup_of">Sauvegarde du %1$s</string>
+    <string name="library_cocoon_import_help">Ton accueil Cocoon dans Tandem : les mêmes vignettes et dossiers dans le même ordre, les rangées de Cocoon, et ton pack de thème avec ses deux fonds d’écran vidéo, icônes, bannières et logos. Lit la sauvegarde la plus récente dans ROMs/backups. Tu peux annuler.</string>
+    <string name="library_cocoon_import_action">Importer</string>
+    <string name="library_cocoon_undo_row">Annuler l’import Cocoon</string>
+    <string name="library_cocoon_undo_help">Remet la grille de l’accueil, l’apparence et le dock que tu avais avant d’importer ta config Cocoon.</string>
+    <string name="library_cocoon_title">Depuis Cocoon</string>
+    <!-- Start › Hidden: a hidden thing's second line (HiddenItems.kt). -->
+    <string name="library_hidden_system_gone">Système · introuvable</string>
+    <string name="library_hidden_folder_gone">Dossier · introuvable</string>
+    <plurals name="library_hidden_system">
+        <item quantity="one">Système · %1$d jeu</item>
+        <item quantity="other">Système · %1$d jeux</item>
+    </plurals>
+    <plurals name="library_hidden_folder">
+        <item quantity="one">Dossier · %1$d jeu</item>
+        <item quantity="other">Dossier · %1$d jeux</item>
+    </plurals>
+    <plurals name="library_hidden_home_folder">
+        <item quantity="one">Dossier de l’accueil · %1$d élément</item>
+        <item quantity="other">Dossier de l’accueil · %1$d éléments</item>
+    </plurals>
+    <!-- %1$s is a system's name. -->
+    <string name="library_hidden_game">Jeu · %1$s</string>
+    <!-- After unhiding something; names nothing, as hidden things stay private. -->
+    <string name="library_hidden_back_home">De retour sur ta grille d’accueil</string>
+    <string name="library_hidden_back_library">De retour dans ta bibliothèque</string>
+    <plurals name="library_clear_done">
+        <item quantity="one">%1$d fichier effacé, %2$s Mo libérés</item>
+        <item quantity="other">%1$d fichiers effacés, %2$s Mo libérés</item>
+    </plurals>
+</resources>

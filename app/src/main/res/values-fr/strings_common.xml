@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Words used all over Tandem: button hints, On and Off, sizes. Keys start with common_. See docs/TRANSLATING.md. -->
+<resources>
+    <string name="common_back">Retour</string>
+    <string name="common_close">Fermer</string>
+    <string name="common_choose">Choisir</string>
+    <string name="common_on">Activé</string>
+    <string name="common_off">Désactivé</string>
+    <string name="common_clear">Effacer</string>
+    <!-- Free space on a drive, after a size: "12 GB free". -->
+    <string name="common_size_free">%1$s libres</string>
+    <!-- A battery level: "87%". -->
+    <string name="common_percent">%1$d %%</string>
+
+    <!-- Settings › Play & system › Language. The options are each language's name in itself, never translated. -->
+    <string name="common_language">Langue</string>
+    <string name="common_language_system">Langue du système</string>
+    <string name="common_language_help">La langue que parle Tandem. Langue du système suit celle d’Android. Là où une traduction manque encore, le texte s’affiche en anglais.</string>
+</resources>
