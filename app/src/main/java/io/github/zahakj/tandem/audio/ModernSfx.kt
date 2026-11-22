@@ -39,7 +39,7 @@ internal object ModernSfx {
     class Timbre(
         val pitch: Double = 1.0, val tap: Double = 1.0, val tapGain: Double = 1.0, val body: Double = 1.0, val bodyGain: Double = 1.0,
         val decay: Double = 1.0, val fm: Double = 1.0, val air: Double = 1.0, val cutoff: Double = 6200.0, val room: Double = 1.0,
-        val level: Double = 0.0,
+        val level: Double = 0.0, val thud: Double = 0.0,
     ) {
         companion object {
             val MODERN = Timbre()
@@ -49,9 +49,10 @@ internal object ModernSfx {
             val GLASS = Timbre(pitch = 1.5, tap = 1.35, tapGain = 0.8, body = 1.4, bodyGain = 0.35, decay = 1.9, fm = 1.5, air = 0.8, cutoff = 9500.0, room = 2.6, level = -1.0)
             // Pure sines, a whisper of a tap, breaths doing most of the work, soft room.
             val AIR = Timbre(pitch = 1.0, tap = 0.7, tapGain = 0.35, body = 0.9, bodyGain = 0.5, decay = 1.4, fm = 0.0, air = 1.9, cutoff = 5000.0, room = 2.0)
-            // A good keyboard's thock: the weight moved down to ~250–300 Hz and left to ring a little longer, the
-            // click muffled and quiet on top, nothing bright, almost no room. The tones keep their pitch, only warmer.
-            val THOCK = Timbre(pitch = 1.0, tap = 0.5, tapGain = 0.55, body = 0.22, bodyGain = 2.1, decay = 2.2, fm = 0.25, air = 0.5, cutoff = 2600.0, room = 0.35, level = 1.0)
+            // A good keyboard's thock: the weight moved down to ~450–600 Hz (low enough to feel heavy, high enough
+            // for a handheld's small speakers to play), a muffled click on top, tones an octave down in the same key,
+            // a thud under every sound, nothing bright, almost no room.
+            val THOCK = Timbre(pitch = 0.5, tap = 0.62, tapGain = 0.9, body = 0.38, bodyGain = 1.8, decay = 1.7, fm = 0.25, air = 0.5, cutoff = 3800.0, room = 0.35, level = 2.0, thud = 0.6)
 
             /** The timbre for [pack], or null for the packs made another way. */
             fun of(pack: SoundPack): Timbre? = when (pack) {
@@ -113,6 +114,8 @@ internal object ModernSfx {
             Sfx.SaverIn -> { b.tone(0.0, A5, 0.35, 0.25); b.tone(0.16, Fs5, 0.33, 0.25); b.tone(0.32, D5, 0.35, 0.4); b.tone(0.32, A4, 0.2, 0.4) }
             Sfx.SaverOut -> { b.tap(0.0, 3200.0, 0.4); b.tone(0.0, D5, 0.35, 0.08); b.tone(0.06, Fs5, 0.38, 0.08); b.tone(0.12, A5, 0.42, 0.18) }
         }
+        // Timbres with a thud put one under every sound that has no weight of its own yet (navigation already does).
+        if (tm.thud > 0 && kind !in setOf(Sfx.Move, Sfx.Key, Sfx.Page, Sfx.SaverIn)) b.thud(0.0, tm.thud)
         return b.finish(levelDb(kind) + tm.level, (if (kind == Sfx.Launch) 0.06 else 0.035) * tm.room)
     }
 
@@ -180,6 +183,20 @@ internal object ModernSfx {
                 if (k >= data.size) break
                 val t = i.toDouble() / rate
                 data[k] += (bp.bp(noise.next()) * env(t, 0.0002, tau) * vel * 1.6).toFloat()
+            }
+        }
+
+        /** A keycap bottoming out: a muffled click and a ~460 Hz knock that drops a little as it dies. */
+        fun thud(at: Double, vel: Double) {
+            tap(at, 2200.0 / tm.tap, 0.45 * vel / tm.tapGain)
+            val start = idx(at)
+            var ph = 0.0
+            for (i in 0 until idx(0.016 * 7)) {
+                val k = start + i
+                if (k >= data.size) break
+                val t = i.toDouble() / rate
+                ph += 460.0 * (1 + 0.4 * exp(-t / 0.005)) / rate
+                data[k] += (sin(2 * PI * ph) * env(t, 0.0008, 0.016) * vel).toFloat()
             }
         }
 
