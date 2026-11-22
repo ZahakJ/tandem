@@ -43,10 +43,7 @@
     <string name="settings_page_screens_details">Details below · %1$s</string>
     <string name="settings_page_screens_details_mode">Details</string>
     <!-- %1$s is a sound pack's name: "Soft sounds". -->
-    <string name="settings_page_sound_sounds">%1$s sounds</string>
     <string name="settings_page_sound_sounds_off">Sounds off</string>
-    <string name="settings_page_sound_music_on">music on</string>
-    <string name="settings_page_sound_music_off">music off</string>
     <!-- %1$s is a kind of button prompts: "Xbox prompts". -->
     <string name="settings_page_controls_prompts">%1$s prompts</string>
     <string name="settings_page_controls_swapped">A/B swapped</string>

@@ -36,6 +36,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.border
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -156,24 +161,51 @@ fun SettingsPage(id: String) {
     )
 }
 
-/** A page's tile: its icon, name and the current state in a few words. */
+/**
+ * A page's tile: its icon and name, centred, nothing else (the page's state is in the side panel, which has room).
+ * Every tile is built the same way in its own colour: a soft wash from the top, a glow behind a glossy icon tile, and
+ * the name under it, so the seven read as one set.
+ */
 @Composable
 private fun CategoryTile(c: SettingsCategory, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    FocusCard(modifier, glow = c.color, shape = RoundedCornerShape(20.dp), onFocus = onFocus, onClick = onClick) {
-        // The tile's own colour, deepened, behind the text (no dark band): see UI-RULES §5.
-        Box(Modifier.fillMaxSize().background(lerp(c.color, Palette.Night, 0.82f)))
-        Column(Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 12.dp)) {
-            GlyphChip(c.icon, c.color, 32.dp)
-            Spacer(Modifier.weight(1f))
-            // Narrow tiles (four in the top row) wrap a long name onto two lines at a word, or a phrase in Japanese
-            // and Chinese, shrinking a little rather than cutting it or leaving one character on a line.
-            ShrinkText(
-                c.title, MaterialTheme.typography.titleMedium.copy(lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.15f),
-                Modifier.fillMaxWidth().heightIn(max = 48.dp), maxLines = 2, minScale = 0.82f,
-            )
-            // Only a short state that always fits ("Icon grid · 6 across", "198 games"): a theme's or a pack's name
-            // could be long, and the side panel shows it in full. Without one, the name sits at the tile's foot.
-            if (c.summary.isNotBlank()) PartsText(c.summary, MaterialTheme.typography.labelLarge, color = c.color)
+    FocusCard(modifier, glow = c.color, shape = RoundedCornerShape(22.dp), onFocus = onFocus, onClick = onClick) {
+        // The tile's own colour, deepened, behind everything (no dark band): see UI-RULES §5.
+        Box(
+            Modifier.fillMaxSize()
+                .background(Brush.verticalGradient(listOf(lerp(c.color, Palette.Night, 0.70f), lerp(c.color, Palette.Night, 0.86f))))
+                .drawBehind {
+                    // A pool of the tile's colour behind the icon, so each tile glows from its middle.
+                    drawCircle(
+                        Brush.radialGradient(
+                            listOf(c.color.copy(alpha = 0.30f), Color.Transparent),
+                            center = Offset(size.width / 2, size.height * 0.42f), radius = size.minDimension * 0.62f,
+                        ),
+                        radius = size.minDimension * 0.62f, center = Offset(size.width / 2, size.height * 0.42f),
+                    )
+                },
+        )
+        Column(
+            Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            // The icon on a glossy tile of its colour: lit at the top, a fine rim.
+            Box(
+                Modifier.size(48.dp).clip(RoundedCornerShape(16.dp))
+                    .background(Brush.linearGradient(listOf(lerp(c.color, Color.White, 0.18f), lerp(c.color, Palette.Night, 0.30f))))
+                    .border(1.dp, Color.White.copy(alpha = 0.18f), RoundedCornerShape(16.dp)),
+                contentAlignment = Alignment.Center,
+            ) { GlyphIcon(c.icon, readableOn(c.color), Modifier.padding(12.dp)) }
+            Spacer(Modifier.height(8.dp))
+            // One size on every tile: a long name wraps onto a second line (at a word, or a phrase in Japanese and
+            // Chinese) and only shrinks if even two lines can't hold it. Centred in its own box, so a one-line name
+            // sits in the middle of a wide tile too.
+            Box(Modifier.fillMaxWidth().heightIn(min = 50.dp), contentAlignment = Alignment.Center) {
+                ShrinkText(
+                    c.title, MaterialTheme.typography.titleMedium.copy(lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.15f),
+                    Modifier.heightIn(max = 80.dp), maxLines = 2, minScale = 0.82f,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
+            }
         }
     }
 }

@@ -447,7 +447,6 @@ fun settingsCatalog(): List<SettingsCategory> {
     // derivedStateOf: details changing (a scrape, a favourite) only recomposes Settings when the count changes.
     val games by remember { androidx.compose.runtime.derivedStateOf { io.github.zahakj.tandem.Collections.visibleGames().size } }
     val systems = Libraries.all.orEmpty().count { it.games.isNotEmpty() }
-    val pack = ThemePacks.byId(look.theme)
 
     // A page tile's summary is a few parts joined with " · " (PartsText draws them so), each part a whole phrase.
     fun parts(vararg p: String?) = p.filterNotNull().joinParts()
@@ -482,14 +481,9 @@ fun settingsCatalog(): List<SettingsCategory> {
         ),
         SettingsCategory(
             "sound", SettingsCategories.title("sound"), Glyph.Music, Palette.Peach, Tx.s(R.string.settings_page_sound_blurb),
-            when {
-                // A theme pack's name can be long and is shown in full on the side panel: the tile stays quiet.
-                pack != null && (pack.music.isNotEmpty() || pack.sounds != null) -> ""
-                else -> parts(
-                    if (look.sounds) Tx.s(R.string.settings_page_sound_sounds, SoundPack.of(look.soundPack).label) else Tx.s(R.string.settings_page_sound_sounds_off),
-                    Tx.s(if (look.music) R.string.settings_page_sound_music_on else R.string.settings_page_sound_music_off),
-                )
-            },
+            // Pack names (a theme pack's, or a sound pack's) are long and the side panel shows them in full: the tile
+            // stays quiet and only says so when sounds are off.
+            if (look.sounds) "" else Tx.s(R.string.settings_page_sound_sounds_off),
             soundPage, en = SettingsCategories.titleEn("sound"),
         ),
         tile(

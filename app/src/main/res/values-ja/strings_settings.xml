@@ -28,10 +28,7 @@
     <string name="settings_page_screens_swapped">ライブラリは下画面</string>
     <string name="settings_page_screens_details">下画面に詳細 · %1$s</string>
     <string name="settings_page_screens_details_mode">詳細</string>
-    <string name="settings_page_sound_sounds">操作音：%1$s</string>
     <string name="settings_page_sound_sounds_off">操作音オフ</string>
-    <string name="settings_page_sound_music_on">BGMオン</string>
-    <string name="settings_page_sound_music_off">BGMオフ</string>
     <string name="settings_page_controls_prompts">%1$s風ガイド</string>
     <string name="settings_page_controls_swapped">A/B入れ替え</string>
     <plurals name="settings_page_controls_rebound">

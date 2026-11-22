@@ -28,10 +28,7 @@
     <string name="settings_page_screens_swapped">游戏库在下屏</string>
     <string name="settings_page_screens_details">下屏资料 · %1$s</string>
     <string name="settings_page_screens_details_mode">资料</string>
-    <string name="settings_page_sound_sounds">%1$s音效</string>
     <string name="settings_page_sound_sounds_off">音效关</string>
-    <string name="settings_page_sound_music_on">音乐开</string>
-    <string name="settings_page_sound_music_off">音乐关</string>
     <string name="settings_page_controls_prompts">%1$s 按键图标</string>
     <string name="settings_page_controls_swapped">A/B 已交换</string>
     <plurals name="settings_page_controls_rebound">
