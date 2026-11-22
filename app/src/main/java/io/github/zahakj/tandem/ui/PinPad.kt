@@ -269,7 +269,8 @@ private fun PinDots(typed: Int) {
 
 /** 1 to 9, then ⌫ 0 OK, as on a phone. The keys are ids too ("OK" shows in Tandem's language). */
 @Composable
-private fun Keypad(enabled: Boolean, onKey: (String) -> Unit) {
+private fun Keypad(enabled: Boolean, onKey: (String) -> Unit) = LeftToRight {
+    // 1 2 3 from the left in every language, as phones keep them.
     val target = rememberFocusTarget(ROUTE, KEYS.map { "k:$it" })
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         for (row in KEYS.chunked(3)) Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -174,7 +175,7 @@ private fun buildOrbs(catalog: GridCatalog, groups: String): List<Orb> {
                 listOfNotNull(
                     Tx.p(R.plurals.home_orbit_games, item.games.size),
                     if (playing > 0) Tx.p(R.plurals.home_orbit_playing, playing) else item.blurb.ifEmpty { null },
-                ).joinToString(" · ")
+                ).joinParts()
             }
             TileKind.Collection, TileKind.Genres -> item.detail
             else -> item.blurb.ifEmpty { item.type }
@@ -402,8 +403,10 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         val withContinue = last != null && !noGames
         val cardW = min((floorY - fanTop) / 1.12f / Fan.ASPECT, (w / 2 - 14.dp) / Fan.reach(cards.size, withContinue)).coerceAtLeast(36.dp)
         val cardH = cardW * Fan.ASPECT
+        // In right to left the ring runs the other way round: the next orbs on the left, as everything else runs.
+        val rtl = isRtl
         val layout = with(density) {
-            remember(w, h, side, orbD, rise) { OrbitLayout(w.toPx(), (baseY - stageTop).toPx(), rise.toPx(), orbD.toPx(), side) }
+            remember(w, h, side, orbD, rise, rtl) { OrbitLayout(w.toPx(), (baseY - stageTop).toPx(), rise.toPx(), orbD.toPx(), side, mirrored = rtl) }
         }
         st.layout = layout
         val ring = animateFloatAsState(if (st.focused) 1f else 0f, Motion.soft(), label = "orbit-ring")
@@ -496,8 +499,9 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
                 Modifier.focusRequester(continueReq)
                     .focusProperties {
                         down = if (orbs.isNotEmpty()) stageReq else FocusRequester.Default
-                        left = FocusRequester.Cancel
-                        if (cards.isEmpty()) right = FocusRequester.Cancel
+                        // Outwards (the start side) stops; towards the covers goes on.
+                        start = FocusRequester.Cancel
+                        if (cards.isEmpty()) end = FocusRequester.Cancel
                     }
                     .takesFocus(route, Orbit.CONTINUE, target == Orbit.CONTINUE),
                 onFocus = { fanFocus = null; part = OrbitPart.Continue },
@@ -529,6 +533,8 @@ private fun OrbitStage(
     val glowW = with(LocalDensity.current) { 9.dp.toPx() }
     val lineW = with(LocalDensity.current) { 1.6.dp.toPx() }
     val bead = with(LocalDensity.current) { 2.4.dp.toPx() }
+    // A drag spins the ring the way the finger goes, whichever way round it runs.
+    val spin = if (layout.mirrored) -1f else 1f
     Box(
         modifier
             .onFocusChanged {
@@ -543,8 +549,8 @@ private fun OrbitStage(
             .onKeyEvent { e ->
                 val down = e.type == KeyEventType.KeyDown
                 when (e.key) {
-                    Key.DirectionLeft -> { if (down) st.step(-1); true }
-                    Key.DirectionRight -> { if (down) st.step(1); true }
+                    // The way the arrow points: the neighbour on that side comes to the front (Rtl.kt).
+                    Key.DirectionLeft, Key.DirectionRight -> { if (down) st.step(e.sideStep()); true }
                     Key.DirectionUp -> if (down) onUp() else false
                     // Nothing below the dock-less orbit: Down stays put rather than wandering off.
                     Key.DirectionDown -> { if (down) onDown(); true }
@@ -562,12 +568,12 @@ private fun OrbitStage(
                 val tracker = VelocityTracker()
                 detectHorizontalDragGestures(
                     onDragStart = { tracker.resetTracking(); st.stop() },
-                    onDragEnd = { st.fling(-tracker.calculateVelocity().x / layout.pxPerOrb); if (!st.focused) st.focusFromTouch(scope) },
+                    onDragEnd = { st.fling(-tracker.calculateVelocity().x * spin / layout.pxPerOrb); if (!st.focused) st.focusFromTouch(scope) },
                     onDragCancel = { st.fling(0f) },
                 ) { change, dx ->
                     change.consume()
                     tracker.addPosition(change.uptimeMillis, change.position)
-                    st.dragBy(-dx / layout.pxPerOrb)
+                    st.dragBy(-dx * spin / layout.pxPerOrb)
                 }
             }
             .drawWithCache {
@@ -601,6 +607,8 @@ private fun OrbitStage(
                     }
                 }
             },
+        // The orbs are moved from the left edge by the layout's own x (already mirrored in right to left).
+        contentAlignment = AbsoluteAlignment.TopLeft,
     ) {
         st.orbs.forEachIndexed { i, orb -> OrbView(orb, i, st, layout, orbD, ring) }
     }
@@ -811,6 +819,8 @@ private fun SpotFan(
 ) {
     val ctx = LocalContext.current
     val cardWpx = with(LocalDensity.current) { cardW.toPx() }
+    // offset {} mirrors the covers' places in right to left; their turn and entry glide follow.
+    val sign = startSign
     val n = cards.size
     cards.forEachIndexed { rank, card ->
         val p = Fan.place(rank, n, cardWpx)
@@ -833,9 +843,9 @@ private fun SpotFan(
                     val s = p.scale * (0.86f + 0.14f * e)
                     scaleX = s
                     scaleY = s
-                    rotationY = p.turn * e
+                    rotationY = p.turn * e * sign
                     cameraDistance = 16f * density
-                    translationX = -p.x * (1f - e) * 0.7f
+                    translationX = -p.x * (1f - e) * 0.7f * sign
                     // Faded as one picture (not ModulateAlpha): the card's surface must not show through the art.
                     alpha = e.coerceIn(0f, 1f) * shown.value
                 }

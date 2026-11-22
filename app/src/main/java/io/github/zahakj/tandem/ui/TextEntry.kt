@@ -124,7 +124,8 @@ fun TextEntryOverlay() {
                 // Long text shows its end, where you're typing.
                 TailText(visible, Palette.Text)
             }
-            LazyVerticalGrid(GridCells.Fixed(10), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // A–Z in their usual order in every language (LeftToRight).
+            LeftToRight { LazyVerticalGrid(GridCells.Fixed(10), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(keys, key = { it }, span = { k -> GridItemSpan(if (k.length > 1 && k != "⇧" && k != "⌫") 2 else 1) }) { k ->
                     // Shift does nothing for symbols, so it looks switched off there.
                     val off = k == "⇧" && symbols
@@ -145,7 +146,7 @@ fun TextEntryOverlay() {
                         },
                     ) { KeyFace(keyLabel(k), on, off) }
                 }
-            }
+            } }
             Row(Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 ButtonHint("A", Tx.s(R.string.menus_keyboard_type), Palette.Mint)
                 ButtonHint("X", Tx.s(R.string.menus_keyboard_delete), Palette.Peach)

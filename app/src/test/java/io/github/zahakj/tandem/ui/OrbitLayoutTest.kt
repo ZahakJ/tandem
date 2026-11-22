@@ -218,4 +218,19 @@ class OrbitLayoutTest {
         assertEquals(-a.x, b.x, 0.001f)
         assertTrue(b.x - a.x > 100f * a.scale)
     }
+
+    @Test fun mirroredRingPutsTheNextOrbsOnTheLeftAndHitsThem() {
+        val rtl = OrbitLayout(width = 1920f, baseY = 600f, rise = 250f, orb = 190f, side = 5, mirrored = true)
+        for (d in listOf(-3f, -1f, 0f, 0.5f, 2f)) {
+            val a = layout.place(d)
+            val b = rtl.place(d)
+            assertEquals(1920f - a.x, b.x, 0.01f)
+            assertEquals(a.y, b.y, 0.01f)
+            assertEquals(a.scale, b.scale, 0.0001f)
+        }
+        assertTrue(rtl.place(1f).x < 960f)
+        // A touch on the orb drawn left of the front finds the next one.
+        val next = rtl.place(1f)
+        assertEquals(1, rtl.hit(next.x, next.y, 0f, 20, false))
+    }
 }

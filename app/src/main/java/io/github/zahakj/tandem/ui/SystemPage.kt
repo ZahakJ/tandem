@@ -266,14 +266,14 @@ private fun Hero(e: SystemEntry, modifier: Modifier, end: @Composable () -> Unit
             )
         }
         // Darker behind the words, so they read over any picture.
-        Box(Modifier.matchParentSize().background(Brush.horizontalGradient(listOf(Palette.Card.copy(alpha = 0.94f), Palette.Card.copy(alpha = 0.6f), Color.Transparent)), shape))
+        Box(Modifier.matchParentSize().background(startGradient(listOf(Palette.Card.copy(alpha = 0.94f), Palette.Card.copy(alpha = 0.6f), Color.Transparent), isRtl), shape))
         Row(Modifier.fillMaxSize().padding(horizontal = 14.dp), verticalAlignment = Alignment.CenterVertically) {
             SystemArt(e, 84.dp)
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(p.name, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Text(
-                    listOfNotNull(e.maker, Tx.p(R.plurals.library_games, e.games.size)).joinToString("  ·  "),
+                    listOfNotNull(e.maker, Tx.p(R.plurals.library_games, e.games.size)).joinParts("  ·  "),
                     style = MaterialTheme.typography.titleSmall, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -447,7 +447,7 @@ private fun CardGrid(columns: Int, content: @Composable (cell: Dp) -> Unit) {
             layout(width, heights.sum() + gap * (rows.size - 1).coerceAtLeast(0)) {
                 var y = 0
                 rows.forEachIndexed { r, row ->
-                    row.forEachIndexed { c, p -> p.place(c * (cellPx + gap), y) }
+                    row.forEachIndexed { c, p -> p.placeRelative(c * (cellPx + gap), y) }
                     y += heights[r] + gap
                 }
             }

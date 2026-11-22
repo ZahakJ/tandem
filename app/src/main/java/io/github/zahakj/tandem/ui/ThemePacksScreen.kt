@@ -208,7 +208,7 @@ private fun PackCard(p: ThemePack, look: Look, focus: Modifier, onFocus: () -> U
             // Two lines kept for the name on every card, so the cards of a line stay the same height.
             Text(p.name, Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.titleSmall, minLines = 2, maxLines = 2)
             ShrinkText(
-                listOfNotNull(p.author.ifBlank { null }?.let { Tx.s(R.string.look_packs_by, it) }, p.format.label).joinToString(" · "),
+                listOfNotNull(p.author.ifBlank { null }?.let { Tx.s(R.string.look_packs_by, it) }, p.format.label).joinParts(),
                 MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth().padding(horizontal = 4.dp), maxLines = 1, minScale = 0.75f, color = Palette.Muted,
             )
         }
@@ -286,7 +286,7 @@ private fun PackMenu(pack: ThemePack?, onClose: () -> Unit) {
         ) {
             Text(p.name, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                listOfNotNull(p.author.ifBlank { null }?.let { Tx.s(R.string.look_packs_by, it) }, p.format.label).joinToString(" · "),
+                listOfNotNull(p.author.ifBlank { null }?.let { Tx.s(R.string.look_packs_by, it) }, p.format.label).joinParts(),
                 style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(10.dp))

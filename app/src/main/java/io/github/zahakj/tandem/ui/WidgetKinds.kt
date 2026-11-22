@@ -370,7 +370,8 @@ fun Ring(fraction: Float, color: Color, modifier: Modifier, stroke: Dp = 7.dp, c
 private fun Bar(fraction: Float, color: Color, modifier: Modifier) {
     val anim = remember { Animatable(0f) }
     LaunchedEffect(fraction) { anim.animateTo(fraction.coerceIn(0f, 1f), spring(dampingRatio = 0.9f, stiffness = Spring.StiffnessVeryLow)) }
-    Canvas(modifier) {
+    // Fills from the start side (from the right in right to left).
+    Canvas(modifier.mirroredInRtl()) {
         val r = CornerRadius(size.height / 2)
         drawRoundRect(Palette.NightDeep.copy(alpha = 0.75f), cornerRadius = r)
         val w = size.width * anim.value
@@ -1272,14 +1273,15 @@ private fun StatsWidget(s: WidgetScope, m: Modifier) {
 
 private val DAY_LETTERS get() = DateTimeFormatter.ofPattern(Tx.s(R.string.widgets_date_day_letter), Lang.locale)
 
-/** The last 7 days as soft bars that grow in; today is the warm one on the right. */
+/** The last 7 days as soft bars that grow in; today is the warm one at the end (the right, or the left in right to left). */
 @Composable
 private fun WeekBars(days: LongArray, modifier: Modifier, labels: Boolean) {
     val grow = remember { Animatable(0f) }
     LaunchedEffect(Unit) { grow.animateTo(1f, spring(Spring.DampingRatioLowBouncy, Spring.StiffnessVeryLow)) }
     val today = LocalDate.now()
     Column(modifier) {
-        Canvas(Modifier.fillMaxWidth().weight(1f)) {
+        // Today at the end, like the day letters under it: mirrored in right to left.
+        Canvas(Modifier.fillMaxWidth().weight(1f).mirroredInRtl()) {
             val max = maxOf(days.max(), 20 * 60L).toFloat()
             val slot = size.width / 7f
             val barW = slot * 0.56f

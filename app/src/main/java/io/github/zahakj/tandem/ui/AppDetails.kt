@@ -279,7 +279,7 @@ fun AppDetails(pkg: String, chrome: Boolean, shift: () -> Float = { 0f }, topCle
                     val sub = when {
                         builtIn != null -> builtIn.blurb
                         drawer -> Tx.s(R.string.library_app_drawer_blurb)
-                        else -> listOfNotNull(l?.version?.let { Tx.s(R.string.library_app_version, it) }, l?.updated?.takeIf { it > 0 }?.let { Tx.s(R.string.library_app_updated, ago(it)) }).joinToString(" · ")
+                        else -> listOfNotNull(l?.version?.let { Tx.s(R.string.library_app_version, it) }, l?.updated?.takeIf { it > 0 }?.let { Tx.s(R.string.library_app_updated, ago(it)) }).joinParts()
                     }
                     if (sub.isNotEmpty()) Text(sub, style = MaterialTheme.typography.bodyLarge, color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }

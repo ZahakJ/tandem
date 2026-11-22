@@ -182,7 +182,7 @@ fun ResumePage(running: RunningGame, routeKey: String, target: String?, modifier
                         game.platform.name,
                         session?.takeIf { it >= 60 }?.let { Tx.s(R.string.home_resume_session, formatPlayTime(it)) },
                         running.appName,
-                    ).joinToString(" · ")
+                    ).joinParts()
                     Text(line, style = MaterialTheme.typography.labelLarge.onArt(), color = lerp(color, Color.White, 0.6f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                     if (roomy) {
                         Spacer(Modifier.height(8.dp))

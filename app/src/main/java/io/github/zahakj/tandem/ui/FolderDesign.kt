@@ -247,7 +247,7 @@ private fun Header(plain: GridItem, preview: GridItem) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {
             Text(FolderDesign.page?.let { Tx.s(R.string.grid_design_page, it.label) } ?: Tx.s(R.string.grid_design_title_main), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(listOf(plain.title, plain.type).joinToString(" · "), style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(listOf(plain.title, plain.type).joinParts(), style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
             ButtonHint("L1", "", Palette.Muted)

@@ -368,7 +368,8 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
     }
     FocusCard(
         modifier.fillMaxWidth().height(210.dp).onPreviewKeyEvent { e ->
-            val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
+            // The way the arrow points: towards the end is the left in right to left (Rtl.kt).
+            val d = e.sideStep().takeIf { it != 0 } ?: return@onPreviewKeyEvent false
             // Let focus leave at the ends.
             if (selected + d !in 0..29) return@onPreviewKeyEvent false
             if (e.type == KeyEventType.KeyDown) selected += d
@@ -388,7 +389,8 @@ private fun DayChart(stats: PlayStats, noHistory: Boolean, modifier: Modifier) {
                 style = MaterialTheme.typography.labelLarge, color = if (focused) Palette.Peach else Palette.Muted,
             )
             Spacer(Modifier.height(6.dp))
-            Canvas(Modifier.fillMaxWidth().weight(1f)) {
+            // Oldest day at the start, today at the end, like the dates under it: mirrored in right to left.
+            Canvas(Modifier.fillMaxWidth().weight(1f).mirroredInRtl()) {
                 val max = maxOf(days.max(), 30 * 60L).toFloat()
                 val slot = size.width / 30f
                 val barW = slot * 0.62f

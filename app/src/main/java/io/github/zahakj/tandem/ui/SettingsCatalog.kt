@@ -375,7 +375,7 @@ private fun subSummary(id: String, rows: List<SettingRow>): String {
             "RA ✓".takeIf { HomeStore.ra.user.isNotBlank() && HomeStore.ra.key.isNotBlank() },
             "Steam ✓".takeIf { io.github.zahakj.tandem.data.SteamStore.account.signedIn },
             "Discord ✓".takeIf { DiscordPresence.available && DiscordPresence.linked },
-        ).joinToString(" · ").ifEmpty { Tx.s(R.string.settings_sub_accounts_none) }
+        ).joinParts().ifEmpty { Tx.s(R.string.settings_sub_accounts_none) }
         "play/privacy" -> Tx.s(if (HomeStore.settings.privateMode) R.string.settings_sub_privacy_on else R.string.settings_sub_privacy_off)
         "play/data" -> Tx.s(R.string.settings_sub_data_summary)
         "play/dev" -> Tx.p(R.plurals.settings_sub_dev_tools, rows.size)
@@ -451,7 +451,7 @@ fun settingsCatalog(): List<SettingsCategory> {
     val pack = ThemePacks.byId(look.theme)
 
     // A page tile's summary is a few parts joined with " · " (PartsText draws them so), each part a whole phrase.
-    fun parts(vararg p: String?) = p.filterNotNull().joinToString(" · ")
+    fun parts(vararg p: String?) = p.filterNotNull().joinParts()
     fun tile(id: String, icon: Glyph, color: Color, @StringRes blurb: Int, summary: String) =
         SettingsCategory(id, SettingsCategories.title(id), icon, color, Tx.s(blurb), summary, pages.getValue(id), en = SettingsCategories.titleEn(id))
     val top = listOf(

@@ -64,7 +64,7 @@ data class ThemePack(
             if (spec.wallpaperTop != null && spec.wallpaperBottom != null) add(Tx.s(R.string.look_pack_has_two_wallpapers))
             else if (hasWallpaper) add(Tx.s(R.string.look_pack_has_wallpaper))
             if (music.isNotEmpty()) add(Tx.p(R.plurals.look_pack_has_songs, music.size))
-        }.joinToString(" · ")
+        }.joinParts()
 
     /** The asset packs it uses, each as "Name by Author" (or just its name), for its Art: line. */
     fun creditLines(): List<String> = credits.map { (name, author) -> if (author != null) Tx.s(R.string.look_pack_credit, name, author) else name }

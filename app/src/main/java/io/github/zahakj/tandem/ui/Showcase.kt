@@ -182,11 +182,15 @@ private fun Dots(n: Int, shown: Int, current: Int, color: Color) {
 
 // --- Drawing helpers --------------------------------------------------------------------------------------------
 
-/** A miniature screen in the live theme: its background, then [draw] with the theme and a unit of 1 % of the height. */
+/**
+ * A miniature screen in the live theme: its background, then [draw] with the theme and a unit of 1 % of the height.
+ * Mirrored in right to left (the screens it sketches are), unless it pictures something physical ([mirror] false: the
+ * handheld, a keyboard).
+ */
 @Composable
-internal fun MiniScreen(modifier: Modifier = Modifier, draw: DrawScope.(t: ThemeSpec, u: Float) -> Unit) {
+internal fun MiniScreen(modifier: Modifier = Modifier, mirror: Boolean = true, draw: DrawScope.(t: ThemeSpec, u: Float) -> Unit) {
     val t = Themes.live
-    Canvas(modifier.fillMaxSize()) {
+    Canvas(modifier.fillMaxSize().then(if (mirror) Modifier.mirroredInRtl() else Modifier)) {
         drawRect(Brush.verticalGradient(listOf(t.background, t.backgroundDeep)))
         draw(t, size.height / 100f)
     }
@@ -432,7 +436,7 @@ internal enum class Shows { Library, Details, Off, App, AppFaint, Art, Companion
  */
 @Composable
 internal fun DeviceScene(top: Shows, bottom: Shows) {
-    MiniScreen { t, u -> device(t, top, bottom, 1f) }
+    MiniScreen(mirror = false) { t, u -> device(t, top, bottom, 1f) }
 }
 
 /**
@@ -833,7 +837,7 @@ internal fun LaunchScene(on: Boolean) {
 /** The Deck's keyboard in [layout] ("full" or "game"). */
 @Composable
 internal fun DeckScene(layout: String) {
-    MiniScreen { t, u ->
+    MiniScreen(mirror = false) { t, u ->
         val key = t.card
         val ink = t.muted
         if (layout == "game") {

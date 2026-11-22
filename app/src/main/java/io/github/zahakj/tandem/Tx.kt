@@ -46,11 +46,11 @@ object Lang {
     )
 
     /**
-     * Right-to-left screens wait for the RTL pass (docs/TRANSLATING.md lists what still assumes left to right):
-     * until then Arabic text runs right to left inside each line, but every screen keeps its left-to-right layout,
-     * which is how Tandem has always looked on an Arabic Android. Turning this on is that pass's last step.
+     * Arabic lays every screen out right to left (docs/TRANSLATING.md, "Right to left": what mirrors, what stays left
+     * to right on purpose, and how the D-pad steps). Turning this off puts every language back to left to right,
+     * with Arabic text still running right to left inside each line.
      */
-    const val RTL_READY = false
+    const val RTL_READY = true
 
     /** The tag picked in Settings, or [SYSTEM]. */
     var chosen by mutableStateOf(SYSTEM)
@@ -159,7 +159,9 @@ object Lang {
         }
     }
 
-    private fun isRtl(l: Locale) = l.language in setOf("ar", "fa", "he", "iw", "ur")
+    // Only a right-to-left language Tandem has text for: Android set to Hebrew or Persian shows Tandem in English,
+    // which must stay left to right.
+    private fun isRtl(l: Locale) = l.language == "ar"
 }
 
 /**
@@ -193,14 +195,23 @@ object Tx {
     /** A string. */
     fun s(@StringRes id: Int): String = r().getString(id)
 
-    /** A string with its %1$s, %2$d… filled in. */
-    fun s(@StringRes id: Int, vararg args: Any): String = r().getString(id, *args)
+    /** A string with its %1$s, %2$d… filled in (text arguments isolated in right to left, see [bidi]). */
+    fun s(@StringRes id: Int, vararg args: Any): String = r().getString(id, *bidi(args))
 
     /** The form of a plural for [n], with %1$d being [n]. */
     fun p(@PluralsRes id: Int, n: Int): String = r().getQuantityString(id, n, n)
 
     /** The form of a plural for [n], with [args] (put [n] among them yourself). */
-    fun p(@PluralsRes id: Int, n: Int, vararg args: Any): String = r().getQuantityString(id, n, *args)
+    fun p(@PluralsRes id: Int, n: Int, vararg args: Any): String = r().getQuantityString(id, n, *bidi(args))
+
+    /**
+     * In a right-to-left layout every text argument is a first-strong isolate: a Latin game title, a file path or a
+     * URL keeps its own direction inside the Arabic sentence, so its punctuation and slashes stay where they belong
+     * ("/ROMs/snes", "Pokémon (USA)!") and it never pulls the words around it out of order. Left to right: as given.
+     */
+    private fun bidi(args: Array<out Any>): Array<out Any> =
+        if (Lang.layoutDirection != LayoutDirection.Rtl) args
+        else Array(args.size) { i -> args[i].let { a -> if (a is CharSequence) "\u2068$a\u2069" else a } }
 
     /**
      * The English text of [id], whatever the language: for stable keys and for search, so an English word still

@@ -350,6 +350,8 @@ fun Coverflow(routeKey: String, items: List<FlowItem>, cardWidth: Dp, cardHeight
     }
     BoxWithConstraints(modifier) {
         val side = ((maxWidth - cardWidth) / 2).coerceAtLeast(0.dp)
+        // Offsets in the list run from its start: in right to left that is the right, so the turn and pull flip.
+        val sign = startSign
         LazyRow(
             Modifier.fillMaxSize().fadingEdges(state, horizontal = true, length = 48.dp).focusRow(),
             state = state,
@@ -364,10 +366,10 @@ fun Coverflow(routeKey: String, items: List<FlowItem>, cardWidth: Dp, cardHeight
                     val center = (info.viewportStartOffset + info.viewportEndOffset) / 2f
                     val d = ((me.offset + me.size / 2f - center) / me.size).coerceIn(-3f, 3f)
                     val a = abs(d)
-                    rotationY = (-d * 38f).coerceIn(-55f, 55f)
+                    rotationY = (-d * 38f).coerceIn(-55f, 55f) * sign
                     val s = (1f - 0.14f * a).coerceAtLeast(0.66f)
                     scaleX = s; scaleY = s
-                    translationX = -d * size.width * 0.14f
+                    translationX = -d * size.width * 0.14f * sign
                     alpha = (1f - 0.22f * a).coerceAtLeast(0.25f)
                     cameraDistance = 14f * density
                 }
@@ -580,7 +582,7 @@ fun GameListView(routeKey: String, folders: List<GroupItem>, games: List<Game>) 
             }
             itemsIndexed(games, key = { _, g -> g.key }, contentType = { _, _ -> "game" }) { i, g ->
                 val m = g.meta
-                val detail = listOfNotNull(g.platform.shortName, m.year?.toString(), m.genres.firstOrNull(), m.developer).joinToString(" · ")
+                val detail = listOfNotNull(g.platform.shortName, m.year?.toString(), m.genres.firstOrNull(), m.developer).joinParts()
                 ListRow(
                     g.title + if (m.favorite) "  ♥" else "", detail,
                     if (m.playSeconds > 0) formatPlayTime(m.playSeconds) else null, Palette.forName(g.platform.id),
@@ -626,7 +628,7 @@ fun GameCarouselView(routeKey: String, folders: List<GroupItem>, games: List<Gam
         } + games.map { g ->
             val m = g.meta
             FlowItem(
-                g.key, g.title, listOfNotNull(g.platform.shortName, m.year?.toString(), m.genres.firstOrNull()).joinToString(" · "),
+                g.key, g.title, listOfNotNull(g.platform.shortName, m.year?.toString(), m.genres.firstOrNull()).joinParts(),
                 Palette.forName(g.platform.id), Selected.GameItem(g), game = g,
             ) { Launcher.launch(ctx, g) }
         }

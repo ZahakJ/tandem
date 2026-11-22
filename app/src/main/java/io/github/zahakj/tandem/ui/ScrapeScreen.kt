@@ -759,7 +759,7 @@ private fun runFooter(run: ScrapeRun): String? {
         if (s < 60) Tx.s(R.string.scrape_run_eta_under_minute) else if (s < 120) Tx.s(R.string.scrape_run_eta_minute)
         else Tx.p(R.plurals.scrape_run_eta_minutes, (s / 60).toInt())
     }
-    return listOfNotNull(run.source.ifEmpty { null }, eta, run.bytes.takeIf { it > 0 }?.let(::formatBytes)).joinToString(" · ").ifEmpty { null }
+    return listOfNotNull(run.source.ifEmpty { null }, eta, run.bytes.takeIf { it > 0 }?.let(::formatBytes)).joinParts().ifEmpty { null }
 }
 
 /** "New art for 12 games · details for 30 · 8.1 MB", or that nothing changed. */
@@ -767,7 +767,7 @@ private fun runSummary(run: ScrapeRun): String = listOfNotNull(
     run.withArt.takeIf { it > 0 }?.let { Tx.p(R.plurals.scrape_run_summary_art, it) },
     run.withDetails.takeIf { it > 0 }?.let { Tx.p(if (run.withArt > 0) R.plurals.scrape_run_summary_details_too else R.plurals.scrape_run_summary_details, it) },
     run.bytes.takeIf { it > 0 }?.let(::formatBytes),
-).joinToString(" · ").replaceFirstChar { it.uppercase(Lang.locale) }.ifEmpty { Tx.s(R.string.scrape_run_nothing_new) }
+).joinParts().replaceFirstChar { it.uppercase(Lang.locale) }.ifEmpty { Tx.s(R.string.scrape_run_nothing_new) }
 
 /**
  * A progress bar. The fill animates in the draw phase only, so a moving bar never recomposes (or re-lays out)
@@ -782,7 +782,8 @@ fun ProgressBar(fraction: Float, modifier: Modifier = Modifier) {
     Box(
         modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(50)).background(Palette.CardHigh).drawBehind {
             val w = size.width * f.value
-            if (w > 0f) drawRoundRect(Brush.horizontalGradient(colors, endX = w), size = Size(w, size.height), cornerRadius = CornerRadius(size.height / 2))
+            // From the start side: the right in right to left.
+            if (w > 0f) mirroredInRtl { drawRoundRect(Brush.horizontalGradient(colors, endX = w), size = Size(w, size.height), cornerRadius = CornerRadius(size.height / 2)) }
         },
     )
 }

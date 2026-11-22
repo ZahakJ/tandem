@@ -116,10 +116,11 @@ private fun Scrim(visible: Boolean, onClose: () -> Unit, morph: PanelMorph? = nu
     }
     // Reduce motion: no growing out of the tile, just a short fade.
     val moving = morph != null && Flair.entering
+    val rtl = isRtl
     AnimatedVisibility(
         visible,
-        enter = when { moving -> EnterTransition.None; side -> sideIn; morph != null -> fadeIn(tween(140)); else -> popIn },
-        exit = when { moving -> ExitTransition.None; side -> sideOut; morph != null -> fadeOut(tween(120)); else -> popOut },
+        enter = when { moving -> EnterTransition.None; side -> sideIn(rtl); morph != null -> fadeIn(tween(140)); else -> popIn },
+        exit = when { moving -> ExitTransition.None; side -> sideOut(rtl); morph != null -> fadeOut(tween(120)); else -> popOut },
     ) {
         val progress = if (moving) {
             val p = transition.animateFloat({ spring(dampingRatio = 0.86f, stiffness = 420f, visibilityThreshold = 0.002f) }, label = "panel-morph") {
@@ -218,15 +219,19 @@ internal fun ValueChip(value: String, color: Color, cycles: Boolean = false, mod
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val arrow = color.copy(alpha = 0.6f)
-        if (cycles) Text("◂", Modifier.padding(end = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
-        Text(value, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        if (cycles) Text("▸", Modifier.padding(start = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
+        // The arrows point outwards on both sides; the row puts its start on the right in right to left.
+        val rtl = isRtl
+        if (cycles) Text(if (rtl) "▸" else "◂", Modifier.padding(end = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
+        // "▸" (opens a page) points towards the end, the left in right to left.
+        Text(if (rtl && value == "▸") "◂" else value, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (cycles) Text(if (rtl) "◂" else "▸", Modifier.padding(start = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
     }
 }
 
 /** Left and Right call [step] with -1 and 1 (a row whose value is a choice); without one they move the focus as usual. */
 internal fun Modifier.sideSteps(step: ((Int) -> Unit)?): Modifier = if (step == null) this else onPreviewKeyEvent { e ->
-    val by = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> 0 }
+    // Towards the start or the end, whichever side that is (Rtl.kt).
+    val by = e.sideStep()
     if (by == 0) return@onPreviewKeyEvent false
     if (e.type == KeyEventType.KeyDown) { step(by); Sounds.move() }
     true
@@ -388,7 +393,7 @@ fun GameMenu() {
             })
         }
         val page = if (StatusUi.pageFor == g.key) StatusUi.page(g, onBack = { StatusUi.pageFor = null }) { StatusUi.pageFor = null; Nav.closeMenus() } else null
-        MenuSpec(routeKey, g.title, listOfNotNull(g.platform.name, meta.year?.toString()).joinToString(" · "), SystemColors.of(g.platform.id), actions, page) { GameArt(g) }
+        MenuSpec(routeKey, g.title, listOfNotNull(g.platform.name, meta.year?.toString()).joinParts(), SystemColors.of(g.platform.id), actions, page) { GameArt(g) }
     }
 }
 
@@ -626,7 +631,8 @@ fun SearchOverlay() {
                     }
                 }
                 Spacer(Modifier.height(4.dp))
-                LazyVerticalGrid(GridCells.Fixed(7), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                // A–Z in their usual order in every language.
+                LeftToRight { LazyVerticalGrid(GridCells.Fixed(7), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(KEYS, key = { it }, span = { k -> GridItemSpan(if (k.length > 1 || k == "⌫") 2 else 1) }) { k ->
                         FocusCard(
                             Modifier.height(34.dp).takesFocus("search", "key:$k", !SearchState.inResults && keyTarget == "key:$k"),
@@ -644,7 +650,7 @@ fun SearchOverlay() {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(keyLabel(k), style = MaterialTheme.typography.titleSmall, maxLines = 1) }
                         }
                     }
-                }
+                } }
                 Row(Modifier.padding(horizontal = 8.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     ButtonHint("X", Tx.s(R.string.menus_keyboard_delete), Palette.Peach)
                     ButtonHint("B", Tx.s(R.string.common_close), Palette.Lavender)

@@ -403,7 +403,8 @@ private fun LevelCard(
 ) {
     FocusCard(
         modifier.fillMaxWidth().height(if (compact) 50.dp else 60.dp).onPreviewKeyEvent { e ->
-            val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
+            // The way the arrow points: towards the end is the left in right to left (Rtl.kt).
+            val d = e.sideStep().takeIf { it != 0 } ?: return@onPreviewKeyEvent false
             if (e.type == KeyEventType.KeyDown) onStep(d)
             true
         },

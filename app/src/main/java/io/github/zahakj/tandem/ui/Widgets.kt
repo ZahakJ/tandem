@@ -550,8 +550,8 @@ fun FocusFrame(
             .onPreviewKeyEvent { e ->
                 if (cursorCount < 2) return@onPreviewKeyEvent false
                 val d = when (e.key) {
-                    Key.DirectionLeft -> if (vertical) return@onPreviewKeyEvent false else -1
-                    Key.DirectionRight -> if (vertical) return@onPreviewKeyEvent false else 1
+                    // Sideways the way the arrow points (the strip runs from the right in right to left).
+                    Key.DirectionLeft, Key.DirectionRight -> if (vertical) return@onPreviewKeyEvent false else e.sideStep()
                     Key.DirectionUp -> if (vertical) -1 else return@onPreviewKeyEvent false
                     Key.DirectionDown -> if (vertical) 1 else return@onPreviewKeyEvent false
                     else -> return@onPreviewKeyEvent false
@@ -587,8 +587,9 @@ fun Modifier.movable(id: String, area: WidgetArea): Modifier {
         .onPreviewKeyEvent { e ->
             if (WidgetUi.moving != id) return@onPreviewKeyEvent false
             val d = when (e.key) {
-                Key.DirectionLeft, Key.DirectionUp -> -1
-                Key.DirectionRight, Key.DirectionDown -> 1
+                Key.DirectionLeft, Key.DirectionRight -> e.sideStep()
+                Key.DirectionUp -> -1
+                Key.DirectionDown -> 1
                 Key.DirectionCenter, Key.Enter, Key.NumPadEnter, Key.ButtonA -> 0
                 else -> return@onPreviewKeyEvent false
             }

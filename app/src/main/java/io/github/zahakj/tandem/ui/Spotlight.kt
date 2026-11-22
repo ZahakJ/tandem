@@ -184,9 +184,11 @@ fun SpotlightView(selected: Selected, onStatusPill: (Dp) -> Unit = {}) {
             label = "spotlight",
         ) { s ->
             val still = Motion.style == AnimationStyle.Off
-            // -1 arriving, 0 shown, 1 leaving: the background moves further than the front.
+            // 1 arriving (from the end side), 0 shown, -1 leaving: the background moves further than the front. The
+            // end side is the left in right to left.
+            val toEnd = startSign
             val shift = transition.animateFloat({ tween(360) }, label = "parallax") { st ->
-                if (still) 0f else when (st) { EnterExitState.PreEnter -> 1f; EnterExitState.Visible -> 0f; EnterExitState.PostExit -> -1f }
+                if (still) 0f else when (st) { EnterExitState.PreEnter -> toEnd; EnterExitState.Visible -> 0f; EnterExitState.PostExit -> -toEnd }
             }
             // Logos, icons and words never overlap: the leaving item's go first (120 ms) and the arriving item's only
             // come in once they're gone, while the two backgrounds crossfade underneath.

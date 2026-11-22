@@ -250,7 +250,8 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
  */
 internal fun Modifier.spill(w: Dp, h: Dp, bigW: Dp, bigH: Dp, dx: Dp = 0.dp, dy: Dp = 0.dp): Modifier = layout { m, _ ->
     val p = m.measure(Constraints.fixed(bigW.roundToPx().coerceAtLeast(0), bigH.roundToPx().coerceAtLeast(0)))
-    layout(w.roundToPx(), h.roundToPx()) { p.place(dx.roundToPx(), dy.roundToPx()) }
+    // Relative: in right to left the grid runs from the right, so a widget spills over the cells to its left.
+    layout(w.roundToPx(), h.roundToPx()) { p.placeRelative(dx.roundToPx(), dy.roundToPx()) }
 }
 
 /**

@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -129,7 +130,8 @@ fun MorphBox(morph: PanelMorph, progress: () -> Float, content: @Composable () -
         val art = morph.art
         if (art != null && showArt && tileSide > 0f) {
             val sideDp = with(density) { tileSide.toDp() }
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
+            // The left edge in every language: the translation below is measured from it.
+            Box(Modifier.fillMaxSize(), contentAlignment = AbsoluteAlignment.TopLeft) {
                 Box(
                     Modifier.requiredSize(sideDp).graphicsLayer {
                         val q = progress().coerceIn(0f, 1f)

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 enum class Glyph {
     Theme, Sparkle, Grid, Image, Music, Volume, Gamepad, Screens, Clock, Battery, Eye, Folder, Sort, Refresh,
     Download, Save, Restore, Info, Heart, Motion, Corners, Layers, Text, Home, Swap, Highlight, Bell,
-    Play, Trash, Pencil, Star, Close, Move, More, Back, Search, Plus,
+    Play, Trash, Pencil, Star, Close, Move, More, Back, Search, Plus, Forward,
     Chart, Trophy, Key, Shield, Cartridge, Wand
 }
 
@@ -63,9 +63,14 @@ fun GlyphIcon(glyph: Glyph, color: Color, modifier: Modifier = Modifier) {
             if (close) path.close()
             drawPath(path, color, style = stroke)
         }
-        draw(glyph, ::line, ::circle, ::rect, ::path, u)
+        // Arrows and lines ranged from the start mirror in right to left; pictures of things don't.
+        if (glyph in Pointing) mirroredInRtl { draw(glyph, ::line, ::circle, ::rect, ::path, u) }
+        else draw(glyph, ::line, ::circle, ::rect, ::path, u)
     }
 }
+
+/** Glyphs that point or read from the start side, drawn mirrored in right to left. */
+private val Pointing = setOf(Glyph.Back, Glyph.Forward, Glyph.Sort, Glyph.Motion)
 
 private fun DrawScope.draw(
     g: Glyph,
@@ -144,7 +149,9 @@ private fun DrawScope.draw(
         Glyph.Close -> { line(6f, 6f, 18f, 18f); line(18f, 6f, 6f, 18f) }
         Glyph.Move -> { line(12f, 3f, 12f, 21f); line(3f, 12f, 21f, 12f); pl(9f, 6f, 12f, 3f, 15f, 6f); pl(9f, 18f, 12f, 21f, 15f, 18f); pl(6f, 9f, 3f, 12f, 6f, 15f); pl(18f, 9f, 21f, 12f, 18f, 15f) }
         Glyph.More -> { c(5.5f, 12f, 1.6f, true); c(12f, 12f, 1.6f, true); c(18.5f, 12f, 1.6f, true) }
+        // Back points towards the start, Forward towards the end (both mirrored in right to left).
         Glyph.Back -> { line(5f, 12f, 19f, 12f); pl(11f, 6f, 5f, 12f, 11f, 18f) }
+        Glyph.Forward -> { line(5f, 12f, 19f, 12f); pl(13f, 6f, 19f, 12f, 13f, 18f) }
         Glyph.Search -> { c(10.5f, 10.5f, 6f); line(15f, 15f, 20f, 20f) }
         Glyph.Plus -> { line(12f, 5f, 12f, 19f); line(5f, 12f, 19f, 12f) }
     }

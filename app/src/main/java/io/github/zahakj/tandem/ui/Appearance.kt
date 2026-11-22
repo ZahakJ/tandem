@@ -966,7 +966,9 @@ fun LayoutPreview(
     drift: androidx.compose.runtime.State<Float>? = null,
 ) {
     val t = Themes.live
-    Canvas(modifier.clip(RoundedCornerShape(if (rounded) 16.dp else 0.dp))) {
+    // Shapes only, so in right to left the sketch is the mirror image, as the layouts themselves are; Spotlight's
+    // rail keeps the side its setting names (SpotlightHome), so its sketch doesn't.
+    Canvas(modifier.clip(RoundedCornerShape(if (rounded) 16.dp else 0.dp)).then(if (id == "spotlight") Modifier else Modifier.mirroredInRtl())) {
         val w = size.width
         val h = size.height
         val u = h / 100f

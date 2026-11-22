@@ -140,8 +140,13 @@ val Nunito = FontFamily(nunito(400), nunito(600), nunito(700), nunito(800), nuni
  * Japanese or the Simplified Chinese shapes of the characters both share (and their line-breaking rules), which
  * otherwise follow Android's language instead of Tandem's. See tandemTypography.
  */
-private fun tandemTypography(locales: androidx.compose.ui.text.intl.LocaleList) = Typography().let { t ->
-    fun TextStyle.n() = copy(fontFamily = Nunito, localeList = locales)
+/**
+ * The type. In right to left every style is aligned right: text aligned to its start follows its own direction, so a
+ * Latin game title or file name in an Arabic row would hug the left of its slot while the row runs from the right.
+ * Text centred or aligned on purpose says so itself and keeps that. Left to right adds nothing.
+ */
+private fun tandemTypography(locales: androidx.compose.ui.text.intl.LocaleList, rtl: Boolean) = Typography().let { t ->
+    fun TextStyle.n() = copy(fontFamily = Nunito, localeList = locales).let { if (rtl) it.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Right) else it }
     Typography(
         displaySmall = t.displaySmall.n().copy(fontWeight = FontWeight.Black, fontSize = 30.sp),
         headlineSmall = t.headlineSmall.n().copy(fontWeight = FontWeight.ExtraBold, fontSize = 22.sp),
@@ -174,10 +179,11 @@ fun TandemTheme(content: @Composable () -> Unit) {
             background = t.background, surface = t.background, onBackground = t.text, onSurface = t.text,
         )
     }
-    // Tandem's language (Tx.kt): the type's locale, and the layout direction (left to right until the RTL pass).
+    // Tandem's language (Tx.kt): the type's locale, and the layout direction (right to left for Arabic).
     val locale = io.github.zahakj.tandem.Lang.locale
-    val typography = remember(locale) { tandemTypography(androidx.compose.ui.text.intl.LocaleList(locale.toLanguageTag())) }
-    CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides io.github.zahakj.tandem.Lang.layoutDirection) {
+    val direction = io.github.zahakj.tandem.Lang.layoutDirection
+    val typography = remember(locale, direction) { tandemTypography(androidx.compose.ui.text.intl.LocaleList(locale.toLanguageTag()), direction == androidx.compose.ui.unit.LayoutDirection.Rtl) }
+    CompositionLocalProvider(androidx.compose.ui.platform.LocalLayoutDirection provides direction) {
         MaterialTheme(colorScheme = scheme, typography = typography) {
             // On a screen stage the wallpaper (picture, video or drawn backdrop) is already behind everything, so the
             // theme only sets colours and type; painting its background here would cover the wallpaper.

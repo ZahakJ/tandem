@@ -9,7 +9,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.LazyGridState
@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -454,8 +455,9 @@ internal fun DragGhost() {
     val ring = if (d.armed) 1f else 0f
     val armedGlow by animateFloatAsState(ring, Motion.soft(), label = "drag-armed")
     val corner = with(density) { (d.tilePx * Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)).toDp() }
-    Box(
-        Modifier.offset { (d.at.value - d.grab).let { IntOffset(it.x.roundToInt(), it.y.roundToInt()) } }
+    // Placed from the left edge (the host lays out right to left in Arabic): the finger's place is not mirrored.
+    Box(Modifier.fillMaxSize(), contentAlignment = AbsoluteAlignment.TopLeft) { Box(
+        Modifier.absoluteOffset { (d.at.value - d.grab).let { IntOffset(it.x.roundToInt(), it.y.roundToInt()) } }
             .size(with(density) { wPx.toDp() }, with(density) { hPx.toDp() })
             .graphicsLayer {
                 val v = shown.value
@@ -479,7 +481,7 @@ internal fun DragGhost() {
             Modifier.align(Alignment.Center).graphicsLayer { alpha = armedGlow }.clip(RoundedCornerShape(50))
                 .background(Palette.NightDeep.copy(alpha = 0.8f)).padding(horizontal = 8.dp, vertical = 3.dp),
         ) { Text(Tx.s(R.string.grid_drag_new_folder), style = MaterialTheme.typography.labelMedium, color = Palette.Text, maxLines = 1) }
-    }
+    } }
 }
 
 /**

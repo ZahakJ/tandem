@@ -27,9 +27,10 @@ class OrbPlace(val x: Float, val y: Float, val scale: Float, val alpha: Float, v
 
 /**
  * The orbit's ring on a stage [width] px wide. The front orb's centre sits at [baseY]; the ring climbs [rise] px
- * towards the last visible orbs. [orb] is the focused orb's diameter; [side] orbs show on each side of it.
+ * towards the last visible orbs. [orb] is the focused orb's diameter; [side] orbs show on each side of it. [mirrored]
+ * (right to left) puts the next orbs on the left instead of the right, so Left on the D-pad brings them round.
  */
-class OrbitLayout(val width: Float, val baseY: Float, val rise: Float, val orb: Float, val side: Int = 5) {
+class OrbitLayout(val width: Float, val baseY: Float, val rise: Float, val orb: Float, val side: Int = 5, val mirrored: Boolean = false) {
     /** How far round the ellipse the last visible orb is (radians from the front): just short of its widest point. */
     private val reach = 1.4f
     /** The angle between neighbouring orbs. */
@@ -49,13 +50,14 @@ class OrbitLayout(val width: Float, val baseY: Float, val rise: Float, val orb: 
     /** About how many px one orb's worth of spin is at the front: a finger dragged this far moves the orbit one orb. */
     val pxPerOrb: Float get() = radiusX * sin(step) + gap
 
-    /** The orb [d] orbs from the front (negative: to the left). */
+    /** The orb [d] orbs from the front (negative: to the left; to the right when [mirrored]). */
     fun place(d: Float): OrbPlace {
         val a = abs(d)
         val angle = (d.coerceIn(-(side + 1f), side + 1f)) * step
         // How far towards the back the orb has gone: 0 at the front, 1 at the last visible orb.
         val back = ((1f - cos(angle)) / sag).coerceIn(0f, 1.4f)
-        val x = width / 2f + radiusX * sin(angle) + sign(d) * gap * a.coerceAtMost(1f)
+        val across = radiusX * sin(angle) + sign(d) * gap * a.coerceAtMost(1f)
+        val x = width / 2f + if (mirrored) -across else across
         val y = baseY - rise * back
         // The front orb swells to FOCUS times its neighbours' size, easing in as it reaches the front; the others
         // shrink with depth, to about two thirds of their size at the last visible one.

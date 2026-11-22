@@ -619,7 +619,8 @@ private fun Modifier.routeMotion(scope: androidx.compose.animation.AnimatedVisib
             androidx.compose.animation.EnterExitState.PostExit -> -Nav.dir / 6f
         }
     }
-    return graphicsLayer { translationX = shift.value * size.width }
+    val sign = startSign
+    return graphicsLayer { translationX = shift.value * size.width * sign }
 }
 
 /** Screens kept composed between visits (see [KeptScreen]). */
@@ -710,7 +711,9 @@ private fun KeptScreen(route: Route, warm: Boolean = false, topRoom: androidx.co
     @Suppress("DEPRECATION")
     val transition = androidx.compose.animation.core.updateTransition(state, label = "kept-${route.key}")
     // Where it slides from or to, fixed when it starts showing or hiding (Nav.dir is set before the route changes).
-    val from = remember(shown) { if (shown) Nav.dir / 5f else -Nav.dir / 6f }
+    // Forward comes in from the end side: the right, or the left in right to left.
+    val sign = startSign
+    val from = remember(shown, sign) { (if (shown) Nav.dir / 5f else -Nav.dir / 6f) * sign }
     val p = transition.animateFloat(
         transitionSpec = { if (targetState) Motion.screenIn() else Motion.screenOut() }, label = "kept-p",
     ) { if (it) 1f else 0f }
@@ -854,7 +857,9 @@ private fun TopBar() {
         }
     }
     // Page names joined with " › " (the arrow needs no translating: it mirrors itself in a right-to-left line).
-    fun path(vararg parts: String?) = parts.filterNotNull().joinToString("  ›  ")
+    // In right to left each name is isolated, so a Latin system or game name keeps its place in the path.
+    val rtl = isRtl
+    fun path(vararg parts: String?) = parts.filterNotNull().joinToString("  ›  ") { if (rtl) "\u2068$it\u2069" else it }
     val crumb = when (val r = Nav.route) {
         Route.Home -> null
         is Route.System -> path(Libraries.byId(r.platformId)?.platform?.name ?: Tx.s(R.string.home_crumb_games), r.folder)
@@ -900,9 +905,11 @@ private fun TopBar() {
 private fun Crumb(crumb: String?, modifier: Modifier) {
     val shown = rememberLatest(crumb)
     Box(modifier) {
-        AnimatedVisibility(crumb != null, enter = fadeIn() + slideInHorizontally { -it / 3 }, exit = fadeOut()) {
+        val rtl = isRtl
+        AnimatedVisibility(crumb != null, enter = fadeIn() + slideInHorizontally { if (rtl) it / 3 else -it / 3 }, exit = fadeOut()) {
             Text(
-                "  ›  ${shown.orEmpty()}", style = MaterialTheme.typography.titleMedium, color = Palette.Muted,
+                // A right-to-left line even when the name is Latin, so the arrow points the way the path reads.
+                "  ›  ${shown.orEmpty()}", style = MaterialTheme.typography.titleMedium.let { if (rtl) it.copy(textDirection = androidx.compose.ui.text.style.TextDirection.Rtl) else it }, color = Palette.Muted,
                 maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
         }
@@ -1027,9 +1034,9 @@ private fun SetupStep(done: Boolean, title: String, detail: String, key: String,
 /** Shared enter/exit for overlay panels: a bouncy pop. */
 val popIn = scaleIn(spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMedium), initialScale = 0.85f) + fadeIn(tween(150))
 val popOut = scaleOut(tween(120), targetScale = 0.92f) + fadeOut(tween(120))
-/** A side panel (SidePanel) gliding in from the right edge and back out. */
-val sideIn = androidx.compose.animation.slideInHorizontally(spring(dampingRatio = 0.9f, stiffness = 520f)) { it } + fadeIn(tween(120))
-val sideOut = androidx.compose.animation.slideOutHorizontally(tween(180)) { it } + fadeOut(tween(160))
+/** A side panel (SidePanel) gliding in from the end edge (the right; the left in right to left) and back out. */
+fun sideIn(rtl: Boolean) = androidx.compose.animation.slideInHorizontally(spring(dampingRatio = 0.9f, stiffness = 520f)) { if (rtl) -it else it } + fadeIn(tween(120))
+fun sideOut(rtl: Boolean) = androidx.compose.animation.slideOutHorizontally(tween(180)) { if (rtl) -it else it } + fadeOut(tween(160))
 
 /** The MainActivity behind a context (Compose may wrap it). */
 fun activityOf(ctx: android.content.Context): MainActivity? {

@@ -122,12 +122,14 @@ fun WelcomeOverlay() {
     }
 
     OverlayPanel(visible, onClose = { back() }) {
+        val rtl = isRtl
         Column(
             Modifier.fillMaxWidth().background(Palette.Card, RoundedCornerShape(28.dp)).padding(horizontal = 22.dp, vertical = 18.dp),
         ) {
             AnimatedContent(
                 steps[step],
-                transitionSpec = { (slideInHorizontally(Motion.move()) { it / 6 } + fadeIn(tween(200))) togetherWith fadeOut(tween(120)) },
+                // The next step comes in from the end side (the left in right to left).
+                transitionSpec = { (slideInHorizontally(Motion.move()) { if (rtl) -it / 6 else it / 6 } + fadeIn(tween(200))) togetherWith fadeOut(tween(120)) },
                 label = "welcome",
             ) { id ->
                 Column {

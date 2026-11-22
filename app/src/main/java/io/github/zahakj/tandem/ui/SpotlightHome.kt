@@ -33,7 +33,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -55,6 +55,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -393,7 +394,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
         }
     }
 
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+    BoxWithConstraints(Modifier.fillMaxSize(), contentAlignment = AbsoluteAlignment.TopLeft) {
         val w = maxWidth
         val h = maxHeight
         val density = LocalDensity.current
@@ -434,7 +435,9 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
         val ring = animateFloatAsState(if (st.focused && !st.clean) 1f else 0f, Motion.soft(), label = "spotlight-ring")
 
         Column(
-            Modifier.offset(x = frame.railX.dp).width(railW).fillMaxHeight()
+            // The rail's side is the setting's Left or Right as seen, in every language (the backdrop's fade and the
+            // D-pad's "away" follow the same side), so the frame is placed from the left edge, never mirrored.
+            Modifier.absoluteOffset(x = frame.railX.dp).width(railW).fillMaxHeight()
                 .graphicsLayer { alpha = chrome.value }
                 .focusRequester(stageReq)
                 .takesFocus(route, SpotlightMode.STAGE, target == SpotlightMode.STAGE)
@@ -446,7 +449,7 @@ fun SpotlightHome(libs: List<PlatformLibrary>) {
         }
 
         Box(
-            Modifier.offset(x = frame.panelX.dp).width(frame.panelW.dp).fillMaxHeight().padding(vertical = 14.dp)
+            Modifier.absoluteOffset(x = frame.panelX.dp).width(frame.panelW.dp).fillMaxHeight().padding(vertical = 14.dp)
                 .graphicsLayer { alpha = chrome.value },
             contentAlignment = Alignment.CenterStart,
         ) {

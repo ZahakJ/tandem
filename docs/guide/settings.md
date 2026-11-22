@@ -36,7 +36,7 @@ Colours, wallpaper, icons, motion and the language: how Tandem looks and reads, 
 | Wallpaper, icons & motion | Icon style | the theme's | How Tandem draws system icons when no pack has art for them: pixel, neon, LCD, chrome, plastic, sticker and more. |
 | Wallpaper, icons & motion | Icons from | Auto | Where system icons, heroes and logos come from: the theme pack's own (Auto), another pack's, or always drawn by Tandem. |
 | Wallpaper, icons & motion | Motion › | | Opens **Motion** (below). |
-| Language | Language | System default | The language Tandem speaks: System default (Android's), English, العربية, 日本語, 简体中文 or Français, each named in itself. Both screens switch at once. Text not translated yet shows in English. On Android 13 and later it is the same setting as Android's own Settings › Apps › Tandem › Language. |
+| Language | Language | System default | The language Tandem speaks: System default (Android's), English, العربية, 日本語, 简体中文 or Français, each named in itself. Both screens switch at once. In العربية every screen mirrors and reads from the right: Start slides in from the right, the side panel (R2) from the left, and Left on the D-pad moves towards the next option, cover or page (the way the arrow points on screen). Text not translated yet shows in English. On Android 13 and later it is the same setting as Android's own Settings › Apps › Tandem › Language. |
 | Start over | Reset look | | Back to Tandem's original look (Pastel Night): theme, layout, wallpapers, icons and motion. Your buttons, screens, sounds, music and library stay. Hold <kbd>A</kbd> to confirm; an automatic backup is made first. |
 
 **Look & feel › Wallpaper**

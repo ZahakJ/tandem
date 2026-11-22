@@ -269,7 +269,7 @@ private fun ShotViewer(shots: List<Shot>, index: Int?, onIndex: (Int) -> Unit, o
                     horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        listOfNotNull(s.game?.title, s.source, DateUtils.getRelativeTimeSpanString(s.time).toString()).joinToString(" · "),
+                        listOfNotNull(s.game?.title, s.source, DateUtils.getRelativeTimeSpanString(s.time).toString()).joinParts(),
                         style = MaterialTheme.typography.labelLarge, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false),
                     )

@@ -469,7 +469,7 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
             val h = io.github.zahakj.tandem.data.TimeToBeat
             val main = listOf(t.main, t.extra).firstOrNull { it > 0 }
             chip(
-                Tx.s(R.string.screens_ttb_chip, listOfNotNull(main?.let { h.hours(it) }, t.complete.takeIf { it > 0 }?.let { Tx.s(R.string.screens_ttb_complete, h.hours(it)) }).joinToString(" · ")),
+                Tx.s(R.string.screens_ttb_chip, listOfNotNull(main?.let { h.hours(it) }, t.complete.takeIf { it > 0 }?.let { Tx.s(R.string.screens_ttb_complete, h.hours(it)) }).joinParts()),
                 Palette.Sky,
             )
         }
@@ -535,7 +535,7 @@ private fun GameFacts(game: Game, modifier: Modifier) {
                 t.extra.takeIf { it > 0 }?.let { Tx.s(R.string.screens_ttb_extras, h.hours(it)) },
                 t.complete.takeIf { it > 0 }?.let { Tx.s(R.string.screens_ttb_100, h.hours(it)) },
             )
-            add(Tx.s(R.string.screens_fact_time_to_beat) to parts.joinToString(" · "))
+            add(Tx.s(R.string.screens_fact_time_to_beat) to parts.joinParts())
         }
         if (meta.lastPlayed > 0) add(Tx.s(R.string.screens_fact_last_played) to relative(meta.lastPlayed))
         if (meta.firstSeen > 0) add(Tx.s(R.string.screens_fact_added) to DateUtils.formatDateTime(Tx.context, meta.firstSeen, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH))
@@ -575,7 +575,7 @@ internal fun creditsLine(m: io.github.zahakj.tandem.data.GameMeta): String? {
         }
     }
     val parts = listOfNotNull(m.developer, m.publisher?.takeIf { !it.equals(m.developer, ignoreCase = true) }, players)
-    return parts.joinToString(" · ").ifEmpty { null }
+    return parts.joinParts().ifEmpty { null }
 }
 
 /** "3 minutes ago", "Yesterday", or "just now". */

@@ -223,9 +223,12 @@ fun AppActionMenu() {
         val pkg = shown ?: return@spec null
         // In the dock: its place can change too.
         val dock = HomeStore.settings.dock ?: Dock.pinned(ctx)
+        val rtl = rtlNow
         val moves = if (!Panels.apps && pkg in dock) listOf(
-            MenuAction("left", Tx.s(R.string.menus_app_move_left), Glyph.Back, Palette.Sky, value = "◀") { Dock.move(ctx, pkg, -1) },
-            MenuAction("right", Tx.s(R.string.menus_app_move_right), Glyph.Play, Palette.Sky, value = "▶") { Dock.move(ctx, pkg, 1) },
+            // Towards the dock's start and its end: Left and Right in English, "earlier" and "later" in Arabic, where the
+            // dock runs from the right; the arrows point the way the app goes.
+            MenuAction("left", Tx.s(R.string.menus_app_move_left), Glyph.Back, Palette.Sky, value = if (rtl) "▶" else "◀") { Dock.move(ctx, pkg, -1) },
+            MenuAction("right", Tx.s(R.string.menus_app_move_right), if (rtl) Glyph.Forward else Glyph.Play, Palette.Sky, value = if (rtl) "◀" else "▶") { Dock.move(ctx, pkg, 1) },
         ) else emptyList()
         val subtitle = if (Dock.builtIn(pkg) != null) Tx.s(R.string.app_name) else Tx.s(if (AppActions.isGame(pkg)) R.string.menus_app_kind_game else R.string.menus_app_kind_app)
         MenuSpec("appmenu:$pkg", RunningGames.appLabel(ctx, pkg), subtitle, Palette.Sky, appMenuActions(ctx, pkg, extra = moves)) { AppTileIcon(pkg, 120.dp) }

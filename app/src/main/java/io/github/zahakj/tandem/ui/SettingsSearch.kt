@@ -228,7 +228,8 @@ private fun SearchPanes(query: String, q: String, results: List<Hit>) {
                 if (query.isEmpty()) Text(Tx.s(R.string.settings_search_box), style = MaterialTheme.typography.titleLarge, color = Palette.Muted, maxLines = 1)
                 else TailText("⌕ $query", Palette.Text)
             }
-            LazyVerticalGrid(
+            // A–Z in their usual order in every language.
+            LeftToRight { LazyVerticalGrid(
                 GridCells.Fixed(7), Modifier.weight(1f),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -251,7 +252,7 @@ private fun SearchPanes(query: String, q: String, results: List<Hit>) {
                         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(keyLabel(k), style = MaterialTheme.typography.titleSmall, maxLines = 1) }
                     }
                 }
-            }
+            } }
             Row(Modifier.padding(horizontal = 8.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 ButtonHint("X", Tx.s(R.string.settings_search_delete), Palette.Peach)
                 if (results.isNotEmpty()) ButtonHint("◀▶", Tx.s(R.string.settings_search_results), Palette.Sky)

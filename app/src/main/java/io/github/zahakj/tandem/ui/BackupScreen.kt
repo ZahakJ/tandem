@@ -174,7 +174,7 @@ object BackupUi {
 
     /** "Before Quick look · 1,204 games · 38 tiles · 2 days ago". */
     fun line(s: BackupSnapshot): String =
-        listOfNotNull(s.manifest.reason?.let { Tx.s(R.string.data_backup_before, it) }, BackupFiles.summary(s.manifest)).joinToString(" · ")
+        listOfNotNull(s.manifest.reason?.let { Tx.s(R.string.data_backup_before, it) }, BackupFiles.summary(s.manifest)).joinParts()
 
     @Composable
     fun Host() {

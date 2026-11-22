@@ -123,7 +123,8 @@ fun SegmentTrack(labels: List<String>, selected: Int, color: Color, modifier: Mo
             .drawBehind {
                 if (!lit) return@drawBehind
                 val w = size.width / n
-                drawRoundRect(color, Offset(w * at, 0f), Size(w, size.height), CornerRadius(size.height / 2))
+                // Options run from the start side, so in right to left the first is on the right and the pill with it.
+                mirroredInRtl { drawRoundRect(color, Offset(w * at, 0f), Size(w, size.height), CornerRadius(size.height / 2)) }
             },
     ) { measurables, constraints ->
         val h = constraints.maxHeight
@@ -133,7 +134,7 @@ fun SegmentTrack(labels: List<String>, selected: Int, color: Color, modifier: Mo
             natural.coerceAtMost(room).coerceAtLeast(constraints.minWidth / n)
         }
         val placeables = measurables.map { it.measure(Constraints.fixed(seg, h)) }
-        layout(seg * n, h) { placeables.forEachIndexed { i, p -> p.place(i * seg, 0) } }
+        layout(seg * n, h) { placeables.forEachIndexed { i, p -> p.placeRelative(i * seg, 0) } }
     }
 }
 
@@ -262,7 +263,8 @@ fun ValueTrack(
             Spacer(Modifier.width(8.dp))
         }
         Column(if (trackWidth != null) Modifier.width(trackWidth) else Modifier.weight(1f)) {
-            Canvas(Modifier.fillMaxWidth().height(20.dp)) {
+            // Drawn from the start side: in right to left the fill grows leftwards (Left on the D-pad adds).
+            Canvas(Modifier.fillMaxWidth().height(20.dp).mirroredInRtl()) {
                 val h = 6.dp.toPx()
                 val r = 8.dp.toPx()
                 val span = size.width - 2 * r

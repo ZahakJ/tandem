@@ -2,7 +2,7 @@
 
 Tandem speaks English, and is being made ready for العربية (Arabic), 日本語 (Japanese), 简体中文 (Simplified Chinese,
 zh-CN) and Français. This page is the pattern for moving text out of the code (extraction), for translating it, and
-for the right-to-left pass still to come. Paths are relative to `app/src/main/`.
+for laying screens out right to left in Arabic. Paths are relative to `app/src/main/`.
 
 - [How it works](#how-it-works)
 - [Extracting a file, step by step](#extracting-a-file-step-by-step)
@@ -16,7 +16,7 @@ for the right-to-left pass still to come. Paths are relative to `app/src/main/`.
 - [Fonts and fitting](#fonts-and-fitting)
 - [Trying a language on the handheld](#trying-a-language-on-the-handheld)
 - [For translators](#for-translators)
-- [Right to left: notes for the RTL pass](#right-to-left-notes-for-the-rtl-pass)
+- [Right to left](#right-to-left)
 - [Who extracts what](#who-extracts-what)
 
 ## How it works
@@ -39,8 +39,8 @@ for the right-to-left pass still to come. Paths are relative to `app/src/main/`.
   `locale|layoutDirection` in `configChanges`, so Android 13's own language change doesn't recreate them either.
   Do not use `stringResource` / `pluralStringResource`: on Android 11 and 12 they show Android's language.
 - `TandemTheme` (`ui/Design.kt`) carries the language into the type (`TextStyle.localeList`, see
-  [Fonts](#fonts-and-fitting)) and sets the layout direction from `Lang.layoutDirection`, left to right until the
-  RTL pass sets `Lang.RTL_READY`.
+  [Fonts](#fonts-and-fitting)) and sets the layout direction from `Lang.layoutDirection`: right to left for Arabic
+  (see [Right to left](#right-to-left)), left to right for every other language.
 
 ## Extracting a file, step by step
 
@@ -246,7 +246,7 @@ All run in `testDebugUnitTest`:
   so dates and numbers follow too.
 - **Pseudo-locales (debug builds):** `--locales en-XA` shows every translated string accented and a third longer,
   so plain English left on screen is a string not extracted yet, and anything cut off needs room. `--locales ar-XB`
-  shows the text mirrored right to left (the layout stays left to right until the RTL pass).
+  shows the text mirrored right to left, with the layout right to left as in Arabic.
 - What to look at: Start, the quick settings (hold Start) and the side panel (R2) in each language; text in the
   Settings › Look & feel › Language picker cards (each greeting in its own script); a language change while a panel is
   open; Japanese and Chinese characters drawn with their own regional shapes (骨, 直 differ); nothing as empty boxes.
@@ -264,54 +264,78 @@ All run in `testDebugUnitTest`:
 
 The tone is Tandem's: plain, friendly, short. Pip is the mascot's name; leave it.
 
-## Right to left: notes for the RTL pass
+## Right to left
 
-Until `Lang.RTL_READY` is true (`Tx.kt`), every screen lays out left to right in every language, and
-`android:supportsRtl` stays `false` in the manifest. Arabic text itself already runs right to left inside each line.
-The pass then: works through this list, sets `RTL_READY = true` and `supportsRtl="true"`, and checks on the handheld
-in `ar` and `ar-XB`. Compose mirrors `Row`, `padding(start/end)`, `Alignment.Start/End`, `Arrangement.Start` and
-`RoundedCornerShape(topStart…)` by itself; what follows doesn't mirror and must be looked at:
+Arabic lays every screen out right to left: `Lang.RTL_READY` is true (`Tx.kt`), `Lang.layoutDirection` is `Rtl` for
+Arabic only (never for a language Tandem has no text in: Android set to Hebrew shows Tandem in English, left to
+right), `TandemTheme` provides it, and the manifest has `android:supportsRtl="true"`. English, 日本語, 简体中文 and
+Français stay exactly left to right; every change below is a no-op there. Try it with `ar` and with the debug
+pseudo-locale `ar-XB` (mirrored English, so a string not extracted still shows the layout).
 
-- **D-pad Left / Right** handlers (Left must mean "towards the start", which is right in RTL, wherever the thing
-  they move is mirrored): `MainActivity` (Pip's glance, sounds), `ui/Settings.kt` (`SettingRowCard`: `onLeft`/
-  `onRight` for segmented choices and sliders), `ui/QuickPanel.kt` (`LevelCard` brightness and volume, whose −/+ ends
-  and fill do mirror), `ui/Focus.kt`, `ui/IconGrid.kt`, `ui/Orbit.kt`, `ui/SpotlightHome.kt`, `ui/Bookshelf.kt`,
-  `ui/Overlays.kt`, `ui/Stats.kt`, `ui/PlaySessions.kt`, `ui/Widgets.kt`, `ui/GalleryApp.kt`, `ui/ManualReader.kt`
-  (page turns: in RTL the next page is to the left), `ui/SketchPad.kt`, `ui/ControllerTestApp.kt` (physical buttons:
-  never mirror), `ui/Touch.kt`. Add one helper (Key and LayoutDirection to a −1/+1 step) and use it everywhere.
-- **Custom layouts placing with `place()`** (absolute, never mirrored; `placeRelative()` mirrors):
-  `ui/Choices.kt` (`SegmentTrack`: options and the sliding pill are always left to right, so its D-pad is consistent
-  today; mirror both together), `ui/Settings.kt`, `ui/StartPanel.kt`, `ui/Appearance.kt`, `ui/App.kt`,
-  `ui/AppWidgets.kt`, `ui/Bookshelf.kt`, `ui/CartCase.kt`, `ui/Edges.kt`, `ui/GridDrag.kt`, `ui/GridSpots.kt`,
-  `ui/GridWidgets.kt`, `ui/LaunchOverlay.kt`, `ui/LogoFx.kt`, `ui/Orbit.kt`, `ui/ScrapeScreen.kt`,
-  `ui/SpotlightHome.kt`, `ui/Switcher.kt`, `ui/SystemPage.kt`, `ui/Video.kt`. Decide per layout: a grid of tiles
-  probably mirrors; the orbit's arc and spotlight rail have a geometry of their own (`OrbitLayout`,
-  `SpotlightHomeLayout`, both tested) that needs a mirrored mode, not a flip.
-- **Slide-ins and `translationX`**: the Start panel comes from the left (`ui/StartPanel.kt`: `translationX` from
-  `-width`, `RoundedCornerShape(topEnd, bottomEnd)` mirrors but the translation doesn't) and its pages slide
-  sideways (`side`); the side panel from the right (`SidePanel` in `ui/Overlays.kt`, `Scrim(side = true)`); `slideInHorizontally` in
-  `ui/ActionMenu.kt`, `ui/App.kt`, `ui/Welcome.kt`; `translationX` in `ui/ActionMenu.kt`, `ui/AppDetails.kt`,
-  `ui/CompanionScreen.kt`, `ui/CoverWall.kt`, `ui/Flair.kt`, `ui/HeroArt.kt`, `ui/Layouts.kt`, `ui/LogoFx.kt`,
-  `ui/PanelMorph.kt`, `ui/ScreensaverUi.kt`, `ui/SecondaryHomeScreen.kt`, `ui/Spotlight.kt`, `ui/SwapFx.kt`. In RTL
-  Start should open from the right and the side panel from the left (Android does this with its own drawers).
-- **Drawings** (Canvas, `drawBehind`, `drawWithCache`, about 40 files): offsets from the left, fills that grow
-  rightwards (`ValueTrack` in `ui/Choices.kt`, `LevelCard`'s bar uses `fillMaxWidth(fraction)` and mirrors already),
-  `Brush.horizontalGradient` (doesn't mirror: `ui/ActionMenu.kt`, `ui/Appearance.kt`, `ui/Bookshelf.kt`,
-  `ui/Edges.kt` (`fadingEdges` is symmetric, fine), `ui/HeroArt.kt`, `ui/Orbit.kt`, `ui/ScrapeScreen.kt`,
-  `ui/SpotlightHome.kt`, `ui/StartPanel.kt` (row glow fades from the icon side), `ui/SystemIcons.kt`,
-  `ui/SystemPage.kt`, `ui/WidgetKinds.kt`). Icons and glyphs (`ui/Glyphs.kt`, `ui/TandemIcons.kt`, QuickPanel's)
-  are pictures: only arrows (`Glyph.Back`, chevrons, play) should mirror; a gamepad, a clock or a speaker shouldn't.
-- **Arrows in text** need nothing: `‹ › « »` and brackets are mirrored by the text engine in a right-to-left
-  paragraph, so `Settings › Look & feel` reads correctly in Arabic. `▸ ◂ ▶ ◀ → ←` are **not** mirrored: StartPanel's
-  "▸" row marker is drawn as "›" (fine); search for the others when converting.
-- **Horizontal lists** (`LazyRow`, `horizontalScroll`) mirror their order and scroll start in RTL: check the first
-  item is where the highlight lands (`ui/HomeExtras.kt`, `ui/HomeMode.kt`, `ui/IconGrid.kt`, `ui/Layouts.kt`,
-  `ui/Screens.kt`, `ui/SidePanel.kt` status chips, `ui/Stats.kt`, `ui/Switcher.kt`, `ui/ThemeGallery.kt`, …).
-- **Numbers**: Arabic formats with Arabic-Indic digits (٣) through `Tx` and `Lang.locale`; text built with `"$n"`
-  uses Latin digits. Pick one for Tandem (the handhelds' own Arabic UI uses Arabic-Indic) and make counts, clocks and
-  percentages agree.
-- **Search keyboards** (`ui/SettingsSearch.kt`, `ui/TextEntry.kt`, `ui/Overlays.kt` X search) type A–Z only:
-  Japanese, Chinese and Arabic need Android's keyboard or a script-aware one, outside this pass's layout work.
+Compose mirrors `Row`, `padding(start/end)`, `Alignment.Start/End`, `Arrangement.Start`, lazy rows and grids,
+`offset(x)`/`offset {}`, `placeRelative()` and `RoundedCornerShape(topStart…)` by itself. Everything else goes
+through the helpers in `ui/Rtl.kt` (pure parts tested in `RtlTest`):
+
+| Helper | For |
+| --- | --- |
+| `KeyEvent.sideStep()` | D-pad Left/Right as −1 (towards the start) or +1 (towards the end) |
+| `Sides.step(left, rtl)`, `Sides.sign(rtl)`, `Sides.x(…)` | the same without a key; ±1 for `translationX` slides |
+| `isRtl`, `startSign` (composables), `rtlNow` (anywhere), `DrawScope.rtl` | which way it runs here |
+| `Modifier.mirroredInRtl()`, `DrawScope.mirroredInRtl {}` | drawings of shapes that run from the start (never text) |
+| `startGradient(colors, rtl)` | a `horizontalGradient` from the start side |
+| `joinParts()` | lines of parts joined by " · " (each part isolated, so the line reads from the right) |
+| `LeftToRight { }` | things whose order is physical or fixed: keyboards, the PIN pad |
+| `Sides.ltr(text)` | text that must stay left to right inside Arabic (a path or a number built in code) |
+
+### Conventions
+
+- **The D-pad moves things the way the arrow points on screen.** Focus search already does (Left goes to the item on
+  the visual left). For controls where Left/Right *change* something, the thing runs from the start side, so in
+  Arabic **Left steps forward and Right steps back**: segmented choices (the first option is on the right, Left
+  moves to the next), sliders (the fill grows leftwards; Left adds, as Android's own sliders do), the quick
+  settings' brightness and volume (− on the right, + on the left), ◂ value ▸ steppers in menus, the Stats chart
+  (oldest day on the right, today on the left), the play-session steppers, the icon grid and folders (the first
+  column is on the right), widgets' inner cursors and widget moving, the shelves' wrap from one shelf to the next,
+  the photo viewer, the manual's pages (Left is the next page), and the Orbit (the ring runs the other way round,
+  `OrbitLayout(mirrored = true)`, tested: Left brings the next orb to the front; a drag follows the finger).
+- **Panels:** Start slides in from the right and its sub-pages from the left; the side panel (R2) from the left; a
+  new screen comes in from the left; menu pages and the welcome's steps likewise come from the end side. The top
+  bar's path reads from the right (`›` mirrors itself into `‹` in a right-to-left line; each name is isolated, and
+  the crumb is a right-to-left line even when a name is Latin).
+- **Text:** in Arabic every style is aligned right (`tandemTypography`), so a Latin title in an Arabic row hugs the
+  start of its slot; text centred on purpose keeps that. `Tx.s`/`Tx.p` wrap every text argument in a first-strong
+  isolate in right to left, so a game title, file path or URL keeps its own direction inside an Arabic sentence
+  ("/ROMs/snes" keeps its slash in front, "Pokémon (USA)!" its brackets). Lines of parts use `joinParts()`. Never
+  keep such text (a note, a saved name): the isolates would stay in it. Counters like "3 / 12" are left to read
+  from the right.
+- **Pictures:** `Glyph.Back`, `Glyph.Forward`, `Glyph.Sort` and `Glyph.Motion` mirror; everything else (a gamepad,
+  a clock, a speaker, the play triangle of media, logos, Tandem's own icons) does not. Text "▸" values in menus show
+  as "◂", and ◂ ▸ around a stepper's value point outwards on both sides. Sketches of Tandem's screens (the layout
+  previews, the setting showcases' `MiniScreen`) are mirror images, as the screens are.
+
+### Left to right on purpose
+
+- **Physical things:** the controller test's drawing, the handheld in the screen showcases (`DeviceScene`), the
+  Deck's keyboard sketch, the sketch pad's pen, Pip's glance and the sounds' stereo pan, the tap zones of touch
+  navigation (a tap on the left half is D-pad Left).
+- **Settings that name a side:** Spotlight rail Left/Right (and its preview) and a game logo's place Left/Right (and
+  its ◀ ▶ nudges) are the side as seen, in every language (the frame is placed with `absoluteOffset`). The dock's
+  "Move" pair is by order instead: Left/Right in English, "earlier/later" (قدّمه خطوة / أخّره خطوة) in Arabic, each
+  with an arrow pointing the way the app goes.
+- **Keyboards and the PIN pad** (`ui/TextEntry.kt`, `ui/SettingsSearch.kt`, `ui/Overlays.kt` X search,
+  `ui/PinPad.kt`): A–Z and 1 2 3 from the left, inside panels that do mirror. They type A–Z only: Arabic still
+  needs Android's keyboard for Arabic letters.
+- **Things placed in window coordinates** (the long-press menu growing out of an item, the dragged tile, the
+  panels growing out of a grid tile): placed from the left edge with `absoluteOffset`/`AbsoluteAlignment.TopLeft`,
+  so they land where the item really is.
+- **Decoration:** the screensaver, the cover wall's drift, the swap sweep and the art's Ken Burns don't mirror.
+- **Numbers:** Arabic shows Android's Arabic-Indic digits (٣) wherever text goes through `Tx` or `Lang.locale`;
+  numbers built in code with `"$n"` (a few counters) are Latin. Both read correctly; unifying them is a wording
+  pass, not a layout one.
+
+When adding a screen: use Row/start/end and lazy lists, `sideStep()` for any Left/Right handler that changes a
+value, `startSign` for a sideways slide, `mirroredInRtl()` for a drawn fill or chart, and `absoluteOffset` only for
+something placed in window coordinates.
 
 ## Who extracts what
 

@@ -1440,7 +1440,7 @@ private fun RowDetails(items: List<GridItem>, pip: Boolean, modifier: Modifier) 
                     it.detail.takeIf { d -> d.isNotBlank() && d != it.type },
                     if (played >= 60) Tx.s(R.string.grid_played_for, formatPlayLong(played)) else null,
                     it.blurb.takeIf { b -> b.isNotBlank() },
-                ).joinToString(" · ")
+                ).joinParts()
             }
             Box(Modifier.fillMaxSize()) {
                 // The hero strip: the item's wide art, faded into the wallpaper on every side (no band, no frame).
@@ -1463,7 +1463,7 @@ private fun RowDetails(items: List<GridItem>, pip: Boolean, modifier: Modifier) 
                             it.title, style = (if (big) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleLarge).onArt(),
                             color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis,
                         )
-                        val sub = if (tall) line else listOf(it.type, line).filter { s -> s.isNotBlank() }.joinToString(" · ")
+                        val sub = if (tall) line else listOf(it.type, line).filter { s -> s.isNotBlank() }.joinParts()
                         if (sub.isNotEmpty()) Text(
                             sub, style = MaterialTheme.typography.labelLarge.onArt(),
                             color = if (tall) Palette.Muted else lerp(it.color, Palette.Text, 0.45f),
@@ -1810,8 +1810,8 @@ private fun handleMoveKey(e: KeyEvent, lanes: Int, vertical: Boolean, page: Int 
         return true
     }
     val (dLine, dLane) = when (e.key) {
-        Key.DirectionLeft -> if (vertical) 0 to -1 else -1 to 0
-        Key.DirectionRight -> if (vertical) 0 to 1 else 1 to 0
+        // Sideways the way the arrow points: the grid runs from the right in right to left (Rtl.kt).
+        Key.DirectionLeft, Key.DirectionRight -> e.sideStep().let { s -> if (vertical) 0 to s else s to 0 }
         Key.DirectionUp -> if (vertical) -1 to 0 else 0 to -1
         Key.DirectionDown -> if (vertical) 1 to 0 else 0 to 1
         else -> return false
@@ -1869,8 +1869,8 @@ internal fun slotKey(e: KeyEvent, nav: SlotFocus, route: String, keys: List<Stri
     }
     if (e.type != KeyEventType.KeyDown) return false
     val (dLine, dLane) = when (e.key) {
-        Key.DirectionLeft -> if (vertical) 0 to -1 else -1 to 0
-        Key.DirectionRight -> if (vertical) 0 to 1 else 1 to 0
+        // Sideways the way the arrow points: the grid runs from the right in right to left (Rtl.kt).
+        Key.DirectionLeft, Key.DirectionRight -> e.sideStep().let { s -> if (vertical) 0 to s else s to 0 }
         Key.DirectionUp -> if (vertical) -1 to 0 else 0 to -1
         Key.DirectionDown -> if (vertical) 1 to 0 else 0 to 1
         else -> return false
@@ -2277,7 +2277,7 @@ private fun tileMenuSpec(t: TileMenuTarget, item: GridItem, catalog: GridCatalog
         else -> null
     }
     return MenuSpec(
-        routeKey, item.title, listOf(item.type, item.detail).filter { it.isNotEmpty() }.joinToString(" · "), item.color, actions, page,
+        routeKey, item.title, listOf(item.type, item.detail).filter { it.isNotEmpty() }.joinParts(), item.color, actions, page,
     ) { LiftedTileArt(item) }
 }
 
@@ -2772,7 +2772,7 @@ private fun BottomGridHeader(modifier: Modifier) {
                     it?.title ?: Tx.s(R.string.grid_trail_home), style = MaterialTheme.typography.titleLarge.onArt(), color = Palette.Text,
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
-                val line = listOfNotNull(it?.type, it?.detail?.takeIf { d -> d.isNotBlank() }, it?.blurb?.takeIf { b -> b.isNotBlank() }).joinToString(" · ")
+                val line = listOfNotNull(it?.type, it?.detail?.takeIf { d -> d.isNotBlank() }, it?.blurb?.takeIf { b -> b.isNotBlank() }).joinParts()
                 if (line.isNotEmpty()) Text(
                     line, style = MaterialTheme.typography.labelLarge,
                     color = it?.color?.let { c -> lerp(c, Palette.Text, 0.45f) } ?: Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,

@@ -490,7 +490,8 @@ fun SettingRowCard(row: SettingRow, modifier: Modifier = Modifier, flashKey: Str
     }
     FocusCard(
         modifier.fillMaxWidth().onPreviewKeyEvent { e ->
-            val handler = when (e.key) { Key.DirectionLeft -> row.onLeft; Key.DirectionRight -> row.onRight; else -> null }
+            // Left and Right step the way the arrow points: in right to left the options and the slider run leftwards.
+            val handler = when (e.sideStep()) { -1 -> row.onLeft; 1 -> row.onRight; else -> null }
             if (handler == null) return@onPreviewKeyEvent false
             if (e.type == KeyEventType.KeyDown) { handler(); Sounds.toggle() }
             true
@@ -562,8 +563,9 @@ private fun LabelAndEnd(modifier: Modifier, content: @Composable () -> Unit) {
         val labelP = label.measure(Constraints(maxWidth = (total - endW).coerceAtLeast(0)))
         val h = maxOf(labelP.height, endP?.height ?: 0)
         layout(total, h) {
-            labelP.place(0, (h - labelP.height) / 2)
-            endP?.place(total - endP.width, (h - endP.height) / 2)
+            // Relative: the label at the start, the control at the end, whichever side that is.
+            labelP.placeRelative(0, (h - labelP.height) / 2)
+            endP?.placeRelative(total - endP.width, (h - endP.height) / 2)
         }
     }
 }

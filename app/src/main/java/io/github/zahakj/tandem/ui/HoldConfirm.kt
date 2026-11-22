@@ -184,10 +184,10 @@ fun HoldRing(state: HoldState, color: Color, size: Dp = 20.dp) {
     }
 }
 
-/** Fills the control from the left as the hold goes on, behind its content. */
+/** Fills the control from the start side (the right in right to left) as the hold goes on, behind its content. */
 fun Modifier.holdFill(state: HoldState, color: Color, round: Dp): Modifier = drawWithContent {
     val p = state.progress.value
-    if (p > 0.001f) drawRoundRect(color.copy(alpha = 0.32f), size = Size(size.width * p, size.height), cornerRadius = CornerRadius(round.toPx()))
+    if (p > 0.001f) mirroredInRtl { drawRoundRect(color.copy(alpha = 0.32f), size = Size(size.width * p, size.height), cornerRadius = CornerRadius(round.toPx())) }
     drawContent()
 }
 

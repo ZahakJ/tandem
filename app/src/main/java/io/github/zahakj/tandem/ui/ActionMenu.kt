@@ -34,7 +34,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,6 +50,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -258,11 +259,14 @@ private suspend fun snapshotDepth(depth: Animatable<Float, *>) {
 private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, lift: () -> Float) {
     val density = LocalDensity.current
     var self by remember { mutableStateOf(Offset.Zero) }
+    // Everything here is placed in the window's own coordinates (where the item sat), so with absoluteOffset, never
+    // mirrored; only the list's rows follow the language.
+    val rtl = isRtl
     // Where the item sits now (captured once per opening, relative to this layer).
     val from: Rect? = remember(s.routeKey) {
         ActionMenu.origin?.takeIf { it.isAttached }?.boundsInRoot()?.takeIf { it.width > 4f && it.height > 4f }
     }
-    BoxWithConstraints(Modifier.fillMaxSize().onGloballyPositioned { self = it.positionInRoot() }) {
+    BoxWithConstraints(Modifier.fillMaxSize().onGloballyPositioned { self = it.positionInRoot() }, contentAlignment = AbsoluteAlignment.TopLeft) {
         val wPx = constraints.maxWidth.toFloat()
         val hPx = constraints.maxHeight.toFloat()
         val margin = with(density) { PanelMargin.toPx() }
@@ -272,7 +276,7 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         // The item: where it was, or a sensible spot when it isn't known.
         val src = from?.translate(-self.x, -self.y) ?: run {
             val side = with(density) { 150.dp.toPx() }
-            Rect(Offset(wPx * 0.28f - side / 2, hPx / 2 - side / 2), Size(side, side / s.aspect))
+            Rect(Offset(wPx * (if (rtl) 0.72f else 0.28f) - side / 2, hPx / 2 - side / 2), Size(side, side / s.aspect))
         }
         // It grows a little, but never past the room left beside the list.
         val maxW = (wPx - listW - gap - margin * 3).coerceAtLeast(80f).coerceAtMost(with(density) { 260.dp.toPx() })
@@ -295,7 +299,7 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         val round = ActionMenu.originRound
         // The lifted item: drawn at its own size and moved and scaled in a layer, so nothing re-lays out per frame.
         Box(
-            Modifier.offset { IntOffset(src.left.roundToInt(), src.top.roundToInt()) }
+            Modifier.absoluteOffset { IntOffset(src.left.roundToInt(), src.top.roundToInt()) }
                 .size(with(density) { src.width.toDp() }, with(density) { src.height.toDp() })
                 .graphicsLayer {
                     val p = lift()
@@ -322,7 +326,7 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         val nameW = minOf(nameWant, centred).coerceAtLeast(tw)
         val nameX = (target.center.x - nameW / 2).coerceIn(sideL, (sideR - nameW).coerceAtLeast(sideL))
         Column(
-            Modifier.offset { IntOffset(nameX.roundToInt(), (target.bottom + with(density) { 10.dp.toPx() }).roundToInt()) }
+            Modifier.absoluteOffset { IntOffset(nameX.roundToInt(), (target.bottom + with(density) { 10.dp.toPx() }).roundToInt()) }
                 .width(with(density) { nameW.toDp() }).graphicsLayer { alpha = lift().coerceIn(0f, 1f); translationY = (1f - lift()) * 16f * this.density },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -331,7 +335,7 @@ private fun MenuLayout(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit, l
         }
         val listMaxH = hPx - margin * 2
         Box(
-            Modifier.offset { IntOffset(listX.roundToInt(), 0) }.width(with(density) { listW.toDp() }).fillMaxSize()
+            Modifier.absoluteOffset { IntOffset(listX.roundToInt(), 0) }.width(with(density) { listW.toDp() }).fillMaxSize()
                 .padding(vertical = PanelMargin),
             contentAlignment = Alignment.CenterStart,
         ) {
@@ -379,6 +383,8 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
             )
             ButtonHint("B", Tx.s(if (choosing != null || page != null || more) R.string.common_back else R.string.common_close), Palette.Lavender)
         }
+        // A deeper page comes in from the end side (the left in right to left).
+        val toEnd = if (isRtl) -1 else 1
         AnimatedContent(
             pageKey,
             // Takes what's left of the card, so a long page scrolls instead of running off a short screen.
@@ -387,8 +393,8 @@ private fun ActionList(s: MenuSpec, more: Boolean, setMore: (Boolean) -> Unit) {
                 fun depth(k: String) = when { k == "main" -> 0; k.startsWith("choose:") -> 2; else -> 1 }
                 val forward = depth(targetState) > depth(initialState)
                 if (Motion.style == AnimationStyle.Off) fadeIn(tween(0)) togetherWith fadeOut(tween(0))
-                else (slideInHorizontally(tween(220)) { if (forward) it / 3 else -it / 3 } + fadeIn(tween(180)))
-                    .togetherWith(slideOutHorizontally(tween(160)) { if (forward) -it / 4 else it / 4 } + fadeOut(tween(120)))
+                else (slideInHorizontally(tween(220)) { (if (forward) it / 3 else -it / 3) * toEnd } + fadeIn(tween(180)))
+                    .togetherWith(slideOutHorizontally(tween(160)) { (if (forward) -it / 4 else it / 4) * toEnd } + fadeOut(tween(120)))
             },
             label = "menu-page",
         ) { key ->
@@ -451,9 +457,11 @@ internal fun ActionRow(a: MenuAction, routeKey: String, wanted: Boolean, index: 
             }
             .drawWithCache {
                 val r = CornerRadius(size.height / 2f)
-                val fill = Brush.horizontalGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)))
+                // Brightest at the icon end, the start side.
+                val rtl = layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl
+                val fill = startGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)), rtl)
                 val ring = Brush.linearGradient(listOf(lerp(color, Color.White, 0.55f), color, lerp(color, Color.White, 0.3f)), Offset.Zero, Offset(size.width, size.height))
-                val halo = Brush.horizontalGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent))
+                val halo = startGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent), rtl)
                 onDrawBehind {
                     val g = glow.value
                     if (g > 0.01f) {

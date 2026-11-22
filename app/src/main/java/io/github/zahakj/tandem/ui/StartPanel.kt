@@ -201,6 +201,7 @@ fun StartPanelHost() {
     // Composed in the same frame as the press (not a frame later, after the effect above runs).
     if (!visible && !open) return
     val layer = rememberLayer(open)
+    val sign = startSign
     ProvideLayer(layer) {
         Box(Modifier.fillMaxSize()) {
             Box(
@@ -210,7 +211,8 @@ fun StartPanelHost() {
             Column(
                 Modifier.fillMaxHeight().width(PanelWidth)
                     .graphicsLayer {
-                        translationX = -(1f - slide.value) * (size.width + 24f * density)
+                        // From the start side: the left, or the right in right to left.
+                        translationX = -(1f - slide.value) * (size.width + 24f * density) * sign
                         shadowElevation = 24f * density * slide.value.coerceIn(0f, 1f)
                         shape = RoundedCornerShape(topEnd = 30.dp, bottomEnd = 30.dp)
                         clip = true
@@ -262,14 +264,14 @@ private fun StartPage(
     val tick = Nav.focusTick
     // Worked out again each time the page shows (opening a page forgets its last row, so it starts on the first).
     val target = remember(routeKey, ids, tick, shown) { FocusMemory.resolve(routeKey, ids) }
-    // 1 shown, 0 hidden; sub-pages come from the right, the main page from the left.
+    // 1 shown, 0 hidden; sub-pages come from the end side, the main page from the start side.
     val enter = remember { Animatable(if (shown) 1f else 0f) }
     var drawn by remember { mutableStateOf(shown) }
     LaunchedEffect(shown) {
         if (shown) { drawn = true; enter.animateTo(1f, if (still) tween(0) else spring(0.85f, 500f)) }
         else { enter.animateTo(0f, if (still) tween(0) else tween(170)); drawn = false }
     }
-    val side = if (page == null) -1f else 1f
+    val side = (if (page == null) -1f else 1f) * startSign
     // A page opened inside the panel unfolds its own rows.
     val pageUnfold = remember { Animatable(if (page == null || still) 1f else 0f) }
     LaunchedEffect(shown) {
@@ -340,7 +342,7 @@ private fun StartHeader(progress: () -> Float) {
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(Tx.s(R.string.app_name), style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            val line = listOfNotNull(Clock.format(now), if (battery >= 0) Tx.s(R.string.common_percent, battery) else null).joinToString(" · ")
+            val line = listOfNotNull(Clock.format(now), if (battery >= 0) Tx.s(R.string.common_percent, battery) else null).joinParts()
             if (line.isNotEmpty()) Text(line, style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
         }
     }
@@ -630,9 +632,11 @@ private fun StartRow(a: MenuAction, routeKey: String, wanted: Boolean, height: D
             }
             .drawWithCache {
                 val r = CornerRadius(size.height / 2f)
-                val fill = Brush.horizontalGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)))
+                // Brightest at the icon end, the start side.
+                val rtl = layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl
+                val fill = startGradient(listOf(color.copy(alpha = 0.26f), color.copy(alpha = 0.08f)), rtl)
                 val ring = Brush.linearGradient(listOf(lerp(color, Color.White, 0.55f), color, lerp(color, Color.White, 0.3f)), Offset.Zero, Offset(size.width, size.height))
-                val halo = Brush.horizontalGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent))
+                val halo = startGradient(listOf(color.copy(alpha = 0.22f), Color.Transparent), rtl)
                 onDrawBehind {
                     val g = glow.value
                     if (g > 0.01f) {

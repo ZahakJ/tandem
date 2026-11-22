@@ -367,7 +367,8 @@ private fun DateEditor() {
 private fun StepCard(label: String, value: String, color: Color, modifier: Modifier, onStep: (Int) -> Unit, onFocus: () -> Unit = {}, under: @Composable () -> Unit) {
     FocusCard(
         modifier.fillMaxWidth().onPreviewKeyEvent { e ->
-            val d = when (e.key) { Key.DirectionLeft -> -1; Key.DirectionRight -> 1; else -> return@onPreviewKeyEvent false }
+            // The way the arrow points: towards the end is the left in right to left (Rtl.kt).
+            val d = e.sideStep().takeIf { it != 0 } ?: return@onPreviewKeyEvent false
             if (e.type == KeyEventType.KeyDown) onStep(d)
             true
         },

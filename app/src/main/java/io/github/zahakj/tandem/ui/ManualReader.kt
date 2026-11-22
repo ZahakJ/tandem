@@ -202,8 +202,8 @@ fun ManualScreen(route: Route.Manual) {
                     if (e.key == Key.DirectionUp && scroll.value == 0) return@onPreviewKeyEvent false
                     if (e.type != KeyEventType.KeyDown) return@onPreviewKeyEvent true
                     when (e.key) {
-                        Key.DirectionLeft -> if (state.previous()) Sounds.page() else Sounds.error()
-                        Key.DirectionRight -> if (state.next()) Sounds.page() else Sounds.error()
+                        // Pages turn the way the language reads: in right to left Left is the next page (Rtl.kt).
+                        Key.DirectionLeft, Key.DirectionRight -> if (if (e.sideStep() > 0) state.next() else state.previous()) Sounds.page() else Sounds.error()
                         Key.DirectionUp -> scope.launch { scroll.scrollPage(-scroll.viewportSize * 0.6f) }
                         Key.DirectionDown -> if (scroll.canScrollForward) scope.launch { scroll.scrollPage(scroll.viewportSize * 0.6f) }
                     }

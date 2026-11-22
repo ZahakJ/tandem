@@ -422,7 +422,7 @@ private fun CandidateTile(c: Candidate, onClick: () -> Unit) {
                 contentScale = if (c.kind == MediaKind.Box || c.kind == MediaKind.Hero) ContentScale.Crop else ContentScale.Fit,
             )
             Text(
-                listOf(c.source, c.note).filter { it.isNotBlank() }.joinToString(" · "),
+                listOf(c.source, c.note).filter { it.isNotBlank() }.joinParts(),
                 Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(horizontal = 7.dp, vertical = 4.dp),
                 // A text shadow keeps it readable on any picture, without a dark band across the art.
                 style = MaterialTheme.typography.labelSmall.copy(

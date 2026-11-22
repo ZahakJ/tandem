@@ -265,7 +265,7 @@ fun StatusSorterPopup() {
                         Spacer(Modifier.height(8.dp))
                         Text(game.title, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         Text(
-                            listOfNotNull(game.platform.shortName, playProgress(game.meta)).joinToString(" · "),
+                            listOfNotNull(game.platform.shortName, playProgress(game.meta)).joinParts(),
                             style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1,
                         )
                     }

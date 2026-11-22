@@ -570,7 +570,7 @@ private fun CompanionFace(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(info.title, style = MaterialTheme.typography.titleLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(
-                    listOf(info.system, Tx.s(R.string.screens_comp_playing, sessionText(now - info.start + info.earlier, seconds = !dim))).filter { it.isNotEmpty() }.joinToString(" · "),
+                    listOf(info.system, Tx.s(R.string.screens_comp_playing, sessionText(now - info.start + info.earlier, seconds = !dim))).filter { it.isNotEmpty() }.joinParts(),
                     style = MaterialTheme.typography.titleSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
                 val total = totalSeconds(info, now)

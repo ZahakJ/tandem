@@ -71,16 +71,19 @@ fun Modifier.fadingEdges(state: ScrollableState, horizontal: Boolean = false, le
 }
 
 /**
- * The mask behind [fadingEdges]: [start] and [end] (0..1) say how strongly each edge fades. Read in the draw phase,
- * so a changing fade never recomposes; the offscreen layer is only used while something is fading.
+ * The mask behind [fadingEdges]: [start] and [end] (0..1) say how strongly each edge fades (a row's start is its
+ * right edge in right to left). Read in the draw phase, so a changing fade never recomposes; the offscreen layer is
+ * only used while something is fading.
  */
 fun Modifier.edgeFade(horizontal: Boolean, length: Dp, start: () -> Float, end: () -> Float): Modifier =
     graphicsLayer {
         compositingStrategy = if (start() > 0.001f || end() > 0.001f) CompositingStrategy.Offscreen else CompositingStrategy.Auto
     }.drawWithContent {
         drawContent()
-        val s = start()
-        val e = end()
+        // A row's start is its right edge in right to left.
+        val flip = horizontal && rtl
+        val s = if (flip) end() else start()
+        val e = if (flip) start() else end()
         val px = length.toPx()
         val main = if (horizontal) size.width else size.height
         val len = minOf(px, main / 3f)

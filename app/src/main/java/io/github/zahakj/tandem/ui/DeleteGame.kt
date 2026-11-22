@@ -296,7 +296,7 @@ fun DeleteGameOverlay() {
                     )
                     Text(
                         listOfNotNull(g.platform.name, files?.takeIf { it.ok }?.let { Tx.s(R.string.library_delete_freed, size(ctx, it.bytes + if (DeleteGame.withArt) r.art.sumOf { a -> a.bytes } else 0)) })
-                            .joinToString(" · "),
+                            .joinParts(),
                         style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 }

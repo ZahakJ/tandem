@@ -455,10 +455,12 @@ private fun ShelfRow(
                 verticalAlignment = Alignment.Bottom,
             ) {
                 row.items.forEachIndexed { i, item ->
-                    // Right off the end of a shelf carries on at the start of the next; Left off the start goes back.
+                    // Off the end of a shelf carries on at the start of the next; off the start goes back (the end is the
+                    // left in right to left).
+                    val rtl = isRtl
                     val wrap = when (i) {
-                        row.items.lastIndex -> row.after?.let { Key.DirectionRight to it }
-                        0 -> row.before?.let { Key.DirectionLeft to it }
+                        row.items.lastIndex -> row.after?.let { (if (rtl) Key.DirectionLeft else Key.DirectionRight) to it }
+                        0 -> row.before?.let { (if (rtl) Key.DirectionRight else Key.DirectionLeft) to it }
                         else -> null
                     }
                     Standing(route, item, size, tallest, item.key == target, onFocus, onOpen, onLong, wrap)
@@ -988,7 +990,7 @@ internal fun shelfSections(folder: io.github.zahakj.tandem.data.HomeFolder, cata
 fun FolderCarouselView(route: String, sections: List<ShelfSection>, onOpen: (GridItem) -> Unit) {
     val items = remember(sections) { sections.flatMap { it.items } }
     val flow = remember(items) {
-        items.map { i -> FlowItem(i.key, i.title, listOf(i.type, i.detail).filter { it.isNotEmpty() }.joinToString(" · "), i.color, i.selected, i.game, i.games) { onOpen(i) } }
+        items.map { i -> FlowItem(i.key, i.title, listOf(i.type, i.detail).filter { it.isNotEmpty() }.joinParts(), i.color, i.selected, i.game, i.games) { onOpen(i) } }
     }
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val h = (maxHeight * 0.66f).coerceAtMost(330.dp)
@@ -998,7 +1000,7 @@ fun FolderCarouselView(route: String, sections: List<ShelfSection>, onOpen: (Gri
             val shown = items.firstOrNull { it.selected == sel } ?: items.firstOrNull { it.key == FocusMemory.get(route) } ?: items.firstOrNull()
             if (shown != null) {
                 val status = shown.game?.meta?.playStatus
-                FlowCaption(shown.title, listOfNotNull(shown.game?.platform?.name ?: shown.type, status?.chip, shown.game?.meta?.let { playProgress(it) }).joinToString("  ·  "), status?.color ?: shown.color)
+                FlowCaption(shown.title, listOfNotNull(shown.game?.platform?.name ?: shown.type, status?.chip, shown.game?.meta?.let { playProgress(it) }).joinParts("  ·  "), status?.color ?: shown.color)
             }
             androidx.compose.foundation.layout.Spacer(Modifier.height(18.dp))
         }
