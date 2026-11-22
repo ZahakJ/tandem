@@ -298,7 +298,7 @@
     <string name="look_layout_carousel_help">封面轮播：选中的卡片大大地立在中间，其他卡片向两侧转开。</string>
     <string name="look_layout_list_help">紧凑的列表，旁边配一张大预览。一眼扫过，游戏再多也不怕。</string>
     <string name="look_layout_console_help">主机风格的仪表盘：选中项的图片铺满屏幕，底部一排大图块。</string>
-    <string name="look_layout_orbit_help">Tandem 独创：你的平台、合集和应用化作一圈圆形图标绕着轨道转，选中的那个在最前面放大。它上方是最近玩的游戏，像手里的扑克牌一样展开，顶上还有一条“继续游玩”飘带。左右键转动轨道，L1 和 R1 在分组之间跳转，X 交换屏幕。</string>
+    <string name="look_layout_orbit_help">Tandem 独创：你的平台、合集和应用化作一颗颗玻璃光球，排在一圈发光的轨道上，选中的那颗在最前面放大。轨道中间，它最近玩的游戏封面一字排开地立着，旁边是“继续游玩”卡片。左右键转动轨道，L1 和 R1 在分组之间跳转，X 交换屏幕。</string>
     <string name="look_layout_spotlight_help">游戏优先：选中游戏的图片铺满屏幕，一侧是一列封面，另一侧是它的标志、剧情简介和游玩时长。上下键移动封面栏，L1 和 R1 切换平台或合集，X 阅读完整简介。</string>
 
     <string name="look_hints_play">开玩</string>
@@ -461,9 +461,9 @@
     <string name="look_preset_grid_6">你的 Cocoon 主题包（如果装了的话）</string>
     <string name="look_preset_grid_7">有 Cocoon 备份时：原样还原你的主页、程序坞和主题</string>
     <string name="look_preset_orbit">轨道</string>
-    <string name="look_preset_orbit_blurb">Tandem 独创的主页：你的平台、合集和应用排成一圈圆形图标，选中那个的游戏在上方展开。</string>
+    <string name="look_preset_orbit_blurb">Tandem 独创的主页：你的平台、合集和应用排在一圈发光的光球轨道上，选中那颗的游戏封面立在轨道中间。</string>
     <string name="look_preset_orbit_1">轨道主页，含平台、合集和应用</string>
-    <string name="look_preset_orbit_2">聚光灯上方的“继续游玩”飘带</string>
+    <string name="look_preset_orbit_2">封面旁的“继续游玩”卡片</string>
     <string name="look_preset_orbit_3">轨道下方的圆形程序坞</string>
     <string name="look_preset_orbit_4">下屏显示资料</string>
     <string name="look_preset_orbit_5">在轨道上按 X 交换屏幕</string>

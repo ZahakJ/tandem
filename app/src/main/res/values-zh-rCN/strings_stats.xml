@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="stats_tab_overview">概览</string>
+    <string name="stats_tab_library">游戏库</string>
+    <string name="stats_tab_trophies">奖杯</string>
+    <string name="stats_tab_sessions">游玩记录</string>
+    <string name="stats_tab_achievements">成就</string>
+    <string name="stats_hint_switch_tab">切换标签</string>
+
+    <string name="stats_overview_empty">去玩点什么吧，我会在这里帮你记着，数据只留在这台设备上</string>
+    <string name="stats_overview_go_back">返回</string>
+
+    <string name="stats_tile_total">总游玩时长</string>
+    <plurals name="stats_tile_total_across">
+        <item quantity="other">分布在 %1$d 款游戏中</item>
+    </plurals>
+    <string name="stats_tile_games">玩过的游戏</string>
+    <plurals name="stats_tile_games_of">
+        <item quantity="other">游戏库共 %1$d 款</item>
+    </plurals>
+    <string name="stats_tile_streak">连续天数</string>
+    <string name="stats_tile_streak_new">新开始</string>
+    <plurals name="stats_tile_streak_days">
+        <item quantity="other">%1$d 天</item>
+    </plurals>
+    <plurals name="stats_tile_streak_best">
+        <item quantity="other">最长 %1$d 天</item>
+    </plurals>
+    <string name="stats_tile_history_starts">从今天开始记录</string>
+    <string name="stats_tile_sessions">游玩次数</string>
+    <string name="stats_tile_sessions_short">短小精悍</string>
+    <string name="stats_tile_sessions_average">平均每次约 %1$s</string>
+    <string name="stats_tile_said">%1$s：%2$s · %3$s</string>
+
+    <string name="stats_by_system">按平台</string>
+    <string name="stats_most_played">最常玩</string>
+    <plurals name="stats_mosaic_more">
+        <item quantity="other">另外 %1$d 个</item>
+    </plurals>
+    <string name="stats_mosaic_share">占你游玩时长的 %1$d%%</string>
+
+    <string name="stats_fact_morning">你是只早起的鸟儿：大部分时间都在早上玩。</string>
+    <string name="stats_fact_afternoon">午后冒险家：下午是你玩得最多的时候。</string>
+    <string name="stats_fact_evening">晚上是你的游戏时间。真惬意！</string>
+    <string name="stats_fact_night">资深夜猫子。你大部分时间都在晚上 11 点以后玩。</string>
+    <string name="stats_fact_private">你的统计数据绝不会离开这台设备</string>
+
+    <string name="stats_chart_title">最近 30 天</string>
+    <string name="stats_chart_empty_new">你的游玩记录从今天开始。去玩点什么，这里的日子就会慢慢填满。</string>
+    <string name="stats_chart_empty">最近 30 天没有玩过。下次游玩会显示在这里。</string>
+    <string name="stats_chart_nothing">还没有</string>
+    <string name="stats_chart_total">共 %1$s</string>
+    <string name="stats_chart_day">%1$s · %2$s</string>
+    <string name="stats_chart_day_none">%1$s · 没玩</string>
+    <string name="stats_today">今天</string>
+    <string name="stats_yesterday">昨天</string>
+    <string name="stats_date_short">M\'月\'d\'日\' EEE</string>
+    <string name="stats_date_long">M\'月\'d\'日\' EEEE</string>
+
+    <string name="stats_sessions_none_for">%1$s 没有游玩记录：它的游玩时长可能是导入的</string>
+    <string name="stats_sessions_show_all_long">显示所有记录</string>
+    <string name="stats_sessions_empty">每次游玩都会在这里留下一条记录</string>
+    <string name="stats_sessions_see_overview">查看概览</string>
+    <string name="stats_sessions_show_all">全部显示</string>
+    <string name="stats_sessions_clear_these">清除这些记录</string>
+    <string name="stats_sessions_clear_all">清除所有记录</string>
+    <string name="stats_sessions_clear_these_ask">要清除 %1$s 的游玩记录吗？</string>
+    <string name="stats_sessions_clear_all_ask">要清除所有游玩记录吗？</string>
+    <plurals name="stats_sessions_cleared">
+        <item quantity="other">已清除 %1$d 条记录</item>
+    </plurals>
+    <plurals name="stats_sessions_count">
+        <item quantity="other">%1$d 条记录</item>
+    </plurals>
+    <plurals name="stats_sessions_count_for">
+        <item quantity="other">%2$s · %1$d 条记录</item>
+    </plurals>
+    <string name="stats_sessions_hint_edit">编辑记录</string>
+    <string name="stats_sessions_day">%1$s · %2$s</string>
+    <string name="stats_sessions_game_gone">这款游戏已经不在你的游戏库里了</string>
+
+    <string name="stats_export_saved">已在 ROMs/tandem 中保存 play-stats.csv 和 play-sessions.csv</string>
+    <string name="stats_export_failed">无法写入 ROMs/tandem</string>
+
+    <string name="stats_library_empty">在任意游戏上按 Y › 状态，就能把它放进待玩，或标为已通关。你的游戏库会在这里自己整理好</string>
+    <string name="stats_library_playing">在玩</string>
+    <string name="stats_library_playing_latest">最近：%1$s</string>
+    <string name="stats_library_playing_none">手头没有在玩的</string>
+    <string name="stats_library_backlog">待玩</string>
+    <string name="stats_library_backlog_left">约 %1$s 可清空</string>
+    <string name="stats_library_backlog_left_more">约 %1$s+ 可清空</string>
+    <string name="stats_library_backlog_none">排队中的游戏</string>
+    <string name="stats_library_finished">已通关</string>
+    <plurals name="stats_library_finished_year">
+        <item quantity="other">今年 %1$d 款</item>
+    </plurals>
+    <string name="stats_library_completed">完美通关</string>
+    <string name="stats_library_completed_none">100% 达成</string>
+    <string name="stats_library_completed_share">占已通关的 %1$d%%</string>
+    <plurals name="stats_library_untracked">
+        <item quantity="other">你玩过的 %1$d 款游戏还没有状态。按 A 逐个整理，玩得最多的在前。</item>
+    </plurals>
+    <string name="stats_library_shelf">%1$s · %2$d</string>
+    <string name="stats_library_shelf_playing">在玩</string>
+    <string name="stats_library_shelf_backlog">待玩</string>
+    <string name="stats_library_shelf_beaten">已通关和完美通关</string>
+    <string name="stats_library_shelf_shelved">搁置</string>
+    <string name="stats_library_shelf_endless">无尽</string>
+    <string name="stats_library_just_started">刚开始</string>
+    <string name="stats_ago_today">今天</string>
+    <string name="stats_ago_yesterday">昨天</string>
+    <plurals name="stats_ago_days">
+        <item quantity="other">%1$d 天前</item>
+    </plurals>
+    <plurals name="stats_ago_months">
+        <item quantity="other">%1$d 个月前</item>
+    </plurals>
+    <plurals name="stats_ago_years">
+        <item quantity="other">%1$d 年前</item>
+    </plurals>
+    <string name="stats_waiting">排队中</string>
+    <string name="stats_waiting_today">今天开始排队</string>
+    <string name="stats_waiting_yesterday">昨天开始排队</string>
+    <plurals name="stats_waiting_days">
+        <item quantity="other">已等 %1$d 天</item>
+    </plurals>
+    <plurals name="stats_waiting_months">
+        <item quantity="other">已等 %1$d 个月</item>
+    </plurals>
+    <plurals name="stats_waiting_years">
+        <item quantity="other">已等 %1$d 年</item>
+    </plurals>
+
+    <string name="stats_sorter_none">你玩过的每款游戏都有状态了</string>
+    <plurals name="stats_sorter_done">
+        <item quantity="other">整理完毕！搞定了 %1$d 款游戏</item>
+    </plurals>
+    <string name="stats_sorter_title">整理你玩过的游戏</string>
+    <string name="stats_sorter_set">设定</string>
+    <string name="stats_sorter_stop">先到这里</string>
+    <string name="stats_sorter_progress">%1$d / %2$d</string>
+    <string name="stats_sorter_skip">跳过这款</string>
+
+    <string name="stats_tier_bronze">铜</string>
+    <string name="stats_tier_silver">银</string>
+    <string name="stats_tier_gold">金</string>
+    <string name="stats_tier_platinum">白金</string>
+
+    <string name="stats_trophy_new">🏆 %1$s奖杯：%2$s · %3$s</string>
+    <plurals name="stats_trophy_new_more">
+        <item quantity="other">🏆 %2$s奖杯：%3$s（另有 %1$d 个）</item>
+    </plurals>
+    <string name="stats_trophies_about">奖杯来自你的游玩和游戏状态，所有平台都算</string>
+    <plurals name="stats_trophies_earned">
+        <item quantity="other">%1$d / %2$d 个奖杯</item>
+    </plurals>
+    <plurals name="stats_trophies_finished">
+        <item quantity="other">已通关 %1$d 款游戏</item>
+    </plurals>
+    <string name="stats_trophies_cabinet">荣誉陈列柜：你通关的游戏</string>
+    <string name="stats_date_month">yyyy\'年\'M\'月\'</string>
+    <string name="stats_date_earned">yyyy\'年\'M\'月\'d\'日\'</string>
+    <string name="stats_trophy_said">%1$s：%2$s</string>
+    <string name="stats_trophy_progress_said">%1$s。目前 %2$s</string>
+    <string name="stats_trophy_earned_on">%1$s · %2$s</string>
+    <string name="stats_trophy_hours">%1$d 小时 / %2$d 小时</string>
+
+    <string name="stats_trophy_first_play">按下开始</string>
+    <string name="stats_trophy_first_play_how">在 Tandem 里玩第一款游戏</string>
+    <string name="stats_trophy_hour">再来一关</string>
+    <string name="stats_trophy_hour_how">累计游玩 1 小时</string>
+    <string name="stats_trophy_ten_hours">渐入佳境</string>
+    <string name="stats_trophy_ten_hours_how">累计游玩 10 小时</string>
+    <string name="stats_trophy_hundred_hours">百时斩</string>
+    <string name="stats_trophy_hundred_hours_how">累计游玩 100 小时</string>
+    <string name="stats_trophy_thousand_hours">终身玩家</string>
+    <string name="stats_trophy_thousand_hours_how">累计游玩 1000 小时</string>
+    <string name="stats_trophy_marathon">马拉松</string>
+    <string name="stats_trophy_marathon_how">一次连续玩 3 小时</string>
+    <string name="stats_trophy_devoted">死忠粉</string>
+    <string name="stats_trophy_devoted_how">在一款游戏里玩 25 小时</string>
+    <string name="stats_trophy_second_home">第二个家</string>
+    <string name="stats_trophy_second_home_how">在一款游戏里玩 100 小时</string>
+    <string name="stats_trophy_week">一周打卡</string>
+    <string name="stats_trophy_week_how">连续 7 天游玩</string>
+    <string name="stats_trophy_month">风雨无阻</string>
+    <string name="stats_trophy_month_how">连续 30 天游玩</string>
+    <string name="stats_trophy_regular">常客</string>
+    <string name="stats_trophy_regular_how">游玩 100 次</string>
+    <string name="stats_trophy_night_owl">夜猫子</string>
+    <string name="stats_trophy_night_owl_how">在凌晨 2 点到 5 点之间开始游戏</string>
+    <string name="stats_trophy_early_bird">早起的鸟儿</string>
+    <string name="stats_trophy_early_bird_how">在早上 7 点前开始游戏</string>
+    <string name="stats_trophy_travelled">见多识广</string>
+    <string name="stats_trophy_travelled_how">在 3 个平台上玩游戏</string>
+    <string name="stats_trophy_globetrotter">环游世界</string>
+    <string name="stats_trophy_globetrotter_how">在 8 个平台上玩游戏</string>
+    <string name="stats_trophy_sampler">尝鲜达人</string>
+    <string name="stats_trophy_sampler_how">玩 25 款不同的游戏</string>
+    <string name="stats_trophy_plans">宏图大志</string>
+    <string name="stats_trophy_plans_how">把 5 款游戏放进待玩</string>
+    <string name="stats_trophy_credits">字幕升起</string>
+    <string name="stats_trophy_credits_how">通关一款游戏</string>
+    <string name="stats_trophy_closer">收官人</string>
+    <string name="stats_trophy_closer_how">通关 5 款游戏</string>
+    <string name="stats_trophy_finisher">通关狂人</string>
+    <string name="stats_trophy_finisher_how">通关 25 款游戏</string>
+    <string name="stats_trophy_completionist">全收集</string>
+    <string name="stats_trophy_completionist_how">100% 完美通关一款游戏</string>
+    <string name="stats_trophy_perfectionist">完美主义者</string>
+    <string name="stats_trophy_perfectionist_how">100% 完美通关 10 款游戏</string>
+    <string name="stats_trophy_monthly">月更通关</string>
+    <string name="stats_trophy_monthly_how">一年内通关 12 款游戏</string>
+    <string name="stats_trophy_collector">收藏家</string>
+    <string name="stats_trophy_collector_how">游戏库里有 100 款游戏</string>
+    <string name="stats_trophy_archivist">档案馆长</string>
+    <string name="stats_trophy_archivist_how">游戏库里有 500 款游戏</string>
+    <string name="stats_trophy_master">Tandem 大师</string>
+    <string name="stats_trophy_master_how">拿下其他所有奖杯</string>
+
+    <string name="stats_date_session">yyyy\'年\'M\'月\'d\'日\' EEE</string>
+    <string name="stats_date_day_month">M\'月\'d\'日\'</string>
+    <string name="stats_date_weekday">EEE</string>
+    <string name="stats_session_header">%1$s · %2$s · %3$s</string>
+    <string name="stats_session_edit_length">编辑时长</string>
+    <string name="stats_session_change_date">更改日期和时间</string>
+    <string name="stats_session_when">%1$s %2$s</string>
+    <string name="stats_session_merge">与下一条合并</string>
+    <string name="stats_session_merge_adds">+ %1$s</string>
+    <string name="stats_session_merged">已合并为一条 %1$s 的记录</string>
+    <string name="stats_session_only_game">只看这款游戏</string>
+    <string name="stats_session_delete">删除</string>
+    <string name="stats_session_deleted">记录已删除</string>
+    <string name="stats_session_length">时长</string>
+    <string name="stats_session_one_min">1 分钟</string>
+    <string name="stats_session_one_day">24 小时</string>
+    <string name="stats_session_ten_min">10 分钟</string>
+    <string name="stats_session_cancel">取消</string>
+    <string name="stats_session_save">保存</string>
+    <string name="stats_session_length_set">时长已设为 %1$s</string>
+    <string name="stats_session_day">日期</string>
+    <string name="stats_session_time">时间</string>
+    <string name="stats_session_midnight">午夜</string>
+    <string name="stats_session_change">更改</string>
+    <string name="stats_session_a_week">一周</string>
+    <string name="stats_session_an_hour">一小时</string>
+    <string name="stats_session_moved">已移到 %1$s %2$s</string>
+    <plurals name="stats_sessions_clear_detail">
+        <item quantity="other">将删除 %1$d 条记录（%2$s），并根据剩下的记录重新计算游玩时长、游玩次数和上次游玩时间。从其他前端导入的游玩时长会保留。此操作无法撤销。</item>
+    </plurals>
+    <plurals name="stats_sessions_clear_detail_of">
+        <item quantity="other">将删除 %3$s 的 %1$d 条记录（%2$s），并根据剩下的记录重新计算游玩时长、游玩次数和上次游玩时间。从其他前端导入的游玩时长会保留。此操作无法撤销。</item>
+    </plurals>
+</resources>

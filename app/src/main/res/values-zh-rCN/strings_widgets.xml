@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 简体中文. See docs/i18n/glossary-zh-CN.md. -->
+<resources>
+    <string name="widgets_size_small">小</string>
+    <string name="widgets_size_medium">中</string>
+    <string name="widgets_size_wide">宽</string>
+    <string name="widgets_size_tall">高</string>
+    <string name="widgets_place_home">主页</string>
+    <string name="widgets_place_bottom">下屏</string>
+    <string name="widgets_place_both">两块屏幕</string>
+    <string name="widgets_place_grid">主页网格</string>
+
+    <string name="widgets_storage">存储空间</string>
+    <string name="widgets_storage_blurb">可用空间、占用最大的平台和文件夹。按 A 重新计算。</string>
+    <string name="widgets_battery">电池</string>
+    <string name="widgets_battery_blurb">电量、温度和剩余时间。按 A 打开快速设置。</string>
+    <string name="widgets_clock">时钟</string>
+    <string name="widgets_clock_blurb">数字、指针或大号可爱款。按 A 切换样式。</string>
+    <string name="widgets_nowplaying">正在玩</string>
+    <string name="widgets_nowplaying_blurb">在后台等你的游戏。按 A 继续。</string>
+    <string name="widgets_continue">继续游玩</string>
+    <string name="widgets_continue_blurb">你最近玩的游戏，一键直达。</string>
+    <string name="widgets_favorites">收藏</string>
+    <string name="widgets_favorites_blurb">你 ♥ 过的游戏。</string>
+    <string name="widgets_random">随机来一款</string>
+    <string name="widgets_random_blurb">随机抽一款，不满意可以重抽。</string>
+    <string name="widgets_recent">最近添加</string>
+    <string name="widgets_recent_blurb">游戏库里的新面孔。</string>
+    <string name="widgets_stats">游玩统计</string>
+    <string name="widgets_stats_blurb">今天、本周、连续天数和一张小图表。按 A 打开统计。</string>
+    <string name="widgets_achievements">成就</string>
+    <string name="widgets_achievements_blurb">你最近解锁的 RetroAchievements 成就。</string>
+    <string name="widgets_achievements_needs">请先在设置里登录 RetroAchievements</string>
+    <string name="widgets_pip">Pip</string>
+    <string name="widgets_pip_blurb">你的小伙伴。Pip 会留意时间和你的连续天数。</string>
+    <string name="widgets_upnext">接下来玩</string>
+    <string name="widgets_upnext_blurb">你接下来要玩的游戏清单。在任意游戏上按 Y › 加入“接下来玩”。</string>
+    <string name="widgets_sysmon">系统监视器</string>
+    <string name="widgets_sysmon_blurb">可用内存、CPU 温度（Android 提供时）和运行时长。</string>
+    <string name="widgets_apps">应用快捷方式</string>
+    <string name="widgets_apps_blurb">把程序坞里的应用放进一个迷你程序坞。</string>
+    <string name="widgets_greeting">问候</string>
+    <string name="widgets_greeting_blurb">Pip 向你打招呼，附上时间和你上次玩的游戏。按 A 开玩。</string>
+    <string name="widgets_android">Android 小组件</string>
+    <string name="widgets_android_blurb">来自你某个应用的小组件：天气、日历、音乐等等。</string>
+
+    <string name="widgets_opt_list">列表</string>
+    <string name="widgets_opt_list_systems">最大的平台</string>
+    <string name="widgets_opt_list_folders">最大的文件夹</string>
+    <string name="widgets_opt_list_none">只显示圆环</string>
+    <string name="widgets_opt_extras">图片和缓存大小</string>
+    <string name="widgets_opt_temp">温度</string>
+    <string name="widgets_opt_estimate">剩余时间</string>
+    <string name="widgets_opt_style">样式</string>
+    <string name="widgets_opt_style_digital">数字</string>
+    <string name="widgets_opt_style_analog">指针</string>
+    <string name="widgets_opt_style_big">大号可爱</string>
+    <string name="widgets_opt_hours">小时制</string>
+    <string name="widgets_opt_hours_system">跟随 Android</string>
+    <string name="widgets_opt_hours_12">12 小时制</string>
+    <string name="widgets_opt_hours_24">24 小时制</string>
+    <string name="widgets_opt_seconds">秒</string>
+    <string name="widgets_opt_date">日期</string>
+    <string name="widgets_opt_order">顺序</string>
+    <string name="widgets_opt_order_name">按名称</string>
+    <string name="widgets_opt_order_recent">最近玩过</string>
+    <string name="widgets_opt_order_most">最常玩</string>
+    <string name="widgets_opt_pool">抽取范围</string>
+    <string name="widgets_opt_pool_unplayed">从没玩过</string>
+    <string name="widgets_opt_pool_any">全部</string>
+    <string name="widgets_opt_pool_favorites">收藏</string>
+    <string name="widgets_opt_talk">对话气泡</string>
+    <string name="widgets_opt_mood">心情</string>
+    <string name="widgets_opt_mood_auto">自动</string>
+    <string name="widgets_opt_mood_happy">开心</string>
+    <string name="widgets_opt_mood_excited">兴奋</string>
+    <string name="widgets_opt_mood_sleepy">困困</string>
+    <string name="widgets_opt_played">玩过的游戏</string>
+    <string name="widgets_opt_played_show">打 ✓ 显示</string>
+    <string name="widgets_opt_played_hide">隐藏</string>
+    <string name="widgets_opt_uptime">运行时长</string>
+
+    <string name="widgets_act_measure">重新计算</string>
+    <string name="widgets_measuring">正在计算你的文件夹…</string>
+    <string name="widgets_act_pick_another">换一款</string>
+    <string name="widgets_act_check_again">再检查一次</string>
+    <string name="widgets_act_add_upnext">添加游戏或笔记…</string>
+    <string name="widgets_act_clear_played">清掉玩过的游戏</string>
+    <plurals name="widgets_cleared_played">
+        <item quantity="other">已清掉 %1$d 款游戏</item>
+    </plurals>
+    <string name="widgets_act_remove">移除 %1$s</string>
+    <string name="widgets_act_choose_dock">选择程序坞应用</string>
+
+    <string name="widgets_move_hint">用十字键移动，然后按 A</string>
+    <string name="widgets_moved">已移动 ✓</string>
+    <string name="widgets_upnext_removed">已移出“接下来玩”</string>
+    <string name="widgets_upnext_added">已加入“接下来玩” ✓</string>
+    <string name="widgets_upnext_ask">加入“接下来玩”：游戏名或一条笔记</string>
+    <string name="widgets_upnext_already">%1$s 已经在清单里了</string>
+    <string name="widgets_upnext_added_game">已添加 %1$s ✓</string>
+    <string name="widgets_upnext_added_note">已在“接下来玩”中添加一条笔记 ✓</string>
+    <string name="widgets_upnext_edit_note">编辑笔记（清空即移除）</string>
+    <string name="widgets_title">小组件</string>
+    <string name="widgets_settings">小组件</string>
+    <string name="widgets_customize">自定义小组件</string>
+    <plurals name="widgets_count">
+        <item quantity="other">%1$d 个小组件</item>
+    </plurals>
+    <string name="widgets_customize_help">添加、移动、调整大小和移除小组件：时钟、电池、游玩时长、存储空间、接下来玩等等。</string>
+    <string name="widgets_home">主页上的小组件</string>
+    <string name="widgets_none_yet">还没有</string>
+    <string name="widgets_home_help">在主页顶部显示你的小组件。</string>
+    <string name="widgets_grid">网格上的小组件</string>
+    <string name="widgets_grid_help">在图标网格上用 添加到这里 › 小组件… 时，新小组件放在哪里：占一个自己的位置（每个方向 1 到 2 格），或放进小组件行。已经放好的小组件保持不动。</string>
+    <string name="widgets_grid_cells">占格子</string>
+    <string name="widgets_grid_row">成一行</string>
+    <string name="widgets_bottom">空闲时的下屏</string>
+    <string name="widgets_bottom_greeting">问候</string>
+    <string name="widgets_bottom_help">没有选中任何东西时，下屏显示什么：Pip 的问候，或你挑选的小组件。</string>
+
+    <string name="widgets_minutes">%1$d 分</string>
+    <string name="widgets_hours_minutes">%1$d 时 %2$d 分</string>
+    <string name="widgets_under_minute">不到 1 分</string>
+
+    <string name="widgets_storage_checking">正在检查存储空间…</string>
+    <string name="widgets_free">可用 %1$s</string>
+    <string name="widgets_free_word">可用</string>
+    <string name="widgets_storage_measuring">计算中…</string>
+    <string name="widgets_volume_free">%1$s · 可用 %2$s</string>
+    <string name="widgets_art_cache">图片 %1$s · 缓存 %2$s</string>
+    <string name="widgets_extra_games">游戏</string>
+    <string name="widgets_extra_art">图片与视频</string>
+    <string name="widgets_extra_cache">缓存</string>
+    <string name="widgets_measuring_folders">正在计算文件夹…</string>
+    <string name="widgets_nothing_to_measure">没有可计算的</string>
+
+    <string name="widgets_checking">正在检查…</string>
+    <string name="widgets_battery_full">已充满</string>
+    <string name="widgets_battery_charging">充电中</string>
+    <string name="widgets_battery_plugged">已接通电源</string>
+    <string name="widgets_battery_low">电量不足</string>
+    <string name="widgets_battery_on">使用电池</string>
+    <string name="widgets_battery_charged_short">已充满</string>
+    <string name="widgets_battery_low_short">低电量</string>
+    <string name="widgets_battery_full_in">%1$s后充满</string>
+    <string name="widgets_battery_left">约剩 %1$s</string>
+    <string name="widgets_battery_warm">%1$s · 偏热</string>
+
+    <string name="widgets_date_short">M\'月\'d\'日\' EEE</string>
+    <string name="widgets_date_day_month">M\'月\'d\'日\'</string>
+    <string name="widgets_clock_style">时钟样式：%1$s</string>
+
+    <string name="widgets_np_start">开一局游戏，它就会在这里等你</string>
+    <string name="widgets_np_shizuku">在 Shizuku 中授权 Tandem，才能看到运行中的游戏</string>
+    <string name="widgets_np_nothing">没有在运行的</string>
+    <string name="widgets_np_cant_see">看不到游戏</string>
+    <string name="widgets_np_wait">你开着的游戏会在这里等你</string>
+    <string name="widgets_np_needs">需要 Shizuku</string>
+    <string name="widgets_np_running">● 运行中</string>
+    <string name="widgets_np_this_time">%1$s · 本次 %2$s</string>
+    <string name="widgets_np_in_app">%1$s · %2$s</string>
+    <string name="widgets_np_now_playing">● 正在玩</string>
+    <string name="widgets_np_resume">▶ 继续</string>
+    <string name="widgets_np_paused_in">● 已在 %1$s 中暂停</string>
+    <string name="widgets_np_more">还有 %1$d 个</string>
+
+    <string name="widgets_strip_add_upnext">加入“接下来玩”</string>
+    <string name="widgets_strip_add_first">+ 添加第一款游戏</string>
+    <string name="widgets_strip_add">+ 添加</string>
+    <string name="widgets_continue_empty">还没玩过任何游戏</string>
+    <string name="widgets_continue_empty_detail">你最近玩的游戏会出现在这里</string>
+    <string name="widgets_favorites_empty">还没有收藏</string>
+    <string name="widgets_favorites_empty_detail">在游戏上按 Y › 收藏</string>
+    <string name="widgets_recent_new">新</string>
+    <string name="widgets_no_games">还没有游戏</string>
+    <string name="widgets_recent_empty_detail">在 设置 › 游戏库与图片 › 游戏文件夹 中选择你的游戏文件夹</string>
+    <string name="widgets_upnext_empty">没有接下来要玩的</string>
+    <string name="widgets_upnext_empty_detail">在游戏上按 Y › 加入“接下来玩”</string>
+
+    <string name="widgets_random_none">还没有可抽的游戏</string>
+    <string name="widgets_random_nothing">没有可抽的游戏</string>
+    <string name="widgets_random_how_about">🎲 来一局…</string>
+
+    <string name="widgets_stats_no_streak">还没有连续记录</string>
+    <plurals name="widgets_stats_streak">
+        <item quantity="other">🔥 %1$d 天</item>
+    </plurals>
+    <string name="widgets_stats_week">本周 %1$s</string>
+    <string name="widgets_stats_today_star">★ 今天</string>
+    <string name="widgets_stats_today">今天</string>
+    <string name="widgets_stats_play_time">游玩时长</string>
+    <string name="widgets_date_day_letter">EEEEE</string>
+
+    <string name="widgets_ach_none">这个月还没有解锁</string>
+    <string name="widgets_ach_next">下一个成就会出现在这里</string>
+    <string name="widgets_ach_latest_all">最近解锁</string>
+    <string name="widgets_ach_latest">🏆 最新解锁</string>
+
+    <string name="widgets_pip_late">熬夜呢？我也是。</string>
+    <string name="widgets_pip_bed">再打一关就睡？</string>
+    <string name="widgets_pip_morning">早上好！出门前先来一局？</string>
+    <string name="widgets_pip_afternoon">午休时间？我帮你占着座。</string>
+    <string name="widgets_pip_evening">惬意的晚上。今天玩什么？</string>
+    <plurals name="widgets_pip_streak">
+        <item quantity="other">连续 %1$d 天！你太强了。</item>
+    </plurals>
+    <plurals name="widgets_pip_keep_streak">
+        <item quantity="other">今天玩一下，保住你连续 %1$d 天的记录！</item>
+    </plurals>
+    <string name="widgets_pip_today">今天玩了 %1$s。不错哦！</string>
+    <string name="widgets_pip_missed">好想你呀。一起玩吗？</string>
+    <plurals name="widgets_pip_untried">
+        <item quantity="other">还有 %1$d 款游戏你没试过 👀</item>
+    </plurals>
+    <string name="widgets_pip_surprise">嘘… %1$s 帮你挑一款游戏。</string>
+    <string name="widgets_pip_switcher">%1$s 可以看看哪些在运行。</string>
+    <string name="widgets_pip_here">你在这儿，我就开心。</string>
+
+    <string name="widgets_sys_uptime">已运行 %1$s</string>
+    <string name="widgets_sys_title">系统</string>
+    <string name="widgets_sys_ram">内存</string>
+    <string name="widgets_sys_cpu">CPU %1$s</string>
+    <string name="widgets_sys_of">共 %1$s</string>
+    <string name="widgets_sys_memory">内存</string>
+
+    <string name="widgets_apps_all">所有应用</string>
+    <string name="widgets_apps_title">应用</string>
+
+    <string name="widgets_hello_morning">早上好！</string>
+    <string name="widgets_hello_afternoon">下午好！</string>
+    <string name="widgets_hello_evening">晚上好！</string>
+    <plurals name="widgets_greeting_ready">
+        <item quantity="other">%1$d 款游戏整装待发</item>
+    </plurals>
+    <plurals name="widgets_greeting_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <string name="widgets_last_played">上次玩的</string>
+
+    <string name="widgets_not_available">暂不可用</string>
+    <string name="widgets_grid_too_big">%1$s 一个位置放不下。它可以放在主页网格上</string>
+    <string name="widgets_added">已添加 %1$s</string>
+    <string name="widgets_added_row">已把 %1$s 添加到小组件行</string>
+    <string name="widgets_added_at">已按 %2$s 添加 %1$s：有空间时可用 Y › 调整大小</string>
+    <string name="widgets_one_size">%1$s 只有一种尺寸</string>
+    <string name="widgets_no_room_for">这里放不下 %1$s</string>
+    <string name="widgets_no_room">这里放不下其他尺寸</string>
+    <string name="widgets_resized">已把 %1$s 调整为 %2$s</string>
+    <string name="widgets_sized">%1$s：%2$s</string>
+    <string name="widgets_a_widget">小组件</string>
+    <string name="widgets_removed">已移除 %1$s</string>
+    <string name="widgets_menu_options">小组件选项…</string>
+    <string name="widgets_menu_move">移动</string>
+    <string name="widgets_menu_resize">调整大小</string>
+    <string name="widgets_menu_remove">移除小组件</string>
+    <string name="widgets_menu_select">多选</string>
+    <string name="widgets_menu_select_sub">标记多个，一起处理</string>
+    <string name="widgets_menu_tidy">整理</string>
+    <string name="widgets_menu_search">搜索</string>
+    <string name="widgets_menu_swap">交换屏幕</string>
+    <string name="widgets_menu_kind">小组件 · %1$s</string>
+
+    <string name="widgets_ed_top">上屏</string>
+    <string name="widgets_ed_bottom">下屏</string>
+    <string name="widgets_ed_top_about">主页上的一行小组件，位于“继续游玩”下方。</string>
+    <string name="widgets_ed_bottom_about">没有选中任何东西时显示在下屏。一个都没有时，显示 Pip 的问候。</string>
+    <string name="widgets_ed_add">+ 添加小组件</string>
+    <string name="widgets_ed_show_home">在主页显示</string>
+    <string name="widgets_ed_rows">行数</string>
+    <string name="widgets_ed_rows_auto">自动</string>
+    <string name="widgets_ed_rows_one">一行</string>
+    <string name="widgets_ed_rows_two">两行</string>
+    <string name="widgets_ed_reset_again">再按一次即可重置</string>
+    <string name="widgets_ed_reset">恢复默认组合</string>
+    <string name="widgets_ed_reset_done">小组件已恢复默认组合</string>
+    <string name="widgets_ed_customize">自定义</string>
+    <string name="widgets_ed_options">选项</string>
+    <string name="widgets_ed_switch">切换屏幕</string>
+    <string name="widgets_ed_home">主页</string>
+    <string name="widgets_ed_row_off">小组件行已关闭。打开“在主页显示”就能看到。</string>
+    <string name="widgets_ed_none">这里还没有小组件</string>
+    <string name="widgets_ed_none_detail">添加时钟、存储空间、游玩统计等等。</string>
+    <string name="widgets_ed_greeting">这里会显示 Pip 的问候。</string>
+    <string name="widgets_ed_add_tile">添加小组件</string>
+    <string name="widgets_ed_moving">◀ ▶  A 完成</string>
+    <string name="widgets_ed_choose">选择</string>
+    <string name="widgets_ed_done">完成</string>
+    <string name="widgets_ed_size">尺寸</string>
+    <string name="widgets_ed_size_help">在网格上占几格</string>
+    <string name="widgets_ed_show_on">显示于</string>
+    <string name="widgets_ed_move">移动</string>
+    <string name="widgets_ed_all">所有小组件…</string>
+    <string name="widgets_ed_remove">移除小组件</string>
+    <string name="widgets_ed_add_title">添加小组件</string>
+    <string name="widgets_ed_add_hint">添加</string>
+    <string name="widgets_ed_added">已添加 %1$s ✓</string>
+    <string name="widgets_ed_needs_sign_in">需要登录</string>
+
+    <string name="widgets_app_gone">%1$s 已不可用，所以已被移除</string>
+    <string name="widgets_app_unavailable">Android 小组件暂时不可用</string>
+    <string name="widgets_app_no_ask">Android 没有弹出小组件的授权询问</string>
+    <string name="widgets_app_not_allowed">Android 不允许使用这个小组件</string>
+    <string name="widgets_app_set_up">设置…</string>
+    <string name="widgets_app_set_up_failed">它的设置界面打不开</string>
+    <string name="widgets_app_not_available">不可用</string>
+    <string name="widgets_app_from_apps">来自你某个应用的小组件</string>
+    <string name="widgets_app_add_title">添加 Android 小组件</string>
+    <string name="widgets_app_in_folder">在文件夹中</string>
+    <string name="widgets_app_looking">正在翻看你的应用…</string>
+    <string name="widgets_app_looking_detail">它们提供的小组件会显示在这里。</string>
+    <string name="widgets_app_none">你的应用都还没有提供小组件</string>
+    <string name="widgets_app_go_back">返回</string>
+    <string name="widgets_app_cant_add">这个小组件暂时无法添加</string>
+    <string name="widgets_app_asks">需要先回答几个问题</string>
+    <string name="widgets_app_ready">可以直接用</string>
+
+    <string name="widgets_volume_internal">内部存储</string>
+    <string name="widgets_volume_sd">SD 卡</string>
+</resources>

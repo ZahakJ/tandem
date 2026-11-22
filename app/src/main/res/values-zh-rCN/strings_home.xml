@@ -380,4 +380,30 @@
     <plurals name="home_collection_more_systems_most">
         <item quantity="other">另外 %1$d 个平台 · 最常玩</item>
     </plurals>
+
+    <plurals name="home_orbit_games">
+        <item quantity="other">%1$d 款游戏</item>
+    </plurals>
+    <plurals name="home_orbit_playing">
+        <item quantity="other">%1$d 款在玩</item>
+    </plurals>
+    <string name="home_orbit_empty_hidden">所有游戏都隐藏了</string>
+    <string name="home_orbit_empty_none">还没有游戏。选择你放游戏的文件夹吧</string>
+    <string name="home_orbit_empty_show">显示隐藏的游戏</string>
+    <string name="home_orbit_empty_pick">选择你的游戏文件夹</string>
+    <string name="home_orbit_continue">继续游玩</string>
+    <string name="home_orbit_resume">继续游戏</string>
+    <string name="home_orbit_caption_continue">继续游玩 · %1$s</string>
+    <string name="home_orbit_caption_resume">继续游戏 · %1$s</string>
+    <string name="home_orbit_all_apps">所有应用</string>
+    <string name="home_orbit_app">应用</string>
+    <string name="home_orbit_note_pin">把应用固定到程序坞，就能在这里看到它们</string>
+    <string name="home_orbit_settings">轨道</string>
+    <string name="home_orbit_holds">轨道上放什么</string>
+    <string name="home_orbit_holds_help">绕着轨道转的是什么：你的平台、合集和 Tandem 的应用，或者少放几样。L1 和 R1 在分组之间跳转。</string>
+    <string name="home_orbit_holds_all">平台、合集、应用</string>
+    <string name="home_orbit_holds_games">平台和合集</string>
+    <string name="home_orbit_holds_systems">仅平台</string>
+    <string name="home_orbit_continue_card">“继续游玩”卡片</string>
+    <string name="home_orbit_continue_card_help">你上次玩的游戏，化作一张卡片立在封面左边。按 A 接着玩（游戏还在运行时就是“继续游戏”）。</string>
 </resources>
