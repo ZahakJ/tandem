@@ -42,5 +42,5 @@ A complete handheld frontend with nothing hidden: no telemetry, open formats, an
 - [x] GitHub Actions builds and signed releases
 - [x] F-Droid metadata
 - [ ] F-Droid submission
-- [ ] Translations
+- [x] Translations (Arabic, Japanese, Chinese, French)
 - [x] User guide and website

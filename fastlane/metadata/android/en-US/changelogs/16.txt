@@ -1,0 +1,5 @@
+- Tandem speaks Arabic (every screen mirrors), Japanese, Chinese and French; pick at first start or in Look & feel.
+- Hijri and Chinese calendars, alone or beside Gregorian.
+- Orbit home redesigned: a glowing ring, covers on a floor, a Continue card.
+- Continue shows the running game, and Y closes it, in every layout.
+- Cleaner Settings tiles, a truer memory widget.

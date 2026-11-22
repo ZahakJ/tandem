@@ -40,6 +40,10 @@ Colours, wallpaper, icons, motion, the language and the calendar: how Tandem loo
 | Language | Calendar | Gregorian | The calendar dates are shown in: Gregorian, Hijri (Umm al-Qura), Chinese (the lunar calendar), Gregorian + Hijri or Gregorian + Chinese. Each card shows today in it. Every date follows, on both screens at once: the clocks and the clock widget, the side panel (R2), the bottom screen, the screensaver, Stats, trophies, play sessions, the journal, backups, Steam's unlock dates. With two calendars the second date sits beside the Gregorian one, or on a smaller line under it where room is short (the clock widget, the side panel, the bottom screen); a trophy card and the cabinet's plaques have room for the main calendar only. "5 minutes ago" stays as it is. Dates are only shown this way: what Tandem saves, file names and exported play stats stay Gregorian. Search finds it as calendar, hijri, islamic, lunar or chinese. |
 | Start over | Reset look | | Back to Tandem's original look (Pastel Night): theme, layout, wallpapers, icons and motion. Your buttons, screens, sounds, music and library stay. Hold <kbd>A</kbd> to confirm; an automatic backup is made first. |
 
+![Settings in Arabic: the page tiles read from the right, Look & feel highlighted on the far right, and the side panel on the left lists its accent colour, highlight style, surface and wallpaper.](../../site/assets/screenshots/guide/settings-arabic.webp "العربية: every screen mirrors")
+
+![The Calendar cards: Gregorian (in use), Hijri, Chinese, Gregorian + Hijri (highlighted, with 11 Jumada al-Akhirah 1448 AH under 21 Nov 2026) and Gregorian + Chinese.](../../site/assets/screenshots/guide/settings-calendar.webp "Settings › Look & feel › Calendar")
+
 **Look & feel › Wallpaper**
 
 | Setting | Default | What it does |

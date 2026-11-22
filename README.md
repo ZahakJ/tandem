@@ -19,6 +19,9 @@ bottom screen shows the art and details for whatever is highlighted. Pick a game
 and Tandem starts it in the right emulator. Press Home, pick it again, and you're
 back where you left off instead of at the title screen.
 
+Tandem speaks English, العربية (every screen mirrors), 日本語, 简体中文 and Français, and shows dates in the
+Gregorian, Hijri or Chinese calendar, or two at once.
+
 No ads, no accounts, no analytics. Tandem only goes online for things you start
 yourself: scraping artwork, RetroAchievements if you sign in, and the Discord status if you
 connect it. The exceptions: a daily check on GitHub for a new Tandem (which you can turn off), and Steam
