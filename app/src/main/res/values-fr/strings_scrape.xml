@@ -104,8 +104,8 @@
     <string name="scrape_where_logo">Logo : le nom du jeu dessiné, posé sur la bannière sur l’écran du bas et dans la Vedette au lieu d’un simple texte.</string>
     <string name="scrape_where_title">Écran titre : affiché derrière un jeu qui n’a pas de bannière, et l’une des images que l’écran du bas fait défiler.</string>
     <string name="scrape_where_gameplay">Gameplay : une image fixe d’une partie. Affichée derrière un jeu sans bannière ni écran titre, et l’une des images que l’écran du bas fait défiler. Elle ne bouge pas : les clips, c’est Vidéo.</string>
-    <string name="scrape_where_video">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Apparence › Aperçus vidéo est activé.</string>
-    <string name="scrape_where_video_off">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Apparence › Aperçus vidéo est activé (pour l’instant, c’est désactivé).</string>
+    <string name="scrape_where_video">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Deux écrans › Visuels et vidéo › Aperçus vidéo est activé.</string>
+    <string name="scrape_where_video_off">Vidéo : un court clip qui se lance sur la bannière peu après que tu sélectionnes un jeu, si Deux écrans › Visuels et vidéo › Aperçus vidéo est activé (pour l’instant, c’est désactivé).</string>
     <string name="scrape_where_physical">Boîte : de vrais scans de la face et de la tranche de la boîte, pour la vue Étagère et les jaquettes en forme de boîte.</string>
 
     <!-- The scrape screen's setup. -->

@@ -104,8 +104,8 @@
     <string name="scrape_where_logo">Logo: the game\'s name drawn as art, laid over the hero on the bottom screen and in Spotlight instead of plain text.</string>
     <string name="scrape_where_title">Title screen: shown behind a game when it has no hero, and one of the pictures the bottom screen picks from.</string>
     <string name="scrape_where_gameplay">Gameplay: a still from play. Shown behind a game when it has no hero or title screen, and one of the pictures the bottom screen picks from. It doesn\'t move: clips are Video.</string>
-    <string name="scrape_where_video">Video: a short clip that plays over the hero a moment after you highlight a game, when Look &amp; feel › Video snaps is on.</string>
-    <string name="scrape_where_video_off">Video: a short clip that plays over the hero a moment after you highlight a game, when Look &amp; feel › Video snaps is on (it\'s off now).</string>
+    <string name="scrape_where_video">Video: a short clip that plays over the hero a moment after you highlight a game, when Two screens › Art &amp; video › Video snaps is on.</string>
+    <string name="scrape_where_video_off">Video: a short clip that plays over the hero a moment after you highlight a game, when Two screens › Art &amp; video › Video snaps is on (it\'s off now).</string>
     <string name="scrape_where_physical">Physical box: real scans of the box\'s front and spine, for the Shelf view and box-shaped covers.</string>
 
     <!-- The scrape screen's setup. -->

@@ -154,7 +154,7 @@ Highlight an art tile and the note beside **Start scraping** says what that kind
 | Logo | The game's name drawn as art, over the hero on the bottom screen and in Spotlight instead of plain text |
 | Title screen | Behind a game that has no hero, and one of the pictures the bottom screen picks from |
 | Gameplay | A still from play: behind a game with no hero or title screen, and one of the pictures the bottom screen picks from. It doesn't move |
-| Video | A short clip that plays over the hero a moment after you highlight a game, only while **Look & feel › Video snaps** is on |
+| Video | A short clip that plays over the hero a moment after you highlight a game, only while **Settings › Two screens › Art & video › Video snaps** is on |
 | Physical box | Real scans of the box's front and spine, for the Shelf view and box-shaped covers |
 
 </details>

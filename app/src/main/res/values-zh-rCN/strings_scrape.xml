@@ -86,8 +86,8 @@
     <string name="scrape_where_logo">标志：画成图片的游戏名，在下屏和聚光灯里叠在主视觉上，代替纯文字。</string>
     <string name="scrape_where_title">标题画面：游戏没有主视觉时显示在它背后，也是下屏挑选图片的来源之一。</string>
     <string name="scrape_where_gameplay">截图：游戏中的一张静帧。游戏没有主视觉和标题画面时显示在它背后，也是下屏挑选图片的来源之一。它不会动：会动的是视频。</string>
-    <string name="scrape_where_video">视频：开启 外观与风格 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片。</string>
-    <string name="scrape_where_video_off">视频：开启 外观与风格 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片（现在是关闭的）。</string>
+    <string name="scrape_where_video">视频：开启 双屏 › 图片与视频 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片。</string>
+    <string name="scrape_where_video_off">视频：开启 双屏 › 图片与视频 › 预览视频 后，选中游戏片刻会在主视觉上播放的一段短片（现在是关闭的）。</string>
     <string name="scrape_where_physical">实体包装：包装正面和侧脊的真实扫描，用于书架视图和包装形状的封面。</string>
 
     <string name="scrape_setup_what">要刮削什么</string>

@@ -87,8 +87,8 @@
     <string name="scrape_where_logo">ロゴ：ゲームの名前をデザインした画像。下画面やスポットライトで、ただの文字の代わりにキービジュアルの上に重なります。</string>
     <string name="scrape_where_title">タイトル画面：キービジュアルがないゲームの後ろに出ます。下画面が選ぶ画像の一つでもあります。</string>
     <string name="scrape_where_gameplay">プレイ画面：プレイ中の静止画。キービジュアルもタイトル画面もないゲームの後ろに出ます。下画面が選ぶ画像の一つでもあります。動きません。動くのは「動画」です。</string>
-    <string name="scrape_where_video">動画：見た目と雰囲気 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です。</string>
-    <string name="scrape_where_video_off">動画：見た目と雰囲気 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です（今はオフです）。</string>
+    <string name="scrape_where_video">動画：2画面 › アートと動画 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です。</string>
+    <string name="scrape_where_video_off">動画：2画面 › アートと動画 › プレビュー動画 がオンのとき、ゲームを選んで少しするとキービジュアルの上で流れる短い動画です（今はオフです）。</string>
     <string name="scrape_where_physical">実物パッケージ：パッケージの表面と背の実物スキャン。本棚表示とパッケージ型のカードに使います。</string>
 
     <string name="scrape_setup_what">取得するもの</string>
