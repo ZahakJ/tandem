@@ -20,7 +20,7 @@
     <string name="accounts_pin_forgot_title">忘了 PIN？</string>
     <string name="accounts_private_on">隐私模式已开启。%1$s 加上你的 PIN 可以显示隐藏的游戏</string>
     <string name="accounts_private_off">隐私模式已关闭</string>
-    <string name="accounts_private_showing">嘘… 隐藏的游戏正在显示</string>
+    <string name="accounts_private_showing">嘘……隐藏的游戏正在显示</string>
     <string name="accounts_pin_wait_over">等待结束了。设置新的 PIN 吧</string>
     <string name="accounts_pin_length">你的 PIN 是 %1$d 到 %2$d 位数字</string>
     <string name="accounts_pin_wrong_wait">PIN 不对。请等 %1$s 再试</string>
@@ -40,7 +40,7 @@
     <string name="accounts_pin_cancel">取消</string>
     <string name="accounts_pin_forgot_how">隐藏的内容会继续隐藏。等待 %1$s 后，你可以在这里设置新的 PIN。在那之前输对 PIN 就会取消等待。</string>
     <string name="accounts_pin_start_wait">开始等待</string>
-    <string name="accounts_update_out_toast">Tandem %1$s 已发布 · 打开 Start 更新</string>
+    <string name="accounts_update_out_toast">Tandem %1$s 已发布 · 打开 Start 面板即可更新</string>
     <string name="accounts_update_offline">隐私模式下离线</string>
     <string name="accounts_update_github_said">GitHub 返回 %1$d</string>
     <string name="accounts_update_unreachable">连不上 GitHub</string>
@@ -184,7 +184,7 @@
     <string name="accounts_steam_details">详情</string>
     <string name="accounts_steam_look_again">重新查询</string>
     <string name="accounts_steam_hidden">解锁后才会显示</string>
-    <string name="accounts_steam_players_have_it">%1$s 的玩家拥有</string>
+    <string name="accounts_steam_players_have_it">%1$s 的玩家已解锁</string>
     <string name="accounts_steam_of_players">%1$s 的玩家</string>
     <string name="accounts_steam_unlocked">已解锁</string>
     <string name="accounts_steam_unlocked_on">已解锁 · %1$s</string>
@@ -208,7 +208,7 @@
     <string name="accounts_steam_percent">%1$s%%</string>
     <string name="accounts_steam_got_rare">你解锁了“%1$s”！只有 %2$s 的玩家拿到过！</string>
     <string name="accounts_steam_got">你解锁了“%1$s”！%2$s 的玩家拿到过。</string>
-    <string name="accounts_steam_got_in">你解锁了“%1$s”！来自 %2$s。</string>
+    <string name="accounts_steam_got_in">你在 %2$s 中解锁了“%1$s”！</string>
     <string name="accounts_steam_got_plain">你解锁了“%1$s”！</string>
     <plurals name="accounts_steam_more_in">
         <item quantity="other">……还有 %2$s 里的 %1$d 个成就。这一局太猛了！</item>

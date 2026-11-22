@@ -110,7 +110,7 @@
     <string name="grid_spot_new_folder">新建文件夹…</string>
     <string name="grid_spot_made_folder">已在这里创建文件夹 %1$s</string>
     <string name="grid_spot_smart_folder">智能文件夹…</string>
-    <string name="grid_spot_smart_folder_sub">自动装满：某个类型、没玩过的游戏…</string>
+    <string name="grid_spot_smart_folder_sub">自动收录：某个类型、没玩过的游戏…</string>
     <string name="grid_spot_game">游戏…</string>
     <string name="grid_spot_game_sub">一款或多款，按平台挑选</string>
     <string name="grid_spot_system">平台…</string>
@@ -218,7 +218,7 @@
     <string name="grid_form_played">玩过</string>
     <string name="grid_form_played_help">玩过：有任何游玩记录的游戏。没玩过：从没启动过的游戏。</string>
     <string name="grid_form_status">状态</string>
-    <string name="grid_form_status_help">只收这个状态的游戏：待玩、在玩、已通关（包括完美通关）… 无：没有状态的游戏。</string>
+    <string name="grid_form_status_help">只收这个状态的游戏：待玩、在玩、已通关（包括完美通关）等。选“无”则只收没有状态的游戏。</string>
     <string name="grid_form_status_none">无</string>
     <string name="grid_form_status_finished">已通关</string>
     <string name="grid_form_random">数量</string>
@@ -336,9 +336,9 @@
     <string name="grid_menu_unhide_system">取消隐藏这个平台</string>
     <string name="grid_menu_hide_system">隐藏这个平台</string>
     <string name="grid_menu_add_home">添加到主页…</string>
-    <string name="grid_menu_sort_folder">排序这个文件夹…</string>
+    <string name="grid_menu_sort_folder">给这个文件夹排序…</string>
 
-    <string name="grid_sort_page">排序 %1$s</string>
+    <string name="grid_sort_page">给 %1$s 排序</string>
     <string name="grid_sort_page_folder">文件夹排序</string>
     <string name="grid_sort_manual_sub">你自己的顺序，无论怎么排序都会保留</string>
     <string name="grid_sort_manual_done">已恢复你自己的顺序</string>
@@ -436,7 +436,7 @@
     <string name="grid_smart_every_game">所有游戏</string>
     <string name="grid_smart_years_from">%1$s 年起</string>
     <string name="grid_smart_years_to">至 %1$s 年</string>
-    <string name="grid_smart_open_on">游戏打开于</string>
+    <string name="grid_smart_open_on">启动屏幕</string>
     <string name="grid_smart_open_own">按每款游戏的设置</string>
     <string name="grid_smart_edit_rules">编辑规则…</string>
     <string name="grid_smart_freeze">转为普通文件夹</string>

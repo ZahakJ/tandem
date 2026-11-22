@@ -13,7 +13,7 @@
     <string name="data_status_playing">在玩</string>
     <string name="data_status_playing_blurb">正在攻略中</string>
     <string name="data_status_finished">已通关</string>
-    <string name="data_status_finished_blurb">看过制作人员名单了</string>
+    <string name="data_status_finished_blurb">看到片尾字幕了</string>
     <string name="data_status_completed">完美通关</string>
     <string name="data_status_completed_blurb">全部搞定，100%</string>
     <string name="data_status_shelved">搁置</string>

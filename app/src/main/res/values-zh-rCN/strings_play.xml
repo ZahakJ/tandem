@@ -46,7 +46,7 @@
     <string name="play_clip_recording">正在录制片段</string>
     <string name="play_launch_bottom">下屏 ↓</string>
     <string name="play_problem_get">获取 %1$s</string>
-    <string name="play_problem_no_store">打不开 %1$s 的应用商店</string>
+    <string name="play_problem_no_store">打不开 %1$s 的商店页面</string>
     <string name="play_problem_systems">平台</string>
     <string name="play_problem_pick_other">换个模拟器</string>
     <string name="play_problem_update">更新 %1$s</string>
@@ -77,7 +77,7 @@
     <string name="play_close_never_ask">我不会再问了。可以在 设置 › 游玩与系统 › 游玩 中重新开启</string>
     <string name="play_close_pip">等等，还有游戏在运行</string>
     <plurals name="play_close_more">
-        <item quantity="other">还有 %1$d 个</item>
+        <item quantity="other">还有 %1$d 款</item>
     </plurals>
     <string name="play_close_press_again">再按一次即可关闭</string>
     <string name="play_close_and_start">关闭并启动 %1$s</string>
@@ -96,7 +96,7 @@
     <string name="play_close_resume">继续 %1$s</string>
     <string name="play_move_needs_shizuku">在两块屏幕之间移动应用需要 Shizuku</string>
     <string name="play_move_refused">Android 不肯移动这个应用</string>
-    <string name="play_move_back">已移回。%1$s 照旧打开</string>
+    <string name="play_move_back">已移回。%1$s 恢复原来的打开位置</string>
     <string name="play_move_to_bottom">已移到下屏。%1$s 以后都在那里打开（再长按返回键可撤销）</string>
     <string name="play_move_to_top">已移到上屏。%1$s 以后都在那里打开（再长按返回键可撤销）</string>
     <string name="play_move_not_open">%1$s 没有打开</string>

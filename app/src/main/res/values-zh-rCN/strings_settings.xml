@@ -50,13 +50,13 @@
     </plurals>
     <string name="settings_page_play_resume_ready">可继续游戏</string>
     <string name="settings_page_play_resume_shizuku">继续游戏需要 Shizuku</string>
-    <string name="settings_page_play_home">主屏幕</string>
-    <string name="settings_page_play_not_home">不是主屏幕</string>
+    <string name="settings_page_play_home">已设为主屏幕</string>
+    <string name="settings_page_play_not_home">未设为主屏幕</string>
 
     <string name="settings_sub_wallpaper">壁纸</string>
     <string name="settings_sub_wallpaper_help">每块屏幕的壁纸，以及图片和视频壁纸的调暗程度。</string>
     <string name="settings_sub_motion">动态效果</string>
-    <string name="settings_sub_motion_help">东西怎么动：动画风格、减弱动态效果、漂浮标题、动感强弱，以及屏幕交换的方式。</string>
+    <string name="settings_sub_motion_help">界面怎么动：动画风格、减弱动态效果、漂浮标题、动感强弱，以及屏幕交换的方式。</string>
     <string name="settings_sub_grid">网格形状</string>
     <string name="settings_sub_grid_help">图标网格的行数、图标的圆角、图标间距，以及网格上方的图片。</string>
     <string name="settings_sub_games">游戏显示方式</string>

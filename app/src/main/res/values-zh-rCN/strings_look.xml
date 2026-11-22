@@ -155,8 +155,8 @@
     <string name="look_games_titles_help">在每张卡片下方写上游戏名称。</string>
     <string name="look_home_system_tiles">平台图块</string>
     <string name="look_home_system_tiles_help">主页上平台图块的样式。</string>
-    <string name="look_home_rows">主页行</string>
-    <string name="look_home_rows_help">主页显示哪些行，以及它们的顺序。</string>
+    <string name="look_home_rows">主页栏目</string>
+    <string name="look_home_rows_help">主页显示哪些栏目，以及它们的顺序。</string>
     <string name="look_home_open_folders">打开文件夹</string>
     <string name="look_home_open_folders_help">以页面打开、以全屏页面打开（顶栏滑走，网格占满整个屏幕），或以弹窗盖在当前屏幕上。</string>
     <string name="look_home_open_folders_page">页面</string>
@@ -357,7 +357,7 @@
 
     <string name="look_import_cant_open">打不开这个文件</string>
     <string name="look_import_too_big">这对主题包来说太大了</string>
-    <string name="look_import_too_many">这里面的文件太多，不像主题包</string>
+    <string name="look_import_too_many">文件太多，超出了主题包的上限</string>
     <string name="look_import_no_pack">里面没有 theme.json 或图标文件夹</string>
     <string name="look_import_failed">导入失败</string>
     <string name="look_import_icons_description">图标</string>
@@ -366,7 +366,7 @@
     <string name="look_flair_floating">漂浮标题</string>
     <string name="look_flair_floating_help">标志、图标和标题会轻轻漂浮，切换时缓缓升起，主视觉图也会慢慢漂移。开启“减弱动态效果”、动画关闭或省电模式时保持静止。</string>
     <string name="look_flair_intensity">动态幅度</string>
-    <string name="look_flair_intensity_help">东西漂浮和弹跳的幅度。</string>
+    <string name="look_flair_intensity_help">界面元素漂浮和弹跳的幅度。</string>
     <string name="look_flair_subtle">轻微</string>
     <string name="look_flair_normal">正常</string>
     <string name="look_flair_lively">活泼</string>

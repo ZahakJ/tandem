@@ -27,9 +27,9 @@
     <string name="scrape_meta_time">通关时长</string>
     <string name="scrape_meta_time_detail">主线、主线 + 支线和 100%（HowLongToBeat）</string>
 
-    <string name="scrape_mode_basics">补缺基础</string>
+    <string name="scrape_mode_basics">只补基础</string>
     <string name="scrape_mode_basics_detail">只处理缺封面或简介的游戏，也只补这两样</string>
-    <string name="scrape_mode_missing">补缺所选</string>
+    <string name="scrape_mode_missing">补全所选</string>
     <string name="scrape_mode_missing_detail">补上你选的项目中游戏还没有的部分</string>
     <string name="scrape_mode_refresh">全部重刮</string>
     <string name="scrape_mode_refresh_detail">把你选的项目全部重新获取并替换</string>

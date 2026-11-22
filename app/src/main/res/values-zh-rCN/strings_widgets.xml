@@ -213,7 +213,7 @@
     <plurals name="widgets_pip_untried">
         <item quantity="other">还有 %1$d 款游戏你没试过 👀</item>
     </plurals>
-    <string name="widgets_pip_surprise">嘘… %1$s 帮你挑一款游戏。</string>
+    <string name="widgets_pip_surprise">嘘……试试 %1$s，帮你随机挑一款游戏。</string>
     <string name="widgets_pip_switcher">%1$s 可以看看哪些在运行。</string>
     <string name="widgets_pip_here">你在这儿，我就开心。</string>
 

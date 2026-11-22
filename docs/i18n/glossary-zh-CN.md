@@ -168,6 +168,11 @@ the word from Steam Deck.
 | Connected controllers | 已连接的手柄 | Chinese players say 手柄 for a controller |
 | Controller (Built-in) | 手柄（内置） | |
 | Companion (bottom screen while playing) | 游戏助手 | Every mainland phone's in-game panel is 游戏助手: the same idea |
+| Companion app (an app started beside a game) | 配套应用 | The usual word for an app that goes with something; keeps 游戏助手 for Tandem's own companion |
+| Start on / Open games on / Always open on / Apps open on | 启动屏幕 / 启动屏幕 / 固定屏幕 / 应用打开屏幕 | Rows whose value is a screen: a noun that reads right before 上屏, 下屏 or 默认 (never 「…于」, which reads like a form) |
+| Players (game facts) | 单人 / %1$s 人 | As Nintendo China prints it on the box (「1-4 人」) |
+| Credits (the end of a game) | 片尾字幕 | 「看到片尾字幕了」: what players say, not the literal 制作人员名单 |
+| Home rows (Shelves layout) | 主页栏目 | |
 | Trophy | 奖杯 | PlayStation China |
 | Bronze / Silver / Gold / Platinum | 铜 / 银 / 金 / 白金 | PlayStation China |
 | Achievement | 成就 | Steam and Xbox China |
@@ -220,7 +225,7 @@ exact words.
 | Y › Edit details › Manual | Y › 编辑资料 › 说明书 | `menus_game_edit`, `library_manual_row` |
 | Y › Select | Y › 多选 | `grid_menu_select` |
 | Y › Move | Y › 移动 | `grid_menu_move` |
-| Y › Always open on | Y › 总在此屏打开 | `menus_app_screen` |
+| Y › Always open on | Y › 固定屏幕 | `menus_app_screen` |
 | Y › More | Y › 更多 | `menus_action_more` |
 | Add here › Widget… | 添加到这里 › 小组件… | `grid_pick_add_here`, `grid_spot_widget` |
 | Add to home | 添加到主页 | `grid_menu_add_home`, `menus_app_home_add` |

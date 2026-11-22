@@ -81,7 +81,7 @@
     <string name="menus_group_unhide_folder">取消隐藏这个文件夹</string>
     <string name="menus_group_hide_folder">隐藏这个文件夹</string>
     <string name="menus_group_sort">排序方式</string>
-    <string name="menus_group_own_order">自有顺序</string>
+    <string name="menus_group_own_order">自带顺序</string>
     <string name="menus_group_own_order_help">这个列表有自己的顺序。</string>
     <string name="menus_group_own_order_toast">这个列表有自己的顺序。排序只对平台和其他列表生效</string>
     <string name="menus_group_sort_help">每个平台和列表里游戏的排序方式。点一下换下一种。</string>
@@ -149,7 +149,7 @@
     <string name="menus_app_open_help">它现在会在这块屏幕上打开。</string>
     <string name="menus_app_open_on_top">在上屏打开</string>
     <string name="menus_app_open_on_bottom">在下屏打开</string>
-    <string name="menus_app_screen">总在此屏打开</string>
+    <string name="menus_app_screen">固定屏幕</string>
     <string name="menus_app_screen_auto">自动</string>
     <string name="menus_app_screen_default">默认</string>
     <string name="menus_app_screen_help">这个应用总是在哪块屏幕上打开：上屏、下屏，或跟随所有应用的默认设置。</string>

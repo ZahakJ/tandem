@@ -40,8 +40,8 @@
     <string name="library_settings_single_only_one">只找到一块屏幕，游戏总会在它上面启动</string>
     <string name="library_settings_single_off">正在使用两块屏幕</string>
     <string name="library_settings_single_on">现在只用上屏；游戏也在那里启动</string>
-    <string name="library_settings_apps_open">应用打开于</string>
-    <string name="library_settings_apps_open_help">应用在哪里打开，除非它自己指定了屏幕（Y › 总在此屏打开）。自动：从哪块屏幕启动就在哪块打开。在下屏点按会在下屏打开；用手柄则在游戏库所在的屏幕打开。游戏保留自己的屏幕设置。</string>
+    <string name="library_settings_apps_open">应用打开屏幕</string>
+    <string name="library_settings_apps_open_help">应用在哪块屏幕打开，除非它自己指定了屏幕（Y › 固定屏幕）。自动：从哪块屏幕启动就在哪块打开。在下屏点按会在下屏打开；用手柄则在游戏库所在的屏幕打开。游戏保留自己的屏幕设置。</string>
     <string name="library_settings_apps_open_one">上屏 · 单屏</string>
     <string name="library_settings_apps_open_only_one">只找到一块屏幕，应用总会在它上面打开</string>
     <string name="library_settings_move">长按返回键移动</string>
@@ -53,7 +53,7 @@
     <string name="library_settings_move_apps">应用</string>
     <string name="library_settings_move_games">应用 + 游戏</string>
     <string name="library_settings_move_help">应用打开时长按返回键片刻，它就会移到另一块屏幕，以后也在那里打开。很快再长按一次可以撤销。“应用 + 游戏”：前台的游戏也会移动；选“应用”时，游戏始终留在原地。需要 Shizuku 和手柄 Home 键服务（操控）。</string>
-    <string name="library_settings_voice">片段录入人声</string>
+    <string name="library_settings_voice">片段录制人声</string>
     <string name="library_settings_voice_help">在游戏助手里录片段（下屏的“片段”）时，会同时录下麦克风里你的声音和游戏声音。关闭则只录游戏。只在录片段时收音。</string>
     <string name="library_settings_launch">启动动画</string>
     <string name="library_settings_launch_help">模拟器启动时，游戏图片会带着一点小花样放大。关闭后游戏直接启动。</string>
@@ -69,8 +69,8 @@
     <string name="library_system_emulators_default">按 A 设为默认</string>
     <string name="library_system_already_plays">%1$s 已经在运行 %2$s 游戏了</string>
     <string name="library_system_now_plays">现在由 %1$s 运行 %2$s 游戏</string>
-    <string name="library_system_no_store">打不开 %1$s 的应用商店</string>
-    <string name="library_system_start_on">游戏启动于</string>
+    <string name="library_system_no_store">打不开 %1$s 的商店页面</string>
+    <string name="library_system_start_on">游戏启动屏幕</string>
     <string name="library_system_start_single">单屏模式已开启，所以游戏暂时留在上屏</string>
     <string name="library_system_start_note">游戏自己的“启动屏幕”（Y › 更多）优先</string>
     <string name="library_system_bottom">游戏时的下屏</string>
@@ -176,7 +176,7 @@
     <string name="library_edit_unlocked">未锁定：刮削可能会更新它</string>
     <string name="library_edit_locked">已锁定：刮削不会动它</string>
     <string name="library_edit_heading">编辑资料</string>
-    <string name="library_edit_heading_app">伴随应用</string>
+    <string name="library_edit_heading_app">配套应用</string>
     <string name="library_edit_heading_ra">RetroAchievements 匹配</string>
     <string name="library_edit_invalid">%1$s好像不太对</string>
     <string name="library_edit_cleared">已清除%1$s</string>
@@ -220,19 +220,19 @@
     <string name="library_clear_hold">清除它们</string>
     <string name="library_manual_pictures">图片文件夹</string>
 
-    <string name="library_extras_companion_badge">▣ 伴随应用</string>
+    <string name="library_extras_companion_badge">▣ 配套应用</string>
     <string name="library_extras_native_badge">⚡ 原生</string>
     <string name="library_extras_title">附加</string>
     <string name="library_extras_none">无</string>
     <string name="library_extras_app_closes">%1$s · 游戏结束后关闭</string>
     <string name="library_extras_app_keeps">%1$s · 保持运行</string>
-    <string name="library_extras_app">伴随应用</string>
+    <string name="library_extras_app">配套应用</string>
     <string name="library_extras_choose_app">选择应用</string>
     <string name="library_extras_change">更换</string>
-    <string name="library_extras_close_on">之后关闭：开</string>
-    <string name="library_extras_close_off">之后关闭：关</string>
+    <string name="library_extras_close_on">随游戏关闭：开</string>
+    <string name="library_extras_close_off">随游戏关闭：关</string>
     <string name="library_extras_remove">移除</string>
-    <string name="library_extras_no_app">还没选伴随应用</string>
+    <string name="library_extras_no_app">还没选配套应用</string>
     <string name="library_extras_app_note">和游戏一起在另一块屏幕上启动，并在那里代替 Tandem 的游戏助手。单屏、游戏在下屏运行，或平台交给模拟器处理时不可用。</string>
     <string name="library_extras_reading_apps">正在读取你的应用…</string>
     <string name="library_extras_app_starts">%1$s 会和 %2$s 一起启动</string>

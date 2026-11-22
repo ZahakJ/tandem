@@ -28,7 +28,7 @@
     <string name="home_hero_gradient_none">无</string>
     <string name="home_hero_running">● 运行中</string>
     <string name="home_clock_all_apps">所有应用</string>
-    <string name="home_clock_date">M月d日 EEEE</string>
+    <string name="home_clock_date">M\'月\'d\'日\' EEEE</string>
     <string name="home_clock_battery">电量 %1$d%%</string>
 
     <string name="home_resume_continue">继续游玩</string>
@@ -142,7 +142,7 @@
     <string name="home_none_backlog">待玩清单清空啦</string>
     <string name="home_none_backlog_detail">在游戏上按 Y › 状态 › 待玩，就会放到这里。</string>
     <string name="home_none_finished">还没有通关的游戏</string>
-    <string name="home_none_finished_detail">看到制作人员名单时，按 Y › 状态 › 已通关。</string>
+    <string name="home_none_finished_detail">片尾字幕滚动时，按 Y › 状态 › 已通关。</string>
     <string name="home_none_added">还没有游戏</string>
     <string name="home_none_added_detail">新游戏会在重新扫描后出现在这里。</string>
     <string name="home_none_genre">这个类型里没有游戏</string>
@@ -175,8 +175,8 @@
     <string name="home_spotlight_show_hidden">显示隐藏的游戏</string>
     <string name="home_spotlight_pick">选择你的游戏文件夹</string>
     <string name="home_spotlight_running">● 运行中</string>
-    <string name="home_spotlight_one_player">1 名玩家</string>
-    <string name="home_spotlight_players">%1$s 名玩家</string>
+    <string name="home_spotlight_one_player">单人</string>
+    <string name="home_spotlight_players">%1$s 人</string>
     <string name="home_spotlight_played">已玩</string>
     <string name="home_spotlight_last_played">上次游玩</string>
     <plurals name="home_spotlight_sessions">
@@ -248,7 +248,7 @@
     </plurals>
     <string name="home_top_view">▦ %1$s</string>
     <string name="home_top_stats">★ 统计</string>
-    <string name="home_top_quick">◐ 快速</string>
+    <string name="home_top_quick">◐ 快捷</string>
 
     <string name="home_scan_already">已经在找游戏了…</string>
     <string name="home_scan_looking">正在找游戏…</string>

@@ -88,8 +88,8 @@
     <string name="stats_library_playing_latest">最近：%1$s</string>
     <string name="stats_library_playing_none">手头没有在玩的</string>
     <string name="stats_library_backlog">待玩</string>
-    <string name="stats_library_backlog_left">约 %1$s 可清空</string>
-    <string name="stats_library_backlog_left_more">约 %1$s+ 可清空</string>
+    <string name="stats_library_backlog_left">约需 %1$s 清空</string>
+    <string name="stats_library_backlog_left_more">约需 %1$s+ 清空</string>
     <string name="stats_library_backlog_none">排队中的游戏</string>
     <string name="stats_library_finished">已通关</string>
     <plurals name="stats_library_finished_year">
@@ -200,7 +200,7 @@
     <string name="stats_trophy_sampler_how">玩 25 款不同的游戏</string>
     <string name="stats_trophy_plans">宏图大志</string>
     <string name="stats_trophy_plans_how">把 5 款游戏放进待玩</string>
-    <string name="stats_trophy_credits">字幕升起</string>
+    <string name="stats_trophy_credits">剧终</string>
     <string name="stats_trophy_credits_how">通关一款游戏</string>
     <string name="stats_trophy_closer">收官人</string>
     <string name="stats_trophy_closer_how">通关 5 款游戏</string>

@@ -41,8 +41,8 @@
     <string name="screens_fact_added">添加于</string>
     <string name="screens_fact_folder">文件夹</string>
     <string name="screens_fact_file">文件</string>
-    <string name="screens_players_one">1 名玩家</string>
-    <string name="screens_players">%1$s 名玩家</string>
+    <string name="screens_players_one">单人</string>
+    <string name="screens_players">%1$s 人</string>
     <string name="screens_just_now">刚刚</string>
     <string name="screens_not_played">还没玩过：一场新冒险等着你！</string>
     <string name="screens_played_time">玩了 %1$s</string>
@@ -106,7 +106,7 @@
     <string name="screens_status_set">%1$s：%2$s</string>
     <string name="screens_status">状态</string>
     <string name="screens_status_none">无</string>
-    <string name="screens_status_help">待玩、在玩、已通关… 待玩的游戏玩上一阵子后，会自动变成“在玩”。</string>
+    <string name="screens_status_help">待玩、在玩、已通关等。待玩的游戏玩上一阵子后，会自动变成“在玩”。</string>
     <string name="screens_status_no_status">无状态</string>
     <string name="screens_status_progress">%1$s / 约 %2$s</string>
 </resources>
