@@ -248,6 +248,42 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
     ))
 }
 
+/**
+ * DroidDeck's installed games in the Windows system (DroidDeck.kt): what Tandem found there, and the switch. A on
+ * the status looks again (a rescan).
+ */
+@Composable
+fun droidDeckSettings(onRescan: () -> Unit): SettingSection {
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    val on = io.github.zahakj.tandem.data.SystemPrefs.data.droidDeck
+    val status = io.github.zahakj.tandem.DroidDeck.status
+    val scanning = settingsScanning()
+    val (value, help) = when (status) {
+        is io.github.zahakj.tandem.DroidDeck.Status.Found -> Tx.p(R.plurals.library_droiddeck_found, status.count) to
+            Tx.s(if (status.shared) R.string.library_droiddeck_help_shared else R.string.library_droiddeck_help_root)
+        io.github.zahakj.tandem.DroidDeck.Status.NotInstalled -> Tx.s(R.string.library_droiddeck_not_installed) to Tx.s(R.string.library_droiddeck_help_not_installed)
+        io.github.zahakj.tandem.DroidDeck.Status.NeedsRoot -> Tx.s(R.string.library_droiddeck_needs_root) to Tx.s(R.string.library_droiddeck_help_needs_root)
+        io.github.zahakj.tandem.DroidDeck.Status.Off -> onOff(false) to Tx.s(R.string.library_droiddeck_help_off)
+        io.github.zahakj.tandem.DroidDeck.Status.Checking -> Tx.s(R.string.settings_library_rescan_looking) to Tx.s(R.string.library_droiddeck_help_checking)
+    }
+    return SettingSection("DroidDeck", rows = listOf( // tx-ok: an app's name
+        SettingRow(
+            Tx.s(R.string.library_droiddeck_status), if (scanning) Tx.s(R.string.settings_library_rescan_looking) else value, Palette.Sky, Glyph.Refresh,
+            help = help,
+            keywords = "droiddeck steam proton pc windows games installed import root library",
+            en = "DroidDeck library",
+            onClick = onRescan,
+        ),
+        toggle(
+            Tx.s(R.string.library_droiddeck_show), Glyph.Cartridge, Palette.Sky, Tx.s(R.string.library_droiddeck_show_help), on,
+            en = "Show DroidDeck games",
+        ) { v ->
+            io.github.zahakj.tandem.data.SystemPrefs.update { it.copy(droidDeck = v) }
+            LibraryScan.request(ctx, announce = false, onlyIfChanged = false)
+        }.copy(keywords = "droiddeck steam proton pc windows games import automatic"),
+    ))
+}
+
 @Composable
 fun dataSettings(): SettingSection {
     return SettingSection(Tx.s(R.string.settings_data), en = "Your data", rows = listOf(

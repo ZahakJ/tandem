@@ -509,4 +509,24 @@
         <item quantity="many">مُسح %1$d ملفًا، تحرّر %2$s MB</item>
         <item quantity="other">مُسح %1$d ملف، تحرّر %2$s MB</item>
     </plurals>
+
+    <string name="library_droiddeck_status">مكتبة DroidDeck</string>
+    <plurals name="library_droiddeck_found">
+        <item quantity="zero">لا ألعاب فيها بعد</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">لعبتان</item>
+        <item quantity="few">%1$d ألعاب</item>
+        <item quantity="many">%1$d لعبة</item>
+        <item quantity="other">%1$d لعبة</item>
+    </plurals>
+    <string name="library_droiddeck_not_installed">DroidDeck غير مثبّت</string>
+    <string name="library_droiddeck_needs_root">يحتاج صلاحيات الجذر</string>
+    <string name="library_droiddeck_help_shared">يشارك DroidDeck مكتبته مع Tandem، فتنضمّ ألعاب Steam فيه إلى ألعاب الكمبيوتر بصورها كاملة. اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_droiddeck_help_root">يقرؤها Tandem الآن بصلاحيات الجذر، لأن DroidDeck يحتفظ بمكتبته لنفسه. وحين يشاركها DroidDeck مع التطبيقات الأخرى، يقرؤها Tandem بلا جذر. اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeck غير مثبّت. ثبّته وأضف فيه لعبة من Steam، وستظهر هنا من تلقاء نفسها.</string>
+    <string name="library_droiddeck_help_needs_root">يحتاج Tandem إلى صلاحيات الجذر ليقرأ مكتبة DroidDeck (إلى أن يشاركها DroidDeck مع التطبيقات الأخرى). شغّل Shizuku بصلاحيات الجذر، ثم اضغط A لإلقاء نظرة جديدة.</string>
+    <string name="library_droiddeck_help_off">معطّل: تبقى ألعاب DroidDeck خارج مكتبتك، ووقت لعبك فيها محفوظ.</string>
+    <string name="library_droiddeck_help_checking">نظرة سريعة داخل DroidDeck…</string>
+    <string name="library_droiddeck_show">إظهار ألعاب DroidDeck</string>
+    <string name="library_droiddeck_show_help">ألعاب Steam المثبّتة في DroidDeck تنضمّ إلى ألعاب الكمبيوتر وحدها، بصور DroidDeck، وتبدأ فيه مباشرةً. احذف لعبة هناك فتغادر من هنا، ويبقى وقت لعبك فيها.</string>
 </resources>

@@ -69,6 +69,8 @@ data class Platform(
         val ps = playersFor(game.file.name, players)
         // A Switch game Peanuts Native has built plays natively; one it hasn't built never goes there.
         PeanutsNative.playerFor(game, ps)?.let { return it }
+        // A game of DroidDeck's library starts in DroidDeck.
+        DroidDeck.playerFor(game, ps)?.let { return it }
         val usable = ps.filter { !PeanutsNative.isPeanuts(it.packageName) || PeanutsNative.of(game, it.packageName)?.state == "ready" }
         return usable.firstOrNull { it.name == game.meta.emulator } ?: usable.firstOrNull()
     }
@@ -157,6 +159,7 @@ object Platforms {
     fun all(ctx: Context): List<Platform> {
         SystemPrefs.init(ctx)
         ScanCache.init(ctx)
+        DroidDeck.init(ctx)
         Emulators.refresh(ctx)
         // A launch shim is a helper app with no icon of its own that only starts an emulator. Installed packages
         // without a launcher entry are treated as one, and imported players that go through them are skipped.

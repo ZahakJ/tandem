@@ -62,7 +62,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 | Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
 | Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
 | Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons; Controllers (Connected controllers ›, Deck ›) |
-| Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems; Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
+| Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems (DroidDeck ›); Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
 | Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, For tinkerers ›) |
 
 ## Every setting and where it is
@@ -148,6 +148,7 @@ A "›" step after a page is its subpage.
 | `Settings.sort` | Library & art › Games & systems › Sort games by (also Start › Sort) | choice |
 | Systems, emulators, folders (`SystemPrefs`); Cocoon and Daijisho platform files | Library & art › Games & systems › Systems and emulators | link |
 | Android apps and games (`AppPrefs`) | Library & art › Games & systems › Android apps | link |
+| `SystemPrefs.droidDeck`; DroidDeck's library (`DroidDeck.status`, `files/droiddeck/`) | Library & art › DroidDeck › DroidDeck library (games found, not installed, or needs root; A looks again) / Show DroidDeck games | action / toggle |
 | Scraping (`ScrapeConfig`) | Library & art › Artwork & accounts › Scrape library (what to fetch, region, language: the scrape screen); Clear downloaded media | link / action |
 | Scraping sources, their order and keys (LaunchBox, ScreenScraper, IGDB, SteamGridDB, libretro, HowLongToBeat) | Library & art › Artwork & accounts › Set up sources (the tiles in order, L1/R1 move one; A opens its card) | link |
 | RetroAchievements (`HomeStore.ra`) | Library & art › Accounts › RetroAchievements › Account / Show achievements / Look up games again / Sign out | action / toggle |

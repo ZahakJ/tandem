@@ -23,7 +23,7 @@ Tandem knows 104 systems out of the box, and offers each installed emulator that
 | Genesis, Master System, Game Gear | `genesis`, `megadrive`, `mastersystem`, `gamegear` | `.md` `.gen` `.sms` `.gg` `.zip` | RetroArch (Genesis Plus GX, PicoDrive) |
 | Saturn, Dreamcast | `saturn`, `dreamcast` | `.chd` `.cue` `.gdi` `.cdi` | Yaba Sanshiro, Flycast, Redream, RetroArch |
 | Arcade, Neo Geo | `arcade`, `mame`, `fbneo`, `neogeo` | `.zip` `.7z` `.chd` | RetroArch (FinalBurn Neo, MAME), MAME4droid |
-| Windows | `windows`, `pc`, `steam` | `.steam` `.epic` `.pcgame` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
+| Windows | `windows`, `pc`, `steam` | `.steam` `.epic` `.pcgame` `.desktop` and other shortcuts; `.moonlight` for [streamed games](streaming.md); games installed in DroidDeck join on their own ([how](library.md#games-installed-in-droiddeck)) | GameNative, DroidDeck (Steam games only), Winlator, Moonlight (streamed games only) |
 | DOS, ScummVM | `dos`, `scummvm` | `.zip` `.dosz` `.exe` `.scummvm` | DOSBox Pure, ScummVM |
 
 A system appears only when its folder has at least one game. The built-in [`platforms.json`](../../app/src/main/assets/platforms.json) lists every system, folder name and file type. PC games are shortcut files; [Windows and Steam games](library.md#windows-and-steam-games) explains them.

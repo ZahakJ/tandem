@@ -254,4 +254,6 @@
     <string name="settings_search_stats_help">按日期、平台和游戏统计的游玩时长、每一次游玩记录，以及你的成就。可在 游玩与系统 › 我的数据 中导出。</string>
     <string name="settings_search_source_help">%1$s。</string>
     <string name="settings_updates_auto_help">Tandem 打开时每天检查一次有没有新版本，有的话用一条消息和 Start 面板提醒你一次。它只向 GitHub 询问最新版本号；在你按“更新”之前什么都不会安装。关闭后不会检查也不会提示，除非你在“更新”上按 A 手动检查。隐私模式下会跳过。</string>
+    <string name="settings_sub_droiddeck">DroidDeck</string>
+    <string name="settings_sub_droiddeck_help">你在 DroidDeck 里装好的 Steam 游戏，直接进游戏库。</string>
 </resources>

@@ -416,6 +416,22 @@ object Shell {
         }.getOrNull()
     }
 
+    /**
+     * Runs the shell script at [script] (see [script]) as root: `su` through Shizuku, each argument quoted. Its
+     * output, or null when Shizuku isn't available. Without `su` the output is empty, so scripts print a word of
+     * their own to say they ran. Blocking: call off the main thread.
+     */
+    fun su(script: String, vararg args: String): String? =
+        run("su", "-c", (listOf("sh", script) + args).joinToString(" ") { "'$it'" })
+
+    /** Asset [name] copied out of the APK where root can read it (again whenever the app is updated): its path. */
+    fun script(ctx: Context, name: String): String {
+        val f = File(ctx.filesDir, name)
+        val wanted = ctx.assets.open(name).use { it.readBytes() }
+        if (!f.isFile || !f.readBytes().contentEquals(wanted)) f.writeBytes(wanted)
+        return f.path
+    }
+
     /** Lets go of a finished process: closes its output, ends it on Shizuku's side and drops Shizuku's reference. */
     fun release(p: Process) {
         runCatching { p.inputStream.close() }

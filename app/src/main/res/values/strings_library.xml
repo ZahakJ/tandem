@@ -536,4 +536,25 @@
         <item quantity="one">Cleared %1$d files, %2$s MB freed</item>
         <item quantity="other">Cleared %1$d files, %2$s MB freed</item>
     </plurals>
+
+    <!-- Settings › Library & art › DroidDeck: the games installed in DroidDeck (an app that runs Steam games), added
+         to the PC games on their own. The status row, its value (what Tandem found) and its help per state; A on it
+         looks again. -->
+    <string name="library_droiddeck_status">DroidDeck library</string>
+    <plurals name="library_droiddeck_found">
+        <item quantity="one">%1$d game found</item>
+        <item quantity="other">%1$d games found</item>
+    </plurals>
+    <string name="library_droiddeck_not_installed">DroidDeck isn\'t installed</string>
+    <!-- Short value; the help says the whole sentence. -->
+    <string name="library_droiddeck_needs_root">Needs root</string>
+    <string name="library_droiddeck_help_shared">DroidDeck shares its library with Tandem, so its Steam games join your PC games, art and all. Press A to look again.</string>
+    <string name="library_droiddeck_help_root">Read with root for now, since DroidDeck keeps its library to itself. Once DroidDeck shares it with other apps, Tandem reads it without root. Press A to look again.</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeck isn\'t installed. Install it, add a Steam game there, and it shows up here on its own.</string>
+    <string name="library_droiddeck_help_needs_root">Needs root to read DroidDeck\'s library (until DroidDeck shares it with other apps). Run Shizuku with root, then press A to look again.</string>
+    <string name="library_droiddeck_help_off">Turned off: DroidDeck\'s games stay out of your library. Your play time in them is kept.</string>
+    <string name="library_droiddeck_help_checking">Having a peek inside DroidDeck…</string>
+    <!-- The switch for the whole feature. -->
+    <string name="library_droiddeck_show">Show DroidDeck games</string>
+    <string name="library_droiddeck_show_help">Steam games installed in DroidDeck join your PC games on their own, with DroidDeck\'s art, and start straight in DroidDeck. Uninstall one there and it leaves; its play time stays.</string>
 </resources>

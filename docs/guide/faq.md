@@ -30,7 +30,7 @@ Yes. Tandem doesn't change their files, and it reads the same folders and artwor
 
 ### Does Tandem support Android apps and PC games?
 
-Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, DroidDeck, Winlator) are in [`platforms.json`](platforms.md) like any other system; PC games are small shortcut files, see [Windows and Steam games](library.md#windows-and-steam-games). To play games streamed from your own PC, see [Streaming from a home PC](streaming.md).
+Yes. Your installed Android games show up as their own system, every other app is in the apps drawer, and you can pin apps to the dock. PS Vita (Vita3K) and Windows games (GameNative, DroidDeck, Winlator) are in [`platforms.json`](platforms.md) like any other system; PC games are small shortcut files, see [Windows and Steam games](library.md#windows-and-steam-games), except Steam games installed in DroidDeck, which show up on their own ([Games installed in DroidDeck](library.md#games-installed-in-droiddeck)). To play games streamed from your own PC, see [Streaming from a home PC](streaming.md).
 
 ### I skipped the art sources at first launch. How do I set them up later and get art?
 

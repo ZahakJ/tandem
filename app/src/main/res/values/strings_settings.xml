@@ -338,4 +338,7 @@
     <!-- An art source's result: %1$s says what it gives, like "Box art, logos and videos". -->
     <string name="settings_search_source_help">%1$s.</string>
     <string name="settings_updates_auto_help">Look for a new Tandem once a day while Tandem is open, and say so once with a message and in the Start panel. It only asks GitHub for the latest version number; nothing installs until you press Update. Off, nothing is checked or shown until you check with A on Updates. Private mode skips it.</string>
+    <!-- Library & art › DroidDeck: the subpage for the games installed in DroidDeck (an app's name, the same everywhere). -->
+    <string name="settings_sub_droiddeck">DroidDeck</string>
+    <string name="settings_sub_droiddeck_help">The Steam games you\'ve installed in DroidDeck, straight into your library.</string>
 </resources>

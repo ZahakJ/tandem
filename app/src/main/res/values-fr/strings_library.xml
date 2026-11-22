@@ -535,4 +535,20 @@
         <item quantity="one">%1$d fichier effacé, %2$s Mo libérés</item>
         <item quantity="other">%1$d fichiers effacés, %2$s Mo libérés</item>
     </plurals>
+
+    <string name="library_droiddeck_status">Bibliothèque DroidDeck</string>
+    <plurals name="library_droiddeck_found">
+        <item quantity="one">%1$d jeu trouvé</item>
+        <item quantity="other">%1$d jeux trouvés</item>
+    </plurals>
+    <string name="library_droiddeck_not_installed">DroidDeck n’est pas installé</string>
+    <string name="library_droiddeck_needs_root">Requiert le root</string>
+    <string name="library_droiddeck_help_shared">DroidDeck partage sa bibliothèque avec Tandem : ses jeux Steam rejoignent tes jeux PC, visuels compris. Appuie sur A pour jeter un nouveau coup d’œil.</string>
+    <string name="library_droiddeck_help_root">Lu en root pour l’instant, car DroidDeck garde sa bibliothèque pour lui. Dès qu’il la partagera avec les autres applis, Tandem s’en passera. Appuie sur A pour jeter un nouveau coup d’œil.</string>
+    <string name="library_droiddeck_help_not_installed">DroidDeck n’est pas installé. Installe-le, ajoutes-y un jeu Steam, et il apparaîtra ici tout seul.</string>
+    <string name="library_droiddeck_help_needs_root">Il faut le root pour lire la bibliothèque de DroidDeck (tant que DroidDeck ne la partage pas avec les autres applis). Lance Shizuku en root, puis appuie sur A pour revérifier.</string>
+    <string name="library_droiddeck_help_off">Désactivé : les jeux de DroidDeck restent hors de ta bibliothèque. Ton temps de jeu, lui, est gardé.</string>
+    <string name="library_droiddeck_help_checking">Petit coup d’œil dans DroidDeck…</string>
+    <string name="library_droiddeck_show">Afficher les jeux DroidDeck</string>
+    <string name="library_droiddeck_show_help">Les jeux Steam installés dans DroidDeck rejoignent tes jeux PC tout seuls, avec les visuels de DroidDeck, et se lancent direct dans DroidDeck. Désinstalles-en un là-bas et il s’en va ; son temps de jeu reste.</string>
 </resources>

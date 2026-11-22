@@ -50,9 +50,8 @@ object SaveSync {
     }
 
     private fun sync(ctx: Context, title: String, peanutsRoot: String, toPeanuts: Boolean): String? {
-        val script = script(ctx)
-        fun sh(vararg args: String): String = Shell.run("su", "-c", (listOf("sh", script) + args).joinToString(" ") { "'$it'" })
-            ?: error("root isn't available")
+        val script = Shell.script(ctx, "save-sync.sh")
+        fun sh(vararg args: String): String = Shell.su(script, *args) ?: error("root isn't available")
         val users = sh("users", EDEN_ROOT, title).lines().map { it.trim() }.filter { it.length == 32 }
         val user = users.firstOrNull { it != DEVICE }
         val parts = when {
@@ -98,13 +97,5 @@ object SaveSync {
         }
         Log.i("Tandem", "Save of $title brought ${if (toPeanuts) "from Eden Duo to Peanuts" else "from Peanuts to Eden Duo"}")
         return Tx.s(if (toPeanuts) R.string.play_save_from_eden else R.string.play_save_from_native)
-    }
-
-    /** The shell script, copied out of the APK where root can read it (again whenever the app is updated). */
-    private fun script(ctx: Context): String {
-        val f = File(ctx.filesDir, "save-sync.sh")
-        val wanted = ctx.assets.open("save-sync.sh").use { it.readBytes() }
-        if (!f.isFile || !f.readBytes().contentEquals(wanted)) f.writeBytes(wanted)
-        return f.path
     }
 }

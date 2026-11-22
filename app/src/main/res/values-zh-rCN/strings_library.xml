@@ -423,4 +423,19 @@
     <plurals name="library_clear_done">
         <item quantity="other">已清除 %1$d 个文件，释放了 %2$s MB</item>
     </plurals>
+
+    <string name="library_droiddeck_status">DroidDeck 游戏库</string>
+    <plurals name="library_droiddeck_found">
+        <item quantity="other">找到 %1$d 款游戏</item>
+    </plurals>
+    <string name="library_droiddeck_not_installed">未安装 DroidDeck</string>
+    <string name="library_droiddeck_needs_root">需要 root</string>
+    <string name="library_droiddeck_help_shared">DroidDeck 把游戏库分享给了 Tandem，它的 Steam 游戏连同图片一起进了 PC 游戏。按 A 再看一眼。</string>
+    <string name="library_droiddeck_help_root">目前靠 root 读取，因为 DroidDeck 还不把游戏库分享给别的应用。等它开放分享，Tandem 就不再需要 root。按 A 再看一眼。</string>
+    <string name="library_droiddeck_help_not_installed">还没安装 DroidDeck。装好它，在里面装个 Steam 游戏，就会自动出现在这里。</string>
+    <string name="library_droiddeck_help_needs_root">需要 root 才能读取 DroidDeck 的游戏库（直到 DroidDeck 向其他应用开放分享）。以 root 运行 Shizuku，再按 A 看一眼。</string>
+    <string name="library_droiddeck_help_off">已关闭：DroidDeck 的游戏不进游戏库，游玩时间照样保留。</string>
+    <string name="library_droiddeck_help_checking">正在瞄一眼 DroidDeck…</string>
+    <string name="library_droiddeck_show">显示 DroidDeck 游戏</string>
+    <string name="library_droiddeck_show_help">装在 DroidDeck 里的 Steam 游戏会自动加入 PC 游戏，带上 DroidDeck 的图片，一按就在 DroidDeck 里启动。在那边卸载后它就离开，游玩时间还在。</string>
 </resources>

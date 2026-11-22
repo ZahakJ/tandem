@@ -254,4 +254,6 @@
     <string name="settings_search_stats_help">日・機種・ゲームごとのプレイ時間、これまでのプレイ履歴、そして実績。プレイとシステム › データ管理 で書き出せます。</string>
     <string name="settings_search_source_help">%1$s。</string>
     <string name="settings_updates_auto_help">Tandemを開いている間、1日1回新しいTandemを探し、見つかったらメッセージとStartパネルで一度だけお知らせします。GitHubに最新のバージョン番号を聞くだけで、「アップデート」を押すまで何もインストールしません。オフにすると、アップデートの項目でAを押して確認するまで、何も確認も表示もしません。プライベートモード中は確認しません。</string>
+    <string name="settings_sub_droiddeck">DroidDeck</string>
+    <string name="settings_sub_droiddeck_help">DroidDeckに入れたSteamのゲームを、そのままライブラリへ。</string>
 </resources>

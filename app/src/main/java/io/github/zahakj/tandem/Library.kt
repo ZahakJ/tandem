@@ -211,7 +211,8 @@ object Library {
             counted(found.games.values.sumOf { it.size })
         }
         val games = platforms.associate { p ->
-            p.id to (p.source?.invoke(p) ?: LibraryRoots.merge(perRoot[p.id].orEmpty()) { it.key })
+            // The Windows system also has the games installed in DroidDeck, which no folder holds.
+            p.id to DroidDeck.withLibrary(p, p.source?.invoke(p) ?: LibraryRoots.merge(perRoot[p.id].orEmpty()) { it.key })
         }
         // Copies of a game an earlier root already gave, per root, so Game folders can say why a folder looks empty.
         val shadowed = HashMap<String, LibraryRoots.Shadowed>()
