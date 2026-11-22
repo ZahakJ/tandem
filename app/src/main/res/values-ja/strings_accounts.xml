@@ -65,7 +65,7 @@
     <string name="accounts_update_not_installed">Androidがインストールしませんでした</string>
     <string name="accounts_update_no_notes">このリリースにはメモがありません。</string>
     <string name="accounts_update_title">Tandem %1$s</string>
-    <string name="accounts_update_you_have">今は%1$sです</string>
+    <string name="accounts_update_you_have">お使いのバージョン：%1$s</string>
     <string name="accounts_update_debug_note">これはデバッグ版なので、リリース版を上からインストールできません</string>
     <string name="accounts_update_not_now">あとで</string>
     <string name="accounts_update_percent">%1$d%%</string>
@@ -112,7 +112,7 @@
     <plurals name="accounts_ra_unlock_line_hardcore">
         <item quantity="other">%1$dポイント · ハードコア · %2$s</item>
     </plurals>
-    <string name="accounts_achievements_bring">実績を持ってこよう</string>
+    <string name="accounts_achievements_bring">実績をここに集めよう</string>
     <string name="accounts_achievements_bring_text">ユーザー名とWeb APIキーでRetroAchievementsにログインするか、自分のWeb APIキーとアカウントでSteamをつないでください。\nTandemが通信するのはこれがオンのときだけで、非表示のゲームについては一切送りません。</string>
     <string name="accounts_ra_turn_on">RetroAchievementsをオンにする</string>
     <string name="accounts_ra_unreachable">RetroAchievementsにつながりませんでした。Aでもう一度</string>

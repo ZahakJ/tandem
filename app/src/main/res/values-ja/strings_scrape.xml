@@ -17,8 +17,8 @@
     <string name="scrape_meta_description_detail">ゲームについての数段落の紹介</string>
     <string name="scrape_meta_genres">ジャンル</string>
     <string name="scrape_meta_genres_detail">ゲームをジャンル別のリストに分けます</string>
-    <string name="scrape_meta_credits">開発と発売元</string>
-    <string name="scrape_meta_credits_detail">作った会社と出した会社</string>
+    <string name="scrape_meta_credits">開発元と発売元</string>
+    <string name="scrape_meta_credits_detail">開発した会社と発売した会社</string>
     <string name="scrape_meta_year">発売年</string>
     <string name="scrape_meta_year_detail">年順の並べ替えに</string>
     <string name="scrape_meta_players">プレイ人数</string>
@@ -55,12 +55,12 @@
 
     <string name="scrape_hidden_never_sent">非表示のゲームはどこにも送りません</string>
     <string name="scrape_offline">プライベートモード中はTandemはオフラインです。情報の取得もアートの検索もしません</string>
-    <string name="scrape_busy">ピップはもう情報を取得中です。終わったらもう一度どうぞ</string>
+    <string name="scrape_busy">ピップはいま情報の取得で手がいっぱいです。終わったらもう一度どうぞ</string>
     <string name="scrape_looking_for">「%1$s」を探しています…</string>
-    <string name="scrape_cant_start">開始できませんでした。もう取得中ではありませんか？</string>
+    <string name="scrape_cant_start">開始できませんでした。すでに取得中かもしれません</string>
     <string name="scrape_lb_ask_title">LaunchBoxのゲームデータベースをダウンロードしますか？</string>
-    <string name="scrape_lb_ask_text">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB）、あなたの機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
-    <string name="scrape_lb_ask_text_metered">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB。今は従量制の接続です）、あなたの機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
+    <string name="scrape_lb_ask_text">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB）、ライブラリにある機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
+    <string name="scrape_lb_ask_text_metered">LaunchBoxはアカウント不要です。Tandemはデータベースを一度だけダウンロードし（約%1$d MB。今は従量制の接続です）、ライブラリにある機種の分だけ残して、この端末の中でゲームを調べます。月に一度、Wi-Fiで更新します。</string>
     <string name="scrape_lb_ask_yes">ダウンロードして取得</string>
     <string name="scrape_lb_ask_skip">LaunchBoxは使わない</string>
     <string name="scrape_background_top">バックグラウンドで取得中：進み具合は上画面に出ます</string>
@@ -176,9 +176,9 @@
     <string name="scrape_run_new">新しく取得</string>
     <string name="scrape_run_covers">パッケージ</string>
     <string name="scrape_run_missed">見つからず</string>
-    <string name="scrape_run_missed_title">見つからず：手でアートを選んでください</string>
+    <string name="scrape_run_missed_title">見つからず：自分でアートを選んでください</string>
     <string name="scrape_run_new_artwork">新しいアートワーク</string>
-    <string name="scrape_run_just_found">今見つけた</string>
+    <string name="scrape_run_just_found">見つけたばかり</string>
     <string name="scrape_run_nothing_new">今回は新しいものなし</string>
     <string name="scrape_run_covers_soon">見つけたパッケージがここにポンポン出てきます</string>
     <string name="scrape_run_getting_ready">準備中…</string>
@@ -245,8 +245,8 @@
     <string name="scrape_settings_wait">先に取得が終わるのを待ってください</string>
     <string name="scrape_settings_nothing">まだ何もダウンロードしていません</string>
 
-    <string name="scrape_lb_already">もうダウンロード中です</string>
-    <string name="scrape_lb_none_of_yours">あなたの機種はLaunchBoxのデータベースにありません</string>
+    <string name="scrape_lb_already">すでにダウンロード中です</string>
+    <string name="scrape_lb_none_of_yours">ライブラリにある機種は、どれもLaunchBoxのデータベースにありません</string>
     <string name="scrape_lb_download_title">LaunchBoxのデータベースをダウンロードしますか？</string>
     <plurals name="scrape_lb_download_text">
         <item quantity="other">約%1$d MBです。Tandemはあなたの%2$d機種の分だけ残して、この端末の中でゲームを調べます。</item>
@@ -260,14 +260,14 @@
     <string name="scrape_lb_failed">LaunchBoxのデータベースをダウンロードできませんでした。Wi-Fiでもう一度どうぞ</string>
 
     <string name="scrape_guide_no_account">アカウント不要</string>
-    <string name="scrape_guide_lb_1">TandemがLaunchBoxの無料ゲームデータベースを一度だけダウンロードし（約%1$d MB、Wi-Fi推奨）、あなたの機種の分だけ残します。</string>
+    <string name="scrape_guide_lb_1">TandemがLaunchBoxの無料ゲームデータベースを一度だけダウンロードし（約%1$d MB、Wi-Fi推奨）、ライブラリにある機種の分だけ残します。</string>
     <string name="scrape_guide_lb_2">ゲームはこの端末の中で調べます。Wi-Fiで取得したときに、月に一度更新します。</string>
     <string name="scrape_guide_lb_sends">ゲームについては何も送りません。画像はimages.launchbox-app.comから取得します。</string>
     <string name="scrape_guide_ss_account">無料アカウント＋開発者ID</string>
     <string name="scrape_guide_ss_1">screenscraper.frで無料アカウントを作ります。</string>
     <string name="scrape_guide_ss_2">フォーラム（「Demande d\'accès à l\'API」）でAPIアクセスを申請して、開発者IDとパスワードをもらいます。Tandemに同梱することはできません。</string>
     <string name="scrape_guide_ss_3">下に両方を入力します。自分のログインは任意ですが、1日の上限が増えます。</string>
-    <string name="scrape_guide_ss_sends">あなたのログイン、開発者ID、各ゲームのファイル名・サイズ・機種・チェックサム。</string>
+    <string name="scrape_guide_ss_sends">ログイン情報、開発者ID、各ゲームのファイル名・サイズ・機種・チェックサム。</string>
     <string name="scrape_guide_igdb_account">無料のTwitchアカウント</string>
     <string name="scrape_guide_igdb_1">dev.twitch.tv/console/appsにログインします（Twitchが先に2段階認証を求めます）。</string>
     <string name="scrape_guide_igdb_2">「Register Your Application」：名前は自由、リダイレクトURLはhttp://localhost、カテゴリは「Application Integration」、クライアントの種類は「Confidential」。</string>
@@ -313,9 +313,9 @@
     <string name="scrape_key_dev_id_ask">ScreenScraperの開発者ID</string>
     <string name="scrape_key_dev_pw">開発者パスワード</string>
     <string name="scrape_key_dev_pw_ask">ScreenScraperの開発者パスワード</string>
-    <string name="scrape_key_login">あなたのログイン</string>
+    <string name="scrape_key_login">ユーザー名</string>
     <string name="scrape_key_login_ask">ScreenScraperのユーザー名（任意）</string>
-    <string name="scrape_key_pw">あなたのパスワード</string>
+    <string name="scrape_key_pw">パスワード</string>
     <string name="scrape_key_pw_ask">ScreenScraperのパスワード</string>
     <string name="scrape_key_client_id">クライアントID</string>
     <string name="scrape_key_client_id_ask">TwitchのClient ID（dev.twitch.tv/console/apps）</string>
@@ -363,7 +363,7 @@
     <string name="scrape_note_ss_short">ScreenScraperにつながりませんでした</string>
     <string name="scrape_note_sgdb_short">SteamGridDBにつながりませんでした</string>
 
-    <string name="scrape_down_twitch_pass">TwitchがIGDBの通行証を出してくれませんでした</string>
+    <string name="scrape_down_twitch_pass">TwitchがIGDBへのアクセス許可を出してくれませんでした</string>
     <string name="scrape_down_twitch_keys">TwitchがIGDBのクライアントIDかシークレットを受け付けませんでした</string>
     <string name="scrape_down_igdb_refused">IGDBがリクエストを断りました。クライアントIDとシークレットを確認してください</string>
     <string name="scrape_down_hltb_slow">HowLongToBeatにペースを落とすよう言われたので、今は飛ばします</string>
@@ -381,7 +381,7 @@
     <string name="scrape_test_http">エラーが返ってきました（%1$d）</string>
     <string name="scrape_test_unreachable">つながりませんでした。Wi-Fiを確認してもう一度どうぞ</string>
     <string name="scrape_test_lb_not_downloaded">まだダウンロードしていません：「ダウンロード」を押してください</string>
-    <string name="scrape_test_lb_no_systems">ダウンロードにあなたの機種が入っていません。もう一度ダウンロードしてください</string>
+    <string name="scrape_test_lb_no_systems">ダウンロードにライブラリの機種が入っていません。もう一度ダウンロードしてください</string>
     <string name="scrape_test_lb_not_found">ダウンロードの中に「%1$s」が見つかりませんでした</string>
     <plurals name="scrape_test_lb_found">
         <item quantity="other">「%1$s」（%2$s）を画像%3$d枚つきで発見（この端末内）</item>

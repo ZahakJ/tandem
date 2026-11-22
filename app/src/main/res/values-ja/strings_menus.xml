@@ -24,7 +24,7 @@
     <string name="menus_game_manual_pictures">画像</string>
     <string name="menus_game_manual_help">ゲームの説明書や攻略本を1ページずつ：%1$s</string>
     <string name="menus_game_achievements">実績</string>
-    <string name="menus_game_achievements_help">このゲームのSteam実績すべてと、それぞれのレア度。</string>
+    <string name="menus_game_achievements_help">このゲームのSteam実績をすべて、達成率つきで表示します。</string>
     <string name="menus_game_edit">情報を編集</string>
     <plurals name="menus_game_edit_locked">
         <item quantity="other">%1$d個ロック中</item>
@@ -42,8 +42,8 @@
     <string name="menus_game_screen_system">機種の設定どおり</string>
     <string name="menus_game_screen_help">このゲームが起動する画面です。機種の設定に戻すと、また機種に合わせるようになります。</string>
     <string name="menus_game_companion">プレイ中の下画面</string>
-    <string name="menus_game_companion_help">このゲームを上画面で遊んでいる間、下画面に何を映すか。</string>
-    <string name="menus_game_companion_help_deck">このゲームを上画面で遊んでいる間、下画面に何を映すか。デッキはゲーム用のキーボードとトラックパッドです。</string>
+    <string name="menus_game_companion_help">このゲームを上画面で遊んでいる間に、下画面に映すものです。</string>
+    <string name="menus_game_companion_help_deck">このゲームを上画面で遊んでいる間に、下画面に映すものです。デッキはゲーム用のキーボードとトラックパッドです。</string>
     <string name="menus_game_companion_system">機種の標準</string>
     <string name="menus_game_art">アートワークを選ぶ</string>
     <string name="menus_game_scrape">このゲームの情報を取得</string>
@@ -81,7 +81,7 @@
     <string name="menus_group_hide_system">この機種を非表示にする</string>
     <string name="menus_group_unhide_folder">このフォルダを再表示</string>
     <string name="menus_group_hide_folder">このフォルダを非表示にする</string>
-    <string name="menus_group_sort">並べ順</string>
+    <string name="menus_group_sort">並び順</string>
     <string name="menus_group_own_order">独自の順番</string>
     <string name="menus_group_own_order_help">このリストは独自の順番で並んでいます。</string>
     <string name="menus_group_own_order_toast">このリストは独自の順番で並んでいます。並べ替えは機種とほかのリストに使われます</string>
@@ -147,7 +147,7 @@
     <string name="menus_app_open">開く</string>
     <string name="menus_app_open_bottom">下画面</string>
     <string name="menus_app_open_top">上画面</string>
-    <string name="menus_app_open_help">今開く画面です。</string>
+    <string name="menus_app_open_help">今回開く画面です。</string>
     <string name="menus_app_open_on_top">上画面で開く</string>
     <string name="menus_app_open_on_bottom">下画面で開く</string>
     <string name="menus_app_screen">いつも開く画面</string>

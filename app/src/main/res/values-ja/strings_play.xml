@@ -37,7 +37,7 @@
     <string name="play_shot_failed">スクリーンショットを撮れませんでした</string>
     <string name="play_no_game">先にゲームを始めてください。もう一方の画面のゲームを記録します</string>
     <string name="play_clip_needs_shizuku">クリップにはShizukuが必要です</string>
-    <string name="play_clip_busy">もうクリップを録画中です</string>
+    <string name="play_clip_busy">すでにクリップを録画中です</string>
     <string name="play_clip_failed">クリップを録画できませんでした</string>
     <string name="play_clip_not_saved">クリップを保存できませんでした</string>
     <string name="play_clip_saved">クリップをギャラリーに保存しました</string>

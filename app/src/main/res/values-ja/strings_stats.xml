@@ -42,13 +42,13 @@
 
     <string name="stats_fact_morning">早起きさんですね。プレイのほとんどが朝です。</string>
     <string name="stats_fact_afternoon">午後の冒険家。いちばん遊ぶのは昼下がりです。</string>
-    <string name="stats_fact_evening">夜があなたのゲームタイム。まったりですね！</string>
+    <string name="stats_fact_evening">夜はゲームの時間。まったりですね！</string>
     <string name="stats_fact_night">生粋の夜ふかしさん。プレイのほとんどが夜11時すぎです。</string>
     <string name="stats_fact_private">記録がこの端末から出ることはありません</string>
 
-    <string name="stats_chart_title">最近30日</string>
+    <string name="stats_chart_title">過去30日間</string>
     <string name="stats_chart_empty_new">プレイの記録は今日からです。何か遊ぶと、ここに日々が積み上がっていきます。</string>
-    <string name="stats_chart_empty">最近30日はプレイなし。次のプレイがここに出てきます。</string>
+    <string name="stats_chart_empty">過去30日間はプレイなし。次のプレイがここに出てきます。</string>
     <string name="stats_chart_nothing">まだなし</string>
     <string name="stats_chart_total">合計%1$s</string>
     <string name="stats_chart_day">%1$s · %2$s</string>

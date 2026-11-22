@@ -113,7 +113,7 @@
     <string name="look_theme_decides">テーマ · %1$s</string>
 
     <string name="look_accent">アクセントカラー</string>
-    <string name="look_accent_help">スイッチやカーソルに使う、あなただけのアクセントカラーです。左右で色見本を試せます。Aで全部の色を表示、「色を入力…」なら#FF7AB6のようにどんな色でも使えます。</string>
+    <string name="look_accent_help">スイッチやカーソルに使う、自分好みのアクセントカラーです。左右で色見本を試せます。Aで全部の色を表示、「色を入力…」なら#FF7AB6のようにどんな色でも使えます。</string>
     <string name="look_accent_theme">テーマ</string>
     <string name="look_accent_type">色を入力…</string>
     <string name="look_accent_hex">アクセントカラー（16進数）</string>
@@ -181,7 +181,7 @@
     <string name="look_bottom_style_help">「詳細」はゲームのアートが情報へ溶けこみます。「アート＋情報」は動くアートが画面いっぱいに広がり、その上に情報。「動くアート」は目の保養専用。「時計」は落ち着いた画面に。</string>
     <string name="look_bottom_logo_size">ロゴの大きさ</string>
     <string name="look_bottom_logo_size_help">アートの上に出るゲームのロゴの大きさです。</string>
-    <string name="look_bottom_art_fade">アートのぼかし</string>
+    <string name="look_bottom_art_fade">アートのフェード</string>
     <string name="look_bottom_art_fade_help">アートを下の背景へどう溶けこませるか。</string>
     <string name="look_bottom_video_snaps">プレビュー動画</string>
     <string name="look_bottom_video_snaps_help">カーソルをしばらく止めると、ゲームの動画（ROMs/downloaded_media/&lt;system&gt;/videos）を再生します。「はやい」はすぐ始まり、「節約」は長めに待つので、さっとスクロールしても動画を読みこみません。いつも消音で、プレイ中は止まります。</string>
@@ -203,7 +203,7 @@
     <string name="look_controls_prompts">ボタンガイド</string>
     <string name="look_controls_prompts_help">ガイドでのボタンの描き方：Tandemのパステル、またはXbox、PlayStation、Nintendo風。</string>
     <string name="look_controls_swap_ab">AとBを入れ替え</string>
-    <string name="look_controls_swap_ab_help">Bで決定、Aで戻る。Nintendoのゲーム機と同じ配置です。ガイドも合わせて変わります。</string>
+    <string name="look_controls_swap_ab_help">Bで決定、Aで戻る。Nintendoのゲーム機と同じ位置のボタンで決定できます。ガイドも合わせて変わります。</string>
     <string name="look_controls_swap_xy">XとYを入れ替え</string>
     <string name="look_controls_swap_xy_help">Yで検索、Xでオプションを開きます。</string>
     <string name="look_controls_does_open">開く</string>
@@ -386,7 +386,7 @@
     <string name="look_dev_tour">全テーマを巡回</string>
     <string name="look_dev_tour_stop">停止</string>
     <string name="look_dev_tour_count">%1$d＋インポート分</string>
-    <string name="look_dev_tour_help">内蔵テーマと、いちばん新しくインポートしたパックを数秒ずつ表示して、色や文字をチェックできます。あなたのテーマは変わりません。</string>
+    <string name="look_dev_tour_help">内蔵テーマと、いちばん新しくインポートしたパックを数秒ずつ表示して、色や文字をチェックできます。今のテーマは変わりません。</string>
     <string name="look_dev_tour_toast">テーマ %1$d/%2$d：%3$s</string>
 
     <plurals name="look_start_found">
@@ -437,7 +437,7 @@
     <string name="look_welcome_home_set">Tandemがホーム画面になりました ✨</string>
     <string name="look_welcome_done">準備完了。さあ、遊びましょう！</string>
     <string name="look_welcome_done_detail">どこにいても覚えておきたい、4つのボタン：</string>
-    <string name="look_welcome_done_y">何でもオプションを開く</string>
+    <string name="look_welcome_done_y">どこでもオプションを開く</string>
     <string name="look_welcome_done_x_swap">ホームでは画面入れ替え、ほかでは検索</string>
     <string name="look_welcome_done_start">Startパネル、設定もここ（長押しでクイック設定）</string>
     <string name="look_welcome_done_select">おまかせで1本（長押しでゲーム切り替え）</string>
@@ -465,7 +465,7 @@
     <string name="look_preset_orbit_blurb">Tandemオリジナルのホーム：機種、コレクション、アプリが光るリングにガラス玉となって並び、その中に選択中のもののゲームのパッケージが立ち並びます。</string>
     <string name="look_preset_orbit_1">機種・コレクション・アプリのオービットのホーム</string>
     <string name="look_preset_orbit_2">パッケージの横に「つづきから」カード</string>
-    <string name="look_preset_orbit_3">軌道の下に丸いドック</string>
+    <string name="look_preset_orbit_3">オービットの下に丸いドック</string>
     <string name="look_preset_orbit_4">下画面に詳細</string>
     <string name="look_preset_orbit_5">オービットではXで画面を入れ替え</string>
     <string name="look_preset_minimal">ミニマル</string>

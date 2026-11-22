@@ -16,6 +16,8 @@ The words Tandem uses in Japanese, chosen once and used everywhere. Read this be
 - **Punctuation:** full-width 、。！？（）：. No spaces between Japanese words. 「」 around names, typed text and
   menu items quoted in a sentence. The path arrow › and the dot · stay as they are, with a space each side as in
   English (「Y › フォルダへ移動」). Toasts that have no full stop in English get none in Japanese either.
+- **No あなた:** Japanese drops "your" ("your games" is just ゲーム, "your systems" is ライブラリにある機種). Pip may say
+  あなた in a warm line of its own, nowhere else.
 - **Latin and digits** sit directly against Japanese with no space (「ゲーム12本」「Yで選択」), Android's own style
   for Japanese.
 - **Counting:** games 本 (「12本」), things in general 個, systems 機種, songs 曲, pictures 枚, buttons 個,
@@ -138,6 +140,13 @@ Two exceptions where Japan has its own word: **OLED** is 有機EL (what every Ja
 | Carry / Paste (moving a tile) | 持ち運ぶ / 貼り付け | |
 | Tidy up | 整理する | |
 | Sort orders | 名前順 / 最近遊んだ順 / よく遊ぶ順 / 追加した順 / 機種順 / 手動 | |
+| Sort by (the setting) | 並び順 | Never 並べ順 |
+| Your data (page) | データ管理 | What Nintendo and Sony call it; 「あなたのデータ」 reads as translation |
+| Developer / Publisher | 開発元 / 発売元 | |
+| Art fade | アートのフェード | |
+| Rows (horizontal: icon grid, widget row) | 段 (「2段」) | 列 reads as columns |
+| Extras (Edit details › Extras) | おまけ | |
+| Read / load (files) | 読みこむ | One spelling everywhere |
 | Manual folder (not smart) | ふつうのフォルダ | |
 | Details (game info) | ゲーム情報 / 詳細 | |
 | Manual | 説明書 | Nintendo's 電子説明書 |

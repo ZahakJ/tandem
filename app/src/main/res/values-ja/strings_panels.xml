@@ -77,8 +77,8 @@
     <string name="panels_quick_android_settings">設定</string>
     <string name="panels_quick_shizuku_note">Shizukuがあれば、Wi-Fi・Bluetooth・機内モードをここで直接切り替えられます。</string>
     <string name="panels_quick_allow_write">Tandemにシステム設定の変更を許可して、戻ってきてください</string>
-    <string name="panels_quick_saver_on">バッテリーセーバー オン：画面の動きとBGMを止めます</string>
-    <string name="panels_quick_saver_off">バッテリーセーバー オフ</string>
+    <string name="panels_quick_saver_on">バッテリーセーバー：オン（動きとBGMを止めます）</string>
+    <string name="panels_quick_saver_off">バッテリーセーバー：オフ</string>
 
     <string name="panels_side_morning">おはようございます！</string>
     <string name="panels_side_afternoon">こんにちは！</string>

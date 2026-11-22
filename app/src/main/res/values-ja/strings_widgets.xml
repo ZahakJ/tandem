@@ -16,7 +16,7 @@
     <string name="widgets_battery">バッテリー</string>
     <string name="widgets_battery_blurb">残量、温度、残り時間。Aでクイック設定を開きます。</string>
     <string name="widgets_clock">時計</string>
-    <string name="widgets_clock_blurb">デジタル、アナログ、大きくて親しみやすいもの。Aでスタイルを切り替え。</string>
+    <string name="widgets_clock_blurb">デジタル、アナログ、でっかい時計。Aでスタイルを切り替え。</string>
     <string name="widgets_nowplaying">プレイ中</string>
     <string name="widgets_nowplaying_blurb">バックグラウンドで待っているゲーム。Aで再開します。</string>
     <string name="widgets_continue">つづきから遊ぶ</string>
@@ -143,7 +143,7 @@
     <string name="widgets_battery_low">残りわずか</string>
     <string name="widgets_battery_on">バッテリー駆動</string>
     <string name="widgets_battery_charged_short">満充電</string>
-    <string name="widgets_battery_low_short">低</string>
+    <string name="widgets_battery_low_short">わずか</string>
     <string name="widgets_battery_full_in">満充電まで%1$s</string>
     <string name="widgets_battery_left">残り約%1$s</string>
     <string name="widgets_battery_warm">%1$s · 高め</string>
@@ -268,10 +268,10 @@
     <string name="widgets_ed_bottom_about">何も選択していないときに下画面に表示します。何もなければピップのあいさつが出ます。</string>
     <string name="widgets_ed_add">＋ウィジェットを追加</string>
     <string name="widgets_ed_show_home">ホームに表示</string>
-    <string name="widgets_ed_rows">列の数</string>
+    <string name="widgets_ed_rows">段数</string>
     <string name="widgets_ed_rows_auto">自動</string>
-    <string name="widgets_ed_rows_one">1列</string>
-    <string name="widgets_ed_rows_two">2列</string>
+    <string name="widgets_ed_rows_one">1段</string>
+    <string name="widgets_ed_rows_two">2段</string>
     <string name="widgets_ed_reset_again">もう一度押すとリセット</string>
     <string name="widgets_ed_reset">最初のセットに戻す</string>
     <string name="widgets_ed_reset_done">ウィジェットを最初のセットに戻しました</string>

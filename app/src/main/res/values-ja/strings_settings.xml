@@ -64,7 +64,7 @@
     <string name="settings_sub_dock">ドックとウィジェット</string>
     <string name="settings_sub_dock_help">ホーム画面に並ぶアプリのドックと、そこに置くウィジェット。</string>
     <string name="settings_sub_art">アートと動画</string>
-    <string name="settings_sub_art_help">もう一方の画面のアート：プレビュー動画、動くアート、ロゴの大きさ、アートのぼかし方。</string>
+    <string name="settings_sub_art_help">もう一方の画面のアート：プレビュー動画、動くアート、ロゴの大きさ、アートのフェード。</string>
     <string name="settings_sub_pads">接続中のコントローラー</string>
     <string name="settings_sub_pads_help">BluetoothとUSBのコントローラー：それぞれのNintendo配置のボタン表記と、HOMEボタンの動作。</string>
     <string name="settings_sub_deck">デッキ</string>
@@ -75,7 +75,7 @@
     <string name="settings_sub_perf_help">ゲーム中のパフォーマンスモード、ファン、リフレッシュレートと、スリープ中のゲームの一時停止。</string>
     <string name="settings_sub_privacy">プライバシーと非表示</string>
     <string name="settings_sub_privacy_help">プライベートモードとそのPIN、非表示のゲームの表示、非表示のゲーム中のオフライン化。</string>
-    <string name="settings_sub_data">あなたのデータ</string>
+    <string name="settings_sub_data">データ管理</string>
     <string name="settings_sub_data_help">バックアップと復元、Cocoonの設定やgamelist.xmlの情報の取り込み、プレイ記録の書き出し。</string>
     <string name="settings_sub_dev">こだわり派向け</string>
     <string name="settings_sub_dev_help">なめらかさの計測やテーマのチェック用のツールです。ふだんは使わなくて大丈夫。</string>
@@ -127,7 +127,7 @@
     <string name="settings_group_discord">Discord</string>
     <string name="settings_group_perf_sleep">パフォーマンスとスリープ</string>
     <string name="settings_group_privacy_hidden">プライバシーと非表示</string>
-    <string name="settings_group_your_data">あなたのデータ</string>
+    <string name="settings_group_your_data">データ管理</string>
     <string name="settings_group_tinkerers">こだわり派向け</string>
     <string name="settings_group_theme_pack">テーマパック</string>
     <string name="settings_group_not_placed">未配置</string>
@@ -151,7 +151,7 @@
     <string name="settings_about_panel">オープンソース · トラッキングなし</string>
 
     <string name="settings_library">ライブラリ</string>
-    <string name="settings_library_sort">ゲームの並べ順</string>
+    <string name="settings_library_sort">ゲームの並び順</string>
     <string name="settings_library_sort_help">各機種やコレクションの中でゲームが並ぶ順番です。</string>
     <string name="settings_library_hidden">非表示のゲームを表示</string>
     <string name="settings_library_hidden_private">プライベート</string>
@@ -167,13 +167,13 @@
     <string name="settings_library_games_manuals">%1$s · %2$s</string>
     <string name="settings_library_rescan_help">ゲームフォルダをもう一度調べて、コピーしたばかりのゲームと説明書を探します。Tandemに戻ってくるたびに自動でもチェックしています。説明書や攻略本は、ROMs/manuals/&lt;system&gt;/にゲームと同じ名前で入れてください（Pokemon Red.gbならPokemon Red.pdf）。PDF、画像のzipかフォルダ、テキストかMarkdownファイルが使えます。ゲームのYメニューやプレイ中の下画面で読めます。Y › 情報を編集 › 説明書 で選ぶこともできます。</string>
 
-    <string name="settings_data">あなたのデータ</string>
+    <string name="settings_data">データ管理</string>
     <string name="settings_data_import">情報をインポート</string>
     <string name="settings_data_importing">インポート中…</string>
-    <string name="settings_data_import_help">gamelist.xml（ES-DE、Cocoonのバックアップ）から、名前・説明・アートワークのリンクを読み込みます。埋まるのは空欄だけで、Tandemで変えたところはそのままです。</string>
+    <string name="settings_data_import_help">gamelist.xml（ES-DE、Cocoonのバックアップ）から、名前・説明・アートワークのリンクを読みこみます。埋まるのは空欄だけで、Tandemで変えたところはそのままです。</string>
     <string name="settings_data_importing_details">情報をインポート中…</string>
     <plurals name="settings_data_imported">
-        <item quantity="other">%1$d本のゲーム情報を読み込みました</item>
+        <item quantity="other">%1$d本のゲーム情報を読みこみました</item>
     </plurals>
     <string name="settings_data_import_none">gamelist.xmlが見つかりません</string>
     <string name="settings_data_back_up">バックアップ</string>
@@ -196,10 +196,10 @@
     <string name="settings_shizuku_start">先にShizukuアプリを起動して、ここに戻ってきてください</string>
     <string name="settings_about_tandem">Tandemについて</string>
     <string name="settings_about_version">バージョン%1$s · GPL-3.0</string>
-    <string name="settings_about_help">無料のオープンソース（GPL-3.0）。広告なし、アカウントなし、トラッキングなし。あなたのデータはこの端末の中だけにあります。</string>
+    <string name="settings_about_help">無料のオープンソース（GPL-3.0）。広告なし、アカウントなし、トラッキングなし。データはこの端末の中だけにあります。</string>
     <string name="settings_about_hi">愛をこめて、ずっと無料。ピップからこんにちは！</string>
     <string name="settings_updates">アップデート</string>
-    <string name="settings_updates_help">これはTandem %1$sです。Aを押すと、新しいバージョンが出ていないかGitHubに確認します。「アップデート」でダウンロードし、本物のリリースか（チェックサムとTandemの署名鍵で）確かめてからインストールし、Tandemを再起動します。Shizukuがあれば確認なしでインストールし、なければ最初の一度だけ、Tandemからのインストールを許可するかAndroidが聞いてきます。%2$s</string>
+    <string name="settings_updates_help">お使いのTandemは%1$sです。Aを押すと、新しいバージョンが出ていないかGitHubに確認します。「アップデート」でダウンロードし、本物のリリースか（チェックサムとTandemの署名鍵で）確かめてからインストールし、Tandemを再起動します。Shizukuがあれば確認なしでインストールし、なければ最初の一度だけ、Tandemからのインストールを許可するかAndroidが聞いてきます。%2$s</string>
     <string name="settings_updates_see">アップデートを見る</string>
     <string name="settings_updates_check">確認</string>
     <string name="settings_updates_auto">自動で確認</string>
@@ -234,7 +234,7 @@
         <item quantity="other">%1$d件以上</item>
     </plurals>
     <string name="settings_search_nothing">「%1$s」という設定はありません</string>
-    <string name="settings_search_try">できることで探してみて：「bigger」「quiet」「buttons」</string>
+    <string name="settings_search_try">できることで探してみてください：「bigger」「quiet」「buttons」</string>
     <string name="settings_search_where_settings">設定</string>
     <string name="settings_search_where_in">%1$s › %2$s</string>
     <string name="settings_search_where_themes">見た目と雰囲気 › テーマ</string>
@@ -255,7 +255,7 @@
     <string name="settings_search_language">優先する言語</string>
     <string name="settings_search_language_help">取得元に用意があれば、説明やジャンルをこの言語で取得します。「ライブラリの情報を取得」画面の「地域と言語」にあります。</string>
     <string name="settings_search_stats">プレイ記録</string>
-    <string name="settings_search_stats_help">日・機種・ゲームごとのプレイ時間、これまでのプレイ履歴、そして実績。プレイとシステム › あなたのデータ で書き出せます。</string>
+    <string name="settings_search_stats_help">日・機種・ゲームごとのプレイ時間、これまでのプレイ履歴、そして実績。プレイとシステム › データ管理 で書き出せます。</string>
     <string name="settings_search_source_help">%1$s。</string>
     <string name="settings_updates_auto_help">Tandemを開いている間、1日1回新しいTandemを探し、見つかったらメッセージとStartパネルで一度だけお知らせします。GitHubに最新のバージョン番号を聞くだけで、「アップデート」を押すまで何もインストールしません。オフにすると、アップデートの項目でAを押して確認するまで、何も確認も表示もしません。プライベートモード中は確認しません。</string>
 </resources>

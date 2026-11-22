@@ -78,7 +78,7 @@
     <string name="grid_sel_hide_sub">ゲーム、機種、フォルダ</string>
     <string name="grid_sel_all">すべて選択</string>
     <string name="grid_sel_clear">選択を解除</string>
-    <string name="grid_sel_already_hidden">非表示にしてあります</string>
+    <string name="grid_sel_already_hidden">もう非表示です</string>
     <plurals name="grid_sel_moved">
         <item quantity="other">タイル%1$d個を移動</item>
     </plurals>
@@ -129,7 +129,7 @@
     <string name="grid_tidy_already">もう整理されています</string>
     <string name="grid_tidy_done">整理しました</string>
     <string name="grid_tidy_done_folder">「%1$s」を整理しました</string>
-    <string name="grid_tidy_sorted">%1$sで並べ替え中：いつも整理済みです</string>
+    <string name="grid_tidy_sorted">%1$sで並んでいるので、いつも整理済みです</string>
     <string name="grid_carrying">持ち運び中 · 空きスペースでA › 貼り付け</string>
 
     <string name="grid_design_title_main">フォルダをデザイン</string>
@@ -215,7 +215,7 @@
     <string name="grid_form_year_to_help">この年以前に発売。</string>
     <string name="grid_form_favorites">お気に入りのみ</string>
     <string name="grid_form_favorites_help">ハートをつけたゲームだけ。</string>
-    <string name="grid_form_played">プレイ</string>
+    <string name="grid_form_played">プレイ状況</string>
     <string name="grid_form_played_help">「プレイ済み」：一度でも遊んだゲーム。「未プレイ」：まだ始めていないゲーム。</string>
     <string name="grid_form_status">ステータス</string>
     <string name="grid_form_status_help">このステータスのゲームだけ：積みゲー、プレイ中、クリア済み（コンプリートも含む）…「なし」はステータスのないゲームです。</string>
@@ -338,7 +338,7 @@
     <string name="grid_menu_add_home">ホームに追加…</string>
     <string name="grid_menu_sort_folder">このフォルダを並べ替え…</string>
 
-    <string name="grid_sort_page">「%1$s」をフォルダ風に</string>
+    <string name="grid_sort_page">「%1$s」を並べ替え</string>
     <string name="grid_sort_page_folder">フォルダを並べ替え</string>
     <string name="grid_sort_manual_sub">自分で決めた順番。どの並べ替えでも保たれます</string>
     <string name="grid_sort_manual_done">自分で決めた順番に戻しました</string>

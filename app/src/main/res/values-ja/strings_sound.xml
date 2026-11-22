@@ -43,7 +43,7 @@
     <string name="sound_bottom_muted">本体の下画面の音量がゼロになっていて、Tandemの音も消えています。Dual screen assistant（Bottom screen › Volume）で上げてください。</string>
 
     <string name="sound_source_pack">テーマパック「%1$s」から</string>
-    <string name="sound_source_folder">あなたの音楽フォルダから</string>
+    <string name="sound_source_folder">音楽フォルダから</string>
     <string name="sound_source_builtin">内蔵のサウンドトラック</string>
 
     <string name="sound_now_your_music">マイミュージック</string>

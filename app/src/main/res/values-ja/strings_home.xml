@@ -142,7 +142,7 @@
     <string name="home_none_backlog">積みゲーはゼロです</string>
     <string name="home_none_backlog_detail">ゲームで Y › ステータス › 積みゲー を選ぶと、ここに入ります。</string>
     <string name="home_none_finished">クリアしたゲームはまだありません</string>
-    <string name="home_none_finished_detail">エンディングを見たら Y › ステータス › クリア済み。</string>
+    <string name="home_none_finished_detail">エンディングを見たら Y › ステータス › クリア済み を選びましょう。</string>
     <string name="home_none_added">ゲームはまだありません</string>
     <string name="home_none_added_detail">再スキャンすると、新しいゲームがここに並びます。</string>
     <string name="home_none_genre">このジャンルは空です</string>
@@ -250,7 +250,7 @@
     <string name="home_top_stats">★ 記録</string>
     <string name="home_top_quick">◐ クイック</string>
 
-    <string name="home_scan_already">もうゲームを探しています…</string>
+    <string name="home_scan_already">いまゲームを探しているところです…</string>
     <string name="home_scan_looking">ゲームを探しています…</string>
     <plurals name="home_scan_found">
         <item quantity="other">ゲームが%1$d本見つかりました</item>
@@ -279,14 +279,14 @@
     <string name="home_splash_gathering">ゲームを集めています…</string>
 
     <string name="home_setup_hi">こんにちは、ピップです！</string>
-    <string name="home_setup_lets_find">あなたのゲームを探しましょう。</string>
+    <string name="home_setup_lets_find">さっそくゲームを探しましょう！</string>
     <string name="home_setup_files">ゲームを読みこむ</string>
     <string name="home_setup_files_detail">すべてのファイルへのアクセスを許可してください。ゲームとアートワークを探しに行けるようになります。</string>
     <string name="home_setup_tree">ゲームのフォルダを選ぶ</string>
     <string name="home_setup_tree_detail">ゲームが入っているフォルダ（並び方は自由）を選んで、「このフォルダを使用」をタップしてください。ROMsフォルダでも大丈夫です。エミュレーターによっては、この方法で共有したゲームしか開けません。</string>
     <string name="home_setup_step_one_first">先にステップ1を済ませてください</string>
-    <string name="home_setup_shizuku">ゲームの再開（おまけ）</string>
-    <string name="home_setup_shizuku_detail">Shizukuでぼくを許可してくれたら、ゲームをやめたところからそのまま戻せます。</string>
+    <string name="home_setup_shizuku">ゲームの再開（お好みで）</string>
+    <string name="home_setup_shizuku_detail">Shizukuでぼくを許可してもらえれば、中断したところからそのままゲームに戻れます。</string>
     <string name="home_setup_done">完了 ✓</string>
     <string name="home_setup_todo">設定する</string>
 
@@ -345,7 +345,7 @@
     </plurals>
     <string name="home_play_dock_help">ドックに置くアプリと、その順番を選びます。</string>
     <string name="home_play_screensaver">スクリーンセーバー</string>
-    <string name="home_play_screensaver_help">しばらくボタンを押さないでいると、ピップがお昼寝している夜空を、あなたのゲームのパッケージがゆっくり流れていきます。画面の焼きつきも防げます。どのボタンでも起きます。</string>
+    <string name="home_play_screensaver_help">しばらくボタンを押さないでいると、ピップがお昼寝している夜空を、ゲームのパッケージがゆっくり流れていきます。画面の焼きつきも防げます。どのボタンでも起きます。</string>
     <plurals name="home_play_screensaver_after">
         <item quantity="other">%1$d分後</item>
     </plurals>
@@ -359,7 +359,7 @@
     <string name="home_play_offline_closes">終了するまで</string>
     <string name="home_play_offline_plays">プレイ中だけ</string>
     <string name="home_play_offline_help">プライベートモードでは、非表示のゲームを遊んでいる間は機内モードをオンにして、ゲームがネットにつながらないようにします。「プレイ中だけ」：Tandemに戻るとオンラインに戻ります。「終了するまで」：ゲームがバックグラウンドで開いている間（そこで同期するかもしれません）も、アプリが終了するか非表示のゲームをしまうまでオフラインのままです。自分でオンにした機内モードはそのままです。Shizukuが必要です。</string>
-    <string name="home_play_offline_help_off">プライベートモードでは、非表示のゲームを遊んでいる間は機内モードをオンにして、ゲームがネットにつながらないようにします。「プレイ中だけ」：Tandemに戻るとオンラインに戻ります。「終了するまで」：ゲームがバックグラウンドで開いている間（そこで同期するかもしれません）も、アプリが終了するか非表示のゲームをしまうまでオフラインのままです。自分でオンにした機内モードはそのままです。Shizukuが必要です。プライベートモード中のみ。</string>
+    <string name="home_play_offline_help_off">プライベートモードでは、非表示のゲームを遊んでいる間は機内モードをオンにして、ゲームがネットにつながらないようにします。「プレイ中だけ」：Tandemに戻るとオンラインに戻ります。「終了するまで」：ゲームがバックグラウンドで開いている間（そこで同期するかもしれません）も、アプリが終了するか非表示のゲームをしまうまでオフラインのままです。自分でオンにした機内モードはそのままです。Shizukuが必要です。プライベートモードでのみ使えます。</string>
     <string name="home_play_pin">プライベートモードのPIN</string>
     <string name="home_play_pin_set">設定済み</string>
     <string name="home_play_pin_not_set">未設定</string>

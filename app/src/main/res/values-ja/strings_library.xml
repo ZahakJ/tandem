@@ -34,7 +34,7 @@
     <string name="library_settings_systems_help">機種のオン・オフ、機種ごとのエミュレーターとゲームを起動する画面を選び、フォルダを追加します。</string>
     <string name="library_settings_apps">Androidアプリ</string>
     <string name="library_settings_apps_value">ゲームとアプリ</string>
-    <string name="library_settings_apps_help">この端末のすべてのアプリ。ゲームのものに印をつけると、Android Gamesの機種に出てきます。</string>
+    <string name="library_settings_apps_help">この端末のすべてのアプリ。ゲームのアプリに印をつけると、「Android Games」に並びます。</string>
     <string name="library_settings_single">1画面モード</string>
     <string name="library_settings_single_one">オン · 1画面</string>
     <string name="library_settings_single_help">2つ目の画面にはさわらず（オフのままでも）、上画面だけを使います。ゲームもいつも上画面で始まります。</string>
@@ -68,7 +68,7 @@
     <string name="library_system_emulators_none">この機種に登録されたものはありません</string>
     <string name="library_system_emulators_none_installed">まだインストールされていません。Aで入手できます</string>
     <string name="library_system_emulators_default">Aでデフォルトにします</string>
-    <string name="library_system_already_plays">%2$sのゲームはもう%1$sで遊びます</string>
+    <string name="library_system_already_plays">%2$sのゲームはすでに%1$sで遊ぶ設定です</string>
     <string name="library_system_now_plays">%2$sのゲームは%1$sで遊ぶようになりました</string>
     <string name="library_system_no_store">%1$sのストアを開けませんでした</string>
     <string name="library_system_start_on">ゲームを起動する画面</string>
@@ -168,7 +168,7 @@
     <string name="library_edit_year_ask">発売年（例：1998）</string>
     <string name="library_edit_genres">ジャンル</string>
     <string name="library_edit_genres_ask">ジャンル（カンマ区切り）</string>
-    <string name="library_edit_developer">開発</string>
+    <string name="library_edit_developer">開発元</string>
     <string name="library_edit_publisher">発売元</string>
     <string name="library_edit_players">プレイ人数</string>
     <string name="library_edit_players_ask">プレイ人数（例：1-4）</string>
@@ -230,8 +230,8 @@
     <string name="library_extras_app">おともアプリ</string>
     <string name="library_extras_choose_app">アプリを選ぶ</string>
     <string name="library_extras_change">変更</string>
-    <string name="library_extras_close_on">あとで終了：オン</string>
-    <string name="library_extras_close_off">あとで終了：オフ</string>
+    <string name="library_extras_close_on">ゲーム後に終了：オン</string>
+    <string name="library_extras_close_off">ゲーム後に終了：オフ</string>
     <string name="library_extras_remove">外す</string>
     <string name="library_extras_no_app">おともアプリは選ばれていません</string>
     <string name="library_extras_app_note">ゲームといっしょにもう一方の画面で起動し、そこでTandemのおとも画面の代わりになります。1画面のとき、下画面で遊ぶゲーム、エミュレーターまかせの機種では使えません。</string>
@@ -390,7 +390,7 @@
     <string name="library_cocoon_folder">フォルダ</string>
     <string name="library_cocoon_no_backup">ROMs/backupsにCocoonのバックアップが見つかりませんでした。先にCocoonの設定でバックアップを作ってください</string>
     <string name="library_cocoon_backup_reason">Cocoonの取り込み</string>
-    <string name="library_cocoon_here">Cocoonの設定がやってきました ✨ 設定 › プレイとシステム › あなたのデータ › Cocoonの取り込みを元に戻す で戻せます</string>
+    <string name="library_cocoon_here">Cocoonの設定がやってきました ✨ 設定 › プレイとシステム › データ管理 › Cocoonの取り込みを元に戻す で戻せます</string>
     <string name="library_cocoon_in">Cocoonのホームとテーマを取り込みました ✨</string>
     <string name="library_cocoon_in_skipped">Cocoonのホームとテーマを取り込みました ✨（%1$sは対応するものがありませんでした）</string>
     <string name="library_cocoon_undo">元に戻す</string>
