@@ -12,7 +12,6 @@ import io.github.zahakj.tandem.data.Store
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 /** How a button prompt is drawn. A null colour means "use the caller's colour". */
 data class PromptGlyph(val glyph: String, val color: Color?, val onColor: Color?, val square: Boolean = false)
@@ -123,13 +122,13 @@ object Clock {
 
     fun format(date: Date): String? = when (Store.settings.look.clock) {
         "off" -> null
-        "12" -> SimpleDateFormat("h:mm a", Locale.getDefault()).format(date)
-        "24" -> SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
-        else -> DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+        "12" -> SimpleDateFormat("h:mm a", io.github.zahakj.tandem.Lang.locale).format(date)
+        "24" -> SimpleDateFormat("HH:mm", io.github.zahakj.tandem.Lang.locale).format(date)
+        else -> DateFormat.getTimeInstance(DateFormat.SHORT, io.github.zahakj.tandem.Lang.locale).format(date)
     }
 
     /** Always a time, for places that are all about the clock (the bottom-screen clock face). */
-    fun always(date: Date): String = format(date) ?: DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+    fun always(date: Date): String = format(date) ?: DateFormat.getTimeInstance(DateFormat.SHORT, io.github.zahakj.tandem.Lang.locale).format(date)
 }
 
 /**

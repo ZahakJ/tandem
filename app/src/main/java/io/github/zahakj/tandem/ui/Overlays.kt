@@ -223,7 +223,7 @@ internal fun ValueChip(value: String, color: Color, cycles: Boolean = false, mod
         val rtl = isRtl
         if (cycles) Text(if (rtl) "▸" else "◂", Modifier.padding(end = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
         // "▸" (opens a page) points towards the end, the left in right to left.
-        Text(if (rtl && value == "▸") "◂" else value, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.labelMedium, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        FitText(if (rtl && value == "▸") "◂" else value, MaterialTheme.typography.labelMedium, Modifier.weight(1f, fill = false), color = color)
         if (cycles) Text(if (rtl) "◂" else "▸", Modifier.padding(start = 4.dp), style = MaterialTheme.typography.labelMedium, color = arrow)
     }
 }

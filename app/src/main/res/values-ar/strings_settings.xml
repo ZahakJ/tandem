@@ -29,7 +29,6 @@
     <string name="settings_page_screens_swapped">المكتبة في الأسفل</string>
     <string name="settings_page_screens_details">التفاصيل في الأسفل · %1$s</string>
     <string name="settings_page_screens_details_mode">التفاصيل</string>
-    <string name="settings_page_sound_pack">بصوتيات %1$s</string>
     <string name="settings_page_sound_sounds">الأصوات: %1$s</string>
     <string name="settings_page_sound_sounds_off">بلا أصوات</string>
     <string name="settings_page_sound_music_on">مع موسيقى</string>

@@ -122,7 +122,7 @@ private fun ExtraButton(text: String, color: Color, routeKey: String, id: String
         onFocus = { focus(id); FocusMemory.remember(routeKey, id) }, onClick = onClick,
     ) {
         Box(Modifier.fillMaxHeight().background(color.copy(alpha = 0.2f)).padding(horizontal = 13.dp), contentAlignment = Alignment.Center) {
-            Text(text, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            FitText(text, MaterialTheme.typography.labelLarge, color = color)
         }
     }
 }

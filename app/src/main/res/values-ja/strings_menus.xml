@@ -179,8 +179,8 @@
     <string name="menus_app_move_right">右へ移動</string>
     <string name="menus_app_kind_game">Androidゲーム</string>
     <string name="menus_app_kind_app">アプリ</string>
-    <string name="menus_app_game_off">「%1$s」をAndroid Gamesから外しました</string>
-    <string name="menus_app_game_on">「%1$s」をAndroid Gamesに入れました</string>
+    <string name="menus_app_game_off">「%1$s」をAndroidゲームから外しました</string>
+    <string name="menus_app_game_on">「%1$s」をAndroidゲームに入れました</string>
     <string name="menus_app_rename_title">「%1$s」の名前</string>
     <string name="menus_app_renamed_own">元の名前に戻しました</string>
     <string name="menus_app_renamed">「%1$s」に名前を変えました</string>

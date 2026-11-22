@@ -52,7 +52,7 @@
     <string name="play_problem_update">%1$sをアップデート</string>
     <string name="play_problem_rescan">再スキャン</string>
     <string name="play_problem_hide">非表示にする</string>
-    <string name="play_problem_hidden">Android Gamesで非表示にしました</string>
+    <string name="play_problem_hidden">Androidゲームで非表示にしました</string>
     <string name="play_problem_start_anyway">このまま起動</string>
     <string name="play_problem_ok">OK</string>
     <string name="play_problem_not_installed">%1$sがインストールされていません</string>
@@ -67,7 +67,7 @@
     <string name="play_problem_shortcut">このショートカットにはゲームIDが必要です</string>
     <string name="play_problem_shortcut_text">%1$s：%2$s。Vitaの.dptファイルには「[vita_game_id] PCSA00011」のような行が、Windowsの.pcgameファイルにはGameNativeのアプリIDが必要です。</string>
     <string name="play_problem_app_missing">「%1$s」はもうインストールされていません</string>
-    <string name="play_problem_app_missing_text">ストアからインストールし直すか、Android Gamesで非表示にしてください。</string>
+    <string name="play_problem_app_missing_text">ストアからインストールし直すか、Androidゲームで非表示にしてください。</string>
     <string name="play_problem_not_offline">オフラインにできなかったので、ゲームを起動しませんでした</string>
     <string name="play_problem_not_offline_text">機内モードがオンにならなかったので、何も起動していません。Shizukuが動いているか確認するか、このまま起動してください。</string>
 

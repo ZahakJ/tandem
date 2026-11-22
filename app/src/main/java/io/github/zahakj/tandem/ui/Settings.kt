@@ -574,7 +574,7 @@ private fun LabelAndEnd(modifier: Modifier, content: @Composable () -> Unit) {
 @Composable
 fun ValuePill(text: String, color: Color, modifier: Modifier = Modifier) {
     Box(modifier.clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.18f)).padding(horizontal = 10.dp, vertical = 3.dp)) {
-        Text(text, color = color, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        FitText(text, MaterialTheme.typography.labelLarge, color = color)
     }
 }
 

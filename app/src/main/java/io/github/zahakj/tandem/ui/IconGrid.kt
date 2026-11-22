@@ -506,7 +506,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
             TileArt.Tandem(TIcon.Genres, GenresColor),
             all, Selected.Group(Tx.s(R.string.grid_genres_tile), Tx.p(R.plurals.grid_genres, genres.size), all, GenresColor, GroupTarget.Genres),
             default = true, open = { openFolder(Route.Genres) },
-            blurb = genres.keys.take(4).joinToString(", ") + if (genres.size > 4) "…" else "",
+            blurb = Tx.list(genres.keys.take(4)) + if (genres.size > 4) "…" else "",
         )
     }
 
@@ -585,7 +585,7 @@ class GridCatalog(private val ctx: Context, libs: List<PlatformLibrary>) {
             art, games,
             Selected.Group(f.name, Tx.p(R.plurals.grid_items, inside.size), games, color), default = false,
             open = { FocusMemory.forget(IconGrid.folderRoute(f.id)); IconGrid.openFolder = f.id }, folderId = f.id,
-            blurb = if (inside.isEmpty()) Tx.s(R.string.grid_folder_empty_blurb) else inside.take(3).joinToString(", ") { it.title } + if (inside.size > 3) "…" else "",
+            blurb = if (inside.isEmpty()) Tx.s(R.string.grid_folder_empty_blurb) else Tx.list(inside.take(3)) { it.title } + if (inside.size > 3) "…" else "",
             packNames = names, hidden = f.hidden,
         )
     }

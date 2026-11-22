@@ -124,12 +124,12 @@ private fun Clock(modifier: Modifier, phase: () -> Float) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            DateFormat.getTimeInstance(DateFormat.SHORT).format(now),
+            DateFormat.getTimeInstance(DateFormat.SHORT, io.github.zahakj.tandem.Lang.locale).format(now),
             style = MaterialTheme.typography.displayLarge.copy(fontSize = 96.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center),
             color = Palette.Text,
         )
         Text(
-            java.text.SimpleDateFormat("EEEE, MMMM d", java.util.Locale.getDefault()).format(now),
+            java.text.SimpleDateFormat(android.text.format.DateFormat.getBestDateTimePattern(io.github.zahakj.tandem.Lang.locale, "EEEEMMMMd"), io.github.zahakj.tandem.Lang.locale).format(now),
             style = MaterialTheme.typography.titleLarge.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Center),
             color = accent,
         )

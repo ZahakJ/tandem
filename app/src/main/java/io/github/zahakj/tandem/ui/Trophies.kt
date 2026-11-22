@@ -267,7 +267,7 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
             }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(t.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, color = if (earned) Palette.Text else Palette.Muted)
+                FitText(t.title, MaterialTheme.typography.titleSmall, color = if (earned) Palette.Text else Palette.Muted, minScale = 0.7f)
                 Text(t.detail, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(4.dp))
                 if (earned) {
@@ -276,7 +276,7 @@ private fun TrophyCard(t: Trophy, facts: TrophyFacts, at: Long?, modifier: Modif
                         style = MaterialTheme.typography.labelSmall, color = color, maxLines = 1,
                     )
                 } else {
-                    Text(progressWords(t, facts), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+                    FitText(progressWords(t, facts), MaterialTheme.typography.labelSmall, color = Palette.Muted)
                 }
             }
         }

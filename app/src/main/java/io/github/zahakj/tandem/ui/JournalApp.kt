@@ -150,7 +150,7 @@ fun JournalScreen() {
                             )
                             is JournalLine.Session -> {
                                 val note = notes.sessions[x.key]
-                                val time = DateFormat.getTimeFormat(androidx.compose.ui.platform.LocalContext.current).format(Date(x.s.s))
+                                val time = DateFormat.getTimeFormat(Tx.context).format(Date(x.s.s))
                                 ToolRow(
                                     x.game.title, note ?: Tx.s(R.string.apps_journal_session, formatPlayLong(x.s.d), time, x.game.platform.shortName),
                                     SystemColors.of(x.game.platform.id), Modifier.takesFocus("$route:$view", x.key, x.key == target),

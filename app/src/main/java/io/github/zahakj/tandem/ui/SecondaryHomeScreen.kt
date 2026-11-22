@@ -189,7 +189,7 @@ private fun Face(activity: SecondaryHomeActivity, dim: Boolean, resumed: Boolean
             Column(Modifier.weight(1f)) {
                 Text(Clock.always(Date(now)), style = MaterialTheme.typography.displaySmall.copy(fontSize = 40.sp, lineHeight = 44.sp), maxLines = 1)
                 Text(
-                    android.text.format.DateFormat.format("EEEE, d MMMM", Date(now)).toString(),
+                    java.text.SimpleDateFormat(android.text.format.DateFormat.getBestDateTimePattern(io.github.zahakj.tandem.Lang.locale, "EEEEdMMMM"), io.github.zahakj.tandem.Lang.locale).format(Date(now)),
                     style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }

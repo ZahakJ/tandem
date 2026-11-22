@@ -44,7 +44,7 @@
     <string name="library_settings_systems_help">Active ou désactive des systèmes, choisis l’émulateur de chacun et l’écran où ses jeux démarrent, et ajoute des dossiers en plus.</string>
     <string name="library_settings_apps">Applis Android</string>
     <string name="library_settings_apps_value">Jeux et applis</string>
-    <string name="library_settings_apps_help">Toutes les applis de l’appareil. Marque celles qui sont des jeux pour qu’elles apparaissent dans le système Android Games.</string>
+    <string name="library_settings_apps_help">Toutes les applis de l’appareil. Marque celles qui sont des jeux pour qu’elles apparaissent dans le système Jeux Android.</string>
     <string name="library_settings_single">Un seul écran</string>
     <string name="library_settings_single_one">Activé · un écran</string>
     <string name="library_settings_single_help">Laisse le second écran tranquille (ou éteint) et n’utilise que celui du haut. Les jeux démarrent aussi toujours en haut.</string>
@@ -447,7 +447,8 @@
     <!-- %1$s is when, like "3 days ago". -->
     <string name="library_app_updated">mise à jour : %1$s</string>
     <string name="library_app_running">● Lancée</string>
-    <string name="library_app_in_android_games">Dans Android Games</string>
+    <string name="library_app_in_android_games">Dans les Jeux Android</string>
+    <string name="library_android_games">Jeux Android</string>
     <!-- More systems than fit: "+3 more". -->
     <string name="library_app_more">+%1$d autres</string>
     <!-- Facts: a name over a value. -->

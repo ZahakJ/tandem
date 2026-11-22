@@ -96,9 +96,9 @@ class RestoreResult(val outcomes: Map<BackupCategory, RestoreOutcome>) {
     /** One line for a toast. */
     fun message(): String {
         val parts = ArrayList<String>()
-        if (restored.isNotEmpty()) restored.joinToString(", ") { it.label }.let { parts += words(R.string.data_backup_restored, "Restored $it", it) }
+        if (restored.isNotEmpty()) names(restored).let { parts += words(R.string.data_backup_restored, "Restored $it", it) }
         failed.forEach { (c, why) -> parts += words(R.string.data_backup_failed, "${c.label} failed: $why", c.label, why) }
-        if (missing.isNotEmpty()) missing.joinToString(", ") { it.label }.let { parts += words(R.string.data_backup_missing, "$it not in this backup", it) }
+        if (missing.isNotEmpty()) names(missing).let { parts += words(R.string.data_backup_missing, "$it not in this backup", it) }
         return parts.joinToString(" · ").ifEmpty { words(R.string.data_backup_nothing, "Nothing to restore") }
     }
 }
@@ -331,7 +331,7 @@ object BackupFiles {
     }
 
     private fun count(n: Int, @androidx.annotation.PluralsRes id: Int, word: String): String? = if (n <= 0) null else
-        "%,d".format(if (Tx.ready) Lang.locale else Locale.US, n).let { num -> words(id, n, "$num ${if (n == 1) word else word + "s"}", num) }
+        "%,d".format(Lang.locale, n).let { num -> words(id, n, "$num ${if (n == 1) word else word + "s"}", num) }
 
     /** "just now", "5 minutes ago", "3 hours ago", "yesterday", "2 days ago", then the date. */
     fun ago(then: Long, now: Long): String {
@@ -342,12 +342,12 @@ object BackupFiles {
             min < 24 * 60 -> (min / 60).let { if (it == 1L) words(R.string.data_backup_hour_ago, "an hour ago") else words(R.plurals.data_backup_hours_ago, it.toInt(), "$it hours ago", it.toInt()) }
             min < 2 * 24 * 60 -> words(R.string.data_backup_yesterday, "yesterday")
             min < 30 * 24 * 60 -> (min / (24 * 60)).toInt().let { words(R.plurals.data_backup_days_ago, it, "$it days ago", it) }
-            else -> SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(Date(then))
+            else -> SimpleDateFormat("d MMM yyyy", Lang.locale).format(Date(then))
         }
     }
 
     /** "24 Oct 2026, 14:03". */
-    fun date(m: BackupManifest): String = SimpleDateFormat("d MMM yyyy, HH:mm", Locale.getDefault()).format(Date(m.created))
+    fun date(m: BackupManifest): String = SimpleDateFormat("d MMM yyyy, HH:mm", Lang.locale).format(Date(m.created))
 }
 
 /**
@@ -467,6 +467,10 @@ object Backups {
  * Text in Tandem's language; [english] (the same words) where there are no resources, as in BackupTest, which
  * checks the file work here without Android.
  */
+/** The names of [cats] as a list in the language (English commas before Tx is loaded, as [words]). */
+private fun names(cats: List<BackupCategory>): String =
+    if (Tx.ready) Tx.list(cats) { it.label } else cats.joinToString(", ") { it.label }
+
 private fun words(@androidx.annotation.StringRes id: Int, english: String, vararg args: Any): String =
     if (Tx.ready) Tx.s(id, *args) else english
 

@@ -18,6 +18,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -343,16 +344,17 @@ private fun QuickTileCard(tile: QuickTile, modifier: Modifier, small: Boolean) {
             ) {
                 IconChip(tile, 28.dp)
                 Spacer(Modifier.height(4.dp))
-                ShrinkText(tile.label, name, maxLines = 1, color = Palette.Text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                Text(tile.value, style = valueStyle, color = valueColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ShrinkText(tile.label, name, maxLines = 1, minScale = 0.66f, color = Palette.Text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                FitText(tile.value, valueStyle, color = valueColor)
             }
         } else {
             Row(Modifier.fillMaxSize().padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconChip(tile, 34.dp)
                 Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    ShrinkText(tile.label, name, maxLines = 1, color = Palette.Text)
-                    Text(tile.value, style = valueStyle, color = valueColor, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    // A long name (« Économiseur de batterie ») takes a second line before it shrinks.
+                    ShrinkText(tile.label, name.copy(lineHeight = name.fontSize * 1.2f), Modifier.heightIn(max = 36.dp), maxLines = 2, minScale = 0.8f, color = Palette.Text)
+                    FitText(tile.value, valueStyle, color = valueColor)
                 }
             }
         }

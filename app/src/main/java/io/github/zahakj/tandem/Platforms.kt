@@ -11,7 +11,8 @@ import java.io.File
 /** A game system and how to start its emulator. Loaded from assets/platforms.json (or the user's copy). */
 data class Platform(
     val id: String,
-    val name: String,
+    /** The name as platforms.json (or Cocoon) gives it. Show [name]. */
+    val title: String,
     /** A few letters for tiles, e.g. "3DS". */
     val shortName: String,
     /** Folder names under ROMs, or absolute paths the user added in Systems. */
@@ -32,6 +33,12 @@ data class Platform(
 ) {
     /** True for the Android Games system, whose games are installed apps. */
     val isApps: Boolean get() = id == AndroidApps.PLATFORM_ID
+
+    /**
+     * The system's name to show. Console names stay as they are in every language; Android Games is Tandem's own
+     * and is said in the language ("Jeux Android", "Androidゲーム"), read each time so it follows a change.
+     */
+    val name: String get() = if (isApps && Tx.ready) Tx.s(R.string.library_android_games) else title
 
     /** Whether a file called [name] is a game for this system. */
     fun matches(name: String): Boolean {
@@ -192,7 +199,7 @@ object Platforms {
         val id = o.getString("id")
         return Platform(
             id = id,
-            name = o.getString("name"),
+            title = o.getString("name"),
             shortName = o.optString("short", o.getString("name")),
             folders = o.optJSONArray("folders").strings().ifEmpty { listOf(id) },
             extensions = o.optJSONArray("extensions").strings().map { it.lowercase() }.toSet(),

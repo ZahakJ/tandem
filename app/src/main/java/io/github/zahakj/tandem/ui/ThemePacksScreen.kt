@@ -232,7 +232,7 @@ private fun PackDetails(p: ThemePack, look: Look) {
         Column(Modifier.weight(1f).fadingEdges(scroll).verticalScroll(scroll), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             if (p.description.isNotBlank()) Text(p.description.replace("\r", ""), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
             Text(p.contents.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.bodyMedium)
-            if (p.credits.isNotEmpty()) Text(Tx.s(R.string.look_pack_art, p.creditLines().joinToString(", ")), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
+            if (p.credits.isNotEmpty()) Text(Tx.s(R.string.look_pack_art, Tx.list(p.creditLines())), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted)
             Text(
                 if (p.removable) Tx.s(R.string.look_packs_stored, p.dir.name) else Tx.s(R.string.look_packs_stored_cocoon, p.dir.name),
                 style = MaterialTheme.typography.labelMedium, color = Palette.Muted,

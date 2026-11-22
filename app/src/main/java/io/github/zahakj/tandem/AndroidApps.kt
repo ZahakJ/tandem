@@ -100,7 +100,7 @@ object AndroidApps {
         val app = ctx.applicationContext
         return Platform(
             id = PLATFORM_ID,
-            name = "Android Games",
+            title = "Android Games", // shown in the language: Platform.name
             shortName = "Android",
             folders = emptyList(),
             extensions = emptySet(),

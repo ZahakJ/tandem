@@ -417,6 +417,7 @@
     <string name="library_app_updated">حُدّث %1$s</string>
     <string name="library_app_running">● يعمل</string>
     <string name="library_app_in_android_games">في ألعاب Android</string>
+    <string name="library_android_games">ألعاب Android</string>
     <string name="library_app_more">+%1$d أخرى</string>
     <string name="library_app_apps">التطبيقات</string>
     <string name="library_app_in_dock">في الشريط</string>

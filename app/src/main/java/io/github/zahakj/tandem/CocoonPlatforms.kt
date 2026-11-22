@@ -77,7 +77,7 @@ object CocoonPlatforms {
                     .joinToString("|") { "(?:$it)" }.let { runCatching { Regex(it, RegexOption.IGNORE_CASE) }.getOrNull() } else null
                 out += Platform(
                     id = imp.id,
-                    name = imp.name,
+                    title = imp.name,
                     shortName = imp.shortName.ifEmpty { imp.name },
                     folders = listOf(imp.id, imp.shortName).filter { it.isNotEmpty() }.distinct(),
                     extensions = exts,

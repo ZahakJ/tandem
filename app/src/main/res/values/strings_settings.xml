@@ -42,8 +42,6 @@
     <!-- %1$s is what the bottom screen shows, like "Details" or "Art". -->
     <string name="settings_page_screens_details">Details below · %1$s</string>
     <string name="settings_page_screens_details_mode">Details</string>
-    <!-- Sound & music, when the theme pack brings its own audio: "Using Retro Wave's audio". -->
-    <string name="settings_page_sound_pack">Using %1$s\'s audio</string>
     <!-- %1$s is a sound pack's name: "Soft sounds". -->
     <string name="settings_page_sound_sounds">%1$s sounds</string>
     <string name="settings_page_sound_sounds_off">Sounds off</string>

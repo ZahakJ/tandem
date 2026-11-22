@@ -27,7 +27,7 @@ class GameFinderTest {
             val id = o.getValue("id").jsonPrimitive.content
             val name = o.getValue("name").jsonPrimitive.content
             Platform(
-                id = id, name = name, shortName = (o["short"] ?: o.getValue("name")).jsonPrimitive.content,
+                id = id, title = name, shortName = (o["short"] ?: o.getValue("name")).jsonPrimitive.content,
                 folders = list("folders").ifEmpty { listOf(id) }, extensions = list("extensions").map { it.lowercase() }.toSet(),
                 skipDirs = list("skipDirs").map { it.lowercase() }.toSet(), artIds = listOf(id), allPlayers = emptyList(),
                 aliases = list("aliases").map { it.lowercase() }.toSet(),

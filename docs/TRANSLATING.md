@@ -36,7 +36,9 @@ for laying screens out right to left in Arabic. Paths are relative to `app/src/m
   chosen language instead, the same way on every version, and reading it inside a composable subscribes that
   composable to `Lang.revision`. Changing the language bumps the revision: both screens recompose in place, with
   their focus, scroll, open panels and routes untouched. Nothing is recreated: the activities list
-  `locale|layoutDirection` in `configChanges`, so Android 13's own language change doesn't recreate them either.
+  `locale|layoutDirection` in `configChanges`, so Android 13's own language change doesn't recreate them either;
+  `TandemTheme` sees that change in its window's configuration and calls `Lang.sync()`, so the text and the layout
+  direction turn together whichever way the language was changed.
   Do not use `stringResource` / `pluralStringResource`: on Android 11 and 12 they show Android's language.
 - `TandemTheme` (`ui/Design.kt`) carries the language into the type (`TextStyle.localeList`, see
   [Fonts](#fonts-and-fitting)) and sets the layout direction from `Lang.layoutDirection`: right to left for Arabic
@@ -197,7 +199,7 @@ SettingSection(Tx.s(R.string.look_group_colour), rows, en = "Colour & highlight"
 Ids and keys (`MenuAction("folder", …)`'s first argument, focus keys, routes), file and folder names, log tags and
 log text, intents and settings keys, JSON field names, `en = "…"` and `keywords`, Shizuku/shell commands, button
 letters, brand and product names (Tandem, Pip, Discord, Shizuku, RetroAchievements, Steam, the emulators), system and
-console names (they come from `platforms.json` and the user's metadata), game titles, the soundtrack's song titles,
+console names (they come from `platforms.json` and the user's metadata; only Tandem's own Android Games system is said in the language, `library_android_games` through `Platform.name`), game titles, the soundtrack's song titles,
 and anything the user typed.
 
 ## The tests
@@ -232,6 +234,12 @@ All run in `testDebugUnitTest`:
 - Lengths: French runs about a quarter longer than English; Japanese and Chinese are shorter but each character is
   wide; Arabic is about as long. Rows are one line with `ShrinkText` or ellipsis: check yours in `en-XA` (a third
   longer). Short labels (tiles, segmented options, hints) get a comment in the XML asking to stay short.
+- A label in a tight place never cuts silently: `FitText` (one line: shrinks to three quarters before any "…"; chips,
+  value pills, button hints, quick tiles' values, trophy names) and `ShrinkText` (two lines, then shrinks; tile names,
+  menu labels). Japanese and Chinese have no spaces, so `ShrinkText` keeps such a label on one line or breaks it at a
+  phrase (`CjkBreaks`: after と, の, ・…, between katakana and kanji, between two-character Chinese words), never one
+  character off; the type also asks Android for phrase breaking in Japanese. `fitsOnRow` counts a CJK character as
+  two letters, so a Japanese choice too wide for a segmented track becomes a picker.
 
 ## Trying a language on the handheld
 
@@ -329,9 +337,12 @@ through the helpers in `ui/Rtl.kt` (pure parts tested in `RtlTest`):
   panels growing out of a grid tile): placed from the left edge with `absoluteOffset`/`AbsoluteAlignment.TopLeft`,
   so they land where the item really is.
 - **Decoration:** the screensaver, the cover wall's drift, the swap sweep and the art's Ken Burns don't mirror.
-- **Numbers:** Arabic shows Android's Arabic-Indic digits (٣) wherever text goes through `Tx` or `Lang.locale`;
-  numbers built in code with `"$n"` (a few counters) are Latin. Both read correctly; unifying them is a wording
-  pass, not a layout one.
+- **Numbers:** Arabic always shows Western digits 0–9, never Arabic-Indic ones (٣): the owner's choice.
+  `Lang.locale` is Arabic with the Latin numbering system (`ar-u-nu-latn`, `Lang.westernDigits`), and so are `Tx`'s
+  resources, `Tx.context` and Android's default locale, so `Tx.s`/`Tx.p` arguments, `String.format(Lang.locale, …)`,
+  dates, times, sizes and `DateUtils` all write 0–9 (tested in `LangDigitsTest`). Plurals still pick Arabic's six
+  forms: the rules go by language, not digits. Never format with an activity's own context
+  (`LocalContext.current`): it has Android's Arabic, with Arabic-Indic digits.
 
 When adding a screen: use Row/start/end and lazy lists, `sideStep()` for any Left/Right handler that changes a
 value, `startSign` for a sideways slide, `mirroredInRtl()` for a drawn fill or chart, and `absoluteOffset` only for

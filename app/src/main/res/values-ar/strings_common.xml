@@ -13,4 +13,6 @@
     <string name="common_language">اللغة</string>
     <string name="common_language_system">لغة النظام</string>
     <string name="common_language_help">اللغة التي يتحدّث بها Tandem. «لغة النظام» تتبع لغة Android، وما لم يُترجم بعد يظهر بالإنجليزية.</string>
+    <!-- Between the names of a list shown in a sentence or a line ("Snes9x, RetroArch, Dolphin"): a comma and its space. -->
+    <string name="common_list_sep">"، "</string>
 </resources>

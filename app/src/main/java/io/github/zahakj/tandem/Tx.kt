@@ -56,9 +56,27 @@ object Lang {
     var chosen by mutableStateOf(SYSTEM)
         private set
 
-    /** The locale text is in now: the chosen language, or Android's for [SYSTEM]. Any thread. */
-    @Volatile var locale: Locale = Locale.getDefault()
+    /**
+     * The locale text is in now: the chosen language, or Android's for [SYSTEM], with Western digits in Arabic
+     * ([westernDigits]). Use it for every date and number formatted in code. Any thread; a composable reading it
+     * follows a change of language.
+     */
+    var locale: Locale by mutableStateOf(westernDigits(Locale.getDefault()))
         private set
+
+    /**
+     * [l] with Western digits (0–9) where its language would write Arabic-Indic ones (٠١٢): the owner's choice for
+     * Arabic, whatever Android's own setting. Only the digits change: the language, and so its plural rules (CLDR's
+     * are per language), and its text stay Arabic.
+     */
+    fun westernDigits(l: Locale): Locale =
+        if (l.language == "ar" && l.getUnicodeLocaleType("nu") != "latn")
+            Locale.Builder().setLocale(l).setUnicodeLocaleKeyword("nu", "latn").build()
+        else l
+
+    /** [westernDigits] for every locale in [list]. */
+    fun westernDigits(list: LocaleList): LocaleList =
+        LocaleList(*Array(list.size()) { westernDigits(list[it]) })
 
     /**
      * Bumped whenever the language in use changes. [Tx] reads it, so everything composed from strings is composed
@@ -93,9 +111,11 @@ object Lang {
         chosen = tag
         apply()
         // Android's language changing (or, on 13+, Tandem's in Android's own settings), and every other
-        // configuration change, which on 11 and 12 also puts Android's default locale back.
+        // configuration change, which also puts Android's default locale back. Every window's theme calls [sync]
+        // too (TandemTheme): Android 13's per-app language reaches the activities' configuration, which this
+        // process-wide callback can miss.
         app.registerComponentCallbacks(object : ComponentCallbacks {
-            override fun onConfigurationChanged(newConfig: Configuration) = refresh()
+            override fun onConfigurationChanged(newConfig: Configuration) = sync()
             @Deprecated("Deprecated in Java")
             override fun onLowMemory() = Unit
         })
@@ -110,8 +130,12 @@ object Lang {
         apply()
     }
 
-    /** The configuration changed: the language may have (Android's, or Tandem's in Android's settings). */
-    private fun refresh() {
+    /**
+     * The configuration changed: the language may have (Android's, or Tandem's in Android's settings, or
+     * `cmd locale set-app-locales`). Cheap when nothing did. Main thread.
+     */
+    fun sync() {
+        if (!::app.isInitialized) return
         if (Build.VERSION.SDK_INT >= 33) systemChoice()?.takeIf { it != chosen }?.let { tag ->
             chosen = tag
             app.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putString(KEY, tag).apply()
@@ -120,23 +144,24 @@ object Lang {
     }
 
     private fun apply() {
-        val want = if (chosen == SYSTEM) systemLocale() else Locale.forLanguageTag(chosen)
-        // On 11 and 12 Android's default locale is Android's language: set it, so dates, numbers and anything else
-        // formatted with the default locale speak the same language as the text. (13+ does this itself.)
-        if (Build.VERSION.SDK_INT < 33) {
-            val list = if (chosen == SYSTEM) Resources.getSystem().configuration.locales else LocaleList(want)
-            if (LocaleList.getDefault() != list) LocaleList.setDefault(list)
-        }
+        val list = westernDigits(if (chosen == SYSTEM) systemLocales() else LocaleList(Locale.forLanguageTag(chosen)))
+        // Android's default locale: dates and numbers formatted without a locale (DateUtils, DateFormat, "%d") speak
+        // the same language as the text, with the same digits. On 11 and 12 Android's default is Android's language;
+        // on 13+ Android sets it to the app's language at each change, with Arabic-Indic digits for Arabic.
+        if (LocaleList.getDefault() != list) LocaleList.setDefault(list)
+        val want = list[0]
         val changed = want != locale || !Tx.ready
         locale = want
-        Tx.load(app, if (chosen == SYSTEM) null else want)
+        // Tx reads from its own resources made for [list], never the app's live ones: the text changes exactly when
+        // the revision (and with it the layout direction) does, never half a screen before.
+        Tx.load(app, list)
         if (changed) revision.intValue++
     }
 
-    /** Android's own language, whatever Tandem's is. */
-    private fun systemLocale(): Locale =
-        if (Build.VERSION.SDK_INT >= 33) app.getSystemService(LocaleManager::class.java).systemLocales[0] ?: Locale.getDefault()
-        else Resources.getSystem().configuration.locales[0] ?: Locale.getDefault()
+    /** Android's own languages, whatever Tandem's is. */
+    private fun systemLocales(): LocaleList =
+        if (Build.VERSION.SDK_INT >= 33) app.getSystemService(LocaleManager::class.java).systemLocales.takeUnless { it.isEmpty } ?: LocaleList.getAdjustedDefault()
+        else Resources.getSystem().configuration.locales
 
     /** The app language Android keeps (13+): a tag, [SYSTEM] for none, or null when Android couldn't be asked. */
     private fun systemChoice(): String? {
@@ -177,12 +202,10 @@ object Tx {
 
     internal val ready get() = res != null
 
-    /** Loads the resources for [locale] (null: Android's own language, the app's plain resources). */
-    internal fun load(app: Context, locale: Locale?) {
+    /** Loads the resources for [locales]. */
+    internal fun load(app: Context, locales: LocaleList) {
         this.app = app
-        val ctx = if (locale == null) app else app.createConfigurationContext(
-            Configuration(app.resources.configuration).apply { setLocales(LocaleList(locale)) },
-        )
+        val ctx = app.createConfigurationContext(Configuration(app.resources.configuration).apply { setLocales(locales) })
         localized = ctx
         res = ctx.resources
     }
@@ -203,6 +226,19 @@ object Tx {
 
     /** The form of a plural for [n], with [args] (put [n] among them yourself). */
     fun p(@PluralsRes id: Int, n: Int, vararg args: Any): String = r().getQuantityString(id, n, *bidi(args))
+
+    /**
+     * Names shown as a list ("Snes9x, RetroArch, Dolphin"), joined with the language's comma (、 in Japanese and
+     * Chinese, ، in Arabic, where each name is isolated so Latin names keep their order from the right). Only for text
+     * shown now: never for text saved, parsed back or logged.
+     */
+    fun list(items: Iterable<String>): String {
+        val sep = s(R.string.common_list_sep)
+        return if (Lang.layoutDirection == LayoutDirection.Rtl) items.joinToString(sep) { "⁨$it⁩" } else items.joinToString(sep)
+    }
+
+    /** [list] of [items] shown by [label]. */
+    fun <T> list(items: Iterable<T>, label: (T) -> String): String = list(items.map(label))
 
     /**
      * In a right-to-left layout every text argument is a first-strong isolate: a Latin game title, a file path or a

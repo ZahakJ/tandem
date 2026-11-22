@@ -435,8 +435,8 @@ private fun Fact(name: String, value: String) {
     Column(
         Modifier.widthIn(min = 104.dp).background(Palette.Card.copy(alpha = 0.62f), RoundedCornerShape(16.dp)).padding(horizontal = 14.dp, vertical = 8.dp),
     ) {
-        Text(name, style = MaterialTheme.typography.labelMedium, color = Palette.Muted, maxLines = 1)
-        Text(value, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        FitText(name, MaterialTheme.typography.labelMedium, color = Palette.Muted)
+        FitText(value, MaterialTheme.typography.titleSmall)
     }
 }
 

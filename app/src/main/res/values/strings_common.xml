@@ -16,4 +16,6 @@
     <string name="common_language">Language</string>
     <string name="common_language_system">System default</string>
     <string name="common_language_help">The language Tandem speaks. System default follows Android\'s. Where a translation is still missing, the text shows in English.</string>
+    <!-- Between the names of a list shown in a sentence or a line ("Snes9x, RetroArch, Dolphin"): a comma and its space. -->
+    <string name="common_list_sep">", "</string>
 </resources>

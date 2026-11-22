@@ -296,7 +296,7 @@ object CocoonSetup {
             apply(ctx, plan)
             if (auto) Toasts.show(Tx.s(R.string.library_cocoon_here))
             else Toasts.show(
-                if (plan.skipped.isNotEmpty()) Tx.s(R.string.library_cocoon_in_skipped, plan.skipped.joinToString(", ")) else Tx.s(R.string.library_cocoon_in),
+                if (plan.skipped.isNotEmpty()) Tx.s(R.string.library_cocoon_in_skipped, Tx.list(plan.skipped)) else Tx.s(R.string.library_cocoon_in),
                 6000, Toasts.Action(Tx.s(R.string.library_cocoon_undo)) { GridUndoUi.undo() },
             )
             done(true)

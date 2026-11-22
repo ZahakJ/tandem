@@ -444,7 +444,6 @@ fun settingsCatalog(): List<SettingsCategory> {
     val ss = ScrapeConfig.settings
     val shizuku = remember(ShizukuWatch.version) { Shell.ready() }
     val isHome = Facts.run { ensure(ctx); Facts.isHome }
-    val theme = Themes.target
     // derivedStateOf: details changing (a scrape, a favourite) only recomposes Settings when the count changes.
     val games by remember { androidx.compose.runtime.derivedStateOf { io.github.zahakj.tandem.Collections.visibleGames().size } }
     val systems = Libraries.all.orEmpty().count { it.games.isNotEmpty() }
@@ -458,7 +457,7 @@ fun settingsCatalog(): List<SettingsCategory> {
         tile(
             "look", Glyph.Theme, Palette.Accent, R.string.settings_page_look_blurb,
             parts(
-                theme.name, Tx.s(R.string.settings_page_look_own_accent).takeIf { look.accent != null },
+                Tx.s(R.string.settings_page_look_own_accent).takeIf { look.accent != null },
                 Tx.s(R.string.settings_page_look_still).takeIf { settings.reduceMotion },
             ),
         ),
@@ -484,7 +483,8 @@ fun settingsCatalog(): List<SettingsCategory> {
         SettingsCategory(
             "sound", SettingsCategories.title("sound"), Glyph.Music, Palette.Peach, Tx.s(R.string.settings_page_sound_blurb),
             when {
-                pack != null && (pack.music.isNotEmpty() || pack.sounds != null) -> Tx.s(R.string.settings_page_sound_pack, pack.name)
+                // A theme pack's name can be long and is shown in full on the side panel: the tile stays quiet.
+                pack != null && (pack.music.isNotEmpty() || pack.sounds != null) -> ""
                 else -> parts(
                     if (look.sounds) Tx.s(R.string.settings_page_sound_sounds, SoundPack.of(look.soundPack).label) else Tx.s(R.string.settings_page_sound_sounds_off),
                     Tx.s(if (look.music) R.string.settings_page_sound_music_on else R.string.settings_page_sound_music_off),

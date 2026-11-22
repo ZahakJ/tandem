@@ -803,7 +803,7 @@ fun PillButton(text: String, color: Color, modifier: Modifier, fill: Boolean = f
             contentAlignment = Alignment.Center,
         ) {
             if (fill) ShrinkToFit { Text(text, style = MaterialTheme.typography.titleSmall, color = ink, maxLines = 1) }
-            else Text(text, style = MaterialTheme.typography.titleSmall, color = ink, maxLines = 1)
+            else FitText(text, MaterialTheme.typography.titleSmall, color = ink)
         }
     }
 }

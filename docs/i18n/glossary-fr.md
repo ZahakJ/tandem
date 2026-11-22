@@ -40,8 +40,8 @@ Tandem, Pip, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, 
 SteamGridDB, ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, game
 titles, song titles and soundtrack names (Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG,
 CSV), button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), « USB », « Wi-Fi », « Bluetooth »,
-« GPL-3.0 », « PIN » (« code PIN »). System names come from `platforms.json` and stay as they are there (the
-Android Games system too: its name is fixed in the code, so text says « Android Games », not « Jeux Android »). Steam's
+« GPL-3.0 », « PIN » (« code PIN »). System names come from `platforms.json` and stay as they are there,
+except Tandem's own Android Games system, which is « Jeux Android » (`library_android_games`; « les Jeux Android » in a sentence). Steam's
 website menus are quoted the way Steam France writes them.
 
 ## Android's own words (match the device)

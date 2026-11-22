@@ -243,8 +243,8 @@
     <string name="menus_app_kind_game">Jeu Android</string>
     <string name="menus_app_kind_app">Appli</string>
     <!-- %1$s is the app's name. -->
-    <string name="menus_app_game_off">%1$s a quitté Android Games</string>
-    <string name="menus_app_game_on">%1$s rejoint Android Games</string>
+    <string name="menus_app_game_off">%1$s a quitté les Jeux Android</string>
+    <string name="menus_app_game_on">%1$s rejoint les Jeux Android</string>
     <string name="menus_app_rename_title">Nom pour %1$s</string>
     <string name="menus_app_renamed_own">Elle retrouve son nom d’origine</string>
     <!-- %1$s is the new name. -->

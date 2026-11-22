@@ -22,7 +22,7 @@ class SystemNames(platforms: List<Platform>) {
         }
         val lists: List<(Platform) -> Collection<String>> = listOf(
             { p -> p.aliases },
-            { p -> listOf(p.shortName, p.name) },
+            { p -> listOf(p.shortName, p.title) },
             { p -> NICKNAMES[p.id].orEmpty() },
         )
         for (names in lists) for (p in platforms) for (n in names(p)) squash(n).takeIf { it.isNotEmpty() }?.let { m.putIfAbsent(it, listOf(p)) }

@@ -28,7 +28,6 @@
     <string name="settings_page_screens_swapped">游戏库在下屏</string>
     <string name="settings_page_screens_details">下屏资料 · %1$s</string>
     <string name="settings_page_screens_details_mode">资料</string>
-    <string name="settings_page_sound_pack">使用 %1$s 的音频</string>
     <string name="settings_page_sound_sounds">%1$s音效</string>
     <string name="settings_page_sound_sounds_off">音效关</string>
     <string name="settings_page_sound_music_on">音乐开</string>

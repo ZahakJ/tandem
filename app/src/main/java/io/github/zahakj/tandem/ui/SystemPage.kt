@@ -214,7 +214,7 @@ internal fun SystemPage(e: SystemEntry, maxWidth: Dp, maxHeight: Dp, onChanged: 
                             // The usual names that aren't there, as one card: listing each made a wall of "Not there yet".
                             val names = absent.map { Library.folder(it).name }
                             FolderCard(
-                                Tx.s(R.string.library_system_also_looks), names.joinToString(", "), Tx.s(R.string.library_system_not_there), Palette.Muted, Glyph.Search,
+                                Tx.s(R.string.library_system_also_looks), Tx.list(names), Tx.s(R.string.library_system_not_there), Palette.Muted, Glyph.Search,
                                 Modifier.width(cell).focusAs("absent"),
                             ) { Toasts.show(Tx.s(R.string.library_system_make_folder, shortPath(Library.folder(absent.first())), p.shortName)) }
                         }

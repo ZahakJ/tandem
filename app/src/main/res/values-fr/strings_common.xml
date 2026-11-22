@@ -16,4 +16,6 @@
     <string name="common_language">Langue</string>
     <string name="common_language_system">Langue du système</string>
     <string name="common_language_help">La langue que parle Tandem. « Langue du système » suit celle d’Android. Là où une traduction manque encore, le texte s’affiche en anglais.</string>
+    <!-- Between the names of a list shown in a sentence or a line ("Snes9x, RetroArch, Dolphin"): a comma and its space. -->
+    <string name="common_list_sep">", "</string>
 </resources>

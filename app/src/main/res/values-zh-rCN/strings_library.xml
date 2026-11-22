@@ -33,7 +33,7 @@
     <string name="library_settings_systems_help">开启或关闭平台，为每个平台选择模拟器和游戏启动的屏幕，并添加额外的文件夹。</string>
     <string name="library_settings_apps">Android 应用</string>
     <string name="library_settings_apps_value">游戏和应用</string>
-    <string name="library_settings_apps_help">设备上的所有应用。把游戏标记出来，它们就会出现在 Android Games 平台里。</string>
+    <string name="library_settings_apps_help">设备上的所有应用。把游戏标记出来，它们就会出现在 Android 游戏平台里。</string>
     <string name="library_settings_single">单屏</string>
     <string name="library_settings_single_one">开 · 单屏</string>
     <string name="library_settings_single_help">不碰第二块屏幕（或让它关着），只用上屏。游戏也总是在上屏启动。</string>
@@ -355,7 +355,8 @@
     <string name="library_app_version">版本 %1$s</string>
     <string name="library_app_updated">%1$s更新</string>
     <string name="library_app_running">● 运行中</string>
-    <string name="library_app_in_android_games">在 Android Games 中</string>
+    <string name="library_app_in_android_games">在 Android 游戏中</string>
+    <string name="library_android_games">Android 游戏</string>
     <string name="library_app_more">还有 %1$d 个</string>
     <string name="library_app_apps">应用</string>
     <string name="library_app_in_dock">在程序坞中</string>

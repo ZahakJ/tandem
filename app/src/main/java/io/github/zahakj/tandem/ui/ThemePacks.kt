@@ -289,7 +289,7 @@ object ThemePacks {
             if (platformId == io.github.zahakj.tandem.AndroidApps.PLATFORM_ID) { add("androidgames"); add("android_games") }
             add(platformId)
             if (p != null) {
-                addAll(p.aliases); addAll(p.artIds); addAll(p.folders.filterNot { it.startsWith("/") }); add(p.name)
+                addAll(p.aliases); addAll(p.artIds); addAll(p.folders.filterNot { it.startsWith("/") }); add(p.title)
             }
         }
         return (own + own.flatMap { SYNONYMS[PackArt.norm(it)].orEmpty() }).distinct()

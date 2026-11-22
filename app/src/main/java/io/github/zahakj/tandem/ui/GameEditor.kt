@@ -128,7 +128,7 @@ private val FIELDS = listOf(
     Field(MetaField.YEAR, R.string.library_edit_year, { m, _ -> m.year?.toString() }, R.string.library_edit_year_ask, { m, _ -> m.year?.toString().orEmpty() }) { m, v ->
         if (v == null) m.copy(year = null) else v.toIntOrNull()?.takeIf { it in 1950..2100 }?.let { m.copy(year = it) }
     },
-    Field(MetaField.GENRES, R.string.library_edit_genres, { m, _ -> m.genres.joinToString(", ").ifEmpty { null } }, R.string.library_edit_genres_ask, { m, _ -> m.genres.joinToString(", ") }) { m, v ->
+    Field(MetaField.GENRES, R.string.library_edit_genres, { m, _ -> Tx.list(m.genres).ifEmpty { null } }, R.string.library_edit_genres_ask, { m, _ -> m.genres.joinToString(", ") }) { m, v ->
         m.copy(genres = v?.split(',', ';')?.map { it.trim() }?.filter { it.isNotEmpty() }.orEmpty())
     },
     Field(MetaField.DEVELOPER, R.string.library_edit_developer, { m, _ -> m.developer }, R.string.library_edit_developer, { m, _ -> m.developer.orEmpty() }, { m, v -> m.copy(developer = v) }),

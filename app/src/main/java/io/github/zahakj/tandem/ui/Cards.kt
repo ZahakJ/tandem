@@ -204,8 +204,43 @@ fun GroupCard(
 }
 
 /**
+ * Where a label in Japanese or Chinese, which has no spaces, may break onto a second line without splitting a word
+ * (「見た目と / 雰囲気」, not 「見た目と雰囲 / 気」). Android breaks such text between any two characters; [split] picks a
+ * place a reader would. Pure (CjkBreaksTest).
+ */
+object CjkBreaks {
+    fun isCjk(c: Char): Boolean =
+        c in '぀'..'ヿ' || c in '㐀'..'䶿' || c in '一'..'鿿' || c in '豈'..'﫿' || c in '＀'..'ﾟ'
+
+    private fun isHan(c: Char) = c in '㐀'..'䶿' || c in '一'..'鿿' || c in '豈'..'﫿'
+    private fun isKatakana(c: Char) = c in '゠'..'ヿ'
+
+    /** Ends a phrase: a particle (と, の…), a middle dot, a comma, a colon, a slash. */
+    private val PhraseEnd = setOf('と', 'の', 'や', 'に', 'で', 'を', 'は', '・', '、', '，', '：', ':', '／', '/', '和', '与', '及', '的')
+
+    /**
+     * Where to cut [text] into two lines (the index the second line starts at), at a phrase end nearest the middle,
+     * else between a run of katakana and one of kanji or kana, else (all Chinese characters) after an even number
+     * of them, Chinese words being mostly two characters. Each line keeps at least two characters. Null for text that
+     * isn't Japanese or Chinese, has spaces, or has no good place.
+     */
+    fun split(text: String): Int? {
+        val t = text.trim()
+        if (t.length < 4 || ' ' in t || t.count(::isCjk) * 2 < t.length) return null
+        val inside = 2..t.length - 2
+        // Nearest the middle; of two as near, the later one (a longer first line reads better).
+        fun nearest(c: List<Int>) = c.sortedDescending().minByOrNull { kotlin.math.abs(t.length / 2f - it) }
+        nearest(inside.filter { t[it - 1] in PhraseEnd && t[it] !in PhraseEnd })?.let { return it }
+        nearest(inside.filter { isKatakana(t[it - 1]) != isKatakana(t[it]) && t[it] != 'ー' })?.let { return it }
+        if (t.all(::isHan)) return nearest(inside.filter { it % 2 == 0 })
+        return null
+    }
+}
+
+/**
  * Text that shrinks a little (down to [minScale] of [style]'s size) to fit [maxLines] lines and the height it is
- * given before it ellipsizes, and doesn't break a word in the middle while a smaller size would avoid it.
+ * given before it ellipsizes, and doesn't break a word in the middle while a smaller size would avoid it. Japanese
+ * and Chinese, which have no spaces, stay on one line or break at a phrase ([CjkBreaks]), never one character off.
  */
 @Composable
 fun ShrinkText(
@@ -222,25 +257,32 @@ fun ShrinkText(
         val maxW = constraints.maxWidth
         val maxH = constraints.maxHeight
         val fitted = remember(text, style, maxW, maxH, maxLines) {
-            if (maxW == Constraints.Infinity) return@remember style
+            if (maxW == Constraints.Infinity) return@remember text to style
             val words = text.split(' ').filter { it.isNotBlank() }
+            // Japanese and Chinese: the whole label is one "word" (it may not wrap anywhere it likes), and its
+            // phrase break is the other way to fit.
+            val cut = if (maxLines >= 2) CjkBreaks.split(text) else null
+            val broken = cut?.let { text.trim().let { t -> t.substring(0, it) + "\n" + t.substring(it) } }
             var scale = 1f
-            var chosen = style
+            var chosen = text to style
             while (true) {
                 val st = style.copy(
                     fontSize = style.fontSize * scale,
                     lineHeight = if (style.lineHeight.isSpecified) style.lineHeight * scale else style.lineHeight,
                 )
-                chosen = st
-                val r = measurer.measure(text, st, overflow = TextOverflow.Ellipsis, maxLines = maxLines, constraints = Constraints(maxWidth = maxW))
-                val wordsFit = words.all { measurer.measure(it, st, maxLines = 1).size.width <= maxW }
-                if (!r.hasVisualOverflow && r.size.height <= maxH && wordsFit) break
+                fun fits(s: String, units: List<String>): Boolean {
+                    val r = measurer.measure(s, st, overflow = TextOverflow.Ellipsis, maxLines = maxLines, constraints = Constraints(maxWidth = maxW))
+                    return !r.hasVisualOverflow && r.size.height <= maxH && units.all { measurer.measure(it, st, maxLines = 1).size.width <= maxW }
+                }
+                chosen = text to st
+                if (fits(text, words)) break
+                if (broken != null && fits(broken, broken.lines())) { chosen = broken to st; break }
                 if (scale <= minScale) break
                 scale = (scale - 0.06f).coerceAtLeast(minScale)
             }
             chosen
         }
-        Text(text, style = fitted, color = color, maxLines = maxLines, overflow = TextOverflow.Ellipsis, textAlign = textAlign)
+        Text(fitted.first, style = fitted.second, color = color, maxLines = maxLines, overflow = TextOverflow.Ellipsis, textAlign = textAlign)
     }
 }
 

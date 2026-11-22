@@ -50,8 +50,8 @@ object SmartFolders {
     /** The rule in a few words: "3DS · RPG · Unplayed · Random 10". */
     fun describe(rule: SmartRule): String {
         val parts = ArrayList<String>()
-        if (rule.systems.isNotEmpty()) parts += if (rule.systems.size <= 3) rule.systems.joinToString(", ") { systemName(it, short = true) } else Tx.p(R.plurals.grid_systems, rule.systems.size)
-        if (rule.genres.isNotEmpty()) parts += if (rule.genres.size <= 2) rule.genres.joinToString(", ") else Tx.p(R.plurals.grid_genres, rule.genres.size)
+        if (rule.systems.isNotEmpty()) parts += if (rule.systems.size <= 3) Tx.list(rule.systems) { systemName(it, short = true) } else Tx.p(R.plurals.grid_systems, rule.systems.size)
+        if (rule.genres.isNotEmpty()) parts += if (rule.genres.size <= 2) Tx.list(rule.genres) else Tx.p(R.plurals.grid_genres, rule.genres.size)
         if (rule.pattern.isNotEmpty()) parts += if (rule.regex) "/${rule.pattern}/" else Tx.s(R.string.grid_smart_pattern, rule.pattern)
         yearsLabel(rule)?.let { parts += it }
         if (rule.favorites) parts += Tx.s(R.string.grid_smart_favorites)

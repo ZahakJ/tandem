@@ -158,6 +158,45 @@ fun ShrinkToFit(modifier: Modifier = Modifier, alignment: Alignment = Alignment.
 }
 
 /**
+ * One line of text that shrinks (down to [minScale] of [style]'s size) to fit the width it gets, and only then ends
+ * in "…": for labels in tight places (chips, value pills, button hints, quick tiles) where a longer translation must
+ * not be cut while a slightly smaller size would show it whole. A plain layout (no subcomposition), so it works
+ * where a parent asks for intrinsic sizes (a settings row's label and control, a segmented track).
+ */
+@Composable
+fun FitText(
+    text: String,
+    style: TextStyle,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    minScale: Float = 0.75f,
+) {
+    Layout(
+        {
+            // Measured, never placed: the text's natural one-line width.
+            Text(text, style = style, maxLines = 1, softWrap = false)
+            Text(text, style = style, color = color, maxLines = 1, softWrap = false, overflow = TextOverflow.Ellipsis)
+        },
+        modifier,
+    ) { measurables, constraints ->
+        val natural = measurables[0].measure(Constraints())
+        val scale = if (constraints.hasBoundedWidth && natural.width > constraints.maxWidth && natural.width > 0)
+            maxOf(minScale, constraints.maxWidth.toFloat() / natural.width) else 1f
+        val inner = if (constraints.hasBoundedWidth) (constraints.maxWidth / scale).toInt() else Constraints.Infinity
+        val shown = measurables[1].measure(Constraints(maxWidth = inner))
+        val sw = (shown.width * scale).roundToInt()
+        val sh = (shown.height * scale).roundToInt()
+        val w = sw.coerceIn(constraints.minWidth, constraints.maxWidth)
+        val h = sh.coerceIn(constraints.minHeight, constraints.maxHeight)
+        layout(w, h) {
+            // Scaled from its top-left corner, so placed by hand at the start side.
+            val x = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) w - sw else 0
+            shown.placeWithLayer(x, (h - sh) / 2) { scaleX = scale; scaleY = scale; transformOrigin = TransformOrigin(0f, 0f) }
+        }
+    }
+}
+
+/**
  * A one-line summary made of parts joined by " · " ("191 games · 9 systems · 12 GB"): shows as many whole parts
  * from the start as fit the width, instead of cutting the last one mid-word. Only a first part that doesn't fit on
  * its own shrinks a little (to 85 %), and only one still too long after that is ellipsized.

@@ -522,7 +522,7 @@ private fun TopChip(label: String, color: Color, onClick: () -> Unit) {
         onClick = onClick,
     ) {
         Box(Modifier.fillMaxHeight().background(color.copy(alpha = 0.16f)).padding(horizontal = 12.dp), contentAlignment = Alignment.Center) {
-            Text(label, style = MaterialTheme.typography.labelLarge, color = color, maxLines = 1)
+            FitText(label, MaterialTheme.typography.labelLarge, color = color)
         }
     }
 }

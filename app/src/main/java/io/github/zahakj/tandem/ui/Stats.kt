@@ -182,7 +182,7 @@ fun StatsScreen() {
                     Box(
                         Modifier.fillMaxHeight().background(if (i == tab) color.copy(alpha = 0.85f) else color.copy(alpha = 0.14f)).padding(horizontal = 14.dp),
                         contentAlignment = Alignment.Center,
-                    ) { Text(name, style = MaterialTheme.typography.labelLarge, color = if (i == tab) Palette.NightDeep else color) }
+                    ) { FitText(name, MaterialTheme.typography.labelLarge, color = if (i == tab) Palette.NightDeep else color) }
                 }
             }
             Spacer(Modifier.weight(1f))

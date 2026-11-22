@@ -666,7 +666,7 @@ private fun themeGalleryRow(key: String): SettingRow? {
                 p.description.lineSequence().firstOrNull()?.take(140)?.ifBlank { null },
                 p.author.ifBlank { null }?.let { Tx.s(R.string.look_pack_by_sentence, it) },
                 Tx.s(R.string.look_pack_contents_sentence, p.contents.replaceFirstChar { it.uppercase() }),
-                p.creditLines().takeIf { it.isNotEmpty() }?.let { Tx.s(R.string.look_pack_art, it.joinToString(", ")) },
+                p.creditLines().takeIf { it.isNotEmpty() }?.let { Tx.s(R.string.look_pack_art, Tx.list(it)) },
                 Tx.s(R.string.look_pack_uses_hint),
             ).joinToString("  "),
             // One miniature, scaled to the panel: two stacked previews would spill over the hints.

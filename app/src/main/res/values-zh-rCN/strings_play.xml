@@ -52,7 +52,7 @@
     <string name="play_problem_update">更新 %1$s</string>
     <string name="play_problem_rescan">重新扫描</string>
     <string name="play_problem_hide">隐藏它</string>
-    <string name="play_problem_hidden">已从 Android Games 中隐藏</string>
+    <string name="play_problem_hidden">已从 Android 游戏中隐藏</string>
     <string name="play_problem_start_anyway">仍然启动</string>
     <string name="play_problem_ok">确定</string>
     <string name="play_problem_not_installed">%1$s 还没安装</string>
@@ -67,7 +67,7 @@
     <string name="play_problem_shortcut">这个快捷方式需要游戏 ID</string>
     <string name="play_problem_shortcut_text">%1$s：%2$s。Vita 的 .dpt 文件需要一行类似“[vita_game_id] PCSA00011”的内容；Windows 的 .pcgame 文件里要写 GameNative 的应用 ID。</string>
     <string name="play_problem_app_missing">%1$s 已经卸载了</string>
-    <string name="play_problem_app_missing_text">从它的应用商店重新安装，或者把它从 Android Games 中隐藏。</string>
+    <string name="play_problem_app_missing_text">从它的应用商店重新安装，或者把它从 Android 游戏中隐藏。</string>
     <string name="play_problem_not_offline">没能断网，游戏没有启动</string>
     <string name="play_problem_not_offline_text">飞行模式没有开启，所以什么都没启动。检查一下 Shizuku 有没有在运行，或者仍然启动。</string>
 

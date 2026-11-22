@@ -1058,7 +1058,7 @@ internal fun TopBarScene(clock: String, battery: Boolean) {
         "off" -> null
         "12" -> SimpleDateFormat("h:mm a", Lang.locale).format(now)
         "24" -> SimpleDateFormat("HH:mm", Lang.locale).format(now)
-        else -> DateFormat.getTimeInstance(DateFormat.SHORT).format(now)
+        else -> DateFormat.getTimeInstance(DateFormat.SHORT, Lang.locale).format(now)
     }
     Box(Modifier.fillMaxSize()) {
         MiniScreen { t, u -> miniShelves(t, u, top = 34 * u) }

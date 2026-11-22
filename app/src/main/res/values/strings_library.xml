@@ -448,6 +448,8 @@
     <string name="library_app_updated">updated %1$s</string>
     <string name="library_app_running">● Running</string>
     <string name="library_app_in_android_games">In Android Games</string>
+    <!-- The name of the system holding the installed Android games, shown like a console's name (tiles, Systems, a game's details). -->
+    <string name="library_android_games">Android Games</string>
     <!-- More systems than fit: "+3 more". -->
     <string name="library_app_more">+%1$d more</string>
     <!-- Facts: a name over a value. -->

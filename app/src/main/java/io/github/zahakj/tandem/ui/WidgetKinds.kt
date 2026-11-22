@@ -1655,7 +1655,7 @@ private fun GreetingWidget(s: WidgetScope, m: Modifier) {
     val hello = Tx.s(when (hour) { in 5..11 -> R.string.widgets_hello_morning; in 12..17 -> R.string.widgets_hello_afternoon; in 18..22 -> R.string.widgets_hello_evening; else -> R.string.widgets_pip_late })
     val total = rememberGames { Collections.visibleGames() }.size
     val last = rememberGames { Collections.continuePlaying().take(1) }.firstOrNull()
-    val time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT).format(java.util.Date(now))
+    val time = java.text.DateFormat.getTimeInstance(java.text.DateFormat.SHORT, Lang.locale).format(java.util.Date(now))
     val games = if (total == 0) listOf(Tx.s(R.string.widgets_no_games)) else listOf(Tx.p(R.plurals.widgets_greeting_ready, total), Tx.p(R.plurals.widgets_greeting_games, total))
     val lh = lineHeights()
     val fs = androidx.compose.ui.platform.LocalDensity.current.fontScale

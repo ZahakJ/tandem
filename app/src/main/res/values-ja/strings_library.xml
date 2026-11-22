@@ -34,7 +34,7 @@
     <string name="library_settings_systems_help">機種のオン・オフ、機種ごとのエミュレーターとゲームを起動する画面を選び、フォルダを追加します。</string>
     <string name="library_settings_apps">Androidアプリ</string>
     <string name="library_settings_apps_value">ゲームとアプリ</string>
-    <string name="library_settings_apps_help">この端末のすべてのアプリ。ゲームのアプリに印をつけると、「Android Games」に並びます。</string>
+    <string name="library_settings_apps_help">この端末のすべてのアプリ。ゲームのアプリに印をつけると、「Androidゲーム」に並びます。</string>
     <string name="library_settings_single">1画面モード</string>
     <string name="library_settings_single_one">オン · 1画面</string>
     <string name="library_settings_single_help">2つ目の画面にはさわらず（オフのままでも）、上画面だけを使います。ゲームもいつも上画面で始まります。</string>
@@ -356,7 +356,8 @@
     <string name="library_app_version">バージョン%1$s</string>
     <string name="library_app_updated">%1$sに更新</string>
     <string name="library_app_running">● 起動中</string>
-    <string name="library_app_in_android_games">Android Gamesに登録済み</string>
+    <string name="library_app_in_android_games">Androidゲームに登録済み</string>
+    <string name="library_android_games">Androidゲーム</string>
     <string name="library_app_more">ほか%1$d</string>
     <string name="library_app_apps">アプリ</string>
     <string name="library_app_in_dock">ドック内</string>

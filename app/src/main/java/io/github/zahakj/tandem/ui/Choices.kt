@@ -89,7 +89,10 @@ private val TrackHeight = 30.dp
 
 /** Options that fit on a settings row as a segmented track: two to four, each short. */
 internal fun fitsOnRow(options: List<Pair<String, String>>): Boolean =
-    options.size in 2..4 && options.all { it.second.length <= 13 } && options.sumOf { it.second.length } <= 30
+    options.size in 2..4 && options.all { labelWidth(it.second) <= 13 } && options.sumOf { labelWidth(it.second) } <= 30
+
+/** A label's width counted in Latin letters: a Japanese or Chinese character is about two of them wide. */
+internal fun labelWidth(s: String): Int = s.sumOf { if (CjkBreaks.isCjk(it)) 2 else 1 }
 
 /**
  * [labels] side by side in a rounded track, the [selected] one lit by a pill that slides to it. [onPick] makes each

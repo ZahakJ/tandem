@@ -16,4 +16,6 @@
     <string name="common_language">言語</string>
     <string name="common_language_system">システムのデフォルト</string>
     <string name="common_language_help">Tandemが話す言語です。「システムのデフォルト」はAndroidの設定に合わせます。まだ翻訳されていない部分は英語で表示されます。</string>
+    <!-- Between the names of a list shown in a sentence or a line ("Snes9x, RetroArch, Dolphin"): a comma and its space. -->
+    <string name="common_list_sep">"、"</string>
 </resources>

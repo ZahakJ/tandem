@@ -463,7 +463,7 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
         chip(game.platform.shortName, color)
         meta.year?.let { chip("$it", Palette.Butter) }
         meta.genres.map(Collections::tidyGenre).distinctBy { it.lowercase() }.take(3).forEach { chip(it, Palette.Lavender) }
-        meta.rating?.let { chip("★ ${"%.1f".format(it * 5)}", Palette.Peach) }
+        meta.rating?.let { chip("★ ${"%.1f".format(io.github.zahakj.tandem.Lang.locale, it * 5)}", Palette.Peach) }
         // HowLongToBeat: the main story and 100%, when known.
         meta.timeToBeat?.takeIf { it.any }?.let { t ->
             val h = io.github.zahakj.tandem.data.TimeToBeat

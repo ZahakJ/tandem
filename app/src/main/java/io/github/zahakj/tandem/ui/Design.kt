@@ -146,7 +146,13 @@ val Nunito = FontFamily(nunito(400), nunito(600), nunito(700), nunito(800), nuni
  * Text centred or aligned on purpose says so itself and keeps that. Left to right adds nothing.
  */
 private fun tandemTypography(locales: androidx.compose.ui.text.intl.LocaleList, rtl: Boolean) = Typography().let { t ->
-    fun TextStyle.n() = copy(fontFamily = Nunito, localeList = locales).let { if (rtl) it.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Right) else it }
+    // Japanese breaks a line between phrases (Android 13+), not between any two characters: 「見た目と / 雰囲気」, never
+    // 「見た目と雰囲 / 気」. Other languages keep Compose's own breaking.
+    val ja = locales.firstOrNull()?.language == "ja"
+    val phrases = androidx.compose.ui.text.style.LineBreak.Paragraph.copy(wordBreak = androidx.compose.ui.text.style.LineBreak.WordBreak.Phrase)
+    fun TextStyle.n() = copy(fontFamily = Nunito, localeList = locales)
+        .let { if (ja) it.copy(lineBreak = phrases) else it }
+        .let { if (rtl) it.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Right) else it }
     Typography(
         displaySmall = t.displaySmall.n().copy(fontWeight = FontWeight.Black, fontSize = 30.sp),
         headlineSmall = t.headlineSmall.n().copy(fontWeight = FontWeight.ExtraBold, fontSize = 22.sp),
@@ -179,6 +185,13 @@ fun TandemTheme(content: @Composable () -> Unit) {
             background = t.background, surface = t.background, onBackground = t.text, onSurface = t.text,
         )
     }
+    // Android 13's per-app language (Android's Settings › Apps › Tandem › Language, `cmd locale set-app-locales`)
+    // arrives as this window's configuration changing, which the process-wide callback in Lang can miss: without
+    // this the words changed and the layout stayed left to right until Tandem restarted. Only a change: a new theme
+    // (a swap's wallpaper, a popup) doesn't ask Android again.
+    val locales = androidx.compose.ui.platform.LocalConfiguration.current.locales
+    val seen = remember { arrayOf(locales) }
+    LaunchedEffect(locales) { if (seen[0] != locales) { seen[0] = locales; io.github.zahakj.tandem.Lang.sync() } }
     // Tandem's language (Tx.kt): the type's locale, and the layout direction (right to left for Arabic).
     val locale = io.github.zahakj.tandem.Lang.locale
     val direction = io.github.zahakj.tandem.Lang.layoutDirection
@@ -578,7 +591,7 @@ fun ButtonHint(button: String, label: String, color: Color = Palette.Text, onCli
         }
         if (label.isNotEmpty()) {
             Spacer(Modifier.width(5.dp))
-            Text(label, style = MaterialTheme.typography.labelLarge, color = Palette.Text, maxLines = 1)
+            FitText(label, MaterialTheme.typography.labelLarge, Modifier.weight(1f, fill = false), color = Palette.Text)
         }
     }
 }
@@ -604,5 +617,5 @@ private fun DpadGlyph(horizontal: Boolean, color: Color) {
 fun Pill(text: String, color: Color = Palette.Lavender, modifier: Modifier = Modifier) {
     Box(
         modifier.clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.18f)).padding(horizontal = 9.dp, vertical = 3.dp),
-    ) { Text(text, color = color, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis) }
+    ) { FitText(text, MaterialTheme.typography.labelMedium, color = color) }
 }

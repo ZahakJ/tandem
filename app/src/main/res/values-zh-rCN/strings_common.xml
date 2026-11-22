@@ -13,4 +13,6 @@
     <string name="common_language">语言</string>
     <string name="common_language_system">跟随系统</string>
     <string name="common_language_help">Tandem 使用的语言。“跟随系统”会和 Android 保持一致。还没翻译到的文字会显示为英文。</string>
+    <!-- Between the names of a list shown in a sentence or a line ("Snes9x, RetroArch, Dolphin"): a comma and its space. -->
+    <string name="common_list_sep">"、"</string>
 </resources>

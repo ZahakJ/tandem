@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -164,9 +165,15 @@ private fun CategoryTile(c: SettingsCategory, modifier: Modifier, onFocus: () ->
         Column(Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 12.dp)) {
             GlyphChip(c.icon, c.color, 32.dp)
             Spacer(Modifier.weight(1f))
-            // Narrow tiles (four in the top row) wrap a long name rather than cut it.
-            Text(c.title, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.1f)
-            PartsText(c.summary, MaterialTheme.typography.labelLarge, color = c.color)
+            // Narrow tiles (four in the top row) wrap a long name onto two lines at a word, or a phrase in Japanese
+            // and Chinese, shrinking a little rather than cutting it or leaving one character on a line.
+            ShrinkText(
+                c.title, MaterialTheme.typography.titleMedium.copy(lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.15f),
+                Modifier.fillMaxWidth().heightIn(max = 48.dp), maxLines = 2, minScale = 0.82f,
+            )
+            // Only a short state that always fits ("Icon grid · 6 across", "198 games"): a theme's or a pack's name
+            // could be long, and the side panel shows it in full. Without one, the name sits at the tile's foot.
+            if (c.summary.isNotBlank()) PartsText(c.summary, MaterialTheme.typography.labelLarge, color = c.color)
         }
     }
 }
@@ -180,8 +187,8 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
             GlyphChip(c.icon, c.color, 44.dp)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(c.title, style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                PartsText(c.summary, MaterialTheme.typography.titleSmall, color = c.color)
+                ShrinkText(c.title, MaterialTheme.typography.titleLarge, maxLines = 1)
+                if (c.summary.isNotBlank()) PartsText(c.summary, MaterialTheme.typography.titleSmall, color = c.color)
             }
         }
         Spacer(Modifier.height(10.dp))
@@ -190,9 +197,10 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
         Column(Modifier.fillMaxWidth().weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             c.highlights.forEach { r ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(r.label, Modifier.weight(1f), style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    ShrinkText(r.label, MaterialTheme.typography.labelLarge, Modifier.weight(1f), maxLines = 2)
                     Spacer(Modifier.width(8.dp))
-                    Text(r.shownValue, Modifier.weight(0.8f, fill = false), style = MaterialTheme.typography.labelLarge, color = r.color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    // A value can be a long name (a theme's): two lines, shrinking a little, before any "…".
+                    ShrinkText(r.shownValue, MaterialTheme.typography.labelLarge, Modifier.weight(0.8f, fill = false), maxLines = 2, color = r.color, textAlign = androidx.compose.ui.text.style.TextAlign.End)
                 }
             }
         }

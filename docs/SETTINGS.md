@@ -57,10 +57,10 @@ screen of its own already holds (the scrape options, the source order, the hidde
 
 | Tile | Summary shows | Groups (› opens a subpage) |
 |---|---|---|
-| Look & feel | theme name, own accent, still | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Language; Start over |
+| Look & feel | own accent, still (nothing otherwise: the theme's name is on the side panel) | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Language; Start over |
 | Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included); Home screen (the rows for the layout in use, Grid shape › on the icon grid); Around the home (How games show ›, Dock & widgets ›, top bar, screensaver) |
 | Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
-| Sound & music | the theme pack's audio, or sound pack and music | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
+| Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
 | Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons; Controllers (Connected controllers ›, Deck ›) |
 | Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems; Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
 | Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, For tinkerers ›) |

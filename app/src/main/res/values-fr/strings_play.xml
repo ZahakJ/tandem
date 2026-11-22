@@ -65,7 +65,7 @@
     <string name="play_problem_rescan">Réanalyser</string>
     <string name="play_problem_hide">Le masquer</string>
     <!-- "Android Games" is the system of Android games in the library. -->
-    <string name="play_problem_hidden">Masqué d’Android Games</string>
+    <string name="play_problem_hidden">Masqué des Jeux Android</string>
     <string name="play_problem_start_anyway">Lancer quand même</string>
     <string name="play_problem_ok">OK</string>
     <!-- Titles and explanations. %1$s an emulator, %2$s a system like "Game Boy Advance", %3$s a game. -->
@@ -87,7 +87,7 @@
     <string name="play_problem_shortcut_text">%1$s : %2$s. Les fichiers Vita .dpt ont besoin d’une ligne comme « [vita_game_id] PCSA00011 » ; les fichiers Windows .pcgame contiennent l’identifiant d’appli GameNative.</string>
     <!-- %1$s a game (an Android app). -->
     <string name="play_problem_app_missing">%1$s n’est plus installé</string>
-    <string name="play_problem_app_missing_text">Réinstalle-le depuis sa boutique, ou masque-le d’Android Games.</string>
+    <string name="play_problem_app_missing_text">Réinstalle-le depuis sa boutique, ou masque-le des Jeux Android.</string>
     <string name="play_problem_not_offline">Impossible de passer hors ligne, jeu non lancé</string>
     <string name="play_problem_not_offline_text">Le mode Avion ne s’est pas activé, donc rien n’a été lancé. Vérifie que Shizuku tourne, ou lance quand même.</string>
 

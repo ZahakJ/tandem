@@ -129,7 +129,7 @@ object BackupUi {
         val cats = restoring.intersect(s.manifest.holds)
         if (cats.isEmpty()) { Sounds.error(); Toasts.show(Tx.s(R.string.data_backup_pick_restore)); return }
         Confirm.hold(
-            Tx.s(R.string.data_backup_restore_ask, cats.joinToString(", ") { it.label }),
+            Tx.s(R.string.data_backup_restore_ask, Tx.list(cats) { it.label }),
             Tx.s(R.string.data_backup_restore_text),
             Tx.s(R.string.data_backup_restore),
         ) {

@@ -14,7 +14,9 @@ The words Tandem uses in Arabic, chosen once and used everywhere. Read this befo
 - **Labels** are noun phrases or short imperatives, about as long as the English. Help text is conversational
   second person.
 - **Punctuation:** Arabic comma ، semicolon ؛ question mark ؟. Quotes «…» for names and terms. The path arrow ›
-  and the dot · stay as they are. Western digits (0–9), as Android shows them in apps like this.
+  and the dot · stay as they are. **Western digits (0–9) always**, never Arabic-Indic (٠١٢): the owner's choice. Tandem
+  formats every number, time, date and percentage in Arabic with them (`Lang.westernDigits`), so write `%1$d` and
+  never type ٣ into a string. A list of names is joined with «، » (`common_list_sep`).
 - **"Already"** is بالفعل (or من قبل). أصلًا in that sense is dialect; keep it only for "at all" ("بلا ساعة أصلًا").
 - **No bare بلا / أيّ as a value:** an option reads as a whole phrase ("بلا تأثير"، "بلا حالة"، "الكل").
 - **Directions:** the layout is mirrored for Arabic, so help text says where things are by order, not by side

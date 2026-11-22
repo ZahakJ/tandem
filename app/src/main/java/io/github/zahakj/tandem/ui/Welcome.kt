@@ -269,7 +269,7 @@ private fun CocoonStep(c: CocoonThings, next: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         if (c.backup != null) FoundLine(Palette.Sky, Tx.s(R.string.look_welcome_cocoon_backup, CocoonSetup.backupDate(c.backup)))
         if (c.themePacks.isNotEmpty()) {
-            FoundLine(Palette.Accent, Tx.p(R.plurals.look_welcome_cocoon_themes, c.themePacks.size, c.themePacks.size, c.themePacks.take(3).joinToString(", ") { it.name }))
+            FoundLine(Palette.Accent, Tx.p(R.plurals.look_welcome_cocoon_themes, c.themePacks.size, c.themePacks.size, Tx.list(c.themePacks.take(3)) { it.name }))
         }
         if (c.iconPacks > 0) FoundLine(Palette.Sky, Tx.p(R.plurals.look_welcome_cocoon_icons, c.iconPacks))
         if (c.platformFiles > 0) FoundLine(Palette.Butter, Tx.p(R.plurals.look_welcome_cocoon_platforms, c.platformFiles))
