@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Arabic. Stats & trophies and the trophies themselves. Trophy names are playful on purpose.
+     See docs/i18n/glossary-ar.md. -->
+<resources>
+    <string name="stats_tab_overview">نظرة عامة</string>
+    <string name="stats_tab_library">المكتبة</string>
+    <string name="stats_tab_trophies">الجوائز</string>
+    <string name="stats_tab_sessions">الجلسات</string>
+    <string name="stats_tab_achievements">الإنجازات</string>
+    <string name="stats_hint_switch_tab">بدّل التبويب</string>
+
+    <string name="stats_overview_empty">العب شيئًا وسأحسب لك هنا، وكل شيء يبقى على هذا الجهاز</string>
+    <string name="stats_overview_go_back">رجوع</string>
+
+    <string name="stats_tile_total">إجمالي اللعب</string>
+    <plurals name="stats_tile_total_across">
+        <item quantity="zero">في لا ألعاب</item>
+        <item quantity="one">في لعبة واحدة</item>
+        <item quantity="two">في لعبتين</item>
+        <item quantity="few">في %1$d ألعاب</item>
+        <item quantity="many">في %1$d لعبة</item>
+        <item quantity="other">في %1$d لعبة</item>
+    </plurals>
+    <string name="stats_tile_games">ألعاب لُعبت</string>
+    <plurals name="stats_tile_games_of">
+        <item quantity="zero">من %1$d في مكتبتك</item>
+        <item quantity="one">من لعبة واحدة في مكتبتك</item>
+        <item quantity="two">من لعبتين في مكتبتك</item>
+        <item quantity="few">من %1$d ألعاب في مكتبتك</item>
+        <item quantity="many">من %1$d لعبة في مكتبتك</item>
+        <item quantity="other">من %1$d لعبة في مكتبتك</item>
+    </plurals>
+    <string name="stats_tile_streak">السلسلة</string>
+    <string name="stats_tile_streak_new">جديدة</string>
+    <plurals name="stats_tile_streak_days">
+        <item quantity="zero">%1$d يوم</item>
+        <item quantity="one">يوم واحد</item>
+        <item quantity="two">يومان</item>
+        <item quantity="few">%1$d أيام</item>
+        <item quantity="many">%1$d يومًا</item>
+        <item quantity="other">%1$d يوم</item>
+    </plurals>
+    <plurals name="stats_tile_streak_best">
+        <item quantity="zero">الأفضل %1$d يوم</item>
+        <item quantity="one">الأفضل يوم واحد</item>
+        <item quantity="two">الأفضل يومان</item>
+        <item quantity="few">الأفضل %1$d أيام</item>
+        <item quantity="many">الأفضل %1$d يومًا</item>
+        <item quantity="other">الأفضل %1$d يوم</item>
+    </plurals>
+    <string name="stats_tile_history_starts">السجل يبدأ اليوم</string>
+    <string name="stats_tile_sessions">الجلسات</string>
+    <string name="stats_tile_sessions_short">قصيرة ولطيفة</string>
+    <string name="stats_tile_sessions_average">نحو %1$s للجلسة</string>
+    <string name="stats_tile_said">%1$s: %2$s · %3$s</string>
+
+    <string name="stats_by_system">حسب المنصّة</string>
+    <string name="stats_most_played">الأكثر لعبًا</string>
+    <plurals name="stats_mosaic_more">
+        <item quantity="zero">لا شيء آخر</item>
+        <item quantity="one">واحدة أخرى</item>
+        <item quantity="two">اثنتان أخريان</item>
+        <item quantity="few">%1$d أخرى</item>
+        <item quantity="many">%1$d أخرى</item>
+        <item quantity="other">%1$d أخرى</item>
+    </plurals>
+    <string name="stats_mosaic_share">%1$d%% من لعبك</string>
+
+    <string name="stats_fact_morning">أنت من طيور الصباح: معظم لعبك في الصباح.</string>
+    <string name="stats_fact_afternoon">مغامر العصاري: هذا وقتك المفضّل للعب.</string>
+    <string name="stats_fact_evening">المساء وقت ألعابك. ما أدفأ ذلك!</string>
+    <string name="stats_fact_night">بومة ليل أصيلة. معظم لعبك بعد الحادية عشرة ليلًا.</string>
+    <string name="stats_fact_private">إحصاءاتك لا تغادر هذا الجهاز أبدًا</string>
+
+    <string name="stats_chart_title">آخر 30 يومًا</string>
+    <string name="stats_chart_empty_new">سجل لعبك يبدأ اليوم. العب شيئًا وستمتلئ أيامك هنا.</string>
+    <string name="stats_chart_empty">لا لعب في آخر 30 يومًا. جلستك القادمة ستظهر هنا.</string>
+    <string name="stats_chart_nothing">لا شيء بعد</string>
+    <string name="stats_chart_total">%1$s إجمالًا</string>
+    <string name="stats_chart_day">%1$s · %2$s</string>
+    <string name="stats_chart_day_none">%1$s · بلا لعب</string>
+    <string name="stats_today">اليوم</string>
+    <string name="stats_yesterday">أمس</string>
+    <string name="stats_date_short">EEE d MMM</string>
+    <string name="stats_date_long">EEEE d MMMM</string>
+
+    <string name="stats_sessions_none_for">لا جلسات لـ %1$s: ربما جاء وقت لعبها من استيراد</string>
+    <string name="stats_sessions_show_all_long">أظهر كل الجلسات</string>
+    <string name="stats_sessions_empty">كلما لعبت، تظهر هنا جلسة</string>
+    <string name="stats_sessions_see_overview">اعرض النظرة العامة</string>
+    <string name="stats_sessions_show_all">أظهر الكل</string>
+    <string name="stats_sessions_clear_these">امسح هذه الجلسات</string>
+    <string name="stats_sessions_clear_all">امسح كل الجلسات</string>
+    <string name="stats_sessions_clear_these_ask">مسح جلسات %1$s؟</string>
+    <string name="stats_sessions_clear_all_ask">مسح كل الجلسات؟</string>
+    <plurals name="stats_sessions_cleared">
+        <item quantity="zero">لم تُمسح أي جلسة</item>
+        <item quantity="one">مُسحت جلسة واحدة</item>
+        <item quantity="two">مُسحت جلستان</item>
+        <item quantity="few">مُسحت %1$d جلسات</item>
+        <item quantity="many">مُسحت %1$d جلسة</item>
+        <item quantity="other">مُسحت %1$d جلسة</item>
+    </plurals>
+    <plurals name="stats_sessions_count">
+        <item quantity="zero">لا جلسات</item>
+        <item quantity="one">جلسة واحدة</item>
+        <item quantity="two">جلستان</item>
+        <item quantity="few">%1$d جلسات</item>
+        <item quantity="many">%1$d جلسة</item>
+        <item quantity="other">%1$d جلسة</item>
+    </plurals>
+    <plurals name="stats_sessions_count_for">
+        <item quantity="zero">%2$s · لا جلسات</item>
+        <item quantity="one">%2$s · جلسة واحدة</item>
+        <item quantity="two">%2$s · جلستان</item>
+        <item quantity="few">%2$s · %1$d جلسات</item>
+        <item quantity="many">%2$s · %1$d جلسة</item>
+        <item quantity="other">%2$s · %1$d جلسة</item>
+    </plurals>
+    <string name="stats_sessions_hint_edit">عدّل الجلسة</string>
+    <string name="stats_sessions_day">%1$s · %2$s</string>
+    <string name="stats_sessions_game_gone">هذه اللعبة لم تعد في مكتبتك</string>
+
+    <string name="stats_export_saved">حُفظ play-stats.csv وplay-sessions.csv في ROMs/tandem</string>
+    <string name="stats_export_failed">تعذّرت الكتابة في ROMs/tandem</string>
+
+    <string name="stats_library_empty">Y › الحالة على أي لعبة يضعها في قائمة الانتظار، أو يعلّمها كمُنهاة. وهنا تترتّب مكتبتك وحدها</string>
+    <string name="stats_library_playing">قيد اللعب</string>
+    <string name="stats_library_playing_latest">الأحدث: %1$s</string>
+    <string name="stats_library_playing_none">لا شيء جارٍ</string>
+    <string name="stats_library_backlog">قائمة الانتظار</string>
+    <string name="stats_library_backlog_left">نحو %1$s لإنهائها</string>
+    <string name="stats_library_backlog_left_more">أكثر من %1$s لإنهائها</string>
+    <string name="stats_library_backlog_none">ألعاب تنتظر</string>
+    <string name="stats_library_finished">أنهيتها</string>
+    <plurals name="stats_library_finished_year">
+        <item quantity="zero">لا شيء هذا العام</item>
+        <item quantity="one">واحدة هذا العام</item>
+        <item quantity="two">اثنتان هذا العام</item>
+        <item quantity="few">%1$d هذا العام</item>
+        <item quantity="many">%1$d هذا العام</item>
+        <item quantity="other">%1$d هذا العام</item>
+    </plurals>
+    <string name="stats_library_completed">مكتملة</string>
+    <string name="stats_library_completed_none">جولات 100%</string>
+    <string name="stats_library_completed_share">%1$d%% من الألعاب المُنهاة</string>
+    <plurals name="stats_library_untracked">
+        <item quantity="zero">كل لعبة لعبتها لها حالة.</item>
+        <item quantity="one">لعبة واحدة لعبتها بلا حالة بعد. الزر A يرتّبها لك.</item>
+        <item quantity="two">لعبتان لعبتهما بلا حالة بعد. الزر A يرتّبهما واحدة واحدة، الأكثر لعبًا أولًا.</item>
+        <item quantity="few">%1$d ألعاب لعبتها بلا حالة بعد. الزر A يرتّبها واحدة واحدة، الأكثر لعبًا أولًا.</item>
+        <item quantity="many">%1$d لعبة لعبتها بلا حالة بعد. الزر A يرتّبها واحدة واحدة، الأكثر لعبًا أولًا.</item>
+        <item quantity="other">%1$d لعبة لعبتها بلا حالة بعد. الزر A يرتّبها واحدة واحدة، الأكثر لعبًا أولًا.</item>
+    </plurals>
+    <string name="stats_library_shelf">%1$s · %2$d</string>
+    <string name="stats_library_shelf_playing">قيد اللعب</string>
+    <string name="stats_library_shelf_backlog">قائمة الانتظار</string>
+    <string name="stats_library_shelf_beaten">المُنهاة والمكتملة</string>
+    <string name="stats_library_shelf_shelved">مؤجّلة</string>
+    <string name="stats_library_shelf_endless">بلا نهاية</string>
+    <string name="stats_library_just_started">بدأت للتو</string>
+    <string name="stats_ago_today">اليوم</string>
+    <string name="stats_ago_yesterday">أمس</string>
+    <plurals name="stats_ago_days">
+        <item quantity="zero">قبل %1$d يوم</item>
+        <item quantity="one">قبل يوم</item>
+        <item quantity="two">قبل يومين</item>
+        <item quantity="few">قبل %1$d أيام</item>
+        <item quantity="many">قبل %1$d يومًا</item>
+        <item quantity="other">قبل %1$d يوم</item>
+    </plurals>
+    <plurals name="stats_ago_months">
+        <item quantity="zero">قبل %1$d شهر</item>
+        <item quantity="one">قبل شهر</item>
+        <item quantity="two">قبل شهرين</item>
+        <item quantity="few">قبل %1$d أشهر</item>
+        <item quantity="many">قبل %1$d شهرًا</item>
+        <item quantity="other">قبل %1$d شهر</item>
+    </plurals>
+    <plurals name="stats_ago_years">
+        <item quantity="zero">قبل %1$d سنة</item>
+        <item quantity="one">قبل سنة</item>
+        <item quantity="two">قبل سنتين</item>
+        <item quantity="few">قبل %1$d سنوات</item>
+        <item quantity="many">قبل %1$d سنة</item>
+        <item quantity="other">قبل %1$d سنة</item>
+    </plurals>
+    <string name="stats_waiting">تنتظر</string>
+    <string name="stats_waiting_today">تنتظر منذ اليوم</string>
+    <string name="stats_waiting_yesterday">تنتظر منذ أمس</string>
+    <plurals name="stats_waiting_days">
+        <item quantity="zero">تنتظر منذ %1$d يوم</item>
+        <item quantity="one">تنتظر منذ يوم</item>
+        <item quantity="two">تنتظر منذ يومين</item>
+        <item quantity="few">تنتظر منذ %1$d أيام</item>
+        <item quantity="many">تنتظر منذ %1$d يومًا</item>
+        <item quantity="other">تنتظر منذ %1$d يوم</item>
+    </plurals>
+    <plurals name="stats_waiting_months">
+        <item quantity="zero">تنتظر منذ %1$d شهر</item>
+        <item quantity="one">تنتظر منذ شهر</item>
+        <item quantity="two">تنتظر منذ شهرين</item>
+        <item quantity="few">تنتظر منذ %1$d أشهر</item>
+        <item quantity="many">تنتظر منذ %1$d شهرًا</item>
+        <item quantity="other">تنتظر منذ %1$d شهر</item>
+    </plurals>
+    <plurals name="stats_waiting_years">
+        <item quantity="zero">تنتظر منذ %1$d سنة</item>
+        <item quantity="one">تنتظر منذ سنة</item>
+        <item quantity="two">تنتظر منذ سنتين</item>
+        <item quantity="few">تنتظر منذ %1$d سنوات</item>
+        <item quantity="many">تنتظر منذ %1$d سنة</item>
+        <item quantity="other">تنتظر منذ %1$d سنة</item>
+    </plurals>
+
+    <string name="stats_sorter_none">كل لعبة لعبتها لها حالة</string>
+    <plurals name="stats_sorter_done">
+        <item quantity="zero">كل شيء مرتّب!</item>
+        <item quantity="one">كل شيء مرتّب! لعبة واحدة</item>
+        <item quantity="two">كل شيء مرتّب! لعبتان</item>
+        <item quantity="few">كل شيء مرتّب! %1$d ألعاب</item>
+        <item quantity="many">كل شيء مرتّب! %1$d لعبة</item>
+        <item quantity="other">كل شيء مرتّب! %1$d لعبة</item>
+    </plurals>
+    <string name="stats_sorter_title">رتّب الألعاب التي لعبتها</string>
+    <string name="stats_sorter_set">تعيين</string>
+    <string name="stats_sorter_stop">توقف الآن</string>
+    <string name="stats_sorter_progress">%1$d من %2$d</string>
+    <string name="stats_sorter_skip">تخطَّ هذه</string>
+
+    <string name="stats_tier_bronze">برونزية</string>
+    <string name="stats_tier_silver">فضية</string>
+    <string name="stats_tier_gold">ذهبية</string>
+    <string name="stats_tier_platinum">بلاتينية</string>
+
+    <string name="stats_trophy_new">🏆 جائزة %1$s: %2$s · %3$s</string>
+    <plurals name="stats_trophy_new_more">
+        <item quantity="zero">🏆 جائزة %2$s: %3$s</item>
+        <item quantity="one">🏆 جائزة %2$s: %3$s (وواحدة أخرى)</item>
+        <item quantity="two">🏆 جائزة %2$s: %3$s (واثنتان أخريان)</item>
+        <item quantity="few">🏆 جائزة %2$s: %3$s (و%1$d أخرى)</item>
+        <item quantity="many">🏆 جائزة %2$s: %3$s (و%1$d أخرى)</item>
+        <item quantity="other">🏆 جائزة %2$s: %3$s (و%1$d أخرى)</item>
+    </plurals>
+    <string name="stats_trophies_about">الجوائز تأتي من لعبك ومن حالات ألعابك، على كل المنصّات</string>
+    <plurals name="stats_trophies_earned">
+        <item quantity="zero">%1$d من %2$d جائزة</item>
+        <item quantity="one">%1$d من جائزة واحدة</item>
+        <item quantity="two">%1$d من جائزتين</item>
+        <item quantity="few">%1$d من %2$d جوائز</item>
+        <item quantity="many">%1$d من %2$d جائزة</item>
+        <item quantity="other">%1$d من %2$d جائزة</item>
+    </plurals>
+    <plurals name="stats_trophies_finished">
+        <item quantity="zero">لم تُنهِ أي لعبة</item>
+        <item quantity="one">أنهيت لعبة واحدة</item>
+        <item quantity="two">أنهيت لعبتين</item>
+        <item quantity="few">أنهيت %1$d ألعاب</item>
+        <item quantity="many">أنهيت %1$d لعبة</item>
+        <item quantity="other">أنهيت %1$d لعبة</item>
+    </plurals>
+    <string name="stats_trophies_cabinet">خزانة الكؤوس: ألعاب أنهيتها</string>
+    <string name="stats_date_month">MMM yyyy</string>
+    <string name="stats_date_earned">d MMM yyyy</string>
+    <string name="stats_trophy_said">%1$s: %2$s</string>
+    <string name="stats_trophy_progress_said">%1$s. %2$s حتى الآن</string>
+    <string name="stats_trophy_earned_on">%1$s · %2$s</string>
+    <string name="stats_trophy_hours">%1$d س / %2$d س</string>
+
+    <string name="stats_trophy_first_play">اضغط Start</string>
+    <string name="stats_trophy_first_play_how">العب أول لعبة لك في Tandem</string>
+    <string name="stats_trophy_hour">مرحلة أخيرة فقط</string>
+    <string name="stats_trophy_hour_how">العب ساعة إجمالًا</string>
+    <string name="stats_trophy_ten_hours">خذ راحتك</string>
+    <string name="stats_trophy_ten_hours_how">العب 10 ساعات إجمالًا</string>
+    <string name="stats_trophy_hundred_hours">صاحب المئة</string>
+    <string name="stats_trophy_hundred_hours_how">العب 100 ساعة إجمالًا</string>
+    <string name="stats_trophy_thousand_hours">مدى الحياة</string>
+    <string name="stats_trophy_thousand_hours_how">العب 1,000 ساعة إجمالًا</string>
+    <string name="stats_trophy_marathon">ماراثون</string>
+    <string name="stats_trophy_marathon_how">العب 3 ساعات في جلسة واحدة</string>
+    <string name="stats_trophy_devoted">وفيّ</string>
+    <string name="stats_trophy_devoted_how">اقضِ 25 ساعة في لعبة واحدة</string>
+    <string name="stats_trophy_second_home">بيتي الثاني</string>
+    <string name="stats_trophy_second_home_how">اقضِ 100 ساعة في لعبة واحدة</string>
+    <string name="stats_trophy_week">أسبوع بلا انقطاع</string>
+    <string name="stats_trophy_week_how">العب 7 أيام متتالية</string>
+    <string name="stats_trophy_month">سلسلة لا تنكسر</string>
+    <string name="stats_trophy_month_how">العب 30 يومًا متتاليًا</string>
+    <string name="stats_trophy_regular">زبون دائم</string>
+    <string name="stats_trophy_regular_how">العب 100 جلسة</string>
+    <string name="stats_trophy_night_owl">بومة الليل</string>
+    <string name="stats_trophy_night_owl_how">ابدأ لعبة بين الثانية والخامسة فجرًا</string>
+    <string name="stats_trophy_early_bird">طائر الصباح</string>
+    <string name="stats_trophy_early_bird_how">ابدأ لعبة قبل السابعة صباحًا</string>
+    <string name="stats_trophy_travelled">رحّالة</string>
+    <string name="stats_trophy_travelled_how">العب ألعابًا على 3 منصّات</string>
+    <string name="stats_trophy_globetrotter">ابن بطوطة</string>
+    <string name="stats_trophy_globetrotter_how">العب ألعابًا على 8 منصّات</string>
+    <string name="stats_trophy_sampler">من كل بستان زهرة</string>
+    <string name="stats_trophy_sampler_how">العب 25 لعبة مختلفة</string>
+    <string name="stats_trophy_plans">خطط كبيرة</string>
+    <string name="stats_trophy_plans_how">ضع 5 ألعاب في قائمة الانتظار</string>
+    <string name="stats_trophy_credits">شارة النهاية</string>
+    <string name="stats_trophy_credits_how">أنهِ لعبة</string>
+    <string name="stats_trophy_closer">الحاسم</string>
+    <string name="stats_trophy_closer_how">أنهِ 5 ألعاب</string>
+    <string name="stats_trophy_finisher">قاهر النهايات</string>
+    <string name="stats_trophy_finisher_how">أنهِ 25 لعبة</string>
+    <string name="stats_trophy_completionist">صائد الـ100%</string>
+    <string name="stats_trophy_completionist_how">أكمل لعبة بنسبة 100%</string>
+    <string name="stats_trophy_perfectionist">عاشق الكمال</string>
+    <string name="stats_trophy_perfectionist_how">أكمل 10 ألعاب بنسبة 100%</string>
+    <string name="stats_trophy_monthly">لعبة كل شهر</string>
+    <string name="stats_trophy_monthly_how">أنهِ 12 لعبة في سنة واحدة</string>
+    <string name="stats_trophy_collector">المقتني</string>
+    <string name="stats_trophy_collector_how">اجمع 100 لعبة في مكتبتك</string>
+    <string name="stats_trophy_archivist">أمين الأرشيف</string>
+    <string name="stats_trophy_archivist_how">اجمع 500 لعبة في مكتبتك</string>
+    <string name="stats_trophy_master">أستاذ Tandem</string>
+    <string name="stats_trophy_master_how">احصد كل الجوائز الأخرى</string>
+
+    <string name="stats_date_session">EEE d MMM yyyy</string>
+    <string name="stats_date_day_month">d MMM</string>
+    <string name="stats_date_weekday">EEE</string>
+    <string name="stats_session_header">%1$s · %2$s · %3$s</string>
+    <string name="stats_session_edit_length">عدّل المدة</string>
+    <string name="stats_session_change_date">غيّر التاريخ والوقت</string>
+    <string name="stats_session_when">%1$s، %2$s</string>
+    <string name="stats_session_merge">ادمجها مع التالية</string>
+    <string name="stats_session_merge_adds">+ %1$s</string>
+    <string name="stats_session_merged">دُمجت في جلسة واحدة مدتها %1$s</string>
+    <string name="stats_session_only_game">هذه اللعبة فقط</string>
+    <string name="stats_session_delete">حذف</string>
+    <string name="stats_session_deleted">حُذفت الجلسة</string>
+    <string name="stats_session_length">المدة</string>
+    <string name="stats_session_one_min">1 د</string>
+    <string name="stats_session_one_day">24 س</string>
+    <string name="stats_session_ten_min">10 د</string>
+    <string name="stats_session_cancel">إلغاء</string>
+    <string name="stats_session_save">حفظ</string>
+    <string name="stats_session_length_set">صارت المدة %1$s</string>
+    <string name="stats_session_day">اليوم</string>
+    <string name="stats_session_time">الوقت</string>
+    <string name="stats_session_midnight">منتصف الليل</string>
+    <string name="stats_session_change">تغيير</string>
+    <string name="stats_session_a_week">أسبوع</string>
+    <string name="stats_session_an_hour">ساعة</string>
+    <string name="stats_session_moved">نُقلت إلى %1$s، %2$s</string>
+    <plurals name="stats_sessions_clear_detail">
+        <item quantity="zero">لا جلسات لإزالتها (%2$s). وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="one">ستُزال جلسة واحدة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="two">ستُزال جلستان (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="few">ستُزال %1$d جلسات (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="many">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="other">ستُزال %1$d جلسة (%2$s)، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+    </plurals>
+    <plurals name="stats_sessions_clear_detail_of">
+        <item quantity="zero">لا جلسات لـ %3$s لإزالتها (%2$s). وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="one">ستُزال جلسة واحدة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="two">ستُزال جلستان (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="few">ستُزال %1$d جلسات (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="many">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+        <item quantity="other">ستُزال %1$d جلسة (%2$s) من %3$s، ويُعاد حساب وقت اللعب وعدد مرات اللعب وآخر لعب مما تبقّى. وقت اللعب المستورد من واجهة أخرى يبقى. لا رجعة في ذلك.</item>
+    </plurals>
+</resources>

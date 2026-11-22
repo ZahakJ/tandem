@@ -466,4 +466,40 @@
         <item quantity="many">%1$d منصّة أخرى · الأكثر لعبًا</item>
         <item quantity="other">%1$d منصّة أخرى · الأكثر لعبًا</item>
     </plurals>
+
+    <plurals name="home_orbit_games">
+        <item quantity="zero">لا ألعاب</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">لعبتان</item>
+        <item quantity="few">%1$d ألعاب</item>
+        <item quantity="many">%1$d لعبة</item>
+        <item quantity="other">%1$d لعبة</item>
+    </plurals>
+    <plurals name="home_orbit_playing">
+        <item quantity="zero">لا شيء قيد اللعب</item>
+        <item quantity="one">واحدة قيد اللعب</item>
+        <item quantity="two">اثنتان قيد اللعب</item>
+        <item quantity="few">%1$d قيد اللعب</item>
+        <item quantity="many">%1$d قيد اللعب</item>
+        <item quantity="other">%1$d قيد اللعب</item>
+    </plurals>
+    <string name="home_orbit_empty_hidden">كل الألعاب مخفية</string>
+    <string name="home_orbit_empty_none">لا ألعاب بعد. اختر المجلد الذي فيه ألعابك</string>
+    <string name="home_orbit_empty_show">إظهار الألعاب المخفية</string>
+    <string name="home_orbit_empty_pick">اختر مجلد ألعابك</string>
+    <string name="home_orbit_continue">تابِع</string>
+    <string name="home_orbit_resume">استئناف</string>
+    <string name="home_orbit_caption_continue">تابِع · %1$s</string>
+    <string name="home_orbit_caption_resume">استئناف · %1$s</string>
+    <string name="home_orbit_all_apps">كل التطبيقات</string>
+    <string name="home_orbit_app">تطبيق</string>
+    <string name="home_orbit_note_pin">ثبّت التطبيقات في الشريط لتراها هنا</string>
+    <string name="home_orbit_settings">المدار</string>
+    <string name="home_orbit_holds">ما يدور في المدار</string>
+    <string name="home_orbit_holds_help">ما يدور في المدار: منصّاتك ومجموعاتك وتطبيقات Tandem، أو بعضها فقط. والزران L1 وR1 يقفزان بين المجموعات.</string>
+    <string name="home_orbit_holds_all">منصّات، مجموعات، تطبيقات</string>
+    <string name="home_orbit_holds_games">منصّات ومجموعات</string>
+    <string name="home_orbit_holds_systems">المنصّات فقط</string>
+    <string name="home_orbit_continue_card">بطاقة «تابِع»</string>
+    <string name="home_orbit_continue_card_help">آخر لعبة لعبتها، كبطاقة واقفة يسار الأغلفة. الزر A يعيدك إليها («استئناف» ما دامت تعمل).</string>
 </resources>
