@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Look & feel: themes, theme packs, colours, wallpapers, icons, motion and the first-run welcome. Japanese.
+     See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="look_theme_pastel_night">パステルナイト</string>
+    <string name="look_theme_pastel_night_tagline">やさしい夜空にキャンディカラー</string>
+    <string name="look_theme_oled">有機ELブラック</string>
+    <string name="look_theme_oled_tagline">真っ黒で、電池にやさしい</string>
+    <string name="look_theme_paper">ペーパー</string>
+    <string name="look_theme_paper_tagline">明るく落ち着いた、昼向きの見た目</string>
+    <string name="look_theme_built_in">内蔵</string>
+
+    <string name="look_pack_format_tandem">Tandemパック</string>
+    <string name="look_pack_format_cocoon">Cocoonパック</string>
+    <string name="look_pack_tandem">テーマパック</string>
+    <string name="look_pack_cocoon">Cocoonテーマ</string>
+    <string name="look_pack_sounds_name">%1$s（テーマ）</string>
+    <string name="look_pack_credit">%1$s（作：%2$s）</string>
+    <string name="look_pack_has_colours">配色</string>
+    <plurals name="look_pack_has_icons">
+        <item quantity="other">機種アイコン%1$d個</item>
+    </plurals>
+    <plurals name="look_pack_has_heroes">
+        <item quantity="other">キービジュアル%1$d枚</item>
+    </plurals>
+    <plurals name="look_pack_has_collection_icons">
+        <item quantity="other">コレクションアイコン%1$d個</item>
+    </plurals>
+    <plurals name="look_pack_has_frames">
+        <item quantity="other">パッケージ枠%1$d種</item>
+    </plurals>
+    <string name="look_pack_has_two_wallpapers">壁紙2枚</string>
+    <string name="look_pack_has_wallpaper">壁紙</string>
+    <plurals name="look_pack_has_songs">
+        <item quantity="other">%1$d曲</item>
+    </plurals>
+
+    <string name="look_swatch_mint">ミント</string>
+    <string name="look_swatch_peach">ピーチ</string>
+    <string name="look_swatch_lavender">ラベンダー</string>
+    <string name="look_swatch_sky">空色</string>
+    <string name="look_swatch_butter">クリーム</string>
+    <string name="look_swatch_sakura">桜色</string>
+    <string name="look_swatch_coral">コーラル</string>
+    <string name="look_swatch_hot_pink">ホットピンク</string>
+    <string name="look_swatch_grape">ぶどう色</string>
+    <string name="look_swatch_ocean">海色</string>
+    <string name="look_swatch_teal">青緑</string>
+    <string name="look_swatch_lime">ライム</string>
+    <string name="look_swatch_gold">金色</string>
+    <string name="look_swatch_snow">雪色</string>
+
+    <string name="look_highlight_glow">光彩</string>
+    <string name="look_highlight_outline">枠線</string>
+    <string name="look_highlight_lift">浮き上がり</string>
+    <string name="look_highlight_pulse">パルス</string>
+
+    <string name="look_surface_solid">不透明</string>
+    <string name="look_surface_frosted">すりガラス</string>
+    <string name="look_surface_outlined">枠線のみ</string>
+
+    <string name="look_motion_bouncy">ぽよん</string>
+    <string name="look_motion_smooth">なめらか</string>
+    <string name="look_motion_minimal">ひかえめ</string>
+    <string name="look_motion_off">オフ</string>
+
+    <string name="look_backdrop_blobs">パステルもこもこ</string>
+    <string name="look_backdrop_starfield">星空</string>
+    <string name="look_backdrop_waves">波</string>
+    <string name="look_backdrop_synthwave">シンセウェーブ</string>
+    <string name="look_backdrop_bubbles">あわあわ</string>
+    <string name="look_backdrop_petals">花びら</string>
+    <string name="look_backdrop_fireflies">ホタル</string>
+    <string name="look_backdrop_pixels">8ビットの夕暮れ</string>
+    <string name="look_backdrop_lcd">ポケット液晶</string>
+    <string name="look_backdrop_cubes">浮かぶキューブ</string>
+    <string name="look_backdrop_towers">起動画面のタワー</string>
+    <string name="look_backdrop_marquee">ネオン看板</string>
+    <string name="look_backdrop_shell">スケルトン</string>
+    <string name="look_backdrop_disc">回るディスク</string>
+    <string name="look_backdrop_visor">赤いワイヤーフレーム</string>
+    <string name="look_backdrop_road">夕焼けロード</string>
+    <string name="look_backdrop_shooter">宇宙シューティング</string>
+    <string name="look_backdrop_farm">のどかな畑</string>
+    <string name="look_backdrop_meadow">草むら</string>
+    <string name="look_backdrop_torch">たいまつの壁</string>
+    <string name="look_backdrop_rainbow">レインボーロード</string>
+    <string name="look_backdrop_plain">無地</string>
+
+    <string name="look_icon_style_bubble">つやつやバブル</string>
+    <string name="look_icon_style_neon">ネオン管</string>
+    <string name="look_icon_style_pixel">ドット絵</string>
+    <string name="look_icon_style_flat">フラット</string>
+    <string name="look_icon_style_plastic">クリアカラー</string>
+    <string name="look_icon_style_chrome">クローム</string>
+    <string name="look_icon_style_lcd">液晶</string>
+    <string name="look_icon_style_sticker">シール</string>
+    <string name="look_icon_style_rune">石彫り</string>
+
+    <string name="look_group_colour">色とカーソル</string>
+    <string name="look_group_icons">機種アイコン</string>
+    <string name="look_group_motion">動き</string>
+    <string name="look_group_wallpaper">壁紙</string>
+    <string name="look_group_layout">レイアウト</string>
+    <string name="look_group_icon_grid">アイコングリッド</string>
+    <string name="look_group_dock">ドック</string>
+    <string name="look_group_bottom">下画面</string>
+    <string name="look_group_top_bar">上部バー</string>
+    <string name="look_group_controls">操作</string>
+    <string name="look_group_screens">画面</string>
+    <string name="look_group_extras">おまけ</string>
+
+    <string name="look_theme_decides">テーマ · %1$s</string>
+
+    <string name="look_accent">アクセントカラー</string>
+    <string name="look_accent_help">スイッチやカーソルに使う、あなただけのアクセントカラーです。左右で色見本を試せます。Aで全部の色を表示、「色を入力…」なら#FF7AB6のようにどんな色でも使えます。</string>
+    <string name="look_accent_theme">テーマ</string>
+    <string name="look_accent_type">色を入力…</string>
+    <string name="look_accent_hex">アクセントカラー（16進数）</string>
+    <string name="look_accent_bad">色の指定ではないようです</string>
+    <string name="look_highlight">カーソルの見た目</string>
+    <string name="look_highlight_help">選択中のカードの目印：やわらかく光る、くっきり枠線、大きな影で浮き上がる、ゆっくり脈打つリング。</string>
+    <string name="look_surface">質感</string>
+    <string name="look_surface_help">カードの素材：不透明、壁紙がほんのり透けるすりガラス、軽い枠線だけ。</string>
+
+    <string name="look_icon_style">アイコンの描き方</string>
+    <string name="look_icon_style_help">テーマパックに機種アイコンがないとき、Tandemがどう描くか。機種名入りの小さなゲーム機を、つやつやバブル、ネオン管、ドット絵、液晶、クロームなどで描きます。</string>
+    <string name="look_icons_from">アイコンの出どころ</string>
+    <string name="look_icons_from_help">パックの機種アイコン・キービジュアル・ロゴをどのテーマでも使うか、いつもTandemが描くか。「自動」はテーマパックのアートを使い、内蔵テーマではROMs/assets/smart_foldersにある最初のCocoonスマートフォルダパックを借ります。「Tandemが描く」はテーマのアイコンの描き方で表示します。</string>
+    <string name="look_icons_from_auto">自動</string>
+    <string name="look_icons_from_drawn">Tandemが描く</string>
+
+    <string name="look_animation">アニメーションの種類</string>
+    <string name="look_animation_help">「ぽよん」は楽しく弾み、「なめらか」は行き過ぎずにすべり、「ひかえめ」は素早くさりげなく、「オフ」は一瞬で切り替わります。</string>
+    <string name="look_reduce_motion">動きを減らす</string>
+    <string name="look_reduce_motion_help">動く壁紙、流れるアート、弾むアニメーションを全部止めます。バッテリーセーバーでも壁紙は止まります。</string>
+
+    <string name="look_wall_theme">テーマのデフォルト</string>
+    <string name="look_wall_hero">ゲームのアート（ぼかし）</string>
+    <string name="look_wall_top">上画面</string>
+    <string name="look_wall_top_help">動く背景、選択中のゲームのアート、または自分の画像や動画。画像（PNG、JPG、WebP）や動画（MP4、WebM）をROMs/tandem/wallpapersにコピーすると、ここに出てきます。</string>
+    <string name="look_wall_bottom">下画面</string>
+    <string name="look_wall_bottom_help">2つ目の画面にも同じものが選べます。ゲームのアートや動画が下画面によく映えます。</string>
+    <string name="look_wall_dim">画像を暗く</string>
+    <string name="look_wall_dim_help">画像や動画の壁紙を暗くして、上の文字を読みやすくします。</string>
+
+    <string name="look_games_view">ゲームの表示</string>
+    <string name="look_games_view_help">機種やコレクションの中のゲームの見せ方：カードのグリッド、詳細つきのリスト（大きなライブラリにぴったり）、カルーセル、本棚に並んだ背表紙、ケースに並んだカートリッジ。</string>
+    <string name="look_games_grid_size">グリッドの大きさ</string>
+    <string name="look_games_grid_size_help">機種の中のゲームカードの大きさ、または列の数を固定します。</string>
+    <string name="look_games_card_shape">カードの形</string>
+    <string name="look_games_card_shape_help">角丸、四角、丸、縦長のパッケージ型、スクリーンショットやバナー向けの横長。</string>
+    <string name="look_games_shelf_look">本棚のデザイン</string>
+    <string name="look_games_shelf_look_help">フォルダを本棚表示にしたときの本棚：あたたかい木目、テーマの色のマットな板、または棚なしで、壁紙の上にケースと細い棚の線だけ。</string>
+    <string name="look_games_titles">ゲームのタイトル</string>
+    <string name="look_games_titles_help">カードの下にゲームの名前を表示します。</string>
+    <string name="look_home_system_tiles">機種のタイル</string>
+    <string name="look_home_system_tiles_help">ホーム画面の機種タイルの見た目です。</string>
+    <string name="look_home_rows">ホームの列</string>
+    <string name="look_home_rows_help">ホーム画面に出す列と、その順番です。</string>
+    <string name="look_home_open_folders">フォルダの開き方</string>
+    <string name="look_home_open_folders_help">ページとして、全画面のページとして（上部バーが引っこんでグリッドが画面いっぱいに）、または今の画面の上にポップアップで。</string>
+    <string name="look_home_open_folders_page">ページ</string>
+    <string name="look_home_open_folders_fullscreen">全画面</string>
+    <string name="look_home_open_folders_popup">ポップアップ</string>
+    <string name="look_home_now_playing">プレイ中</string>
+    <string name="look_home_now_playing_help">ゲームがバックグラウンドで起動中のとき、ホーム画面のいちばん上に表示して、すぐ戻れるようにします。</string>
+    <string name="look_corner_hints">すみっこガイド</string>
+    <string name="look_corner_hints_help">上画面のすみに出る、ボタンの小さなおさらいです。</string>
+
+    <string name="look_dock_apps">アプリのドック</string>
+    <string name="look_dock_apps_help">お気に入りのAndroidアプリをホーム画面に。アプリの上でYを押すと移動や削除ができます。</string>
+    <string name="look_dock_style">ドックのスタイル</string>
+    <string name="look_dock_style_help">浮かぶバー、横いっぱいの棚、またはアイコンだけ。シェルフ以外のすべてのレイアウトで使われます。</string>
+    <string name="look_dock_top">ドックを上に</string>
+    <string name="look_dock_top_help">ドックをタイルの下ではなく上に置きます。</string>
+    <string name="look_dock_auto_hide">ドックを自動で隠す</string>
+    <string name="look_dock_auto_hide_help">カーソルを入れるまで、ドックは小さく薄いままです。</string>
+
+    <string name="look_bottom_style">スタイル</string>
+    <string name="look_bottom_style_help">「詳細」はゲームのアートが情報へ溶けこみます。「アート＋情報」は動くアートが画面いっぱいに広がり、その上に情報。「動くアート」は目の保養専用。「時計」は落ち着いた画面に。</string>
+    <string name="look_bottom_logo_size">ロゴの大きさ</string>
+    <string name="look_bottom_logo_size_help">アートの上に出るゲームのロゴの大きさです。</string>
+    <string name="look_bottom_art_fade">アートのぼかし</string>
+    <string name="look_bottom_art_fade_help">アートを下の背景へどう溶けこませるか。</string>
+    <string name="look_bottom_video_snaps">プレビュー動画</string>
+    <string name="look_bottom_video_snaps_help">カーソルをしばらく止めると、ゲームの動画（ROMs/downloaded_media/&lt;system&gt;/videos）を再生します。「はやい」はすぐ始まり、「節約」は長めに待つので、さっとスクロールしても動画を読みこみません。いつも消音で、プレイ中は止まります。</string>
+    <string name="look_bottom_video_snaps_fast">はやい</string>
+    <string name="look_bottom_video_snaps_balanced">ふつう</string>
+    <string name="look_bottom_video_snaps_saver">節約</string>
+    <string name="look_bottom_moving_art">動くアート</string>
+    <string name="look_bottom_moving_art_help">ゲームのアートがゆっくり流れてズームします。生きているポスターのように。</string>
+
+    <string name="look_top_battery">バッテリー</string>
+    <string name="look_top_battery_help">時計の横にバッテリー残量を表示します。</string>
+    <string name="look_top_clock">時計</string>
+    <string name="look_top_clock_help">12時間表示、24時間表示、システムに合わせる、または時計なし。</string>
+    <string name="look_top_clock_system">システム</string>
+    <string name="look_top_clock_12">12時間</string>
+    <string name="look_top_clock_24">24時間</string>
+    <string name="look_top_clock_hidden">非表示</string>
+
+    <string name="look_controls_prompts">ボタンガイド</string>
+    <string name="look_controls_prompts_help">ガイドでのボタンの描き方：Tandemのパステル、またはXbox、PlayStation、Nintendo風。</string>
+    <string name="look_controls_swap_ab">AとBを入れ替え</string>
+    <string name="look_controls_swap_ab_help">Bで決定、Aで戻る。Nintendoのゲーム機と同じ配置です。ガイドも合わせて変わります。</string>
+    <string name="look_controls_swap_xy">XとYを入れ替え</string>
+    <string name="look_controls_swap_xy_help">Yで検索、Xでオプションを開きます。</string>
+    <string name="look_controls_does_open">開く</string>
+    <string name="look_controls_does_search">検索</string>
+    <string name="look_controls_does_options">オプション</string>
+    <string name="look_controls_rebind">ボタン割り当て</string>
+    <string name="look_controls_rebind_help">Tandemのどの操作も、別のボタン、同時押し、長押しに割り当てられます：開く、戻る、オプションメニュー、Start、クイック設定、ゲーム切り替え、サイドパネル、ページ送り、非表示のゲーム、そしてお気に入り・スクリーンショット・クリップのボタン。あちこちのガイドも合わせて変わります。</string>
+    <string name="look_controls_rebind_defaults">デフォルト</string>
+    <plurals name="look_controls_rebind_changes">
+        <item quantity="other">%1$d個変更</item>
+    </plurals>
+
+    <string name="look_screens_swap">画面を入れ替え</string>
+    <string name="look_screens_swap_help">ライブラリが下（タッチ）画面に、詳細が上画面に、一瞬で移ります。アイコングリッドではXでも入れ替えられます。ゲームはこれまでどおり上画面で始まります。</string>
+    <string name="look_screens_rotation">自動回転をオフに保つ</string>
+    <string name="look_screens_rotation_help">Thorはときどき自動回転を勝手にオンにします。Tandemに戻るたびに、Tandemがオフに戻します。自分で決めたいときはこれをオフに。</string>
+
+    <string name="look_reset">見た目をリセット</string>
+    <string name="look_reset_help">Tandemの最初の見た目に戻します：テーマ、レイアウト、壁紙、アイコン、動き。ボタン、画面、操作音とBGM、ライブラリ、お気に入り、プレイ時間はそのままです。</string>
+    <string name="look_reset_ask">見た目を全部リセットしますか？</string>
+    <string name="look_reset_ask_body">テーマ、レイアウト、壁紙、アイコン、動きが、Tandemの最初の見た目に戻ります。ボタン、画面、サウンド、ゲームはそのままです。</string>
+    <string name="look_reset_ask_do">リセット</string>
+    <string name="look_reset_done">「%1$s」に戻しました</string>
+
+    <string name="look_grid_icon_size">アイコンの大きさ</string>
+    <string name="look_grid_icon_size_help">画面の横にアイコンをいくつ並べるか。3DSのHOMEメニューのズームと同じです。グリッドの上でもL1とR1で変えられます。</string>
+    <string name="look_grid_icon_size_option">%1$s · 横%2$d個</string>
+    <string name="look_grid_rows">アイコンの段数</string>
+    <string name="look_grid_rows_help">段数を固定すると、アイコンが画面いっぱいまで大きくなります。1段は3DSのHOMEメニューをいちばん大きくした状態で、大きなアイコンの上に選択中のものの詳細が出ます。「自動」はアイコンの大きさに合わせます。グリッドの上ではL1とR1で段数を変えられます（「大」のアイコンでL1を押すと、さらに段が減ります）。</string>
+    <string name="look_grid_rows_auto">自動</string>
+    <plurals name="look_grid_rows_n">
+        <item quantity="other">%1$d段</item>
+    </plurals>
+    <string name="look_grid_scrolling">スクロール</string>
+    <string name="look_grid_scrolling_help">次がちらっと見える横スクロール、1ページずつ（3DSのように）、または上下。</string>
+    <string name="look_grid_scrolling_sideways">横</string>
+    <string name="look_grid_scrolling_pages">ページ</string>
+    <string name="look_grid_scrolling_vertical">上下</string>
+    <string name="look_grid_roundness">アイコンの丸さ</string>
+    <string name="look_grid_roundness_help">四角い角から、まんまるまで。</string>
+    <string name="look_grid_gap">アイコンの間隔</string>
+    <string name="look_grid_gap_help">アイコン同士のすき間を、アイコンに対する割合で。</string>
+    <string name="look_grid_hero_split">キービジュアル分割</string>
+    <string name="look_grid_hero_split_help">グリッドの上に選択中のアイコンのアートを出します。「分割なし」（デフォルト）なら画面全体がアイコンです。</string>
+    <string name="look_grid_hero_split_none">分割なし</string>
+    <string name="look_grid_other_screen">もう一方の画面</string>
+    <string name="look_grid_other_screen_help">「スポットライト」は選択中のアイコンをその色（またはアイコンパックのアート）の上に大きく、ゲームは全画面で表示します。「クラシック」はTandemの詳細を表示します。</string>
+    <string name="look_grid_other_screen_spotlight">スポットライト</string>
+    <string name="look_grid_other_screen_classic">クラシック</string>
+    <string name="look_grid_folders">フォルダの開き方</string>
+    <string name="look_grid_folders_help">グリッドの上に大きな角丸パネルで、または1ページまるごとで。</string>
+    <string name="look_grid_folders_popup">グリッドの上</string>
+    <string name="look_grid_folders_page">ページ全体</string>
+    <string name="look_grid_x_button">Xボタン</string>
+    <string name="look_grid_x_button_help">アイコングリッドとオービットのホームでXを押して2つの画面を入れ替えるか（検索はStartパネルとグリッドのYメニューに）、どこでも入れ替えるか、Xは検索のままにするか。</string>
+    <string name="look_grid_x_button_swap_grid">グリッドとオービットで入れ替え</string>
+    <string name="look_grid_x_button_swap">どこでも入れ替え</string>
+    <string name="look_grid_x_button_search">検索</string>
+    <string name="look_grid_swap_animation">入れ替えのアニメーション</string>
+    <string name="look_grid_swap_animation_help">Xで画面が入れ替わるときの動き。「ちらばる」：アイコンが飛び散って、もう一方の画面に着地。「押し出し」：それぞれの画面の新しい中身が、ヒンジ側からすべりこむ。「裏返し」：両方の画面がカードのようにくるり。「奥行き」：古い画面が奥へ沈み、新しい画面が手前に出てくる。</string>
+    <string name="look_swap_scatter">ちらばる</string>
+    <string name="look_swap_push">押し出し</string>
+    <string name="look_swap_flip">裏返し</string>
+    <string name="look_swap_depth">奥行き</string>
+    <string name="look_swap_fade">フェード</string>
+    <string name="look_swap_instant">一瞬</string>
+
+    <string name="look_home_rows_continue">つづきから</string>
+    <string name="look_home_rows_systems">機種</string>
+    <string name="look_home_rows_collections">コレクション</string>
+
+    <string name="look_gallery_themes">テーマ</string>
+    <string name="look_gallery_themes_note">Aで使う · パックは下に</string>
+    <string name="look_gallery_packs">テーマパック</string>
+    <string name="look_gallery_layouts">ホームのレイアウト</string>
+    <string name="look_gallery_layouts_note">Aで切り替え</string>
+    <string name="look_gallery_layout_kind">レイアウト</string>
+    <string name="look_in_use">使用中</string>
+    <string name="look_theme_uses_hint">%1$s。Aで使います。</string>
+
+    <string name="look_packs_none">まだありません</string>
+    <plurals name="look_packs_installed">
+        <item quantity="other">%1$d個インストール済み</item>
+    </plurals>
+    <string name="look_packs_manage_help">TandemパックやCocoonパックを、フォルダや.zipからインポートします：配色、壁紙、機種アイコン、キービジュアル、ロゴ。CocoonがROMs/themesにダウンロード済みのパックは自動で出てきます。パックのどの部分を使うか選んだり、削除したりできます。</string>
+    <string name="look_pack_by_sentence">作者：%1$s。</string>
+    <string name="look_pack_contents_sentence">%1$s。</string>
+    <string name="look_pack_art">アート：%1$s</string>
+    <string name="look_pack_uses_hint">Aで使います。どの部分を使うかはパック管理で選べます。</string>
+
+    <string name="look_layout_shelves_help">スクロールしていく列：つづきから、機種、コレクション、アプリ。Tandem定番のホームです。</string>
+    <string name="look_layout_grid_help">機種もフォルダもアプリもゲームも、四角いアイコンにして横スクロールの1枚のグリッドにぎゅっと並べ、丸いドックを添えます。もう一方の画面には選択中のアイコンが大きく出て、Xで画面を入れ替えます。</string>
+    <string name="look_layout_carousel_help">カルーセル：選択中のカードが真ん中に大きく、ほかのカードは左右へ向きを変えて並びます。</string>
+    <string name="look_layout_list_help">コンパクトな列と、その横の大きなプレビュー。ぱっと見渡せて、巨大なライブラリにぴったり。</string>
+    <string name="look_layout_console_help">ゲーム機のようなダッシュボード：選択中のアートが画面いっぱいに広がり、下に大きなタイルが1列並びます。</string>
+    <string name="look_layout_orbit_help">Tandemオリジナル：機種、コレクション、アプリが丸いアイコンの軌道をめぐり、選択中のものが手前に大きく。その上には最近のゲームが手札のように広がり、「つづきから」のリボンがかかります。左右で回転、L1とR1でグループを移動、Xで画面を入れ替え。</string>
+    <string name="look_layout_spotlight_help">ゲームが主役：選択中のゲームのアートが画面いっぱいに広がり、片側にパッケージの列、反対側にロゴ・ストーリー・プレイ時間。上下で列を動かし、L1とR1で機種やコレクションを切り替え、Xでストーリーを全部読めます。</string>
+
+    <string name="look_hints_play">遊ぶ</string>
+    <string name="look_hints_open">開く</string>
+    <string name="look_hints_options">オプション</string>
+    <string name="look_hints_search">検索</string>
+    <string name="look_hints_menu">メニュー</string>
+
+    <string name="look_packs_import_folder">フォルダをインポート</string>
+    <string name="look_packs_import_folder_detail">パックのフォルダ</string>
+    <string name="look_packs_import_zip">.zipをインポート</string>
+    <string name="look_packs_import_zip_detail">圧縮したパック</string>
+    <string name="look_packs_reload">もう一度探す</string>
+    <string name="look_packs_reload_detail">新しいパックを探す</string>
+    <string name="look_packs_no_picker">この端末にはファイル選択画面がありません</string>
+    <string name="look_packs_importing">インポート中…</string>
+    <string name="look_packs_added">「%1$s」を追加しました。Aを押すと使えます</string>
+    <string name="look_packs_found_none">テーマパックが見つかりません</string>
+    <plurals name="look_packs_found">
+        <item quantity="other">テーマパックが%1$d個見つかりました</item>
+    </plurals>
+    <string name="look_packs_none_yet">パックはまだありません</string>
+    <plurals name="look_packs_installed_heading">
+        <item quantity="other">インストール済み · %1$d</item>
+    </plurals>
+    <string name="look_packs_empty">ダウンロード済みのCocoonパックは自動でここに出てきます。上からインポートすることもできます。インポートしたパックはROMs/tandem/themesにコピーされます。</string>
+    <string name="look_packs_its_icons">アイコン使用中</string>
+    <string name="look_packs_by">作：%1$s</string>
+    <string name="look_packs_by_version">作：%1$s · v%2$s</string>
+    <string name="look_packs_stored">保存先：ROMs/tandem/themes/%1$s</string>
+    <string name="look_packs_stored_cocoon">CocoonがROMs/themes/%1$sにインストールしたパックです。Tandemは読むだけです。</string>
+    <string name="look_packs_help">パックには、配色、壁紙、すべての機種のアートが入っています。TandemはTandem形式とCocoon形式のパックを読めます。パックには作者のクレジットが残ります。共有するときは作者のお願いを守ってください。</string>
+
+    <string name="look_packs_use">このテーマを使う</string>
+    <string name="look_packs_icons_stop">アイコンの借用をやめる</string>
+    <string name="look_packs_icons_lend">アイコンだけ借りる</string>
+    <string name="look_packs_brings">入っているもの</string>
+    <string name="look_packs_part_colours">配色</string>
+    <string name="look_packs_part_wallpaper">壁紙</string>
+    <string name="look_packs_part_icons">機種アイコン</string>
+    <string name="look_packs_part_heroes">キービジュアルとロゴ</string>
+    <string name="look_packs_part_frames">パッケージ枠</string>
+    <plurals name="look_packs_part_music">
+        <item quantity="other">BGM（%1$d）</item>
+    </plurals>
+    <string name="look_packs_part_sounds">操作音</string>
+    <string name="look_packs_remove">パックを削除</string>
+    <string name="look_packs_remove_ask">「%1$s」を削除しますか？</string>
+    <string name="look_packs_remove_ask_body">ROMs/tandem/themes/%1$sを削除します。あとでまたインポートできます。</string>
+    <string name="look_packs_remove_do">削除</string>
+    <string name="look_packs_removed">「%1$s」を削除しました</string>
+    <string name="look_packs_remove_failed">パックを削除できませんでした</string>
+    <string name="look_packs_add">テーマパックを追加</string>
+    <string name="look_packs_add_detail">フォルダか.zipから</string>
+    <string name="look_packs_manage">パック管理</string>
+
+    <string name="look_import_cant_open">ファイルを開けませんでした</string>
+    <string name="look_import_too_big">テーマパックにしては大きすぎます</string>
+    <string name="look_import_too_many">テーマパックにしてはファイルが多すぎます</string>
+    <string name="look_import_no_pack">theme.jsonもアイコンのフォルダも入っていません</string>
+    <string name="look_import_failed">インポートできませんでした</string>
+    <string name="look_import_icons_description">アイコン</string>
+
+    <string name="look_flair_group">動きとホーム</string>
+    <string name="look_flair_floating">ふわふわタイトル</string>
+    <string name="look_flair_floating_help">ロゴやアイコン、タイトルがふわふわ浮かび、切り替わるときはすっと上がってきます。キービジュアルもゆっくり漂います。「動きを減らす」、アニメーション「オフ」、バッテリーセーバーのときは止まります。</string>
+    <string name="look_flair_intensity">動きの大きさ</string>
+    <string name="look_flair_intensity_help">どれくらい大きく浮いたり弾んだりするか。</string>
+    <string name="look_flair_subtle">ひかえめ</string>
+    <string name="look_flair_normal">ふつう</string>
+    <string name="look_flair_lively">いきいき</string>
+    <string name="look_flair_recent">最近遊んだゲームのバー</string>
+    <string name="look_flair_recent_help">アイコングリッドの上に、最近遊んだゲームのバーを出します。L2で出し入れ、Aでゲームを再開します。</string>
+    <string name="look_flair_recent_button">L2で表示</string>
+    <string name="look_flair_recent_always">常に表示</string>
+    <string name="look_flair_icon_names">アイコンの名前</string>
+    <string name="look_flair_icon_names_help">アイコングリッドのタイルの下の名前：常に表示、選択中のアイコンだけ、または表示しない。</string>
+    <string name="look_flair_icon_names_always">常に表示</string>
+    <string name="look_flair_icon_names_focus">選択中のみ</string>
+
+    <string name="look_dev">開発者向け</string>
+    <string name="look_dev_frames">フレームタイミング表示</string>
+    <string name="look_dev_frames_help">Tandemを使っている間に遅れたフレームを数えて、合計をすみに表示します。遅れたフレームは、起きた画面といっしょにシステムログ（タグTandemJank）にも書き出されます。なめらかさの計測用です。</string>
+    <string name="look_dev_tour">全テーマを巡回</string>
+    <string name="look_dev_tour_stop">停止</string>
+    <string name="look_dev_tour_count">%1$d＋インポート分</string>
+    <string name="look_dev_tour_help">内蔵テーマと、いちばん新しくインポートしたパックを数秒ずつ表示して、色や文字をチェックできます。あなたのテーマは変わりません。</string>
+    <string name="look_dev_tour_toast">テーマ %1$d/%2$d：%3$s</string>
+
+    <plurals name="look_start_found">
+        <item quantity="other">%1$d本見つけました…</item>
+    </plurals>
+    <string name="look_start_gathering">ゲームを集めています…</string>
+
+    <string name="look_welcome_skip_all">全部スキップ</string>
+    <string name="look_welcome_next">次へ</string>
+    <string name="look_welcome_skip_now">今はスキップ</string>
+    <string name="look_welcome_not_now">あとで</string>
+    <string name="look_welcome_language">どの言語にしますか？</string>
+    <string name="look_welcome_language_detail">Tandemは両方の画面でこの言語を話します。設定 › 見た目と雰囲気 › 言語 でいつでも変えられます。</string>
+    <string name="look_welcome_home">こんにちは！しっくりくるホームはどれですか？</string>
+    <string name="look_welcome_home_cocoon">この端末でCocoonのファイルを見つけたので、アイコングリッドを先頭にしました。あとで設定からいつでも変えられます。</string>
+    <string name="look_welcome_home_detail">まずは一つ選んでください。設定 › ホームとレイアウト には、ほかにもいろいろあります。</string>
+    <string name="look_welcome_cocoon">Cocoonのデータを見つけました</string>
+    <string name="look_welcome_cocoon_detail">コピーは不要です。TandemはCocoonの保存場所からそのまま読み、何も書き換えません。</string>
+    <string name="look_welcome_cocoon_backup">%1$sのCocoonバックアップ：同じホーム、ドック、テーマをワンボタンで</string>
+    <plurals name="look_welcome_cocoon_themes">
+        <item quantity="other">テーマパック%1$d個：%2$s</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_icons">
+        <item quantity="other">機種とコレクションのアイコンパック%1$d個。自動で使われます</item>
+    </plurals>
+    <plurals name="look_welcome_cocoon_platforms">
+        <item quantity="other">プラットフォームファイル%1$d個。そのエミュレーターは「機種」ですぐ使えます</item>
+    </plurals>
+    <string name="look_welcome_cocoon_gamelists">Cocoonのgamelistにあるゲームの名前、説明、アートは自動で引き継がれます</string>
+    <string name="look_welcome_cocoon_bring">Cocoonの設定を引き継ぐ</string>
+    <string name="look_welcome_cocoon_bringing">引き継いでいます…</string>
+    <string name="look_welcome_cocoon_wear">「%1$s」に着替える</string>
+    <string name="look_welcome_cocoon_keep">このテーマのままにする</string>
+    <string name="look_welcome_art">アートワークと情報</string>
+    <string name="look_welcome_art_detail">LaunchBoxとlibretroはアカウント不要です。IGDB、SteamGridDB、ScreenScraperは無料のキーでもっと充実します。選ぶと手順が見られます。</string>
+    <string name="look_welcome_art_launchbox">LaunchBoxを入手（%1$d MB、Wi-Fi）</string>
+    <string name="look_welcome_resume">やめたところから、そのまま再開</string>
+    <string name="look_welcome_resume_ready">再開の準備ができました</string>
+    <string name="look_welcome_resume_ready_detail">まだ開いているゲームを選ぶと、最初からではなく、つづきから戻れます。</string>
+    <string name="look_welcome_resume_allow_detail">ShizukuでTandemを許可すると、起動中のゲームにそのままの状態で戻れます。ゲーム切り替え（Select長押し）でゲームを行き来することもできます。</string>
+    <string name="look_welcome_resume_start_detail">Shizukuアプリが動いていれば、まだ開いているゲームを最初からではなく、つづきから戻せます。Shizukuを起動して、Tandemを許可してください。</string>
+    <string name="look_welcome_resume_allow">Shizukuで許可</string>
+    <string name="look_welcome_resume_how">Shizukuの起動方法は？</string>
+    <string name="look_welcome_homescreen">Tandemをホーム画面にしますか？</string>
+    <string name="look_welcome_homescreen_is">Tandemがホーム画面です</string>
+    <string name="look_welcome_homescreen_detail">どこでもHomeを押せばここに戻ってきて、起動中のゲームにもワンボタンで戻れます。アプリはドックにあります。設定からいつでも元に戻せます。</string>
+    <string name="look_welcome_homescreen_make">ホーム画面にする</string>
+    <string name="look_welcome_home_set">Tandemがホーム画面になりました ✨</string>
+    <string name="look_welcome_done">準備完了。さあ、遊びましょう！</string>
+    <string name="look_welcome_done_detail">どこにいても覚えておきたい、4つのボタン：</string>
+    <string name="look_welcome_done_y">何でもオプションを開く</string>
+    <string name="look_welcome_done_x_swap">ホームでは画面入れ替え、ほかでは検索</string>
+    <string name="look_welcome_done_start">Startパネル、設定もここ（長押しでクイック設定）</string>
+    <string name="look_welcome_done_select">おまかせで1本（長押しでゲーム切り替え）</string>
+    <string name="look_welcome_play">遊ぼう！</string>
+
+    <string name="look_preset_on">「%1$s」にしました。もう一度Aで元に戻せます</string>
+    <string name="look_preset_undone">元に戻しました</string>
+    <string name="look_preset_cozy">くつろぎシェルフ</string>
+    <string name="look_preset_cozy_blurb">Tandemオリジナルのホーム：最近のゲーム、機種、コレクションの列。下画面には詳細とアート。</string>
+    <string name="look_preset_cozy_1">シェルフのホーム</string>
+    <string name="look_preset_cozy_2">機種の中はゲームのグリッド</string>
+    <string name="look_preset_cozy_3">下画面に詳細</string>
+    <string name="look_preset_cozy_4">浮かぶアプリのドック</string>
+    <string name="look_preset_cozy_5">ライブラリは上画面</string>
+    <string name="look_preset_grid">アイコングリッド</string>
+    <string name="look_preset_grid_blurb">横にスクロールする、ぎっしりのアイコングリッド。選択中のアイコンはもう一方の画面に大きく。Xで画面を入れ替え。</string>
+    <string name="look_preset_grid_1">アイコングリッドのホーム、横7個、横スクロール</string>
+    <string name="look_preset_grid_2">もう一方の画面はスポットライト</string>
+    <string name="look_preset_grid_3">グリッドではXで画面を入れ替え</string>
+    <string name="look_preset_grid_4">フォルダはグリッドの上に開く</string>
+    <string name="look_preset_grid_5">アプリの入った丸いドック</string>
+    <string name="look_preset_grid_6">Cocoonのテーマパック（インストール済みなら）</string>
+    <string name="look_preset_grid_7">Cocoonのバックアップがあれば、ホーム・ドック・テーマをそのまま再現</string>
+    <string name="look_preset_orbit">オービット</string>
+    <string name="look_preset_orbit_blurb">Tandemオリジナルのホーム：機種、コレクション、アプリが丸いアイコンの軌道に並び、その上に選択中のもののゲームが扇のように広がります。</string>
+    <string name="look_preset_orbit_1">機種・コレクション・アプリのオービットのホーム</string>
+    <string name="look_preset_orbit_2">スポットライトの上に「つづきから」のリボン</string>
+    <string name="look_preset_orbit_3">軌道の下に丸いドック</string>
+    <string name="look_preset_orbit_4">下画面に詳細</string>
+    <string name="look_preset_orbit_5">オービットではXで画面を入れ替え</string>
+    <string name="look_preset_minimal">ミニマル</string>
+    <string name="look_preset_minimal_blurb">静かでキビキビ：コンパクトなリスト、光彩の代わりにくっきり枠線、短いアニメーション、BGMなし、おまけも少なめ。</string>
+    <string name="look_preset_minimal_1">リストのホームとゲームのリスト</string>
+    <string name="look_preset_minimal_2">枠線のカーソル、ひかえめな動き</string>
+    <string name="look_preset_minimal_3">BGMオフ</string>
+    <string name="look_preset_minimal_4">隠れるアイコンだけのドック</string>
+    <string name="look_preset_minimal_5">ウィジェットの列なし、起動画面なし</string>
+</resources>

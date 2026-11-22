@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The icon grid and its folders. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <plurals name="grid_games">
+        <item quantity="other">%1$d本</item>
+    </plurals>
+    <plurals name="grid_systems">
+        <item quantity="other">%1$d機種</item>
+    </plurals>
+    <plurals name="grid_genres">
+        <item quantity="other">%1$dジャンル</item>
+    </plurals>
+
+    <plurals name="grid_tiles">
+        <item quantity="other">タイル%1$d個</item>
+    </plurals>
+    <plurals name="grid_items">
+        <item quantity="other">%1$d個</item>
+    </plurals>
+    <string name="grid_home_grid">ホームのグリッド</string>
+
+    <string name="grid_undo">元に戻す</string>
+    <string name="grid_undo_nothing">元に戻せるものはありません</string>
+    <string name="grid_undone">元に戻しました：%1$s</string>
+    <string name="grid_undo_last">直前の変更を元に戻す</string>
+
+    <string name="grid_pick_title">ここにゲームを追加</string>
+    <string name="grid_pick_find">ゲームを探す</string>
+    <string name="grid_pick_first">先にAでゲームを選んでください</string>
+    <plurals name="grid_pick_added">
+        <item quantity="other">ここにゲームを%1$d本追加しました</item>
+    </plurals>
+    <plurals name="grid_pick_matching">
+        <item quantity="other">「%2$s」に一致：%1$d本</item>
+    </plurals>
+    <plurals name="grid_pick_picked">
+        <item quantity="other">%1$d本選択中</item>
+    </plurals>
+    <string name="grid_pick_hint_pick">選ぶ</string>
+    <string name="grid_pick_hint_search">検索</string>
+    <string name="grid_pick_hint_add">追加</string>
+    <string name="grid_pick_games_folder">ゲームのフォルダを選ぶ</string>
+    <string name="grid_pick_add_here">ここに追加</string>
+    <plurals name="grid_pick_add_n_here">
+        <item quantity="other">ここに%1$d本追加</item>
+    </plurals>
+    <string name="grid_pick_search">検索…</string>
+    <string name="grid_pick_searching">検索：%1$s</string>
+    <string name="grid_pick_show_all">すべて表示</string>
+    <string name="grid_pick_none">ゲームはまだありません</string>
+    <string name="grid_pick_none_help">ゲームが入っているフォルダを選ぶと、ここに出てきます。</string>
+    <string name="grid_pick_no_matches">見つかりません</string>
+    <string name="grid_pick_no_matches_help">アクセント記号や句読点は気にしなくて大丈夫です。</string>
+    <string name="grid_pick_already">「%1$s」はもうグリッドにあります</string>
+
+    <string name="grid_sel_started">Aでチェック · Y：まとめて操作 · B：完了</string>
+    <string name="grid_sel_nothing">何もチェックしていません</string>
+    <plurals name="grid_sel_count">
+        <item quantity="other">%1$d個選択中</item>
+    </plurals>
+    <plurals name="grid_sel_selected_word">
+        <item quantity="other">個選択中</item>
+    </plurals>
+    <string name="grid_sel_hint_mark">チェック</string>
+    <string name="grid_sel_hint_actions">操作</string>
+    <string name="grid_sel_hint_done">完了</string>
+    <string name="grid_sel_move_here">ここへ移動</string>
+    <string name="grid_sel_move_here_sub">この場所から、今の順番のまま</string>
+    <string name="grid_sel_move_to_folder">フォルダへ移動…</string>
+    <string name="grid_sel_move_to_folder_title">フォルダへ移動</string>
+    <string name="grid_sel_also_add">フォルダにも追加…</string>
+    <string name="grid_sel_also_add_title">フォルダにも追加</string>
+    <string name="grid_sel_also_add_sub">ここにも残ります</string>
+    <string name="grid_sel_new_folder">選んだものから新しいフォルダ</string>
+    <string name="grid_sel_remove_home">ホームから外す</string>
+    <string name="grid_sel_remove_folder">フォルダから外す</string>
+    <string name="grid_sel_hide">非表示にする</string>
+    <string name="grid_sel_hide_sub">ゲーム、機種、フォルダ</string>
+    <string name="grid_sel_all">すべて選択</string>
+    <string name="grid_sel_clear">選択を解除</string>
+    <string name="grid_sel_already_hidden">非表示にしてあります</string>
+    <plurals name="grid_sel_moved">
+        <item quantity="other">タイル%1$d個を移動</item>
+    </plurals>
+    <plurals name="grid_sel_moved_into">
+        <item quantity="other">タイル%1$d個を「%2$s」へ移動</item>
+    </plurals>
+    <string name="grid_sel_added_to">「%1$s」を「%2$s」に追加</string>
+    <plurals name="grid_sel_added_tiles_to">
+        <item quantity="other">タイル%1$d個を「%2$s」に追加</item>
+    </plurals>
+    <string name="grid_sel_removed">「%1$s」を外しました</string>
+    <string name="grid_sel_removed_it">外しました</string>
+    <plurals name="grid_sel_removed_tiles">
+        <item quantity="other">タイル%1$d個を外しました</item>
+    </plurals>
+    <string name="grid_sel_hid">「%1$s」を非表示に</string>
+    <plurals name="grid_sel_hid_tiles">
+        <item quantity="other">タイル%1$d個を非表示に</item>
+    </plurals>
+
+    <string name="grid_menu_search">検索</string>
+    <string name="grid_menu_swap">画面を入れ替え</string>
+
+    <string name="grid_spot_title">空きスペース</string>
+    <string name="grid_spot_type">空きスペース</string>
+    <string name="grid_spot_blurb">Aでフォルダ、ゲーム、アプリ、ウィジェットをここに追加</string>
+    <string name="grid_spot_paste">「%1$s」を貼り付け</string>
+    <string name="grid_spot_paste_it">貼り付け</string>
+    <string name="grid_spot_new_folder">新しいフォルダ…</string>
+    <string name="grid_spot_made_folder">ここにフォルダ「%1$s」を作りました</string>
+    <string name="grid_spot_smart_folder">スマートフォルダ…</string>
+    <string name="grid_spot_smart_folder_sub">自動で中身がそろう：ジャンル、未プレイ…</string>
+    <string name="grid_spot_game">ゲーム…</string>
+    <string name="grid_spot_game_sub">1本でも何本でも、機種ごとに</string>
+    <string name="grid_spot_system">機種…</string>
+    <string name="grid_spot_collection">コレクションかジャンル…</string>
+    <string name="grid_spot_app">アプリ…</string>
+    <string name="grid_spot_tandem_app">Tandemのアプリ…</string>
+    <string name="grid_spot_tandem_app_sub">テーマ、日記、ギャラリー…</string>
+    <string name="grid_spot_widget">ウィジェット…</string>
+    <string name="grid_spot_widget_sub">時計、バッテリー、プレイ記録…</string>
+    <string name="grid_spot_tidy">整理する</string>
+    <string name="grid_spot_unarrange">ふつうのリストで表示</string>
+    <string name="grid_spot_add_widget">ウィジェットを追加</string>
+    <string name="grid_spot_widget_unavailable">まだ使えません</string>
+    <string name="grid_spot_widget_too_big">フォルダには大きすぎます：ホームのグリッド専用</string>
+
+    <string name="grid_tidy_already">もう整理されています</string>
+    <string name="grid_tidy_done">整理しました</string>
+    <string name="grid_tidy_done_folder">「%1$s」を整理しました</string>
+    <string name="grid_tidy_sorted">%1$sで並べ替え中：いつも整理済みです</string>
+    <string name="grid_carrying">持ち運び中 · 空きスペースでA › 貼り付け</string>
+
+    <string name="grid_design_title_main">フォルダをデザイン</string>
+    <string name="grid_design_page">デザイン · %1$s</string>
+    <string name="grid_design_icon">アイコン</string>
+    <string name="grid_design_colour">色</string>
+    <string name="grid_design_hero">キービジュアル</string>
+    <string name="grid_design_title">タイトル</string>
+    <string name="grid_design_shape">形</string>
+    <string name="grid_design_frame">パッケージ枠</string>
+    <string name="grid_design_reset">テーマに戻す</string>
+    <string name="grid_design_hint_pages">ページ</string>
+    <string name="grid_design_hint_change">変更</string>
+    <string name="grid_design_hint_use">使う</string>
+    <string name="grid_design_theme">テーマ</string>
+    <string name="grid_design_from_art">アートから</string>
+    <string name="grid_design_custom">カスタム</string>
+    <string name="grid_design_shape_rounded">角丸の四角</string>
+    <string name="grid_design_shape_circle">丸</string>
+    <string name="grid_design_frame_theme">テーマの枠</string>
+    <string name="grid_design_frame_none">枠なし</string>
+    <string name="grid_design_frame_note">テーマに枠があれば、ゲームのパッケージのアイコンに表示されます</string>
+    <string name="grid_design_reset_following">テーマに合わせています</string>
+    <string name="grid_design_reset_done">テーマの見た目に戻しました</string>
+    <string name="grid_design_app_icon">アプリのアイコン</string>
+    <string name="grid_design_game_cover">ゲームのパッケージ</string>
+    <string name="grid_design_cover_mosaic">パッケージのコラージュ</string>
+    <string name="grid_design_cover_fan">パッケージを扇形に</string>
+    <string name="grid_design_mosaic">コラージュ</string>
+    <string name="grid_design_fan">扇形</string>
+    <string name="grid_design_genre">ジャンル</string>
+    <string name="grid_design_genre_glyph">ジャンル · %1$s</string>
+    <string name="grid_design_glyph">シンボル</string>
+    <string name="grid_design_emoji">絵文字</string>
+    <string name="grid_design_picture">画像</string>
+    <string name="grid_design_colour_sweep">グラデーション</string>
+    <string name="grid_design_cover_wall">パッケージの壁</string>
+    <string name="grid_design_game_hero">ゲームのキービジュアル</string>
+    <string name="grid_design_text">文字 · %1$s · %2$s</string>
+    <string name="grid_design_weight_size">%1$s · %2$s</string>
+    <string name="grid_design_logo">ロゴ：%1$s</string>
+    <string name="grid_design_logo_any">ロゴ：ゲームを選ぶ</string>
+    <string name="grid_design_weight_light">細字</string>
+    <string name="grid_design_weight_bold">太字</string>
+    <string name="grid_design_weight_heavy">極太</string>
+    <string name="grid_design_size_small">小</string>
+    <string name="grid_design_size_medium">中</string>
+    <string name="grid_design_size_large">大</string>
+    <string name="grid_design_from_device">この端末から…</string>
+    <string name="grid_design_browse">ファイルを選ぶ</string>
+    <string name="grid_design_no_picture">このアイコンには色を取れる画像がありません</string>
+    <string name="grid_design_no_colour">そのアートにははっきりした色がありません</string>
+    <string name="grid_design_picture_failed">その画像は使えませんでした</string>
+    <string name="grid_design_picture_saved">ROMs/tandem/art/foldersに保存しました</string>
+    <string name="grid_design_other_screen">もう一方の画面</string>
+
+    <string name="grid_form_title_new">新しいスマートフォルダ</string>
+    <string name="grid_form_title_convert">スマートフォルダにする</string>
+    <string name="grid_form_title_edit">条件を編集</string>
+    <string name="grid_form_convert_sub">%1$s · 中身はホームのグリッドに戻ります</string>
+    <string name="grid_form_hint_change">変更</string>
+    <string name="grid_form_hint_pick">選ぶ</string>
+    <string name="grid_form_hint_save">保存</string>
+    <string name="grid_form_type">入力</string>
+    <string name="grid_form_any">指定なし</string>
+    <string name="grid_form_name">名前</string>
+    <string name="grid_form_name_help">グリッドに表示されるフォルダの名前です。</string>
+    <string name="grid_form_systems">機種</string>
+    <string name="grid_form_systems_help">この機種のゲームだけ。何も選ばなければすべての機種です。</string>
+    <string name="grid_form_genres">ジャンル</string>
+    <string name="grid_form_genres_help">どれかのジャンルに当てはまるゲーム（取得した情報か、入っているサブフォルダから）。</string>
+    <string name="grid_form_pattern">タイトルに含む</string>
+    <string name="grid_form_pattern_anything">なんでも</string>
+    <string name="grid_form_pattern_help">この文字を含むタイトルだけ（大文字小文字は区別しません）。正規表現ならタイトルのどこにあっても一致します。</string>
+    <string name="grid_form_match">一致のしかた</string>
+    <string name="grid_form_match_help">「テキスト」は入力した言葉そのままで探します。「正規表現」はパターンを正規表現として読みます（例：^Super|Kart$）。</string>
+    <string name="grid_form_match_plain">テキスト</string>
+    <string name="grid_form_match_regex">正規表現</string>
+    <string name="grid_form_match_regex_bad">正規表現 · 無効</string>
+    <string name="grid_form_year_from">開始年</string>
+    <string name="grid_form_year_from_help">この年以降に発売。年を指定すると、発売年のないゲームは外れます。</string>
+    <string name="grid_form_year_to">終了年</string>
+    <string name="grid_form_year_to_help">この年以前に発売。</string>
+    <string name="grid_form_favorites">お気に入りのみ</string>
+    <string name="grid_form_favorites_help">ハートをつけたゲームだけ。</string>
+    <string name="grid_form_played">プレイ</string>
+    <string name="grid_form_played_help">「プレイ済み」：一度でも遊んだゲーム。「未プレイ」：まだ始めていないゲーム。</string>
+    <string name="grid_form_status">ステータス</string>
+    <string name="grid_form_status_help">このステータスのゲームだけ：積みゲー、プレイ中、クリア済み（コンプリートも含む）…「なし」はステータスのないゲームです。</string>
+    <string name="grid_form_status_none">なし</string>
+    <string name="grid_form_status_finished">クリア済み</string>
+    <string name="grid_form_random">本数</string>
+    <string name="grid_form_random_help">「ランダム」は一致したゲームからその本数だけ残します。Tandemを起動するたびに選び直します。</string>
+    <string name="grid_form_random_all">すべて</string>
+    <string name="grid_form_emulator">エミュレーター</string>
+    <string name="grid_form_emulator_help">このエミュレーターで起動するゲームだけ。</string>
+    <string name="grid_form_sort">並べ替え</string>
+    <string name="grid_form_sort_help">ゲームが並ぶ順番です。</string>
+    <string name="grid_form_screen_help">このフォルダから開いたゲームが始まる画面。「デフォルト」はゲームごとの設定に従います。ゲーム個別の画面設定がいつも優先です。</string>
+    <string name="grid_form_make">フォルダを作る</string>
+    <string name="grid_form_save">保存</string>
+    <string name="grid_form_save_help">Startでも保存できます。</string>
+    <string name="grid_form_any_system">すべての機種</string>
+    <string name="grid_form_any_clears">選択を解除します</string>
+    <string name="grid_form_any_genre">すべてのジャンル</string>
+    <string name="grid_form_not_in_library">今はライブラリにありません</string>
+    <string name="grid_form_no_systems">ゲームのある機種がまだありません</string>
+    <string name="grid_form_no_genres">ジャンルはまだありません。ゲーム情報を取得すると、ゲームが自動でジャンル分けされます。</string>
+    <string name="grid_form_no_games">ゲームなし</string>
+    <string name="grid_form_counting">数えています…</string>
+    <string name="grid_form_looking">探しています…</string>
+    <string name="grid_form_bad_pattern">タイトルのパターンが正しい正規表現ではありません</string>
+    <string name="grid_form_bad_pattern_short">無効なパターン</string>
+    <plurals name="grid_form_match_count">
+        <item quantity="other">%1$d本が一致</item>
+    </plurals>
+    <string name="grid_form_made">スマートフォルダ「%1$s」を作りました</string>
+    <plurals name="grid_form_made_count">
+        <item quantity="other">スマートフォルダ「%2$s」を作りました · %1$d本</item>
+    </plurals>
+    <string name="grid_form_saved">「%1$s」を保存しました</string>
+    <plurals name="grid_form_saved_count">
+        <item quantity="other">「%2$s」を保存しました · %1$d本</item>
+    </plurals>
+    <string name="grid_form_converted">「%1$s」はスマートフォルダになりました。中身はホームのグリッドに戻りました</string>
+
+    <string name="grid_zoom_folder">%1$s：横%2$d個</string>
+    <string name="grid_zoom_games">ゲーム：%1$s</string>
+    <plurals name="grid_zoom_rows">
+        <item quantity="other">アイコン：%1$d段</item>
+    </plurals>
+    <string name="grid_zoom_icons">アイコン：%1$s</string>
+    <string name="grid_size_large">大</string>
+    <string name="grid_size_largeish">やや大</string>
+    <string name="grid_size_medium">中</string>
+    <string name="grid_size_smallish">やや小</string>
+    <string name="grid_size_small">小</string>
+
+    <string name="grid_blurb_fav">ハートをつけたゲーム。どのゲームでも Y › お気に入りに追加</string>
+    <string name="grid_blurb_most">いちばん長く遊んでいるゲーム、プレイ時間順</string>
+    <string name="grid_blurb_added">ライブラリに入ったばかりのゲーム</string>
+    <string name="grid_blurb_continue">やめたところから、つづきを</string>
+    <string name="grid_blurb_unplayed">まだ始めていない、新しい冒険</string>
+    <string name="grid_blurb_playing">今まさに遊んでいる途中のゲーム</string>
+    <string name="grid_blurb_backlog">出番を待つゲームたち。どのゲームでも Y › ステータス › 積みゲー</string>
+    <string name="grid_blurb_beaten">クリアしたゲームとコンプリートしたゲーム、新しい順</string>
+    <string name="grid_recently_played">最近遊んだゲーム</string>
+    <string name="grid_all_apps">すべてのアプリ</string>
+    <string name="grid_all_apps_detail">インストール済みのすべて</string>
+    <string name="grid_all_apps_blurb">この端末のすべてのAndroidアプリ</string>
+    <string name="grid_genres_tile">ジャンル</string>
+    <string name="grid_genre_blurb">「%1$s」のゲーム</string>
+    <string name="grid_folder_empty_blurb">空のフォルダです。どのタイルでも Y › フォルダへ移動</string>
+    <string name="grid_played_time">%1$sプレイ</string>
+    <string name="grid_played_for">プレイ時間：%1$s</string>
+
+    <string name="grid_empty_title">ホームのグリッドは空っぽです</string>
+    <string name="grid_empty_help">Yを押して「ホームに追加」を選ぶか、設定で「非表示のゲームを表示」をオンにしてください。</string>
+    <string name="grid_no_games_help">ゲームが入っているフォルダを選んでください。中の並び方は自由です。</string>
+    <string name="grid_rescan">再スキャン</string>
+    <string name="grid_running_badge">プレイ中</string>
+
+    <string name="grid_move_cancelled">移動をキャンセル：元の場所に戻しました</string>
+    <string name="grid_move_now_playing">「プレイ中」はいちばん前のままです</string>
+    <string name="grid_move_sorted">%1$sで並べ替え中です。手で動かすには Y › 中身を並べ替え › 手動</string>
+    <string name="grid_move_how">十字ボタンで移動 · Aで置く · Yで持ち運ぶ</string>
+    <string name="grid_move_how_widget">十字ボタンで移動 · Aで置く · Yでサイズ変更</string>
+    <string name="grid_move_resized">「%1$s」のサイズを変更</string>
+    <string name="grid_move_resized_it">サイズを変更</string>
+    <string name="grid_hint_paste">空きスペースに貼り付け</string>
+    <string name="grid_hint_cancel">キャンセル</string>
+    <string name="grid_hint_move">移動</string>
+    <string name="grid_hint_drop">置く</string>
+    <string name="grid_hint_resize">サイズ</string>
+    <string name="grid_hint_carry">持ち運ぶ</string>
+    <string name="grid_hint_page">ページ</string>
+
+    <string name="grid_menu_open">開く</string>
+    <string name="grid_menu_resume">再開</string>
+    <string name="grid_menu_play">遊ぶ</string>
+    <string name="grid_menu_move">移動</string>
+    <string name="grid_menu_select">選択</string>
+    <string name="grid_menu_select_sub">いくつかチェックして、まとめて操作</string>
+    <string name="grid_menu_also_add_sub">ここにも残ります</string>
+    <string name="grid_menu_move_up">「%1$s」へ上がる</string>
+    <string name="grid_menu_take_out">フォルダから出す</string>
+    <string name="grid_menu_took_out">「%1$s」を「%2$s」から出しました</string>
+    <string name="grid_menu_took_out_folder">「%1$s」をフォルダから出しました</string>
+    <string name="grid_menu_game_options">ゲームのオプション</string>
+    <string name="grid_menu_sort_view">並べ替えと表示</string>
+    <string name="grid_menu_design">フォルダをデザイン…</string>
+    <string name="grid_menu_rename">フォルダ名を変更</string>
+    <string name="grid_menu_rename_title">フォルダの名前を変更</string>
+    <string name="grid_menu_sort_inside">中身を並べ替え…</string>
+    <string name="grid_menu_view_as">表示方法…</string>
+    <string name="grid_menu_view_as_help">タイルのグリッド、背表紙の本棚、カートリッジのケース、パッケージのカルーセル。フォルダの中でXを押しても切り替わります。</string>
+    <string name="grid_menu_delete">フォルダを削除…</string>
+    <string name="grid_menu_deleted">「%1$s」を削除しました</string>
+    <string name="grid_menu_deleted_folder">フォルダを削除しました</string>
+    <string name="grid_menu_unhide_folder">このフォルダを再表示</string>
+    <string name="grid_menu_hide_folder">このフォルダを非表示にする</string>
+    <string name="grid_menu_arrange">フォルダのように並べる</string>
+    <string name="grid_menu_arrange_sub">中にフォルダ、ジャンル、ウィジェットを置けます</string>
+    <string name="grid_menu_unhide_system">この機種を再表示</string>
+    <string name="grid_menu_hide_system">この機種を非表示にする</string>
+    <string name="grid_menu_add_home">ホームに追加…</string>
+    <string name="grid_menu_sort_folder">このフォルダを並べ替え…</string>
+
+    <string name="grid_sort_page">「%1$s」をフォルダ風に</string>
+    <string name="grid_sort_page_folder">フォルダを並べ替え</string>
+    <string name="grid_sort_manual_sub">自分で決めた順番。どの並べ替えでも保たれます</string>
+    <string name="grid_sort_manual_done">自分で決めた順番に戻しました</string>
+    <string name="grid_sort_done">%1$sに並べ替えました</string>
+
+    <string name="grid_view_page">「%1$s」の表示方法</string>
+    <string name="grid_view_page_folder">フォルダの表示方法</string>
+    <string name="grid_view_grid_sub">ホームのグリッドと同じタイル</string>
+    <string name="grid_view_shelf_sub">木の本棚に背表紙。中のフォルダごとに1段</string>
+    <string name="grid_view_case_sub">スポンジ張りのケースにカートリッジとディスク</string>
+    <string name="grid_view_carousel_sub">パッケージを1枚ずつ、ほかは奥へ向きを変えて</string>
+    <string name="grid_view_switched">%1$s表示</string>
+
+    <string name="grid_delete_page">「%1$s」を削除しますか？</string>
+    <string name="grid_delete_page_folder">フォルダを削除しますか？</string>
+    <string name="grid_delete_keep">中身は残す</string>
+    <string name="grid_delete_keep_sub">中身は「%1$s」の、このフォルダがあった場所へ移ります</string>
+    <string name="grid_delete_keep_sub_home">中身はホームのグリッドの、このフォルダがあった場所へ移ります</string>
+    <string name="grid_delete_all_subfolders">サブフォルダごと削除</string>
+    <string name="grid_delete_all_shortcuts">ショートカットごと削除</string>
+    <string name="grid_delete_all_sub">ゲームやアプリそのものは残ります</string>
+
+    <string name="grid_trail_home">ホーム</string>
+    <plurals name="grid_items_sorted">
+        <item quantity="other">%1$d個 · %2$s</item>
+    </plurals>
+    <string name="grid_hint_options">オプション</string>
+
+    <string name="grid_add_system">ここに機種を追加</string>
+    <string name="grid_add_system_none">すべての機種がもうグリッドかフォルダにあります。グリッドから外した機種はここに出てきます。</string>
+    <string name="grid_add_collection">ここにコレクションかジャンルを追加</string>
+    <string name="grid_add_collection_none">すべてのコレクションとジャンルが、もうグリッドかフォルダにあります。</string>
+    <string name="grid_add_app">ここにアプリを追加</string>
+    <string name="grid_add_app_none">すべてのアプリが、もうグリッドかフォルダにあります。</string>
+    <string name="grid_add_tandem">ここにTandemのアプリを追加</string>
+    <string name="grid_add_tandem_none">Tandemのアプリは全部、もうグリッドかフォルダにあります。</string>
+    <string name="grid_add_spot">この場所に追加</string>
+    <string name="grid_add_home">ホームに追加</string>
+    <string name="grid_add_none">機種もコレクションもアプリも、全部ホームのグリッドにあります。</string>
+    <string name="grid_add_gathering">アプリを集めています…</string>
+    <plurals name="grid_add_things">
+        <item quantity="other">%1$d個</item>
+    </plurals>
+    <string name="grid_add_nothing_left">追加できるものは残っていません</string>
+    <string name="grid_add_done_home">「%1$s」をホームのグリッドに置きました</string>
+    <string name="grid_add_done_folder">「%1$s」をフォルダに入れました</string>
+    <string name="grid_unpinned">ホームのグリッドから外しました</string>
+    <string name="grid_pinned">ホームのグリッドにピン留めしました ★</string>
+
+    <string name="grid_type_game">ゲーム</string>
+    <string name="grid_type_now_playing">プレイ中</string>
+    <string name="grid_type_apps">アプリ</string>
+    <string name="grid_type_system">機種</string>
+    <string name="grid_type_collection">コレクション</string>
+    <string name="grid_type_genre">ジャンル</string>
+    <string name="grid_type_tandem_app">Tandemのアプリ</string>
+    <string name="grid_type_emulator">エミュレーター</string>
+    <string name="grid_type_app">アプリ</string>
+    <string name="grid_type_widget">ウィジェット</string>
+    <string name="grid_type_folder">フォルダ</string>
+    <string name="grid_type_smart_folder">スマートフォルダ</string>
+
+    <string name="grid_folder_name_title">フォルダの名前</string>
+    <string name="grid_folder_default">新しいフォルダ</string>
+    <string name="grid_folder_unnamed">フォルダ</string>
+
+    <string name="grid_sort_manual">手動</string>
+    <string name="grid_sort_name">名前順</string>
+    <string name="grid_sort_recent">最近遊んだ順</string>
+    <string name="grid_sort_most">よく遊ぶ順</string>
+    <string name="grid_sort_added">追加した順</string>
+    <string name="grid_sort_system">機種順</string>
+
+    <string name="grid_view_grid">グリッド</string>
+    <string name="grid_view_shelf">本棚</string>
+    <string name="grid_view_case">ケース</string>
+    <string name="grid_view_carousel">カルーセル</string>
+
+    <string name="grid_screens_top">上画面</string>
+    <string name="grid_screens_bottom">下画面</string>
+    <string name="grid_screens_default">デフォルト</string>
+
+    <string name="grid_system_arranged_undo">「%1$s」をフォルダ風に</string>
+    <string name="grid_system_arranged">「%1$s」はフォルダのように並ぶようになりました。空きスペースでYを押すとフォルダやウィジェットを追加できます</string>
+    <string name="grid_system_list_undo">「%1$s」をリストに</string>
+    <string name="grid_system_list_plain">「%1$s」はふつうのリストに戻りました</string>
+    <string name="grid_system_list_folders_home">「%1$s」はリストに戻りました。中のフォルダはホームへ移しました</string>
+
+    <string name="grid_smart_played_yes">プレイ済み</string>
+    <string name="grid_smart_played_no">未プレイ</string>
+    <string name="grid_smart_played_any">指定なし</string>
+    <string name="grid_smart_pattern">「%1$s」</string>
+    <string name="grid_smart_favorites">お気に入り</string>
+    <string name="grid_smart_random">ランダム%1$d本</string>
+    <string name="grid_smart_every_game">すべてのゲーム</string>
+    <string name="grid_smart_years_from">%1$s年から</string>
+    <string name="grid_smart_years_to">%1$s年まで</string>
+    <string name="grid_smart_open_on">ゲームを開く画面</string>
+    <string name="grid_smart_open_own">ゲームごとの設定</string>
+    <string name="grid_smart_edit_rules">条件を編集…</string>
+    <string name="grid_smart_freeze">ふつうのフォルダにする</string>
+    <string name="grid_smart_make">スマートフォルダにする</string>
+    <plurals name="grid_smart_frozen">
+        <item quantity="other">「%2$s」はふつうのフォルダになりました。ゲームは%1$d本です</item>
+    </plurals>
+    <plurals name="grid_smart_frozen_some">
+        <item quantity="other">「%2$s」はふつうのフォルダになりました。ほかのフォルダにあった%1$d本はそのままです</item>
+    </plurals>
+
+    <string name="grid_drag_made_folder">フォルダ「%1$s」を作りました</string>
+    <string name="grid_drag_moved">「%1$s」を移動</string>
+    <string name="grid_drag_moved_it">移動しました</string>
+    <string name="grid_drag_moved_into">「%1$s」を「%2$s」へ移動</string>
+    <string name="grid_drag_moved_into_folder">「%1$s」をフォルダへ移動</string>
+    <string name="grid_drag_moved_it_into">「%1$s」へ移動しました</string>
+    <string name="grid_drag_moved_it_into_folder">フォルダへ移動しました</string>
+    <string name="grid_drag_new_folder">＋フォルダ</string>
+</resources>

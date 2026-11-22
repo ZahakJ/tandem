@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The home screens and what sits on them. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="home_grid_size_small">小</string>
+    <string name="home_grid_size_medium">中</string>
+    <string name="home_grid_size_large">大</string>
+    <string name="home_grid_size_huge">特大</string>
+    <plurals name="home_grid_size_columns">
+        <item quantity="other">%1$d列</item>
+    </plurals>
+    <string name="home_card_shape_rounded">角丸</string>
+    <string name="home_card_shape_square">四角</string>
+    <string name="home_card_shape_circle">丸</string>
+    <string name="home_card_shape_portrait">パッケージ（縦長）</string>
+    <string name="home_card_shape_landscape">横長</string>
+    <string name="home_tile_style_pastel">パステル</string>
+    <string name="home_tile_style_solid">単色</string>
+    <string name="home_tile_style_glass">ガラス</string>
+    <string name="home_tile_style_mono">ミニマル</string>
+
+    <string name="home_bottom_details">詳細</string>
+    <string name="home_bottom_both">アート＋情報</string>
+    <string name="home_bottom_art">動くアート</string>
+    <string name="home_bottom_clock">時計</string>
+    <string name="home_hero_gradient_fade">ふんわり</string>
+    <string name="home_hero_gradient_strong">しっかり</string>
+    <string name="home_hero_gradient_vignette">ビネット</string>
+    <string name="home_hero_gradient_none">なし</string>
+    <string name="home_hero_running">● 起動中</string>
+    <string name="home_clock_all_apps">すべてのアプリ</string>
+    <string name="home_clock_date">M月d日（EEE）</string>
+    <string name="home_clock_battery">バッテリー%1$d%%</string>
+
+    <string name="home_resume_continue">つづきから</string>
+    <string name="home_resume_session">今回%1$sプレイ</string>
+    <string name="home_resume_hint_resume">再開</string>
+    <string name="home_resume_hint_switch">切り替え</string>
+    <string name="home_resume_close_again">もう一度Yで「%1$s」を終了</string>
+    <string name="home_recent_off">「最近遊んだゲームのバー」はオフです。設定 › ホームとレイアウト</string>
+    <string name="home_recent_title">最近遊んだゲーム</string>
+    <string name="home_recent_hint_hide">隠す</string>
+    <string name="home_recent_running">● 起動中</string>
+
+    <string name="home_find_also">ほかにも</string>
+    <string name="home_find_system">機種</string>
+    <string name="home_find_app">アプリ</string>
+    <string name="home_find_open">開く</string>
+    <string name="home_jump_unknown_year">発売年不明</string>
+    <string name="home_jump_unrated">評価なし</string>
+    <string name="home_jump_page">%1$dページ</string>
+    <string name="home_jump_hint">L2 · R2でジャンプ</string>
+
+    <string name="home_layout_shelves">シェルフ</string>
+    <string name="home_layout_grid">アイコングリッド</string>
+    <string name="home_layout_carousel">カルーセル</string>
+    <string name="home_layout_list">リスト</string>
+    <string name="home_layout_console">コンソール</string>
+    <string name="home_layout_orbit">オービット</string>
+    <string name="home_layout_spotlight">スポットライト</string>
+    <string name="home_view_grid">グリッド</string>
+    <string name="home_view_list">リスト</string>
+    <string name="home_view_carousel">カルーセル</string>
+    <string name="home_view_shelf">本棚</string>
+    <string name="home_view_case">ケース</string>
+    <string name="home_dock_style_bar">浮かぶバー</string>
+    <string name="home_dock_style_shelf">棚</string>
+    <string name="home_dock_style_minimal">アイコンだけ</string>
+    <string name="home_genres">ジャンル</string>
+    <plurals name="home_genres_count">
+        <item quantity="other">%1$dジャンル</item>
+    </plurals>
+    <plurals name="home_games_count">
+        <item quantity="other">%1$d本</item>
+    </plurals>
+    <plurals name="home_games_count_hidden">
+        <item quantity="other">非表示 · %1$d本</item>
+    </plurals>
+    <string name="home_entry_continue">つづきから · %1$s</string>
+    <string name="home_entry_collection">コレクション</string>
+    <string name="home_empty_hidden">ゲームはすべて非表示です</string>
+    <string name="home_empty_none">ゲームはまだありません</string>
+    <string name="home_empty_hidden_detail">設定 › プレイとシステム › プライバシーと非表示 › 非表示のゲームを表示</string>
+    <string name="home_empty_none_detail">Aでゲームが入っているフォルダを選んでください</string>
+    <string name="home_empty_hidden_kind">非表示</string>
+    <string name="home_empty_none_kind">ゲームのフォルダを選ぶ</string>
+    <string name="home_empty_hidden_action">設定</string>
+    <string name="home_empty_none_action">選ぶ</string>
+
+    <string name="home_shelves_continue">つづきから遊ぶ</string>
+    <string name="home_shelves_systems">機種</string>
+    <string name="home_shelves_collections">コレクション</string>
+    <string name="home_shelves_apps">アプリ</string>
+    <string name="home_shelves_apps_card">アプリ</string>
+    <string name="home_shelves_apps_card_detail">インストール済みのすべて</string>
+    <string name="home_shelves_systems_card">機種</string>
+    <string name="home_shelves_systems_card_detail">エミュレーターとフォルダ</string>
+    <string name="home_empty_hidden_help">見るには、設定（Start）で「非表示のゲームを表示」をオンにしてください。</string>
+    <string name="home_empty_none_help">ゲームが入っているフォルダを選んでください。並び方は自由です：機種ごとのフォルダでも、1機種だけのフォルダでも、全部まとめてでも。</string>
+    <string name="home_empty_looking">探しています…</string>
+    <string name="home_empty_rescan">再スキャン</string>
+    <string name="home_empty_pick">ゲームのフォルダを選ぶ</string>
+
+    <plurals name="home_folder_subtitle">
+        <item quantity="other">%2$s · %1$d本</item>
+    </plurals>
+    <plurals name="home_folder_subtitle_hidden">
+        <item quantity="other">%2$s · 非表示 · %1$d本</item>
+    </plurals>
+    <plurals name="home_genre_subtitle">
+        <item quantity="other">ジャンル · %1$d本</item>
+    </plurals>
+    <plurals name="home_genres_subtitle">
+        <item quantity="other">%1$dジャンル</item>
+    </plurals>
+    <string name="home_grid_folders">フォルダ</string>
+    <string name="home_grid_games">ゲーム</string>
+    <string name="home_shelf_games">ゲーム</string>
+
+    <string name="home_none_go_back">戻る</string>
+    <string name="home_none_system_gone">この機種は見当たりません</string>
+    <string name="home_none_system_gone_detail">前回のスキャンでフォルダが見つかりませんでした。</string>
+    <string name="home_none_folder">ここは空っぽです</string>
+    <string name="home_none_folder_detail">このフォルダにゲームをコピーして、再スキャンしてください。</string>
+    <string name="home_none_rescan">再スキャン</string>
+    <string name="home_none_tucked">ここに表示するものはありません</string>
+    <string name="home_none_tucked_detail">ゲームはこっそりしまってあります。</string>
+    <string name="home_none_hidden">ここのゲームはすべて非表示です</string>
+    <string name="home_none_hidden_detail">非表示のゲームは、表示するまで見えません。</string>
+    <string name="home_none_show_hidden">非表示のゲームを表示</string>
+    <string name="home_none_smart">一致するゲームはありません</string>
+    <string name="home_none_smart_detail">ライブラリに、このフォルダの条件に合うゲームがありません。</string>
+    <string name="home_none_smart_edit">条件を編集</string>
+    <string name="home_none_favorites">お気に入りはまだありません</string>
+    <string name="home_none_favorites_detail">ゲームでYを押して「お気に入りに追加」を選んでください。</string>
+    <string name="home_none_played">まだ何も遊んでいません</string>
+    <string name="home_none_played_detail">遊んだゲームがここに並びます。</string>
+    <string name="home_none_played_system_detail">この機種で遊んだゲームが、よく遊ぶ順にここに並びます。</string>
+    <string name="home_none_unplayed">全部遊びました！</string>
+    <string name="home_none_unplayed_detail">どのゲームも一度は遊んでいます。おみごと。</string>
+    <string name="home_none_playing">遊びかけのゲームはありません</string>
+    <string name="home_none_playing_detail">しばらく遊んだゲームは、自動でここに並びます。</string>
+    <string name="home_none_backlog">積みゲーはゼロです</string>
+    <string name="home_none_backlog_detail">ゲームで Y › ステータス › 積みゲー を選ぶと、ここに入ります。</string>
+    <string name="home_none_finished">クリアしたゲームはまだありません</string>
+    <string name="home_none_finished_detail">エンディングを見たら Y › ステータス › クリア済み。</string>
+    <string name="home_none_added">ゲームはまだありません</string>
+    <string name="home_none_added_detail">再スキャンすると、新しいゲームがここに並びます。</string>
+    <string name="home_none_genre">このジャンルは空です</string>
+    <string name="home_none_genre_detail">ゲームは非表示にされたか、削除されました。</string>
+    <string name="home_none_genres">ジャンルはまだありません</string>
+    <string name="home_none_genres_detail">ゲーム情報を取得するか、gamelistをインポートすると、ゲームが自動でジャンル分けされます。</string>
+    <string name="home_none_genres_scrape">情報を取得</string>
+
+    <string name="home_spot_game">ゲーム</string>
+    <string name="home_spot_system">機種</string>
+    <string name="home_spot_folder">フォルダ</string>
+    <string name="home_spot_genre">ジャンル</string>
+    <string name="home_spot_collection">コレクション</string>
+    <string name="home_spot_app">アプリ</string>
+    <string name="home_spot_empty">空きスペース</string>
+    <string name="home_spot_empty_paste">Aで、持ち運び中のタイルをここに貼り付け</string>
+    <string name="home_spot_empty_add">Aでフォルダ、ゲーム、アプリ、ウィジェットをここに追加</string>
+    <string name="home_spot_running">● 起動中</string>
+    <string name="home_spot_hint_paste">貼り付け</string>
+    <string name="home_spot_hint_add">ここに追加</string>
+    <string name="home_spot_hint_options">オプション</string>
+    <string name="home_spot_hint_swap">入れ替え</string>
+    <string name="home_spot_hint_open">開く</string>
+    <string name="home_spot_hint_resume">再開</string>
+    <string name="home_spot_hint_play">遊ぶ</string>
+
+    <string name="home_spotlight_apps">アプリ</string>
+    <string name="home_spotlight_hidden">ゲームはすべて非表示です</string>
+    <string name="home_spotlight_none">ゲームはまだありません。ゲームが入っているフォルダを選んでください</string>
+    <string name="home_spotlight_show_hidden">非表示のゲームを表示</string>
+    <string name="home_spotlight_pick">ゲームのフォルダを選ぶ</string>
+    <string name="home_spotlight_running">● 起動中</string>
+    <string name="home_spotlight_one_player">1人用</string>
+    <string name="home_spotlight_players">%1$s人用</string>
+    <string name="home_spotlight_played">プレイ時間</string>
+    <string name="home_spotlight_last_played">最後に遊んだ日</string>
+    <plurals name="home_spotlight_sessions">
+        <item quantity="other">プレイ回数</item>
+    </plurals>
+    <string name="home_spotlight_status">ステータス</string>
+    <string name="home_spotlight_achievements">実績</string>
+    <string name="home_spotlight_not_played">まだ遊んでいません</string>
+    <string name="home_spotlight_just_now">たった今</string>
+    <string name="home_spotlight_hint_resume">再開</string>
+    <string name="home_spotlight_hint_play">遊ぶ</string>
+    <string name="home_spotlight_hint_open">開く</string>
+    <string name="home_spotlight_hint_menu">メニュー</string>
+    <string name="home_spotlight_hint_less">たたむ</string>
+    <string name="home_spotlight_hint_more">続きを読む</string>
+    <string name="home_spotlight_hint_groups">グループ</string>
+    <string name="home_spotlight_settings">スポットライト</string>
+    <string name="home_spotlight_rail">スポットライトの列</string>
+    <string name="home_spotlight_rail_help">パッケージの列を左右どちらに置くか。ゲームの詳細は反対側に出ます。</string>
+    <string name="home_spotlight_rail_left">左</string>
+    <string name="home_spotlight_rail_right">右</string>
+    <string name="home_spotlight_backdrop">スポットライトの背景</string>
+    <string name="home_spotlight_backdrop_help">選択中のゲームの後ろに広がるもの：キービジュアル、ぼかしたパッケージ、またはテーマの色だけ。</string>
+    <string name="home_spotlight_backdrop_art">アート</string>
+    <string name="home_spotlight_backdrop_blur">ぼかしパッケージ</string>
+    <string name="home_spotlight_backdrop_dim">暗め</string>
+    <string name="home_spotlight_motion">スポットライトの動き</string>
+    <string name="home_spotlight_motion_help">ゲームの後ろのアートが、とてもゆっくり漂いながらズームします。「動きを減らす」のときも止まります。</string>
+
+    <string name="home_shelf_look_wood">木目</string>
+    <string name="home_shelf_look_matte">マット</string>
+    <string name="home_shelf_look_open">棚なし</string>
+
+    <string name="home_running_outside">Tandemの外で起動</string>
+    <string name="home_running_running">起動中</string>
+    <string name="home_running_played">%1$s · 今回%2$sプレイ</string>
+    <string name="home_running_app">%1$s · %2$s</string>
+    <string name="home_running_closed">「%1$s」を終了しました</string>
+    <string name="home_running_close_failed">終了できませんでした。Shizukuは動いていますか？</string>
+    <string name="home_running_close_again">もう一度Xで「%1$s」を終了</string>
+    <string name="home_running_close_all_again">もう一度Yで全部のゲームを終了</string>
+    <plurals name="home_running_closed_all">
+        <item quantity="other">%1$d本のゲームを終了しました。すっきり！</item>
+    </plurals>
+    <string name="home_running_close_all_failed">終了できませんでした。Shizukuは動いていますか？</string>
+    <string name="home_running_title">起動中のゲーム</string>
+    <plurals name="home_running_open">
+        <item quantity="other">%1$d本起動中</item>
+    </plurals>
+    <string name="home_running_no_access">まだほかのアプリが見えません</string>
+    <string name="home_running_no_access_detail">Shizukuを起動してTandemを許可してくれたら、起動中のゲームを全部ここに出しますね。</string>
+    <string name="home_running_nothing">起動中のゲームはありません</string>
+    <string name="home_running_nothing_detail">ゲームを始めると、ここで待っていてくれます。</string>
+    <string name="home_running_close_all_armed">もう一度で\n全部終了</string>
+    <string name="home_running_close_all">全部終了</string>
+    <string name="home_running_hint_resume">再開</string>
+    <string name="home_running_hint_close">終了</string>
+    <string name="home_running_hint_close_all">全部終了</string>
+    <string name="home_running_save_first">ゲームの終了は電源を切るのと同じです。先にセーブを！</string>
+    <string name="home_running_pill">● 起動中</string>
+    <string name="home_running_close_armed">もう一度Xで\n終了</string>
+    <string name="home_now_title">プレイ中</string>
+    <string name="home_now_paused_in">● %1$sで一時停止中</string>
+    <string name="home_now_more">ほか</string>
+    <string name="home_now_chip">● プレイ中</string>
+    <string name="home_now_tap">タップで再開</string>
+    <plurals name="home_top_open">
+        <item quantity="other">▶ %1$d本起動中</item>
+    </plurals>
+    <string name="home_top_view">▦ %1$s</string>
+    <string name="home_top_stats">★ 記録</string>
+    <string name="home_top_quick">◐ クイック</string>
+
+    <string name="home_scan_already">もうゲームを探しています…</string>
+    <string name="home_scan_looking">ゲームを探しています…</string>
+    <plurals name="home_scan_found">
+        <item quantity="other">ゲームが%1$d本見つかりました</item>
+    </plurals>
+    <plurals name="home_scan_imported">
+        <item quantity="other">%1$d本のゲーム情報を引き継ぎました ✨</item>
+    </plurals>
+    <string name="home_favourite_needs_game">お気に入りにするゲームを選んでください</string>
+    <string name="home_surprise">「%1$s」はいかがですか？</string>
+
+    <string name="home_crumb_games">ゲーム</string>
+    <string name="home_crumb_genres">ジャンル</string>
+    <string name="home_crumb_settings">設定</string>
+    <string name="home_crumb_systems">機種</string>
+    <string name="home_crumb_apps">アプリ</string>
+    <string name="home_crumb_look">見た目と雰囲気</string>
+    <string name="home_crumb_theme_packs">テーマパック</string>
+    <string name="home_crumb_library">ライブラリとアート</string>
+    <string name="home_crumb_game_folders">ゲームフォルダ</string>
+    <string name="home_crumb_scrape">アートワークと情報</string>
+    <string name="home_crumb_stats">プレイ記録</string>
+    <string name="home_crumb_widgets">ウィジェット</string>
+    <string name="home_crumb_controls">操作</string>
+    <string name="home_crumb_rebind">ボタン割り当て</string>
+    <string name="home_crumb_manual">説明書</string>
+    <string name="home_splash_gathering">ゲームを集めています…</string>
+
+    <string name="home_setup_hi">こんにちは、ピップです！</string>
+    <string name="home_setup_lets_find">あなたのゲームを探しましょう。</string>
+    <string name="home_setup_files">ゲームを読みこむ</string>
+    <string name="home_setup_files_detail">すべてのファイルへのアクセスを許可してください。ゲームとアートワークを探しに行けるようになります。</string>
+    <string name="home_setup_tree">ゲームのフォルダを選ぶ</string>
+    <string name="home_setup_tree_detail">ゲームが入っているフォルダ（並び方は自由）を選んで、「このフォルダを使用」をタップしてください。ROMsフォルダでも大丈夫です。エミュレーターによっては、この方法で共有したゲームしか開けません。</string>
+    <string name="home_setup_step_one_first">先にステップ1を済ませてください</string>
+    <string name="home_setup_shizuku">ゲームの再開（おまけ）</string>
+    <string name="home_setup_shizuku_detail">Shizukuでぼくを許可してくれたら、ゲームをやめたところからそのまま戻せます。</string>
+    <string name="home_setup_done">完了 ✓</string>
+    <string name="home_setup_todo">設定する</string>
+
+    <string name="home_dock_removed">ドックから外しました</string>
+    <string name="home_dock_added">ドックに追加しました ★</string>
+    <string name="home_app_wont_open">そのアプリは開けません</string>
+    <string name="home_dock_all_apps">すべてのアプリ</string>
+
+    <string name="home_apps_title">すべてのアプリ</string>
+    <string name="home_apps_hint_open">開く</string>
+    <string name="home_apps_hint_options">オプション</string>
+    <string name="home_apps_hint_search">検索</string>
+    <string name="home_apps_search">アプリを検索</string>
+    <string name="home_apps_show_hidden">非表示のアプリを表示</string>
+    <string name="home_apps_gathering">アプリを集めています…</string>
+    <string name="home_apps_gathering_detail">少々お待ちください。</string>
+    <string name="home_apps_on_dock">ドックにあるアプリ</string>
+    <string name="home_apps_all">すべてのアプリ</string>
+    <string name="home_apps_none">表示できるアプリはありません</string>
+    <string name="home_apps_no_match">「%1$s」に一致するアプリはありません</string>
+    <string name="home_apps_hidden_match">アプリ一覧で非表示にしたアプリが1つ一致しています。</string>
+    <string name="home_apps_try_other">文字を減らすか、別の名前で試してください。</string>
+    <string name="home_apps_clear_search">検索を消去</string>
+    <string name="home_apps_stock_home">Androidのホーム（標準のランチャー）</string>
+    <string name="home_apps_stock_home_value">Homeでここに戻る</string>
+    <string name="home_apps_stock_home_failed">Android標準のホーム画面を開けません</string>
+
+    <string name="home_explainer_done">Tandemがホーム画面になりました ✨</string>
+    <string name="home_explainer_title">Tandemをホーム画面に</string>
+    <string name="home_explainer_body">どこでもHomeを押せばすぐここに戻ってきて、起動中のゲームにもワンボタンで戻れます。ほかのアプリはドックと「すべてのアプリ」にあります。いつでも元に戻せます。</string>
+    <string name="home_explainer_is_home">Tandemがホーム画面です</string>
+    <string name="home_explainer_on">オン ✓</string>
+    <string name="home_explainer_other">別のホームアプリを使う</string>
+    <string name="home_explainer_make">Tandemをホーム画面にする</string>
+    <string name="home_explainer_settings">Androidのホームアプリ設定を開く</string>
+    <string name="home_explainer_not_now">あとで</string>
+
+    <string name="home_play_title">ホームとプレイ</string>
+    <string name="home_play_use_home">Tandemをホーム画面にする</string>
+    <string name="home_play_use_home_help">ゲーム機のように、HomeボタンでTandemに戻れるようにします。いつものランチャーにはいつでも戻せます。</string>
+    <string name="home_play_needs_shizuku">Shizukuが必要</string>
+    <string name="home_play_needs_shizuku_toast">Shizukuを起動して、Tandemを許可する必要があります</string>
+    <string name="home_play_close_previous">前のゲームを終了</string>
+    <string name="home_play_close_previous_help">別のゲームを始めるとき、バックグラウンドで起動中のゲームを先に終了して、メモリやバッテリーを使わないようにします。Shizukuが必要です。</string>
+    <string name="home_play_ask_closing">終了する前に確認</string>
+    <string name="home_play_ask_closing_help">ゲームを始めると起動中のゲームが終了してしまうとき、先に確認します：そのゲームを再開するか、終了して新しいゲームを始めるか。Shizukuが必要です。</string>
+    <string name="home_play_immersion">没入モード</string>
+    <string name="home_play_immersion_needs">サイレントモードへのアクセスが必要</string>
+    <string name="home_play_immersion_help">ゲーム中はサイレントモードをオンにします：通知のポップアップ、音、バイブはなし、アラームだけ。Tandemに戻ると元どおりになります。「サイレントモードへのアクセス」でTandemを許可する必要があります。Shizukuがあれば、Tandemが自分で許可します。</string>
+    <string name="home_play_immersion_allow">許可</string>
+    <string name="home_play_immersion_on">没入モードはオンです</string>
+    <string name="home_play_immersion_come_back">Tandemを許可して、戻ってきてください</string>
+    <string name="home_play_dock">ドックのアプリを選ぶ</string>
+    <plurals name="home_play_dock_count">
+        <item quantity="other">%1$d個のアプリ</item>
+    </plurals>
+    <string name="home_play_dock_help">ドックに置くアプリと、その順番を選びます。</string>
+    <string name="home_play_screensaver">スクリーンセーバー</string>
+    <string name="home_play_screensaver_help">しばらくボタンを押さないでいると、ピップがお昼寝している夜空を、あなたのゲームのパッケージがゆっくり流れていきます。画面の焼きつきも防げます。どのボタンでも起きます。</string>
+    <plurals name="home_play_screensaver_after">
+        <item quantity="other">%1$d分後</item>
+    </plurals>
+    <string name="home_play_freeze">スリープ中はゲームを一時停止</string>
+    <string name="home_play_needs_root">root版Shizukuが必要</string>
+    <string name="home_play_freeze_help">画面が消えて1分たつと、開いたままのゲームを一時停止します。エミュレーターの音声のせいで電池が減り続けることなく、本体がちゃんと眠れます。起こせば、そのままの場所からつづきが始まります。rootで動くShizukuが必要です。</string>
+    <string name="home_play_needs_root_toast">rootで動くShizukuが必要です</string>
+    <string name="home_play_private">プライベートモード</string>
+    <string name="home_play_private_help">非表示のゲーム・フォルダ・機種は、%1$sとPINで出すまで隠れたままで、Tandemはオフラインのままになります。オフにするときはPINを聞かれます。オフの間は、%1$sですぐにオンになります。</string>
+    <string name="home_play_offline">非表示のゲームはオフラインで</string>
+    <string name="home_play_offline_closes">終了するまで</string>
+    <string name="home_play_offline_plays">プレイ中だけ</string>
+    <string name="home_play_offline_help">プライベートモードでは、非表示のゲームを遊んでいる間は機内モードをオンにして、ゲームがネットにつながらないようにします。「プレイ中だけ」：Tandemに戻るとオンラインに戻ります。「終了するまで」：ゲームがバックグラウンドで開いている間（そこで同期するかもしれません）も、アプリが終了するか非表示のゲームをしまうまでオフラインのままです。自分でオンにした機内モードはそのままです。Shizukuが必要です。</string>
+    <string name="home_play_offline_help_off">プライベートモードでは、非表示のゲームを遊んでいる間は機内モードをオンにして、ゲームがネットにつながらないようにします。「プレイ中だけ」：Tandemに戻るとオンラインに戻ります。「終了するまで」：ゲームがバックグラウンドで開いている間（そこで同期するかもしれません）も、アプリが終了するか非表示のゲームをしまうまでオフラインのままです。自分でオンにした機内モードはそのままです。Shizukuが必要です。プライベートモード中のみ。</string>
+    <string name="home_play_pin">プライベートモードのPIN</string>
+    <string name="home_play_pin_set">設定済み</string>
+    <string name="home_play_pin_not_set">未設定</string>
+    <string name="home_play_pin_help">非表示のゲームを出したり、プライベートモードをオフにしたりする4〜6桁のPINを変えます。忘れたら、PIN入力画面でYを押すと24時間の待ち時間が始まり、そのあと新しいPINを決められます。</string>
+    <string name="home_play_pin_change">変更</string>
+    <string name="home_play_export">プレイ記録を書き出す</string>
+    <string name="home_play_export_help">プレイ履歴を表計算ファイル（CSV）にしてROMs/tandemに書き出します。</string>
+
+    <string name="home_collection_playing">プレイ中</string>
+    <string name="home_collection_backlog">積みゲー</string>
+    <string name="home_collection_finished">クリア済み</string>
+    <string name="home_collection_favorites">お気に入り</string>
+    <string name="home_collection_most_played">よく遊ぶゲーム</string>
+    <string name="home_collection_recently_added">最近追加したゲーム</string>
+    <string name="home_collection_never_played">未プレイ</string>
+    <string name="home_collection_continue">つづきから遊ぶ</string>
+    <string name="home_collection_system_most">%1$s · よく遊ぶ順</string>
+    <plurals name="home_collection_more_systems_most">
+        <item quantity="other">ほか%1$d機種 · よく遊ぶ順</item>
+    </plurals>
+</resources>

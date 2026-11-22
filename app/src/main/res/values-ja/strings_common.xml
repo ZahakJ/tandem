@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Words used all over Tandem: button hints, On and Off, sizes. Keys start with common_. See docs/TRANSLATING.md. -->
+<resources>
+    <string name="common_back">戻る</string>
+    <string name="common_close">閉じる</string>
+    <string name="common_choose">選ぶ</string>
+    <string name="common_on">オン</string>
+    <string name="common_off">オフ</string>
+    <string name="common_clear">消去</string>
+    <!-- Free space on a drive, after a size: "12 GB free". -->
+    <string name="common_size_free">空き%1$s</string>
+    <!-- A battery level: "87%". -->
+    <string name="common_percent">%1$d%%</string>
+
+    <!-- Settings › Play & system › Language. The options are each language's name in itself, never translated. -->
+    <string name="common_language">言語</string>
+    <string name="common_language_system">システムのデフォルト</string>
+    <string name="common_language_help">Tandemが話す言語です。「システムのデフォルト」はAndroidの設定に合わせます。まだ翻訳されていない部分は英語で表示されます。</string>
+</resources>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The menus: the game menu, view options, the app menu, Confirm, X search, the keyboards, hold-to-confirm and
+     Undo. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="menus_hidden_away">こっそりしまいました</string>
+    <string name="menus_hidden_still_shows">非表示にしました。非表示のゲームを表示している間は見えています</string>
+    <string name="menus_hidden_listed">非表示にしました。Start › 非表示 に並んでいます</string>
+    <string name="menus_hidden_back">ライブラリに戻りました</string>
+
+    <string name="menus_game_resume">再開</string>
+    <string name="menus_game_play">遊ぶ</string>
+    <string name="menus_game_unfavorite">お気に入りから外す</string>
+    <string name="menus_game_favorite">お気に入りに追加</string>
+    <string name="menus_game_upnext_remove">「次に遊ぶ」から外す</string>
+    <string name="menus_game_upnext_add">「次に遊ぶ」に追加</string>
+    <string name="menus_game_unpin_home">ホームのピン留めを外す</string>
+    <string name="menus_game_pin_home">ホームにピン留め</string>
+    <string name="menus_game_native">ネイティブ版をビルド</string>
+    <string name="menus_game_native_help">Peanuts Nativeが、エミュレーターなしで動くように一度だけ作り直します（5〜40分）。そのあとは「遊ぶ」でネイティブに起動します。</string>
+    <string name="menus_game_native_building">ネイティブ版をビルド中</string>
+    <string name="menus_game_notes">メモ</string>
+    <string name="menus_game_notes_help">このゲームのメモです。ROMs/notesにあります。</string>
+    <string name="menus_game_manual">説明書</string>
+    <string name="menus_game_manual_pictures">画像</string>
+    <string name="menus_game_manual_help">ゲームの説明書や攻略本を1ページずつ：%1$s</string>
+    <string name="menus_game_achievements">実績</string>
+    <string name="menus_game_achievements_help">このゲームのSteam実績すべてと、それぞれのレア度。</string>
+    <string name="menus_game_edit">情報を編集</string>
+    <plurals name="menus_game_edit_locked">
+        <item quantity="other">%1$d個ロック中</item>
+    </plurals>
+    <string name="menus_game_edit_help">ロックした項目は設定したままになり、情報の取得やgamelistのインポートでも変わりません。</string>
+    <string name="menus_game_emulator">エミュレーター</string>
+    <string name="menus_game_emulator_none">未インストール</string>
+    <string name="menus_game_emulator_help">このゲームを起動するエミュレーター。Aでインストール済みのものを全部表示します。いちばん上は機種の標準です。</string>
+    <string name="menus_game_emulator_system">機種の標準</string>
+    <string name="menus_game_emulator_get">「機種」で%1$s用のエミュレーターを入手</string>
+    <string name="menus_game_emulator_switch">切り替えるには別のエミュレーターをインストール</string>
+    <string name="menus_game_screen">起動する画面</string>
+    <string name="menus_game_screen_top">上画面</string>
+    <string name="menus_game_screen_bottom">下画面</string>
+    <string name="menus_game_screen_system">機種の設定どおり</string>
+    <string name="menus_game_screen_help">このゲームが起動する画面です。機種の設定に戻すと、また機種に合わせるようになります。</string>
+    <string name="menus_game_companion">プレイ中の下画面</string>
+    <string name="menus_game_companion_help">このゲームを上画面で遊んでいる間、下画面に何を映すか。</string>
+    <string name="menus_game_companion_help_deck">このゲームを上画面で遊んでいる間、下画面に何を映すか。デッキはゲーム用のキーボードとトラックパッドです。</string>
+    <string name="menus_game_companion_system">機種の標準</string>
+    <string name="menus_game_art">アートワークを選ぶ</string>
+    <string name="menus_game_scrape">このゲームの情報を取得</string>
+    <string name="menus_game_unhide">このゲームを再表示</string>
+    <string name="menus_game_hide">このゲームを非表示にする</string>
+    <string name="menus_game_folder_hidden">フォルダが非表示</string>
+    <string name="menus_game_folder_hidden_help">入っているフォルダが非表示なので、ここの設定にかかわらず、いっしょに非表示のままです。</string>
+    <string name="menus_game_sessions">プレイ履歴…</string>
+    <string name="menus_game_reset">プレイ履歴をリセット</string>
+    <string name="menus_game_reset_help">これまでのプレイ時間です。リセットすると、プレイ回数と履歴といっしょに消えます。</string>
+    <string name="menus_game_reset_title">プレイ履歴をリセットしますか？</string>
+    <string name="menus_game_reset_detail">「%1$s」のプレイ時間、プレイ回数、履歴が消えます。元に戻せません。</string>
+    <string name="menus_game_reset_yes">リセット</string>
+    <string name="menus_game_reset_done">プレイ履歴を消去しました</string>
+    <string name="menus_game_uninstall">アプリをアンインストール…</string>
+    <string name="menus_game_delete">ゲームを削除…</string>
+    <string name="menus_game_running">起動中</string>
+    <string name="menus_game_running_help">このゲームはまだ起動中です。</string>
+    <string name="menus_game_view">表示オプション</string>
+    <string name="menus_game_view_value">並べ替え、タイトル…</string>
+
+    <string name="menus_fav_removed">お気に入りから外しました</string>
+    <string name="menus_fav_added">お気に入りに追加しました ♥</string>
+
+    <string name="menus_group_games">ゲーム</string>
+    <string name="menus_group_collection">コレクション</string>
+    <string name="menus_group_genres">ジャンル</string>
+    <string name="menus_group_view">表示</string>
+    <string name="menus_group_subtitle">表示オプション</string>
+    <string name="menus_group_open">開く</string>
+    <string name="menus_group_rescan">ゲームを再スキャン</string>
+    <string name="menus_group_looking">探しています…</string>
+    <string name="menus_group_scrape">これらのゲームの情報を取得</string>
+    <string name="menus_group_unhide_system">この機種を再表示</string>
+    <string name="menus_group_hide_system">この機種を非表示にする</string>
+    <string name="menus_group_unhide_folder">このフォルダを再表示</string>
+    <string name="menus_group_hide_folder">このフォルダを非表示にする</string>
+    <string name="menus_group_sort">並べ順</string>
+    <string name="menus_group_own_order">独自の順番</string>
+    <string name="menus_group_own_order_help">このリストは独自の順番で並んでいます。</string>
+    <string name="menus_group_own_order_toast">このリストは独自の順番で並んでいます。並べ替えは機種とほかのリストに使われます</string>
+    <string name="menus_group_sort_help">すべての機種とリストでの、ゲームの並べ方です。タップで次の並べ方へ。</string>
+    <string name="menus_group_titles">ゲームのタイトル</string>
+    <string name="menus_group_titles_help">すべてのグリッドで、ゲームカードの下に名前を表示します。</string>
+    <string name="menus_group_hidden">非表示のゲームを表示</string>
+    <string name="menus_group_private">プライベート</string>
+    <string name="menus_group_private_help">プライベートモードでは、PINで表示するまで非表示のゲームは見えません。</string>
+    <string name="menus_group_hidden_help">オンの間、非表示のゲームが薄く表示されます。</string>
+
+    <string name="menus_action_more_title">その他</string>
+    <string name="menus_action_options">オプション</string>
+    <string name="menus_action_more">その他…</string>
+
+    <string name="menus_confirm_cancel">キャンセル</string>
+
+    <string name="menus_search_prompt">⌕ ゲーム、アプリ、設定</string>
+    <string name="menus_search_results">結果</string>
+    <string name="menus_search_empty">何文字か入力してください</string>
+    <string name="menus_search_none">「%1$s」に一致するものはありません</string>
+    <string name="menus_search_accents">アクセント記号や句読点は気にしなくて大丈夫です</string>
+    <plurals name="menus_search_matches">
+        <item quantity="other">%1$d件</item>
+    </plurals>
+    <plurals name="menus_search_matches_more">
+        <item quantity="other">%1$d件以上</item>
+    </plurals>
+    <string name="menus_search_play">遊ぶ</string>
+    <string name="menus_search_options">オプション</string>
+    <string name="menus_search_keys">キー</string>
+
+    <string name="menus_keyboard_space">スペース</string>
+    <string name="menus_keyboard_done">完了</string>
+    <string name="menus_keyboard_type">入力</string>
+    <string name="menus_keyboard_delete">削除</string>
+    <string name="menus_keyboard_cancel">キャンセル</string>
+
+    <string name="menus_time_short_under">1分未満</string>
+    <plurals name="menus_time_short_minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
+    <plurals name="menus_time_short_hours">
+        <item quantity="other">%1$d時間%2$d分</item>
+    </plurals>
+    <string name="menus_time_long_under">1分未満</string>
+    <plurals name="menus_time_long_minutes">
+        <item quantity="other">%1$d分</item>
+    </plurals>
+    <plurals name="menus_time_long_hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <plurals name="menus_time_long_hours_minutes">
+        <item quantity="other">%1$d時間%2$d分</item>
+    </plurals>
+
+    <string name="menus_hold_hint">Aまたは画面を長押しで%1$s</string>
+    <string name="menus_undo">元に戻す</string>
+    <string name="menus_undone">元に戻しました</string>
+
+    <string name="menus_selected_change">変更</string>
+
+    <string name="menus_app_open">開く</string>
+    <string name="menus_app_open_bottom">下画面</string>
+    <string name="menus_app_open_top">上画面</string>
+    <string name="menus_app_open_help">今開く画面です。</string>
+    <string name="menus_app_open_on_top">上画面で開く</string>
+    <string name="menus_app_open_on_bottom">下画面で開く</string>
+    <string name="menus_app_screen">いつも開く画面</string>
+    <string name="menus_app_screen_auto">自動</string>
+    <string name="menus_app_screen_default">デフォルト</string>
+    <string name="menus_app_screen_help">このアプリをいつも開く画面：上画面、下画面、またはすべてのアプリ共通のデフォルト。</string>
+    <string name="menus_app_screen_like_all">ほかのアプリと同じ：%1$s</string>
+    <string name="menus_app_screen_top">上画面</string>
+    <string name="menus_app_screen_bottom">下画面</string>
+    <string name="menus_app_home_remove">ホームから外す</string>
+    <string name="menus_app_home_add">ホームに追加</string>
+    <string name="menus_app_home_removed">ホームのグリッドから外しました</string>
+    <string name="menus_app_home_added">ホームのグリッドに置きました ★</string>
+    <string name="menus_app_dock_unpin">ドックから外す</string>
+    <string name="menus_app_dock_pin">ドックにピン留め</string>
+    <string name="menus_app_rename">名前を変更</string>
+    <string name="menus_app_yours">自分で設定</string>
+    <string name="menus_app_icon">アイコンを選ぶ</string>
+    <string name="menus_app_game">ゲームとして扱う</string>
+    <string name="menus_app_drawer_show">アプリ一覧に表示</string>
+    <string name="menus_app_drawer_hide">アプリ一覧から隠す</string>
+    <string name="menus_app_drawer_shown">「すべてのアプリ」に戻しました</string>
+    <string name="menus_app_drawer_hidden">「すべてのアプリ」から隠しました。「非表示のアプリを表示」で戻せます</string>
+    <string name="menus_app_info">アプリ情報</string>
+    <string name="menus_app_uninstall">アンインストール…</string>
+    <string name="menus_app_move_left">左へ移動</string>
+    <string name="menus_app_move_right">右へ移動</string>
+    <string name="menus_app_kind_game">Androidゲーム</string>
+    <string name="menus_app_kind_app">アプリ</string>
+    <string name="menus_app_game_off">「%1$s」をAndroid Gamesから外しました</string>
+    <string name="menus_app_game_on">「%1$s」をAndroid Gamesに入れました</string>
+    <string name="menus_app_rename_title">「%1$s」の名前</string>
+    <string name="menus_app_renamed_own">元の名前に戻しました</string>
+    <string name="menus_app_renamed">「%1$s」に名前を変えました</string>
+    <string name="menus_app_icon_own_back">アプリ本来のアイコンに戻しました</string>
+    <string name="menus_app_icon_new">「%1$s」のアイコンを変えました</string>
+    <string name="menus_app_uninstaller_failed">Androidのアンインストール画面を開けません</string>
+    <string name="menus_app_icon_pick_title">「%1$s」のアイコンを選ぶ</string>
+    <string name="menus_app_icon_title">「%1$s」のアイコン</string>
+    <string name="menus_app_icon_files">ファイルから</string>
+    <string name="menus_app_icon_gallery">ギャラリーから</string>
+    <string name="menus_app_icon_own">アプリ本来のアイコン</string>
+    <string name="menus_app_icon_packs_looking">アイコンパックを探しています…</string>
+    <string name="menus_app_icon_packs_none">アイコンパックが見つかりません。機種アイコン入りのテーマパックがあれば、ここに出てきます</string>
+    <string name="menus_app_icon_packs">アイコンパックから</string>
+    <string name="menus_pick_picture">画像</string>
+</resources>

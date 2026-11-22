@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The panels: Start, the quick settings and the side panel. Japanese. See docs/i18n/glossary-ja.md. -->
+<resources>
+    <string name="panels_start_hint_unhide">再表示</string>
+    <string name="panels_start_hint_hide_again">また隠す</string>
+    <string name="panels_start_hint_show_here">ここに表示</string>
+
+    <string name="panels_start_switch_games">ゲーム切り替え</string>
+    <string name="panels_start_all_apps">すべてのアプリ</string>
+    <string name="panels_start_search">検索</string>
+    <string name="panels_start_stats">記録とトロフィー</string>
+    <string name="panels_start_new">新規作成</string>
+    <string name="panels_start_sort">並べ替え</string>
+    <string name="panels_start_edit_grid">グリッドを編集</string>
+    <string name="panels_start_undo">元に戻す</string>
+    <string name="panels_start_edit_widgets">ウィジェットを編集</string>
+    <string name="panels_start_hidden">非表示</string>
+    <string name="panels_start_settings">設定</string>
+    <string name="panels_start_update">Tandem %1$sが出ました</string>
+    <plurals name="panels_start_trophies">
+        <item quantity="other">トロフィー%1$d個</item>
+    </plurals>
+    <plurals name="panels_start_playing">
+        <item quantity="other">%1$d本プレイ中</item>
+    </plurals>
+
+    <string name="panels_start_new_folder">新しいフォルダ…</string>
+    <string name="panels_start_new_smart_folder">スマートフォルダ…</string>
+    <string name="panels_start_new_add_home">ホームに追加…</string>
+    <string name="panels_start_new_widget">ウィジェット…</string>
+    <string name="panels_start_name_folder">フォルダの名前</string>
+    <string name="panels_start_folder_default">新しいフォルダ</string>
+    <string name="panels_start_folder_unnamed">フォルダ</string>
+    <string name="panels_start_folder_made">フォルダ「%1$s」を作りました。タイルで Y › フォルダへ移動</string>
+
+    <string name="panels_start_sort_tidy">ホーム：すき間を詰める</string>
+    <string name="panels_start_sort_home_name">ホーム：名前順</string>
+    <string name="panels_start_sort_home_recent">ホーム：最近遊んだ順</string>
+    <string name="panels_start_sort_home_most">ホーム：よく遊ぶ順</string>
+    <string name="panels_start_sort_home_kind">ホーム：機種を先に</string>
+    <string name="panels_start_sort_games">ゲーム：%1$s</string>
+    <string name="panels_start_sorted_games">ゲームを並べ替えました：%1$s</string>
+    <string name="panels_start_sorted_home_name">ホームを名前順に並べ替え</string>
+    <string name="panels_start_sorted_home_recent">ホームを最近遊んだ順に並べ替え</string>
+    <string name="panels_start_sorted_home_most">ホームをよく遊ぶ順に並べ替え</string>
+    <string name="panels_start_sorted_home_kind">機種を先に</string>
+    <string name="panels_start_edit_grid_pick">タイルを選んでから Start › グリッドを編集</string>
+
+    <string name="panels_start_hidden_tuck">こっそりしまう</string>
+    <string name="panels_start_hidden_show_all">非表示をすべて表示</string>
+    <string name="panels_start_hidden_showing">表示中</string>
+    <string name="panels_start_hidden_some_showing">一部表示中</string>
+    <string name="panels_start_hidden_tucked">非表示のゲームをこっそりしまいました</string>
+    <string name="panels_start_hidden_shown">非表示のゲームを表示中</string>
+    <string name="panels_start_hidden_none_left">%1$s。ほかに非表示のものはありません</string>
+    <string name="panels_start_hidden_all_showing">非表示のものはもう全部表示されています</string>
+    <string name="panels_start_hidden_peek">非表示のゲームをしまうまで表示します</string>
+    <string name="panels_start_hidden_again">また非表示にしました</string>
+
+    <string name="panels_quick_title">クイック設定</string>
+    <string name="panels_quick_brightness">明るさ</string>
+    <string name="panels_quick_brightness_auto">自動</string>
+    <string name="panels_quick_volume">音量</string>
+    <string name="panels_quick_muted">ミュート</string>
+    <string name="panels_quick_wifi">Wi-Fi</string>
+    <string name="panels_quick_bluetooth">Bluetooth</string>
+    <string name="panels_quick_airplane">機内モード</string>
+    <string name="panels_quick_controller">コントローラー</string>
+    <string name="panels_quick_controller_builtin">本体</string>
+    <string name="panels_quick_discord_showing">表示中</string>
+    <string name="panels_quick_discord_paused">一時停止中</string>
+    <string name="panels_quick_battery_saver">バッテリーセーバー</string>
+    <string name="panels_quick_private">プライベートモード</string>
+    <string name="panels_quick_screensaver">スクリーンセーバー</string>
+    <string name="panels_quick_screensaver_start">今すぐ開始</string>
+    <string name="panels_quick_android">Android</string>
+    <string name="panels_quick_android_settings">設定</string>
+    <string name="panels_quick_shizuku_note">Shizukuがあれば、Wi-Fi・Bluetooth・機内モードをここで直接切り替えられます。</string>
+    <string name="panels_quick_allow_write">Tandemにシステム設定の変更を許可して、戻ってきてください</string>
+    <string name="panels_quick_saver_on">バッテリーセーバー オン：画面の動きとBGMを止めます</string>
+    <string name="panels_quick_saver_off">バッテリーセーバー オフ</string>
+
+    <string name="panels_side_morning">おはようございます！</string>
+    <string name="panels_side_afternoon">こんにちは！</string>
+    <string name="panels_side_evening">こんばんは！</string>
+    <string name="panels_side_late">夜ふかし？ぼくもです。</string>
+    <string name="panels_side_all_quiet">%1$sいまは平和です。</string>
+    <plurals name="panels_side_things">
+        <item quantity="other">お知らせが%1$d件あります。</item>
+    </plurals>
+    <string name="panels_side_notifications">通知</string>
+    <string name="panels_side_clear_all">すべて消去</string>
+    <string name="panels_side_allow_title">ピップに通知を見せてあげてください</string>
+    <string name="panels_side_allow_detail">通知はこの端末から出ません。Tandemはここに表示するだけです。</string>
+    <string name="panels_side_nothing_new">新しいお知らせはありません。</string>
+    <string name="panels_side_on_device">この端末で動作中</string>
+    <string name="panels_side_status">ステータス</string>
+    <string name="panels_side_cant_clear">この通知は消去できません</string>
+    <string name="panels_side_allow_access">ここでTandemをオンにして、戻ってきてください</string>
+    <string name="panels_side_private">プライベートモードで非表示</string>
+</resources>

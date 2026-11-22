@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sound and music. Japanese. See docs/i18n/glossary-ja.md. Song titles and soundtrack names stay as they are. -->
+<resources>
+    <string name="sound_group">サウンドとBGM</string>
+    <string name="sound_group_theme_pack">テーマパック</string>
+
+    <string name="sound_pack_music">テーマパックのBGM</string>
+    <plurals name="sound_pack_music_help">
+        <item quantity="other">「%1$s」には専用の曲が%2$d曲あります。オンにすると、このテーマを使っている間は下で選んだBGMの代わりに流れます。</item>
+    </plurals>
+    <string name="sound_pack_sounds">テーマパックの操作音</string>
+    <string name="sound_pack_sounds_help">「%1$s」には専用の操作音があります。オンにすると、このテーマを使っている間は下で選んだサウンドパックの代わりに鳴ります（足りない音はそのパックから鳴ります）。</string>
+    <string name="sound_fallback">%1$s上のテーマパック専用の音をオフにしたときに使われます。</string>
+
+    <string name="sound_ui">操作音</string>
+    <string name="sound_ui_help">カーソル移動のクリック音、決定のチャイム、ゲーム起動の音などです。%1$s</string>
+    <string name="sound_ui_off_help">オフにすると、Tandemは静かになります。</string>
+    <string name="sound_ui_custom_help">カスタム：手持ちの録音された音を使います。Cocoonのサウンドパックやテーマパックから、下で選べます。</string>
+    <string name="sound_ui_custom">カスタム</string>
+    <string name="sound_custom">カスタム操作音</string>
+    <string name="sound_custom_help">%1$s。足りない音は「%2$s」から鳴ります。</string>
+    <string name="sound_volume">操作音の音量</string>
+    <string name="sound_volume_help">システムの音量に対する、操作音の大きさです。</string>
+    <string name="sound_pip_voice">ピップの声</string>
+    <string name="sound_pip_voice_help">伝えたいことがあると、ピップがちょっとだけおしゃべりします。</string>
+    <string name="sound_pip_hello">こんにちは！ピップです！</string>
+
+    <string name="sound_music">BGM</string>
+    <string name="sound_music_folder">マイミュージック</string>
+    <string name="sound_music_help_empty">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は空なので、内蔵のサウンドトラック（%1$s）が流れます。Tandemのオリジナルは、ゆったりやさしいピアノ・ハープ・チェレスタの「Calm」と、小さなオーケストラの「Meadow Tales」です。</string>
+    <plurals name="sound_music_help_found">
+        <item quantity="other">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は%1$d曲あります。Tandemのオリジナルは、ゆったりやさしいピアノ・ハープ・チェレスタの「Calm」と、小さなオーケストラの「Meadow Tales」です。</item>
+    </plurals>
+    <string name="sound_music_folder_empty">先にROMs/tandem/musicに曲を入れてください</string>
+    <string name="sound_shuffle">マイミュージックをシャッフル</string>
+    <string name="sound_shuffle_help">音楽フォルダの曲をランダムな順番で流します。</string>
+    <string name="sound_music_volume">BGMの音量</string>
+    <string name="sound_music_volume_help">BGMの大きさです。</string>
+    <string name="sound_next">次の曲</string>
+    <string name="sound_next_none">まだありません</string>
+    <string name="sound_next_help">別の曲にスキップします。%1$s。</string>
+    <string name="sound_music_off">先にBGMをオンにしてください</string>
+    <string name="sound_bottom_muted">本体の下画面の音量がゼロになっていて、Tandemの音も消えています。Dual screen assistant（Bottom screen › Volume）で上げてください。</string>
+
+    <string name="sound_source_pack">テーマパック「%1$s」から</string>
+    <string name="sound_source_folder">あなたの音楽フォルダから</string>
+    <string name="sound_source_builtin">内蔵のサウンドトラック</string>
+
+    <string name="sound_now_your_music">マイミュージック</string>
+    <string name="sound_now_playing">再生中</string>
+    <string name="sound_now_paused">一時停止</string>
+
+    <string name="sound_pack_modern">モダン</string>
+    <string name="sound_pack_modern_blurb">やわらかいタップ音とおだやかな音色。短くて静か、今どきのゲーム機のような音です。Tandem標準の音。</string>
+    <string name="sound_pack_playful">ポップ</string>
+    <string name="sound_pack_playful_blurb">ガラスのようなマリンバとあたたかいチャイム。Tandem最初の、陽気なセットです。</string>
+    <string name="sound_pack_chiptune">ピコピコ</string>
+    <string name="sound_pack_chiptune_blurb">矩形波のピコッという音と、コインを取ったようなファンファーレ。8ビット機そのものです。</string>
+    <string name="sound_pack_bubbly">ぷくぷく</string>
+    <string name="sound_pack_bubbly_blurb">まるい水滴のポコンという音と、しゅわっとはじけるきらめき。</string>
+    <string name="sound_pack_minimal">ひかえめ</string>
+    <string name="sound_pack_minimal_blurb">静かで短く、さりげない。あるかないかくらいの音です。</string>
+    <string name="sound_pack_studio">スタジオ</string>
+    <string name="sound_pack_studio_blurb">フェルトと木の音。低くあたたかいタップに、やわらかなコトッ。上質なキーボードのような打ち心地です。</string>
+    <string name="sound_pack_glass">ガラス</string>
+    <string name="sound_pack_glass_blurb">澄んだ明るいクリスタルの音が、少し長めに響きます。くっきり、つややか。</string>
+    <string name="sound_pack_air">そよかぜ</string>
+    <string name="sound_pack_air_blurb">やわらかな息づかいと、まるく澄んだ音色。おだやかで広がりのある音です。</string>
+
+    <string name="sound_mood_still_water">夕暮れの静かな湖に、やさしいピアノ</string>
+    <string name="sound_mood_soft_morning">朝の光が差しこむ、ハープとチェレスタ</string>
+    <string name="sound_mood_hillside_breeze">風の吹く晴れた丘で、フルートとピアノ</string>
+    <string name="sound_mood_lantern_town">ランプの灯る小さな町の、アコーディオンのワルツ</string>
+    <string name="sound_mood_seaside_train">海ぞいを走る小さな列車、窓の外には波</string>
+    <string name="sound_mood_forest_spirits">古い木々のあいだで踊る、小さな精霊たち</string>
+    <string name="sound_mood_summer_rain">けだるい夏の午後、ピアノとやさしい雨</string>
+    <string name="sound_mood_flying_home">野原の上を飛んで、おうちへ帰ろう</string>
+</resources>
