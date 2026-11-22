@@ -10,48 +10,62 @@ import kotlin.math.sin
 /*
  * The geometry of the Orbit home (Orbit.kt), kept free of Compose so it can be tested on its own.
  *
- * The orbs ride an ellipse seen from slightly above: the focused orb is at the front, the lowest and biggest point,
- * and its neighbours rise and shrink as they go round towards the far side, so a long row reads as a curve. The
- * orbit's position is one float, the "offset", in orbs: offset 3 puts orb 3 at the front, 3.5 sits halfway to orb 4.
- * Everything below is worked out from that one number, so a spin is one animated value read in graphics layers.
+ * The orbs ride a ring seen in perspective from a little above: an ellipse whose nearest point, at the bottom, is
+ * the front. The focused orb sits there, lowest and biggest; its neighbours shrink, dim and rise as they go round
+ * towards the back, the last visible ones near the ellipse's widest point, so the row reads as a ring in depth
+ * rather than a curved line (Orbit.kt draws the whole ellipse as a faint glowing path, its far side behind the
+ * covers). The orbit's position is one float, the "offset", in orbs: offset 3 puts orb 3 at the front, 3.5 sits
+ * halfway to orb 4. Everything below is worked out from that one number, so a spin is one animated value read in
+ * graphics layers.
  */
-
-/** Where one orb is drawn: its centre in px, its scale (1 = the focused orb's size), its alpha and its depth (higher in front). */
-class OrbPlace(val x: Float, val y: Float, val scale: Float, val alpha: Float, val depth: Float)
 
 /**
- * The orbit's track on a stage [width] px wide. The front orb's centre sits at [baseY]; the track climbs [rise] px
- * towards its visible ends. [orb] is the focused orb's diameter; [side] orbs show on each side of it.
+ * Where one orb is drawn: its centre in px, its scale (1 = the focused orb's size), its alpha, its depth (higher in
+ * front) and how far round towards the back it is ([back]: 0 at the front, 1 at the last visible orb).
+ */
+class OrbPlace(val x: Float, val y: Float, val scale: Float, val alpha: Float, val depth: Float, val back: Float)
+
+/**
+ * The orbit's ring on a stage [width] px wide. The front orb's centre sits at [baseY]; the ring climbs [rise] px
+ * towards the last visible orbs. [orb] is the focused orb's diameter; [side] orbs show on each side of it.
  */
 class OrbitLayout(val width: Float, val baseY: Float, val rise: Float, val orb: Float, val side: Int = 5) {
-    /** How far round the ellipse the last visible orb is (radians from the front). */
-    private val reach = 1.25f
+    /** How far round the ellipse the last visible orb is (radians from the front): just short of its widest point. */
+    private val reach = 1.4f
     /** The angle between neighbouring orbs. */
-    private val step = reach / (side + 0.6f)
+    private val step = reach / side
     /** Extra room either side of the front orb, which is bigger than the rest. */
     private val gap = orb * 0.12f
-    /** The ellipse's half-width, so the last visible orb's centre stays a little inside the stage. */
-    private val radius = (width / 2f - orb * 0.35f - gap) / sin(reach)
     private val sag = 1f - cos(reach)
 
+    /** The ring's half-width, so the last visible orb stays a little inside the stage. */
+    val radiusX = (width / 2f - orb * 0.3f - gap) / sin(reach)
+    /** The ring's half-height: how flat the perspective makes it. */
+    val radiusY = rise / sag
+    /** The ring's centre: its far side is [radiusY] above, the front orb's centre [radiusY] below. */
+    val centreX: Float get() = width / 2f
+    val centreY: Float get() = baseY - radiusY
+
     /** About how many px one orb's worth of spin is at the front: a finger dragged this far moves the orbit one orb. */
-    val pxPerOrb: Float get() = radius * sin(step) + gap
+    val pxPerOrb: Float get() = radiusX * sin(step) + gap
 
     /** The orb [d] orbs from the front (negative: to the left). */
     fun place(d: Float): OrbPlace {
         val a = abs(d)
         val angle = (d.coerceIn(-(side + 1f), side + 1f)) * step
-        // How far towards the back the orb has gone: 0 at the front, 1 at the visible ends.
+        // How far towards the back the orb has gone: 0 at the front, 1 at the last visible orb.
         val back = ((1f - cos(angle)) / sag).coerceIn(0f, 1.4f)
-        val x = width / 2f + radius * sin(angle) + sign(d) * gap * a.coerceAtMost(1f)
+        val x = width / 2f + radiusX * sin(angle) + sign(d) * gap * a.coerceAtMost(1f)
         val y = baseY - rise * back
-        // The front orb swells to FOCUS times its neighbours' size, easing in as it reaches the front.
+        // The front orb swells to FOCUS times its neighbours' size, easing in as it reaches the front; the others
+        // shrink with depth, to about two thirds of their size at the last visible one.
         val t = a.coerceAtMost(1f)
         val bump = 1f - t * t * (3f - 2f * t)
-        val scale = (1f + (FOCUS - 1f) * bump) * (1f - 0.45f * back.coerceAtMost(1f)) / FOCUS
+        val b = back.coerceAtMost(1f)
+        val scale = (1f + (FOCUS - 1f) * bump) * (1f - 0.38f * b) / FOCUS
         val fadeOut = (side + 1f - a).coerceIn(0f, 1f)
-        val alpha = (1f - 0.5f * back.coerceAtMost(1f)) * fadeOut
-        return OrbPlace(x, y, scale, alpha, -a)
+        val alpha = (1f - 0.3f * b) * fadeOut
+        return OrbPlace(x, y, scale, alpha, -a, b)
     }
 
     /** The orb under a touch at ([x], [y]), the frontmost one when two overlap; -1 for none. */
@@ -146,14 +160,27 @@ class OrbitLayout(val width: Float, val baseY: Float, val rise: Float, val orb: 
     }
 }
 
-/** Where one card of the spotlight's fan sits, from the fan's centre: px, degrees of tilt and scale. */
-class FanPlace(val x: Float, val y: Float, val rotation: Float, val scale: Float)
+/**
+ * Where one cover of the spotlight's carousel sits: its centre's px from the carousel's middle, its scale (around
+ * the bottom edge, so every cover stands on the same floor), its turn in degrees about the vertical axis (positive
+ * turns the right edge away) and how much it is dimmed (0 to 1) while it isn't highlighted.
+ */
+class FanPlace(val x: Float, val scale: Float, val turn: Float, val dim: Float)
 
 /**
- * The spotlight's fan of covers, like cards in a hand: the latest game (rank 0) in the middle and a little larger,
- * the next ones alternating right and left, each tilted a few degrees more and dropping a little lower.
+ * The spotlight's carousel of covers, all one shape and standing on one floor: the latest game (rank 0) in the
+ * middle and biggest, the next ones alternating right and left, each smaller, dimmer and turned a little further
+ * away, like the outside of a turning drum. Each tucks a fifth of its width behind the one nearer the middle, so the
+ * row reads in depth without the covers piling up. The Continue card stands apart, left of them all.
  */
 object Fan {
+    /** A cover's height for its width. */
+    const val ASPECT = 4f / 3f
+    /** The Continue card's size against the middle cover. */
+    const val CONTINUE = 0.82f
+    /** The room between the Continue card and the carousel, in middle-cover widths. */
+    private const val APART = 0.24f
+
     /** How many cards a fan shows out of [available]: five or three, so there is always a middle, or all of one or two. */
     fun count(available: Int): Int = when {
         available >= 5 -> 5
@@ -164,17 +191,42 @@ object Fan {
     /** Which slot rank [rank] takes, counting from the middle: 0, then 1, -1, 2, -2. */
     fun slot(rank: Int): Int = if (rank == 0) 0 else if (rank % 2 == 1) (rank + 1) / 2 else -(rank / 2)
 
-    /** Card [rank] of [n], for cards [cardW] px wide. */
+    private fun scaleAt(a: Int) = 1f - 0.17f * a
+
+    /** How far from the middle the cover [a] slots out sits, in middle-cover widths. */
+    private fun xAt(a: Int): Float {
+        var x = 0f
+        for (i in 0 until a) x += (scaleAt(i) + scaleAt(i + 1)) / 2f * 0.8f
+        return x
+    }
+
+    /** Card [rank] of [n], for covers [cardW] px wide (the middle one's width). */
     fun place(rank: Int, n: Int, cardW: Float): FanPlace {
-        // Two cards have no middle: shift them so the pair is centred.
-        val s = slot(rank) - if (n == 2) 0.5f else 0f
+        if (n == 2) {
+            // Two cards have no middle: side by side, the same size, a little apart.
+            val s = if (rank == 0) -1f else 1f
+            return FanPlace(s * cardW * 0.48f, 0.9f, s * 6f, 0f)
+        }
+        val s = slot(rank)
         val a = abs(s)
-        return FanPlace(
-            x = s * cardW * 0.8f,
-            y = a * a * cardW * 0.07f,
-            rotation = s * 5f,
-            scale = if (rank == 0) 1.16f else 1f - 0.05f * a,
-        )
+        return FanPlace(sign(s.toFloat()) * xAt(a) * cardW, scaleAt(a), s * 11f, (0.2f * a).coerceAtMost(0.36f))
+    }
+
+    /** The Continue card's centre, from the carousel's middle, beside [n] covers [cardW] px wide. */
+    fun continueX(n: Int, cardW: Float): Float = -(leftEdge(n) + APART + CONTINUE / 2f) * cardW
+
+    /**
+     * How far left of the middle the carousel reaches, in middle-cover widths, with the Continue card when
+     * [withContinue]. Orbit shrinks the covers so this fits in half the screen.
+     */
+    fun reach(n: Int, withContinue: Boolean): Float =
+        if (withContinue) leftEdge(n) + APART + CONTINUE else leftEdge(n).coerceAtLeast(0.5f)
+
+    private fun leftEdge(n: Int): Float = when {
+        // No covers: an orb's note (its art and a line or two) stands in the middle instead, wider than a cover.
+        n <= 0 -> 1.4f
+        n == 2 -> 0.48f + 0.45f
+        else -> xAt((n - 1) / 2) + scaleAt((n - 1) / 2) / 2f
     }
 
     /** The ranks of [n] cards from left to right: the order the D-pad walks through them. */

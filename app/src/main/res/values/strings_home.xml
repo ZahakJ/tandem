@@ -494,4 +494,38 @@
         <item quantity="one">%1$d more system · most played</item>
         <item quantity="other">%1$d more systems · most played</item>
     </plurals>
+
+    <!-- The Orbit home: orbs (systems, collections, apps) on a ring, the highlighted one's games as covers inside it. -->
+    <!-- The line under a system's orb: "130 games · 1 playing". -->
+    <plurals name="home_orbit_games">
+        <item quantity="one">%1$d game</item>
+        <item quantity="other">%1$d games</item>
+    </plurals>
+    <plurals name="home_orbit_playing">
+        <item quantity="one">%1$d playing</item>
+        <item quantity="other">%1$d playing</item>
+    </plurals>
+    <string name="home_orbit_empty_hidden">Every game is hidden</string>
+    <string name="home_orbit_empty_none">No games yet. Pick the folder your games are in</string>
+    <string name="home_orbit_empty_show">Show hidden games</string>
+    <string name="home_orbit_empty_pick">Pick your games folder</string>
+    <!-- The label over the Continue card (the last game played); Resume while that game still runs. -->
+    <string name="home_orbit_continue">Continue</string>
+    <string name="home_orbit_resume">Resume</string>
+    <!-- The line under the orbit while the Continue card is highlighted. %1$s is the game's system ("Nintendo 3DS"). -->
+    <string name="home_orbit_caption_continue">Continue · %1$s</string>
+    <string name="home_orbit_caption_resume">Resume · %1$s</string>
+    <string name="home_orbit_all_apps">All apps</string>
+    <!-- The line under an app's name when an app's card is highlighted. -->
+    <string name="home_orbit_app">App</string>
+    <string name="home_orbit_note_pin">Pin apps to the dock to see them here</string>
+    <!-- Settings › Home & layout › Home screen, while Orbit is the layout. -->
+    <string name="home_orbit_settings">Orbit</string>
+    <string name="home_orbit_holds">Orbit holds</string>
+    <string name="home_orbit_holds_help">What rides the orbit: your systems, collections and Tandem\'s apps, or fewer of them. L1 and R1 jump between the groups.</string>
+    <string name="home_orbit_holds_all">Systems, collections, apps</string>
+    <string name="home_orbit_holds_games">Systems and collections</string>
+    <string name="home_orbit_holds_systems">Systems only</string>
+    <string name="home_orbit_continue_card">Continue card</string>
+    <string name="home_orbit_continue_card_help">The last game you played, as a card standing left of the covers. A picks it up again (Resume while it still runs).</string>
 </resources>

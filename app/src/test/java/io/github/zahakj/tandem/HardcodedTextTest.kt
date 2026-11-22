@@ -54,6 +54,7 @@ class HardcodedTextTest {
         "ui/BrowseBar.kt",
         "Collections.kt",
         "ui/Layouts.kt",
+        "ui/Orbit.kt", "ui/OrbitLayout.kt",
         "ui/Screens.kt",
         "ui/Spotlight.kt",
         "ui/SpotlightHome.kt",

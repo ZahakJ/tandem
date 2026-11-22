@@ -347,7 +347,7 @@
     <string name="look_layout_carousel_help">A coverflow: the highlighted card sits big in the middle and the others turn away to the sides.</string>
     <string name="look_layout_list_help">Compact rows with a big preview beside them. Fast to scan, great for huge libraries.</string>
     <string name="look_layout_console_help">A console-style dashboard: the highlighted item\'s art fills the screen with one row of big tiles along the bottom.</string>
-    <string name="look_layout_orbit_help">Tandem\'s own: your systems, collections and apps ride an orbit of round icons, the highlighted one big at the front. Above it its latest games fan out like cards in a hand, under a Continue ribbon. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.</string>
+    <string name="look_layout_orbit_help">Tandem\'s own: your systems, collections and apps ride a glowing ring of glassy orbs, the highlighted one big at the front. Inside the ring its latest games stand as a row of covers, the Continue card beside them. Left and Right spin it, L1 and R1 jump between groups, X swaps the screens.</string>
     <string name="look_layout_spotlight_help">Game first: the highlighted game\'s art fills the screen, a rail of covers runs down one side and its logo, story and play time sit on the other. Up and Down move the rail, L1 and R1 change system or collection, X reads the whole story.</string>
 
     <!-- Corner hints: the button reminders in the corner of the top screen. Short. -->
@@ -559,9 +559,9 @@
     <string name="look_preset_grid_6">Your Cocoon theme pack, if one is installed</string>
     <string name="look_preset_grid_7">With a Cocoon backup: your exact home, dock and theme</string>
     <string name="look_preset_orbit">Orbit</string>
-    <string name="look_preset_orbit_blurb">Tandem\'s own home: your systems, collections and apps on an orbit of round icons, the highlighted one\'s games fanned out above it.</string>
+    <string name="look_preset_orbit_blurb">Tandem\'s own home: your systems, collections and apps on a glowing ring of orbs, the highlighted one\'s games standing as covers inside it.</string>
     <string name="look_preset_orbit_1">Orbit home with systems, collections and apps</string>
-    <string name="look_preset_orbit_2">Continue ribbon over the spotlight</string>
+    <string name="look_preset_orbit_2">Continue card beside the covers</string>
     <string name="look_preset_orbit_3">Round dock under the orbit</string>
     <string name="look_preset_orbit_4">Details on the bottom screen</string>
     <string name="look_preset_orbit_5">X swaps the screens on Orbit</string>

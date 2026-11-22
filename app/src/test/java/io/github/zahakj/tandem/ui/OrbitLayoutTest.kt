@@ -56,8 +56,26 @@ class OrbitLayoutTest {
             val a = layout.place(i.toFloat())
             val b = layout.place(i + 1f)
             val reach = layout.orb / 2f * (a.scale + b.scale)
-            assertTrue("orbs $i and ${i + 1} overlap", b.x - a.x > reach)
+            // Near the ring's sides the orbs climb as much as they move across, so measure the real distance.
+            val dx = b.x - a.x
+            val dy = b.y - a.y
+            assertTrue("orbs $i and ${i + 1} overlap", dx * dx + dy * dy > reach * reach)
         }
+    }
+
+    @Test fun orbsDimAndShrinkSteadilyRoundTheRing() {
+        // No jump between the neighbours: each orb further round is a little smaller and further back.
+        var last = layout.place(1f)
+        for (i in 2..5) {
+            val p = layout.place(i.toFloat())
+            assertTrue("orb $i is smaller", p.scale < last.scale)
+            assertTrue("orb $i is further back", p.back > last.back)
+            assertTrue("orb $i shrinks gently", p.scale > last.scale * 0.8f)
+            last = p
+        }
+        assertEquals(1f, layout.place(5f).back, 0.001f)
+        // The ring's front point is the front orb's centre.
+        assertEquals(layout.baseY, layout.centreY + layout.radiusY, 0.01f)
     }
 
     @Test fun orbsFadeOutPastTheSide() {
@@ -155,19 +173,49 @@ class OrbitLayoutTest {
         assertEquals(listOf(2, 0, 1), Fan.leftToRight(3))
         val middle = Fan.place(0, 5, 100f)
         assertEquals(0f, middle.x, 0.001f)
-        assertEquals(0f, middle.rotation, 0.001f)
+        assertEquals(0f, middle.turn, 0.001f)
+        assertEquals(0f, middle.dim, 0.001f)
         for (r in 1 until 5) {
             val p = Fan.place(r, 5, 100f)
             assertTrue("card $r is smaller than the middle", p.scale < middle.scale)
-            assertTrue("card $r sits lower", p.y > middle.y)
-            assertTrue("card $r tilts away from the middle", p.rotation * p.x > 0f)
-            assertTrue("card $r tilts only a few degrees", abs(p.rotation) <= 12f)
+            assertTrue("card $r is dimmer than the middle", p.dim > middle.dim)
+            assertTrue("card $r turns away from the middle", p.turn * p.x > 0f)
+            assertTrue("card $r turns only a little", abs(p.turn) <= 25f)
+        }
+    }
+
+    @Test fun carouselCoversTuckOnlyALittleBehindEachOther() {
+        // Left to right, each cover's left edge is past the previous one's, and at most about a fifth is hidden.
+        val w = 100f
+        val places = Fan.leftToRight(5).map { Fan.place(it, 5, w) }
+        for (i in 1 until places.size) {
+            val a = places[i - 1]
+            val b = places[i]
+            val aRight = a.x + w * a.scale / 2f
+            val bLeft = b.x - w * b.scale / 2f
+            assertTrue("cover $i starts right of the one before", bLeft > a.x - w * a.scale / 2f)
+            val hidden = (aRight - bLeft) / (w * minOf(a.scale, b.scale))
+            assertTrue("covers $i overlap by $hidden", hidden in 0f..0.3f)
+        }
+    }
+
+    @Test fun continueStandsApartLeftOfTheCarousel() {
+        for (n in listOf(0, 1, 2, 3, 5)) {
+            val c = Fan.continueX(n, 100f)
+            val leftmost = Fan.leftToRight(n).firstOrNull()?.let { Fan.place(it, n, 100f) }
+            val edge = leftmost?.let { it.x - 100f * it.scale / 2f } ?: -50f
+            assertTrue("continue clears $n covers", c + 100f * Fan.CONTINUE / 2f < edge)
+            // reach() covers the Continue card's left edge, which is what Orbit fits into half the screen.
+            assertEquals(-(c - 100f * Fan.CONTINUE / 2f), Fan.reach(n, true) * 100f, 0.01f)
         }
     }
 
     @Test fun fanShowsFiveOrThreeSoThereIsAMiddle() {
         assertEquals(listOf(0, 1, 2, 3, 3, 5, 5), (0..6).map { Fan.count(it) })
-        // Two cards sit either side of the centre.
-        assertEquals(-Fan.place(0, 2, 100f).x, Fan.place(1, 2, 100f).x, 0.001f)
+        // Two cards sit either side of the centre, without touching.
+        val a = Fan.place(0, 2, 100f)
+        val b = Fan.place(1, 2, 100f)
+        assertEquals(-a.x, b.x, 0.001f)
+        assertTrue(b.x - a.x > 100f * a.scale)
     }
 }

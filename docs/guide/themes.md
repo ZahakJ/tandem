@@ -67,15 +67,15 @@ The game's art covers the whole screen: key art if it has some, else a title scr
 
 Orbit is Tandem's own home: your systems, then your collections, then Tandem's apps ride a ring of round icons in the lower part of the top screen, like planets seen from a little above.
 
-- **The orbit.** The highlighted orb sits at the front, lowest and biggest, with its name and a line about it underneath ("132 games · 3 playing"); the others shrink and fade as they go round. A faint line shows the orbit's path.
-- **The fan.** Above the orbit, the highlighted system's or collection's games fan out like cards in a hand: the one you played last in the middle and a little larger, then the most recently and most played. The **All apps** orb fans out your dock apps, and Tandem's own apps (Gallery, Journal…) show what they are.
-- **The Continue ribbon** over the fan holds the last game you played anywhere.
-- **The dock**, small and round, sits under the orbit with your apps.
+- **The orbit.** The orbs ride a softly glowing ring seen in perspective. The highlighted orb sits at the front, lowest and biggest, with its name and a line about it underneath ("132 games · 3 playing"); the others get smaller and darker as they go round towards the back, and the ring takes the highlighted orb's colour. Holding <kbd>◀</kbd> or <kbd>▶</kbd> spins it in one smooth glide.
+- **The covers.** Inside the ring, the highlighted system's or collection's games stand as a row of covers on a lit floor: the one you played last in the middle and biggest, then the most recently and most played, smaller and turned slightly away. The name under the orbit follows the highlight, so on a cover it names that game. The **All apps** orb shows your dock apps, and Tandem's own apps (Gallery, Journal…) show what they are.
+- **The Continue card**, apart to the left of the covers, holds the last game you played anywhere (**Resume** while it is still running).
+- **The dock**, a quiet row of round app icons under the orbit, lights up when you go down to it; the highlighted icon shows its name.
 
-| Press | On the orbit | In the fan, the ribbon or the dock |
+| Press | On the orbit | On the covers, the Continue card or the dock |
 | --- | --- | --- |
-| <kbd>◀</kbd> / <kbd>▶</kbd> (or the left stick) | Spin the orbit; hold to skim through it | Move along |
-| <kbd>▲</kbd> / <kbd>▼</kbd> | <kbd>▲</kbd> into the fan (or the ribbon), <kbd>▼</kbd> to the dock | Back towards the orbit; <kbd>▲</kbd> from the fan reaches the ribbon |
+| <kbd>◀</kbd> / <kbd>▶</kbd> (or the left stick) | Spin the orbit; hold to skim through it | Move along (<kbd>◀</kbd> from the leftmost cover reaches the Continue card) |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | <kbd>▲</kbd> to the covers (or the Continue card), <kbd>▼</kbd> to the dock | Back to the orbit |
 | <kbd>A</kbd> | Open the system, collection or app | Play the game, open the app |
 | <kbd>B</kbd> | Back round to the first orb | Back to the orbit |
 | <kbd>Y</kbd> | The system's or collection's view menu | The game menu, or the app's options |
@@ -84,7 +84,7 @@ Orbit is Tandem's own home: your systems, then your collections, then Tandem's a
 
 <kbd>Start</kbd>, the quick panel (hold <kbd>Start</kbd>) and the side panel (<kbd>R2</kbd>) work as on every home. The other screen shows the highlighted system, collection or game as usual (**Settings › Two screens › Other screen**).
 
-**Settings for Orbit.** Two rows in **Settings › Home & layout › Home screen** shape it while Orbit is in use: **Orbit holds** (systems, collections and apps; systems and collections; or systems only) and **Continue ribbon**.
+**Settings for Orbit.** Two rows in **Settings › Home & layout › Home screen** shape it while Orbit is in use: **Orbit holds** (systems, collections and apps; systems and collections; or systems only) and **Continue card**.
 
 <details>
 <summary>Touch, hidden games and Reduce motion</summary>

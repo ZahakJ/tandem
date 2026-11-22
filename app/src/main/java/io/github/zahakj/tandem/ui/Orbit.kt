@@ -2,9 +2,14 @@ package io.github.zahakj.tandem.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -27,6 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -49,11 +55,14 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -67,25 +76,28 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.zahakj.tandem.Collections
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.Launcher
 import io.github.zahakj.tandem.PlatformLibrary
+import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.RunningGames
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.data.GameStatus
 import io.github.zahakj.tandem.data.HomeStore
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.playStatus
-import io.github.zahakj.tandem.plural
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -94,14 +106,15 @@ import kotlin.math.roundToInt
 
 /*
  * Orbit, Tandem's own home layout ("orbit"). The lower part of the top screen is the orbit: the home's systems,
- * collections and Tandem's apps as round orbs along an arc that bows downward, like planets on an orbit seen from a
- * little above. The highlighted orb sits at the front, lowest and biggest; Left and Right spin the orbit. Above it,
- * the spotlight fans out that orb's latest games like cards in a hand (Up goes into the fan), and a Continue ribbon
- * over the fan holds the last game played anywhere. Down reaches a small dock of round app icons.
+ * collections and Tandem's apps as glassy orbs riding a glowing ring seen in perspective, like planets on an orbit
+ * seen from a little above. The highlighted orb sits at the front, lowest and biggest, its name under it; the others
+ * shrink and sink into the dark as they go round. Left and Right spin the ring. Inside it the spotlight stands that
+ * orb's latest games as a carousel of covers on a lit floor (Up goes into it), with the Continue card (the last game
+ * played anywhere) apart to their left. Down reaches a quiet dock of round app icons.
  *
  * The geometry lives in OrbitLayout.kt. The spin is one Animatable (the orbit's offset, in orbs) read only in
- * graphics layers and draw lambdas, so a spin recomposes nothing; the fan's entry is one more. Only the settled
- * orb's fan loads covers, at their drawn size.
+ * graphics layers and draw lambdas, so a spin recomposes nothing; the covers' entry is one more. Only the settled
+ * orb's covers load, at their drawn size.
  */
 
 object Orbit {
@@ -110,12 +123,15 @@ object Orbit {
 
     /** The focus route remembering which orb is at the front (the home route remembers which part has the highlight). */
     const val ROUTE = "home:orbit"
-    /** Focus keys on the home route: the orbit itself, the Continue ribbon, the empty library's note. */
+    /** Focus keys on the home route: the orbit itself, the Continue card, the empty library's note. */
     const val STAGE = "orbit"
     const val CONTINUE = "orbit:continue"
     const val EMPTY = "orbit:empty"
 
-    val Groups = listOf("all" to "Systems, collections, apps", "games" to "Systems and collections", "systems" to "Systems only")
+    val Groups: List<Pair<String, String>> get() = listOf(
+        "all" to Tx.s(R.string.home_orbit_holds_all), "games" to Tx.s(R.string.home_orbit_holds_games),
+        "systems" to Tx.s(R.string.home_orbit_holds_systems),
+    )
 
     const val SYSTEMS = 0
     const val COLLECTIONS = 1
@@ -124,6 +140,9 @@ object Orbit {
 
 /** One orb: an icon grid tile ([GridCatalog] builds them, designs and pack art included), its group and one line about it. */
 private class Orb(val item: GridItem, val group: Int, val detail: String, val open: () -> Unit)
+
+/** The parts of the home off the orbit that can hold the highlight. */
+private enum class OrbitPart { Fan, Continue, Dock }
 
 /** A card in the spotlight's fan: a game, or an app (the All apps orb fans out the dock). */
 private class FanCard(val key: String, val game: Game? = null, val pkg: String? = null)
@@ -149,7 +168,10 @@ private fun buildOrbs(catalog: GridCatalog, groups: String): List<Orb> {
         val detail = when (item.kind) {
             TileKind.System -> {
                 val playing = item.games.count { it.meta.playStatus == GameStatus.Playing }
-                listOfNotNull(plural(item.games.size, "game"), if (playing > 0) "$playing playing" else item.blurb.ifEmpty { null }).joinToString(" · ")
+                listOfNotNull(
+                    Tx.p(R.plurals.home_orbit_games, item.games.size),
+                    if (playing > 0) Tx.p(R.plurals.home_orbit_playing, playing) else item.blurb.ifEmpty { null },
+                ).joinToString(" · ")
             }
             TileKind.Collection, TileKind.Genres -> item.detail
             else -> item.blurb.ifEmpty { item.type }
@@ -178,6 +200,17 @@ private fun fanGames(orb: Orb): List<Game> {
         out
     }
     return picked.take(Fan.count(picked.size))
+}
+
+/**
+ * The spin's spring, after the theme's animation style. Always a spring (Minimal's too, only stiffer): a tween
+ * started again on every D-pad repeat drops its speed each time and the orbit moves in steps.
+ */
+private fun glide(): AnimationSpec<Float> = when (Motion.style) {
+    AnimationStyle.Bouncy -> spring(0.72f, 260f)
+    AnimationStyle.Smooth -> spring(Spring.DampingRatioNoBouncy, 240f)
+    AnimationStyle.Minimal -> spring(Spring.DampingRatioNoBouncy, 520f)
+    AnimationStyle.Off -> snap()
 }
 
 /** The orbit's live state: the spin, which orb is at the front, and whether the orbit holds the highlight. */
@@ -213,7 +246,9 @@ private class OrbitState(initial: Float, private val scope: CoroutineScope) {
             if (focused) Selection.current = o.item.selected
         }
         scope.launch {
-            if (still) offset.snapTo(to) else offset.animateTo(to, Motion.move(), initialVelocity = velocity)
+            // A new goal mid-spin carries on at the speed the orbit already has, so a held D-pad is one glide
+            // rather than a start and a stop for every orb.
+            if (still) offset.snapTo(to) else offset.animateTo(to, glide(), initialVelocity = if (velocity != 0f) velocity else offset.velocity)
             // A long spin one way leaves the numbers far from zero: bring them back by whole turns, which look the same.
             val n = count
             if (wraps && n > 0 && abs(goal) > n * 8f) {
@@ -295,7 +330,7 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
 
     val keys = buildList {
         if (orbs.isNotEmpty()) add(Orbit.STAGE)
-        if (last != null) add(Orbit.CONTINUE)
+        if (last != null && !noGames) add(Orbit.CONTINUE)
         if (noGames) add(Orbit.EMPTY)
         cards.forEach { add("fan:${it.key}") }
         addAll(dockKeys)
@@ -309,11 +344,14 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
     val target = rememberFocusTarget(route, keys)
     val stageReq = remember { FocusRequester() }
     val fanReq = remember { FocusRequester() }
-    val ribbonReq = remember { FocusRequester() }
+    val continueReq = remember { FocusRequester() }
     val emptyReq = remember { FocusRequester() }
     val dockReqs = remember { HashMap<String, FocusRequester>() }
     var lastDock by remember { mutableStateOf<String?>(null) }
     var fanFocus by remember { mutableStateOf<String?>(null) }
+    // Which part off the orbit last took the highlight: the caption names what is highlighted, and steps aside for
+    // the dock (whose icon names itself).
+    var part by remember { mutableStateOf(OrbitPart.Fan) }
 
     fun focusStage() {
         if (orbs.isEmpty()) return
@@ -330,8 +368,8 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         if (!st.focused) focusStage()
         true
     }
-    // B: from the fan, the ribbon or the dock, back to the orbit; on the orbit, back round to the first orb (Home
-    // never leaves Tandem, as on the other layouts).
+    // B: from the covers, the Continue card or the dock, back to the orbit; on the orbit, back round to the first orb
+    // (Home never leaves Tandem, as on the other layouts).
     BackHandler(enabled = Nav.route == Route.Home && !Nav.overlayOpen && FolderPopup.route == null && orbs.isNotEmpty()) {
         if (!st.focused) focusStage() else st.show(0)
     }
@@ -341,23 +379,25 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         val w = maxWidth
         val h = maxHeight
         // The bottom screen (screens swapped) is narrow: fewer orbs either side, so they keep their room.
-        val side = if (w < 600.dp) 3 else 5
+        val side = if (w < 600.dp) 3 else 4
         st.side = side
-        val orbD = min(84.dp, h * 0.2f)
-        val dockH = if (dockKeys.isNotEmpty()) 62.dp else 10.dp
-        val captionH = 66.dp
+        val orbD = min(96.dp, h * 0.22f)
+        val dockH = if (dockKeys.isNotEmpty()) 56.dp else 10.dp
+        val captionH = 58.dp
         val baseY = h - dockH - captionH - orbD / 2 - 2.dp
-        val rise = h * 0.3f
+        val rise = min(h * 0.17f, baseY * 0.3f)
         val stageTop = (baseY - rise - orbD * 0.6f).coerceAtLeast(0.dp)
         val stageBottom = baseY + orbD * 0.6f
-        val ribbonH = 46.dp
-        val fanTop = if (last != null) 8.dp + ribbonH + 10.dp else 12.dp
-        val fanBottom = baseY - orbD / 2 - 12.dp
-        // The middle card is 1.16 times the rest and the outer ones drop a little (Fan.place): fit them all.
-        val cardH = ((fanBottom - fanTop) / 1.3f).coerceIn(60.dp, 170.dp)
-        val cardW = cardH * 0.72f
+        // The covers stand on a floor clear of the front orb. They take the room above it, less a little for the
+        // focus zoom and the Continue card's label, and shrink so the carousel and the Continue card fit in half
+        // the width either side of the middle.
+        val fanTop = 10.dp
+        val floorY = (baseY - orbD / 2 - 24.dp).coerceAtLeast(fanTop + 60.dp)
+        val withContinue = last != null && !noGames
+        val cardW = min((floorY - fanTop) / 1.12f / Fan.ASPECT, (w / 2 - 14.dp) / Fan.reach(cards.size, withContinue)).coerceAtLeast(36.dp)
+        val cardH = cardW * Fan.ASPECT
         val layout = with(density) {
-            remember(w, h, side, orbD) { OrbitLayout(w.toPx(), (baseY - stageTop).toPx(), rise.toPx(), orbD.toPx(), side) }
+            remember(w, h, side, orbD, rise) { OrbitLayout(w.toPx(), (baseY - stageTop).toPx(), rise.toPx(), orbD.toPx(), side) }
         }
         st.layout = layout
         val ring = animateFloatAsState(if (st.focused) 1f else 0f, Motion.soft(), label = "orbit-ring")
@@ -368,30 +408,45 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
             else { entry.snapTo(0f); entry.animateTo(1f, Motion.move()) }
         }
         val glowColor = spotOrb?.item?.color ?: Palette.Lavender
+        val tint = animateColorAsState(glowColor, Motion.soft(), label = "orbit-tint")
+        val deep = Palette.NightDeep
 
-        // A soft light in the spotlit orb's colour behind the fan, fading in with it.
+        // Shade towards the bottom and the sides, under the orbit, the names and the dock: whatever the wallpaper,
+        // they read against something calm.
         Box(
-            Modifier.fillMaxWidth().height(fanBottom + orbD).graphicsLayer { alpha = 0.22f * entry.value }.drawWithCache {
-                val brush = Brush.radialGradient(
-                    listOf(glowColor, Color.Transparent), center = Offset(size.width / 2f, size.height * 0.55f), radius = size.height * 0.75f,
+            Modifier.fillMaxSize().drawWithCache {
+                val fall = Brush.verticalGradient(
+                    0f to Color.Transparent, 0.4f to Color.Transparent, 0.75f to deep.copy(alpha = 0.4f), 1f to deep.copy(alpha = 0.72f),
                 )
+                val sides = Brush.horizontalGradient(
+                    0f to deep.copy(alpha = 0.42f), 0.16f to Color.Transparent, 0.84f to Color.Transparent, 1f to deep.copy(alpha = 0.42f),
+                )
+                onDrawBehind { drawRect(fall); drawRect(sides) }
+            },
+        )
+        // A soft light in the spotlit orb's colour behind the covers, fading in with them.
+        Box(
+            Modifier.fillMaxSize().graphicsLayer { alpha = 0.3f * entry.value; compositingStrategy = CompositingStrategy.ModulateAlpha }.drawWithCache {
+                val c = Offset(size.width / 2f, (fanTop + (floorY - fanTop) * 0.55f).toPx())
+                val brush = Brush.radialGradient(listOf(glowColor, glowColor.copy(alpha = 0.3f), Color.Transparent), center = c, radius = cardH.toPx() * 1.6f)
                 onDrawBehind { drawRect(brush) }
             },
         )
 
         if (orbs.isNotEmpty()) {
             OrbitStage(
-                st, layout, orbD, ring,
+                st, layout, orbD, ring, tint,
                 Modifier.offset(y = stageTop).fillMaxWidth().height(stageBottom - stageTop)
                     .focusRequester(stageReq)
                     .takesFocus(route, Orbit.STAGE, target == Orbit.STAGE),
                 onUp = {
-                    when {
-                        cards.isNotEmpty() -> runCatching { fanReq.requestFocus() }.isSuccess
-                        noGames -> runCatching { emptyReq.requestFocus() }.isSuccess
-                        last != null -> runCatching { ribbonReq.requestFocus() }.isSuccess
-                        else -> false
+                    val to = when {
+                        cards.isNotEmpty() -> fanReq
+                        noGames -> emptyReq
+                        withContinue -> continueReq
+                        else -> null
                     }
+                    to != null && runCatching { to.requestFocus() }.isSuccess
                 },
                 onDown = {
                     val key = lastDock?.takeIf { it in dockKeys } ?: dockKeys.getOrNull(dockKeys.size / 2)
@@ -399,68 +454,75 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
                 },
             )
             OrbitCaption(
-                st,
-                Modifier.offset(y = baseY + orbD / 2 + 4.dp).align(Alignment.TopCenter).widthIn(max = w * 0.6f).height(captionH),
+                st, part,
+                Modifier.offset(y = baseY + orbD / 2 + 8.dp).align(Alignment.TopCenter).widthIn(max = w * 0.56f).height(captionH),
             )
         }
 
-        // The spotlight: the fan, a note for an orb with nothing to fan out, or the empty library.
-        val zone = Modifier.offset(y = fanTop).fillMaxWidth().height(fanBottom - fanTop)
-        when {
-            noGames -> Box(zone, contentAlignment = Alignment.Center) {
-                val hidden = libs.any { it.games.isNotEmpty() }
-                val pick = rememberGameFolderPicker()
-                EmptyNote(
-                    if (hidden) "Every game is hidden" else "No games yet. Pick the folder your games are in",
-                    if (hidden) "Show hidden games" else "Pick your games folder",
-                    Modifier.focusRequester(emptyReq).focusProperties { if (orbs.isNotEmpty()) down = stageReq; left = FocusRequester.Cancel; right = FocusRequester.Cancel }
-                        .takesFocus(route, Orbit.EMPTY, target == Orbit.EMPTY),
-                ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() }
-            }
-            cards.isNotEmpty() -> SpotFan(
-                cards, cardW, cardH, entry, route, target, fanFocus, fanReq, stageReq, ribbonReq.takeIf { last != null },
-                onFocusCard = { key -> fanFocus = key }, modifier = zone,
-            )
-            spotOrb != null -> OrbNote(spotOrb, entry, zone)
-        }
-
-        if (last != null) ContinueRibbon(
-            last, ribbonH,
-            Modifier.align(Alignment.TopCenter).padding(top = 8.dp).width(min(380.dp, w - 48.dp))
-                .focusRequester(ribbonReq)
-                .focusProperties {
-                    down = if (cards.isNotEmpty()) fanReq else if (orbs.isNotEmpty()) stageReq else FocusRequester.Default
-                    left = FocusRequester.Cancel
-                    right = FocusRequester.Cancel
+        // The spotlight: the covers on their floor with the Continue card beside them, a note for an orb with
+        // nothing to show, or the empty library. One row: Left and Right walk from the Continue card into the covers.
+        val cardWpx = with(density) { cardW.toPx() }
+        Box(
+            Modifier.offset(y = fanTop).fillMaxWidth().height(floorY - fanTop).focusRow()
+                .then(if (cards.isNotEmpty()) Modifier.floorLight(glowColor, Fan.reach(cards.size, false) * cardWpx) else Modifier),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
+            when {
+                noGames -> {
+                    val hidden = libs.any { it.games.isNotEmpty() }
+                    val pick = rememberGameFolderPicker()
+                    EmptyNote(
+                        Tx.s(if (hidden) R.string.home_orbit_empty_hidden else R.string.home_orbit_empty_none),
+                        Tx.s(if (hidden) R.string.home_orbit_empty_show else R.string.home_orbit_empty_pick),
+                        Modifier.focusRequester(emptyReq).focusProperties { if (orbs.isNotEmpty()) down = stageReq; left = FocusRequester.Cancel; right = FocusRequester.Cancel }
+                            .takesFocus(route, Orbit.EMPTY, target == Orbit.EMPTY),
+                        modifier = Modifier.align(Alignment.Center),
+                    ) { if (hidden) openSetting("play/privacy", ShowHiddenKey) else pick() }
                 }
-                .takesFocus(route, Orbit.CONTINUE, target == Orbit.CONTINUE),
-            onFocus = { fanFocus = null },
-        )
+                cards.isNotEmpty() -> SpotFan(
+                    cards, cardW, cardH, entry, route, target, fanFocus, fanReq, stageReq,
+                    onFocusCard = { key -> fanFocus = key; part = OrbitPart.Fan },
+                )
+                spotOrb != null -> OrbNote(spotOrb, entry, if (withContinue) cardW * 2.6f else 340.dp, Modifier.fillMaxSize())
+            }
+            if (withContinue && last != null) ContinueCard(
+                last, Fan.continueX(cards.size, cardWpx), cardW, cardH,
+                Modifier.focusRequester(continueReq)
+                    .focusProperties {
+                        down = if (orbs.isNotEmpty()) stageReq else FocusRequester.Default
+                        left = FocusRequester.Cancel
+                        if (cards.isEmpty()) right = FocusRequester.Cancel
+                    }
+                    .takesFocus(route, Orbit.CONTINUE, target == Orbit.CONTINUE),
+                onFocus = { fanFocus = null; part = OrbitPart.Continue },
+            )
+        }
 
         if (dockKeys.isNotEmpty()) OrbitDock(
             dock, dockAll, route, target, stageReq.takeIf { orbs.isNotEmpty() }, dockReqs,
-            onFocusKey = { lastDock = it },
+            onFocusKey = { lastDock = it; part = OrbitPart.Dock },
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp),
         )
     }
 }
 
 /**
- * The orbit itself: one focusable stage that draws every orb in a graphics layer placed from the spin, the faint
- * line of the track under them, and takes the D-pad and touch for the whole orbit. [onUp] / [onDown] move the
- * highlight out of it and say whether they did.
+ * The orbit itself: one focusable stage that draws its ring and every orb in a graphics layer placed from the spin,
+ * and takes the D-pad and touch for the whole orbit. [onUp] / [onDown] move the highlight out of it and say whether
+ * they did. [tint] colours the ring after the orb at the front.
  */
 @Composable
 private fun OrbitStage(
-    st: OrbitState, layout: OrbitLayout, orbD: Dp, ring: State<Float>, modifier: Modifier,
+    st: OrbitState, layout: OrbitLayout, orbD: Dp, ring: State<Float>, tint: State<Color>, modifier: Modifier,
     onUp: () -> Boolean, onDown: () -> Boolean,
 ) {
     val interaction = remember { MutableInteractionSource() }
     val press = remember { TilePress() }
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
-    val muted = Palette.Muted
-    val hair = with(LocalDensity.current) { 1.5.dp.toPx() }
+    val glowW = with(LocalDensity.current) { 9.dp.toPx() }
+    val lineW = with(LocalDensity.current) { 1.6.dp.toPx() }
+    val bead = with(LocalDensity.current) { 2.4.dp.toPx() }
     Box(
         modifier
             .onFocusChanged {
@@ -503,22 +565,35 @@ private fun OrbitStage(
                 }
             }
             .drawWithCache {
-                // The orbit's path, drawn once per size: a faint line through where the orbs ride.
-                val path = Path()
-                var d = -(layout.side + 0.7f)
-                var first = true
-                while (d <= layout.side + 0.7f) {
-                    val p = layout.place(d)
-                    if (first) path.moveTo(p.x, p.y) else path.lineTo(p.x, p.y)
-                    first = false
-                    d += 0.1f
-                }
-                val brush = Brush.horizontalGradient(
-                    0f to Color.Transparent, 0.18f to muted.copy(alpha = 0.32f), 0.5f to muted.copy(alpha = 0.42f),
-                    0.82f to muted.copy(alpha = 0.32f), 1f to Color.Transparent,
+                // The ring, built once per size or colour: a pool of light inside it, a wide soft glow and a fine
+                // line, brightest at the front (the bottom) and fading towards the far side behind the covers.
+                val c = tint.value
+                val light = lerp(c, Color.White, 0.55f)
+                val top = layout.centreY - layout.radiusY
+                val bottom = layout.centreY + layout.radiusY
+                val centre = Offset(layout.centreX, layout.centreY)
+                val corner = Offset(layout.centreX - layout.radiusX, top)
+                val oval = Size(layout.radiusX * 2f, layout.radiusY * 2f)
+                val pool = Brush.radialGradient(listOf(c.copy(alpha = 0.16f), c.copy(alpha = 0.05f), Color.Transparent), center = centre, radius = layout.radiusX)
+                val glow = Brush.verticalGradient(0f to c.copy(alpha = 0.02f), 0.55f to c.copy(alpha = 0.08f), 1f to c.copy(alpha = 0.28f), startY = top, endY = bottom)
+                val line = Brush.verticalGradient(
+                    0f to light.copy(alpha = 0.1f), 0.6f to light.copy(alpha = 0.32f), 1f to light.copy(alpha = 0.85f), startY = top, endY = bottom,
                 )
-                val stroke = Stroke(hair, cap = StrokeCap.Round)
-                onDrawBehind { drawPath(path, brush, style = stroke) }
+                val glowStroke = Stroke(glowW)
+                val lineStroke = Stroke(lineW)
+                onDrawBehind {
+                    scale(1f, layout.radiusY / layout.radiusX, pivot = centre) { drawCircle(pool, layout.radiusX, centre) }
+                    drawOval(glow, corner, oval, style = glowStroke)
+                    drawOval(line, corner, oval, style = lineStroke)
+                    // Small lights halfway between the orbs ride round with them, so the ring is seen to turn.
+                    val off = st.offset.value
+                    val frac = off - floor(off)
+                    for (k in -(layout.side + 1)..layout.side) {
+                        val p = layout.place(k + 0.5f - frac)
+                        if (p.alpha < 0.02f) continue
+                        drawCircle(light, bead * (0.45f + 0.55f * p.scale * OrbitLayout.FOCUS), Offset(p.x, p.y), alpha = 0.75f * p.alpha * (1f - 0.5f * p.back))
+                    }
+                }
             },
     ) {
         st.orbs.forEachIndexed { i, orb -> OrbView(orb, i, st, layout, orbD, ring) }
@@ -553,7 +628,12 @@ private fun holdOrb(st: OrbitState, pos: Offset, haptic: HapticFeedback, scope: 
     }
 }
 
-/** One orb on the track: the icon art in a circle of its colour, a soft halo, and the highlight ring at the front. */
+/**
+ * One orb on the ring: the icon art in a sphere of its colour (lit from the top left, shaded towards the bottom
+ * right, with a fine glassy rim), a soft shadow on the ring under it, its colour's glow and the highlight ring at the
+ * front, and the dark of the far side coming over it as it goes round. Everything moving is read in the layer and
+ * draw lambdas.
+ */
 @Composable
 private fun OrbView(orb: Orb, index: Int, st: OrbitState, layout: OrbitLayout, size: Dp, ring: State<Float>) {
     val item = orb.item
@@ -563,6 +643,7 @@ private fun OrbView(orb: Orb, index: Int, st: OrbitState, layout: OrbitLayout, s
     val ringColor = lerp(Palette.highlightFor(color), Color.White, 0.5f)
     val fill = remember(color) { Brush.linearGradient(listOf(lerp(color, Color.White, 0.18f), color, lerp(color, Color.Black, 0.3f))) }
     val dim = if (item.hidden) HiddenAlpha else 1f
+    val deep = Palette.NightDeep
     Box(
         Modifier.size(size)
             .graphicsLayer {
@@ -572,19 +653,39 @@ private fun OrbView(orb: Orb, index: Int, st: OrbitState, layout: OrbitLayout, s
                 scaleX = p.scale
                 scaleY = p.scale
                 alpha = p.alpha * dim
+                compositingStrategy = CompositingStrategy.ModulateAlpha
             }
             .drawWithCache {
                 val r = this.size.width / 2f
-                val halo = Brush.radialGradient(listOf(color.copy(alpha = 0.45f), color.copy(alpha = 0.12f), Color.Transparent), radius = r * 1.5f)
-                val rim = Stroke(r * 0.04f)
+                val mid = Offset(r, r)
+                val halo = Brush.radialGradient(listOf(color.copy(alpha = 0.55f), color.copy(alpha = 0.16f), Color.Transparent), center = mid, radius = r * 1.75f)
+                val foot = Offset(r, r * 2.02f)
+                val shadow = Brush.radialGradient(listOf(Color.Black.copy(alpha = 0.5f), Color.Transparent), center = foot, radius = r * 0.95f)
+                val shade = Brush.radialGradient(
+                    0f to Color.Transparent, 0.62f to Color.Transparent, 1f to Color.Black.copy(alpha = 0.42f),
+                    center = Offset(r * 0.78f, r * 0.7f), radius = r * 1.3f,
+                )
+                val shineAt = Offset(r * 0.66f, r * 0.46f)
+                val shine = Brush.radialGradient(listOf(Color.White.copy(alpha = 0.4f), Color.White.copy(alpha = 0f)), center = shineAt, radius = r * 0.72f)
+                val rim = Stroke(r * 0.035f)
                 val ringStroke = Stroke(ringW)
+                val glowStroke = Stroke(ringW * 3.5f)
                 onDrawWithContent {
-                    drawCircle(halo, radius = r * 1.5f)
+                    val d = OrbitLayout.distance(index, st.offset.value, st.count, st.wraps)
+                    val near = 1f - abs(d).coerceAtMost(1f)
+                    val back = layout.place(d).back
+                    scale(1f, 0.26f, pivot = foot) { drawCircle(shadow, radius = r * 0.95f, center = foot) }
+                    drawCircle(halo, radius = r * 1.75f, alpha = 0.35f + 0.65f * near)
                     drawContent()
-                    drawCircle(Color.White.copy(alpha = 0.28f), radius = r - rim.width / 2f, style = rim)
-                    val near = 1f - abs(OrbitLayout.distance(index, st.offset.value, st.count, st.wraps)).coerceAtMost(1f)
+                    drawCircle(shade, radius = r)
+                    drawCircle(shine, radius = r * 0.72f, center = shineAt)
+                    drawCircle(Color.White.copy(alpha = 0.3f), radius = r - rim.width / 2f, style = rim)
+                    if (back > 0.01f) drawCircle(deep, radius = r, alpha = 0.55f * back)
                     val f = ring.value * near
-                    if (f > 0.01f) drawCircle(ringColor, radius = r + ringW * 1.6f, alpha = f, style = ringStroke)
+                    if (f > 0.01f) {
+                        drawCircle(ringColor, radius = r + ringW * 1.8f, alpha = f * 0.22f, style = glowStroke)
+                        drawCircle(ringColor, radius = r + ringW * 1.6f, alpha = f, style = ringStroke)
+                    }
                 }
             },
     ) {
@@ -595,182 +696,292 @@ private fun OrbView(orb: Orb, index: Int, st: OrbitState, layout: OrbitLayout, s
     }
 }
 
-/** The name of what is highlighted, under the front orb: the orb's, or the fan card's or ribbon's game. */
+/** Text over the wallpaper: a soft shadow under it, so it reads on a bright patch too. */
+private val CaptionShadow = Shadow(Color.Black.copy(alpha = 0.55f), Offset(0f, 2f), 12f)
+
+/**
+ * The name of what is highlighted, under the front orb: the orb's, or the game (or app) of the highlighted cover or
+ * Continue card, with one line about it after a dot of its colour. On the dock it steps aside: the highlighted icon
+ * names itself there, and the orb's name under the orbit would only say something else.
+ */
 @Composable
-private fun OrbitCaption(st: OrbitState, modifier: Modifier) {
+private fun OrbitCaption(st: OrbitState, part: OrbitPart, modifier: Modifier) {
     val ctx = LocalContext.current
     val sel = Selection.current
     val orb = st.orbs.firstOrNull { it.item.key == st.spot } ?: st.front ?: return
+    val off = !st.focused
     val (title, detail, color) = when {
-        !st.focused && sel is Selected.GameItem -> Triple(sel.game.title, sel.game.platform.name, SystemColors.of(sel.game.platform.id))
-        !st.focused && sel is Selected.App ->
-            Triple(if (sel.pkg == Dock.ALL_APPS) "All apps" else remember(sel.pkg) { RunningGames.appLabel(ctx, sel.pkg) }, "App", Palette.Sky)
+        off && part == OrbitPart.Continue && sel is Selected.GameItem -> {
+            val running = RunningGames.list.any { it.game?.key == sel.game.key }
+            Triple(sel.game.title, Tx.s(if (running) R.string.home_orbit_caption_resume else R.string.home_orbit_caption_continue, sel.game.platform.name), Palette.Mint)
+        }
+        off && part == OrbitPart.Fan && sel is Selected.GameItem -> Triple(sel.game.title, sel.game.platform.name, SystemColors.of(sel.game.platform.id))
+        off && part == OrbitPart.Fan && sel is Selected.App ->
+            Triple(
+                if (sel.pkg == Dock.ALL_APPS) Tx.s(R.string.home_orbit_all_apps) else remember(sel.pkg) { RunningGames.appLabel(ctx, sel.pkg) },
+                Tx.s(R.string.home_orbit_app), Palette.Sky,
+            )
         else -> Triple(orb.item.title, orb.detail, orb.item.color)
     }
+    val shown = animateFloatAsState(if (off && part == OrbitPart.Dock) 0f else 1f, Motion.soft(), label = "orbit-caption-shown")
+    val deep = Palette.NightDeep
     AnimatedContent(
-        title to detail, modifier,
+        Triple(title, detail, color),
+        modifier
+            .graphicsLayer { alpha = shown.value; compositingStrategy = CompositingStrategy.ModulateAlpha }
+            .drawWithCache {
+                // A pool of shade under the words, wider than they are, fading out at its edges.
+                val mid = Offset(size.width / 2f, size.height * 0.45f)
+                val r = size.width * 0.5f
+                val brush = Brush.radialGradient(listOf(deep.copy(alpha = 0.5f), deep.copy(alpha = 0.22f), Color.Transparent), center = mid, radius = r)
+                onDrawBehind { scale(1f, 0.42f, pivot = mid) { drawCircle(brush, r, mid) } }
+            },
         transitionSpec = { fadeIn(Motion.fade(180)) togetherWith fadeOut(Motion.fade(110)) },
         contentAlignment = Alignment.TopCenter, label = "orbit-caption",
-    ) { (t, d) ->
+    ) { (t, d, c) ->
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(t, style = MaterialTheme.typography.headlineSmall, maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-            // On a chip of the card colour: the line sits on the wallpaper, where a pale patch would swallow it.
-            if (d.isNotEmpty()) Box(
-                Modifier.padding(top = 4.dp).clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.82f)).padding(horizontal = 12.dp, vertical = 3.dp),
-            ) {
+            Text(
+                t, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold, shadow = CaptionShadow),
+                maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+            )
+            if (d.isNotEmpty()) Row(Modifier.padding(top = 3.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(7.dp).clip(CircleShape).background(c))
+                Spacer(Modifier.width(7.dp))
                 Text(
-                    d, style = MaterialTheme.typography.titleSmall, color = Palette.readable(color),
-                    maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+                    d, style = MaterialTheme.typography.titleSmall.copy(shadow = CaptionShadow), color = Palette.Text.copy(alpha = 0.82f),
+                    maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
         }
     }
 }
 
+/** A soft shadow on the floor under a cover, so it stands on the stage rather than floating over it. */
+private fun Modifier.floorShadow(): Modifier = drawWithCache {
+    val foot = Offset(size.width / 2f, size.height)
+    val r = size.width * 0.62f
+    val brush = Brush.radialGradient(listOf(Color.Black.copy(alpha = 0.6f), Color.Black.copy(alpha = 0.2f), Color.Transparent), center = foot, radius = r)
+    onDrawBehind { scale(1f, 0.13f, pivot = foot) { drawCircle(brush, r, foot) } }
+}
+
+/** The floor the covers stand on: a line of light in [color] along the bottom, [halfSpan] px either side of the middle. */
+private fun Modifier.floorLight(color: Color, halfSpan: Float): Modifier = drawWithCache {
+    val cx = size.width / 2f
+    val y = size.height
+    val span = halfSpan * 1.25f
+    val line = Brush.horizontalGradient(
+        0f to Color.Transparent, 0.5f to lerp(color, Color.White, 0.4f).copy(alpha = 0.55f), 1f to Color.Transparent, startX = cx - span, endX = cx + span,
+    )
+    val pool = Brush.radialGradient(listOf(color.copy(alpha = 0.32f), Color.Transparent), center = Offset(cx, y), radius = span)
+    val hair = 1.2.dp.toPx()
+    onDrawBehind {
+        scale(1f, 0.12f, pivot = Offset(cx, y)) { drawCircle(pool, span, Offset(cx, y)) }
+        drawRect(line, Offset(cx - span, y - hair / 2f), Size(span * 2f, hair))
+    }
+}
+
+/** A cover's glass: a sheen across its top corner, and [dim] (read while drawing) shading it back into the stage. */
+private fun Modifier.coverGlass(dim: () -> Float): Modifier = drawWithCache {
+    val sheen = Brush.linearGradient(
+        0f to Color.White.copy(alpha = 0.2f), 0.38f to Color.Transparent, start = Offset.Zero, end = Offset(size.width, size.height),
+    )
+    onDrawBehind {
+        drawRect(sheen)
+        val d = dim()
+        if (d > 0.01f) drawRect(Color.Black, alpha = d)
+    }
+}
+
 /**
- * The spotlight's fan: real covers at their own proportions, tilted like cards in a hand, the latest in the middle
- * and larger. Each card is a [FocusCard] placed at its real spot (so Left and Right walk them in order); the tilt,
- * the size and the entry are graphics-layer only. Down goes back to the orbit, Up to the Continue ribbon.
+ * The spotlight's covers, one shape and on one floor (see [Fan]): the latest in the middle and biggest, the others
+ * smaller, dimmer and turned away a little the further out they are. Each is a [FocusCard] laid out at its real spot
+ * (so Left and Right walk them in order); the scale, turn, shade and entry are graphics-layer only. Down goes back
+ * to the orbit.
  */
 @Composable
 private fun SpotFan(
     cards: List<FanCard>, cardW: Dp, cardH: Dp, entry: Animatable<Float, AnimationVector1D>, route: String, target: String?,
-    focusedKey: String?, middle: FocusRequester, stage: FocusRequester, up: FocusRequester?, onFocusCard: (String) -> Unit, modifier: Modifier,
+    focusedKey: String?, middle: FocusRequester, stage: FocusRequester, onFocusCard: (String) -> Unit,
 ) {
     val ctx = LocalContext.current
     val cardWpx = with(LocalDensity.current) { cardW.toPx() }
-    // Room above the middle card for its larger size.
-    val inset = with(LocalDensity.current) { (cardH * 0.08f).toPx() }
-    Box(modifier.focusRow(), contentAlignment = Alignment.TopCenter) {
-        val n = cards.size
-        cards.forEachIndexed { rank, card ->
-            val p = Fan.place(rank, n, cardWpx)
-            val key = "fan:${card.key}"
-            val game = card.game
-            val pkg = card.pkg
-            val glow = game?.let { SystemColors.of(it.platform.id) } ?: Palette.Sky
-            FocusCard(
-                Modifier
-                    .offset { IntOffset(p.x.roundToInt(), (p.y + inset).roundToInt()) }
-                    .zIndex(if (key == focusedKey) 20f else 10f - abs(Fan.slot(rank)))
-                    .size(cardW, cardH)
-                    .graphicsLayer {
-                        val e = entry.value
-                        rotationZ = p.rotation * e
-                        val s = 0.82f + (p.scale - 0.82f) * e
-                        scaleX = s
-                        scaleY = s
-                        translationX = -p.x * (1f - e)
-                        alpha = e.coerceIn(0f, 1f)
-                    }
-                    .then(if (rank == 0) Modifier.focusRequester(middle) else Modifier)
-                    .focusProperties { down = stage; if (up != null) this.up = up }
-                    .takesFocus(route, key, key == target)
-                    .onFocusChanged { if (!it.isFocused && pkg != null && Panels.focusedApp == pkg) Panels.focusedApp = null },
-                glow = glow, shape = RoundedCornerShape(12.dp), entry = true,
-                onFocus = {
-                    onFocusCard(key)
-                    if (game != null) Selection.current = Selected.GameItem(game)
-                    else if (pkg != null) { Panels.focusedApp = pkg; Selection.current = Selected.App(pkg) }
-                },
-                onClick = { if (game != null) Launcher.launch(ctx, game) else if (pkg != null) Dock.open(ctx, pkg) },
-            ) {
-                if (game != null) GameBoxArt(game, cardW)
-                else if (pkg != null) Column(
-                    Modifier.fillMaxSize().background(lerp(Palette.Card, Palette.Sky, 0.12f)).padding(8.dp),
-                    verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    AppIcon(pkg, Modifier.size(cardW * 0.6f).clip(RoundedCornerShape(14.dp)))
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        remember(pkg) { RunningGames.appLabel(ctx, pkg) }, style = MaterialTheme.typography.labelMedium,
-                        maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
-                    )
+    val n = cards.size
+    cards.forEachIndexed { rank, card ->
+        val p = Fan.place(rank, n, cardWpx)
+        val key = "fan:${card.key}"
+        val game = card.game
+        val pkg = card.pkg
+        val glow = game?.let { SystemColors.of(it.platform.id) } ?: Palette.Sky
+        FocusCard(
+            Modifier
+                .offset { IntOffset(p.x.roundToInt(), 0) }
+                .zIndex(if (key == focusedKey) 20f else 10f - abs(Fan.slot(rank)))
+                .size(cardW, cardH)
+                .graphicsLayer {
+                    val e = entry.value
+                    transformOrigin = TransformOrigin(0.5f, 1f)
+                    val s = p.scale * (0.86f + 0.14f * e)
+                    scaleX = s
+                    scaleY = s
+                    rotationY = p.turn * e
+                    cameraDistance = 16f * density
+                    translationX = -p.x * (1f - e) * 0.7f
+                    alpha = e.coerceIn(0f, 1f)
                 }
+                .floorShadow()
+                .then(if (rank == 0) Modifier.focusRequester(middle) else Modifier)
+                .focusProperties { down = stage }
+                .takesFocus(route, key, key == target)
+                .onFocusChanged { if (!it.isFocused && pkg != null && Panels.focusedApp == pkg) Panels.focusedApp = null },
+            glow = glow, shape = RoundedCornerShape(12.dp), entry = true,
+            onFocus = {
+                onFocusCard(key)
+                if (game != null) Selection.current = Selected.GameItem(game)
+                else if (pkg != null) { Panels.focusedApp = pkg; Selection.current = Selected.App(pkg) }
+            },
+            onClick = { if (game != null) Launcher.launch(ctx, game) else if (pkg != null) Dock.open(ctx, pkg) },
+        ) { focused ->
+            if (game != null) GameBoxArt(game, cardW)
+            else if (pkg != null) Column(
+                Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(lerp(Palette.Card, Palette.Sky, 0.2f), Palette.Card))).padding(8.dp),
+                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                AppIcon(pkg, Modifier.size(cardW * 0.56f).clip(RoundedCornerShape(14.dp)))
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    remember(pkg) { RunningGames.appLabel(ctx, pkg) }, style = MaterialTheme.typography.labelLarge,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+                )
             }
+            val shade = animateFloatAsState(if (focused) 0f else p.dim, Motion.soft(), label = "cover-shade")
+            Box(Modifier.fillMaxSize().coverGlass { shade.value })
         }
     }
 }
 
 /** The spotlight for an orb with nothing to fan out (one of Tandem's apps): its art big, and what it is. */
 @Composable
-private fun OrbNote(orb: Orb, entry: Animatable<Float, AnimationVector1D>, modifier: Modifier) {
+private fun OrbNote(orb: Orb, entry: Animatable<Float, AnimationVector1D>, width: Dp, modifier: Modifier) {
     Column(
-        modifier.graphicsLayer { alpha = entry.value.coerceIn(0f, 1f); translationY = (1f - entry.value) * 24f * density },
+        modifier.graphicsLayer {
+            alpha = entry.value.coerceIn(0f, 1f)
+            translationY = (1f - entry.value) * 24f * density
+            compositingStrategy = CompositingStrategy.ModulateAlpha
+        },
         verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(Modifier.size(92.dp).clip(RoundedCornerShape(26.dp))) { TileArtView(orb.item.art, 92.dp) }
-        Spacer(Modifier.height(12.dp))
-        val line = orb.item.blurb.ifEmpty { if (orb.item.kind == TileKind.AllApps) "Pin apps to the dock to see them here" else orb.item.type }
+        Box(Modifier.size(96.dp).floorShadow().clip(RoundedCornerShape(28.dp))) { TileArtView(orb.item.art, 96.dp) }
+        Spacer(Modifier.height(14.dp))
+        val line = orb.item.blurb.ifEmpty { if (orb.item.kind == TileKind.AllApps) Tx.s(R.string.home_orbit_note_pin) else orb.item.type }
         Text(
-            line, Modifier.widthIn(max = 420.dp).padding(horizontal = 16.dp), style = MaterialTheme.typography.titleMedium,
-            color = Palette.Muted, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+            line, Modifier.widthIn(max = width).padding(horizontal = 16.dp),
+            style = MaterialTheme.typography.titleMedium.copy(shadow = CaptionShadow),
+            color = Palette.Text.copy(alpha = 0.8f), maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
         )
     }
 }
 
-/** The last game played anywhere, as a wide card over the fan: A picks it up again. */
+/**
+ * The last game played anywhere, as a cover standing on the same floor as the carousel, apart to its left, under
+ * a "Continue" (or "Resume", while it runs) label and with a play badge. A picks it up again.
+ */
 @Composable
-private fun ContinueRibbon(game: Game, height: Dp, modifier: Modifier, onFocus: () -> Unit) {
+private fun ContinueCard(game: Game, x: Float, cardW: Dp, cardH: Dp, modifier: Modifier, onFocus: () -> Unit) {
     val ctx = LocalContext.current
     val running = RunningGames.list.any { it.game?.key == game.key }
-    val color = SystemColors.of(game.platform.id)
-    FocusCard(
-        modifier.height(height), glow = Palette.Mint, shape = RoundedCornerShape(height / 2), entry = true,
-        onFocus = { onFocus(); Selection.current = Selected.GameItem(game) },
-        onClick = { Launcher.launch(ctx, game) },
-    ) {
-        Row(
-            Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(lerp(color, Palette.Card, 0.55f), Palette.Card.copy(alpha = 0.85f)))),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(Modifier.padding(start = 6.dp).size(height - 12.dp).clip(CircleShape)) { GameBoxArt(game, height) }
-            Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text(
-                    if (running) "Resume" else "Continue", style = MaterialTheme.typography.labelMedium,
-                    color = Palette.readable(Palette.Mint), maxLines = 1,
-                )
-                Text(game.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            }
+    val w = cardW * Fan.CONTINUE
+    val mint = Palette.Mint
+    Column(Modifier.offset { IntOffset(x.roundToInt(), 0) }.width(w), horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(Modifier.padding(bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            GlyphIcon(Glyph.Play, Palette.readable(mint), Modifier.size(11.dp))
+            Spacer(Modifier.width(5.dp))
             Text(
-                game.platform.shortName, Modifier.padding(end = 18.dp), style = MaterialTheme.typography.labelMedium,
-                color = Palette.Muted, maxLines = 1,
+                Tx.s(if (running) R.string.home_orbit_resume else R.string.home_orbit_continue),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = 1.2.sp, shadow = CaptionShadow),
+                color = Palette.readable(mint), maxLines = 1, softWrap = false,
             )
+        }
+        FocusCard(
+            modifier.size(w, cardH * Fan.CONTINUE).floorShadow(), glow = mint, shape = RoundedCornerShape(12.dp), entry = true,
+            onFocus = { onFocus(); Selection.current = Selected.GameItem(game) },
+            onClick = { Launcher.launch(ctx, game) },
+        ) {
+            GameBoxArt(game, w)
+            Box(Modifier.fillMaxSize().coverGlass { 0f })
+            Box(
+                Modifier.align(Alignment.BottomEnd).padding(7.dp).size(26.dp).clip(CircleShape).background(mint),
+                contentAlignment = Alignment.Center,
+            ) { GlyphIcon(Glyph.Play, Palette.OnAccent, Modifier.padding(start = 2.dp).size(13.dp)) }
         }
     }
 }
 
-/** The dock under the orbit: the pinned apps as small round icons. Up goes back to the orbit. */
+/**
+ * The dock under the orbit: the pinned apps as small round icons on a faint glass tray, quieter than the orbit until
+ * it holds the highlight. The highlighted icon shows its name above it. Up goes back to the orbit.
+ */
 @Composable
 private fun OrbitDock(
     dock: List<String>, withAll: Boolean, route: String, target: String?, stage: FocusRequester?,
     requesters: HashMap<String, FocusRequester>, onFocusKey: (String) -> Unit, modifier: Modifier,
 ) {
     val ctx = LocalContext.current
-    Row(modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+    var lit by remember { mutableStateOf<String?>(null) }
+    val calm = animateFloatAsState(if (lit != null) 1f else 0.72f, Motion.soft(), label = "orbit-dock")
+    val tray = Palette.Card.copy(alpha = 0.42f)
+    val edge = Palette.Text.copy(alpha = 0.1f)
+    Row(
+        modifier.focusRow()
+            .graphicsLayer { alpha = calm.value }
+            .drawWithCache {
+                val radius = androidx.compose.ui.geometry.CornerRadius(size.height / 2f)
+                val hair = Stroke(1.dp.toPx())
+                onDrawBehind {
+                    drawRoundRect(tray, cornerRadius = radius)
+                    drawRoundRect(edge, cornerRadius = radius, style = hair)
+                }
+            }
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
+    ) {
         @Composable
         fun Icon(key: String, pkg: String, onClick: () -> Unit, content: @Composable () -> Unit) {
-            FocusCard(
-                Modifier.size(44.dp)
-                    .focusRequester(requesters.getOrPut(key) { FocusRequester() })
-                    .focusProperties { if (stage != null) up = stage }
-                    .takesFocus(route, key, key == target)
-                    .onFocusChanged { if (!it.isFocused && Panels.focusedApp == pkg) Panels.focusedApp = null },
-                glow = Palette.Sky, shape = CircleShape, entry = pkg != Dock.ALL_APPS,
-                onFocus = {
-                    onFocusKey(key)
-                    Panels.focusedApp = pkg.takeIf { it != Dock.ALL_APPS }
-                    Selection.current = Selected.App(pkg)
-                },
-                onClick = onClick,
-            ) { content() }
+            Box {
+                FocusCard(
+                    Modifier.size(38.dp)
+                        .focusRequester(requesters.getOrPut(key) { FocusRequester() })
+                        .focusProperties { if (stage != null) up = stage }
+                        .takesFocus(route, key, key == target)
+                        .onFocusChanged {
+                            if (!it.isFocused && Panels.focusedApp == pkg) Panels.focusedApp = null
+                            if (!it.isFocused && lit == key) lit = null
+                        },
+                    glow = Palette.Sky, shape = CircleShape, entry = pkg != Dock.ALL_APPS,
+                    onFocus = {
+                        lit = key
+                        onFocusKey(key)
+                        Panels.focusedApp = pkg.takeIf { it != Dock.ALL_APPS }
+                        Selection.current = Selected.App(pkg)
+                    },
+                    onClick = onClick,
+                ) { content() }
+                // The name floats above the icon without taking room in the row.
+                if (lit == key) Box(Modifier.matchParentSize()) {
+                    Text(
+                        if (pkg == Dock.ALL_APPS) Tx.s(R.string.home_orbit_all_apps) else remember(pkg) { RunningGames.appLabel(ctx, pkg) },
+                        Modifier.offset(y = (-36).dp).wrapContentSize(unbounded = true)
+                            .clip(RoundedCornerShape(50)).background(Palette.CardHigh.copy(alpha = 0.94f)).padding(horizontal = 12.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelLarge, maxLines = 1, softWrap = false,
+                    )
+                }
+            }
         }
         dock.forEach { pkg ->
-            Icon("app:$pkg", pkg, { Dock.open(ctx, pkg) }) { AppIcon(pkg, Modifier.fillMaxSize().padding(5.dp).clip(CircleShape)) }
+            Icon("app:$pkg", pkg, { Dock.open(ctx, pkg) }) { AppIcon(pkg, Modifier.fillMaxSize().padding(4.dp).clip(CircleShape)) }
         }
         if (withAll) Icon("app:*", Dock.ALL_APPS, { Panels.openApps() }) {
             Box(Modifier.fillMaxSize().background(Palette.Sky.copy(alpha = 0.22f)), contentAlignment = Alignment.Center) {
-                GlyphIcon(Glyph.Grid, Palette.Sky, Modifier.size(22.dp))
+                GlyphIcon(Glyph.Grid, Palette.Sky, Modifier.size(19.dp))
             }
         }
     }
@@ -780,20 +991,19 @@ private fun OrbitDock(
 @Composable
 fun orbitSettings(): SettingSection {
     val look = Store.settings.look
-    return SettingSection(
-        "Orbit",
-        listOf(
+    return SettingSection(Tx.s(R.string.home_orbit_settings), en = "Orbit",
+        rows = listOf(
             choice(
-                "Orbit holds", Glyph.Home, Palette.Lavender,
-                "What rides the orbit: your systems, collections and Tandem's apps, or fewer of them. L1 and R1 jump between the groups.",
-                Orbit.Groups, look.orbitGroups,
+                Tx.s(R.string.home_orbit_holds), Glyph.Home, Palette.Lavender, Tx.s(R.string.home_orbit_holds_help),
+                Orbit.Groups, look.orbitGroups, en = "Orbit holds",
             ) { v -> updateLook { it.copy(orbitGroups = v) } }.copy(keywords = "orbit orbs planets systems collections apps groups"),
+            // Its English name stays "Continue ribbon" (an id: Settings places the row, focus memory and search by it),
+            // though it is a card now.
             toggle(
-                "Continue ribbon", Glyph.Play, Palette.Mint,
-                "The last game you played, as a wide card above the spotlight's fan. A picks it up again.",
-                look.orbitContinue,
+                Tx.s(R.string.home_orbit_continue_card), Glyph.Play, Palette.Mint, Tx.s(R.string.home_orbit_continue_card_help),
+                look.orbitContinue, en = "Continue ribbon",
                 look = { on -> LayoutPreview("orbit", Modifier.fillMaxSize(), rounded = false, look = look.copy(orbitContinue = on)) },
-            ) { v -> updateLook { it.copy(orbitContinue = v) } }.copy(keywords = "orbit continue resume last played recent"),
+            ) { v -> updateLook { it.copy(orbitContinue = v) } }.copy(keywords = "orbit continue ribbon card resume last played recent"),
         ),
     )
 }

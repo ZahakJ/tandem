@@ -97,7 +97,7 @@ A "›" step after a page is its subpage.
 | `Look.homeSections` | Home & layout › Home screen › Home rows (shelves, carousel, list, console) | choice |
 | `Look.systemTiles` | Home & layout › Home screen › System tiles (shelves, carousel, list, console) | choice |
 | `Look.folderPopup`, `fullscreenFolders` | Home & layout › Home screen › Open folders (other layouts) | choice |
-| `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue ribbon (Orbit) | choice / toggle |
+| `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue card (Orbit) | choice / toggle |
 | `Look.spotlightRail`, `spotlightBackdrop`, `spotlightMotion` | Home & layout › Home screen › Spotlight rail (left, right) / Spotlight backdrop (art, blurred cover, dim) / Spotlight motion (Spotlight) | choice / choice / toggle |
 | `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › How games show (Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
 | `HomeSettings.showDock`, `dock`, `Look.dockStyle`, `dockTop`, `dockAutoHide` | Home & layout › Dock & widgets › Dock › Apps dock / Choose dock apps / Dock style / Dock on top / Auto-hide dock | toggle / link / choice |

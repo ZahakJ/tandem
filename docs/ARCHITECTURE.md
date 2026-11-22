@@ -173,7 +173,7 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
 - Orbit, Tandem's own home: `ui/OrbitLayout.kt` (pure geometry: orbs along the arc for a spin offset, wrap-around,
   hit tests, flick settling, L1/R1 group jumps, the spotlight's fan; tested in `OrbitLayoutTest`) and `ui/Orbit.kt`
   (`OrbitHome`: the orbit as one focusable stage whose orbs are drawn in graphics layers from one `Animatable`, the
-  spotlight fan of `FocusCard`s, the Continue ribbon, the round dock, `orbitSettings()`). Orbs are `GridCatalog` tiles.
+  spotlight's carousel of cover `FocusCard`s, the Continue card, the round dock, `orbitSettings()`). Orbs are `GridCatalog` tiles.
 - Spotlight, the game-first home: `ui/SpotlightHomeLayout.kt` (pure: the rail/panel split and its mirror, the rail's
   tile places for a scroll offset, windowing, hit tests, hold speed-up, flick settling, group cycling, B's order, the
   art's settle delay; tested in `SpotlightHomeLayoutTest`) and `ui/SpotlightHome.kt` (`SpotlightHome`: the rail as one

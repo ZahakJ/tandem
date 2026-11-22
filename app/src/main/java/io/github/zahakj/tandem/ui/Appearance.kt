@@ -1123,43 +1123,54 @@ fun LayoutPreview(
                 dock(h - 11 * u)
             }
             "orbit" -> {
-                // Drawn with Orbit's own geometry (OrbitLayout): orbs on an arc that bows downward, the front one big
-                // and ringed, its fan of covers above, the Continue ribbon on top and the round dock below.
-                val orbit = OrbitLayout(w, 64 * u, 30 * u, 17 * u, side = 4)
-                val track = androidx.compose.ui.graphics.Path()
-                var d = -4.6f
-                while (d <= 4.6f) {
-                    val p = orbit.place(d)
-                    if (d == -4.6f) track.moveTo(p.x, p.y) else track.lineTo(p.x, p.y)
-                    d += 0.2f
-                }
-                drawPath(track, t.muted.copy(alpha = 0.45f), style = Stroke(0.6f * u))
+                // Drawn with Orbit's own geometry (OrbitLayout, Fan) in its proportions: orbs on a glowing ring seen
+                // in perspective, the front one big and ringed with its name under it, the covers standing on a lit
+                // floor inside the ring with the Continue card apart to their left, and the quiet dock below.
+                val baseY = 62 * u
+                val orbit = OrbitLayout(w, baseY, 17 * u, 22 * u, side = 4)
+                val lav = t.lavender
+                val ringTop = orbit.centreY - orbit.radiusY
+                val corner = Offset(orbit.centreX - orbit.radiusX, ringTop)
+                val oval = Size(orbit.radiusX * 2, orbit.radiusY * 2)
+                drawOval(Brush.verticalGradient(listOf(lav.copy(alpha = 0.02f), lav.copy(alpha = 0.28f)), ringTop, baseY), corner, oval, style = Stroke(2.2f * u))
+                drawOval(Brush.verticalGradient(listOf(t.text.copy(alpha = 0.1f), t.text.copy(alpha = 0.8f)), ringTop, baseY), corner, oval, style = Stroke(0.4f * u))
                 for (i in listOf(-4, 4, -3, 3, -2, 2, -1, 1, 0)) {
                     val p = orbit.place(i.toFloat())
-                    val rr = 8.5f * u * p.scale
+                    val rr = 11 * u * p.scale
                     val c = accents[(i + 8) % accents.size]
-                    drawCircle(c.copy(alpha = 0.25f * p.alpha), rr * 1.45f, Offset(p.x, p.y))
-                    drawCircle(Brush.linearGradient(listOf(c, androidx.compose.ui.graphics.lerp(c, t.background, 0.35f)), Offset(p.x - rr, p.y - rr), Offset(p.x + rr, p.y + rr)), rr, Offset(p.x, p.y), alpha = p.alpha)
-                    if (i == 0) drawCircle(t.text, rr + 1.6f * u, Offset(p.x, p.y), style = Stroke(1.1f * u))
+                    val at = Offset(p.x, p.y)
+                    if (i == 0) drawCircle(c.copy(alpha = 0.3f), rr * 1.6f, at)
+                    drawCircle(Brush.linearGradient(listOf(androidx.compose.ui.graphics.lerp(c, Color.White, 0.25f), androidx.compose.ui.graphics.lerp(c, t.background, 0.35f)), Offset(p.x - rr, p.y - rr), Offset(p.x + rr, p.y + rr)), rr, at, alpha = p.alpha)
+                    if (p.back > 0f) drawCircle(t.backgroundDeep, rr, at, alpha = 0.55f * p.back)
+                    if (i == 0) drawCircle(t.text, rr + 1.4f * u, at, style = Stroke(0.9f * u))
                 }
-                bar(w / 2 - w * 0.11f, 77 * u, w * 0.22f, t.text, 4.5f)
-                bar(w / 2 - w * 0.07f, 83.5f * u, w * 0.14f, t.muted, 2.5f)
-                val cw = 13 * u
+                bar(w / 2 - w * 0.1f, baseY + 13.5f * u, w * 0.2f, t.text, 4.5f)
+                bar(w / 2 - w * 0.07f, baseY + 20 * u, w * 0.14f, t.muted, 2.5f)
+                val floorY = baseY - 16.6f * u
+                val cw = minOf((floorY - 2.3f * u) / 1.12f / Fan.ASPECT, (w / 2 - 3.3f * u) / Fan.reach(5, look.orbitContinue))
+                val ch = cw * Fan.ASPECT
+                drawRect(
+                    Brush.horizontalGradient(listOf(Color.Transparent, lav.copy(alpha = 0.6f), Color.Transparent), w / 2 - cw * 2.2f, w / 2 + cw * 2.2f),
+                    Offset(w / 2 - cw * 2.2f, floorY - 0.2f * u), Size(cw * 4.4f, 0.4f * u),
+                )
                 for (rank in listOf(4, 3, 2, 1, 0)) {
                     val f = Fan.place(rank, 5, cw)
-                    val s = f.scale
-                    val cx = w / 2 + f.x
-                    val top = 19 * u + f.y
-                    rotate(f.rotation, Offset(cx, top + cw * 0.7f)) {
-                        tile(cx - cw * s / 2, top, cw * s, cw * 1.38f * s, rank + 1)
-                    }
+                    val fw = cw * f.scale
+                    val fh = ch * f.scale
+                    tile(w / 2 + f.x - fw / 2, floorY - fh, fw, fh, rank + 1, focused = false)
+                    if (f.dim > 0f) drawRoundRect(Color.Black, Offset(w / 2 + f.x - fw / 2, floorY - fh), Size(fw, fh), r, alpha = f.dim)
                 }
                 if (look.orbitContinue) {
-                    drawRoundRect(t.card.copy(alpha = 0.9f), Offset(w * 0.32f, 5 * u), Size(w * 0.36f, 9 * u), CornerRadius(4.5f * u))
-                    drawCircle(t.mint, 3 * u, Offset(w * 0.32f + 5 * u, 9.5f * u))
-                    bar(w * 0.32f + 10 * u, 8 * u, w * 0.18f, t.text, 3f)
+                    val kw = cw * Fan.CONTINUE
+                    val kh = ch * Fan.CONTINUE
+                    val kx = w / 2 + Fan.continueX(5, cw) - kw / 2
+                    tile(kx, floorY - kh, kw, kh, 6)
+                    drawCircle(t.mint, 2.6f * u, Offset(kx + kw - 4 * u, floorY - 4 * u))
+                    bar(kx + kw * 0.2f, floorY - kh - 4.5f * u, kw * 0.6f, t.mint, 2.2f)
                 }
-                for (i in 0 until 4) drawCircle(accents[(i + 2) % accents.size], 2.6f * u, Offset(w / 2 + (i - 1.5f) * 8 * u, h - 5.5f * u))
+                val dw = w * 0.34f
+                drawRoundRect(t.card.copy(alpha = 0.5f), Offset((w - dw) / 2, h - 10.5f * u), Size(dw, 8 * u), CornerRadius(4 * u))
+                for (i in 0 until 5) drawCircle(accents[(i + 2) % accents.size].copy(alpha = 0.8f), 2.4f * u, Offset((w - dw) / 2 + dw * (i + 0.5f) / 5, h - 6.5f * u))
             }
             "spotlight" -> {
                 // The art across the screen fading towards the rail, the rail of covers with the middle one ringed,

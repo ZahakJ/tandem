@@ -50,7 +50,7 @@ data class Look(
     val spotlightMotion: Boolean = true,
     /** What the Orbit home's orbs are: "all" (systems, collections, apps), "games" (systems and collections) or "systems". */
     val orbitGroups: String = "all",
-    /** The Orbit home's Continue ribbon (the last game played) above the spotlight. */
+    /** The Orbit home's Continue card (the last game played) beside the spotlight's covers. */
     val orbitContinue: Boolean = true,
     /** How games show inside a system or collection: "grid", "list" or "carousel". */
     val gameView: String = "grid",
