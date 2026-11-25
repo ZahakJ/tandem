@@ -475,4 +475,16 @@
     <string name="look_preset_minimal_3">BGMオフ</string>
     <string name="look_preset_minimal_4">隠れるアイコンだけのドック</string>
     <string name="look_preset_minimal_5">ウィジェットの列なし、起動画面なし</string>
+    <string name="look_grid_corner_sharp">シャープ</string>
+    <string name="look_grid_corner_crisp">キリッと</string>
+    <string name="look_grid_corner_soft">やわらか</string>
+    <string name="look_grid_corner_rounded">角丸</string>
+    <string name="look_grid_corner_round">まるっと</string>
+    <string name="look_grid_corner_pebble">小石</string>
+    <string name="look_grid_corner_circle">まる</string>
+    <string name="look_grid_animated">動くアイコン</string>
+    <string name="look_grid_animated_help">タイルのGIFやアニメーションWebPを、いつも動かすか、カーソルが乗ったときだけ動かすか、動かさないか。ゲーム中はいつも止まります。</string>
+    <string name="look_grid_animated_always">いつも</string>
+    <string name="look_grid_animated_focused">カーソルが乗ったとき</string>
+    <string name="look_grid_animated_off">オフ</string>
 </resources>

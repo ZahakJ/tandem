@@ -572,4 +572,18 @@
     <string name="look_preset_minimal_3">Music off</string>
     <string name="look_preset_minimal_4">Icons-only dock that hides</string>
     <string name="look_preset_minimal_5">No widgets row, no splash</string>
+    <!-- Icon roundness steps, from square corners to circles; shown as "Rounded · 20%". Short. -->
+    <string name="look_grid_corner_sharp">Sharp</string>
+    <string name="look_grid_corner_crisp">Crisp</string>
+    <string name="look_grid_corner_soft">Soft</string>
+    <string name="look_grid_corner_rounded">Rounded</string>
+    <string name="look_grid_corner_round">Round</string>
+    <string name="look_grid_corner_pebble">Pebble</string>
+    <string name="look_grid_corner_circle">Circle</string>
+    <!-- Tiles wearing a GIF or animated WebP the user uploaded. -->
+    <string name="look_grid_animated">Animated icons</string>
+    <string name="look_grid_animated_help">GIFs and animated WebPs on tiles play all the time, only while highlighted, or never. They always rest while a game runs.</string>
+    <string name="look_grid_animated_always">Always</string>
+    <string name="look_grid_animated_focused">While highlighted</string>
+    <string name="look_grid_animated_off">Off</string>
 </resources>

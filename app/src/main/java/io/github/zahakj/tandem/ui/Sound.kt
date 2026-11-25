@@ -165,7 +165,7 @@ object Sounds {
 
     // --- What the UI calls ------------------------------------------------------------------------------------
 
-    fun move() { play(Sfx.Move) }
+    fun move() { play(Sfx.Move); Feel.move() }
     fun select() { play(Sfx.Select) }
     fun back() { play(Sfx.Back) }
     fun error() { play(Sfx.Error) }

@@ -161,4 +161,11 @@
     <string name="controls_padlink_playing">تلعب بـ %1$s</string>
     <string name="controls_padlink_failed">تعذّر استخدام %1$s</string>
     <string name="controls_padlink_failed_unknown">تعذّر استخدام ذراع التحكّم</string>
+    <string name="controls_command_grab">التقط لتنقل</string>
+    <string name="controls_command_grab_help">اضغط زر الخيارات مطوّلًا على مربع في شبكة الأيقونات: يرتفع المربع وتحرّكه بأزرار الاتجاه. A يضعه، وB يعيده إلى مكانه.</string>
+    <string name="controls_feel">اشعر بكل حركة</string>
+    <string name="controls_feel_help">نقرة اهتزاز صغيرة جدًا من الجهاز كلما تحرّك التحديد، وأوضح قليلًا حين تلتقط مربعًا أو تضعه. ألطف حين تُبقي اتجاهًا مضغوطًا. يجب أن تكون «الاهتزاز عند اللمس» مفعّلة في إعدادات Android.</string>
+    <string name="controls_feel_off">معطّل</string>
+    <string name="controls_feel_light">خفيف</string>
+    <string name="controls_feel_firm">واضح</string>
 </resources>

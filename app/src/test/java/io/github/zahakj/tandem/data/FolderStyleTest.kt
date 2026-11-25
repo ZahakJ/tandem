@@ -116,4 +116,48 @@ class ArtColorTest {
             for (shift in listOf(16, 8, 0)) assertTrue(kotlin.math.abs(((back shr shift) and 0xff) - ((c shr shift) and 0xff)) <= 1)
         }
     }
+
+    // A tile's own corners (Y › Edit › Look › Corners).
+
+    @Test fun cornersFollowTheGridUntilATileKeepsItsOwn() {
+        assertEquals(0.2f, FolderStyle.DEFAULT.cornerShare(0.2f), 0f)
+        assertEquals(0.35f, FolderStyle(corners = 0.35f).cornerShare(0.2f), 0f)
+        assertTrue(FolderStyle(corners = 0.35f).ownCorners)
+        assertFalse(FolderStyle.DEFAULT.ownCorners)
+        // Out of range, it is still a sensible shape.
+        assertEquals(0.5f, FolderStyle(corners = 3f).cornerShare(0.2f), 0f)
+    }
+
+    @Test fun aShapeOfItsOwnWinsOverCorners() {
+        assertEquals(0.5f, FolderStyle(shape = FolderStyle.SHAPE_CIRCLE, corners = 0.1f).cornerShare(0.2f), 0f)
+        assertEquals(FolderStyle.ROUNDED_SHARE, FolderStyle(shape = FolderStyle.SHAPE_ROUNDED).cornerShare(0f), 0f)
+        assertFalse(FolderStyle(shape = FolderStyle.SHAPE_CIRCLE, corners = 0.1f).ownCorners)
+    }
+
+    @Test fun cornerStepsGoFromFollowingTheGridToRound() {
+        assertEquals(0f, FolderStyle.stepCorners(null, 1)!!, 0f)
+        assertNull(FolderStyle.stepCorners(null, -1))
+        assertNull(FolderStyle.stepCorners(0f, -1))
+        assertEquals(0.25f, FolderStyle.stepCorners(0.2f, 1)!!, 0f)
+        assertEquals(0.5f, FolderStyle.stepCorners(0.5f, 1)!!, 0f)
+        // A value between the steps (from a hand-edited file) goes on to the next one.
+        assertEquals(0.3f, FolderStyle.stepCorners(0.27f, 1)!!, 0f)
+    }
+
+    @Test fun anAppOrAGameKeepsOnlyItsShape() {
+        val own = FolderStyle(icon = FolderStyle.ICON_GAME, iconRef = "game:x", color = 1, shape = FolderStyle.SHAPE_CIRCLE, corners = 0.1f).shapeOnly()
+        assertEquals(FolderStyle(shape = FolderStyle.SHAPE_CIRCLE, corners = 0.1f), own)
+        assertTrue(FolderStyle(icon = FolderStyle.ICON_GLYPH, glyph = "Star").shapeOnly().isDefault)
+    }
+
+    @Test fun cornersSurviveTheRoundTripAndOldFilesHaveNone() {
+        val config = IconGridConfig().withStyle("app:com.foo", FolderStyle(corners = 0.4f))
+        val text = GridJson.encode(config)
+        assertTrue(text, "\"corners\":0.4" in text)
+        assertEquals(0.4f, GridJson.decode(text).styleOf("app:com.foo").corners!!, 0f)
+        val old = """{"styles":{"folder:x":{"shape":"rounded"}}}"""
+        assertNull(GridJson.decode(old).styleOf("folder:x").corners)
+        // Back on the grid's corners, the entry goes away.
+        assertTrue(config.withStyle("app:com.foo", FolderStyle(corners = null)).styles.isEmpty())
+    }
 }

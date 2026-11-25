@@ -251,14 +251,8 @@
     <string name="widgets_a_widget">小组件</string>
     <string name="widgets_removed">已移除 %1$s</string>
     <string name="widgets_menu_options">小组件选项…</string>
-    <string name="widgets_menu_move">移动</string>
     <string name="widgets_menu_resize">调整大小</string>
     <string name="widgets_menu_remove">移除小组件</string>
-    <string name="widgets_menu_select">多选</string>
-    <string name="widgets_menu_select_sub">标记多个，一起处理</string>
-    <string name="widgets_menu_tidy">整理</string>
-    <string name="widgets_menu_search">搜索</string>
-    <string name="widgets_menu_swap">交换屏幕</string>
     <string name="widgets_menu_kind">小组件 · %1$s</string>
 
     <string name="widgets_ed_top">上屏</string>

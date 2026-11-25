@@ -248,14 +248,14 @@ Collections are lists Tandem builds from what it knows, without moving any files
 | Most played | Games with recorded play time, most first. |
 | Recently added | The 30 newest games, by when Tandem first saw them. |
 | Never played | Games you have never started from Tandem. |
-| Playing, Backlog, Finished | Games by [status](#game-status), to add to the icon grid (**Add here › Collection or genre…**) or a smart folder. Finished includes Completed. |
+| Playing, Backlog, Finished | Games by [status](#game-status), to add to the icon grid (<kbd>Y</kbd> on an empty spot › **New ›** › **Collection or genre…**) or a smart folder. Finished includes Completed. |
 | Genres | One folder per genre, built from imported metadata. Games without genres use the subfolder they are in, so a folder called `RPG` counts as a genre too. A genre needs at least two games. |
 
 Hidden games are left out of everything unless **Show hidden games** is on.
 
 ## Home folders
 
-Make your own folders on the icon grid to group games, apps and systems however you like: <kbd>Y</kbd> › **Move to folder…** › **New folder…**, or **New folder…** on an empty spot.
+Make your own folders on the icon grid to group games, apps and systems however you like: <kbd>Y</kbd> on a tile › **Edit** › **Organize** › **Move to folder…** › **New folder…**, or <kbd>Y</kbd> on an empty spot › **New ›** › **New folder…**. Everything about a folder (its name, look, contents, how it opens, where it lives, deleting it) is on its edit screen: <kbd>Y</kbd> › **Edit** (see [Controls](controls.md#the-edit-screen)).
 
 - **Folders hold shortcuts.** The same game, app or system can be in several folders and on the home grid at once. **Move to folder…** takes it from where it is; **Also add to folder…** leaves it there too. Removing a shortcut never touches the game.
 - **Folders inside folders,** two levels deep (Home › Games › RPGs). The header shows the way back, and <kbd>B</kbd> goes up one level. A folder can't be put inside itself or one of its own folders.

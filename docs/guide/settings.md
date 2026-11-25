@@ -94,8 +94,9 @@ What the home screen is made of, and how games show inside a system. The page op
 | Setting | Default | What it does |
 | --- | --- | --- |
 | Rows of icons | Auto | Fix the rows at 1 to 5 and the icons grow to fill the screen; Auto follows Icon size. |
-| Icon roundness, Space between icons | 20 %, 26 % | Square corners to circles; the gap between icons. |
+| Icon roundness, Space between icons | Rounded (20 %), 26 % | Corners from Sharp to Circle, each step named and shown on live tiles; the gap between icons. One tile can keep its own corners (Y › Edit › Look › Corners). |
 | Hero split | No split | Art of the highlighted icon above the grid, taking up to half the screen. |
+| Animated icons | Always | Uploaded GIFs and animated WebPs on tiles play Always, While highlighted, or Off. They always rest while a game runs and with Reduce motion. |
 
 **Home & layout › How games show**
 
@@ -117,7 +118,7 @@ What the home screen is made of, and how games show inside a system. The page op
 | Dock | Dock on top, Auto-hide dock | Off, Off | The dock above the tiles; the dock small and faded until you move into it. |
 | Widgets | Customize widgets | | The widget editor: add, move, resize and remove widgets. See [Widgets](widgets.md). |
 | Widgets | Widgets on the home screen | On | The widget row on the home screen. |
-| Widgets | Widgets on the grid (icon grid) | In cells | Where Add here › Widget… on the icon grid puts a new widget: In cells, or As a row. |
+| Widgets | Widgets on the grid (icon grid) | In cells | Where New › Widget… on an empty spot of the icon grid puts a new widget: In cells, or As a row. |
 
 ## Two screens
 
@@ -176,6 +177,7 @@ How buttons are drawn and mapped, and which controller plays in your games.
 | Buttons | Swap X and Y | Off | Search with <kbd>Y</kbd>, options with <kbd>X</kbd>. |
 | Buttons | X button | Swap on grid and Orbit | What <kbd>X</kbd> does: swap the screens on the icon grid and Orbit homes (search everywhere else), Swap everywhere, or Search. |
 | Buttons | Rebind buttons | Defaults | Put any of Tandem's commands on another button, a chord or a hold. See [Rebinding buttons](controls.md#rebinding-buttons). |
+| Buttons | Feel each move | Light | A very light tick from the motor on every highlight move, and a fuller one when a tile is picked up or dropped: Light, Firm or Off. Needs Android's touch feedback on. See [Feel each move](controls.md#feel-each-move). |
 | Buttons | Corner hints | Off | A small reminder of the buttons in a corner of the top screen. |
 | Controllers | Controller in games | Built-in | Which controller plays as the built-in one in every emulator. Needs Shizuku or root. See [Play with a controller](controls.md#play-with-a-controller-passthrough). |
 | Controllers | Always use a connected pad | Off | A controller that connects plays as the built-in one at once, without asking. |

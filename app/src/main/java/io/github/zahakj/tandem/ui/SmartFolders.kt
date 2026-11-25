@@ -97,12 +97,12 @@ object SmartFolders {
      */
     fun extendMenu(spec: MenuSpec): MenuSpec {
         val prefix = IconGrid.MENU_ROUTE + ":"
-        if (!spec.routeKey.startsWith(prefix)) return spec
+        if (!spec.routeKey.startsWith(prefix) || spec.compact) return spec
         val smartIds = IconGridStore.config.folders.filter { it.smart }.mapTo(HashSet()) { it.id }
         val page = spec.page?.takeIf { smartIds.isNotEmpty() }?.let { p -> MenuPage(p.title, p.actions.filter { it.id !in smartIds }, p.onBack) } ?: spec.page
         val key = spec.routeKey.removePrefix(prefix)
         val f = key.takeIf { it.startsWith("folder:") }?.let { IconGridStore.folder(it.removePrefix("folder:")) }
-        if (f == null) return if (page === spec.page) spec else MenuSpec(spec.routeKey, spec.title, spec.subtitle, spec.color, spec.actions, page, spec.aspect, spec.art)
+        if (f == null) return if (page === spec.page) spec else MenuSpec(spec.routeKey, spec.title, spec.subtitle, spec.color, spec.actions, page, spec.aspect, art = spec.art)
         val all = FolderScreens.ALL
         fun stepScreen(by: Int) = IconGridStore.setOpenOn(f.id, all[Math.floorMod(all.indexOf(f.openOn) + by, all.size)])
         val screen = MenuAction(
@@ -130,6 +130,6 @@ object SmartFolders {
         // After Open (and Move), before the rest.
         val at = spec.actions.indexOfFirst { it.id == "move" }.let { if (it >= 0) it + 1 else spec.actions.indexOfFirst { a -> a.id == "open" } + 1 }
         val actions = spec.actions.toMutableList().apply { addAll(at.coerceIn(0, size), added) }
-        return MenuSpec(spec.routeKey, spec.title, spec.subtitle, spec.color, actions, page, spec.aspect, spec.art)
+        return MenuSpec(spec.routeKey, spec.title, spec.subtitle, spec.color, actions, page, spec.aspect, art = spec.art)
     }
 }

@@ -123,10 +123,15 @@ class MenuAction(
      * [onClick], so the options are in sight rather than stepped through blind. Left and Right still [step].
      */
     val choices: List<MenuChoice>? = null,
+    /**
+     * A group (New ›, Sort › in a compact menu): A opens these as the menu's second level, sliding in where the list
+     * is, instead of running [onClick].
+     */
+    val children: List<MenuAction>? = null,
     val onClick: () -> Unit,
 ) {
     /** The same action doing [click] on A. */
-    fun withClick(click: () -> Unit) = MenuAction(id, label, glyph, color, value, more, icon, sub, art, onFocus, help, hold, step, choices, click)
+    fun withClick(click: () -> Unit) = MenuAction(id, label, glyph, color, value, more, icon, sub, art, onFocus, help, hold, step, choices, children, click)
 }
 
 /** One option of a choice in a Y menu ([MenuAction.choices]): picking it runs [pick] and goes back to the list. */
@@ -152,8 +157,22 @@ class MenuSpec(
     val page: MenuPage? = null,
     /** The lifted item's shape: square tiles, tall boxes, wide cards. */
     val aspect: Float = 1f,
+    /**
+     * The icon grid's lift (LiftMenu.kt): the item grows where it sits, and a short card of a few actions (and groups
+     * that open in place) floats beside it, with Pip peeking out. False: the full list beside the item.
+     */
+    val compact: Boolean = false,
+    /** How Pip shows on a compact menu: peeking up from behind the card, small on an item, bigger on an empty spot. */
+    val pip: PipPeek = PipPeek.Small,
+    /** A line under a compact menu's first level, after the Options button's hint ("Hold to move"). */
+    val footer: String? = null,
+    /** A compact menu lifts the item and names it; false for an empty spot, where only the card (and Pip) shows. */
+    val showItem: Boolean = true,
     val art: @Composable () -> Unit,
 )
+
+/** Pip on a compact menu. */
+enum class PipPeek { None, Small, Big }
 
 object ActionMenu {
     /** Where the highlighted item is on screen (set by cards and tiles as they take focus). */
@@ -169,9 +188,12 @@ object ActionMenu {
     /** The choice whose options the open Y menu shows ([MenuAction.choices]), by action id; null on its lists. */
     var choosing by mutableStateOf<String?>(null)
 
+    /** The group open in a compact menu ([MenuAction.children]), by action id; null on its first level. */
+    var group by mutableStateOf<String?>(null)
+
     /** Closes every Y menu (Home pressed, a launch). */
     fun dismiss() {
-        Nav.menuFor = null; Nav.groupMenu = false; choosing = null
+        Nav.menuFor = null; Nav.groupMenu = false; choosing = null; group = null
         IconGrid.menu = null; IconGrid.choosingFolder = false
         Panels.appMenu = null
     }
@@ -212,7 +234,7 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
     val open by rememberUpdatedState(visible)
     var more by remember { mutableStateOf(false) }
     val s = spec()?.let { SmartFolders.extendMenu(it) }
-    LaunchedEffect(visible) { if (visible) { more = false; ActionMenu.choosing = null } }
+    LaunchedEffect(visible) { if (visible) { more = false; ActionMenu.choosing = null; ActionMenu.group = null } }
     // The screen behind blurs in as the menu opens and clears as it closes.
     val depth = remember { Animatable(0f) }
     LaunchedEffect(visible) {
@@ -224,7 +246,8 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
         when {
             ActionMenu.choosing != null -> ActionMenu.choosing = null
             s?.page != null -> s.page.onBack()
-            more -> { more = false; FocusMemory.forget(s?.routeKey + ":more") }
+            ActionMenu.group != null -> ActionMenu.group = null
+            more ->{ more = false; FocusMemory.forget(s?.routeKey + ":more") }
             else -> onClose()
         }
     }
@@ -232,7 +255,8 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
         Box(Modifier.fillMaxSize().background(Palette.NightDeep.copy(alpha = if (Build.VERSION.SDK_INT >= 31) 0.42f else 0.66f)).clickable(onClick = onClose))
     }
     AnimatedVisibility(visible, enter = fadeIn(tween(1)), exit = fadeOut(tween(260))) {
-        val still = Motion.style == AnimationStyle.Off
+        // Reduce motion (or animations off): the item and its card are simply there, nothing springs up.
+        val still = Motion.style == AnimationStyle.Off || io.github.zahakj.tandem.data.Store.settings.reduceMotion
         val lift = transition.animateFloat(
             { if (still) tween(0) else if (targetState == EnterExitState.Visible) spring(0.72f, Spring.StiffnessMediumLow) else tween(240) },
             label = "lift",
@@ -246,7 +270,7 @@ fun ActionMenuHost(visible: Boolean, onClose: () -> Unit, spec: @Composable () -
                     .trapFocus()
                     // A tap outside the item and the list closes the menu, like the dim behind it.
                     .swallowTaps(onClose),
-            ) { MenuLayout(m, more, { more = it }, lift::value) }
+            ) { if (m.compact) LiftLayout(m, lift::value) else MenuLayout(m, more, { more = it }, lift::value) }
         }
     }
 }

@@ -50,9 +50,9 @@ The icon grid is the home most like a console menu: big tiles you arrange yourse
 ![The bottom screen's title card for Super Mario 3D Land: the game's art across the screen with its logo in front.](../../site/assets/screenshots/game-art-bottom.webp "A highlighted game's title card on the other screen")
 
 - **Size:** **Icon size** (5 to 9 across), or **Rows of icons** fixed at 1 to 5 (1 to 3 on the bottom screen). <kbd>L1</kbd> / <kbd>R1</kbd> change the size on the grid itself.
-- **Scrolling** sideways, by pages, or up and down; plus icon roundness, the space between icons, and names under icons.
-- **Folders** of your own: <kbd>Y</kbd> on a tile › **Put in a folder**. Folders open as a popup or a full page, and you can [design each one](#folder-design).
-- **Empty spots** sit after the last icon and wherever one was taken away. <kbd>A</kbd> on one makes a folder or adds something right there, and moved icons can be dropped into them. <kbd>Start</kbd> › **Sort** › **Home: close the gaps** (or **Tidy up** in the <kbd>Y</kbd> menu) closes them. See [Controls](controls.md#empty-spots).
+- **Scrolling** sideways, by pages, or up and down; plus icon roundness (from Sharp to Circle, shown live; one tile can keep its own, see [Corners](controls.md#corners)), the space between icons, and names under icons.
+- **Folders** of your own: <kbd>Y</kbd> on a tile › **Edit** › **Organize** › **Move to folder…**. Folders open as a popup or a full page, and you can [design each one](#folder-design). <kbd>Y</kbd> lifts a tile where it sits with **Open** and **Edit** beside it; holding <kbd>Y</kbd> picks it up to move it (see [the lift](controls.md#y-on-the-icon-grid-the-lift)).
+- **Empty spots** sit after the last icon and wherever one was taken away. <kbd>A</kbd> or <kbd>Y</kbd> on one opens a small card with Pip (New ›, Sort ›, Search, Edit grid ›, Settings) to make a folder or add something right there, and moved icons can be dropped into them. <kbd>Start</kbd> › **Sort** › **Home: close the gaps** (or <kbd>Y</kbd> on an empty spot › **Sort ›** › **Tidy up**) closes them. See [Controls](controls.md#empty-spots).
 - **The other screen** shows a spotlight of the highlighted tile, or the classic details. A highlighted game gets a title card, like the 3DS menu's banners.
 - <kbd>X</kbd> **swaps the screens** here and on Orbit. To make <kbd>X</kbd> always search, or always swap, use **Settings › Controls**.
 
@@ -133,11 +133,11 @@ Spotlight is the quiet, game-first home: the highlighted game's art fills the sc
 
 ### Folder design
 
-Give any folder, system, collection or genre on the icon grid a look of its own: <kbd>Y</kbd> on it › **Design folder…**.
+Give any folder, system, collection or genre on the icon grid a look of its own: <kbd>Y</kbd> on it › **Edit** › **Look**, then **Artwork**, **Colour**, **Hero** or **Logo**. Each opens the artwork studio straight on that page; **Shape**, **Corners** and **Cover frame** change right there on the edit screen (see [Controls](controls.md#the-edit-screen)).
 
-1. Pick a row on the left (Icon, Colour, Hero…) to open its page of choices.
-2. Highlight a choice to preview it beside the rows and on the other screen.
-3. <kbd>A</kbd> keeps it, <kbd>B</kbd> goes back, and <kbd>L1</kbd> / <kbd>R1</kbd> move between pages. Each choice is saved as you make it.
+1. The studio's pages (**Icon**, **Colour**, **Hero**, **Title**) sit as tabs at the top; <kbd>L1</kbd> / <kbd>R1</kbd> move between them.
+2. The choices come in groups: **Upload** first, then what's made from the folder's own contents, covers and icons (or game art), Tandem's glyphs, emoji and your pictures.
+3. Highlight a choice to preview it beside the grid and on the other screen; <kbd>A</kbd> keeps it and takes you back to the edit screen, <kbd>B</kbd> goes back without changing anything. Each choice is saved as you make it.
 
 | Part | Choices |
 | --- | --- |
@@ -145,12 +145,18 @@ Give any folder, system, collection or genre on the icon grid a look of its own:
 | Colour | **Theme**, **From the art** (the main colour of the icon's picture), or a swatch. It colours the tile, its highlight ring and the sweep on the other screen |
 | Hero | **Theme** (the pack's hero; a folder of games uses the hero of its favourite or most played game), a game's hero, a picture, a **Colour sweep**, or a **Cover wall** (rows of the covers inside drifting past) |
 | Title | **Theme** (the pack's logo, else the icon), the name as text in three weights and three sizes, a game's logo, or a picture |
-| Shape | The theme's, a rounded square or a circle |
+| Shape | The grid's, a rounded square or a circle |
+| Corners | **Grid** (Icon roundness), or this tile's own, from square to round. See [Corners](controls.md#corners) |
 | Cover frame | Whether a game cover used as the icon wears the theme's cover frame (when the theme has frames) |
 
-**Reset to theme** puts everything back, and Undo in the message takes that back.
+**Reset look** puts everything back, and Undo in the message takes that back. Apps, games and Tandem's own apps get **Shape** and **Corners** too.
 
-**Your own pictures** come from `ROMs/tandem/art/` (and one folder below it), or **From this device…** opens the system picker and copies the picture to `ROMs/tandem/art/folders/`. Covers, mosaics and pictures always show whole inside the tile, on the folder colour, and a circle leaves room so nothing is cut off.
+**Your own pictures** come from `ROMs/tandem/art/` (and one folder below it), or **Upload your own** opens the system picker and copies the picture into `ROMs/tandem/art/folders/`:
+
+- PNG, JPEG, WebP and HEIC up to 24 MB. They are scaled down as they come in (768 pixels on the longest side for an icon or a logo, 1920 for a hero) and saved as PNG (icons, logos) or JPEG (heroes).
+- **GIF and animated WebP move.** Up to 8 MB and 1024 pixels on the longest side, kept as they are. They play on the tile only while it is on screen and Tandem is in front, never while a game runs, never with Reduce motion, and rest when Tandem has been idle a while. **Settings › Home & layout › Grid shape › Animated icons**: **Always**, **While highlighted** (only the tile the highlight is on) or **Off**. A moving picture as a hero or logo shows its first frame.
+
+Covers, mosaics and pictures always show whole inside the tile, on the folder colour, and a circle leaves room so nothing is cut off.
 
 <details>
 <summary>Where a design is kept, and folders without one</summary>

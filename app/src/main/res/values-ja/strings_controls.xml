@@ -157,4 +157,11 @@
     <string name="controls_padlink_playing">%1$sで遊んでいます</string>
     <string name="controls_padlink_failed">%1$sを使えませんでした</string>
     <string name="controls_padlink_failed_unknown">コントローラーを使えませんでした</string>
+    <string name="controls_command_grab">持ち上げて移動</string>
+    <string name="controls_command_grab_help">アイコングリッドのタイルでオプションボタンを長押しすると、タイルがふわっと持ち上がり、十字キーで動かせます。Aで置いて、Bで元の場所に戻します。</string>
+    <string name="controls_feel">動くたびにコツン</string>
+    <string name="controls_feel_help">カーソルが動くたびに本体がごく小さくコツンと振動し、タイルを持ち上げたり置いたりするともう少ししっかり振動します。方向を押しっぱなしのときは控えめに。Androidの「タップ時のバイブレーション」をオンにしておいてください。</string>
+    <string name="controls_feel_off">オフ</string>
+    <string name="controls_feel_light">軽め</string>
+    <string name="controls_feel_firm">しっかり</string>
 </resources>

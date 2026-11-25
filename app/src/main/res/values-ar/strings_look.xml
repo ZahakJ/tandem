@@ -550,4 +550,16 @@
     <string name="look_preset_minimal_3">بلا موسيقى</string>
     <string name="look_preset_minimal_4">شريط أيقونات فقط، يختفي تلقائيًا</string>
     <string name="look_preset_minimal_5">بلا صف أدوات وبلا شاشة افتتاحية</string>
+    <string name="look_grid_corner_sharp">حادّة</string>
+    <string name="look_grid_corner_crisp">مصقولة</string>
+    <string name="look_grid_corner_soft">ناعمة</string>
+    <string name="look_grid_corner_rounded">مستديرة</string>
+    <string name="look_grid_corner_round">مستديرة جدًا</string>
+    <string name="look_grid_corner_pebble">حصاة</string>
+    <string name="look_grid_corner_circle">دائرة</string>
+    <string name="look_grid_animated">أيقونات متحرّكة</string>
+    <string name="look_grid_animated_help">صور GIF وWebP المتحرّكة على المربعات تتحرّك دائمًا، أو حين يكون المربع محدّدًا فقط، أو لا تتحرّك أبدًا. وتتوقف دائمًا أثناء اللعب.</string>
+    <string name="look_grid_animated_always">دائمًا</string>
+    <string name="look_grid_animated_focused">حين يكون محدّدًا</string>
+    <string name="look_grid_animated_off">معطّل</string>
 </resources>

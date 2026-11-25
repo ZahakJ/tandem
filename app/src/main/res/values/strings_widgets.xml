@@ -315,14 +315,8 @@
     <string name="widgets_removed">Removed %1$s</string>
     <!-- A grid widget's Y menu. -->
     <string name="widgets_menu_options">Widget options…</string>
-    <string name="widgets_menu_move">Move</string>
     <string name="widgets_menu_resize">Resize</string>
     <string name="widgets_menu_remove">Remove widget</string>
-    <string name="widgets_menu_select">Select</string>
-    <string name="widgets_menu_select_sub">Mark several, then act on them all</string>
-    <string name="widgets_menu_tidy">Tidy up</string>
-    <string name="widgets_menu_search">Search</string>
-    <string name="widgets_menu_swap">Swap screens</string>
     <!-- Under the widget's name in its menu: "Widget · 2×2". -->
     <string name="widgets_menu_kind">Widget · %1$s</string>
 

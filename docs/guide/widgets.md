@@ -34,11 +34,11 @@ On the bottom screen (two columns) Wide is a big card two rows high. On the icon
 
 With the icon grid as home, widgets can also sit on the grid itself, among the icons.
 
-1. Press <kbd>A</kbd> on an empty spot and pick **Add here › Widget…**.
+1. Press <kbd>A</kbd> (or <kbd>Y</kbd>) on an empty spot and pick **New ›** › **Widget…**.
 2. A widget on the grid covers 1×1, 2×1, 1×2 or 2×2 cells; Small, Medium, Tall and Wide draw as those.
-3. <kbd>Y</kbd> on it gives **Widget options…** (the same settings as above), **Move**, **Resize** (<kbd>A</kbd> lists its sizes, with the one it has ticked) and **Remove widget** (under More). While moving it, <kbd>Y</kbd> changes its size to the next one that fits.
+3. <kbd>Y</kbd> on it gives **Widget options…** (the same settings as above) and **Edit**: **Look › Resize** (<kbd>A</kbd> lists its sizes, with the one it has ticked), its own actions under **Contents**, and **Remove › Remove widget**. Hold <kbd>Y</kbd> to move it; while moving it, <kbd>Y</kbd> changes its size to the next one that fits.
 
-**Settings › Home & layout › Dock & widgets › Widgets on the grid** chooses where **Add here › Widget…** puts a new widget: **In cells** (the default) or **As a row**, in the widget row at the end of an up-and-down grid. Widgets already placed stay where they are.
+**Settings › Home & layout › Dock & widgets › Widgets on the grid** chooses where **New › Widget…** on an empty spot puts a new widget: **In cells** (the default) or **As a row**, in the widget row at the end of an up-and-down grid. Widgets already placed stay where they are.
 
 ## The widgets
 
@@ -69,7 +69,7 @@ Here is every widget Tandem has, and what <kbd>A</kbd> does on each.
 
 Widgets from your other apps (a weather forecast, a calendar, a music player, a to-do list) sit beside Tandem's own: on the home screen, on the bottom screen and in the icon grid's cells, in the same card with the same frame and highlight.
 
-To add one, pick **Android widget** wherever you add a Tandem widget: **+ Add a widget** in the widget editor (**Settings › Home & layout › Dock & widgets › Customize widgets**, or <kbd>Start</kbd> › **New › Widget…**), or **Add here › Widget…** on an empty spot of the icon grid. A picker lists every widget your installed apps offer, grouped by app, with its preview picture and the room it will take (**2×1**, say). Press <kbd>A</kbd> on one:
+To add one, pick **Android widget** wherever you add a Tandem widget: **+ Add a widget** in the widget editor (**Settings › Home & layout › Dock & widgets › Customize widgets**, or <kbd>Start</kbd> › **New › Widget…**), or **New › Widget…** on an empty spot of the icon grid. A picker lists every widget your installed apps offer, grouped by app, with its preview picture and the room it will take (**2×1**, say). Press <kbd>A</kbd> on one:
 
 1. The first time, Android asks whether Tandem may create widgets and read their content. Tick **Always allow** so it doesn't ask again.
 2. If the widget has a set-up screen of its own (which city, which calendar), it opens now. Backing out of it adds nothing.

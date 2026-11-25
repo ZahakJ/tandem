@@ -93,7 +93,10 @@ object Selection {
  * screen handles them only where they make sense.
  */
 enum class Button {
-    X, Y, Start, Select, L1, R1, L2, R2, SidePanel, Favourite, Screenshot, Clip;
+    X, Y, Start, Select, L1, R1, L2, R2, SidePanel, Favourite, Screenshot, Clip,
+
+    /** Options held on the icon grid: pick the highlighted tile up (Command.Grab). */
+    Grab;
 
     /** The command this button stands for when pressed on its own (a tapped hint, a direct [Buttons.press]). */
     val command: Command get() = when (this) {
@@ -109,6 +112,7 @@ enum class Button {
         Favourite -> Command.Favourite
         Screenshot -> Command.Screenshot
         Clip -> Command.Clip
+        Grab -> Command.Grab
     }
 }
 

@@ -97,6 +97,8 @@ A "›" step after a page is its subpage.
 | `Look.gridFolders` | Home & layout › Home screen › Folders open (icon grid) | choice |
 | `Look.nowPlaying`, `ExtrasSettings.resumeLanding` | Home & layout › Home screen › Resume page (icon grid: Off, On, Opens first) or Now playing (every other layout: `nowPlaying` alone) | choice / toggle |
 | `Look.gridRows`, `gridRoundness`, `gridGap`, `gridHeroSplit` | Home & layout › Grid shape (icon grid) | choice / slider |
+| `ExtrasSettings.animatedArt` | Home & layout › Grid shape › Animated icons (icon grid: Always, While highlighted, Off) | choice |
+| `IconGridConfig.styles[key].corners` | Not in Settings: a tile's own corners, Y › Edit › Look › Corners (null follows `gridRoundness`) | stepper |
 | `Look.homeSections` | Home & layout › Home screen › Home rows (shelves, carousel, list, console) | choice |
 | `Look.systemTiles` | Home & layout › Home screen › System tiles (shelves, carousel, list, console) | choice |
 | `Look.folderPopup`, `fullscreenFolders` | Home & layout › Home screen › Open folders (other layouts) | choice |
@@ -134,6 +136,7 @@ A "›" step after a page is its subpage.
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |
 | `ControllerSettings.bindings` (Swap A and B, Swap X and Y) | Controls › Buttons › Swap A and B (Open on B, Back on A) / Swap X and Y | toggle |
 | `ControllerSettings.bindings` | Controls › Buttons › Rebind buttons (a page: every command with its button, chord or hold; A listens for 5 s, X resets one, Y clears one, Reset all) | link |
+| `ExtrasSettings.feelMoves` | Controls › Buttons › Feel each move (Light, Firm, Off) | choice |
 | `Look.cornerHints` | Controls › Buttons › Corner hints | toggle |
 | (`PadLink`, not saved) | Controls › Controllers › Controller in games (also Quick settings › Controller) | choice |
 | `ControllerSettings.usePads` | Controls › Controllers › Always use a connected pad | toggle |

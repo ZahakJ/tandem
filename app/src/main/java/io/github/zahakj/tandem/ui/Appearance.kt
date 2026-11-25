@@ -218,10 +218,22 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
             look = { v -> grid(look.copy(gridScroll = v)) },
             en = "Scrolling",
         ) { v -> updateLook { it.copy(gridScroll = v) } },
+        // Corners from sharp to round: a slider with a name for each step, and real tiles in the side panel that ease to
+        // each new shape (a tile can keep its own corners: Y › Edit › Look).
         number(
             Tx.s(R.string.look_grid_roundness), Glyph.Corners, Palette.Sky, Tx.s(R.string.look_grid_roundness_help),
-            look.gridRoundness, 0f, 0.5f, 0.05f, ::pct, preview = preview, en = "Icon roundness",
+            look.gridRoundness, 0f, 0.5f, 0.05f, { cornerName(it) },
+            preview = { CornerPreview(look.gridRoundness, Modifier.fillMaxWidth().aspectRatio(1.6f)) }, en = "Icon roundness",
         ) { v -> updateLook { it.copy(gridRoundness = v ?: 0.2f) } },
+        choice(
+            Tx.s(R.string.look_grid_animated), Glyph.Image, Palette.Sky, Tx.s(R.string.look_grid_animated_help),
+            listOf(
+                AnimatedArt.ALWAYS to Tx.s(R.string.look_grid_animated_always), AnimatedArt.FOCUSED to Tx.s(R.string.look_grid_animated_focused),
+                AnimatedArt.OFF to Tx.s(R.string.look_grid_animated_off),
+            ),
+            io.github.zahakj.tandem.data.ExtrasStore.settings.animatedArt,
+            en = "Animated icons",
+        ) { v -> io.github.zahakj.tandem.data.ExtrasStore.update { it.copy(animatedArt = v) } },
         number(
             Tx.s(R.string.look_grid_gap), Glyph.Grid, Palette.Sky, Tx.s(R.string.look_grid_gap_help),
             look.gridGap, 0.1f, 0.5f, 0.04f, ::pct, preview = preview, en = "Space between icons",
@@ -263,6 +275,55 @@ private fun iconGridSettingRows(look: Look): List<SettingRow> {
             en = "Swap animation",
         ) { v -> updateLook { it.copy(swapStyle = v) } },
     )
+}
+
+/** A corner rounding (a share of the side, 0 … 0.5) as a word and its amount: "Rounded · 20%". */
+internal fun cornerName(v: Float): String {
+    val word = Tx.s(
+        when {
+            v < 0.025f -> R.string.look_grid_corner_sharp
+            v < 0.075f -> R.string.look_grid_corner_crisp
+            v < 0.125f -> R.string.look_grid_corner_soft
+            v < 0.225f -> R.string.look_grid_corner_rounded
+            v < 0.325f -> R.string.look_grid_corner_round
+            v < 0.475f -> R.string.look_grid_corner_pebble
+            else -> R.string.look_grid_corner_circle
+        },
+    )
+    return listOf(word, pct(v)).joinParts()
+}
+
+/**
+ * Icon roundness, live: a few tiles in the theme's colours (the middle one ringed, as the highlight draws it) whose
+ * corners ease to each new value as Left and Right step it, with the name of the shape under them.
+ */
+@Composable
+private fun CornerPreview(value: Float, modifier: Modifier) {
+    val share by androidx.compose.animation.core.animateFloatAsState(value.coerceIn(0f, 0.5f), Motion.focus(), label = "corner-preview")
+    val t = Themes.live
+    val colors = listOf(t.mint, t.accent, t.peach)
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Canvas(Modifier.fillMaxWidth().weight(1f)) {
+            val gap = size.width * 0.06f
+            val tw = minOf((size.width - gap * 4) / 3f, size.height * 0.8f)
+            val left = (size.width - (tw * 3 + gap * 2)) / 2f
+            val top = (size.height - tw) / 2f
+            for (i in 0 until 3) {
+                val x = left + i * (tw + gap)
+                val c = colors[i]
+                val r = CornerRadius(tw * share)
+                drawRoundRect(
+                    Brush.linearGradient(listOf(androidx.compose.ui.graphics.lerp(c, Color.White, 0.18f), c, androidx.compose.ui.graphics.lerp(c, Color.Black, 0.25f)), Offset(x, top), Offset(x + tw, top + tw)),
+                    Offset(x, top), Size(tw, tw), r,
+                )
+                if (i == 1) {
+                    val o = tw * 0.06f
+                    drawRoundRect(t.text, Offset(x - o, top - o), Size(tw + o * 2, tw + o * 2), CornerRadius(r.x + o), style = Stroke(tw * 0.025f))
+                }
+            }
+        }
+        Text(cornerName(value), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1)
+    }
 }
 
 /** The Look & feel page of Settings (it kept its old route, so links to "Appearance" still land here). */
@@ -559,6 +620,12 @@ fun appearanceSections(): List<SettingSection> {
                 opens = true, keywords = "remap mapping custom controls chord hold shortcut keys buttons favourite screenshot clip side panel",
                 en = "Rebind buttons",
             ) { Nav.go(Route.Rebind) },
+            // A light tick from the motor on every highlight move (Feel.kt); picking one plays it once.
+            choice(
+                Tx.s(R.string.controls_feel), Glyph.Motion, Palette.Lavender, Tx.s(R.string.controls_feel_help),
+                Feel.levels, io.github.zahakj.tandem.data.ExtrasStore.settings.feelMoves,
+                en = "Feel each move",
+            ) { v -> io.github.zahakj.tandem.data.ExtrasStore.update { it.copy(feelMoves = v) }; Feel.sample(v) },
         )),
         SettingSection(Tx.s(R.string.look_group_screens), en = "Screens", rows = listOf(
             toggle(

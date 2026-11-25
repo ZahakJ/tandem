@@ -315,14 +315,8 @@
     <string name="widgets_removed">Retiré : %1$s</string>
     <!-- A grid widget's Y menu. -->
     <string name="widgets_menu_options">Options du widget…</string>
-    <string name="widgets_menu_move">Déplacer</string>
     <string name="widgets_menu_resize">Redimensionner</string>
     <string name="widgets_menu_remove">Retirer le widget</string>
-    <string name="widgets_menu_select">Sélectionner</string>
-    <string name="widgets_menu_select_sub">En cocher plusieurs, puis agir sur tous</string>
-    <string name="widgets_menu_tidy">Ranger</string>
-    <string name="widgets_menu_search">Rechercher</string>
-    <string name="widgets_menu_swap">Inverser les écrans</string>
     <!-- Under the widget's name in its menu: "Widget · 2×2". -->
     <string name="widgets_menu_kind">Widget · %1$s</string>
 

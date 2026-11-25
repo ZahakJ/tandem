@@ -572,4 +572,16 @@
     <string name="look_preset_minimal_3">Musique coupée</string>
     <string name="look_preset_minimal_4">Dock d’icônes seules qui se cache</string>
     <string name="look_preset_minimal_5">Ni rayon de widgets, ni écran de démarrage</string>
+    <string name="look_grid_corner_sharp">Net</string>
+    <string name="look_grid_corner_crisp">Vif</string>
+    <string name="look_grid_corner_soft">Doux</string>
+    <string name="look_grid_corner_rounded">Arrondi</string>
+    <string name="look_grid_corner_round">Rond</string>
+    <string name="look_grid_corner_pebble">Galet</string>
+    <string name="look_grid_corner_circle">Cercle</string>
+    <string name="look_grid_animated">Icônes animées</string>
+    <string name="look_grid_animated_help">Les GIF et WebP animés des vignettes bougent tout le temps, seulement sous le curseur, ou jamais. Ils se mettent toujours en pause pendant une partie.</string>
+    <string name="look_grid_animated_always">Toujours</string>
+    <string name="look_grid_animated_focused">Sous le curseur</string>
+    <string name="look_grid_animated_off">Jamais</string>
 </resources>

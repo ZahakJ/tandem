@@ -102,7 +102,7 @@ fun RebindScreen() {
         }
     }
 
-    val keys = listOf(RESET_ALL) + Command.entries.map { it.name }
+    val keys = listOf(RESET_ALL) + Command.entries.filter { it.rebindable }.map { it.name }
     val target = rememberFocusTarget(route, keys)
     val state = rememberRouteListState(route)
     KeepInView(state, keys.indexOf(target) + 1)
@@ -152,7 +152,7 @@ fun RebindScreen() {
                 }
             }
             item(key = "h:commands") { SettingsHeader(Tx.s(R.string.controls_rebind_commands)) }
-            items(Command.entries, key = { it.name }) { c ->
+            items(Command.entries.filter { it.rebindable }, key = { it.name }) { c ->
                 CommandRow(c, map[c], style, Modifier.takesFocus(route, c.name, target == c.name), onFocus = {
                     FocusMemory.remember(route, c.name); focused = c
                     Selection.current = Selected.Setting(

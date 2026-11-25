@@ -208,4 +208,13 @@
     <string name="controls_padlink_playing">Playing with %1$s</string>
     <string name="controls_padlink_failed">Couldn\'t take over %1$s</string>
     <string name="controls_padlink_failed_unknown">Couldn\'t take over the controller</string>
+    <!-- Command: Options held on the icon grid. Not on the rebind page; it follows the Options button. -->
+    <string name="controls_command_grab">Pick up to move</string>
+    <string name="controls_command_grab_help">Hold Options on a tile of the icon grid: it lifts off and the D-pad moves it. A drops it, B puts it back.</string>
+    <!-- Settings › Controls: a light buzz from the handheld on every highlight move. -->
+    <string name="controls_feel">Feel each move</string>
+    <string name="controls_feel_help">A tiny tick from the handheld every time the highlight moves, and a fuller one when a tile is picked up or dropped. Gentler while a direction is held. Android\'s own touch feedback setting must be on.</string>
+    <string name="controls_feel_off">Off</string>
+    <string name="controls_feel_light">Light</string>
+    <string name="controls_feel_firm">Firm</string>
 </resources>

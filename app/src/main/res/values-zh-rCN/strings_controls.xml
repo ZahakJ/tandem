@@ -155,4 +155,11 @@
     <string name="controls_padlink_playing">正在用 %1$s 玩</string>
     <string name="controls_padlink_failed">没能接管 %1$s</string>
     <string name="controls_padlink_failed_unknown">没能接管手柄</string>
+    <string name="controls_command_grab">拿起移动</string>
+    <string name="controls_command_grab_help">在图标网格的图块上长按选项键：图块会浮起来，用方向键挪动。A 放下，B 放回原处。</string>
+    <string name="controls_feel">移动手感</string>
+    <string name="controls_feel_help">选中项每移动一格，机身就轻轻“嗒”一下；拿起或放下图块时震感更明显。按住方向键连续移动时会更轻柔。需要在 Android 设置里打开“触摸振动”。</string>
+    <string name="controls_feel_off">关</string>
+    <string name="controls_feel_light">轻</string>
+    <string name="controls_feel_firm">明显</string>
 </resources>

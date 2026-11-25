@@ -292,14 +292,8 @@
     <string name="widgets_a_widget">أداة</string>
     <string name="widgets_removed">أُزيلت %1$s</string>
     <string name="widgets_menu_options">خيارات الأداة…</string>
-    <string name="widgets_menu_move">نقل</string>
     <string name="widgets_menu_resize">تغيير الحجم</string>
     <string name="widgets_menu_remove">إزالة الأداة</string>
-    <string name="widgets_menu_select">تحديد</string>
-    <string name="widgets_menu_select_sub">حدّد عدة مربعات، ثم تصرّف فيها كلها</string>
-    <string name="widgets_menu_tidy">سدّ الفراغات</string>
-    <string name="widgets_menu_search">بحث</string>
-    <string name="widgets_menu_swap">تبديل الشاشتين</string>
     <string name="widgets_menu_kind">أداة · %1$s</string>
 
     <string name="widgets_ed_top">الشاشة العلوية</string>

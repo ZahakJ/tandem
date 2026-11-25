@@ -208,4 +208,11 @@
     <string name="controls_padlink_playing">On joue avec %1$s</string>
     <string name="controls_padlink_failed">Impossible de prendre la main sur %1$s</string>
     <string name="controls_padlink_failed_unknown">Impossible de prendre la main sur la manette</string>
+    <string name="controls_command_grab">Saisir pour déplacer</string>
+    <string name="controls_command_grab_help">Maintiens Options sur une vignette de la grille d’icônes : elle se soulève et la croix la déplace. A la pose, B la remet à sa place.</string>
+    <string name="controls_feel">Sentir chaque déplacement</string>
+    <string name="controls_feel_help">Un tout petit tic de la console à chaque mouvement du curseur, et un plus franc quand tu saisis ou poses une vignette. Plus doux quand tu maintiens une direction. Le retour haptique d’Android doit être activé.</string>
+    <string name="controls_feel_off">Désactivé</string>
+    <string name="controls_feel_light">Léger</string>
+    <string name="controls_feel_firm">Franc</string>
 </resources>

@@ -111,7 +111,16 @@ object FolderLooks {
 
     /** A catalog tile with its stored style applied (and the built-in folders' own art). Unchanged when neither applies. */
     fun styled(item: GridItem?): GridItem? {
-        if (item == null || !designable(item)) return item
+        if (item == null) return null
+        if (!designable(item)) {
+            // Anything else (an app, a game, a Tandem app) may keep its own corners or shape, nothing more.
+            val own = IconGridStore.config.styles[item.key]?.shapeOnly()?.takeIf { !it.isDefault } ?: return item
+            return GridItem(
+                item.key, item.kind, item.title, item.type, item.detail, item.color, item.art, item.games, item.selected, item.default, item.open,
+                item.game, item.pkg, item.platformId, item.folderId, item.collectionId, item.blurb, item.builtIn, item.packNames, item.hidden,
+                style = own, plain = item, widgetId = item.widgetId,
+            )
+        }
         val style = IconGridStore.config.styleOf(item.key)
         if (style.isDefault && builtIn(item) == null) return item
         return restyle(item, style)
@@ -164,7 +173,10 @@ object FolderLooks {
             FolderStyle.ICON_GLYPH -> glyph(style.glyph)?.let { TileArt.Rendered(GlyphArt(it, color, deep, inset)) } ?: auto()
             FolderStyle.ICON_GENRE -> TileArt.Rendered(GenreArt(glyph(style.glyph) ?: genreIcon(plain.title), color, deep, sources(plain, 3), inset))
             FolderStyle.ICON_EMOJI -> style.emoji?.takeIf { it.isNotBlank() }?.let { TileArt.Rendered(EmojiArt(it, color, inset)) } ?: auto()
-            FolderStyle.ICON_FILE -> style.iconFile?.let { TileArt.Rendered(PictureArt(it, color, inset)) } ?: auto()
+            FolderStyle.ICON_FILE -> style.iconFile?.let { f ->
+                // A GIF or animated WebP plays on the tile; a still picture is drawn once into the cache.
+                if (AnimatedArt.isAnimated(File(f))) TileArt.Animated(File(f), color) else TileArt.Rendered(PictureArt(f, color, inset))
+            } ?: auto()
             else -> auto()
         }
     }
@@ -218,6 +230,7 @@ object FolderLooks {
             else -> null
         }
         is TileArt.App -> "pkg:" + a.pkg
+        is TileArt.Animated -> a.file.path
         else -> null
     }
 
@@ -268,19 +281,18 @@ object FolderLooks {
         return builtIn(item.plain ?: item)?.icon
     }
 
-    /** The tile's shape: the theme's rounding ([corner]), or the style's rounded square or circle. */
+    /**
+     * The tile's shape: the grid's rounding ([corner]), the tile's own corners when it keeps them, or the style's
+     * rounded square or circle.
+     */
     fun shape(style: FolderStyle?, size: Dp, corner: Dp): Shape = when (style?.shape) {
         FolderStyle.SHAPE_CIRCLE -> CircleShape
-        FolderStyle.SHAPE_ROUNDED -> RoundedCornerShape(size * 0.24f)
-        else -> RoundedCornerShape(corner)
+        else -> RoundedCornerShape(cornerOf(style, size, corner))
     }
 
     /** The same as a corner radius, for rings drawn around the tile. */
-    fun cornerOf(style: FolderStyle?, size: Dp, corner: Dp): Dp = when (style?.shape) {
-        FolderStyle.SHAPE_CIRCLE -> size / 2
-        FolderStyle.SHAPE_ROUNDED -> size * 0.24f
-        else -> corner
-    }
+    fun cornerOf(style: FolderStyle?, size: Dp, corner: Dp): Dp =
+        if (style == null || size <= Dp.Hairline) corner else size * style.cornerShare(corner / size)
 }
 
 // --- Drawing -------------------------------------------------------------------------------------------------------

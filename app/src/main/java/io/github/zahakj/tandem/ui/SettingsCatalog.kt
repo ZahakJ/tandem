@@ -194,7 +194,7 @@ object SettingsPlan {
         "controls" to listOf(
             Group(
                 "Buttons", R.string.settings_group_buttons,
-                p("Controls", "Button prompts", "Swap A and B", "Swap X and Y") + p("Icon grid", "X button") + p("Controls", "Rebind buttons") +
+                p("Controls", "Button prompts", "Swap A and B", "Swap X and Y") + p("Icon grid", "X button") + p("Controls", "Rebind buttons", "Feel each move") +
                     p("Layout", "Corner hints"),
                 // Replaced with the live bindings when the page is built (buttonsNote).
                 note = R.string.settings_group_buttons_note,
@@ -226,7 +226,7 @@ object SettingsPlan {
         "look/motion" to listOf(
             Group("Motion", R.string.settings_group_motion, p("Motion", "Animation style", "Reduce motion") + p("Motion & home", "Floating titles", "Motion intensity") + p("Icon grid", "Swap animation")),
         ),
-        "home/grid" to listOf(Group("Grid shape", R.string.settings_group_grid_shape, grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split"))),
+        "home/grid" to listOf(Group("Grid shape", R.string.settings_group_grid_shape, grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split", "Animated icons"))),
         "home/games" to listOf(Group("How games show", R.string.settings_group_how_games_show, p("Layout", "Games view", "Grid size", "Card shape", "Shelf look", "Game titles"))),
         "home/dock" to listOf(
             Group("Dock", R.string.settings_group_dock, p("Dock", "Apps dock") + p("Home & play", "Choose dock apps") + p("Dock", "Dock style", "Dock on top", "Auto-hide dock")),

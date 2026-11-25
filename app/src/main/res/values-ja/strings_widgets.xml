@@ -252,14 +252,8 @@
     <string name="widgets_a_widget">ウィジェット</string>
     <string name="widgets_removed">%1$sを削除しました</string>
     <string name="widgets_menu_options">ウィジェットのオプション…</string>
-    <string name="widgets_menu_move">移動</string>
     <string name="widgets_menu_resize">サイズ変更</string>
     <string name="widgets_menu_remove">ウィジェットを削除</string>
-    <string name="widgets_menu_select">選択</string>
-    <string name="widgets_menu_select_sub">いくつかチェックして、まとめて操作</string>
-    <string name="widgets_menu_tidy">整理する</string>
-    <string name="widgets_menu_search">検索</string>
-    <string name="widgets_menu_swap">画面を入れ替え</string>
     <string name="widgets_menu_kind">ウィジェット · %1$s</string>
 
     <string name="widgets_ed_top">上画面</string>

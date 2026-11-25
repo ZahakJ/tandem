@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -130,6 +131,24 @@ class LookFileTest {
         val lookFields = Look.serializer().descriptor.let { l -> (0 until l.elementsCount).map { l.getElementName(it) }.toSet() }
         assertTrue((fields - setOf("bottomMode", "floating", "intensity")).all { it in lookFields })
         for (never in listOf("theme", "iconPack", "packParts", "soundFiles", "hiddenFolders", "showHidden")) assertFalse(never in fields)
+    }
+
+    /**
+     * The grid's Icon roundness travels with a look; a tile's own corners, artwork and uploaded pictures are the user's
+     * (icon-grid.json), never in a shared look.
+     */
+    @Test fun gridRoundnessTravelsButTilesOwnLooksNeverDo() {
+        val d = SharedLook.serializer().descriptor
+        val fields = (0 until d.elementsCount).map { d.getElementName(it) }.toSet()
+        assertTrue("gridRoundness" in fields)
+        for (never in listOf("styles", "corners", "iconFile", "heroFile", "logoFile", "folders", "animatedArt", "feelMoves")) assertFalse(never in fields)
+        val shared = SharedLook.of(Look(gridRoundness = 0.35f), Settings(), ExtrasSettings(), "theme", "theme")
+        assertEquals(0.35f, shared.gridRoundness!!, 0f)
+        assertEquals(0.5f, SharedLook(gridRoundness = 0.5f).sanitized().gridRoundness!!, 0f)
+        assertNull(SharedLook(gridRoundness = 0.9f).sanitized().gridRoundness)
+        // Nothing under art/ (where uploads live) is ever written into a .tandem file.
+        assertFalse(LookFile.allowed("art/folders/folder_x-icon-1.gif"))
+        assertFalse(LookFile.allowed("systems/snes/icon.gif"))
     }
 
     @Test fun wallpaperPathsNeverTravel() {

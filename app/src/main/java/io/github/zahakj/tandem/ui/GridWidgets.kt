@@ -204,7 +204,11 @@ object GridWidgets {
     }
 }
 
-/** Y on a widget on the grid: its options, Move, Resize, its own actions, and Remove under More. */
+/**
+ * A widget on the grid, for its edit screen (TileEditor.kt): its options, Resize, its own actions and Remove. Moving
+ * it is holding Y; the grid as a whole (Tidy up, Undo, Search) is on an empty spot's Y.
+ */
+@Suppress("UNUSED_PARAMETER")
 internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): MenuSpec? {
     val w = item.widgetId?.let { Widgets.byId(it) } ?: return null
     val kind = Widgets.kind(w) ?: return null
@@ -215,7 +219,6 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
             IconGrid.closeMenu()
             WidgetUi.openMenu(w.id, WidgetArea.Top, inEditor = false)
         })
-        add(MenuAction("move", Tx.s(R.string.widgets_menu_move), Glyph.Move, Palette.Sky, value = "◀▶") { IconGrid.closeMenu(); startMove(key, null, slots) })
         // Every size, the one it has ticked; a size with no room says so when picked.
         if (GridWidgets.spans(kind).size > 1) add(MenuAction("resize", Tx.s(R.string.widgets_menu_resize), Glyph.Corners, Palette.Butter, value = span.label,
             choices = GridWidgets.spans(kind).map { s -> MenuChoice(s.label, s == span) { GridWidgets.resize(key, s) } }) { GridWidgets.resize(key) })
@@ -228,15 +231,6 @@ internal fun widgetMenuSpec(item: GridItem, slots: List<String>, ctx: Context): 
         add(MenuAction("remove", Tx.s(R.string.widgets_menu_remove), Glyph.Trash, Palette.Peach, more = true) {
             IconGrid.closeMenu()
             GridWidgets.remove(key)
-        })
-        add(MenuAction("select", Tx.s(R.string.widgets_menu_select), Glyph.Highlight, Palette.Sky, more = true, sub = Tx.s(R.string.widgets_menu_select_sub)) {
-            IconGrid.closeMenu(); GridSelect.start(null, key)
-        })
-        add(MenuAction("tidy", Tx.s(R.string.widgets_menu_tidy), Glyph.Sparkle, Palette.Mint, more = true) { IconGrid.closeMenu(); tidyHome() })
-        GridUndoUi.action { IconGrid.closeMenu() }?.let { add(it) }
-        add(MenuAction("search", Tx.s(R.string.widgets_menu_search), Glyph.Search, Palette.Sky, more = true) { IconGrid.menu = null; Nav.search = true })
-        add(MenuAction("swap", Tx.s(R.string.widgets_menu_swap), Glyph.Swap, Palette.Lavender, value = if (ScreenRoles.xSwaps()) "X" else null, more = true) { // tx-ok: a button letter
-            IconGrid.closeMenu(); ScreenRoles.toggle(ctx)
         })
     }
     return MenuSpec(IconGrid.MENU_ROUTE + ":" + key, kind.label(w), Tx.s(R.string.widgets_menu_kind, span.label), kind.accent, actions, aspect = span.w.toFloat() / span.h) {

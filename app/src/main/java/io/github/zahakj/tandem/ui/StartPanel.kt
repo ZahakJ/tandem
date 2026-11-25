@@ -477,7 +477,7 @@ private fun editGrid() {
 }
 
 /** Sort › Home: puts the home grid in a new order (Y › Move still works after). */
-private fun sortHome(by: String) {
+internal fun sortHome(by: String) {
     val (catalog, arranged) = IconGrid.menuData ?: return
     val items = arranged.mapNotNull { catalog.item(it) }
     val sorted = when (by) {

@@ -42,6 +42,8 @@ Put any of Tandem's commands on the button you like, a chord of buttons, or a ho
 
 Favourite, Screenshot and Clip have no button until you give them one. Screenshot and Clip capture the game on the other screen, as the companion's chips do, while Tandem is in front.
 
+Picking a tile up on the icon grid has no row of its own: it is a hold of whatever button **Game options** is on (<kbd>Y</kbd> unless you moved it, <kbd>X</kbd> with Swap X and Y). Only on the grid, and only while a tile is highlighted, does that button wait for its release; everywhere else it acts the moment it goes down, as before. If Game options is a chord or a hold, holding it picks nothing up.
+
 | Button | What it does |
 | --- | --- |
 | <kbd>A</kbd> on a command | Listen for its new button: press one button, several together for a chord, or hold one for a hold. You have 5 seconds (the popup counts down, and waits while buttons are still down); <kbd>B</kbd> cancels |
@@ -80,7 +82,7 @@ Everything works by touch too, the same way as with the buttons.
 | Tap a button hint | The same as pressing that button (**A** Open, **Y** Options, **B** Back, **X** Search…). On a <kbd>◀</kbd><kbd>▶</kbd> hint, tap the left or right side. |
 | Drag a list | Scroll it. The highlight stays where it was; the next D-pad press brings it back into view. |
 
-A long press gives a short buzz. On an empty spot of the icon grid the first tap highlights it and a second tap opens Add here.
+A long press gives a short buzz. On an empty spot of the icon grid the first tap highlights it and a second tap opens its card (New, Sort…).
 
 **Drag and drop on the icon grid.** Hold a tile, folder or widget until it buzzes: it comes up under your finger and follows it. The spot it would land on lights up.
 
@@ -247,7 +249,7 @@ Rumble stays on the handheld. While a controller plays as the built-in one, Andr
 
 ## Y menus
 
-<kbd>Y</kbd> on anything lifts it out of the screen, a little bigger, over a blurred background, with a short list of actions beside it. The first few are the ones you use most; the rest sit under **More…**. <kbd>B</kbd> goes back from More, and closes the menu from the first page; the item settles back into its place.
+<kbd>Y</kbd> on anything lifts it out of the screen, a little bigger, over a blurred background, with a short list of actions beside it. The first few are the ones you use most; the rest sit under **More…**. <kbd>B</kbd> goes back from More, and closes the menu from the first page; the item settles back into its place. On the icon grid <kbd>Y</kbd> is shorter still: see [the lift](#y-on-the-icon-grid-the-lift).
 
 ![The Y menu on Super Mario 3D Land: the game's cover lifted over a blurred grid, beside Play, Favorite, Add to Up next, Pin to home, Edit details and More.](../../site/assets/screenshots/game-menu.webp "The Y menu on a game")
 
@@ -268,20 +270,41 @@ Each choice in More (Emulator, Start on…) lists its options with <kbd>A</kbd>,
 
 In **All apps**, <kbd>X</kbd> searches. Holding Back for a moment while an app is in front moves it to the other screen ([Android apps](apps.md#moving-an-open-app)).
 
-<details>
-<summary>Y menus on the icon grid: tiles, empty spots, widgets, selections</summary>
+### Y on the icon grid: the lift
 
-**On an icon grid tile:** Open, Move, Select, Move to folder…, Also add to folder…, Take out of the folder (Move up to… in a folder inside a folder), Sort and view or Game options, Design folder…, Rename folder, Sort inside…, View as…. **More…**: Delete folder…, Hide, App info, Remove from home (Remove from folder inside one), Add to home…, Sort this folder…, Tidy up, Undo last change, Search, Swap screens.
+On the icon grid (and inside its folders) <kbd>Y</kbd> doesn't open a long list. The tile **lifts where it sits**: it grows a little on a spring, its name under it, the grid behind blurs and dims, and a short card floats beside it (on the right, or the left near the right edge; mirrored in Arabic). The highlight first shows as a small circle on the first row's icon and stretches into the full bar, then glides from row to row. Pip peeks up from behind the card. <kbd>B</kbd> or <kbd>Y</kbd> puts the tile back, the same way it came.
 
-**On an empty spot of the icon grid:** Paste (while carrying a tile), New folder…, Smart folder…, Game…, System…, Collection or genre…, App…, Tandem app…, Widget… (in a folder, the one-spot widgets). **More…**: Tidy up, Undo last change, Search, Swap screens, and in an arranged system Show as a plain list.
+| On | The card |
+| --- | --- |
+| A tile | **Open** (Play, Resume) and **Edit**; **Close game** too while that game runs. Under them, a reminder: hold <kbd>Y</kbd> to move it |
+| A widget | **Widget options…** and **Edit** |
+| An empty spot | Nothing lifts: the card opens right at the spot, with a bigger Pip. **Paste** (while carrying a tile), **New ›**, **Sort ›**, **Search**, **Edit grid ›**, **Settings** |
+| Marked tiles | What to do with them (see [Marking several tiles](#marking-several-tiles)) |
 
-**On a widget on the icon grid:** Widget options…, Move, Resize, the widget's own actions. **More…**: Remove widget, Select, Tidy up, Undo last change, Search, Swap screens.
+A row with **›** is a group: <kbd>A</kbd> slides its second level in where the card is, and <kbd>B</kbd> slides back.
 
-**With tiles selected** (<kbd>Y</kbd> on a tile or an empty spot): Move here, Move to folder…, Also add to folder…, New folder from selection, Remove from home (or from the folder), Hide, Select all, Clear selection.
+- **New ›**: New folder…, Smart folder…, Game…, System…, Collection or genre…, App…, Tandem app…, Widget… (in a folder, the one-spot widgets).
+- **Sort ›**: Tidy up (close the gaps, keep the order), then on the home grid By name, Recently played, Most played and By kind (once, undoable), in a folder its order (ticked) or Manual, and in an arranged system Show as a plain list.
+- **Edit grid ›**: Mark several, Add to home… (every kind at once), Undo last change, Swap screens, Grid look (the grid's settings: size, rows, corners).
+- **Settings** opens Tandem's settings.
 
-</details>
 
-**Arranging a system:** <kbd>Y</kbd> on a system's tile › **Arrange like a folder**. It then opens as a folder that still holds every one of its games, new ones included, and takes empty spots, folders of its own (a **Smart folder…** made there starts limited to that system, so picking a genre is all it needs) and widgets. Your files never move. <kbd>Y</kbd> › **Show as a plain list** turns it back; folders made inside it move to the home grid.
+### The edit screen
+
+**Edit** opens the tile's edit screen. It grows out of the tile (on the home grid): the tile big on the left, exactly as it looks now, with Pip perched on its corner, a small picture of what the other screen shows under it, and on the right the tile's options in sections. <kbd>L1</kbd> / <kbd>R1</kbd> step between the sections (they slide the way you go); the ones that don't apply to this tile aren't there. Every change shows at once: on the big tile, on the grid behind and on the other screen. <kbd>B</kbd> (**Done**) or <kbd>Y</kbd> closes it.
+
+| Section | What's in it |
+| --- | --- |
+| **Name** | Rename (folders, apps) |
+| **Look** | **Artwork** (icon), **Colour**, **Hero** and **Logo** open the artwork studio on that page; **Shape** (the grid's, a rounded square, a circle); **Corners** (see [below](#corners)); **Cover frame** (a cover as the icon); **Reset look**. An app's **Choose icon**, a widget's **Resize** |
+| **Contents** | Edit rules, Make it a smart folder, Keep these games (smart folders); Sort inside, View as (folders); Sort and view (systems, collections, genres); Arrange like a folder / Show as a plain list (systems); Game options and Status (games); a widget's own actions |
+| **Behaviour** | Open games on (folders, smart folders); Open on the other screen, Always open on, Pin to dock, Treat as game, Hide from drawer, App info (apps) |
+| **Organize** | Move to folder…, Also add to folder…, Take out of the folder (Move up to…), Sort this folder… |
+| **Remove** | Hide (Unhide), Remove from home (or from the folder), Delete folder… (keep what's inside, or hold <kbd>A</kbd> to delete it all), Uninstall… (apps), Remove widget |
+
+Pip reacts as you go: curious on Look, a little worried on Remove, a happy hop when a change lands.
+
+**Arranging a system:** <kbd>Y</kbd> on a system's tile › **Edit** › **Contents** › **Arrange like a folder**. It then opens as a folder that still holds every one of its games, new ones included, and takes empty spots, folders of its own (a **Smart folder…** made there starts limited to that system, so picking a genre is all it needs) and widgets. Your files never move. **Show as a plain list** (the same place, or <kbd>Y</kbd> on an empty spot inside it › **Sort ›**) turns it back; folders made inside it move to the home grid.
 
 ## The icon grid
 
@@ -290,8 +313,9 @@ The 3DS-style home: a grid of icons, folders and widgets you arrange yourself.
 | Button | What it does |
 | --- | --- |
 | D-pad | Move between icons and empty spots, one spot at a time; <kbd>◀</kbd> / <kbd>▶</kbd> keep their row, <kbd>▲</kbd> / <kbd>▼</kbd> their column, over gaps and widgets. <kbd>◀</kbd> from the first column reaches the Resume page when a game is running |
-| <kbd>A</kbd> | Open the icon (a folder pops up over the grid). On an empty spot: the Add here menu. Hold <kbd>A</kbd> to select the icon |
-| <kbd>Y</kbd> | The tile menu: move, folders, remove, add. On an empty spot: the Add here menu |
+| <kbd>A</kbd> | Open the icon (a folder pops up over the grid). On an empty spot: its card (New, Sort…). Hold <kbd>A</kbd> to mark the icon |
+| <kbd>Y</kbd> (tap) | The lift: Open and Edit beside the tile; on an empty spot, its card (see [the lift](#y-on-the-icon-grid-the-lift)) |
+| <kbd>Y</kbd> (hold) | Pick the tile up to move it (below). A ring runs round the tile while you hold; at the end of it (0.4 s) the tile lifts off with a buzz. Let go sooner and it's a tap |
 | <kbd>X</kbd> | Swap the screens. Inside a folder: the next view (Grid, Shelf, Case, Carousel; see [Home folders](library.md#home-folders)) |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Bigger or smaller icons. With fixed rows (**Rows of icons**), <kbd>L1</kbd> means fewer rows and <kbd>R1</kbd> more, from 1 to 5 (1 to 3 on the bottom screen); <kbd>L1</kbd> on the biggest automatic size steps on to fixed rows. Tiles ease to their new size and the highlighted one stays where it is. |
 | <kbd>L2</kbd> | Show or hide the Recently played strip (or set it to always show) |
@@ -302,26 +326,26 @@ At **1 row** the grid looks like the 3DS HOME menu zoomed all the way in: one ro
 
 **On the Resume page:** <kbd>A</kbd> resumes the game, <kbd>Y</kbd> closes it (press twice: closing loses unsaved progress), <kbd>X</kbd> opens the game switcher when more than one game runs. A long press there opens the game's options, never Close.
 
-**Moving a tile.** It rises off the grid and glides from spot to spot:
+**Moving a tile.** Hold <kbd>Y</kbd> on it: it rises off the grid, sways a little, and glides from spot to spot. The hints at the top say what each button does:
 
 | Button | What it does |
 | --- | --- |
 | D-pad | Move it one spot at a time (into empty spots too, anywhere on the empty canvas, hopping over widgets) |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Move it a screen at a time |
-| <kbd>A</kbd> | Drop it |
+| <kbd>A</kbd> | Drop it (with a buzz) |
 | <kbd>B</kbd> | Put it back |
+| <kbd>X</kbd> (or <kbd>Select</kbd>) | Mark it and go on marking others: the tile goes back, checked, and you're [marking several](#marking-several-tiles) |
 | <kbd>Y</kbd> | Carry it instead: the D-pad moves freely again, folders open with <kbd>A</kbd>, and <kbd>A</kbd> on an empty spot › **Paste** puts it there, on the home grid or inside a folder. <kbd>B</kbd> stops carrying. While moving a widget, <kbd>Y</kbd> changes its size instead |
-| <kbd>Select</kbd> | Put the tile back and select it |
 
-On a touch screen, a tap on the moving tile drops it, a tap on an empty spot puts it there, and a tap anywhere else puts it back. A move left alone for a minute goes back by itself.
+A sorted folder keeps its own order, so there <kbd>Y</kbd> held is the same as a tap. On a touch screen, a tap on the moving tile drops it, a tap on an empty spot puts it there, and a tap anywhere else puts it back. A move left alone for a minute goes back by itself.
 
-### Selecting several tiles
+### Marking several tiles
 
-Work on many tiles at once. <kbd>Y</kbd> › **Select**, holding <kbd>A</kbd> on a tile, or <kbd>Select</kbd> while moving a tile starts a selection on that grid (the home grid or one folder). Selected tiles sit a little smaller with a check mark, and a pill at the top shows how many. While selecting:
+Work on many tiles at once. <kbd>X</kbd> while moving a tile, holding <kbd>A</kbd> on a tile, or <kbd>Y</kbd> on an empty spot › **Edit grid ›** › **Mark several** starts marking on that grid (the home grid or one folder). Marked tiles sit a little smaller with a check mark, and a pill at the top shows how many. While marking:
 
 | Button | What it does |
 | --- | --- |
-| <kbd>A</kbd> or <kbd>Select</kbd> | Select or deselect the highlighted tile (folders don't open) |
+| <kbd>A</kbd>, <kbd>X</kbd> or <kbd>Select</kbd> | Mark or unmark the highlighted tile (folders don't open) |
 | <kbd>Y</kbd>, or <kbd>A</kbd> on an empty spot | What to do with the selected tiles |
 | <kbd>B</kbd> | Clear the selection |
 
@@ -334,7 +358,7 @@ Work on many tiles at once. <kbd>Y</kbd> › **Select**, holding <kbd>A</kbd> on
 
 Changes that take something away or move several things can be undone. After each one a message shows for 6 seconds; <kbd>Select</kbd> (or a tap on the message) undoes it.
 
-**Undo last change** is under **More…** in the Y menu, and in the Start panel while there is something to undo. The last 20 changes are kept, also after a restart.
+**Undo last change** is in <kbd>Y</kbd> on an empty spot › **Edit grid ›**, and in the Start panel while there is something to undo. The last 20 changes are kept, also after a restart.
 
 <details>
 <summary>What can be undone</summary>
@@ -355,7 +379,7 @@ That covers deleting a game, a folder with its subfolders, a file, a screenshot,
 
 Room to place things. Empty spots look like nothing until the highlight lands on one: then the ring and a small + show. After the last item the grid always leaves two screens of empty columns (rows on a grid that scrolls up and down, whole pages on a paged grid). Only what you place is saved. Folders have empty spots too.
 
-<kbd>A</kbd> or <kbd>Y</kbd> on an empty spot opens **Add here**:
+<kbd>A</kbd> or <kbd>Y</kbd> on an empty spot opens its card ([the lift](#y-on-the-icon-grid-the-lift)); **New ›** holds what can go in it:
 
 - **New folder…** names an empty folder and puts it in this spot (on the home grid, or inside a folder that sits on the home grid).
 - **Game…** lists every game by system. <kbd>A</kbd> picks (several at once, numbered in order), <kbd>X</kbd> searches with the on-screen keyboard, <kbd>Start</kbd> or **Add** puts them in this spot and the free spots after it.
@@ -363,9 +387,9 @@ Room to place things. Empty spots look like nothing until the highlight lands on
 - **Widget…** adds a widget in this spot (home grid only), at its usual size or the biggest that fits.
 - **Paste** appears while you carry a tile.
 
-On a touch screen, the first tap on an empty spot highlights it and a second tap opens Add here.
+On a touch screen, the first tap on an empty spot highlights it and a second tap opens its card.
 
-Removing, hiding or moving an icon leaves its spot empty; nothing else shifts. **Tidy up** (<kbd>Start</kbd>, or **More…** in the Y menu) packs every icon to the front, keeping their order and fitting widgets in whole.
+Removing, hiding or moving an icon leaves its spot empty; nothing else shifts. **Tidy up** (<kbd>Start</kbd>, or <kbd>Y</kbd> on an empty spot › **Sort ›**) packs every icon to the front, keeping their order and fitting widgets in whole.
 
 <details>
 <summary>Dead spots, and what happens when the rows change</summary>
@@ -380,11 +404,21 @@ When the number of rows changes (<kbd>L1</kbd> / <kbd>R1</kbd>, or swapped scree
 
 A widget on the grid covers 1×1, 2×1, 1×2 or 2×2 cells (columns × rows); nothing else goes in the cells it covers. The D-pad moves onto and off it like any icon.
 
-<kbd>Y</kbd> on it: **Widget options…**, **Move**, **Resize** (the next size that fits where it is), and the widget's own actions; **Remove widget** is under More. A widget never spans two pages on a paged grid.
+<kbd>Y</kbd> on it: **Widget options…** and **Edit** (**Look › Resize**, its own actions under **Contents**, **Remove › Remove widget**). Hold <kbd>Y</kbd> to move it; while moving, <kbd>Y</kbd> changes its size. A widget never spans two pages on a paged grid.
+
+### Corners
+
+How round the icons are: **Settings › Home & layout › Grid shape › Icon roundness**, from **Sharp** (square corners) through Crisp, Soft, **Rounded** (the default, 20%), Round and Pebble to **Circle**. <kbd>◀</kbd> / <kbd>▶</kbd> step it and the tiles in the side panel ease into each shape as you go. A shared look (**Share my look**) carries it.
+
+One tile can keep its own: <kbd>Y</kbd> › **Edit** › **Look** › **Corners**. It starts on **Grid** (it follows Icon roundness); <kbd>▶</kbd> gives it its own, from square to round. A tile with its own corners says **Own corners** under its picture on the edit screen; <kbd>◀</kbd> back to **Grid** follows the grid again. **Shape** › rounded square or circle overrides both. A tile's own corners are yours alone: they stay in your grid and never travel in a shared look.
+
+### Feel each move
+
+Tandem gives a very light tick from the handheld's motor each time the highlight moves (grids, menus, the edit screen: wherever the move sound plays), and a fuller one when a tile is picked up or dropped. Holding a direction gives a gentle patter instead of a constant buzz. **Settings › Controls › Buttons › Feel each move**: **Light** (the default), **Firm**, or **Off**. It goes through Android's own touch feedback, so Android's **Vibration & haptics › Touch feedback** must be on.
 
 ## Built-in apps
 
-Tandem's own apps sit on the icon grid like any other tile (<kbd>Y</kbd> › **Remove from home** takes one off, <kbd>Y</kbd> › **Add to home…** brings it back):
+Tandem's own apps sit on the icon grid like any other tile (<kbd>Y</kbd> › **Edit** › **Remove** › **Remove from home** takes one off, <kbd>Y</kbd> on an empty spot › **New ›** › **Tandem app…** brings it back):
 
 | App | Buttons |
 | --- | --- |

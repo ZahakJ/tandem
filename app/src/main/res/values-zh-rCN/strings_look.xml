@@ -474,4 +474,16 @@
     <string name="look_preset_minimal_3">关闭音乐</string>
     <string name="look_preset_minimal_4">会自动隐藏的纯图标程序坞</string>
     <string name="look_preset_minimal_5">没有小组件行，没有启动画面</string>
+    <string name="look_grid_corner_sharp">尖角</string>
+    <string name="look_grid_corner_crisp">利落</string>
+    <string name="look_grid_corner_soft">柔和</string>
+    <string name="look_grid_corner_rounded">圆角</string>
+    <string name="look_grid_corner_round">圆润</string>
+    <string name="look_grid_corner_pebble">鹅卵石</string>
+    <string name="look_grid_corner_circle">圆形</string>
+    <string name="look_grid_animated">动态图标</string>
+    <string name="look_grid_animated_help">图块上的 GIF 和动态 WebP 可以一直播放、只在选中时播放，或者不播放。玩游戏时总会暂停。</string>
+    <string name="look_grid_animated_always">一直</string>
+    <string name="look_grid_animated_focused">选中时</string>
+    <string name="look_grid_animated_off">关</string>
 </resources>

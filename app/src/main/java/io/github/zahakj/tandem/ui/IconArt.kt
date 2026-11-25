@@ -84,6 +84,8 @@ sealed interface TileArt {
     data class Rendered(val spec: ArtSpec) : TileArt
     /** [base] with a live count in its corner: a smart folder's games. */
     data class Counted(val base: TileArt, val count: Int) : TileArt
+    /** A picture that moves (a GIF or animated WebP the user uploaded), played on the tile (AnimatedArt.kt). */
+    data class Animated(val file: File, val color: Color) : TileArt
 }
 
 /** The art without a count on it. */
@@ -186,6 +188,7 @@ fun TileArtView(art: TileArt, size: Dp, modifier: Modifier = Modifier) {
             is TileArt.Folder -> FolderArt(art, size)
             is TileArt.Tandem -> TandemIconTile(art.icon, art.color)
             is TileArt.Rendered -> RenderedArt(art.spec, size)
+            is TileArt.Animated -> AnimatedTileArt(art.file, art.color, size)
             is TileArt.Counted -> {
                 TileArtView(art.base, size)
                 if (size >= 40.dp) CountChip(art.count, size, Modifier.align(Alignment.BottomEnd))

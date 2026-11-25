@@ -479,7 +479,8 @@ private fun Main(resumes: Int) {
             when (b) {
                 // Y on a game that is still open closes it (press twice), as on the icon grid's Resume card; the
                 // grid handles its own Y before this.
-                Button.Y -> {
+                // Grab: Y held where nothing could be picked up after all; it is the menu, as a tap would be.
+                Button.Y, Button.Grab -> {
                     val g = (Selection.current as? Selected.GameItem)?.game
                     val running = g?.let { RunningGames.list.firstOrNull { r -> r.game?.key == it.key } }
                     if (running != null && onHome) resumePageClose(ctx, running) else openMenuFor(Selection.current)
@@ -582,6 +583,8 @@ private fun Main(resumes: Int) {
         QuickJumpBubble()
         FolderPopupHost()
         IconGridMenuHost()
+        // Y › Edit: over the lift, under the artwork studio and the smart folder form it opens.
+        TileEditorHost()
         FolderDesignHost()
         SmartFolderFormHost()
         StartPanelHost()

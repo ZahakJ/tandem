@@ -190,7 +190,6 @@
     <string name="grid_design_frame">Cadre de jaquette</string>
     <string name="grid_design_reset">Revenir au thème</string>
     <!-- Button hints. Keep them short. -->
-    <string name="grid_design_hint_pages">Pages</string>
     <string name="grid_design_hint_change">Changer</string>
     <string name="grid_design_hint_use">Utiliser</string>
     <!-- The look the theme gives, for any part. -->
@@ -233,8 +232,6 @@
     <string name="grid_design_size_small">Petit</string>
     <string name="grid_design_size_medium">Moyen</string>
     <string name="grid_design_size_large">Grand</string>
-    <string name="grid_design_from_device">Depuis cet appareil…</string>
-    <string name="grid_design_browse">Parcourir</string>
     <string name="grid_design_no_picture">Cette icône n’a pas d’image où piocher une couleur</string>
     <string name="grid_design_no_colour">Pas de couleur nette dans ce visuel</string>
     <string name="grid_design_picture_failed">Impossible d’utiliser cette image</string>
@@ -396,9 +393,6 @@
     <string name="grid_menu_open">Ouvrir</string>
     <string name="grid_menu_resume">Reprendre</string>
     <string name="grid_menu_play">Jouer</string>
-    <string name="grid_menu_move">Déplacer</string>
-    <string name="grid_menu_select">Sélectionner</string>
-    <string name="grid_menu_select_sub">En cocher plusieurs, puis agir sur tous</string>
     <string name="grid_menu_also_add_sub">Il reste aussi ici</string>
     <!-- %1$s is the name of the folder one level up. -->
     <string name="grid_menu_move_up">Remonter dans %1$s</string>
@@ -576,4 +570,55 @@
     <string name="grid_drag_moved_it_into_folder">Déplacement dans le dossier</string>
     <!-- On a tile held over another: let go to make a folder of the two. Keep it short. -->
     <string name="grid_drag_new_folder">+ Dossier</string>
+    <string name="grid_hint_mark">En cocher d’autres</string>
+    <string name="grid_hint_hold_move">Maintenir : déplacer</string>
+    <string name="grid_lift_edit">Modifier</string>
+    <string name="grid_lift_hold_move">Maintiens pour la déplacer</string>
+    <string name="grid_spot_group_new">Nouveau</string>
+    <string name="grid_spot_group_new_sub">Dossier, jeu, appli, widget…</string>
+    <string name="grid_spot_group_sort">Trier</string>
+    <string name="grid_spot_group_grid">Modifier la grille</string>
+    <string name="grid_spot_settings">Paramètres</string>
+    <string name="grid_spot_tidy_sub">Combler les trous, garder l’ordre</string>
+    <string name="grid_spot_select_several">En cocher plusieurs</string>
+    <string name="grid_spot_select_several_sub">Puis les déplacer, les ranger ou les masquer d’un coup</string>
+    <string name="grid_spot_grid_look">Allure de la grille</string>
+    <string name="grid_spot_grid_look_sub">Taille, rangées, coins</string>
+    <string name="grid_edit_section_name">Nom</string>
+    <string name="grid_edit_section_name_blurb">Son nom sur la grille</string>
+    <string name="grid_edit_section_look">Allure</string>
+    <string name="grid_edit_section_look_blurb">Son image, sa couleur, sa forme, ses coins</string>
+    <string name="grid_edit_section_contents">Contenu</string>
+    <string name="grid_edit_section_contents_blurb">Ce qu’il y a dedans, et comment c’est rangé</string>
+    <string name="grid_edit_section_behaviour">Comportement</string>
+    <string name="grid_edit_section_behaviour_blurb">Comment et sur quel écran ça s’ouvre</string>
+    <string name="grid_edit_section_organize">Organiser</string>
+    <string name="grid_edit_section_organize_blurb">Sa place sur la grille</string>
+    <string name="grid_edit_section_remove">Retirer</string>
+    <string name="grid_edit_section_remove_blurb">La masquer, ou l’enlever</string>
+    <string name="grid_edit_heading">Modifier · %1$s</string>
+    <string name="grid_edit_done">Terminé</string>
+    <string name="grid_edit_artwork">Visuels</string>
+    <string name="grid_edit_artwork_sub">Icônes, glyphes, jaquettes ou ta propre image</string>
+    <string name="grid_edit_hero_sub">La grande image sur l’autre écran</string>
+    <string name="grid_edit_logo">Logo</string>
+    <string name="grid_edit_logo_sub">Le titre posé sur la bannière</string>
+    <string name="grid_edit_shape_grid">Celle de la grille</string>
+    <string name="grid_edit_corners">Coins</string>
+    <string name="grid_edit_corners_follows">Comme toutes les vignettes de la grille</string>
+    <string name="grid_edit_corners_own">Les siens, quels que soient ceux de la grille</string>
+    <string name="grid_edit_corners_help">Gauche et Droite rendent cette vignette plus anguleuse ou plus ronde. Tout au début, elle suit de nouveau l’Arrondi des icônes de la grille.</string>
+    <string name="grid_edit_corners_follow">Grille · %1$s</string>
+    <string name="grid_edit_corners_chip">Coins perso · %1$s</string>
+    <string name="grid_design_upload">Importer ton image</string>
+    <string name="grid_design_upload_too_big">Cette image est trop lourde : 24 Mo max pour une image fixe, 8 Mo pour une animation.</string>
+    <string name="grid_design_upload_too_large">Cette animation est trop grande : 1024 pixels max sur son plus grand côté.</string>
+    <string name="grid_design_upload_not_picture">Tandem ne sait pas utiliser ce fichier : PNG, JPEG, WebP, GIF ou HEIC.</string>
+    <string name="grid_design_group_upload">Importer</string>
+    <string name="grid_design_group_styles">Faits avec le contenu</string>
+    <string name="grid_design_group_covers">Jaquettes et icônes</string>
+    <string name="grid_design_group_game_art">Visuels du jeu</string>
+    <string name="grid_design_group_glyphs">Glyphes de Tandem</string>
+    <string name="grid_design_group_emoji">Emoji</string>
+    <string name="grid_design_group_yours">Tes images</string>
 </resources>
