@@ -599,7 +599,7 @@ private fun TitleThumb(plain: GridItem, st: FolderStyle) {
 
 /** The hero, or the colour sweep (with the folder's glyph) when there is none. */
 @Composable
-private fun HeroPicture(item: GridItem, hero: File?, modifier: Modifier) {
+internal fun HeroPicture(item: GridItem, hero: File?, modifier: Modifier) {
     Box(modifier) {
         if (hero != null) AsyncImage(rememberSizedRequest(hero, 640), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
         else if (item.style?.hero == FolderStyle.HERO_WALL) CoverWall(item.games, item.color, Modifier.fillMaxSize(), moving = false)
@@ -609,7 +609,7 @@ private fun HeroPicture(item: GridItem, hero: File?, modifier: Modifier) {
 
 /** What stands over the hero: the text title, the logo, or nothing (the icon shows instead). */
 @Composable
-private fun TitleArt(item: GridItem, scale: Float) {
+internal fun TitleArt(item: GridItem, scale: Float) {
     val st = item.style ?: FolderStyle.DEFAULT
     val logo = remember(item) { FolderLooks.logo(item) }
     when {

@@ -272,7 +272,7 @@ In **All apps**, <kbd>X</kbd> searches. Holding Back for a moment while an app i
 
 ### Y on the icon grid: the lift
 
-On the icon grid (and inside its folders) <kbd>Y</kbd> doesn't open a long list. The tile **lifts where it sits**: it grows a little on a spring, its name under it, the grid behind blurs and dims, and a short card floats beside it (on the right, or the left near the right edge; mirrored in Arabic). The highlight first shows as a small circle on the first row's icon and stretches into the full bar, then glides from row to row. Pip peeks up from behind the card. <kbd>B</kbd> or <kbd>Y</kbd> puts the tile back, the same way it came.
+On the icon grid (and inside its folders) <kbd>Y</kbd> doesn't open a long list. The tile **lifts where it sits**: it grows a little on a spring, its name under it, the grid behind blurs and dims, and a short card floats beside it (on the right, or the left near the right edge; mirrored in Arabic). The highlight first shows as a small circle on the first row's icon and stretches into the full bar as the card opens (in about a fifth of a second; at once with Reduce motion), then glides from row to row. The same happens on every level of the card and on each section of the edit screen. Pip pops up from behind the card and sits on its top edge, at the end away from the tile, blinking and bobbing while you choose: it hops when a group opens and looks worried over a row that can't be taken back. <kbd>B</kbd> or <kbd>Y</kbd> puts the tile back, the same way it came.
 
 | On | The card |
 | --- | --- |
@@ -291,20 +291,19 @@ A row with **›** is a group: <kbd>A</kbd> slides its second level in where the
 
 ### The edit screen
 
-**Edit** opens the tile's edit screen. It grows out of the tile (on the home grid): the tile big on the left, exactly as it looks now, with Pip perched on its corner, a small picture of what the other screen shows under it, and on the right the tile's options in sections. <kbd>L1</kbd> / <kbd>R1</kbd> step between the sections (they slide the way you go); the ones that don't apply to this tile aren't there. Every change shows at once: on the big tile, on the grid behind and on the other screen. <kbd>B</kbd> (**Done**) or <kbd>Y</kbd> closes it.
+**Edit** opens the tile's edit screen. It grows out of the tile (on the home grid): on the left the tile big, exactly as it looks now, with Pip standing beside it, and under it a small framed copy of the other screen showing what it shows for this tile (a game's hero and logo; a folder's hero, cover wall or colour sweep with its logo, title or icon). The tile and that screen shrink together to fit the panel. On the right are the tile's options in sections. <kbd>L1</kbd> / <kbd>R1</kbd> step between the sections (they slide the way you go); the ones that don't apply to this tile aren't there. Every change shows at once: on the big tile, on the grid behind and on the other screen. <kbd>B</kbd> (**Done**) or <kbd>Y</kbd> closes it.
 
 | Section | What's in it |
 | --- | --- |
-| **Name** | Rename (folders, apps) |
-| **Look** | **Artwork** (icon), **Colour**, **Hero** and **Logo** open the artwork studio on that page; **Shape** (the grid's, a rounded square, a circle); **Corners** (see [below](#corners)); **Cover frame** (a cover as the icon); **Reset look**. An app's **Choose icon**, a widget's **Resize** |
-| **Contents** | Edit rules, Make it a smart folder, Keep these games (smart folders); Sort inside, View as (folders); Sort and view (systems, collections, genres); Arrange like a folder / Show as a plain list (systems); Game options and Status (games); a widget's own actions |
-| **Behaviour** | Open games on (folders, smart folders); Open on the other screen, Always open on, Pin to dock, Treat as game, Hide from drawer, App info (apps) |
-| **Organize** | Move to folder…, Also add to folder…, Take out of the folder (Move up to…), Sort this folder… |
-| **Remove** | Hide (Unhide), Remove from home (or from the folder), Delete folder… (keep what's inside, or hold <kbd>A</kbd> to delete it all), Uninstall… (apps), Remove widget |
+| **Look** | **Rename** (folders, apps); **Artwork** (icon), **Colour**, **Hero** and **Logo**, each with a small picture of what it is now, open the artwork studio on that page; **Shape** (the grid's, a rounded square, a circle); **Corners** (see [below](#corners)); **Cover frame** (a cover as the icon); **Reset look**. An app's **Choose icon** |
+| **Options** | What's inside, then how it opens. Game status and Game options (games); Sort and view (systems, collections, genres); Edit rules, Make it a smart folder, Keep these games (smart folders); Sort inside, View as (folders); Arrange like a folder / Show as a plain list (systems); Open games on (folders, smart folders); Always open on, Open on the other screen, Treat as game, Pin to dock, Hide from drawer, App info (apps); a widget's size, its own actions and Remove widget |
+| **Organize** | Where it lives, then hiding, then taking it away: Move to folder…, Also add to folder…, Take out of the folder (Move up to…), Sort this folder…, Hide (Unhide), Remove from home (or from the folder), Delete folder… (keep what's inside, or hold <kbd>A</kbd> to delete it all), Uninstall… (apps) |
 
-Pip reacts as you go: curious on Look, a little worried on Remove, a happy hop when a change lands.
+A section never holds a single row on its own: a widget, whose size and Remove would each be alone, shows everything in one **Options** list. A section of only a few rows ends with a short card about it. The screen opens on **Look** when there is more to change there than the shape and corners (folders, systems, collections, genres, apps); a game opens on **Options**, where its status and options are.
 
-**Arranging a system:** <kbd>Y</kbd> on a system's tile › **Edit** › **Contents** › **Arrange like a folder**. It then opens as a folder that still holds every one of its games, new ones included, and takes empty spots, folders of its own (a **Smart folder…** made there starts limited to that system, so picking a genre is all it needs) and widgets. Your files never move. **Show as a plain list** (the same place, or <kbd>Y</kbd> on an empty spot inside it › **Sort ›**) turns it back; folders made inside it move to the home grid.
+Pip reacts as you go: excited on Look, worried over a row that can't be taken back (Delete, Uninstall, Remove), a happy hop when a change lands.
+
+**Arranging a system:** <kbd>Y</kbd> on a system's tile › **Edit** › **Options** › **Arrange like a folder**. It then opens as a folder that still holds every one of its games, new ones included, and takes empty spots, folders of its own (a **Smart folder…** made there starts limited to that system, so picking a genre is all it needs) and widgets. Your files never move. **Show as a plain list** (the same place, or <kbd>Y</kbd> on an empty spot inside it › **Sort ›**) turns it back; folders made inside it move to the home grid.
 
 ## The icon grid
 
@@ -418,7 +417,7 @@ Tandem gives a very light tick from the handheld's motor each time the highlight
 
 ## Built-in apps
 
-Tandem's own apps sit on the icon grid like any other tile (<kbd>Y</kbd> › **Edit** › **Remove** › **Remove from home** takes one off, <kbd>Y</kbd> on an empty spot › **New ›** › **Tandem app…** brings it back):
+Tandem's own apps sit on the icon grid like any other tile (<kbd>Y</kbd> › **Edit** › **Organize** › **Remove from home** takes one off, <kbd>Y</kbd> on an empty spot › **New ›** › **Tandem app…** brings it back):
 
 | App | Buttons |
 | --- | --- |

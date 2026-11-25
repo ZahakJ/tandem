@@ -590,18 +590,16 @@
     <string name="grid_spot_grid_look">Grid look</string>
     <string name="grid_spot_grid_look_sub">Size, rows, corners</string>
     <!-- Y › Edit: the edit screen's sections, stepped with L1 / R1. Short: they sit side by side as tabs. -->
-    <string name="grid_edit_section_name">Name</string>
-    <string name="grid_edit_section_name_blurb">What it\'s called on the grid</string>
     <string name="grid_edit_section_look">Look</string>
-    <string name="grid_edit_section_look_blurb">Its picture, colour, shape and corners</string>
-    <string name="grid_edit_section_contents">Contents</string>
-    <string name="grid_edit_section_contents_blurb">What\'s inside, and how it\'s laid out</string>
-    <string name="grid_edit_section_behaviour">Behaviour</string>
-    <string name="grid_edit_section_behaviour_blurb">How and where it opens</string>
+    <string name="grid_edit_section_look_blurb">Its name, picture, colour, shape and corners</string>
+    <string name="grid_edit_section_options">Options</string>
+    <string name="grid_edit_section_options_blurb">What\'s inside, and how it opens</string>
     <string name="grid_edit_section_organize">Organize</string>
-    <string name="grid_edit_section_organize_blurb">Where it lives on the grid</string>
-    <string name="grid_edit_section_remove">Remove</string>
-    <string name="grid_edit_section_remove_blurb">Hide it, or take it away</string>
+    <string name="grid_edit_section_organize_blurb">Where it lives, hiding it, taking it away</string>
+    <!-- A card under a section's rows when it has only a few: one friendly line about the section. -->
+    <string name="grid_edit_tip_look">Every change shows at once: here, on the grid and on the other screen.</string>
+    <string name="grid_edit_tip_options">Where a value shows ◂ ▸, Left and Right change it in place.</string>
+    <string name="grid_edit_tip_organize">Hidden things wait in Start › Hidden, ready to come back.</string>
     <!-- Over the tile's name on the edit screen; %1$s is its kind (Folder, System, App…). -->
     <string name="grid_edit_heading">Edit · %1$s</string>
     <string name="grid_edit_done">Done</string>

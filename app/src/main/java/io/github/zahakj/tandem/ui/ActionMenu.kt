@@ -83,6 +83,7 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -128,10 +129,16 @@ class MenuAction(
      * is, instead of running [onClick].
      */
     val children: List<MenuAction>? = null,
+    /**
+     * A small picture of the value in place of [value]'s chip (the edit screen's Look rows: the artwork, a colour
+     * swatch, the hero, the logo), drawn in the given height. Lists other than the lift's and the edit screen's show
+     * [value] instead.
+     */
+    val preview: (@Composable (Dp) -> Unit)? = null,
     val onClick: () -> Unit,
 ) {
     /** The same action doing [click] on A. */
-    fun withClick(click: () -> Unit) = MenuAction(id, label, glyph, color, value, more, icon, sub, art, onFocus, help, hold, step, choices, children, click)
+    fun withClick(click: () -> Unit) = MenuAction(id, label, glyph, color, value, more, icon, sub, art, onFocus, help, hold, step, choices, children, preview, click)
 }
 
 /** One option of a choice in a Y menu ([MenuAction.choices]): picking it runs [pick] and goes back to the list. */
@@ -159,10 +166,10 @@ class MenuSpec(
     val aspect: Float = 1f,
     /**
      * The icon grid's lift (LiftMenu.kt): the item grows where it sits, and a short card of a few actions (and groups
-     * that open in place) floats beside it, with Pip peeking out. False: the full list beside the item.
+     * that open in place) floats beside it, with Pip sitting on it. False: the full list beside the item.
      */
     val compact: Boolean = false,
-    /** How Pip shows on a compact menu: peeking up from behind the card, small on an item, bigger on an empty spot. */
+    /** How Pip shows on a compact menu: sitting on the card's top edge, smaller on an item, bigger on an empty spot. */
     val pip: PipPeek = PipPeek.Small,
     /** A line under a compact menu's first level, after the Options button's hint ("Hold to move"). */
     val footer: String? = null,

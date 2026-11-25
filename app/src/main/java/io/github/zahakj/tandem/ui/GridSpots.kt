@@ -197,7 +197,7 @@ private fun openAdd(target: SlotTarget, filter: String) {
 }
 
 /**
- * A or Y on an empty spot: the spot lifts with Pip peeking over a short card (Paste first while a tile is carried):
+ * A or Y on an empty spot: the spot lifts with Pip sitting on a short card (Paste first while a tile is carried):
  * New ›, Sort ›, Search, Edit grid › and Settings, the groups opening in place.
  */
 internal fun gapMenuSpec(t: TileMenuTarget, catalog: GridCatalog, ctx: Context): MenuSpec? {

@@ -11,8 +11,10 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,11 +23,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
@@ -46,9 +52,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
+import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.data.FolderStyle
 import io.github.zahakj.tandem.data.IconGridStore
@@ -56,11 +64,12 @@ import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.styleOf
 
 /*
- * A tile's edit screen (Y › Edit): the tile big on the left, live, with Pip perched on it, and what can be changed in
- * a few sections on the right, L1 / R1 stepping between them: Name · Look · Contents · Behaviour · Organize · Remove
- * (only those that apply to this tile). Every change shows at once on the preview, on the grid behind and on the other
- * screen. The rows are the tile's own actions (tileMenuSpec), sorted by EditSections, plus the Look rows built here;
- * Artwork opens the artwork studio (FolderDesign.kt) over this screen, and B there comes back here.
+ * A tile's edit screen (Y › Edit): the tile big on the left, live, with Pip standing beside it and a small copy of the
+ * other screen under it, and what can be changed in a few sections on the right, L1 / R1 stepping between them:
+ * Look · Options · Organize (only those that apply to this tile; see EditSections). Every change shows at once on the
+ * preview, on the grid behind and on the other screen. The rows are the tile's own actions (tileMenuSpec), sorted by
+ * EditSections, plus the Look rows built here; Artwork opens the artwork studio (FolderDesign.kt) over this screen, and
+ * B there comes back here.
  */
 
 object TileEditor {
@@ -68,7 +77,10 @@ object TileEditor {
         private set
     var section by mutableStateOf(EditSection.Look)
 
-    /** A section was picked with L1 / R1 (otherwise the screen opens on the first one there is). */
+    /** The highlighted row can't be taken back (Delete, Uninstall…): Pip looks worried. */
+    internal var risky by mutableStateOf(false)
+
+    /** A section was picked with L1 / R1 (otherwise the screen opens on [EditSections.opening]). */
     internal var chosen = false
 
     fun open(key: String, folder: String?) {
@@ -77,6 +89,7 @@ object TileEditor {
         ActionMenu.choosing = null
         ActionMenu.group = null
         chosen = false
+        risky = false
         target = TileMenuTarget(key, folder)
     }
 
@@ -114,7 +127,7 @@ fun TileEditorHost() {
     LaunchedEffect(visible, item == null) { if (visible && item == null) TileEditor.close() }
     LaunchedEffect(sections) {
         if (sections.isNotEmpty() && (TileEditor.section !in sections.keys || !TileEditor.chosen)) {
-            TileEditor.section = if (EditSection.Look in sections.keys && !TileEditor.chosen) EditSection.Look else sections.keys.first()
+            TileEditor.section = (if (TileEditor.chosen) null else EditSections.opening(sections)) ?: sections.keys.first()
         }
     }
     InterceptButtons(visible) { b ->
@@ -158,21 +171,13 @@ fun TileEditorHost() {
     }
 }
 
-/** The rows of each section that has any, in section order. */
-private fun sectionsFor(item: GridItem, spec: MenuSpec?): Map<EditSection, List<MenuAction>> {
-    val out = LinkedHashMap<EditSection, MutableList<MenuAction>>()
-    for (s in EditSection.entries) out[s] = ArrayList()
-    out.getValue(EditSection.Look).addAll(lookRows(item))
-    for (a in spec?.actions.orEmpty()) {
-        val s = EditSections.of(a.id) ?: continue
-        out.getValue(s).add(a)
-    }
-    return out.filterValues { it.isNotEmpty() }
-}
+/** The rows of each section that has any, in section order (EditSections.arrange). */
+private fun sectionsFor(item: GridItem, spec: MenuSpec?): Map<EditSection, List<MenuAction>> =
+    EditSections.arrange(lookRows(item) + spec?.actions.orEmpty()) { it.id }
 
 /**
- * Look: the artwork studio's parts (designable tiles: folders, systems, collections, genres), the shape and the
- * corners (every tile), each changed in place where it can be and shown at once.
+ * Look: the artwork studio's parts (designable tiles: folders, systems, collections, genres), each with a small picture
+ * of what it is now, the shape and the corners (every tile), each changed in place where it can be and shown at once.
  */
 private fun lookRows(item: GridItem): List<MenuAction> {
     if (item.kind == TileKind.Widget || item.kind == TileKind.Now) return emptyList()
@@ -186,19 +191,22 @@ private fun lookRows(item: GridItem): List<MenuAction> {
     }
     return buildList {
         if (designable) {
-            add(MenuAction("art", Tx.s(R.string.grid_edit_artwork), Glyph.Image, Palette.Mint, sub = Tx.s(R.string.grid_edit_artwork_sub), value = "▸") {
-                FolderDesign.open(key, FolderDesign.Page.Icon)
-            })
             add(MenuAction(
-                "colour", Tx.s(R.string.grid_design_colour), Glyph.Theme, Palette.Peach, value = "▸",
-                art = { Box(Modifier.fillMaxSize().background(item.color)) },
+                "art", Tx.s(R.string.grid_edit_artwork), Glyph.Image, Palette.Mint, sub = Tx.s(R.string.grid_edit_artwork_sub),
+                preview = { h -> ArtThumb(item, h) },
+            ) { FolderDesign.open(key, FolderDesign.Page.Icon) })
+            add(MenuAction(
+                "colour", Tx.s(R.string.grid_design_colour), Glyph.Theme, Palette.Peach,
+                preview = { h -> ColourThumb(item.color, h) },
             ) { FolderDesign.open(key, FolderDesign.Page.Colour) })
-            add(MenuAction("hero", Tx.s(R.string.grid_design_hero), Glyph.Layers, Palette.Sky, sub = Tx.s(R.string.grid_edit_hero_sub), value = "▸") {
-                FolderDesign.open(key, FolderDesign.Page.Hero)
-            })
-            add(MenuAction("logo", Tx.s(R.string.grid_edit_logo), Glyph.Text, Palette.Butter, sub = Tx.s(R.string.grid_edit_logo_sub), value = "▸") {
-                FolderDesign.open(key, FolderDesign.Page.Title)
-            })
+            add(MenuAction(
+                "hero", Tx.s(R.string.grid_design_hero), Glyph.Layers, Palette.Sky, sub = Tx.s(R.string.grid_edit_hero_sub),
+                preview = { h -> HeroThumb(item, h) },
+            ) { FolderDesign.open(key, FolderDesign.Page.Hero) })
+            add(MenuAction(
+                "logo", Tx.s(R.string.grid_edit_logo), Glyph.Text, Palette.Butter, sub = Tx.s(R.string.grid_edit_logo_sub),
+                preview = { h -> LogoThumb(item, h) },
+            ) { FolderDesign.open(key, FolderDesign.Page.Title) })
         }
         val shapes = listOf(FolderStyle.SHAPE_THEME, FolderStyle.SHAPE_ROUNDED, FolderStyle.SHAPE_CIRCLE)
         fun shapeName(s: String) = Tx.s(when (s) { FolderStyle.SHAPE_ROUNDED -> R.string.grid_design_shape_rounded; FolderStyle.SHAPE_CIRCLE -> R.string.grid_design_shape_circle; else -> R.string.grid_edit_shape_grid })
@@ -241,6 +249,42 @@ private fun lookRows(item: GridItem): List<MenuAction> {
 internal fun cornersLabel(own: Float?, grid: Float): String =
     if (own == null) Tx.s(R.string.grid_edit_corners_follow, pct(grid)) else pct(own)
 
+// --- The Look rows' pictures ---------------------------------------------------------------------------------------
+
+private val ThumbEdge = Palette.Text.copy(alpha = 0.22f)
+
+/** The tile's artwork as it is now, in its own shape. */
+@Composable
+private fun ArtThumb(item: GridItem, h: Dp) {
+    val grid = Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)
+    val shape = FolderLooks.shape(item.style, h, h * grid)
+    Box(Modifier.size(h).clip(shape).border(1.dp, ThumbEdge, shape)) { TileArtView(item.art, h) }
+}
+
+/** Its colour, as a round swatch. */
+@Composable
+private fun ColourThumb(color: Color, h: Dp) {
+    Box(Modifier.size(h).padding(3.dp).background(color, CircleShape).border(2.dp, ThumbEdge, CircleShape))
+}
+
+/** The hero the other screen shows (or its cover wall, or its colour sweep), wide. */
+@Composable
+private fun HeroThumb(item: GridItem, h: Dp) {
+    val hero = remember(item) { FolderLooks.hero(item) }
+    val shape = RoundedCornerShape(7.dp)
+    Box(Modifier.height(h).aspectRatio(16f / 9f).clip(shape).border(1.dp, ThumbEdge, shape)) { HeroPicture(item, hero, Modifier.fillMaxSize()) }
+}
+
+/** What stands over the hero: the logo, or the name in the title's own type. */
+@Composable
+private fun LogoThumb(item: GridItem, h: Dp) {
+    val shape = RoundedCornerShape(7.dp)
+    Box(
+        Modifier.height(h).aspectRatio(2.2f).clip(shape).background(lerp(item.color, Palette.Night, 0.45f)).border(1.dp, ThumbEdge, shape),
+        contentAlignment = Alignment.Center,
+    ) { TitleArt(item, 0.3f) }
+}
+
 @Composable
 private fun EditorHeader(item: GridItem, sections: List<EditSection>) {
     Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 18.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -274,7 +318,7 @@ private fun SectionTabs(sections: List<EditSection>) {
             val fill by animateColorAsState(if (on) sectionColor(s).copy(alpha = 0.32f) else Color.Transparent, Motion.fade(160), label = "tab")
             Box(
                 Modifier.background(fill, RoundedCornerShape(50)).swallowTaps { TileEditor.section = s; TileEditor.chosen = true; Sounds.page() }
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
             ) {
                 Text(
                     Tx.s(s.label), style = MaterialTheme.typography.labelMedium, color = if (on) Palette.Text else Palette.Muted,
@@ -286,29 +330,33 @@ private fun SectionTabs(sections: List<EditSection>) {
 }
 
 private fun sectionColor(s: EditSection): Color = when (s) {
-    EditSection.Name -> Palette.Butter
     EditSection.Look -> Palette.Mint
-    EditSection.Contents -> Palette.Sky
-    EditSection.Behaviour -> Palette.Lavender
+    EditSection.Options -> Palette.Sky
     EditSection.Organize -> Palette.Butter
-    EditSection.Remove -> Palette.Peach
 }
 
+private fun sectionGlyph(s: EditSection): Glyph = when (s) {
+    EditSection.Look -> Glyph.Wand
+    EditSection.Options -> Glyph.Sparkle
+    EditSection.Organize -> Glyph.Folder
+}
+
+/** The bottom screen's shape: 1240 by 1080, a little wider than tall. */
+private const val OtherScreenAspect = 1240f / 1080f
+
 /**
- * The tile as it is now, big, with Pip perched on its corner (curious while the look changes, worried on Remove, a hop
- * when a change lands), its name, whether it keeps its own corners, and the other screen's picture.
+ * The tile as it is now, big, with Pip standing beside it (excited while the look changes, worried over a row that
+ * can't be taken back, a hop when a change lands), its name, whether it keeps its own corners, and a small copy of the
+ * other screen. The tile and the other screen shrink together to fit the panel's height, so nothing is cut off.
  */
 @Composable
 private fun EditorPreview(item: GridItem, modifier: Modifier) {
     val grid = Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)
-    val tile = 132.dp
-    val corner = tile * grid
-    val shape = FolderLooks.shape(item.style, tile, corner)
     // A change landing on the tile: a small pop of the preview and a hop from Pip.
-    val styleKey = item.style
+    val changeKey = Triple(item.style, item.title, item.color)
     val first = remember { booleanArrayOf(true) }
     var pops by remember { mutableStateOf(0) }
-    LaunchedEffect(styleKey) {
+    LaunchedEffect(changeKey) {
         if (first[0]) { first[0] = false; return@LaunchedEffect }
         pops++
         if (!Store.settings.reduceMotion) PipMind.cheer()
@@ -319,62 +367,126 @@ private fun EditorPreview(item: GridItem, modifier: Modifier) {
         bump.snapTo(0.9f)
         bump.animateTo(1f, androidx.compose.animation.core.spring(0.45f, 420f))
     }
-    val mood = when (TileEditor.section) {
-        EditSection.Remove -> 3
-        EditSection.Look -> 1
+    val mood = when {
+        TileEditor.risky -> 3
+        TileEditor.section == EditSection.Look -> 1
         else -> 0
     }
-    Column(modifier.padding(top = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.padding(top = 28.dp)) {
-            // Pip peeks over the tile's top corner, behind it.
-            Pip(
-                44.dp, mood = mood,
-                modifier = Modifier.align(Alignment.TopEnd).offset(x = 4.dp, y = (-30).dp),
-            )
-            Box(
-                Modifier.size(tile).graphicsLayer {
-                    val s = bump.value
-                    scaleX = s; scaleY = s
-                    this.shape = shape; clip = true
-                    shadowElevation = 18f * density; spotShadowColor = item.color; ambientShadowColor = item.color
-                },
-            ) { TileArtView(item.art, tile) }
-        }
-        Spacer(Modifier.height(10.dp))
-        Text(item.title, style = MaterialTheme.typography.titleMedium.onArt(), maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
-        Text(
-            listOf(item.type, item.detail).filter { it.isNotBlank() }.joinParts(), style = MaterialTheme.typography.labelMedium,
-            color = lerp(item.color, Palette.Text, 0.45f), maxLines = 1, overflow = TextOverflow.Ellipsis,
-        )
-        // Its own corners, when it doesn't follow the grid's: said plainly, so it is never a mystery on the grid.
-        val own = item.style?.takeIf { it.ownCorners }?.corners
-        if (own != null) {
-            Spacer(Modifier.height(6.dp))
-            Row(
-                Modifier.background(Palette.Lavender.copy(alpha = 0.2f), RoundedCornerShape(50)).padding(horizontal = 10.dp, vertical = 3.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                GlyphIcon(Glyph.Corners, Palette.Lavender, Modifier.size(12.dp))
-                Spacer(Modifier.width(5.dp))
-                Text(Tx.s(R.string.grid_edit_corners_chip, pct(own)), style = MaterialTheme.typography.labelSmall, color = Palette.Lavender, maxLines = 1)
+    val own = item.style?.takeIf { it.ownCorners }?.corners
+    BoxWithConstraints(modifier) {
+        // What doesn't scale: the gaps, the name and its kind, the corners chip, the label under the other screen.
+        val fixed = 8.dp + 10.dp + 50.dp + (if (own != null) 28.dp else 0.dp) + 14.dp + 22.dp
+        val tileFull = 132.dp
+        val screenFull = minOf(204.dp, maxWidth)
+        val scale = ((maxHeight - fixed) / (tileFull + screenFull / OtherScreenAspect)).coerceIn(0.4f, 1f)
+        val tile = tileFull * scale
+        val shape = FolderLooks.shape(item.style, tile, tile * grid)
+        Column(Modifier.fillMaxSize().padding(top = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(Modifier.size(tile)) {
+                Box(
+                    Modifier.fillMaxSize().graphicsLayer {
+                        val s = bump.value
+                        scaleX = s; scaleY = s
+                        this.shape = shape; clip = true
+                        shadowElevation = 18f * density; spotShadowColor = item.color; ambientShadowColor = item.color
+                    },
+                ) { TileArtView(item.art, tile) }
+                // Pip stands at the tile's end side, leaning on it, in front of it: whole, never over the name.
+                val pip = (tile * 0.52f).coerceAtLeast(48.dp)
+                val rtl = isRtl
+                Pip(
+                    pip, mood = mood,
+                    modifier = Modifier.align(Alignment.BottomEnd).offset(x = pip * 0.84f, y = pip * 0.02f)
+                        .graphicsLayer { rotationZ = if (rtl) 6f else -6f },
+                )
             }
+            Spacer(Modifier.height(10.dp))
+            Text(
+                item.title, Modifier.padding(horizontal = 6.dp), style = MaterialTheme.typography.titleMedium.onArt(),
+                maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
+            )
+            Text(
+                listOf(item.type, item.detail).filter { it.isNotBlank() }.joinParts(), style = MaterialTheme.typography.labelMedium,
+                color = lerp(item.color, Palette.Text, 0.45f), maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
+            // Its own corners, when it doesn't follow the grid's: said plainly, so it is never a mystery on the grid.
+            if (own != null) {
+                Spacer(Modifier.height(6.dp))
+                Row(
+                    Modifier.background(Palette.Lavender.copy(alpha = 0.2f), RoundedCornerShape(50)).padding(horizontal = 10.dp, vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    GlyphIcon(Glyph.Corners, Palette.Lavender, Modifier.size(12.dp))
+                    Spacer(Modifier.width(5.dp))
+                    Text(Tx.s(R.string.grid_edit_corners_chip, pct(own)), style = MaterialTheme.typography.labelSmall, color = Palette.Lavender, maxLines = 1)
+                }
+            }
+            Spacer(Modifier.weight(1f).heightIn(min = 14.dp))
+            OtherScreen(item, Modifier.width(screenFull * scale))
+            Text(
+                Tx.s(R.string.grid_design_other_screen), Modifier.padding(top = 5.dp), style = MaterialTheme.typography.labelSmall,
+                color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis,
+            )
         }
-        Spacer(Modifier.weight(1f))
-        val hero = remember(item) { heroFor(item) }
-        Box(
-            Modifier.fillMaxWidth().aspectRatio(16f / 9f).graphicsLayer { this.shape = RoundedCornerShape(12.dp); clip = true },
-            contentAlignment = Alignment.Center,
-        ) {
-            if (hero != null) AsyncImage(rememberSizedRequest(hero, 480), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-            else ColorSweep(item.color, Modifier.fillMaxSize().glyphEcho(FolderLooks.sweepGlyph(item)))
-        }
-        Text(Tx.s(R.string.grid_design_other_screen), Modifier.padding(top = 3.dp), style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
     }
 }
 
 /**
- * The section shown: its name and what it holds, then its rows under one gliding highlight. A row that opens a page
- * (Move to folder…) or a choice (Open games on) slides it in here; B goes back to the section.
+ * A small copy of what the other screen shows for this tile, in a thin dark bezel shaped like the bottom screen: a
+ * game's hero with its logo (or name) low on the start side; anything else's hero, cover wall or colour sweep with its
+ * logo, its title or its icon in the middle and its name under it, as the spotlight draws them (Spotlight.kt).
+ */
+@Composable
+private fun OtherScreen(item: GridItem, modifier: Modifier) {
+    val game = item.game
+    val hero = remember(item) { game?.let(FolderLooks::gameHero) ?: FolderLooks.hero(item) }
+    val logo = remember(item) { game?.let { g -> Libraries.of(g)?.logo(g) } ?: FolderLooks.logo(item) }
+    val bezel = RoundedCornerShape(12.dp)
+    Box(
+        modifier.aspectRatio(OtherScreenAspect).background(Palette.NightDeep, bezel).border(1.5.dp, Palette.Text.copy(alpha = 0.18f), bezel).padding(5.dp),
+    ) {
+        BoxWithConstraints(Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))) {
+            val side = minOf(maxWidth, maxHeight)
+            if (game != null) {
+                if (hero != null) AsyncImage(rememberSizedRequest(hero, 480), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+                else ColorSweep(item.color, Modifier.fillMaxSize())
+                Box(Modifier.fillMaxSize().padding(8.dp), contentAlignment = Alignment.BottomStart) {
+                    if (logo != null) AsyncImage(
+                        rememberSizedRequest(logo, 320), item.title, Modifier.fillMaxWidth(0.6f).heightIn(max = side * 0.34f),
+                        contentScale = ContentScale.Fit, alignment = Alignment.BottomStart,
+                    ) else Text(item.title, style = MaterialTheme.typography.labelLarge.onArt(), color = Color.White, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                }
+            } else {
+                HeroPicture(item, hero, Modifier.fillMaxSize())
+                Column(Modifier.fillMaxSize().padding(6.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    val st = item.style ?: FolderStyle.DEFAULT
+                    when {
+                        st.logo == FolderStyle.LOGO_TEXT -> FolderTitle(item.title, st, Modifier.padding(4.dp), 0.34f)
+                        hero != null && logo != null -> AsyncImage(
+                            rememberSizedRequest(logo, 320), item.title, Modifier.fillMaxWidth(0.66f).heightIn(max = side * 0.42f), contentScale = ContentScale.Fit,
+                        )
+                        else -> {
+                            val icon = side * 0.38f
+                            val grid = Store.settings.look.gridRoundness.coerceIn(0f, 0.5f)
+                            Box(Modifier.size(icon).clip(FolderLooks.shape(item.style, icon, icon * grid))) { TileArtView(item.art, icon) }
+                        }
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    Text(
+                        item.title,
+                        Modifier.widthIn(max = side * 1.05f).background(Palette.Card.copy(alpha = 0.7f), RoundedCornerShape(50)).padding(horizontal = 8.dp, vertical = 1.dp),
+                        style = MaterialTheme.typography.labelSmall, color = Palette.Text, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * The section shown: its name and what it holds, then its rows under one gliding highlight, and (when it has only a
+ * few) a card saying something useful about it. A row that opens a page (Move to folder…) or a choice (Open games on)
+ * slides it in here; B goes back to the section.
  */
 @Composable
 private fun SectionPane(t: TileMenuTarget, spec: MenuSpec?, sections: Map<EditSection, List<MenuAction>>) {
@@ -408,10 +520,10 @@ private fun SectionPane(t: TileMenuTarget, spec: MenuSpec?, sections: Map<EditSe
         label = "edit-section",
     ) { key ->
         val routeKey = TileEditor.routeOf(t, section) + ":" + key.substringBefore(':')
-        val closesAfter = section == EditSection.Organize || section == EditSection.Remove
+        // Moving it, hiding it and taking it away are done with this screen, unless they open a page of choices first.
+        val closesAfter = section == EditSection.Organize
         fun after(a: MenuAction): MenuAction = if (!closesAfter || a.choices != null || a.hold) a else a.withClick {
             a.onClick()
-            // Moved, taken out or removed: done here, unless it opened a page of choices first.
             if (!IconGrid.choosingFolder) TileEditor.close()
         }
         val back: (String) -> MenuAction = { title -> MenuAction("back", title, Glyph.Back, Palette.Lavender) {
@@ -443,8 +555,28 @@ private fun SectionPane(t: TileMenuTarget, spec: MenuSpec?, sections: Map<EditSe
                 maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             Box(Modifier.fillMaxWidth().weight(1f).fadingEdges(state).verticalScroll(state)) {
-                LiftRows(routeKey, shownRows, onFocus = {})
+                Column {
+                    LiftRows(routeKey, shownRows, onFocus = { a -> TileEditor.risky = a.hold || a.color == Palette.Peach })
+                    if (title == null && shownRows.size <= 4) SectionTip(section)
+                }
             }
         }
+    }
+}
+
+/** Under a section of only a few rows: its glyph, big, and one line about it, so the page never looks unfinished. */
+@Composable
+private fun SectionTip(section: EditSection) {
+    val color = sectionColor(section)
+    Row(
+        Modifier.padding(start = 8.dp, end = 8.dp, top = 10.dp).fillMaxWidth()
+            .background(color.copy(alpha = 0.08f), RoundedCornerShape(18.dp))
+            .border(1.dp, color.copy(alpha = 0.16f), RoundedCornerShape(18.dp))
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        GlyphChip(sectionGlyph(section), color, 40.dp)
+        Spacer(Modifier.width(12.dp))
+        Text(Tx.s(section.tip), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall, color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis)
     }
 }

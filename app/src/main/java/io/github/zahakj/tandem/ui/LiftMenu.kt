@@ -35,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -81,7 +82,7 @@ import kotlin.math.roundToInt
  * slides away), the grid behind blurs and dims, and a short card floats beside it: Open and Edit on a tile; on an empty
  * spot a few groups (New ›, Sort ›…) whose second level slides in where the card is. One highlight serves the whole
  * card: it appears as a small circle on the first row's icon, stretches into the full bar, and glides from row to row.
- * Pip peeks up from behind the card. B (or Y) puts everything back the way it came. See [MenuSpec.compact].
+ * Pip sits on the card's top edge. B (or Y) puts everything back the way it came. See [MenuSpec.compact].
  */
 
 /** The lifted item, its name, and the card beside it, all placed in window coordinates where the item sits. */
@@ -160,11 +161,13 @@ internal fun LiftLayout(s: MenuSpec, lift: () -> Float) {
             Modifier.absoluteOffset { IntOffset(listX.roundToInt(), 0) }.width(LiftCardWidth).fillMaxHeight().padding(vertical = PanelMargin + 22.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
+            val perch = px(pipPerch(s.pip))
             Box(
                 Modifier.graphicsLayer {
-                    // Lined up with the item's middle, as far as the screen allows.
+                    // The card (under Pip's perch) lined up with the item's middle, as far as the screen allows; Pip
+                    // always stays on the screen with it.
                     val room = ((hPx - (PanelMargin + 22.dp).toPx() * 2) - size.height) / 2f
-                    translationY = (cy - hPx / 2).coerceIn(-room.coerceAtLeast(0f), room.coerceAtLeast(0f))
+                    translationY = (cy - hPx / 2 - perch / 2).coerceIn(-room.coerceAtLeast(0f), room.coerceAtLeast(0f))
                 },
             ) { LiftCard(s, right, lift) }
         }
@@ -174,7 +177,17 @@ internal fun LiftLayout(s: MenuSpec, lift: () -> Float) {
 private val LiftCardWidth = 236.dp
 private val LiftRowHeight = 44.dp
 
-/** The card: its rows (a group's or a page's when one is open) and Pip peeking over its top edge. */
+/** How big Pip is on a compact menu: a friend beside a tile, the host on an empty spot. */
+private fun pipSize(p: PipPeek) = when (p) {
+    PipPeek.None -> 0.dp
+    PipPeek.Small -> 56.dp
+    PipPeek.Big -> 76.dp
+}
+
+/** The room Pip takes above the card: its whole height, but for the bottom edge tucked behind the card's. */
+private fun pipPerch(p: PipPeek) = pipSize(p) * 0.86f
+
+/** The card: its rows (a group's or a page's when one is open) and Pip sitting on its top edge. */
 @Composable
 private fun LiftCard(s: MenuSpec, fromRight: Boolean, lift: () -> Float) {
     val group = ActionMenu.group?.let { id -> s.actions.firstOrNull { it.id == id && it.children != null } }
@@ -191,15 +204,15 @@ private fun LiftCard(s: MenuSpec, fromRight: Boolean, lift: () -> Float) {
     // Each lift starts on its first row (Open), as the highlight's circle first appears there.
     remember(s.routeKey) { FocusMemory.forget(s.routeKey + ":main"); true }
     val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion
-    Box {
+    Column {
         if (s.pip != PipPeek.None) {
-            // Worried over something that can't be taken back, curious inside a group, happy otherwise.
+            // Worried over something that can't be taken back, excited inside a group, happy otherwise.
             val mood = when {
                 focusedAction?.hold == true || focusedAction?.color == Palette.Peach -> 3
                 level != "main" -> 1
                 else -> 0
             }
-            PeekingPip(s.pip == PipPeek.Big, mood, fromRight, still, lift)
+            PerchedPip(s.pip, mood, level, fromRight, still, lift)
         }
         Column(
             Modifier.fillMaxWidth()
@@ -258,58 +271,99 @@ private fun LiftCard(s: MenuSpec, fromRight: Boolean, lift: () -> Float) {
 }
 
 /**
- * Pip, peeking up from behind the card's top edge on the end side: slides up a moment after the card arrives and
- * ducks back as it goes. [big] on an empty spot, where Pip is the host; small on a tile.
+ * Pip, sitting on the card's top edge at its far end (away from the item), whole and in plain sight, above the rows so
+ * it never covers a word or the highlight. It pops up from behind the card a moment after the card arrives, with a
+ * little wobble, and ducks back behind it as it goes; it blinks and bobs while it waits (Pip's own idle), leans in
+ * towards the card, hops when a group or page opens, and looks worried over a row that can't be taken back. Reduce
+ * motion: simply there, still. The side follows the card, so it mirrors with the layout in right to left.
  */
 @Composable
-private fun PeekingPip(big: Boolean, mood: Int, fromRight: Boolean, still: Boolean, lift: () -> Float) {
-    val size = if (big) 50.dp else 30.dp
+private fun PerchedPip(peek: PipPeek, mood: Int, level: String, fromRight: Boolean, still: Boolean, lift: () -> Float) {
+    val size = pipSize(peek)
+    // The host on an empty spot greets you; any Pip hops when a group or a page slides in.
     LaunchedEffect(Unit) {
-        if (still || !big) return@LaunchedEffect
+        if (still || peek != PipPeek.Big) return@LaunchedEffect
         kotlinx.coroutines.delay(320)
         PipMind.cheer()
     }
-    // As tall as Pip, at the card's top, drawn before (so behind) the card: only the part over its edge shows.
-    Box(Modifier.fillMaxWidth()) {
+    val firstLevel = remember { level }
+    LaunchedEffect(level) { if (!still && level != firstLevel) PipMind.cheer() }
+    // As tall as its perch; drawn before (so behind) the card, whose top edge hides Pip's bottom one.
+    Box(Modifier.fillMaxWidth().height(pipPerch(peek))) {
         Pip(
             size, mood = mood,
-            modifier = Modifier.align(if (fromRight) AbsoluteAlignment.TopRight else AbsoluteAlignment.TopLeft)
-                .absoluteOffset(x = if (fromRight) (-18).dp else 18.dp)
+            modifier = Modifier.align(if (fromRight) AbsoluteAlignment.BottomRight else AbsoluteAlignment.BottomLeft)
+                .absoluteOffset(x = if (fromRight) (-16).dp else 16.dp)
                 .graphicsLayer {
-                    // Hidden behind the card until the card is nearly there, then up over its edge.
-                    val p = ((lift() - 0.4f) / 0.6f).coerceIn(0f, 1f)
-                    val hidden = size.toPx() * 0.2f
-                    val shown = -size.toPx() * 0.66f
-                    translationY = if (still) shown else hidden + (shown - hidden) * p
-                    alpha = if (still) lift().coerceIn(0f, 1f) else 1f
-                    rotationZ = if (still) 0f else (1f - p) * (if (fromRight) 10f else -10f)
+                    val p = if (still) 1f else ((lift() - 0.35f) / 0.65f).coerceIn(0f, 1f)
+                    val tucked = size.toPx() * 0.14f
+                    // Rises out from behind the card, growing a little; then sits, leaning towards the card's middle.
+                    translationY = tucked + (1f - p) * size.toPx() * 0.7f
+                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 1f)
+                    val sc = 0.7f + 0.3f * p
+                    scaleX = sc; scaleY = sc
+                    alpha = if (still) lift().coerceIn(0f, 1f) else p.coerceAtLeast(0.001f)
+                    val lean = if (fromRight) -5f else 5f
+                    rotationZ = lean + (1f - p) * (if (fromRight) 14f else -14f)
                 },
         )
     }
 }
 
 /**
+ * The gliding highlight's place and shape: where its pill is, and how far the small circle it first shows as has
+ * stretched into the full bar. Everything [pill] reads is snapshot state, all of it read before it can return early, so
+ * the drawing that calls it redraws the moment the pill is first placed and on every frame of the stretch. (A plain
+ * flag once kept the drawing from reading the stretch at all: the circle stayed a circle until the highlight moved.)
+ */
+@Stable
+internal class Glide {
+    private val y = Animatable(0f)
+    private val stretch = Animatable(0f)
+    private var placed by mutableStateOf(false)
+    val shown: Boolean get() = placed
+
+    /** The first time: there at once, as the circle (the whole bar when [still]). After that: glides to [top]. */
+    suspend fun moveTo(top: Float, still: Boolean) {
+        if (!placed) {
+            y.snapTo(top)
+            stretch.snapTo(if (still) 1f else 0f)
+            placed = true
+        } else if (still) y.snapTo(top) else y.animateTo(top, spring(0.8f, 600f))
+    }
+
+    /** Stretches the circle into the bar, in about a fifth of a second (at once when [still]). */
+    suspend fun open(still: Boolean) {
+        if (!placed) return
+        if (still) stretch.snapTo(1f) else stretch.animateTo(1f, spring(0.8f, 700f))
+    }
+
+    /** The pill in a [full]-wide list of [rowH]-tall rows (its round end on the start side), or null before it is placed. */
+    fun pill(full: Float, rowH: Float, rtl: Boolean): Rect? {
+        val s = stretch.value.coerceIn(0f, 1f)
+        val top = y.value
+        if (!placed) return null
+        val w = rowH + (full - rowH).coerceAtLeast(0f) * s
+        val x = if (rtl) full - w else 0f
+        return Rect(Offset(x, top), Size(w, rowH))
+    }
+}
+
+/**
  * The rows of one level, under one highlight: a pill that first shows as a circle on the focused row's icon, stretches
- * to the whole row, and glides from row to row on a spring (in a layer: nothing recomposes as it moves).
+ * to the whole row as the list opens, and glides from row to row on a spring (in a layer: nothing recomposes as it moves).
  */
 @Composable
 internal fun LiftRows(routeKey: String, rows: List<MenuAction>, onFocus: (MenuAction) -> Unit) {
     val target = rememberFocusTarget(routeKey, rows.map { it.id })
     val tops = remember(routeKey) { mutableStateMapOf<Int, Float>() }
     var focused by remember(routeKey) { mutableIntStateOf(-1) }
-    val y = remember(routeKey) { Animatable(0f) }
-    val stretch = remember(routeKey) { Animatable(0f) }
-    val shown = remember(routeKey) { booleanArrayOf(false) }
+    val glide = remember(routeKey) { Glide() }
     val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion
     val at = tops[focused]
-    LaunchedEffect(focused, at) {
-        val to = at ?: return@LaunchedEffect
-        if (!shown[0]) {
-            shown[0] = true
-            y.snapTo(to)
-            if (still) stretch.snapTo(1f) else { stretch.snapTo(0f); stretch.animateTo(1f, spring(0.7f, 320f)) }
-        } else if (still) y.snapTo(to) else y.animateTo(to, spring(0.8f, 600f))
-    }
+    LaunchedEffect(focused, at) { glide.moveTo(at ?: return@LaunchedEffect, still) }
+    // Its own effect: a glide starting while the circle stretches never stops the stretch halfway.
+    LaunchedEffect(glide, glide.shown) { glide.open(still) }
     val color by animateColorAsState(rows.getOrNull(focused)?.color ?: Palette.Mint, if (still) tween(0) else tween(180), label = "lift-pill")
     val density = LocalDensity.current
     val rowH = with(density) { LiftRowHeight.toPx() }
@@ -317,11 +371,11 @@ internal fun LiftRows(routeKey: String, rows: List<MenuAction>, onFocus: (MenuAc
     val rtl = isRtl
     Box(
         Modifier.padding(horizontal = 8.dp, vertical = 9.dp).drawBehind {
-            if (focused < 0 || !shown[0]) return@drawBehind
-            val full = size.width
-            val w = rowH + (full - rowH) * stretch.value
-            val x = if (rtl) full - w else 0f
-            val top = y.value
+            val pill = glide.pill(size.width, rowH, rtl) ?: return@drawBehind
+            if (focused < 0) return@drawBehind
+            val w = pill.width
+            val x = pill.left
+            val top = pill.top
             val r = CornerRadius(rowH / 2f)
             val halo = Brush.horizontalGradient(listOf(color.copy(alpha = 0.26f), Color.Transparent), startX = if (rtl) x + w else x, endX = if (rtl) x else x + w)
             drawRoundRect(halo, Offset(x - stroke * 2, top - stroke * 2), Size(w + stroke * 4, rowH + stroke * 4), CornerRadius(r.x + stroke * 2), alpha = 0.8f)
@@ -410,7 +464,10 @@ private fun LiftRow(a: MenuAction, routeKey: String, wanted: Boolean, index: Int
             ShrinkText(a.label, MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), maxLines = 1, minScale = 0.72f)
             if (a.sub != null) ShrinkText(a.sub, MaterialTheme.typography.labelSmall, Modifier.fillMaxWidth(), maxLines = 1, minScale = 0.8f, color = Palette.Muted)
         }
-        if (a.value != null) {
+        if (a.preview != null) {
+            Spacer(Modifier.width(8.dp))
+            a.preview.invoke(LiftRowHeight - 8.dp)
+        } else if (a.value != null) {
             Spacer(Modifier.width(6.dp))
             ValueChip(a.value, color, cycles = a.step != null && a.choices == null, maxWidth = 96.dp)
         }
