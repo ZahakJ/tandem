@@ -101,6 +101,7 @@ object Collections {
         m.continuePlaying; m.home; m.genres
         for (f in IconGridStore.config.folders) f.rule?.let { m.smart(f.id, it) }
         m.genreNames
+        ThisWeek.board()
     }
 
     /** Sorts by title, lowercasing each title once instead of on every comparison. */
@@ -184,8 +185,8 @@ object Collections {
     const val BACKLOG = "backlog"
     const val BEATEN = "beaten"
 
-    /** The collections shown on the home screen, in order. Empty ones are left out. */
-    fun home(): List<GameCollection> = memo().home
+    /** The collections shown on the home screen, in order: This week first while it is on and has picks. Empty ones are left out. */
+    fun home(): List<GameCollection> = ThisWeek.collection()?.let { listOf(it) + memo().home } ?: memo().home
 
     /** Collection ids for smart folders: "smart:<folder id>". */
     const val SMART = "smart:"
@@ -198,6 +199,7 @@ object Collections {
     /** A collection by id, even when it has become empty (so its screen can say so instead of going blank). */
     fun byId(id: String): GameCollection? = when {
         id.startsWith("genre:") -> id.removePrefix("genre:").let { g -> GameCollection(id, g, genres()[g].orEmpty(), Palette.forName(g)) }
+        id == ThisWeek.ID -> ThisWeek.collection(evenEmpty = true)
         id == "continue" -> GameCollection(id, "Continue playing", continuePlaying(), Palette.Mint, R.string.home_collection_continue)
         id.startsWith(PLAYED) -> id.removePrefix(PLAYED).split(',').let { ids ->
             val games = mostPlayed().filter { it.platform.id in ids }

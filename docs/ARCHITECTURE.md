@@ -53,7 +53,11 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   UI: `ui/ManualReader.kt` (`Route.Manual` on Tandem's screen with the controller; `CompanionManualPanel`, a face of
   the companion, by touch).
 - `Collections.kt`: favorites, most played, genres, smart folder contents and other lists from metadata, cached per
-  library change.
+  library change. This week, first among them, is `WeekPicks.kt` (`ThisWeek`: the library as plain `WeekGame`s into
+  `data/WeekBoard.kt`, cached by a fingerprint of its inputs, Surprise me's first pool) over `data/WeekBoard.kt` (pure,
+  tested in `WeekBoardTest`: taste profile, slots, the weekly seeded draw, history, diversity, feedback) and
+  `data/WeekStore.kt` (`week.json`); the board, the bottom screen's reason, the Y menu rows and Settings rows are
+  `ui/WeekBoardUi.kt`.
 - `Selection.kt`: what is highlighted (drives the bottom screen), button events, shared `Libraries` state.
 - `GameDelete.kt`: which files deleting a game removes and the root/symlink safety checks (popup in
   `ui/DeleteGame.kt`).

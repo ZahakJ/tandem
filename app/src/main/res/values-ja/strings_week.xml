@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="week_title">今週のおすすめ</string>
+    <string name="week_blurb">あなたの遊び方から、毎週おすすめのゲームを選びます。選んだ理由つき。計算はこの本体の中だけで行います。</string>
+    <string name="week_none">まだおすすめできるゲームがありません。少し遊ぶかゲームを追加すると、ここに今週のおすすめが並びます。</string>
+    <string name="week_off">今週のおすすめはオフになっています。</string>
+    <string name="week_none_action">設定</string>
+    <string name="week_header_of">%1$sからの1週間</string>
+    <string name="week_hint_reroll">引き直す</string>
+    <string name="week_reroll_upnext">「次に遊ぶ」はあなたのリストです。Xで引き直せるのはほかの列です</string>
+
+    <string name="week_tag_upnext">次に遊ぶ</string>
+    <string name="week_tag_pick">今週の一本</string>
+    <string name="week_tag_resume">続きから</string>
+    <string name="week_tag_almost">あと少し</string>
+    <string name="week_tag_short">今夜サクッと</string>
+    <string name="week_tag_because">同じ系統</string>
+    <string name="week_tag_hunt">実績ハント</string>
+    <string name="week_tag_gem">隠れた名作</string>
+    <string name="week_tag_shelf">棚から一本</string>
+    <string name="week_tag_new">新着</string>
+    <string name="week_tag_genre">好きなジャンル</string>
+    <string name="week_tag_explore">気分転換</string>
+
+    <string name="week_slot_upnext">次に遊ぶ</string>
+    <string name="week_slot_pick">今週の一本</string>
+    <string name="week_slot_resume">前回の続きから</string>
+    <string name="week_slot_almost">クリアまであと少し</string>
+    <string name="week_slot_short">今夜サクッと遊べる</string>
+    <string name="week_slot_because">「%1$s」をクリアしたあなたに</string>
+    <string name="week_slot_hunt">実績ハント</string>
+    <string name="week_slot_gem">隠れた名作</string>
+    <string name="week_slot_shelf">積みゲーの棚から</string>
+    <string name="week_slot_new">ライブラリの新着</string>
+    <string name="week_slot_genre">もっと%1$sを</string>
+    <string name="week_slot_explore">気分転換に：%1$s</string>
+
+    <string name="week_why_taste">%2$sを%1$s遊んでいます。まだ始めていない中で、いちばん評価の高い一本です。</string>
+    <string name="week_why_top_rated">持っているゲームの中でも評価が高いのに、まだ始めていない一本です。</string>
+    <string name="week_why_waiting">%1$sから積みゲーのままです。今週こそ出番かも。</string>
+    <string name="week_why_queued">「次に遊ぶ」に入れたゲームです。</string>
+    <plurals name="week_why_left_off_days">
+        <item quantity="other">最後に遊んだのは%1$d日前。ここまで%2$s遊んでいます。</item>
+    </plurals>
+    <plurals name="week_why_left_off_weeks">
+        <item quantity="other">最後に遊んだのは%1$d週間前。ここまで%2$s遊んでいます。</item>
+    </plurals>
+    <string name="week_why_time_left">HowLongToBeatによると、残りはおよそ%1$sです。</string>
+    <plurals name="week_why_ach_left">
+        <item quantity="other">実績 %1$d / %2$d。残りもすぐそこです。</item>
+    </plurals>
+    <string name="week_why_short">HowLongToBeatでは%1$s。ひと晩で遊びきれそうです。</string>
+    <string name="week_why_studio">クリアした「%1$s」と同じ、%2$sの作品です。</string>
+    <string name="week_why_series">クリアした「%1$s」と同じシリーズです。</string>
+    <string name="week_why_same_genre">「%1$s」をクリアしたあなたに、評価の高い%2$sをもう一本。</string>
+    <string name="week_why_gem">評価は%1$s。いつもとひと味違う一本です。</string>
+    <string name="week_why_shelved">%1$sに中断したゲームです。もう一度どうですか？</string>
+    <string name="week_why_backlogged">%1$sから積みゲーのままです。</string>
+    <string name="week_why_untouched">%1$sからライブラリにあるのに、まだ一度も始めていません。</string>
+    <plurals name="week_why_hunt">
+        <item quantity="other">実績 %1$d / %2$d。もう少し集めてみませんか？</item>
+    </plurals>
+    <string name="week_why_added_today">今日追加されたばかりで、まだ遊んでいません。</string>
+    <plurals name="week_why_added">
+        <item quantity="other">%1$d日前に追加されて、まだ遊んでいません。</item>
+    </plurals>
+    <string name="week_why_your_genre">%2$sを%1$s遊んでいます。まだ手をつけていないものをどうぞ。</string>
+    <string name="week_why_new_genre">気分転換にどうぞ。%1$sはあまり遊んでいないジャンルです。</string>
+    <string name="week_why_genre_of_week">今週のジャンルは%1$sです。</string>
+
+    <plurals name="week_chip_days_ago">
+        <item quantity="other">%1$d日前</item>
+    </plurals>
+    <plurals name="week_chip_weeks_ago">
+        <item quantity="other">%1$d週間前</item>
+    </plurals>
+    <string name="week_chip_left">残り%1$s</string>
+    <string name="week_chip_hltb">約%1$s</string>
+    <string name="week_chip_studio">同じ開発元</string>
+    <string name="week_chip_series">同じシリーズ</string>
+    <string name="week_chip_genre">同じジャンル</string>
+    <string name="week_chip_since">%1$sから</string>
+    <string name="week_chip_new_today">今日追加</string>
+    <plurals name="week_chip_added">
+        <item quantity="other">%1$d日前に追加</item>
+    </plurals>
+    <string name="week_chip_fresh">未プレイ</string>
+
+    <string name="week_fact_left">HowLongToBeatで残り%1$s</string>
+    <string name="week_fact_hltb">クリアまでの目安 %1$s</string>
+    <plurals name="week_fact_achievements">
+        <item quantity="other">実績 %1$d / %2$d</item>
+    </plurals>
+    <string name="week_fact_genre_time">%1$sのプレイ時間：%2$s</string>
+    <string name="week_fact_played">%1$sプレイ</string>
+
+    <string name="week_menu_reroll">この列を引き直す</string>
+    <string name="week_menu_reroll_help">「今週のおすすめ」のこの列を、少し下の候補から選び直します。Xボタンでもできます。</string>
+    <string name="week_menu_not_for_me">興味なし</string>
+    <string name="week_menu_not_for_me_help">「今週のおすすめ」から外して、二度とおすすめしません。設定の「おすすめをリセット」で元に戻せます。</string>
+    <string name="week_menu_not_for_me_done">「%1$s」はもうおすすめしません</string>
+    <string name="week_menu_elsewhere">ほかで遊んだ</string>
+    <string name="week_menu_elsewhere_help">プレイ記録をつけずに「クリア済み」にして、次のおすすめに進みます。ステータスはいつでも変えられます。</string>
+    <string name="week_menu_elsewhere_done">「%1$s」をクリア済みにしました</string>
+
+    <string name="week_settings_group">今週のおすすめ</string>
+    <string name="week_settings_on">毎週のおすすめ</string>
+    <string name="week_settings_on_help">コレクションが出るところすべてに「今週のおすすめ」を表示します。毎週あなた向けに選んだゲームと、その理由つき。ライブラリとプレイ記録からこの本体の中だけで計算し、外には何も送りません。</string>
+    <string name="week_settings_reset">おすすめをリセット</string>
+    <plurals name="week_settings_reset_value">
+        <item quantity="other">興味なし %1$d本</item>
+    </plurals>
+    <string name="week_settings_reset_help">「興味なし」にしたゲーム、最近表示したおすすめ、今週の引き直しを忘れます。</string>
+    <string name="week_settings_reset_action">リセット</string>
+    <string name="week_settings_reset_done">おすすめをリセットしました</string>
+</resources>

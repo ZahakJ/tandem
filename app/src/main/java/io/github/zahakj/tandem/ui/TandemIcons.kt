@@ -33,7 +33,7 @@ enum class TIcon {
     // Built-in apps
     Gallery, Journal, Notes, Themes, Stats, Trophy, UpNext, Files, Controller, Gear,
     // Collections
-    Heart, Flame, NewBox, Rewind, Sprout, Genres, AllApps,
+    Heart, Flame, NewBox, Rewind, Sprout, Genres, AllApps, Week,
     // Genres
     Sword, Flag, Puzzle, Target, Ball, Fist, Ghost, Note, Chess, Jump, Star, Bolt, Planet, Leaf, Diamond, Book,
     // Built-in folders (FolderLooks.kt)
@@ -208,6 +208,15 @@ fun DrawScope.drawTIcon(icon: TIcon, s: Float, ink: Color, cut: Color) {
             circle(12f, 12.5f, 9f)
             punch { line(12f, 12.5f, 12f, 7.5f, hole, 2.2f * u); line(12f, 12.5f, 15.5f, 14.5f, hole, 2.2f * u) }
             poly(1.5f, 4.5f, 7.5f, 3f, 5.5f, 9f)
+        }
+        TIcon.Week -> {
+            // A calendar page with a star on it: this week's picks.
+            rect(3f, 5f, 18f, 16.5f, 3f)
+            rect(6.5f, 2f, 2.4f, 5f, 1.2f); rect(15.1f, 2f, 2.4f, 5f, 1.2f)
+            punch {
+                rect(3f, 9f, 18f, 1.6f, 0.8f, c = hole)
+                poly(12f, 11f, 13.06f, 13.84f, 16.09f, 13.97f, 13.71f, 15.86f, 14.53f, 18.78f, 12f, 17.1f, 9.47f, 18.78f, 10.29f, 15.86f, 7.91f, 13.97f, 10.94f, 13.84f, c = hole)
+            }
         }
         TIcon.Sprout -> {
             line(12f, 21.5f, 12f, 11f)

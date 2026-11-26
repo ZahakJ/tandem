@@ -262,6 +262,7 @@ class SecondaryHomeActivity : ComponentActivity() {
         PinVault.init(this)
         io.github.zahakj.tandem.data.AppPrefs.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
+        io.github.zahakj.tandem.data.WeekStore.init(this)
         if (!Themes.initialized) Themes.init(this)
         StartLook.paint(window, StartLook.colorOf(Themes.live))
         WindowCompat.setDecorFitsSystemWindows(window, false)

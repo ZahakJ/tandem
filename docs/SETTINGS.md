@@ -108,6 +108,7 @@ A "›" step after a page is its subpage.
 | `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue card (Orbit) | choice / toggle |
 | `Look.spotlightRail`, `spotlightBackdrop`, `spotlightMotion` | Home & layout › Home screen › Spotlight rail (left, right) / Spotlight backdrop (art, blurred cover, dim) / Spotlight motion (Spotlight) | choice / choice / toggle |
 | `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › How games show (also Start › Games view in a system or collection; Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
+| `WeekState.on` (`week.json`) | Home & layout › How games show › Weekly picks; Reset suggestions beside it clears `notForMe`, `shown`, `rerolls` and `skipped` | toggle / action |
 | `HomeSettings.showDock`, `dock`, `Look.dockStyle`, `dockTop`, `dockAutoHide` | Home & layout › Dock & widgets › Dock › Apps dock / Choose dock apps / Dock style / Dock on top / Auto-hide dock | toggle / link / choice |
 | `WidgetStore.widgets`, `WidgetConfig.homeEnabled` | Home & layout › Dock & widgets › Widgets › Customize widgets / Widgets on the home screen | link / toggle |
 | `WidgetConfig.gridPlace` | Home & layout › Dock & widgets › Widgets › Widgets on the grid (icon grid: In cells, As a row) | choice |

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="week_title">هذا الأسبوع</string>
+    <string name="week_blurb">ألعاب مختارة لك كل أسبوع على ذوقك، ومع كل واحدة سببها. كل ذلك يُحسب على جهازك هذا.</string>
+    <string name="week_none">لا شيء نختاره بعد. العب قليلًا أو أضف ألعابًا، وستظهر اختيارات هذا الأسبوع هنا.</string>
+    <string name="week_off">اختيارات الأسبوع متوقفة.</string>
+    <string name="week_none_action">الإعدادات</string>
+    <string name="week_header_of">أسبوع %1$s</string>
+    <string name="week_hint_reroll">أعِد السحب</string>
+    <string name="week_reroll_upnext">«على الدور» قائمتك أنت: زر X يعيد السحب في الصفوف الأخرى</string>
+
+    <string name="week_tag_upnext">على الدور</string>
+    <string name="week_tag_pick">اختيار الأسبوع</string>
+    <string name="week_tag_resume">عُد إليها</string>
+    <string name="week_tag_almost">اقتربت من النهاية</string>
+    <string name="week_tag_short">لسهرة الليلة</string>
+    <string name="week_tag_because">على المنوال نفسه</string>
+    <string name="week_tag_hunt">صيد الإنجازات</string>
+    <string name="week_tag_gem">جوهرة مخفية</string>
+    <string name="week_tag_shelf">من على الرف</string>
+    <string name="week_tag_new">جديدة</string>
+    <string name="week_tag_genre">نوعك المفضّل</string>
+    <string name="week_tag_explore">شيء مختلف</string>
+
+    <string name="week_slot_upnext">على الدور</string>
+    <string name="week_slot_pick">اختيار الأسبوع</string>
+    <string name="week_slot_resume">أكمل من حيث توقفت</string>
+    <string name="week_slot_almost">اقتربت من النهاية</string>
+    <string name="week_slot_short">قصيرة تكفيها سهرة</string>
+    <string name="week_slot_because">لأنك أنهيت %1$s</string>
+    <string name="week_slot_hunt">صيد الإنجازات</string>
+    <string name="week_slot_gem">جواهر مخفية</string>
+    <string name="week_slot_shelf">انفض عنها الغبار</string>
+    <string name="week_slot_new">جديد في مكتبتك</string>
+    <string name="week_slot_genre">المزيد من %1$s لك</string>
+    <string name="week_slot_explore">غيّر الجو: %1$s</string>
+
+    <string name="week_why_taste">قضيت %1$s في ألعاب %2$s، وهذه أعلاها تقييمًا مما لم تبدأه بعد.</string>
+    <string name="week_why_top_rated">من أعلى ألعابك تقييمًا، ولم تبدأها بعد.</string>
+    <string name="week_why_waiting">في قائمة الانتظار منذ %1$s. لعلّ هذا أسبوعها.</string>
+    <string name="week_why_queued">وضعتها في «على الدور».</string>
+    <plurals name="week_why_left_off_days">
+        <item quantity="zero">لعبتها آخر مرة اليوم، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="one">لعبتها آخر مرة أمس، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="two">لعبتها آخر مرة قبل يومين، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="few">لعبتها آخر مرة قبل %1$d أيام، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="many">لعبتها آخر مرة قبل %1$d يومًا، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="other">لعبتها آخر مرة قبل %1$d يوم، ولك فيها %2$s حتى الآن.</item>
+    </plurals>
+    <plurals name="week_why_left_off_weeks">
+        <item quantity="zero">لعبتها آخر مرة هذا الأسبوع، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="one">لعبتها آخر مرة قبل أسبوع، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="two">لعبتها آخر مرة قبل أسبوعين، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="few">لعبتها آخر مرة قبل %1$d أسابيع، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="many">لعبتها آخر مرة قبل %1$d أسبوعًا، ولك فيها %2$s حتى الآن.</item>
+        <item quantity="other">لعبتها آخر مرة قبل %1$d أسبوع، ولك فيها %2$s حتى الآن.</item>
+    </plurals>
+    <string name="week_why_time_left">بقي نحو %1$s بحسب HowLongToBeat.</string>
+    <plurals name="week_why_ach_left">
+        <item quantity="zero">%1$d من %2$d إنجاز. البقية في متناول يدك.</item>
+        <item quantity="one">%1$d من إنجاز واحد. البقية في متناول يدك.</item>
+        <item quantity="two">%1$d من إنجازين. البقية في متناول يدك.</item>
+        <item quantity="few">%1$d من %2$d إنجازات. البقية في متناول يدك.</item>
+        <item quantity="many">%1$d من %2$d إنجازًا. البقية في متناول يدك.</item>
+        <item quantity="other">%1$d من %2$d إنجاز. البقية في متناول يدك.</item>
+    </plurals>
+    <string name="week_why_short">بحسب HowLongToBeat تحتاج %1$s: سهرة واحدة تكفي.</string>
+    <string name="week_why_studio">من الاستوديو نفسه الذي صنع %1$s، وقد أنهيتها: %2$s.</string>
+    <string name="week_why_series">من سلسلة %1$s نفسها، وقد أنهيتها.</string>
+    <string name="week_why_same_genre">أنهيت %1$s. إليك المزيد من %2$s، بتقييم عالٍ.</string>
+    <string name="week_why_gem">تقييمها %1$s، وبعيدة عن طريقك المعتاد.</string>
+    <string name="week_why_shelved">أجّلتها في %1$s. ما رأيك بجولة أخرى؟</string>
+    <string name="week_why_backlogged">على قائمة الانتظار منذ %1$s.</string>
+    <string name="week_why_untouched">في مكتبتك منذ %1$s، ولم تبدأها قط.</string>
+    <plurals name="week_why_hunt">
+        <item quantity="zero">%1$d من %2$d إنجاز حتى الآن. ما رأيك بالمزيد؟</item>
+        <item quantity="one">%1$d من إنجاز واحد حتى الآن. ما رأيك بالمزيد؟</item>
+        <item quantity="two">%1$d من إنجازين حتى الآن. ما رأيك بالمزيد؟</item>
+        <item quantity="few">%1$d من %2$d إنجازات حتى الآن. ما رأيك بالمزيد؟</item>
+        <item quantity="many">%1$d من %2$d إنجازًا حتى الآن. ما رأيك بالمزيد؟</item>
+        <item quantity="other">%1$d من %2$d إنجاز حتى الآن. ما رأيك بالمزيد؟</item>
+    </plurals>
+    <string name="week_why_added_today">أُضيفت اليوم، ولم تلعبها بعد.</string>
+    <plurals name="week_why_added">
+        <item quantity="zero">أُضيفت اليوم، ولم تلعبها بعد.</item>
+        <item quantity="one">أُضيفت أمس، ولم تلعبها بعد.</item>
+        <item quantity="two">أُضيفت قبل يومين، ولم تلعبها بعد.</item>
+        <item quantity="few">أُضيفت قبل %1$d أيام، ولم تلعبها بعد.</item>
+        <item quantity="many">أُضيفت قبل %1$d يومًا، ولم تلعبها بعد.</item>
+        <item quantity="other">أُضيفت قبل %1$d يوم، ولم تلعبها بعد.</item>
+    </plurals>
+    <string name="week_why_your_genre">قضيت %1$s في %2$s. وهذه ما لم تصل إليه بعد.</string>
+    <string name="week_why_new_genre">غيّر الإيقاع قليلًا: نادرًا ما تلعب %1$s.</string>
+    <string name="week_why_genre_of_week">نوع هذا الأسبوع: %1$s.</string>
+
+    <plurals name="week_chip_days_ago">
+        <item quantity="zero">اليوم</item>
+        <item quantity="one">أمس</item>
+        <item quantity="two">قبل يومين</item>
+        <item quantity="few">قبل %1$d أيام</item>
+        <item quantity="many">قبل %1$d يومًا</item>
+        <item quantity="other">قبل %1$d يوم</item>
+    </plurals>
+    <plurals name="week_chip_weeks_ago">
+        <item quantity="zero">هذا الأسبوع</item>
+        <item quantity="one">قبل أسبوع</item>
+        <item quantity="two">قبل أسبوعين</item>
+        <item quantity="few">قبل %1$d أسابيع</item>
+        <item quantity="many">قبل %1$d أسبوعًا</item>
+        <item quantity="other">قبل %1$d أسبوع</item>
+    </plurals>
+    <string name="week_chip_left">بقي %1$s</string>
+    <string name="week_chip_hltb">نحو %1$s</string>
+    <string name="week_chip_studio">الاستوديو نفسه</string>
+    <string name="week_chip_series">السلسلة نفسها</string>
+    <string name="week_chip_genre">النوع نفسه</string>
+    <string name="week_chip_since">منذ %1$s</string>
+    <string name="week_chip_new_today">جديدة اليوم</string>
+    <plurals name="week_chip_added">
+        <item quantity="zero">جديدة اليوم</item>
+        <item quantity="one">جديدة منذ أمس</item>
+        <item quantity="two">جديدة منذ يومين</item>
+        <item quantity="few">جديدة منذ %1$d أيام</item>
+        <item quantity="many">جديدة منذ %1$d يومًا</item>
+        <item quantity="other">جديدة منذ %1$d يوم</item>
+    </plurals>
+    <string name="week_chip_fresh">لم تبدأها</string>
+
+    <string name="week_fact_left">بقي %1$s بحسب HowLongToBeat</string>
+    <string name="week_fact_hltb">مدة الإنهاء: %1$s</string>
+    <plurals name="week_fact_achievements">
+        <item quantity="zero">%1$d من %2$d إنجاز</item>
+        <item quantity="one">%1$d من إنجاز واحد</item>
+        <item quantity="two">%1$d من إنجازين</item>
+        <item quantity="few">%1$d من %2$d إنجازات</item>
+        <item quantity="many">%1$d من %2$d إنجازًا</item>
+        <item quantity="other">%1$d من %2$d إنجاز</item>
+    </plurals>
+    <string name="week_fact_genre_time">وقتك في %1$s: %2$s</string>
+    <string name="week_fact_played">لعبت %1$s</string>
+
+    <string name="week_menu_reroll">اختيارات أخرى لهذا الصف</string>
+    <string name="week_menu_reroll_help">يسحب من جديد لهذا الصف من «هذا الأسبوع»، من أبعد قليلًا في القائمة. وزر X يفعلها أيضًا.</string>
+    <string name="week_menu_not_for_me">ليست لي</string>
+    <string name="week_menu_not_for_me_help">تزيلها من «هذا الأسبوع» فلا تُقترح عليك ثانيةً. «إعادة ضبط الاقتراحات» في الإعدادات تعيدها.</string>
+    <string name="week_menu_not_for_me_done">لن تُقترح %1$s عليك ثانيةً</string>
+    <string name="week_menu_elsewhere">لعبتها في مكان آخر</string>
+    <string name="week_menu_elsewhere_help">تجعل حالتها «أنهيتها» دون جلسة لعب، فينتقل «هذا الأسبوع» إلى غيرها. غيّر حالتها متى شئت.</string>
+    <string name="week_menu_elsewhere_done">سُجّلت %1$s كلعبة أنهيتها</string>
+
+    <string name="week_settings_group">هذا الأسبوع</string>
+    <string name="week_settings_on">اختيارات الأسبوع</string>
+    <string name="week_settings_on_help">مجموعة «هذا الأسبوع» أينما ظهرت المجموعات: ألعاب مختارة لك كل أسبوع، ومع كل واحدة سببها. تُحسب على جهازك هذا من مكتبتك ولعبك، ولا يغادره شيء.</string>
+    <string name="week_settings_reset">إعادة ضبط الاقتراحات</string>
+    <plurals name="week_settings_reset_value">
+        <item quantity="zero">لا ألعاب مستبعدة</item>
+        <item quantity="one">لعبة مستبعدة</item>
+        <item quantity="two">لعبتان مستبعدتان</item>
+        <item quantity="few">%1$d ألعاب مستبعدة</item>
+        <item quantity="many">%1$d لعبة مستبعدة</item>
+        <item quantity="other">%1$d لعبة مستبعدة</item>
+    </plurals>
+    <string name="week_settings_reset_help">تنسى الألعاب التي قلت إنها ليست لك، وما عرضه «هذا الأسبوع» مؤخرًا، وإعادات السحب هذا الأسبوع.</string>
+    <string name="week_settings_reset_action">إعادة ضبط</string>
+    <string name="week_settings_reset_done">أُعيد ضبط الاقتراحات</string>
+</resources>

@@ -127,6 +127,11 @@ it, as Android would. In private mode the cards show only the app and the time.
   is uninstalled; they are not in Tandem's backups. A hidden game's notebook is left out of Tandem's lists while
   hidden games are hidden, but its files stay where they are.
 - Game details: Tandem's private `library.json`.
+- This week (`data/WeekBoard.kt`, `WeekPicks.kt`): worked out on the device from the library's details, play history,
+  statuses, HowLongToBeat times already scraped and achievements already cached; it makes no network call of its own,
+  and the taste profile is counted each time, never stored. Hidden games never take part, revealed or not. Its state
+  (the switch, a salt made once on the device, not-for-me keys, what showed in the last eight weeks, this week's
+  re-rolls) is Tandem's private `week.json`: in Tandem's backups under game data, never in a shared look.
 - Account details (ScreenScraper login and developer credentials, IGDB client ID and secret, SteamGridDB key):
   Tandem's private `scraping.json`. They are stored as plain text inside app-private storage, which other apps cannot read. They
   are left out of the backups Tandem writes to `ROMs/tandem/backup`, because that folder is on shared storage,

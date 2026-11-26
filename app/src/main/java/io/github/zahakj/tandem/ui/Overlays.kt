@@ -281,6 +281,8 @@ fun GameMenu() {
             val queued = UpNext.contains(g)
             add(StatusUi.action(g) { StatusUi.focusPage(routeKey, g); StatusUi.pageFor = g.key })
             add(MenuAction("upnext", Tx.s(if (queued) R.string.menus_game_upnext_remove else R.string.menus_game_upnext_add), icon = TIcon.UpNext, color = Palette.Sky, value = if (queued) "✓" else null) { UpNext.toggle(g) })
+            // On this week's board: another pick for its row, Not for me, Played it elsewhere (WeekBoardUi.kt).
+            addAll(weekMenuActions(g) { Nav.closeMenus() })
             if (IconGrid.enabled) {
                 val pinned = isPinnedToHome(g)
                 add(MenuAction("home", Tx.s(if (pinned) R.string.menus_game_unpin_home else R.string.menus_game_pin_home), Glyph.Star, Palette.Butter, value = if (pinned) "★" else null) { togglePinToHome(g) })

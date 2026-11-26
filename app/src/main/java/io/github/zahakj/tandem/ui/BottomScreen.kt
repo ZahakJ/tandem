@@ -511,6 +511,8 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
         if (meta.favorite) chip(Tx.s(R.string.screens_favorite), Palette.Peach)
         GameExtrasBadges(game)
     }
+    // On this week's board: why, with the facts behind it.
+    WeekReason(game, onArt)
     creditsLine(meta)?.let {
         Text(it, style = MaterialTheme.typography.labelLarge.art(), color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }

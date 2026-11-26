@@ -161,6 +161,15 @@ private fun buildPages(catalog: GridCatalog, pinned: List<String>, holds: String
             Selected.Group(title, Tx.p(R.plurals.home_games_count, deck.size), deck, Palette.Mint), deck.first().key,
         )
     }
+    // This week comes right after Continue, ahead of the systems: it is what to play next.
+    fun collectionPage(key: String) {
+        val item = catalog.item(key)?.takeIf { it.games.isNotEmpty() } ?: return
+        val entries = item.games.map { StageEntry(it.key, it.title, game = it) } +
+            listOfNotNull(item.collectionId?.let { StageEntry(StageMode.SEE_ALL, Tx.s(R.string.home_stage_see_all), all = Route.Collection(it)) })
+        out += StagePage(key, item.title, item.title, item.color, entries, item.games.size, item.selected, recentOf(item.games))
+    }
+    val week = "col:${io.github.zahakj.tandem.ThisWeek.ID}"
+    if (holds != "systems" && week in catalog.defaults) collectionPage(week)
     for (key in catalog.defaults) {
         if (!key.startsWith("s:")) continue
         val item = catalog.item(key)?.takeIf { it.games.isNotEmpty() } ?: continue
@@ -171,11 +180,7 @@ private fun buildPages(catalog: GridCatalog, pinned: List<String>, holds: String
         out += StagePage(key, short, item.title, item.color, entries, item.games.size, item.selected, recentOf(item.games))
     }
     if (holds != "systems") for (key in catalog.defaults) {
-        if (!key.startsWith("col:")) continue
-        val item = catalog.item(key)?.takeIf { it.games.isNotEmpty() } ?: continue
-        val entries = item.games.map { StageEntry(it.key, it.title, game = it) } +
-            listOfNotNull(item.collectionId?.let { StageEntry(StageMode.SEE_ALL, Tx.s(R.string.home_stage_see_all), all = Route.Collection(it)) })
-        out += StagePage(key, item.title, item.title, item.color, entries, item.games.size, item.selected, recentOf(item.games))
+        if (key.startsWith("col:") && key != week) collectionPage(key)
     }
     if (holds == "all") {
         val appKeys = catalog.defaults.filter { !it.startsWith("s:") && !it.startsWith("col:") && it != "genres" } + "allapps" + pinned.map { "app:$it" }
@@ -349,8 +354,8 @@ fun StageHome(libs: List<PlatformLibrary>) {
             Button.Y, Button.Grab -> { if (st.focused) st.entry?.let { st.select(it) }; false }
             // Select: Surprise me slides to the game's page and lands on it.
             Button.Select -> {
-                val pool = Collections.visibleGames()
-                val pick = pool.filter { it.meta.playCount == 0 && it.meta.playSeconds == 0L }.ifEmpty { pool }.randomOrNull() ?: return@InterceptButtons false
+                // This week's board first, then a game never played (WeekPicks.kt).
+                val pick = io.github.zahakj.tandem.ThisWeek.surprise() ?: return@InterceptButtons false
                 val p = st.pages.indexOfFirst { it.key == "s:${pick.platform.id}" }
                 if (p < 0) return@InterceptButtons false
                 st.show(p, 1)

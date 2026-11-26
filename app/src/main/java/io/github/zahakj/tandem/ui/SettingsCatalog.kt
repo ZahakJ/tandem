@@ -230,7 +230,10 @@ object SettingsPlan {
             Group("Motion", R.string.settings_group_motion, p("Motion", "Animation style", "Reduce motion", "Travelling highlight") + p("Motion & home", "Floating titles", "Motion intensity") + p("Icon grid", "Swap animation")),
         ),
         "home/grid" to listOf(Group("Grid shape", R.string.settings_group_grid_shape, grid("Icon grid", "Rows of icons", "Icon roundness", "Space between icons", "Hero split", "Animated icons") + grid("Extras", "Continue card"))),
-        "home/games" to listOf(Group("How games show", R.string.settings_group_how_games_show, p("Layout", "Games view", "Grid size", "Card shape", "Shelf look", "Game titles"))),
+        "home/games" to listOf(
+            Group("How games show", R.string.settings_group_how_games_show, p("Layout", "Games view", "Grid size", "Card shape", "Shelf look", "Game titles")),
+            Group("This week", R.string.week_settings_group, p("This week", "Weekly picks", "Reset suggestions")),
+        ),
         "home/dock" to listOf(
             Group("Dock", R.string.settings_group_dock, p("Dock", "Apps dock") + p("Home & play", "Choose dock apps") + p("Dock", "Dock style", "Dock on top", "Auto-hide dock")),
             Group("Widgets", R.string.settings_group_widgets, p("Widgets", "Customize widgets", "Widgets on the home screen") + grid("Widgets", "Widgets on the grid")),
@@ -422,7 +425,7 @@ fun settingsCatalog(): List<SettingsCategory> {
         appearanceSections() + listOf(
             librarySettings(onRescan), droidDeckSettings(onRescan), gameNativeSettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), stageSettings(), widgetsSettings(),
             achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
-            performanceSettings(), screenOffSettings(), deckSettings(),
+            performanceSettings(), screenOffSettings(), deckSettings(), weekSettings(),
             SettingSection("Extras", listOf(resumePageRow(), continueCardRow())), // tx-ok: a plan key, never shown (the plan places the row)
             languageSettings(),
         ) + controllerSettings(),

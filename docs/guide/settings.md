@@ -121,6 +121,8 @@ What the home screen is made of, and how games show inside a system. The page op
 | Card shape | Rounded | Rounded, Square, Circle, Box art (tall) or Wide. |
 | Shelf look | Wood | The bookcase behind the Shelf view: Wood, Matte (the theme's colours) or Open (only a thin shelf line). |
 | Game titles | Off | Each game's name under its card. |
+| Weekly picks | On | The **This week** collection: games picked for you each week, each with why (see [This week](library.md#this-week)). Worked out on the handheld. |
+| Reset suggestions | | Forgets the games you said aren't for you, what the board showed lately and this week's re-rolls. |
 
 **Home & layout › Dock & widgets**
 

@@ -125,6 +125,7 @@ object BackupFiles {
     val parts: Map<BackupCategory, List<Part>> = mapOf(
         BackupCategory.Games to listOf(
             Part("library.json"), Part("sessions.json"), Part("journal.json"), Part("achievements.json"), Part("steam.json"), Part("settings.json", gameFields),
+            Part(WeekStore.FILE),
         ),
         BackupCategory.Look to listOf(Part("settings.json", lookFields), Part("extras.json")),
         BackupCategory.Layout to listOf(Part("icon-grid.json"), Part("home.json"), Part("widgets.json")),
@@ -387,6 +388,7 @@ object Backups {
         val notes = ExtrasStore.notes
         val scrape = ScrapeConfig.settings
         val appPrefs = AppPrefs.data
+        val week = WeekStore.state
         return mapOf(
             "library.json" to { json.encodeToString(meta) },
             "settings.json" to { json.encodeToString(settings) },
@@ -402,12 +404,13 @@ object Backups {
             "journal.json" to { json.encodeToString(notes) },
             "scraping.json" to { json.encodeToString(scrape) },
             BackupFiles.APP_PREFS to { AppPrefs.encode(appPrefs) },
+            WeekStore.FILE to { WeekStore.encode(week) },
         )
     }
 
     private fun initAll(ctx: Context) {
         Store.init(ctx); HomeStore.init(ctx); WidgetStore.init(ctx); IconGridStore.init(ctx); SystemPrefs.init(ctx)
-        ControllerStore.init(ctx); ExtrasStore.init(ctx); ScrapeConfig.init(ctx); AppPrefs.init(ctx); SteamStore.init(ctx)
+        ControllerStore.init(ctx); ExtrasStore.init(ctx); ScrapeConfig.init(ctx); AppPrefs.init(ctx); SteamStore.init(ctx); WeekStore.init(ctx)
     }
 
     fun appVersion(ctx: Context): String =
@@ -438,7 +441,7 @@ object Backups {
         initAll(ctx)
         return BackupFiles.restore(s, ctx.applicationContext.filesDir, categories, ::check) { cat ->
             when (cat) {
-                BackupCategory.Games -> { Store.reload(); HomeStore.reload(); ExtrasStore.reload(); SteamStore.reload() }
+                BackupCategory.Games -> { Store.reload(); HomeStore.reload(); ExtrasStore.reload(); SteamStore.reload(); WeekStore.reload() }
                 BackupCategory.Look -> { Store.reload(); ExtrasStore.reload() }
                 BackupCategory.Layout -> { IconGridStore.reload(); HomeStore.reload(); WidgetStore.reload() }
                 BackupCategory.Systems -> { SystemPrefs.reload(); AppPrefs.reload(); ControllerStore.reload(); ScrapeConfig.reload() }
@@ -463,6 +466,7 @@ object Backups {
             "journal.json" -> json.decodeFromString<JournalNotes>(text)
             "scraping.json" -> Json { ignoreUnknownKeys = true; coerceInputValues = true }.decodeFromString<ScrapeSettings>(text)
             BackupFiles.APP_PREFS -> json.decodeFromString<AppsData>(text)
+            WeekStore.FILE -> WeekStore.decode(text)
             else -> json.parseToJsonElement(text)
         }
     }

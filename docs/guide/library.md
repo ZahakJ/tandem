@@ -253,6 +253,32 @@ Collections are lists Tandem builds from what it knows, without moving any files
 
 Hidden games are left out of everything unless **Show hidden games** is on.
 
+## This week
+
+**This week** is a collection Tandem picks for you every Monday, from how you play. It sits first among the collections, with its own calendar-and-star icon, so it shows wherever collections do: a tile on the icon grid, an orb on Orbit, a group on Spotlight, the page right after Continue on Stage, and the collections row on Shelves, Carousel, List and Console. Opened, it is a board: a big **Pick of the week** card with the game's art, then a row for each kind of pick, every cover with a short reason under it.
+
+| Row | What goes in it |
+| --- | --- |
+| Up next | Your own [Up next](apps.md) list, first, in your order. |
+| Pick of the week | A game you haven't started, your kind of game (the genres, studios and systems you play most) and well rated. |
+| Pick up where you left off | A game you're playing that you last touched between three days and four months ago. |
+| Almost there | About three hours or less left of the main story by HowLongToBeat, or most of its achievements earned. |
+| Short tonight | Not started, and a main story of three hours or less by HowLongToBeat. |
+| Because you finished … | More from the series or studio of a game you finished in the last six months; failing that, a well-rated game of its genre. |
+| Achievement hunt | A RetroAchievements or Steam set you've started and not got far in. |
+| Hidden gems | Among the best-rated games you own, not started, and outside the three genres you play most. |
+| From the shelf | Shelved or in the backlog for two months, then games in your library half a year and never started. |
+| New in your library | Added in the last two weeks and not played yet (not right after the first scan, when everything is new). |
+| More … for you, Something different | Your favourite genre, and a genre you rarely play. |
+
+A row shows only when something fits it. The bottom screen says why the highlighted game is there in a sentence ("About 2 h left by HowLongToBeat.", "Same studio as Hades, which you finished: Supergiant Games."), with the facts behind it as chips (time left, achievements, your time in its genre).
+
+- **It stays put all week.** The picks are drawn with the week (Monday to Sunday) and a number made once on your handheld, so the board is the same every time you open it, and different from anyone else's. A game you start leaves its row (another takes its place); a new week brings a new board. Games shown in the last four weeks stay out while there is anything else to show, and no one system or genre fills the board.
+- <kbd>X</kbd> on a row draws it again, a little further down its list. <kbd>Y</kbd> on a pick has **Other picks for this row**, **Not for me** (it is never suggested again) and **Played it elsewhere** (marks it Finished without a play session), each with Undo; **Add to Up next** puts it at the top of the board.
+- <kbd>Select</kbd> (Surprise me) lands on a game from this week's board first, each once, then on a game you've never played.
+- **Settings › Home & layout › How games show › Weekly picks** switches the collection off; **Reset suggestions** forgets the games you said aren't for you, what the board showed lately and this week's re-rolls.
+- It is worked out on the handheld from what Tandem already knows: play time and sessions, statuses, favourites, genres, studios, ratings, HowLongToBeat times you scraped, achievements already fetched, and when each game was added. Nothing is sent anywhere, and your taste is counted afresh each time, never stored. Hidden games never take part, even while they are showing. What it keeps (the not-for-me list, what it showed lately, this week's re-rolls) is in `week.json`, backed up with your game data and never in a shared look.
+
 ## Home folders
 
 Make your own folders on the icon grid to group games, apps and systems however you like: <kbd>Y</kbd> on a tile › **Edit** › **Organize** › **Move to folder…** › **New folder…**, or <kbd>Y</kbd> on an empty spot › **New ›** › **New folder…**. Everything about a folder (its name, look, contents, how it opens, where it lives, deleting it) is on its edit screen: <kbd>Y</kbd> › **Edit** (see [Controls](controls.md#the-edit-screen)).

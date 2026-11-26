@@ -160,6 +160,7 @@ class HardcodedTextTest {
         "data/GameStatus.kt", "data/Store.kt", "data/AppPrefs.kt", "data/Importer.kt", "HiddenItems.kt", "GameFinder.kt",
         "AndroidApps.kt", "Library.kt",
         "Dates.kt", "CalendarText.kt",
+        "ui/WeekBoardUi.kt", "WeekPicks.kt", "data/WeekBoard.kt", "data/WeekStore.kt",
     )
 
     /** Calls that show their string arguments, and how many leading arguments are ids, not text. */

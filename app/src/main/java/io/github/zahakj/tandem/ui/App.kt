@@ -855,10 +855,9 @@ private fun cycle(by: Int) {
 /** Settings and its pages (where X searches settings and the corner hints stay away). */
 fun isSettingsRoute(r: Route): Boolean = r == Route.Settings || SettingsCategories.idOf(r) != null
 
-/** Select: jump to a random game you haven't touched in a while. */
+/** Select: jump to a random game from this week's board, then one you haven't touched (WeekPicks.kt). */
 private fun surpriseMe() {
-    val pool = Collections.visibleGames()
-    val pick = pool.filter { it.meta.playCount == 0 && it.meta.playSeconds == 0L }.ifEmpty { pool }.randomOrNull() ?: return
+    val pick = io.github.zahakj.tandem.ThisWeek.surprise() ?: return
     val route = Route.System(pick.platform.id, pick.group)
     FocusMemory.remember(route.key, pick.key)
     when {

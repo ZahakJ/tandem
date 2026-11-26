@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="week_title">Cette semaine</string>
+    <string name="week_blurb">Des jeux choisis pour toi chaque semaine selon ta façon de jouer, avec le pourquoi. Tout est calculé sur cette console.</string>
+    <string name="week_none">Rien à proposer pour l’instant. Joue un peu ou ajoute des jeux, et les choix de la semaine arriveront ici.</string>
+    <string name="week_off">Les choix de la semaine sont désactivés.</string>
+    <string name="week_none_action">Paramètres</string>
+    <string name="week_header_of">Semaine du %1$s</string>
+    <string name="week_hint_reroll">Relancer</string>
+    <string name="week_reroll_upnext">« Prochains jeux » est ta liste à toi : X relance les autres rangées</string>
+
+    <string name="week_tag_upnext">Prochains jeux</string>
+    <string name="week_tag_pick">Choix de la semaine</string>
+    <string name="week_tag_resume">À reprendre</string>
+    <string name="week_tag_almost">Presque fini</string>
+    <string name="week_tag_short">Pour ce soir</string>
+    <string name="week_tag_because">Dans la même veine</string>
+    <string name="week_tag_hunt">Chasse aux succès</string>
+    <string name="week_tag_gem">Pépite cachée</string>
+    <string name="week_tag_shelf">Sorti du placard</string>
+    <string name="week_tag_new">Nouveau</string>
+    <string name="week_tag_genre">Ton genre</string>
+    <string name="week_tag_explore">Autre chose</string>
+
+    <string name="week_slot_upnext">Prochains jeux</string>
+    <string name="week_slot_pick">Le choix de la semaine</string>
+    <string name="week_slot_resume">Reprends là où tu t’étais arrêté</string>
+    <string name="week_slot_almost">Presque fini</string>
+    <string name="week_slot_short">Vite fait, ce soir</string>
+    <string name="week_slot_because">Parce que tu as fini %1$s</string>
+    <string name="week_slot_hunt">Chasse aux succès</string>
+    <string name="week_slot_gem">Pépites cachées</string>
+    <string name="week_slot_shelf">Sortis du placard</string>
+    <string name="week_slot_new">Nouveaux dans ta bibliothèque</string>
+    <string name="week_slot_genre">Encore plus de %1$s</string>
+    <string name="week_slot_explore">Pour changer : %1$s</string>
+
+    <string name="week_why_taste">Tu as passé %1$s dans le genre %2$s. Voici le mieux noté que tu n’as pas encore commencé.</string>
+    <string name="week_why_top_rated">Un des jeux les mieux notés que tu possèdes, et tu ne l’as pas encore commencé.</string>
+    <string name="week_why_waiting">Dans ta pile « À jouer » depuis %1$s. C’est peut-être sa semaine.</string>
+    <string name="week_why_queued">Tu l’as mis dans tes prochains jeux.</string>
+    <plurals name="week_why_left_off_days">
+        <item quantity="one">Lancé pour la dernière fois hier, avec déjà %2$s au compteur.</item>
+        <item quantity="other">Lancé pour la dernière fois il y a %1$d jours, avec déjà %2$s au compteur.</item>
+    </plurals>
+    <plurals name="week_why_left_off_weeks">
+        <item quantity="one">Lancé pour la dernière fois il y a une semaine, avec déjà %2$s au compteur.</item>
+        <item quantity="other">Lancé pour la dernière fois il y a %1$d semaines, avec déjà %2$s au compteur.</item>
+    </plurals>
+    <string name="week_why_time_left">Il reste environ %1$s d’après HowLongToBeat.</string>
+    <plurals name="week_why_ach_left">
+        <item quantity="one">%1$d succès sur %2$d. Le reste est à portée de main.</item>
+        <item quantity="other">%1$d succès sur %2$d. Le reste est à portée de main.</item>
+    </plurals>
+    <string name="week_why_short">HowLongToBeat annonce %1$s : une soirée peut suffire.</string>
+    <string name="week_why_studio">Même studio que %1$s, que tu as fini : %2$s.</string>
+    <string name="week_why_series">De la même série que %1$s, que tu as fini.</string>
+    <string name="week_why_same_genre">Tu as fini %1$s. Voici un autre jeu du genre %2$s, bien noté.</string>
+    <string name="week_why_gem">Noté %1$s, et loin de tes sentiers battus.</string>
+    <string name="week_why_shelved">Tu l’as mis de côté en %1$s. On retente ?</string>
+    <string name="week_why_backlogged">Dans ta pile « À jouer » depuis %1$s.</string>
+    <string name="week_why_untouched">Dans ta bibliothèque depuis %1$s, jamais commencé.</string>
+    <plurals name="week_why_hunt">
+        <item quantity="one">%1$d succès sur %2$d pour l’instant. On en décroche quelques autres ?</item>
+        <item quantity="other">%1$d succès sur %2$d pour l’instant. On en décroche quelques autres ?</item>
+    </plurals>
+    <string name="week_why_added_today">Ajouté aujourd’hui, pas encore lancé.</string>
+    <plurals name="week_why_added">
+        <item quantity="one">Ajouté hier, pas encore lancé.</item>
+        <item quantity="other">Ajouté il y a %1$d jours, pas encore lancé.</item>
+    </plurals>
+    <string name="week_why_your_genre">Tu as passé %1$s dans le genre %2$s. Voici ceux que tu n’as pas encore touchés.</string>
+    <string name="week_why_new_genre">Pour changer : tu joues rarement au genre %1$s.</string>
+    <string name="week_why_genre_of_week">Le genre de la semaine : %1$s.</string>
+
+    <plurals name="week_chip_days_ago">
+        <item quantity="one">Hier</item>
+        <item quantity="other">Il y a %1$d jours</item>
+    </plurals>
+    <plurals name="week_chip_weeks_ago">
+        <item quantity="one">Il y a une semaine</item>
+        <item quantity="other">Il y a %1$d semaines</item>
+    </plurals>
+    <string name="week_chip_left">Encore %1$s</string>
+    <string name="week_chip_hltb">Environ %1$s</string>
+    <string name="week_chip_studio">Même studio</string>
+    <string name="week_chip_series">Même série</string>
+    <string name="week_chip_genre">Même genre</string>
+    <string name="week_chip_since">Depuis %1$s</string>
+    <string name="week_chip_new_today">Nouveau du jour</string>
+    <plurals name="week_chip_added">
+        <item quantity="one">Arrivé hier</item>
+        <item quantity="other">Arrivé il y a %1$d j</item>
+    </plurals>
+    <string name="week_chip_fresh">Pas commencé</string>
+
+    <string name="week_fact_left">Encore %1$s d’après HowLongToBeat</string>
+    <string name="week_fact_hltb">Durée de vie : %1$s</string>
+    <plurals name="week_fact_achievements">
+        <item quantity="one">%1$d succès sur %2$d</item>
+        <item quantity="other">%1$d succès sur %2$d</item>
+    </plurals>
+    <string name="week_fact_genre_time">Ton temps en %1$s : %2$s</string>
+    <string name="week_fact_played">%1$s de jeu</string>
+
+    <string name="week_menu_reroll">D’autres choix pour cette rangée</string>
+    <string name="week_menu_reroll_help">Relance le tirage de cette rangée de Cette semaine, un peu plus loin dans la liste. X le fait aussi.</string>
+    <string name="week_menu_not_for_me">Pas pour moi</string>
+    <string name="week_menu_not_for_me_help">Le retire de Cette semaine et ne le propose plus jamais. « Réinitialiser les suggestions » dans les Paramètres le fait revenir.</string>
+    <string name="week_menu_not_for_me_done">%1$s ne sera plus proposé</string>
+    <string name="week_menu_elsewhere">J’y ai joué ailleurs</string>
+    <string name="week_menu_elsewhere_help">Le marque Terminé sans session de jeu, pour que Cette semaine passe à autre chose. Tu peux changer son statut quand tu veux.</string>
+    <string name="week_menu_elsewhere_done">%1$s est marqué Terminé</string>
+
+    <string name="week_settings_group">Cette semaine</string>
+    <string name="week_settings_on">Choix de la semaine</string>
+    <string name="week_settings_on_help">Une collection Cette semaine, partout où les collections apparaissent : des jeux choisis pour toi chaque semaine, chacun avec son pourquoi. Calculé sur cette console à partir de ta bibliothèque et de tes parties ; rien n’en sort.</string>
+    <string name="week_settings_reset">Réinitialiser les suggestions</string>
+    <plurals name="week_settings_reset_value">
+        <item quantity="one">%1$d jeu écarté</item>
+        <item quantity="other">%1$d jeux écartés</item>
+    </plurals>
+    <string name="week_settings_reset_help">Oublie les jeux que tu as écartés, ce que le tableau a montré dernièrement et les relances de la semaine.</string>
+    <string name="week_settings_reset_action">Réinitialiser</string>
+    <string name="week_settings_reset_done">Suggestions réinitialisées</string>
+</resources>

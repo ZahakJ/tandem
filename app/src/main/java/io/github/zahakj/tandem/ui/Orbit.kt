@@ -152,7 +152,7 @@ private enum class OrbitPart { Fan, Continue, Dock }
 private class FanCard(val key: String, val game: Game? = null, val pkg: String? = null)
 
 /** Collections whose own order is the point (most played, newest first...): their fan keeps it. */
-private val KeepOrder = setOf("most", "added", "continue", Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
+private val KeepOrder = setOf(io.github.zahakj.tandem.ThisWeek.ID, "most", "added", "continue", Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
 
 private fun buildOrbs(catalog: GridCatalog, groups: String): List<Orb> {
     val keys = catalog.defaults + "allapps"

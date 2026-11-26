@@ -139,6 +139,7 @@ Everything Tandem knows lives on your device. Here is each piece, where it sits 
 | --- | --- | --- |
 | Per-game details: title, description, genres, year, rating, favorite, hidden, chosen emulator, artwork paths | `library.json` in Tandem's private storage | To show your library |
 | Play history: play count, total play time, last played, first seen | `library.json` | Continue playing, Most played, sorting |
+| This week: whether it shows, the games you said aren't for you, what the board showed in the last eight weeks, this week's re-rolls, and a random number made once on the handheld | `week.json` in Tandem's private storage | To keep the board the same all week and not repeat itself. The picks and your taste are worked out on the handheld each time; nothing is sent anywhere, and hidden games never take part. In Tandem's backups with the game data, never in a shared look. See [This week](library.md#this-week) |
 | Settings | `settings.json` in Tandem's private storage | To remember your choices |
 | Journal notes and play sessions | Tandem's private storage | The journal and the stats screen |
 | Notes, with their screenshots and drawings | `ROMs/notes/<notebook>/` as plain Markdown files, pictures in `<note>.assets/` | So they are yours: readable in any app, kept after uninstalling. Never sent anywhere; any app with storage access can read them. A hidden game's notebook stays out of Tandem's lists while hidden games are hidden. See [Notes](notes.md) |

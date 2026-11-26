@@ -86,6 +86,7 @@ class MainActivity : ComponentActivity() {
         io.github.zahakj.tandem.data.IconGridStore.init(this)
         io.github.zahakj.tandem.ui.CocoonSetup.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
+        io.github.zahakj.tandem.data.WeekStore.init(this)
         io.github.zahakj.tandem.data.ControllerStore.init(this)
         // Swap A and B / Swap X and Y from an older setup become bindings.
         io.github.zahakj.tandem.ui.Prompts.migrateSwaps()

@@ -340,6 +340,8 @@ fun SystemScreen(route: Route.System) {
 
 @Composable
 fun CollectionScreen(route: Route.Collection) {
+    // This week opens as its board: a row per slot, each pick with its reason (WeekBoardUi.kt).
+    if (route.id == io.github.zahakj.tandem.ThisWeek.ID) return WeekBoardScreen(route.key)
     val meta = Store.meta
     val showHidden = Privacy.view
     val sort = Store.settings.sort
@@ -402,7 +404,7 @@ private fun GameShelfView(routeKey: String, folders: List<GroupItem>, games: Lis
 private object PlayedOnSystem { operator fun contains(id: String) = id.startsWith(Collections.PLAYED) }
 
 /** Collections that keep their own order instead of following "Sort by". */
-val ORDERED_COLLECTIONS = setOf("continue", "most", "added", Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
+val ORDERED_COLLECTIONS = setOf(io.github.zahakj.tandem.ThisWeek.ID, "continue", "most", "added", Collections.PLAYING, Collections.BACKLOG, Collections.BEATEN)
 
 @Composable
 fun GenresScreen() {

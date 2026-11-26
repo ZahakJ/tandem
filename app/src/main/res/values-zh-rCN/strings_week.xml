@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="week_title">本周推荐</string>
+    <string name="week_blurb">根据你的玩法，每周为你挑几款游戏，并附上理由。全部在这台掌机上算出。</string>
+    <string name="week_none">还没有可推荐的游戏。玩一会儿或添加游戏后，本周推荐就会出现在这里。</string>
+    <string name="week_off">每周推荐已关闭。</string>
+    <string name="week_none_action">设置</string>
+    <string name="week_header_of">%1$s 起的一周</string>
+    <string name="week_hint_reroll">重新抽</string>
+    <string name="week_reroll_upnext">“接下来玩”是你自己的列表：X 只会重抽其他行</string>
+
+    <string name="week_tag_upnext">接下来玩</string>
+    <string name="week_tag_pick">本周之选</string>
+    <string name="week_tag_resume">接着玩</string>
+    <string name="week_tag_almost">就差一点</string>
+    <string name="week_tag_short">今晚玩完</string>
+    <string name="week_tag_because">一脉相承</string>
+    <string name="week_tag_hunt">成就猎人</string>
+    <string name="week_tag_gem">遗珠</string>
+    <string name="week_tag_shelf">别再吃灰</string>
+    <string name="week_tag_new">新入库</string>
+    <string name="week_tag_genre">你爱的类型</string>
+    <string name="week_tag_explore">换换口味</string>
+
+    <string name="week_slot_upnext">接下来玩</string>
+    <string name="week_slot_pick">本周之选</string>
+    <string name="week_slot_resume">从上次停下的地方继续</string>
+    <string name="week_slot_almost">就差一点通关</string>
+    <string name="week_slot_short">今晚就能玩完</string>
+    <string name="week_slot_because">因为你通关了 %1$s</string>
+    <string name="week_slot_hunt">成就猎人</string>
+    <string name="week_slot_gem">被埋没的佳作</string>
+    <string name="week_slot_shelf">别让它再吃灰</string>
+    <string name="week_slot_new">游戏库新成员</string>
+    <string name="week_slot_genre">更多 %1$s</string>
+    <string name="week_slot_explore">换换口味：%1$s</string>
+
+    <string name="week_why_taste">你已经在 %2$s 上玩了 %1$s。这是你还没开始的里面评分最高的一款。</string>
+    <string name="week_why_top_rated">你库里评分最高的游戏之一，你却还没开始玩。</string>
+    <string name="week_why_waiting">从 %1$s 起就在待玩里了。也许这周该轮到它了。</string>
+    <string name="week_why_queued">你把它加进了“接下来玩”。</string>
+    <plurals name="week_why_left_off_days">
+        <item quantity="other">上次玩是 %1$d 天前，已经玩了 %2$s。</item>
+    </plurals>
+    <plurals name="week_why_left_off_weeks">
+        <item quantity="other">上次玩是 %1$d 周前，已经玩了 %2$s。</item>
+    </plurals>
+    <string name="week_why_time_left">按 HowLongToBeat 的数据，大约还剩 %1$s。</string>
+    <plurals name="week_why_ach_left">
+        <item quantity="other">成就 %1$d / %2$d，剩下的近在眼前。</item>
+    </plurals>
+    <string name="week_why_short">HowLongToBeat 说要 %1$s：一个晚上就能搞定。</string>
+    <string name="week_why_studio">和你通关的 %1$s 出自同一家工作室：%2$s。</string>
+    <string name="week_why_series">和你通关的 %1$s 是同一系列。</string>
+    <string name="week_why_same_genre">你通关了 %1$s。再来一款评分不错的 %2$s。</string>
+    <string name="week_why_gem">评分 %1$s，又不在你常玩的路子上。</string>
+    <string name="week_why_shelved">你在 %1$s 把它搁置了。再试一次？</string>
+    <string name="week_why_backlogged">从 %1$s 起就躺在待玩里。</string>
+    <string name="week_why_untouched">从 %1$s 起就在游戏库里，却从没开始玩。</string>
+    <plurals name="week_why_hunt">
+        <item quantity="other">目前成就 %1$d / %2$d。再拿几个？</item>
+    </plurals>
+    <string name="week_why_added_today">今天刚加入，还没玩过。</string>
+    <plurals name="week_why_added">
+        <item quantity="other">%1$d 天前加入，还没玩过。</item>
+    </plurals>
+    <string name="week_why_your_genre">你在 %2$s 上花了 %1$s。这些是你还没碰过的。</string>
+    <string name="week_why_new_genre">换换口味：%1$s 你很少玩。</string>
+    <string name="week_why_genre_of_week">本周类型：%1$s。</string>
+
+    <plurals name="week_chip_days_ago">
+        <item quantity="other">%1$d 天前</item>
+    </plurals>
+    <plurals name="week_chip_weeks_ago">
+        <item quantity="other">%1$d 周前</item>
+    </plurals>
+    <string name="week_chip_left">还剩 %1$s</string>
+    <string name="week_chip_hltb">约 %1$s</string>
+    <string name="week_chip_studio">同一工作室</string>
+    <string name="week_chip_series">同一系列</string>
+    <string name="week_chip_genre">同一类型</string>
+    <string name="week_chip_since">%1$s 起</string>
+    <string name="week_chip_new_today">今天新加</string>
+    <plurals name="week_chip_added">
+        <item quantity="other">%1$d 天前加入</item>
+    </plurals>
+    <string name="week_chip_fresh">还没开始</string>
+
+    <string name="week_fact_left">HowLongToBeat：还剩 %1$s</string>
+    <string name="week_fact_hltb">通关约需 %1$s</string>
+    <plurals name="week_fact_achievements">
+        <item quantity="other">成就 %1$d / %2$d</item>
+    </plurals>
+    <string name="week_fact_genre_time">你的 %1$s 时长：%2$s</string>
+    <string name="week_fact_played">已玩 %1$s</string>
+
+    <string name="week_menu_reroll">这一行换一批</string>
+    <string name="week_menu_reroll_help">从稍靠后的候选里，重新抽取“本周推荐”的这一行。按 X 也可以。</string>
+    <string name="week_menu_not_for_me">不感兴趣</string>
+    <string name="week_menu_not_for_me_help">从“本周推荐”里拿掉，以后不再推荐。在设置里“重置推荐”可以恢复。</string>
+    <string name="week_menu_not_for_me_done">不会再推荐 %1$s</string>
+    <string name="week_menu_elsewhere">在别处玩过了</string>
+    <string name="week_menu_elsewhere_help">不记录游玩，直接标为“已通关”，本周推荐就会换下一款。状态随时可以改。</string>
+    <string name="week_menu_elsewhere_done">已把 %1$s 标为已通关</string>
+
+    <string name="week_settings_group">本周推荐</string>
+    <string name="week_settings_on">每周推荐</string>
+    <string name="week_settings_on_help">在所有显示合集的地方加入“本周推荐”合集：每周为你挑的游戏，各附理由。只在这台掌机上根据你的游戏库和游玩记录算出，什么都不会离开它。</string>
+    <string name="week_settings_reset">重置推荐</string>
+    <plurals name="week_settings_reset_value">
+        <item quantity="other">%1$d 款不感兴趣</item>
+    </plurals>
+    <string name="week_settings_reset_help">忘掉你标为不感兴趣的游戏、最近推荐过的内容和本周的重抽记录。</string>
+    <string name="week_settings_reset_action">重置</string>
+    <string name="week_settings_reset_done">推荐已重置</string>
+</resources>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This week: the board of games picked for you each week, worked out on the handheld (ui/WeekBoardUi.kt,
+     WeekPicks.kt). Keys start with week_. The board is a collection like Favorites, with a row per kind of pick
+     (a "slot"); each pick says why it is there. Game titles, genres and studios in the arguments come from the
+     user's library and stay as they are. See docs/TRANSLATING.md. -->
+<resources>
+    <!-- The collection's name: a tile on the home screen, a heading, a chip on the bottom screen. Keep it short. -->
+    <string name="week_title">This week</string>
+    <!-- What the This week tile is, on the other screen. -->
+    <string name="week_blurb">Games picked for you each week from how you play, and why. Worked out on this handheld.</string>
+    <!-- The board with nothing on it yet. -->
+    <string name="week_none">Nothing to pick yet. Play a little, or add games, and this week\'s picks show up here.</string>
+    <!-- The board while it is switched off in Settings. -->
+    <string name="week_off">Weekly picks are switched off.</string>
+    <!-- The button under that: opens the setting. -->
+    <string name="week_none_action">Settings</string>
+    <!-- Under the board's name. %1$s: the date the week began (a Monday), e.g. "23 November". -->
+    <string name="week_header_of">Week of %1$s</string>
+    <!-- Button hint: X draws new picks for the highlighted row. -->
+    <string name="week_hint_reroll">Re-roll</string>
+    <!-- X pressed on the Up next row, which is the user's own list and can't be re-rolled. -->
+    <string name="week_reroll_upnext">Up next is your own list: X re-rolls the other rows</string>
+
+    <!-- Each kind of pick, short: a tag on the bottom screen and on the big card. -->
+    <string name="week_tag_upnext">Up next</string>
+    <string name="week_tag_pick">Pick of the week</string>
+    <string name="week_tag_resume">Pick it back up</string>
+    <string name="week_tag_almost">Almost there</string>
+    <string name="week_tag_short">Short tonight</string>
+    <string name="week_tag_because">More like it</string>
+    <string name="week_tag_hunt">Achievement hunt</string>
+    <string name="week_tag_gem">Hidden gem</string>
+    <string name="week_tag_shelf">From the shelf</string>
+    <string name="week_tag_new">New</string>
+    <string name="week_tag_genre">Your genre</string>
+    <string name="week_tag_explore">Something different</string>
+
+    <!-- The rows' headings on the board. -->
+    <string name="week_slot_upnext">Up next</string>
+    <string name="week_slot_pick">Pick of the week</string>
+    <string name="week_slot_resume">Pick up where you left off</string>
+    <string name="week_slot_almost">Almost there</string>
+    <string name="week_slot_short">Short tonight</string>
+    <!-- %1$s: the title of a game the user finished lately. -->
+    <string name="week_slot_because">Because you finished %1$s</string>
+    <string name="week_slot_hunt">Achievement hunt</string>
+    <string name="week_slot_gem">Hidden gems</string>
+    <string name="week_slot_shelf">From the shelf</string>
+    <string name="week_slot_new">New in your library</string>
+    <!-- %1$s: the genre the user plays most (as written in their library, e.g. "Role-Playing"). -->
+    <string name="week_slot_genre">More %1$s for you</string>
+    <!-- %1$s: a genre the user rarely plays. -->
+    <string name="week_slot_explore">Something different: %1$s</string>
+
+    <!-- Why a game is on the board: one sentence, in large type on the bottom screen. -->
+    <!-- %1$s: play time ("41 hours"); %2$s: a genre ("Role-Playing"). -->
+    <string name="week_why_taste">You\'ve played %1$s of %2$s. This is the best-rated one you haven\'t started.</string>
+    <string name="week_why_top_rated">One of the best-rated games you own, and you haven\'t started it.</string>
+    <!-- %1$s: a month and year ("August 2026"). -->
+    <string name="week_why_waiting">In your backlog since %1$s. This could be its week.</string>
+    <string name="week_why_queued">You put this in Up next.</string>
+    <!-- %1$d: days since it was last played (3 to 13); %2$s: play time so far ("6 hours"). -->
+    <plurals name="week_why_left_off_days">
+        <item quantity="one">Last played yesterday, with %2$s in it so far.</item>
+        <item quantity="other">Last played %1$d days ago, with %2$s in it so far.</item>
+    </plurals>
+    <!-- %1$d: weeks since it was last played; %2$s: play time so far. -->
+    <plurals name="week_why_left_off_weeks">
+        <item quantity="one">Last played a week ago, with %2$s in it so far.</item>
+        <item quantity="other">Last played %1$d weeks ago, with %2$s in it so far.</item>
+    </plurals>
+    <!-- %1$s: time left of the main story ("2 h"). -->
+    <string name="week_why_time_left">About %1$s left by HowLongToBeat.</string>
+    <!-- Counted by %2$d (all the achievements); %1$d: how many are earned. Most of them are. -->
+    <plurals name="week_why_ach_left">
+        <item quantity="one">%1$d of %2$d achievement. The rest are within reach.</item>
+        <item quantity="other">%1$d of %2$d achievements. The rest are within reach.</item>
+    </plurals>
+    <!-- %1$s: HowLongToBeat's main story time ("2 h"). -->
+    <string name="week_why_short">HowLongToBeat says %1$s: one evening could do it.</string>
+    <!-- %1$s: a game the user finished; %2$s: the studio that made both ("Supergiant Games"). -->
+    <string name="week_why_studio">Same studio as %1$s, which you finished: %2$s.</string>
+    <!-- %1$s: a game the user finished, from the same series. -->
+    <string name="week_why_series">From the same series as %1$s, which you finished.</string>
+    <!-- %1$s: a game the user finished; %2$s: the genre they share. -->
+    <string name="week_why_same_genre">You finished %1$s. Here\'s more %2$s, well rated.</string>
+    <!-- %1$s: the rating out of five ("★ 4.6"). -->
+    <string name="week_why_gem">Rated %1$s, and off your beaten path.</string>
+    <!-- %1$s: a month and year. -->
+    <string name="week_why_shelved">You put this aside in %1$s. Another go?</string>
+    <string name="week_why_backlogged">Waiting in your backlog since %1$s.</string>
+    <string name="week_why_untouched">In your library since %1$s, and never started.</string>
+    <!-- Counted by %2$d (all the achievements); %1$d: how many are earned, a few. -->
+    <plurals name="week_why_hunt">
+        <item quantity="one">%1$d of %2$d achievement so far. Go for a few more?</item>
+        <item quantity="other">%1$d of %2$d achievements so far. Go for a few more?</item>
+    </plurals>
+    <string name="week_why_added_today">Added today, and not played yet.</string>
+    <!-- %1$d: days since the game was added (1 to 14). -->
+    <plurals name="week_why_added">
+        <item quantity="one">Added yesterday, and not played yet.</item>
+        <item quantity="other">Added %1$d days ago, and not played yet.</item>
+    </plurals>
+    <!-- %1$s: play time; %2$s: the genre. -->
+    <string name="week_why_your_genre">You\'ve spent %1$s in %2$s. Here are the ones you haven\'t got to.</string>
+    <!-- %1$s: a genre the user rarely plays. -->
+    <string name="week_why_new_genre">A change of pace: you rarely play %1$s.</string>
+    <!-- %1$s: a genre, picked for the week when nothing has been played yet. -->
+    <string name="week_why_genre_of_week">This week\'s genre: %1$s.</string>
+
+    <!-- The reason in a word or two, on a small chip under each cover on the board. -->
+    <plurals name="week_chip_days_ago">
+        <item quantity="one">Yesterday</item>
+        <item quantity="other">%1$d days ago</item>
+    </plurals>
+    <plurals name="week_chip_weeks_ago">
+        <item quantity="one">A week ago</item>
+        <item quantity="other">%1$d weeks ago</item>
+    </plurals>
+    <!-- %1$s: time ("2 h"). -->
+    <string name="week_chip_left">%1$s left</string>
+    <!-- %1$s: time to beat ("2 h"). -->
+    <string name="week_chip_hltb">About %1$s</string>
+    <string name="week_chip_studio">Same studio</string>
+    <string name="week_chip_series">Same series</string>
+    <string name="week_chip_genre">Same genre</string>
+    <!-- %1$s: a month and year. -->
+    <string name="week_chip_since">Since %1$s</string>
+    <string name="week_chip_new_today">New today</string>
+    <plurals name="week_chip_added">
+        <item quantity="one">New yesterday</item>
+        <item quantity="other">New, %1$d days</item>
+    </plurals>
+    <string name="week_chip_fresh">Not started</string>
+
+    <!-- Facts beside the reason on the bottom screen, as chips. %1$s: a time ("2 h"). -->
+    <string name="week_fact_left">%1$s left by HowLongToBeat</string>
+    <string name="week_fact_hltb">%1$s to beat</string>
+    <!-- Counted by %2$d (all the achievements); %1$d: earned. -->
+    <plurals name="week_fact_achievements">
+        <item quantity="one">%1$d of %2$d achievement</item>
+        <item quantity="other">%1$d of %2$d achievements</item>
+    </plurals>
+    <!-- %1$s: a genre; %2$s: the time played in it ("41 hours"). -->
+    <string name="week_fact_genre_time">Your %1$s time: %2$s</string>
+    <!-- %1$s: play time. -->
+    <string name="week_fact_played">%1$s played</string>
+
+    <!-- Y on a game on the board. -->
+    <string name="week_menu_reroll">Other picks for this row</string>
+    <string name="week_menu_reroll_help">Draws again for this row of This week, a little further down the list. X does it too.</string>
+    <string name="week_menu_not_for_me">Not for me</string>
+    <string name="week_menu_not_for_me_help">Takes it off This week and never suggests it again. Reset suggestions in Settings brings it back.</string>
+    <!-- Toast with Undo. %1$s: the game. -->
+    <string name="week_menu_not_for_me_done">Won\'t suggest %1$s again</string>
+    <string name="week_menu_elsewhere">Played it elsewhere</string>
+    <string name="week_menu_elsewhere_help">Marks it Finished without a play session, so This week moves on. Change its status any time.</string>
+    <!-- Toast with Undo. %1$s: the game. -->
+    <string name="week_menu_elsewhere_done">%1$s is Finished</string>
+
+    <!-- Settings › Home & layout › How games show. -->
+    <string name="week_settings_group">This week</string>
+    <string name="week_settings_on">Weekly picks</string>
+    <string name="week_settings_on_help">A This week collection, wherever collections show: games picked for you each week, each with why. Worked out on this handheld from your library and play; nothing leaves it.</string>
+    <string name="week_settings_reset">Reset suggestions</string>
+    <!-- The row's value: how many games were said not to be for you. -->
+    <plurals name="week_settings_reset_value">
+        <item quantity="one">%1$d not for me</item>
+        <item quantity="other">%1$d not for me</item>
+    </plurals>
+    <string name="week_settings_reset_help">Forgets the games you said aren\'t for you, what the board showed lately and this week\'s re-rolls.</string>
+    <string name="week_settings_reset_action">Reset</string>
+    <string name="week_settings_reset_done">Suggestions reset</string>
+</resources>

@@ -369,6 +369,7 @@ private val StatusCollections = setOf(Collections.PLAYING, Collections.BACKLOG, 
 
 /** Each collection's own colour and drawn icon, so no two collections ever look alike (TandemIcons.kt). */
 private val CollectionLooks: Map<String, Pair<TIcon, Long>> = mapOf(
+    io.github.zahakj.tandem.ThisWeek.ID to (TIcon.Week to 0xFF9A6BEB),
     "fav" to (TIcon.Heart to 0xFFEC5B8C),
     "most" to (TIcon.Flame to 0xFFF26A3D),
     "added" to (TIcon.NewBox to 0xFF4AA8E8),
@@ -381,6 +382,7 @@ private val CollectionLooks: Map<String, Pair<TIcon, Long>> = mapOf(
 
 /** What each collection is, for the other screen. */
 private val CollectionBlurbs = mapOf(
+    io.github.zahakj.tandem.ThisWeek.ID to R.string.week_blurb,
     "fav" to R.string.grid_blurb_fav,
     "most" to R.string.grid_blurb_most,
     "added" to R.string.grid_blurb_added,
