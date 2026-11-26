@@ -585,7 +585,7 @@
     <string name="look_grid_animated_focused">Sous le curseur</string>
     <string name="look_grid_animated_off">Jamais</string>
     <string name="look_art_set">Collection de visuels</string>
-    <string name="look_art_set_help">L\'icône, la bannière et le logo de chaque système, dessinés par Tandem dans un seul style : aucun pack nécessaire. Un système peut porter une autre collection, ou garder les visuels du pack, depuis Modifier › Allure › Visuels, et les images que tu importes passent toujours en premier. « Désactivé » suit Icônes de.</string>
+    <string name="look_art_set_help">L\'icône, la bannière et le logo de chaque système, dessinés par Tandem dans un seul style. Pour un seul système : Modifier › Allure › Visuels.</string>
     <string name="look_art_set_off">Désactivé</string>
     <string name="look_art_set_pastel">Pastel bonbon</string>
     <string name="look_art_set_neon">Néon d’arcade</string>

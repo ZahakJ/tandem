@@ -563,7 +563,7 @@
     <string name="look_grid_animated_focused">حين يكون محدّدًا</string>
     <string name="look_grid_animated_off">معطّل</string>
     <string name="look_art_set">مجموعة الصور</string>
-    <string name="look_art_set_help">أيقونة وصورة بارزة وشعار يرسمها Tandem بنفسه لكل منصّة، بأسلوب واحد ودون أي حزمة. يمكن لأي منصّة أن تلبس مجموعة أخرى، أو تُبقي صور الحزمة، من تعديل › المظهر › الصور، والصور التي ترفعها تأتي أولًا دائمًا. «معطّل» يتبع مصدر الأيقونات.</string>
+    <string name="look_art_set_help">أيقونة وصورة بارزة وشعار يرسمها Tandem لكل منصّة بأسلوب واحد. ولمنصّة بعينها: تعديل › المظهر › الصور.</string>
     <string name="look_art_set_off">معطّل</string>
     <string name="look_art_set_pastel">حلوى الباستيل</string>
     <string name="look_art_set_neon">سهرة النيون</string>

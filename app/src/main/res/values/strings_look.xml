@@ -588,7 +588,7 @@
     <string name="look_grid_animated_off">Off</string>
     <!-- Look & feel › Art set: Tandem's own drawn icons, heroes and logos for every system. -->
     <string name="look_art_set">Art set</string>
-    <string name="look_art_set_help">Tandem\'s own icon, hero and logo for every system, drawn in one style: no pack needed. A system can wear another set, or keep the pack\'s art, from its Edit › Look › Artwork, and pictures you upload always come first. Off follows Icons from.</string>
+    <string name="look_art_set_help">Tandem\'s own icon, hero and logo for every system, in one style. Change one system\'s set in its Edit › Look › Artwork.</string>
     <!-- No set: the art comes from the Icons from setting. -->
     <string name="look_art_set_off">Off</string>
     <!-- The set names. Transcreate them playfully. -->

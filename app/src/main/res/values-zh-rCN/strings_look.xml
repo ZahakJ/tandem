@@ -487,7 +487,7 @@
     <string name="look_grid_animated_focused">选中时</string>
     <string name="look_grid_animated_off">关</string>
     <string name="look_art_set">美术套组</string>
-    <string name="look_art_set_help">Tandem 亲手为每个平台画好图标、主视觉图和标志，一种画风，一套到底，不需要任何图标包。每个平台都能在 编辑 › 外观 › 图片 里换上别的套组，或保留图标包的图片；你上传的图片永远优先。“关”则跟随“图标来源”。</string>
+    <string name="look_art_set_help">Tandem 亲手为每个平台画好图标、主视觉图和标志，一种画风。单个平台可在 编辑 › 外观 › 图片 里更换。</string>
     <string name="look_art_set_off">关</string>
     <string name="look_art_set_pastel">马卡龙糖果</string>
     <string name="look_art_set_neon">霓虹街机厅</string>
