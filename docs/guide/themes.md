@@ -309,7 +309,7 @@ Videos play muted and looping, and stop whenever Tandem isn't on screen, so they
 **Settings › Sound & music** sets what Tandem sounds like: the theme pack's own audio first, then UI sounds and music.
 
 - **Theme pack:** when your theme pack brings music or recorded sounds of its own (Cocoon themes link theirs from `ROMs/assets/music` and `ROMs/assets/sounds`), **Theme pack music** and **Theme pack sounds** switch them on or off. The same switches are on the pack in **Manage packs**. While they're on, they play instead of the choices below.
-- **Sounds:** **UI sounds** is Off, one of Tandem's eight packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass and Air), or **Custom**, which picks among every recorded pack you have (Cocoon's in `ROMs/assets/sounds`, or a theme pack's own). Sounds a recorded pack doesn't have come from Tandem's pack. With **Pip's voice** on (and UI sounds on), Pip hums a few soft notes when it has something to tell you.
+- **Sounds:** **UI sounds** is Off, one of Tandem's nine packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air, and **Thock**: deep, muted keyboard thocks with a thud under every sound), or **Custom**, which picks among every recorded pack you have (Cocoon's in `ROMs/assets/sounds`, or a theme pack's own). Sounds a recorded pack doesn't have come from Tandem's pack. With **Pip's voice** on (and UI sounds on), Pip hums a few soft notes when it has something to tell you.
 - **Music:** **Music** is Off, **My music** (your own MP3, OGG, Opus, FLAC, M4A or WAV files from `ROMs/tandem/music/`), or one of Tandem's own soundtracks:
   - **Calm** (the default): two slow, soft pieces for piano, harp and celesta.
   - **Meadow Tales**: six original pieces for a small orchestra.

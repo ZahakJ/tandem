@@ -168,7 +168,7 @@ Clicks, chimes, Pip's voice and the music while you browse.
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
 | Theme pack (only when your theme pack has music or sounds) | Theme pack music, Theme pack sounds | On | Play the pack's own music and recorded sounds instead of the choices below. |
-| Sounds | UI sounds | Modern | Clicks, chimes and the launch sound as you move around: **Off**, one of Tandem's eight packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air), or **Custom** when you have recorded packs. |
+| Sounds | UI sounds | Modern | Clicks, chimes and the launch sound as you move around: **Off**, one of Tandem's nine packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air, Thock), or **Custom** when you have recorded packs. |
 | Sounds | Custom sounds | | Shown with Custom: which recorded pack plays (Cocoon's from `ROMs/assets/sounds`, or a theme pack's own). |
 | Sounds | Sound volume | 50 % | How loud UI sounds are, compared with the system volume. |
 | Sounds | Pip's voice | On | Pip hums a few soft notes when it has something to tell you. |
