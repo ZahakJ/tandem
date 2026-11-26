@@ -356,6 +356,7 @@ fun StageHome(libs: List<PlatformLibrary>) {
             Button.Select -> {
                 // This week's board first, then a game never played (WeekPicks.kt).
                 val pick = io.github.zahakj.tandem.ThisWeek.surprise() ?: return@InterceptButtons false
+                val pool = Collections.visibleGames()
                 val p = st.pages.indexOfFirst { it.key == "s:${pick.platform.id}" }
                 if (p < 0) return@InterceptButtons false
                 st.show(p, 1)

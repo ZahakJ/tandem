@@ -860,6 +860,8 @@ fun isSettingsRoute(r: Route): Boolean = r == Route.Settings || SettingsCategori
 /** Select: jump to a random game from this week's board, then one you haven't touched (WeekPicks.kt). */
 private fun surpriseMe() {
     val pick = io.github.zahakj.tandem.ThisWeek.surprise() ?: return
+    // The covers the reel spins past (SlotSpin.kt); the pick itself comes from the board.
+    val pool = Collections.visibleGames()
     val route = Route.System(pick.platform.id, pick.group)
     FocusMemory.remember(route.key, pick.key)
     when {
