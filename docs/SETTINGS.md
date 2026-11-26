@@ -57,7 +57,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 
 | Tile | Summary shows | Groups (› opens a subpage) |
 |---|---|---|
-| Look & feel | own accent, still (nothing otherwise: the theme's name is on the side panel) | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, Motion ›); Share; Language; Start over |
+| Look & feel | own accent, still (nothing otherwise: the theme's name is on the side panel) | Theme gallery, Theme packs gallery; Colour; Wallpaper, icons & motion (Wallpaper ›, System icons ›, Motion ›); Share; Language; Start over |
 | Home & layout | layout, icons across or games view | Layout gallery (seven layouts, Orbit and Spotlight included); Home screen (the rows for the layout in use, Grid shape › on the icon grid); Around the home (How games show ›, Dock & widgets ›, top bar, screensaver) |
 | Two screens | single, swapped or the bottom style | Screens; Other screen (Art & video ›); While playing |
 | Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
@@ -78,8 +78,9 @@ A "›" step after a page is its subpage.
 | `Look.material` | Look & feel › Colour › Surface | choice |
 | `Look.wallTop`, `wallBottom` | Look & feel › Wallpaper › Top screen / Bottom screen (your files from `ROMs/tandem/wallpapers`) | choice |
 | `Look.wallDim` | Look & feel › Wallpaper › Picture dimming | slider |
-| `Look.iconPack` | Look & feel › Icons from | choice |
-| `Look.iconStyle` | Look & feel › Icon style | choice |
+| `Look.iconPack` | Look & feel › System icons › Icons from | choice |
+| `Look.artSet` | Look & feel › System icons › Art set (Tandem's drawn sets for every system: Pastel, Neon, Paper, Mono; a system's own set is `FolderStyle.artSet`, chosen in its Edit › Look › Artwork) | choice |
+| `Look.iconStyle` | Look & feel › System icons › Icon style | choice |
 | `Look.motion` | Look & feel › Motion › Animation style | choice |
 | `Settings.reduceMotion` | Look & feel › Motion › Reduce motion | toggle |
 | `ExtrasSettings.floating`, `intensity` | Look & feel › Motion › Floating titles / Motion intensity | toggle / choice |

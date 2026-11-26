@@ -620,4 +620,6 @@
     <string name="grid_design_group_glyphs">رموز Tandem</string>
     <string name="grid_design_group_emoji">إيموجي</string>
     <string name="grid_design_group_yours">صورك</string>
+    <string name="grid_design_group_sets">مجموعات Tandem</string>
+    <string name="grid_design_set_none">صور الحزمة</string>
 </resources>

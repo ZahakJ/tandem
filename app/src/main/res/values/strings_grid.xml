@@ -634,4 +634,8 @@
     <string name="grid_design_group_glyphs">Tandem\'s glyphs</string>
     <string name="grid_design_group_emoji">Emoji</string>
     <string name="grid_design_group_yours">Your pictures</string>
+    <!-- Artwork studio, for a system: a heading over Tandem's drawn art sets (Look & feel › Art set). -->
+    <string name="grid_design_group_sets">Tandem sets</string>
+    <!-- Artwork studio, for a system when an art set is on for every system: keep the pack's art (or Tandem's drawn icon) here. -->
+    <string name="grid_design_set_none">Pack art</string>
 </resources>

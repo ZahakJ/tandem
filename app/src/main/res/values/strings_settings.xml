@@ -78,6 +78,7 @@
     <string name="settings_sub_wallpaper_help">The wallpaper on each screen, and how much pictures and videos are dimmed.</string>
     <string name="settings_sub_motion">Motion</string>
     <string name="settings_sub_motion_help">How things move: the animation style, Reduce motion, floating titles, how lively it is, and how the screens swap.</string>
+    <string name="settings_sub_icons_help">How systems look everywhere: the icon style Tandem draws in, which pack the art comes from, and Tandem\'s own art sets.</string>
     <string name="settings_sub_grid">Grid shape</string>
     <string name="settings_sub_grid_help">The icon grid\'s rows, how round its icons are, the space between them, and art above the grid.</string>
     <string name="settings_sub_games">How games show</string>

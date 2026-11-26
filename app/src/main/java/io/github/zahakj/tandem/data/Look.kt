@@ -84,6 +84,12 @@ data class Look(
      * smart-folder pack's folder name. See ThemePacks.artSource.
      */
     val iconPack: String = "auto",
+    /**
+     * One of Tandem's own art sets for every system's icon, hero and logo ([ArtSets]: "pastel", "neon", "paper",
+     * "mono"), drawn on the handheld; null follows [iconPack]. A system's own choice (FolderStyle.artSet) and pictures
+     * the user uploaded come first.
+     */
+    val artSet: String? = null,
     /** Show the "Now playing" card on the home screen while a game runs in the background. */
     val nowPlaying: Boolean = true,
     /** How long to rest on a game before its video snap starts, in ms. */

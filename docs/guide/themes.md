@@ -10,7 +10,7 @@ Tandem comes with three themes of its own; everything else comes from [theme pac
 - **Paper**, a light theme
 - **OLED Black**
 
-Any theme can wear Tandem's extras: its animated backdrops (pixels, an LCD, cubes, a marquee, a road into the sun, a farm, torchlight and more) are all there as wallpapers, and its drawn system icon styles (pixel, neon, LCD, chrome, plastic, sticker, rune…) are under **Icon style**. With a built-in theme, system tiles show Tandem's own drawn icons, unless **Settings › Look & feel › Icons from** picks a pack's art.
+Any theme can wear Tandem's extras: its animated backdrops (pixels, an LCD, cubes, a marquee, a road into the sun, a farm, torchlight and more) are all there as wallpapers, and its drawn system icon styles (pixel, neon, LCD, chrome, plastic, sticker, rune…) are under **Icon style**. With a built-in theme, system tiles show Tandem's own drawn icons, unless **Settings › Look & feel › Icons from** picks a pack's art, or an [art set](#art-sets) dresses every system.
 
 **Adjusting a theme.** Anything a theme sets can be changed on top of it in **Settings › Look & feel**:
 
@@ -26,6 +26,35 @@ Any theme can wear Tandem's extras: its animated backdrops (pixels, an LCD, cube
 <summary>Why a pale accent still shows on Paper</summary>
 
 When the accent you pick would be hard to see on the theme, Tandem nudges it towards the theme's text colour, so a pale accent still shows on a light theme like Paper.
+
+</details>
+
+## Art sets
+
+No pack needed for good-looking systems: Tandem draws a matching **icon**, **hero** (the big picture on the other screen) and **logo** (the title over the hero) for every system it knows, in one of four styles. Pick one in **Settings › Look & feel › System icons › Art set**; the picker shows each set on your own systems, hero and logo above, icons below.
+
+<!-- Screenshot to add: site/assets/screenshots/guide/art-sets-picker.webp, the Art set picker with the four sets on the handheld's own systems. -->
+<!-- Screenshot to add: site/assets/screenshots/guide/art-sets-bottom.webp, the bottom screen with a Neon Arcade hero and logo for a highlighted system. -->
+
+| Set | Looks like |
+| --- | --- |
+| **Pastel Pop** | A soft colour block with confetti and the device as a white sticker; the name as a fat outlined sticker. Softer on a light theme, deeper on a dark one |
+| **Neon Arcade** | An arcade night: scanlines, a striped sunset over a glowing grid floor, the device in light tubes and the name in neon |
+| **Paper Cartridge** | A cartridge with a paper label in the system's colours; the hero is a printed box with stripes, halftone and an ink stamp, the name on a paper plate |
+| **Minimal Mono** | A thin outline of the device in your accent colour on the theme's own background, the name spaced out in capitals. It follows the theme and the accent |
+
+Every picture is Tandem's own drawing: a silhouette of the *kind* of device (a clamshell, a console, a disc, a cabinet…), colours from the system's family, and its plain name. No logos, box art or console photos are copied, so the sets are safe in screenshots you share.
+
+- **One system, another set.** <kbd>Y</kbd> on a system › **Edit** › **Look** › **Artwork**: the studio lists **Tandem sets** for that system on its Icon, Hero and Title pages. A system's own set wins over the one for every system, and **Pack art** keeps the pack's art (or Tandem's drawn icon) for just that system. **Theme** follows the set for every system again.
+- **Your own pictures come first.** A picture you upload as a system's icon, hero or logo shows instead of any set, for that part only.
+- **Everywhere.** The grid, Spotlight, the bottom screen, the Systems page, search and the other menus all show the set.
+
+<details>
+<summary>Where it is kept, and what travels</summary>
+
+- The set for every system is a look setting, so it is in **Backup › Look** and in a shared look. Each system's own choice and your uploads are kept with the icon grid (**Backup › Layout & folders**); the uploaded pictures themselves live in `ROMs/tandem/art/folders/`.
+- A shared look carries only the set names, for every system and for systems with their own. Your uploaded pictures never leave the handheld.
+- The pictures are drawn on the handheld the first time they are needed (a moment per system) and kept in Tandem's cache, redrawn after a theme change from light to dark (and for Minimal Mono, after an accent change). Clearing the cache only means they are drawn again. Rescans and **Icons from** don't touch any of it.
 
 </details>
 
@@ -141,10 +170,10 @@ Give any folder, system, collection or genre on the icon grid a look of its own:
 
 | Part | Choices |
 | --- | --- |
-| Icon | **Theme** (the pack's art, else Tandem's drawn art), a game's cover or an app's icon from inside, a cover **Mosaic** of four, a **Fan** of three, a **Genre** look (its glyph on a badge over a fan of covers), one of Tandem's glyphs or an emoji on the folder colour, or a picture |
+| Icon | **Theme** (the pack's art, else Tandem's drawn art), for a system one of the [Tandem sets](#art-sets), a game's cover or an app's icon from inside, a cover **Mosaic** of four, a **Fan** of three, a **Genre** look (its glyph on a badge over a fan of covers), one of Tandem's glyphs or an emoji on the folder colour, or a picture |
 | Colour | **Theme**, **From the art** (the main colour of the icon's picture), or a swatch. It colours the tile, its highlight ring and the sweep on the other screen |
-| Hero | **Theme** (the pack's hero; a folder of games uses the hero of its favourite or most played game), a game's hero, a picture, a **Colour sweep**, or a **Cover wall** (rows of the covers inside drifting past) |
-| Title | **Theme** (the pack's logo, else the icon), the name as text in three weights and three sizes, a game's logo, or a picture |
+| Hero | **Theme** (the pack's hero; a folder of games uses the hero of its favourite or most played game), for a system a Tandem set's hero, a game's hero, a picture, a **Colour sweep**, or a **Cover wall** (rows of the covers inside drifting past) |
+| Title | **Theme** (the pack's logo, else the icon), for a system a Tandem set's logo, the name as text in three weights and three sizes, a game's logo, or a picture |
 | Shape | The grid's, a rounded square or a circle |
 | Corners | **Grid** (Icon roundness), or this tile's own, from square to round. See [Corners](controls.md#corners) |
 | Cover frame | Whether a game cover used as the icon wears the theme's cover frame (when the theme has frames) |

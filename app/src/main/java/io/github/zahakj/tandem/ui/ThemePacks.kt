@@ -308,14 +308,29 @@ object ThemePacks {
     fun folderArt(names: List<String>, kind: String): File? =
         if (names.isEmpty()) null else art { if (kind == "icon") it.icons else it.heroes }?.system(names, kind)
 
-    /** The pack's square icon for a system, or null to draw Tandem's own. */
-    fun systemIcon(platformId: String): File? = art { it.icons }?.system(systemIds(platformId), "icon")
+    /**
+     * A system's square icon: its art set's (SetArt.kt, when the system or Look.artSet picks one), else the pack's, or
+     * null to draw Tandem's own. [style] is the system tile's style to decide by (a preview's draft); null reads the saved one.
+     */
+    fun systemIcon(platformId: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        SetArt.setOf(platformId, style)?.let { return SetArt.file(it, platformId, SetArt.Kind.Icon) }
+        return packSystemIcon(platformId)
+    }
 
-    /** A 16:9 hero picture for a system. */
-    fun systemHero(id: String): File? = art { it.heroes }?.system(systemIds(id), "hero")
+    /** A 16:9 hero picture for a system: its art set's, else the pack's. */
+    fun systemHero(id: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        SetArt.setOf(id, style)?.let { return SetArt.file(it, id, SetArt.Kind.Hero) }
+        return art { it.heroes }?.system(systemIds(id), "hero")
+    }
 
-    /** A wide logo for a system (shown over its hero). */
-    fun systemLogo(id: String): File? = art { it.heroes }?.system(systemIds(id), "logo")
+    /** A wide logo for a system (shown over its hero): its art set's, else the pack's. */
+    fun systemLogo(id: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        SetArt.setOf(id, style)?.let { return SetArt.file(it, id, SetArt.Kind.Logo) }
+        return art { it.heroes }?.system(systemIds(id), "logo")
+    }
+
+    /** The pack's own square icon for a system, whatever set is chosen; null when the pack has none. */
+    fun packSystemIcon(platformId: String): File? = art { it.icons }?.system(systemIds(platformId), "icon")
 
     /** An icon for a collection: "favorites", "most_played", "newly_added" or "recent" (Tandem's own ids work too). */
     fun collectionIcon(kind: String): File? = art { it.icons }?.collection(COLLECTION_IDS[kind] ?: kind)

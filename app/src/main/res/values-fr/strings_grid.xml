@@ -619,4 +619,6 @@
     <string name="grid_design_group_glyphs">Glyphes de Tandem</string>
     <string name="grid_design_group_emoji">Emoji</string>
     <string name="grid_design_group_yours">Tes images</string>
+    <string name="grid_design_group_sets">Collections Tandem</string>
+    <string name="grid_design_set_none">Visuels du pack</string>
 </resources>

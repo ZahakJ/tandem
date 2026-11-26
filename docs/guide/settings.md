@@ -33,8 +33,7 @@ Colours, wallpaper, icons, motion, the language and the calendar: how Tandem loo
 | Colour | Highlight style | the theme's | How the highlighted item is marked: Glow, Outline, Lift or Pulse. |
 | Colour | Surface | the theme's | What cards are made of: Solid, Frosted glass or Outlined. |
 | Wallpaper, icons & motion | Wallpaper › | | Opens **Wallpaper** (below). |
-| Wallpaper, icons & motion | Icon style | the theme's | How Tandem draws system icons when no pack has art for them: pixel, neon, LCD, chrome, plastic, sticker and more. |
-| Wallpaper, icons & motion | Icons from | Auto | Where system icons, heroes and logos come from: the theme pack's own (Auto), another pack's, or always drawn by Tandem. |
+| Wallpaper, icons & motion | System icons › | | Opens **System icons** (below). |
 | Wallpaper, icons & motion | Motion › | | Opens **Motion** (below). |
 | Language | Language | System default | The language Tandem speaks: System default (Android's), English, العربية, 日本語, 简体中文 or Français, each named in itself. Both screens switch at once. In العربية every screen mirrors and reads from the right: Start slides in from the right, the side panel (R2) from the left, and Left on the D-pad moves towards the next option, cover or page (the way the arrow points on screen). Text not translated yet shows in English. On Android 13 and later it is the same setting as Android's own Settings › Apps › Tandem › Language. |
 | Language | Calendar | Gregorian | The calendar dates are shown in: Gregorian, Hijri (Umm al-Qura), Chinese (the lunar calendar), Gregorian + Hijri or Gregorian + Chinese. Each card shows today in it. Every date follows, on both screens at once: the clocks and the clock widget, the side panel (R2), the bottom screen, the screensaver, Stats, trophies, play sessions, the journal, backups, Steam's unlock dates. With two calendars the second date sits beside the Gregorian one, or on a smaller line under it where room is short (the clock widget, the side panel, the bottom screen); a trophy card and the cabinet's plaques have room for the main calendar only. "5 minutes ago" stays as it is. Dates are only shown this way: what Tandem saves, file names and exported play stats stay Gregorian. Search finds it as calendar, hijri, islamic, lunar or chinese. |
@@ -50,6 +49,14 @@ Colours, wallpaper, icons, motion, the language and the calendar: how Tandem loo
 | --- | --- | --- |
 | Top screen, Bottom screen | the theme's | The wallpaper for each screen: Tandem's animated backdrops, **Game art (blurred)**, or your pictures and videos from `ROMs/tandem/wallpapers/`. |
 | Picture dimming | 35 % | Darkens picture and video wallpapers so text on them stays readable. |
+
+**Look & feel › System icons**
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Icon style | the theme's | How Tandem draws system icons when no pack has art for them: pixel, neon, LCD, chrome, plastic, sticker and more. |
+| Icons from | Auto | Where system icons, heroes and logos come from: the theme pack's own (Auto), another pack's, or always drawn by Tandem. |
+| Art set | Off | Tandem's own drawn icon, hero and logo for every system in one style: Pastel Pop, Neon Arcade, Paper Cartridge or Minimal Mono. A system can wear another set in its **Edit › Look › Artwork**. See [Themes › Art sets](themes.md#art-sets). |
 
 **Look & feel › Motion**
 

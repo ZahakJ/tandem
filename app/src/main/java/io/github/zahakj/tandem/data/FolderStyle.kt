@@ -48,6 +48,12 @@ data class FolderStyle(
      * roundness. Null follows the grid. Only with [SHAPE_THEME]: the rounded square and the circle have their own.
      */
     val corners: Float? = null,
+    /**
+     * For a system tile: one of Tandem's art sets ([ArtSets]) for its icon, hero and logo, in place of the global
+     * set (Look.artSet); [ArtSets.PACK] keeps the pack's art (or Tandem's drawn icon) even when a global set is on.
+     * Null follows the global set. Pictures the user uploaded for a slot still win over any set.
+     */
+    val artSet: String? = null,
 ) {
     /** Nothing changed from the theme: the same as having no style at all. */
     val isDefault: Boolean get() = this == DEFAULT
@@ -66,7 +72,7 @@ data class FolderStyle(
     fun shapeOnly(): FolderStyle = FolderStyle(shape = shape, corners = corners)
 
     /** A short stable key for everything that changes the icon's picture (bitmap caches use it). */
-    fun iconHash(): String = listOf(icon, iconRef, glyph, emoji, iconFile, color, shape, frame).joinToString("|").hashCode().toUInt().toString(36)
+    fun iconHash(): String = listOf(icon, iconRef, glyph, emoji, iconFile, color, shape, frame, artSet).joinToString("|").hashCode().toUInt().toString(36)
 
     companion object {
         const val ICON_AUTO = "auto"

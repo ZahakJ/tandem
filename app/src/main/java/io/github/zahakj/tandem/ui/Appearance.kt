@@ -415,6 +415,15 @@ fun appearanceSections(): List<SettingSection> {
                 preview = { IconsPreview() },
                 en = "Icons from",
             ) { v -> updateLook { it.copy(iconPack = v) } },
+            choice(
+                Tx.s(R.string.look_art_set), Glyph.Sparkle, Palette.Lavender, Tx.s(R.string.look_art_set_help),
+                listOf("" to Tx.s(R.string.look_art_set_off)) + ArtSet.entries.map { it.id to it.label }, look.artSet ?: "",
+                look = { v -> ArtSetScene(v) },
+                en = "Art set",
+            ) { v ->
+                updateLook { it.copy(artSet = v.ifEmpty { null }) }
+                SetArt.warmLibrary()
+            },
         )),
         SettingSection(Tx.s(R.string.look_group_motion), en = "Motion", rows = listOf(
             choice(

@@ -49,6 +49,10 @@ data class SharedLook(
     val corner: Float? = null,
     val material: String? = null,
     val iconStyle: String? = null,
+    /** Tandem's art set for every system ([ArtSets]), or [ArtSets.OFF] for none. */
+    val artSet: String? = null,
+    /** Systems with a set of their own (system id to set id or [ArtSets.PACK]). Never pictures: those stay home. */
+    val systemArtSets: Map<String, String>? = null,
     // Motion.
     val motion: String? = null,
     val swapStyle: String? = null,
@@ -109,6 +113,7 @@ data class SharedLook(
         corner = corner ?: look.corner,
         material = material ?: look.material,
         iconStyle = iconStyle ?: look.iconStyle,
+        artSet = if (artSet != null) artSet.takeIf { it != ArtSets.OFF } else look.artSet,
         motion = motion ?: look.motion,
         swapStyle = swapStyle ?: look.swapStyle,
         wallTop = wallTop ?: look.wallTop,
@@ -167,6 +172,8 @@ data class SharedLook(
         corner = corner.within(0f, 60f),
         material = material.oneOf(*Ids.material),
         iconStyle = iconStyle.oneOf(*Ids.iconStyle),
+        artSet = artSet?.takeIf { it == ArtSets.OFF || ArtSets.isSet(it) },
+        systemArtSets = ArtSets.sanitize(systemArtSets),
         motion = motion.oneOf(*Ids.motion),
         swapStyle = swapStyle.oneOf("scatter", "push", "flip", "depth", "fade", "instant"),
         floating = floating,
@@ -224,7 +231,10 @@ data class SharedLook(
          * The look settings of [look], [settings] and [extras] that may travel. [wallTop] and [wallBottom] are
          * worked out by the caller ("theme" when the picture is in the file), never a path.
          */
-        fun of(look: Look, settings: Settings, extras: ExtrasSettings, wallTop: String, wallBottom: String): SharedLook = SharedLook(
+        fun of(
+            look: Look, settings: Settings, extras: ExtrasSettings, wallTop: String, wallBottom: String,
+            systemSets: Map<String, String> = emptyMap(),
+        ): SharedLook = SharedLook(
             accent = look.accent ?: NO_ACCENT,
             highlightColor = look.highlightColor,
             highlight = look.highlight,
@@ -233,6 +243,8 @@ data class SharedLook(
             corner = look.corner,
             material = look.material,
             iconStyle = look.iconStyle,
+            artSet = look.artSet ?: ArtSets.OFF,
+            systemArtSets = systemSets.takeIf { it.isNotEmpty() },
             motion = look.motion,
             swapStyle = look.swapStyle,
             floating = extras.floating,

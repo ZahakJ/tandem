@@ -53,6 +53,7 @@
     <string name="settings_sub_wallpaper_help">それぞれの画面の壁紙と、画像や動画をどれだけ暗くするか。</string>
     <string name="settings_sub_motion">動き</string>
     <string name="settings_sub_motion_help">ものの動き方：アニメーションの種類、動きを減らす、ふわふわタイトル、動きの大きさ、画面の入れ替え方。</string>
+    <string name="settings_sub_icons_help">どこでも見える機種の姿：Tandemが描くアイコンの描き方、アートを借りるパック、そしてTandemのアートセット。</string>
     <string name="settings_sub_grid">グリッドの形</string>
     <string name="settings_sub_grid_help">アイコングリッドの段数、アイコンの角の丸さ、アイコンの間隔、グリッドの上のアート。</string>
     <string name="settings_sub_games">ゲームの見せ方</string>

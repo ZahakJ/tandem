@@ -106,6 +106,7 @@ Two exceptions where Japan has its own word: **OLED** is 有機EL (what every Ja
 | Icon grid | アイコングリッド | |
 | Icon style | アイコンの描き方 | |
 | System icons | 機種アイコン | |
+| Art set (Tandem's drawn icons, heroes, logos) | アートセット | Set names are transcreated: ゆめかわパステル, ネオン街ゲーセン, 紙ラベルのカセット, すっきりモノトーン |
 | Dock (apps dock) | ドック | |
 | Folder / Smart folder | フォルダ / スマートフォルダ | |
 | Smart folder rules | 条件 | 「条件を編集」 |

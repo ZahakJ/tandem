@@ -499,4 +499,6 @@
     <string name="grid_design_group_glyphs">Tandemのグリフ</string>
     <string name="grid_design_group_emoji">絵文字</string>
     <string name="grid_design_group_yours">自分の画像</string>
+    <string name="grid_design_group_sets">Tandemのアートセット</string>
+    <string name="grid_design_set_none">パックのアート</string>
 </resources>

@@ -78,6 +78,7 @@
     <string name="settings_sub_wallpaper_help">Le fond d’écran de chaque écran, et à quel point les images et vidéos sont assombries.</string>
     <string name="settings_sub_motion">Animations</string>
     <string name="settings_sub_motion_help">Comment tout bouge : le style d’animation, Réduire les animations, les titres flottants, l’énergie de l’ensemble et la façon dont les écrans s’inversent.</string>
+    <string name="settings_sub_icons_help">L’allure des systèmes partout : le style des icônes que Tandem dessine, le pack d’où viennent les visuels, et les collections de visuels de Tandem.</string>
     <string name="settings_sub_grid">Forme de la grille</string>
     <string name="settings_sub_grid_help">Les lignes de la grille d’icônes, l’arrondi des icônes, l’espace entre elles et les visuels au-dessus de la grille.</string>
     <string name="settings_sub_games">Affichage des jeux</string>

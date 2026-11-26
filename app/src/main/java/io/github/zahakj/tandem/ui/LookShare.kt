@@ -154,6 +154,9 @@ object LookShare {
             }
         }
 
+        // Tandem's art sets travel as their ids and are drawn again on the other handheld.
+        if (look.artSet != null) { parts += LookPart.Icons; parts += LookPart.Heroes }
+
         val name = draft.name.trim().ifEmpty { spec.name }.take(60)
         val theme = themeJson(spec, name, draft.author.trim(), draft.description.trim(), wallpaper)
         val preview = File(work, "preview.png")
@@ -164,7 +167,11 @@ object LookShare {
             created = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()),
             app = io.github.zahakj.tandem.data.Backups.appVersion(ctx).take(20),
             parts = parts.map { it.id },
-            look = SharedLook.of(look, settings, ExtrasStore.settings, wallTop, wallBottom),
+            look = SharedLook.of(
+                look, settings, ExtrasStore.settings, wallTop, wallBottom,
+                // Set ids only: pictures uploaded for a system are the user's own and stay on the handheld.
+                systemSets = io.github.zahakj.tandem.data.ArtSets.perSystem(io.github.zahakj.tandem.data.IconGridStore.config.styles),
+            ),
         )
         val out = File(work, PackImport.safeName(name) + "." + LookFile.EXTENSION)
         out.outputStream().use { LookFile.write(it, manifest, theme, files) }
@@ -401,7 +408,11 @@ object LookShare {
 
     // ---- Applying, and going back ----
 
-    private class Before(val look: io.github.zahakj.tandem.data.Look, val bottomMode: String, val floating: Boolean, val intensity: Int)
+    private class Before(
+        val look: io.github.zahakj.tandem.data.Look, val bottomMode: String, val floating: Boolean, val intensity: Int,
+        /** The art set each system the look gave one of its own had before (null: none). */
+        val systemSets: Map<String, String?> = emptyMap(),
+    )
     private var before: Before? = null
 
     /** True while the look before the last import can be put back. */
@@ -432,12 +443,15 @@ object LookShare {
         val look = s.manifest.look
         val now = Store.settings
         val extras = ExtrasStore.settings
-        before = Before(now.look, now.bottomMode, extras.floating, extras.intensity)
+        val sets = look.systemArtSets.orEmpty()
+        val grid = io.github.zahakj.tandem.data.IconGridStore
+        before = Before(now.look, now.bottomMode, extras.floating, extras.intensity, sets.keys.associateWith { grid.config.styles["s:$it"]?.artSet })
         undoable = true
         Store.updateSettings { st ->
             val l = look.applyTo(st.look).copy(theme = id, iconPack = "auto", packParts = st.look.packParts - id)
             st.copy(look = l, bottomMode = look.bottomMode ?: st.bottomMode)
         }
+        for ((id, set) in sets) grid.setStyle("s:$id", grid.config.styles["s:$id"]?.copy(artSet = set) ?: io.github.zahakj.tandem.data.FolderStyle(artSet = set))
         ExtrasStore.update { it.copy(floating = look.floating ?: it.floating, intensity = look.intensity ?: it.intensity) }
         refresh(ctx)
         Undo.offer(Tx.s(R.string.share_applied, s.name)) { undo(ctx) }
@@ -448,6 +462,8 @@ object LookShare {
         val b = before ?: return
         Store.updateSettings { it.copy(look = b.look, bottomMode = b.bottomMode) }
         ExtrasStore.update { it.copy(floating = b.floating, intensity = b.intensity) }
+        val grid = io.github.zahakj.tandem.data.IconGridStore
+        for ((id, set) in b.systemSets) grid.setStyle("s:$id", (grid.config.styles["s:$id"] ?: io.github.zahakj.tandem.data.FolderStyle()).copy(artSet = set))
         before = null
         undoable = false
         refresh(ctx)

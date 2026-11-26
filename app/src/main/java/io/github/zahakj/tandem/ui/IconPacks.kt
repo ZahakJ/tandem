@@ -18,7 +18,7 @@ object IconPacks {
     val version: Int
         get() {
             val look = Store.settings.look
-            return listOf(System.identityHashCode(ThemePacks.packs), System.identityHashCode(ThemePacks.assetPacks), look.iconPack, look.theme, look.packParts, look.accent).hashCode()
+            return listOf(System.identityHashCode(ThemePacks.packs), System.identityHashCode(ThemePacks.assetPacks), look.iconPack, look.theme, look.packParts, look.accent, look.artSet, SetArt.revision).hashCode()
         }
 
     fun systemIcon(platformId: String): File? = ThemePacks.systemIcon(platformId)
@@ -52,7 +52,7 @@ object IconPacks {
 /** Reads the packs again (off the main thread) once when a screen that shows pack art opens. */
 @Composable
 fun IconPacksDriver() {
-    LaunchedEffect(Unit) { ThemePacks.refresh() }
+    LaunchedEffect(Unit) { ThemePacks.refresh(); SetArt.warmLibrary() }
 }
 
 /**

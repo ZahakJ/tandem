@@ -140,6 +140,7 @@ object SettingsPlan {
 
     val subs: List<Sub> = listOf(
         Sub("look/wallpaper", "look", "Wallpaper", R.string.settings_sub_wallpaper, Glyph.Image, R.string.settings_sub_wallpaper_help),
+        Sub("look/icons", "look", "System icons", R.string.look_group_icons, Glyph.Gamepad, R.string.settings_sub_icons_help),
         Sub("look/motion", "look", "Motion", R.string.settings_sub_motion, Glyph.Motion, R.string.settings_sub_motion_help),
         Sub("home/grid", "home", "Grid shape", R.string.settings_sub_grid, Glyph.Corners, R.string.settings_sub_grid_help),
         Sub("home/games", "home", "How games show", R.string.settings_sub_games, Glyph.Grid, R.string.settings_sub_games_help),
@@ -162,7 +163,7 @@ object SettingsPlan {
     val pages: Map<String, List<Group>> = mapOf(
         "look" to listOf(
             Group("Colour", R.string.settings_group_colour, p("Colour & highlight", "Accent colour", "Highlight style", "Surface")),
-            Group("Wallpaper, icons & motion", R.string.settings_group_wallpaper_icons, link("look/wallpaper") + p("System icons", "Icon style", "Icons from") + link("look/motion")),
+            Group("Wallpaper, icons & motion", R.string.settings_group_wallpaper_icons, link("look/wallpaper") + link("look/icons") + link("look/motion")),
             Group("Share", R.string.settings_group_share, p("Share looks", "Share my look", "Get a look")),
             Group("Language", R.string.settings_group_language, p("Language", "Language", "Calendar")),
             Group("Start over", R.string.settings_group_start_over, p("Extras", "Reset look")),
@@ -223,6 +224,7 @@ object SettingsPlan {
             ),
         ),
         "look/wallpaper" to listOf(Group("Wallpaper", R.string.settings_group_wallpaper, p("Wallpaper", "Top screen", "Bottom screen", "Picture dimming"))),
+        "look/icons" to listOf(Group("System icons", R.string.look_group_icons, p("System icons", "Icon style", "Icons from", "Art set"))),
         "look/motion" to listOf(
             Group("Motion", R.string.settings_group_motion, p("Motion", "Animation style", "Reduce motion") + p("Motion & home", "Floating titles", "Motion intensity") + p("Icon grid", "Swap animation")),
         ),

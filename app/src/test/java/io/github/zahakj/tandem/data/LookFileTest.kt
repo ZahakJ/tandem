@@ -120,7 +120,7 @@ class LookFileTest {
         val fields = (0 until d.elementsCount).map { d.getElementName(it) }.toSet()
         val expected = setOf(
             "accent", "highlightColor", "highlight", "highlightThickness", "focusScale", "corner", "material", "iconStyle",
-            "motion", "swapStyle", "floating", "intensity", "wallTop", "wallBottom", "wallDim",
+            "artSet", "systemArtSets", "motion", "swapStyle", "floating", "intensity", "wallTop", "wallBottom", "wallDim",
             "homeLayout", "homeSections", "systemTiles", "spotlightRail", "spotlightBackdrop", "spotlightMotion", "orbitGroups",
             "orbitContinue", "gameView", "folderPopup", "fullscreenFolders", "cardShape", "shelfLook", "gridSize", "gridHeroSplit",
             "gridAcross", "gridRows", "gridScroll", "gridRoundness", "gridGap", "gridLabels", "gridDetails", "gridFolders",
@@ -129,7 +129,8 @@ class LookFileTest {
         )
         assertEquals(expected, fields)
         val lookFields = Look.serializer().descriptor.let { l -> (0 until l.elementsCount).map { l.getElementName(it) }.toSet() }
-        assertTrue((fields - setOf("bottomMode", "floating", "intensity")).all { it in lookFields })
+        // systemArtSets: each system's own set, kept in icon-grid.json (FolderStyle.artSet), by id only.
+        assertTrue((fields - setOf("bottomMode", "floating", "intensity", "systemArtSets")).all { it in lookFields })
         for (never in listOf("theme", "iconPack", "packParts", "soundFiles", "hiddenFolders", "showHidden")) assertFalse(never in fields)
     }
 

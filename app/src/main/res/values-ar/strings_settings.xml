@@ -74,6 +74,7 @@
     <string name="settings_sub_wallpaper_help">خلفية كل شاشة، ومقدار تعتيم الصور والفيديوهات.</string>
     <string name="settings_sub_motion">الحركة</string>
     <string name="settings_sub_motion_help">كيف تتحرّك الأشياء: أسلوب الحركة، وتقليل الحركة، والعناوين الطائرة، ومدى حيويتها، وطريقة تبادل الشاشتين.</string>
+    <string name="settings_sub_icons_help">شكل المنصّات في كل مكان: شكل الأيقونات التي يرسمها Tandem، والحزمة التي تأتي منها الصور، ومجموعات الصور التي يرسمها Tandem بنفسه.</string>
     <string name="settings_sub_grid">شكل الشبكة</string>
     <string name="settings_sub_grid_help">صفوف شبكة الأيقونات، واستدارة أيقوناتها، والمسافة بينها، والصور فوق الشبكة.</string>
     <string name="settings_sub_games">عرض الألعاب</string>

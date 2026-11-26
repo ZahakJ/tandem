@@ -499,4 +499,6 @@
     <string name="grid_design_group_glyphs">Tandem 图形</string>
     <string name="grid_design_group_emoji">表情符号</string>
     <string name="grid_design_group_yours">你的图片</string>
+    <string name="grid_design_group_sets">Tandem 美术套组</string>
+    <string name="grid_design_set_none">图标包的图片</string>
 </resources>

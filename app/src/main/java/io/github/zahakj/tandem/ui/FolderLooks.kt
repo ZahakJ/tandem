@@ -44,6 +44,7 @@ import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.data.ArtColor
 import io.github.zahakj.tandem.data.FolderStyle
 import io.github.zahakj.tandem.data.IconGridStore
+import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.styleOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -148,7 +149,7 @@ object FolderLooks {
     private fun iconArt(plain: GridItem, style: FolderStyle, color: Color, kind: BuiltInFolder?, inset: Float): TileArt {
         val deep = lerp(color, Color.Black, 0.3f)
         fun auto(): TileArt {
-            val a = plain.art.bare
+            val a = systemArt(plain, style) ?: plain.art.bare
             return when {
                 a is TileArt.Picture -> if (inset > 0f) TileArt.Rendered(PictureArt(a.file.path, color, inset)) else a
                 kind != null -> {
@@ -179,6 +180,17 @@ object FolderLooks {
             } ?: auto()
             else -> auto()
         }
+    }
+
+    /**
+     * A system tile's own picture under [style]: its art set's icon, else the pack's, else its drawn monogram. Worked
+     * out again here (not taken from the catalog's tile) so a draft choosing another set previews it at once.
+     */
+    private fun systemArt(plain: GridItem, style: FolderStyle): TileArt? {
+        val id = plain.platformId ?: return null
+        if (plain.kind != TileKind.System || id == AndroidApps.PLATFORM_ID && style.artSet == null && Store.settings.look.artSet == null) return null
+        val f = ThemePacks.systemIcon(id, style) ?: return TileArt.Monogram(Libraries.byId(id)?.platform?.shortName ?: plain.title, plain.color)
+        return TileArt.Picture(f)
     }
 
     fun glyph(name: String?): TIcon? = name?.let { n -> TIcon.entries.firstOrNull { it.name == n } }
@@ -241,7 +253,7 @@ object FolderLooks {
 
     /** The pack's own wide art for the tile, if any. */
     private fun packHero(item: GridItem): File? =
-        item.platformId?.let { IconPacks.systemHero(it) } ?: item.collectionId?.let { IconPacks.collectionHero(it) } ?: IconPacks.folderHero(item.packNames)
+        item.platformId?.let { ThemePacks.systemHero(it, item.style) } ?: item.collectionId?.let { IconPacks.collectionHero(it) } ?: IconPacks.folderHero(item.packNames)
 
     /** A game's hero (or a screenshot when it has none). */
     fun gameHero(g: Game): File? = Libraries.of(g)?.let { it.hero(g) ?: it.screenshot(g) }
@@ -269,7 +281,7 @@ object FolderLooks {
             FolderStyle.LOGO_TEXT -> null
             FolderStyle.LOGO_FILE -> style.logoFile?.let(::File)?.takeIf { it.isFile }
             FolderStyle.LOGO_GAME -> gameOf(item, style.logoRef)?.let { g -> Libraries.of(g)?.logo(g) }
-            else -> item.platformId?.let { IconPacks.systemLogo(it) } ?: IconPacks.folderLogo(item.packNames)
+            else -> item.platformId?.let { ThemePacks.systemLogo(it, item.style) } ?: IconPacks.folderLogo(item.packNames)
         }
     }
 

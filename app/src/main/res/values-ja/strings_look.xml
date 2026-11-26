@@ -487,4 +487,11 @@
     <string name="look_grid_animated_always">いつも</string>
     <string name="look_grid_animated_focused">カーソルが乗ったとき</string>
     <string name="look_grid_animated_off">オフ</string>
+    <string name="look_art_set">アートセット</string>
+    <string name="look_art_set_help">Tandemが自分で描く、全機種ぶんのアイコン・キービジュアル・ロゴ。ひとつの描き方でそろい、パックは要りません。機種ごとに 編集 › 見た目 › アートワーク で別のセットにしたり、パックのアートのままにしたりできます。アップロードした画像はいつも最優先です。「オフ」は「アイコンの出どころ」に従います。</string>
+    <string name="look_art_set_off">オフ</string>
+    <string name="look_art_set_pastel">ゆめかわパステル</string>
+    <string name="look_art_set_neon">ネオン街ゲーセン</string>
+    <string name="look_art_set_paper">紙ラベルのカセット</string>
+    <string name="look_art_set_mono">すっきりモノトーン</string>
 </resources>

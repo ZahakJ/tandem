@@ -92,6 +92,7 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Icon grid | شبكة الأيقونات | |
 | Icon style | شكل الأيقونات | |
 | System icons | أيقونات المنصّات | |
+| Art set (Tandem's drawn icons, heroes, logos) | مجموعة الصور (مجموعات) | Set names are transcreated: حلوى الباستيل، سهرة النيون، خرطوشة بملصق ورقي، لون واحد هادئ |
 | Dock (apps dock) | شريط التطبيقات | Says what it is; it can sit on top or bottom, so no "سفلي" |
 | Folder / Smart folder | مجلد / مجلد ذكي | |
 | Collection | مجموعة (مجموعات) | |

@@ -507,6 +507,13 @@ private fun DrawScope.drawDeviceStyled(style: IconStyle, device: Device, area: R
 
 private fun Rect4.shift(by: Float) = copy(x = x + by * 0.3f, y = y + by)
 
+/**
+ * [device]'s silhouette in the box at ([x], [y]) sized [w] x [h]: the body in [body], screens and buttons in [detail],
+ * filled or outlined by [style]. For art drawn elsewhere (Tandem's art sets, SetArt.kt).
+ */
+internal fun DrawScope.drawDeviceShape(device: Device, x: Float, y: Float, w: Float, h: Float, body: Brush, detail: Color, style: DrawStyle = Fill, detailStyle: DrawStyle = style) =
+    Pen(this, Rect4(x, y, w, h), body, detail, style, detailStyle).device(device)
+
 // ---- Pixel style: the silhouette drawn small, then scaled up without smoothing ----
 
 private const val PIXELS = 22
