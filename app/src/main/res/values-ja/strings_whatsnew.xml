@@ -89,7 +89,7 @@
     <string name="whatsnew_0100_settings_body">設定は8枚のタイルから。どれも中身を映す小さな動くスケッチつきです。困ったときは「不具合を報告」で、パソコンなしでレポートを保存できます。</string>
     <string name="whatsnew_0100_settings_short">設定</string>
 
-    <string name="whatsnew_0100_music_title">ほっこり新BGM</string>
-    <string name="whatsnew_0100_music_body">ライブラリを眺めるお供に、やさしくてあたたかい新しいBGM。毛布みたいにくるんでくれます。設定 › サウンドとBGMで音量を上げてどうぞ。</string>
+    <string name="whatsnew_0100_music_title">新BGM「Plaza」</string>
+    <string name="whatsnew_0100_music_body">新しい標準のBGMは「Plaza」。ホームでは口笛のメロディ、設定ではほっこりボサノバ、スクリーンセーバーではオルゴールのワルツ、うれしい知らせには小さなファンファーレ。設定 › サウンドとBGMで変えられます。</string>
     <string name="whatsnew_0100_music_short">BGM</string>
 </resources>

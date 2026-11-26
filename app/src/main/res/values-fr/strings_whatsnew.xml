@@ -90,7 +90,7 @@
     <string name="whatsnew_0100_settings_body">Les paramètres s’ouvrent sur huit vignettes, chacune avec un petit croquis vivant de ce qu’elle contient. Un souci ? Envoyer un rapport de bug en prépare un, sans ordinateur.</string>
     <string name="whatsnew_0100_settings_short">Paramètres</string>
 
-    <string name="whatsnew_0100_music_title">Une nouvelle bande-son toute douce</string>
-    <string name="whatsnew_0100_music_body">De la musique neuve pour flâner dans ta bibliothèque, douce et chaleureuse comme un plaid. Monte le son dans Paramètres › Son et musique.</string>
+    <string name="whatsnew_0100_music_title">Plaza, une bande-son ensoleillée</string>
+    <string name="whatsnew_0100_music_body">Plaza est la nouvelle bande-son par défaut : un air sifflé à l’accueil, une petite bossa dans Paramètres, une valse de boîte à musique pour l’économiseur d’écran et une fanfare pour les bonnes nouvelles. À changer dans Paramètres › Son et musique.</string>
     <string name="whatsnew_0100_music_short">Bande-son</string>
 </resources>

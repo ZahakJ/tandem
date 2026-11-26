@@ -60,6 +60,7 @@ import io.github.zahakj.tandem.ui.Pip
 import io.github.zahakj.tandem.ui.SettingsCategories
 import io.github.zahakj.tandem.ui.SettingsHomeTile
 import io.github.zahakj.tandem.ui.SettingsTileHint
+import io.github.zahakj.tandem.ui.ShrinkText
 import io.github.zahakj.tandem.ui.WeekText
 import io.github.zahakj.tandem.ui.mirroredInRtl
 import io.github.zahakj.tandem.ui.onArt
@@ -156,50 +157,85 @@ internal fun WeekVisual() {
 
 // --- 2. Surprise me ---------------------------------------------------------------------------------------------
 
-/** Select: a reel of covers spins past, slows, and lands on one, which rises with a burst; Pip cheers. */
+/**
+ * Select: a full row of covers spins past, slows and settles, with a little bounce, on the one in the window, which
+ * pops with a burst while Pip hops; a pause, and round again.
+ */
 @Composable
 internal fun SurpriseVisual() {
-    val t = rememberLoop(4200, still = 0.9f)
-    val cover = 70f
-    val gap = 12f
+    val t = rememberLoop(5200, still = 0.75f)
+    val cover = 64f
+    val step = 76f
+    val mid = 180f
+    val cy = 94f
+    // The reel travels [laps] covers; the art repeats every nine, so where it stops looks just like where it starts
+    // and the loop comes round without a jump.
+    val laps = 18
+    val reel = { v: Float ->
+        val p = (v / 0.56f).coerceIn(0f, 1f)
+        val glide = 1f - (1f - p) * (1f - p) * (1f - p)
+        val q = ((v - 0.56f) / 0.16f).coerceIn(0f, 1f)
+        laps * glide + 0.22f * sin(q * 2f * PI.toFloat()) * (1f - q)
+    }
+    val landed = { v: Float -> seg(v, 0.57f, 0.66f) * (1f - seg(v, 0.9f, 0.98f)) }
+    val pop = { v: Float -> sin(((v - 0.57f) / 0.12f).coerceIn(0f, 1f) * PI.toFloat()) }
     Box(Modifier.fillMaxSize()) {
-        // The reel: covers sliding from the end side, fast then slower, stopping with the chosen one in the middle.
+        // The reel's band.
         Box(
-            Modifier.offset(0.dp, 46.dp).fillMaxWidth().height(110.dp).arrive(0).graphicsLayer { clip = true }
-                .background(Brush.horizontalGradient(listOf(Color.Transparent, Palette.Card.copy(alpha = 0.7f), Color.Transparent))),
-        ) {
-            for (i in 0 until 9) {
+            Modifier.offset(0.dp, (cy - 60).dp).fillMaxWidth().height(120.dp).arrive(0)
+                .background(Brush.horizontalGradient(listOf(Color.Transparent, Palette.Card.copy(alpha = 0.75f), Palette.Card.copy(alpha = 0.75f), Color.Transparent))),
+        )
+        // The covers, filling the width: each one's place follows the reel; the one in the window grows a little.
+        Box(Modifier.fillMaxSize().arrive(1)) {
+            for (j in -3..laps + 3) {
                 Box(
-                    // From the end side towards the start (offset mirrors itself in right to left), slowing to a stop
-                    // with the first cover, the chosen one, in the middle.
                     Modifier.offset {
-                        val left = 6f * (1f - seg(t.value, 0.05f, 0.62f))
-                        val x = 180f - cover / 2f + (i + left) * (cover + gap)
-                        IntOffset((x * density).roundToInt(), (20 * density).roundToInt())
-                    }.size(cover.dp, cover.dp).graphicsLayer {
-                        val landed = seg(t.value, 0.62f, 0.72f) * (1f - seg(t.value, 0.92f, 0.99f))
-                        val chosen = i == 0
-                        val s = if (chosen) 1f + 0.2f * landed else 1f - 0.1f * landed
+                        val dx = (j - reel(t.value)) * step
+                        IntOffset(((mid - cover / 2f + dx) * density).roundToInt(), ((cy - cover / 2f) * density).roundToInt())
+                    }.size(cover.dp).graphicsLayer {
+                        val dx = (j - reel(t.value)) * step
+                        val near = (1f - abs(dx) / step).coerceIn(0f, 1f)
+                        val chosen = j == laps
+                        val l = landed(t.value)
+                        val s = 1f + 0.12f * near + (if (chosen) 0.14f * l + 0.1f * pop(t.value) else -0.08f * l)
                         scaleX = s; scaleY = s
-                        alpha = if (chosen) 1f else 1f - 0.5f * landed
+                        val edge = (abs(dx) / (mid + cover / 2f)).coerceIn(0f, 1f)
+                        alpha = (1f - 0.7f * edge * edge) * (if (chosen) 1f else 1f - 0.45f * l)
                         shape = RoundedCornerShape(12.dp); clip = true
-                        shadowElevation = if (chosen) 18f * density * landed else 0f
+                        shadowElevation = if (chosen) 18f * density * l else 0f
                         ambientShadowColor = Palette.Peach; spotShadowColor = Palette.Peach
                     },
-                ) { SampleCover(i + 1, Modifier.fillMaxSize()) }
+                ) { SampleCover(((j % 9) + 9) % 9 + 1, Modifier.fillMaxSize()) }
             }
         }
-        // The burst round the chosen one.
+        // The window the reel stops in, with a pointer above and below; it lights as the cover lands.
         Canvas(Modifier.fillMaxSize().arrive(1)) {
-            val b = seg(t.value, 0.64f, 0.85f) * (1f - seg(t.value, 0.9f, 0.97f))
+            val l = landed(t.value)
+            val c = Offset(size.width / 2f, cy.dp.toPx())
+            val half = 46.dp.toPx()
+            val ring = Palette.Peach.copy(alpha = 0.45f + 0.55f * l)
+            drawRoundRect(ring, Offset(c.x - half, c.y - half), Size(half * 2f, half * 2f), CornerRadius(16.dp.toPx()), style = Stroke((2f + 1.5f * l).dp.toPx()))
+            val tip = 7.dp.toPx()
+            for (dir in listOf(-1f, 1f)) {
+                val y = c.y + dir * (half + 4.dp.toPx())
+                drawPath(
+                    Path().apply { moveTo(c.x - tip, y + dir * tip); lineTo(c.x + tip, y + dir * tip); lineTo(c.x, y); close() },
+                    Palette.Peach,
+                )
+            }
+            // The burst: rays and confetti round the chosen one.
+            val b = seg(t.value, 0.58f, 0.8f) * (1f - seg(t.value, 0.86f, 0.95f))
             if (b <= 0f) return@Canvas
-            val c = Offset(size.width / 2f, (46 + 20 + 35).dp.toPx())
-            for (k in 0 until 10) {
-                val a = k / 10f * 2f * PI.toFloat()
-                val r1 = (48 + 18 * b).dp.toPx()
-                val r2 = r1 + 10.dp.toPx() * b
+            for (k in 0 until 12) {
+                val a = (k / 12f + 1f / 24f) * 2f * PI.toFloat()
+                val r1 = (50 + 20 * b).dp.toPx()
+                val r2 = r1 + 12.dp.toPx() * b
                 val col = Palette.accents[k % Palette.accents.size]
-                drawLine(col.copy(alpha = b), Offset(c.x + kotlin.math.cos(a) * r1, c.y + sin(a) * r1), Offset(c.x + kotlin.math.cos(a) * r2, c.y + sin(a) * r2), 3.dp.toPx())
+                val ca = kotlin.math.cos(a)
+                val sa = sin(a)
+                drawLine(col.copy(alpha = b), Offset(c.x + ca * r1, c.y + sa * r1), Offset(c.x + ca * r2, c.y + sa * r2), 3.dp.toPx())
+                val r3 = (60 + 44 * b).dp.toPx()
+                drawCircle(col.copy(alpha = b * 0.9f), 2.5.dp.toPx(), Offset(c.x + kotlin.math.cos(a + 0.26f) * r3, c.y + sin(a + 0.26f) * r3 + 10.dp.toPx() * b * b))
             }
         }
         Row(Modifier.align(Alignment.BottomStart).padding(start = 14.dp, bottom = 12.dp).arrive(2), verticalAlignment = Alignment.CenterVertically) {
@@ -212,8 +248,8 @@ internal fun SurpriseVisual() {
             ) { ButtonHint("Select", Tx.s(R.string.controls_command_surprise), Palette.Peach, tappable = false) }
         }
         Pip(
-            44.dp, Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 6.dp).arrive(3)
-                .graphicsLayer { translationY = -10.dp.toPx() * seg(t.value, 0.64f, 0.72f) * (1f - seg(t.value, 0.76f, 0.86f)) },
+            44.dp, Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 8.dp).arrive(3)
+                .graphicsLayer { translationY = -14.dp.toPx() * pop(t.value) },
             mood = 1, bounce = false,
         )
     }
@@ -232,7 +268,7 @@ internal fun DiscsVisual() {
             Box(
                 Modifier.offset {
                     val s = stack(t.value)
-                    val apart = (24 + d * 82).dp.toPx()
+                    val apart = (14 + d * 64).dp.toPx()
                     val together = (106 + d * 6).dp.toPx()
                     IntOffset((apart + (together - apart) * s).roundToInt(), (34 - d * 6 * s).dp.roundToPx())
                 }.size(74.dp, 96.dp).arrive(d).graphicsLayer { shape = RoundedCornerShape(12.dp); clip = true; shadowElevation = 6f * density },
@@ -259,14 +295,12 @@ internal fun DiscsVisual() {
         }
         // Settings › Library: Make playlists, and the file it writes.
         Column(
-            Modifier.offset(222.dp, 56.dp).width(126.dp).arrive(3).card().padding(10.dp),
+            Modifier.offset(214.dp, 40.dp).width(136.dp).arrive(3).card().padding(10.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                GlyphChip(Glyph.Music, Palette.Sky, size = 24.dp, round = true)
-                Spacer(Modifier.width(6.dp))
-                Text(Tx.s(R.string.library_playlists_row), style = MaterialTheme.typography.labelMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            }
+            // The chip over the row's name, so the name has the card's whole width (and up to three lines) to itself.
+            GlyphChip(Glyph.Music, Palette.Sky, size = 24.dp, round = true)
+            ShrinkText(Tx.s(R.string.library_playlists_row), MaterialTheme.typography.labelLarge, Modifier.fillMaxWidth().height(54.dp), maxLines = 3)
             Row(
                 Modifier.graphicsLayer { alpha = seg(t.value, 0.5f, 0.62f) * (1f - seg(t.value, 0.9f, 0.98f)) }
                     .clip(RoundedCornerShape(8.dp)).background(Palette.Sky.copy(alpha = 0.16f)).padding(horizontal = 8.dp, vertical = 4.dp),
@@ -290,17 +324,28 @@ internal fun DiscsVisual() {
 internal fun SmartVisual() {
     val t = rememberLoop(6400, still = 0.7f)
     val any by remember { derivedStateOf { t.value in 0.55f..0.95f } }
+    // Each rule by its short name (as the search filters and the game's facts say it), so it fits beside its value.
     val rules = listOf(
-        Triple(Glyph.Star, Tx.s(R.string.grid_form_rating_from), Tx.s(R.string.grid_form_stars_at_least, "4")),
-        Triple(Glyph.Gamepad, Tx.s(R.string.grid_form_developer), "Capcom"), // tx-ok: a studio's name, as in the help
-        Triple(Glyph.Clock, Tx.s(R.string.grid_form_played_more), Tx.p(R.plurals.grid_form_hours, 10, 10)),
+        Triple(Glyph.Star, Tx.s(R.string.menus_search_filter_rating), "★ 4+"), // tx-ok: stars
+        Triple(Glyph.Gamepad, Tx.s(R.string.library_edit_developer), "Capcom"), // tx-ok: a studio's name, as in the help
+        Triple(Glyph.Clock, Tx.s(R.string.screens_fact_play_time), Tx.p(R.plurals.grid_form_hours, 10, 10)),
         Triple(Glyph.Refresh, Tx.s(R.string.grid_form_last), Tx.s(R.string.grid_form_last_never)),
     )
     Box(Modifier.fillMaxSize()) {
-        Column(Modifier.offset(10.dp, 8.dp).width(196.dp).arrive(0).card(corner = 18.dp).padding(6.dp)) {
+        Column(Modifier.offset(8.dp, 8.dp).width(222.dp).arrive(0).card(corner = 18.dp).padding(6.dp)) {
             rules.forEachIndexed { i, (glyph, label, value) ->
-                Box(Modifier.graphicsLayer { alpha = 0.35f + 0.65f * seg(t.value, 0.05f + i * 0.08f, 0.12f + i * 0.08f) }) {
-                    MenuPill(glyph, label, Palette.Lavender, value = value)
+                Row(
+                    Modifier.fillMaxWidth().height(34.dp).padding(horizontal = 5.dp)
+                        .graphicsLayer { alpha = 0.35f + 0.65f * seg(t.value, 0.05f + i * 0.08f, 0.12f + i * 0.08f) },
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    GlyphChip(glyph, Palette.Lavender, size = 24.dp, round = true)
+                    Spacer(Modifier.width(8.dp))
+                    FitText(label, MaterialTheme.typography.titleSmall, Modifier.weight(1f), minScale = 0.7f)
+                    Spacer(Modifier.width(6.dp))
+                    Box(Modifier.clip(RoundedCornerShape(50)).background(Palette.Lavender.copy(alpha = 0.22f)).padding(horizontal = 8.dp, vertical = 2.dp)) {
+                        Text(value, style = MaterialTheme.typography.labelMedium, color = Palette.Lavender, maxLines = 1, softWrap = false)
+                    }
                 }
             }
             Spacer(Modifier.height(4.dp))
@@ -320,7 +365,7 @@ internal fun SmartVisual() {
         for (i in 0 until 4) {
             val slot = order.indexOf(i)
             Row(
-                Modifier.offset { IntOffset(220.dp.roundToPx(), (12 + slot * 52).dp.roundToPx()) }.width(130.dp).arrive(1 + i),
+                Modifier.offset { IntOffset(240.dp.roundToPx(), (12 + slot * 52).dp.roundToPx()) }.width(112.dp).arrive(1 + i),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SampleCover(i + 10, Modifier.size(40.dp, 44.dp).clip(RoundedCornerShape(8.dp)))
@@ -471,14 +516,15 @@ internal fun SettingsVisual() {
     val glyphs = listOf(Glyph.Theme, Glyph.Home, Glyph.Screens, Glyph.Music, Glyph.Gamepad, Glyph.Cartridge, Glyph.Chart, Glyph.Search)
     val at by remember { derivedStateOf { (t.value * 8f).toInt().coerceIn(0, 7) } }
     val shape = RoundedCornerShape(16.dp)
-    // The tiles are pictures here: they never take the focus, which stays on the deck's own buttons.
-    Box(Modifier.fillMaxSize().focusProperties { canFocus = false }) {
+    // The tiles are pictures here: they never take the focus, which stays on the deck's own buttons. Laid out near
+    // their real size and scaled down as one, so every page's name has the room it has on the Settings home.
+    DesignBox(Modifier.fillMaxSize().focusProperties { canFocus = false }, width = 496.dp, height = 328.dp) {
         for (i in ids.indices) {
             val r = i / 4
             val c = i % 4
             val name = if (ids[i] == "search") Tx.s(R.string.settings_hint_search) else SettingsCategories.title(ids[i])
             Box(
-                Modifier.offset((8 + c * 87).dp, (6 + r * 112).dp).size(80.dp, 104.dp).arrive(i).graphicsLayer {
+                Modifier.offset((4 + c * 124).dp, (4 + r * 164).dp).size(116.dp, 156.dp).arrive(i).graphicsLayer {
                     val on = i == at
                     val s = if (on) 1.06f else 1f
                     scaleX = s; scaleY = s

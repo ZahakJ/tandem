@@ -114,8 +114,9 @@
     <string name="whatsnew_0100_settings_body">Settings opens on eight tiles, each with a tiny live sketch of what\'s inside. Something odd? Send a bug report saves one for you, no computer needed.</string>
     <string name="whatsnew_0100_settings_short">Settings</string>
 
-    <!-- The last slide: a new soundtrack made for this version. -->
-    <string name="whatsnew_0100_music_title">A new cozy soundtrack</string>
-    <string name="whatsnew_0100_music_body">Fresh music to browse by, soft and warm, like a blanket for your library. Turn it up in Settings › Sound &amp; music.</string>
+    <!-- The last slide: Plaza, the new default soundtrack, and its four pieces (home, Settings, the screensaver, the
+         jingle for good news). Plaza is a name: it stays as it is. -->
+    <string name="whatsnew_0100_music_title">Plaza, a sunny new soundtrack</string>
+    <string name="whatsnew_0100_music_body">Plaza is the new default: a whistled tune at home, a cozy bossa in Settings, a music-box waltz for the screensaver and a little fanfare for good news. Swap it in Settings › Sound &amp; music.</string>
     <string name="whatsnew_0100_music_short">Soundtrack</string>
 </resources>

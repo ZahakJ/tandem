@@ -4,4 +4,4 @@
 - Search filters: system, genre, year, rating, status and more.
 - RetroAchievements: full lists, players' hints, disc matching.
 - Settings home of eight live tiles; bug reports without adb.
-- A What's new tour after each update; a new cozy soundtrack.
+- What's new tour after updates; Plaza, a sunny new default soundtrack.

@@ -62,8 +62,8 @@ private val deck090 = Deck(
 
 /**
  * 0.10: This week, Surprise me's reel, multi-disc games, smarter sorting and rules, search filters, RetroAchievements
- * up close, the Settings home, and the new soundtrack last (its words and picture stand in until the music is final:
- * a cozy tune, an equaliser and notes). Pictures in Visuals010.kt.
+ * up close, the Settings home, and Plaza, the new soundtrack, last (an equaliser, notes and
+ * Pip). Pictures in Visuals010.kt.
  */
 private val deck0100 = Deck(
     "0.10.0", R.string.whatsnew_0100_tagline,

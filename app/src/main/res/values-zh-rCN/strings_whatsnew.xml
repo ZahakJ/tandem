@@ -89,7 +89,7 @@
     <string name="whatsnew_0100_settings_body">设置首页是八个图块，每块都有一幅会动的小速写，展示里面的内容。遇到怪事？「发送错误报告」帮你存一份，不用电脑。</string>
     <string name="whatsnew_0100_settings_short">设置</string>
 
-    <string name="whatsnew_0100_music_title">温馨的新配乐</string>
-    <string name="whatsnew_0100_music_body">全新的背景音乐，柔和温暖，像给游戏库盖上一条小毯子。在 设置 › 声音与音乐 里调大音量吧。</string>
+    <string name="whatsnew_0100_music_title">阳光满满的新配乐 Plaza</string>
+    <string name="whatsnew_0100_music_body">新的默认配乐是 Plaza：主页有口哨小调，设置里是温馨的波萨诺瓦，屏保时是八音盒华尔兹，有好消息时还有一小段欢快号角。可在 设置 › 声音与音乐 里更换。</string>
     <string name="whatsnew_0100_music_short">配乐</string>
 </resources>
