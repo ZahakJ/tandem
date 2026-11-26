@@ -247,6 +247,9 @@ object IconGrid {
     var folderShown: io.github.zahakj.tandem.data.GridShown? = null
     /** The home tile the D-pad left the grid from (Down into the dock): Up from the dock goes back to it. */
     var leftFrom: String? = null
+    /** The dock's icons in order, and the one last highlighted: where the D-pad goes when it leaves the grid's edge towards the dock. */
+    var dockKeys: List<String> = emptyList()
+    var lastDock: String? = null
     /** The tiles on the home grid now (not its empty spots, the dock or the strip), for holding Y ([gridCanGrab]). */
     internal var homeTiles: Set<String> = emptySet()
     /** Add to home puts what is picked in this slot (an empty spot's "Add to this spot…"); null: after the last tile. */
@@ -2026,7 +2029,21 @@ internal fun slotKey(e: KeyEvent, nav: SlotFocus, route: String, keys: List<Stri
     if (cur < 0) return false
     val from = if (nav.item == cur && nav.cell >= 0) nav.cell else cur
     val c = GridSlots.stepFocus(keys.size, owners, lanes, cur, from, dLine, dLane)
-    if (c == null) { if (route == Route.Home.key) IconGrid.leftFrom = keys[cur]; return false }
+    if (c == null) {
+        if (route == Route.Home.key) {
+            IconGrid.leftFrom = keys[cur]
+            // Towards the dock: straight to it (the last icon used there, or the middle one). Left to focus search, a
+            // tall card beside the grid (the Continue card) could win and the dock could never be reached.
+            val toDock = if (Store.settings.look.dockTop) Key.DirectionUp else Key.DirectionDown
+            val dock = IconGrid.dockKeys
+            if (e.key == toDock && dock.isNotEmpty()) {
+                val k = IconGrid.lastDock?.takeIf { it in dock } ?: dock[dock.size / 2]
+                // Focused directly: a focus hand-back (Nav.focusTick) would let the Continue card take it first.
+                if (PageFocus.request(route, k)) { FocusMemory.remember(route, k); return true }
+            }
+        }
+        return false
+    }
     if (c < 0) return true
     val o = owners.getOrElse(c) { -1 }.let { if (it >= 0) it else c }
     val k = keys.getOrNull(o)?.takeIf { !isCoveredKey(it) } ?: return true
@@ -2094,6 +2111,7 @@ private fun PillDock(dock: List<String>, target: String?, modifier: Modifier) {
     val look = Store.settings.look
     val shape = dockIconShape
     PrefetchAppLooks(dock)
+    androidx.compose.runtime.SideEffect { IconGrid.dockKeys = listOf("app:*") + dock.map { "app:$it" } }
     Row(
         // A background in the pill shape, not a clip: a highlighted icon grows and glows past the pill.
         modifier.background(Palette.Card.copy(alpha = if (look.dockBackground) 0.86f else 0f), RoundedCornerShape(50))
@@ -2133,7 +2151,7 @@ private fun DockIcon(
         // On the icon grid a long press never opens a menu (Y does); a hold here just highlights.
         onLongPress = {},
         // An app (or All apps, "app:*") shows its own details on the other screen.
-        onFocus = { onFocus(); IconGrid.spot = null; Selection.current = if (key.startsWith("app:")) Selected.App(key.removePrefix("app:")) else Selected.Home },
+        onFocus = { onFocus(); IconGrid.lastDock = key; IconGrid.spot = null; Selection.current = if (key.startsWith("app:")) Selected.App(key.removePrefix("app:")) else Selected.Home },
         entry = key != "app:*",
         onClick = onClick,
     ) { content() }

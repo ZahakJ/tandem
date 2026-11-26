@@ -185,6 +185,11 @@ object PageFocus {
     fun find(root: android.view.View, route: String, item: String?): FocusRequester? =
         item?.let { entries.values.firstOrNull { e -> e.root === root && e.shown && e.route == route && e.item == it }?.requester }
 
+    /** Moves the focus straight to [item] on [route], wherever it is on screen; false if it isn't there. */
+    fun request(route: String, item: String): Boolean =
+        entries.values.firstOrNull { it.shown && it.route == route && it.item == item }
+            ?.let { runCatching { it.requester.requestFocus() }.isSuccess } ?: false
+
     /** Asks [requester] for the focus; true once [done] says it worked (checked after a frame). */
     suspend fun take(requester: FocusRequester, done: () -> Boolean): Boolean {
         runCatching { requester.requestFocus() }
