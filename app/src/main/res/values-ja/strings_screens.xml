@@ -114,4 +114,8 @@
     <plurals name="screens_discs">
         <item quantity="other">ディスク%1$d枚</item>
     </plurals>
+    <string name="screens_comp_achievements">実績</string>
+    <string name="screens_comp_ach_no_game">いまライブラリにこのゲームが見つかりません。</string>
+    <string name="screens_comp_ach_empty">この絞り込みではもう残っていません。おみごと！</string>
+    <string name="screens_comp_ach_tap">実績をタップするとプレイヤーのヒントが見られます。</string>
 </resources>

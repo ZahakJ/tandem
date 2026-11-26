@@ -313,6 +313,14 @@ fun GameMenu() {
                     Nav.closeOverlays(); SteamUi.openFor(g)
                 })
             }
+            // A RetroAchievements game's list, once signed in (RaUi.kt); the count from what is already known.
+            if (RaUi.applies(g)) {
+                val ra = io.github.zahakj.tandem.RetroAchievements.cachedProgress(g)
+                add(MenuAction("ra", Tx.s(R.string.menus_game_achievements), Glyph.Trophy, Palette.Butter, value = ra?.takeIf { it.total > 0 }?.let { "${it.earned} / ${it.total}" },
+                    help = Tx.s(R.string.menus_game_achievements_ra_help)) {
+                    Nav.closeOverlays(); RaUi.openFor(g)
+                })
+            }
             add(MenuAction("edit", Tx.s(R.string.menus_game_edit), Glyph.Pencil, Palette.Butter, value = if (meta.lockedFields.isNotEmpty()) Tx.p(R.plurals.menus_game_edit_locked, meta.lockedFields.size) else null,
                 help = Tx.s(R.string.menus_game_edit_help)) {
                 GameEditor.edit(g); Nav.closeOverlays()
@@ -587,10 +595,19 @@ object SearchState {
     var query by mutableStateOf("")
     /** Whether the results (rather than the keyboard) were used last, so focus goes back to the right side. */
     var inResults by mutableStateOf(false)
+    /** The filters (SearchFilters.kt): kept for the session, like the text. */
+    var filter by mutableStateOf(io.github.zahakj.tandem.data.SearchFilter())
+    /** Whether the filter row holds the focus (it counts as the results' side too). */
+    var inFilters by mutableStateOf(false)
+    /** The chip whose sheet of values is open. */
+    var sheet by mutableStateOf<io.github.zahakj.tandem.data.SearchFilter.Chip?>(null)
 }
 
-/** One game with its title prepared for matching. */
-private class Searchable(val game: Game, val text: String)
+/** The most results shown at once; the count says how many there are in all. */
+private const val SEARCH_SHOWN = 200
+
+/** One game with its title prepared for matching, and what the filters look at. */
+private class Searchable(val game: Game, val text: String, val view: io.github.zahakj.tandem.data.SmartGame)
 
 /** X anywhere: a controller-friendly keyboard on the left, live results on the right. */
 @Composable
@@ -598,32 +615,43 @@ fun SearchOverlay() {
     val ctx = LocalContext.current
     val open = Nav.search
     // X deletes a letter and Y opens the game menu for the highlighted result, while search is on top.
-    InterceptButtons(open && Nav.menuFor == null && Nav.groupMenu.not() && TextEntry.request == null && !GameEditor.isOpen) { b ->
+    InterceptButtons(open && Nav.menuFor == null && Nav.groupMenu.not() && TextEntry.request == null && !GameEditor.isOpen && SearchState.sheet == null) { b ->
         when (b) {
             Button.X -> SearchState.query = SearchState.query.dropLast(1)
-            Button.Y -> (Selection.current as? Selected.GameItem)?.takeIf { SearchState.inResults }?.let { Nav.openMenu(it.game) }
+            Button.Y -> (Selection.current as? Selected.GameItem)?.takeIf { SearchState.inResults && !SearchState.inFilters }?.let { Nav.openMenu(it.game) }
+            // L1 / R1 move along the filter row while it has the focus.
+            Button.L1, Button.R1 -> if (SearchState.inFilters) SearchFilters.move(if (b == Button.R1) 1 else -1)
             else -> Unit
         }
         true
     }
-    LaunchedEffect(open) { if (open) SearchState.inResults = false }
+    LaunchedEffect(open) { if (open) { SearchState.inResults = false; SearchState.inFilters = false } }
+    val showHidden = Privacy.view
+    val libs = Libraries.all
+    val meta = Store.meta
+    val index = remember(libs, meta, showHidden, open) {
+        if (!open) emptyList() else {
+            val tidied = HashMap<String, String>()
+            Collections.visibleGames().map { Searchable(it, normalize(it.title), Collections.filterView(it, tidied)) }
+        }
+    }
     Scrim(open, onClose = { Nav.closeOverlays() }) {
         val query = SearchState.query
-        val meta = Store.meta
-        val showHidden = Privacy.view
-        val libs = Libraries.all
-        val index = remember(libs, meta, showHidden) { Collections.visibleGames().map { Searchable(it, normalize(it.title)) } }
         val q = normalize(query)
-        val results = remember(q, index) { if (q.isEmpty()) emptyList() else index.filter { it.text.contains(q) }.take(60).map { it.game } }
+        val filter = SearchState.filter
+        // The typed text and the filters together; with nothing typed, the filters alone browse the library.
+        val (results, total) = remember(q, index, filter) {
+            io.github.zahakj.tandem.data.SearchFilter.results(index, q, filter, SEARCH_SHOWN, { it.text }, { it.view }).let { (l, n) -> l.map { it.game } to n }
+        }
         // Systems, apps and settings that match too, as chips above the games (QuickFind.kt).
         val finds = rememberQuickFinds(q)
         // The bottom screen previews the first match while typing.
         LaunchedEffect(results) {
             if (!SearchState.inResults) results.firstOrNull()?.let { Selection.current = Selected.GameItem(it) }
         }
-        LaunchedEffect(results.isEmpty() && finds.isEmpty()) { if (results.isEmpty() && finds.isEmpty()) SearchState.inResults = false }
+        LaunchedEffect(results.isEmpty() && finds.isEmpty()) { if (results.isEmpty() && finds.isEmpty() && !SearchState.inFilters) SearchState.inResults = false }
         // B in the results goes back to the keyboard first.
-        BackHandler(enabled = open && SearchState.inResults && Nav.menuFor == null) { SearchState.inResults = false }
+        BackHandler(enabled = open && SearchState.inResults && Nav.menuFor == null) { SearchState.inResults = false; SearchState.inFilters = false }
         val keyTarget = rememberFocusTarget("search", KEYS.map { "key:$it" })
         val resultKeys = finds.map { it.key } + results.map { it.key }
         val resultTarget = rememberFocusTarget("search:results", resultKeys)
@@ -664,51 +692,72 @@ fun SearchOverlay() {
                 }
             }
             Spacer(Modifier.width(14.dp))
-            Box(Modifier.weight(1f).fillMaxHeight()) {
+            Column(Modifier.weight(1f).fillMaxHeight()) {
+                // The filters, above the results; Up from the first row of results reaches them.
+                SearchFilterRow(index.map { it.game }, SearchState.inFilters)
+                Box(Modifier.weight(1f).fillMaxWidth()) {
                 if (results.isEmpty() && finds.isEmpty()) {
                     Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Pip(70.dp, mood = if (q.isEmpty()) 0 else 2)
-                        Text(if (q.isEmpty()) Tx.s(R.string.menus_search_empty) else Tx.s(R.string.menus_search_none, query.trim()), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        Pip(70.dp, mood = if (q.isEmpty() && !filter.active) 0 else 2)
+                        Text(
+                            when {
+                                q.isNotEmpty() -> Tx.s(R.string.menus_search_none, query.trim())
+                                filter.active -> Tx.s(R.string.menus_search_filter_none)
+                                else -> Tx.s(R.string.menus_search_empty)
+                            },
+                            style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                        )
                         if (q.isNotEmpty()) Text(Tx.s(R.string.menus_search_accents), style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
+                        if (q.isEmpty() && !filter.active) Text(Tx.s(R.string.menus_search_filter_tip), style = MaterialTheme.typography.bodySmall, color = Palette.Muted)
                     }
                 } else {
                     Column(Modifier.fillMaxSize()) {
                         val grid = rememberLazyGridState()
+                        val inGrid = SearchState.inResults && !SearchState.inFilters
                         LazyVerticalGrid(
-                            GridCells.Adaptive(92.dp), Modifier.weight(1f).fadingEdges(grid).onFocusChanged { if (it.hasFocus) SearchState.inResults = true },
+                            GridCells.Adaptive(92.dp), Modifier.weight(1f).fadingEdges(grid).onFocusChanged { if (it.hasFocus) { SearchState.inResults = true; SearchState.inFilters = false } },
                             state = grid,
                             // Room on every side, so the highlighted result (which grows) is never cut off at the top;
                             // rows scrolled past fade out instead of being cut.
                             contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(14.dp),
                         ) {
                             if (finds.isNotEmpty()) {
-                                item("quickfind", span = { GridItemSpan(maxLineSpan) }) { QuickFindRow(finds, "search:results", SearchState.inResults, resultTarget) }
+                                item("quickfind", span = { GridItemSpan(maxLineSpan) }) { QuickFindRow(finds, "search:results", inGrid, resultTarget) }
                             }
                             items(results, key = { it.key }) { g ->
                                 GameCard(
-                                    g, Modifier.aspectRatio(0.8f).takesFocus("search:results", g.key, SearchState.inResults && resultTarget == g.key),
+                                    g, Modifier.aspectRatio(0.8f).takesFocus("search:results", g.key, inGrid && resultTarget == g.key),
                                     onFocus = { Selection.current = Selected.GameItem(g) },
                                     onClick = { Nav.closeOverlays(); Launcher.launch(ctx, g) }, showTitle = true,
                                 )
                             }
                         }
-                        if (SearchState.inResults) {
+                        if (inGrid) {
                             // The chips are one grid item above the games.
                             val at = resultKeys.indexOf(resultTarget)
                             KeepInView(grid, if (finds.isEmpty() || at < 0) at else if (at < finds.size) 0 else at - finds.size + 1)
                         }
                         Row(Modifier.padding(horizontal = 18.dp, vertical = 2.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Text(Tx.p(if (results.size >= 60) R.plurals.menus_search_matches_more else R.plurals.menus_search_matches, results.size), style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
+                            // How many games match in all (the grid shows the first SEARCH_SHOWN).
+                            Text(Tx.p(if (total > results.size) R.plurals.menus_search_matches_more else R.plurals.menus_search_matches, total), style = MaterialTheme.typography.labelLarge, color = Palette.Muted)
                             Spacer(Modifier.weight(1f))
-                            ButtonHint("A", Tx.s(R.string.menus_search_play), Palette.Mint)
-                            ButtonHint("Y", Tx.s(R.string.menus_search_options), Palette.Butter)
+                            if (SearchState.inFilters) {
+                                ButtonHint("L1 R1", Tx.s(R.string.menus_search_filter_move), Palette.Sky)
+                                ButtonHint("A", Tx.s(R.string.common_choose), Palette.Mint)
+                            } else {
+                                ButtonHint("A", Tx.s(R.string.menus_search_play), Palette.Mint)
+                                ButtonHint("Y", Tx.s(R.string.menus_search_options), Palette.Butter)
+                            }
                             ButtonHint("B", Tx.s(R.string.menus_search_keys), Palette.Lavender)
                         }
                     }
                 }
+                }
             }
         }
     }
+    // A chip's values (SearchFilters.kt), over the search.
+    SearchFilterSheet(index.map { it.game to it.view })
 }
 
 /** One line of text that always shows its end (the latest letters typed), scrolling the start out of view. */

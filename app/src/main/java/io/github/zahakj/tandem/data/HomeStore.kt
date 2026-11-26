@@ -64,6 +64,8 @@ data class RaAccount(
     val key: String = "",
     val enabled: Boolean = false,
     val matches: Map<String, Int> = emptyMap(),
+    /** The disc-hashing revision (RaDisc.REVISION) the matches were made with: older "no match"es of disc games are looked up again. */
+    val discHashes: Int = 0,
 )
 
 /**

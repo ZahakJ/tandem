@@ -162,6 +162,7 @@ class HardcodedTextTest {
         "Dates.kt", "CalendarText.kt",
         "ui/WeekBoardUi.kt", "WeekPicks.kt", "data/WeekBoard.kt", "data/WeekStore.kt",
         "Discs.kt", "ui/Playlists.kt", "ui/SlotSpin.kt", "BugReport.kt", "data/Redact.kt",
+        "RaList.kt", "ui/RaUi.kt", "ui/SearchFilters.kt", "data/SearchFilter.kt", "ui/RaCompanion.kt",
     )
 
     /** Calls that show their string arguments, and how many leading arguments are ids, not text. */

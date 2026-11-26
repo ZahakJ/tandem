@@ -150,4 +150,8 @@
         <item quantity="one">%1$d disque</item>
         <item quantity="other">%1$d disques</item>
     </plurals>
+    <string name="screens_comp_achievements">Succès</string>
+    <string name="screens_comp_ach_no_game">Tandem ne trouve pas ce jeu dans ta bibliothèque pour l’instant.</string>
+    <string name="screens_comp_ach_empty">Plus rien sous ce filtre. Bien joué !</string>
+    <string name="screens_comp_ach_tap">Touche un succès pour les indices des joueurs.</string>
 </resources>

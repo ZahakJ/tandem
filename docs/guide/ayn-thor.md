@@ -88,6 +88,7 @@ The Game art and Tandem companion styles share these:
 - **Clip** records the next 15 seconds of the game's screen and sound, and your voice unless **Settings › Two screens › While playing › Voice in clips** is off; tap it again to stop sooner. Clips go to `ROMs/clips/` and play, with sound, in the Gallery, which can also share a picture or clip through Android's share sheet.
 - **Notes** opens the game's notebook, by touch, with screenshots straight into a note, sketches, checklists and glossaries. See [Notes](notes.md).
 - **Manual**, when the game has a manual or guide in `ROMs/manuals` (or one picked in its Edit details): bottom right in the Game art style, beside the game's name in the Tandem companion. It shows the manual on the bottom screen, page by page, under the game. Tap the sides of a page to turn, the middle to zoom, and the bar under it to jump; the page you were on is remembered for next time. See [Manuals and guides](library.md#manuals-and-guides).
+- **Achievements**, for a game with a RetroAchievements set once you are signed in, next to Manual: the set under the game, the ones still to get first (**Locked**, **Missable**, **All**). Tap one for its whole description and players' hints, which that tap fetches and which stay blurred until you tap them. It doesn't dim while open. See [RetroAchievements](library.md#retroachievements).
 
 #### Game screen
 

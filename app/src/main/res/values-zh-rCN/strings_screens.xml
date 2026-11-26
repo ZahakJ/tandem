@@ -113,4 +113,8 @@
     <plurals name="screens_discs">
         <item quantity="other">%1$d 张光盘</item>
     </plurals>
+    <string name="screens_comp_achievements">成就</string>
+    <string name="screens_comp_ach_no_game">Tandem 现在在你的游戏库里找不到这款游戏。</string>
+    <string name="screens_comp_ach_empty">这个筛选下已经全部搞定，干得漂亮！</string>
+    <string name="screens_comp_ach_tap">点一个成就，看看玩家的提示。</string>
 </resources>

@@ -41,7 +41,12 @@ look settings and pictures, from an allow-list (`SharedLook` in `data/LookFile.k
 games, the PIN, accounts, keys, folder paths or device ids, and its pictures are re-encoded, which drops their metadata.
 
 RetroAchievements is contacted only after you sign in, to show your profile and progress, and when you open
-**Find match** in a game's Edit details (never for a hidden game).
+**Find match** in a game's Edit details (never for a hidden game). A game's whole list (Y › Achievements, `ui/RaUi.kt`)
+is asked for once when it opens, and the in-game page on the bottom screen (`ui/RaCompanion.kt`) asks only when nothing
+was kept; each answer is kept in `ra/progress-<id>.json` and **Sign out** deletes them. An achievement's comments
+(`API_GetComments`, players' hints) are asked for only when A or a tap opens that achievement (`RaList.Hints`), kept
+in memory for the session, never fetched ahead or while a game plays. Disc games are matched by rcheevos' disc hashes
+computed on the device (`RaDisc.kt`), compared with the cached game list; neither files nor hashes are sent.
 
 Steam's Web API is contacted only after you enter your own Web API key and account (Settings › Library & art ›
 Accounts): once to check them (and to resolve a profile name you typed), then for each Steam game in your library when
@@ -83,7 +88,7 @@ Each source can be turned off in Settings › Library & art › Set up sources; 
 | ScreenScraper and IGDB, for system art | When you fetch system art, only if set up and switched on | ScreenScraper: your login and developer ID for `systemesListe` (every system it knows; which ones you have isn't sent), then the chosen pictures. IGDB: your client ID and secret (to Twitch), then your systems' IGDB platform ids, then their logos from images.igdb.com. |
 | Steam's video servers | Only for video snaps from LaunchBox | The trailer's address. |
 | Steam's store CDN (cdn.cloudflare.steamstatic.com) | After a library scan, for `.steam` shortcuts missing art | The app id in the shortcut, as part of the picture's address. |
-| RetroAchievements (retroachievements.org, media.retroachievements.org) | Only after you sign in (Settings › Library & art › Accounts) | Your username and web API key; the console's public game list with hashes (cached for a week); the ID of a matched game, for your progress in it; badge pictures. Games are matched by a hash computed on the device, the file is never sent. **Find match** in Edit details uses the same cached game list and sends nothing about the game; an ID you type or "No achievements" stays on the device. |
+| RetroAchievements (retroachievements.org, media.retroachievements.org) | Only after you sign in (Settings › Library & art › Accounts) | Your username and web API key; the console's public game list with hashes (cached for a week); the ID of a matched game, for your progress in it and its list; the ID of an achievement whose comments (hints) you open; badge pictures. Games are matched by a hash computed on the device (disc games too, `RaDisc.kt`); neither the file nor the hash is sent. **Find match** in Edit details uses the same cached game list and sends nothing about the game; an ID you type or "No achievements" stays on the device. |
 | Discord (discord.com, through Discord's Social SDK) | Only after you connect your account (Settings › Library & art › Accounts), in builds that include the SDK | Account linking through Discord's OAuth2 (PKCE, public client; Tandem never sees a password). While a game plays: its title, when the session started and the public address of its cover picture (thumbnails.libretro.com, cdn2.steamgriddb.com and similar, images.launchbox-app.com or images.igdb.com, which Discord's servers then fetch), or of the Tandem icon on the project site when no cover address is known. An address with a login or key in it is never sent: ScreenScraper's never, other addresses only without their query. Never for hidden games or while private mode is on. The connection opens when a game starts and closes a minute after it stops. |
 
 **Hidden games are never sent anywhere**, and neither is any game in a hidden folder or hidden system (or inside a

@@ -126,7 +126,7 @@ fun achievementsSettings(): SettingSection {
                         keywords = "retroachievements logout", en = "Sign out",
                     ) {
                         HomeStore.updateRa { RaAccountSignedOut }
-                        RetroAchievements.invalidate()
+                        RetroAchievements.forgetProgress()
                         raVersion++
                         Toasts.show(Tx.s(R.string.accounts_ra_signed_out))
                     },
@@ -156,7 +156,7 @@ class RecentUnlock(
 )
 
 /** RetroAchievements' "2024-05-01 12:00:00" (UTC) as ms; 0 when it doesn't read. */
-private fun raDateMs(date: String): Long = runCatching {
+internal fun raDateMs(date: String): Long = runCatching {
     java.time.LocalDateTime.parse(date.trim().replace(' ', 'T')).toInstant(java.time.ZoneOffset.UTC).toEpochMilli()
 }.getOrDefault(0L)
 

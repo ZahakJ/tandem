@@ -96,7 +96,13 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   cover address (`data/Covers.kt`: `GameMeta.coverUrl` from the scrape, else a lazy lookup; `CoverUrl.safe` lets only
   credential-free addresses out), or the Tandem icon.
 - `Achievements.kt`: RetroAchievements client and ROM hashing (`RaHash`); network only when signed in, never for
-  hidden games.
+  hidden games. A game's progress is kept in `filesDir/ra/progress-<id>.json`. `RaDisc.kt` (pure): rcheevos' disc
+  hashes (PlayStation, PS2, PSP, Sega CD, Saturn, PC Engine CD) over `.cue`/`.bin`, `.iso`, `.img` and `.cso`.
+  `RaList.kt` (pure): reading a set and its comments, the filters and sorts, and `Hints`, which fetches an
+  achievement's comments only when asked. Screens: `ui/RaUi.kt` (Y › Achievements) and `ui/RaCompanion.kt` (the
+  in-game page on the bottom screen).
+- Search filters: `data/SearchFilter.kt` (pure, a `SmartRule` underneath) and `ui/SearchFilters.kt` (the chips and
+  their sheets), used by `SearchOverlay` in `ui/Overlays.kt`.
 - `SteamApi.kt` (pure: Steam Web API addresses, parsing of GetPlayerAchievements, GetSchemaForGame and
   GetGlobalAchievementPercentagesForApp, the merge, the new-unlock diff, account and app id reading) and
   `SteamAchievements.kt` (fetching with the user's own key, the per-game cache in `filesDir/steam/<app id>.json`,

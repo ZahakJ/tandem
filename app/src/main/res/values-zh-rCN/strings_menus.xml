@@ -26,6 +26,7 @@
     <string name="menus_game_manual_help">游戏的说明书或攻略，一页一页翻：%1$s</string>
     <string name="menus_game_achievements">成就</string>
     <string name="menus_game_achievements_help">这款游戏的全部 Steam 成就，以及每个成就的稀有程度。</string>
+    <string name="menus_game_achievements_ra_help">这款游戏的全部 RetroAchievements 成就，可筛选，附稀有度和玩家提示。</string>
     <string name="menus_game_edit">编辑资料</string>
     <plurals name="menus_game_edit_locked">
         <item quantity="other">%1$d 项已锁定</item>
@@ -195,4 +196,23 @@
     <string name="menus_app_icon_packs_none">没有找到图标包。带平台图标的主题包会在这里显示它们的图标</string>
     <string name="menus_app_icon_packs">来自你的图标包</string>
     <string name="menus_pick_picture">图片</string>
+    <string name="menus_search_filter_system">平台</string>
+    <string name="menus_search_filter_genre">类型</string>
+    <string name="menus_search_filter_year">年份</string>
+    <string name="menus_search_filter_rating">评分</string>
+    <string name="menus_search_filter_status">状态</string>
+    <string name="menus_search_filter_played">玩过</string>
+    <string name="menus_search_filter_any">不限</string>
+    <string name="menus_search_filter_only">♥ 仅收藏</string>
+    <string name="menus_search_filter_never">从没玩过</string>
+    <string name="menus_search_filter_clear">清除筛选</string>
+    <plurals name="menus_search_filter_set">
+        <item quantity="other">已设 %1$d 项</item>
+    </plurals>
+    <plurals name="menus_search_filter_stars">
+        <item quantity="other">%1$d★ 及以上</item>
+    </plurals>
+    <string name="menus_search_filter_none">没有游戏符合这些筛选</string>
+    <string name="menus_search_filter_tip">也可以按上键筛选：平台、类型、年份…</string>
+    <string name="menus_search_filter_move">下一个筛选</string>
 </resources>

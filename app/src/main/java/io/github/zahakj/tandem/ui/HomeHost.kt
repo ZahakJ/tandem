@@ -187,6 +187,7 @@ fun HomeHost() {
     HomeExplainer()
     WidgetHost()
     SteamAchievementsPopup()
+    RaAchievementsPopup()
     ScreensaverOverlay()
 }
 

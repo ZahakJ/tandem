@@ -349,6 +349,8 @@ A smart folder fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". 
 | Sort | A–Z, Recently played, Most played, Date added or System. The folder keeps this order; the global **Sort by** doesn't apply. |
 | Open games on | **Top**, **Bottom** or **Default**. Games opened from inside the folder start on that screen, unless the game has its own screen setting. |
 
+For a quick look without making a folder, [search](controls.md#search)'s filters use the same rules: System, Genre, Year (by decade), Rating (at least), Status, Played and Favorites, with or without text typed.
+
 <kbd>Y</kbd> on a smart folder has **Edit rules…**, **Open games on** and, under More, **Convert to manual folder**, which keeps the games it holds now as an ordinary folder (as shortcuts, so they stay wherever else they are too). On an ordinary folder, **Make this a smart folder** opens the same form, starting from the systems inside it.
 
 <details>
@@ -417,6 +419,31 @@ The status shows on the other screen with the game, beside its play time against
 Tandem gives its own trophies, earned from your play and your games' statuses on every system, Switch and PC games included: 25 of them in bronze, silver and gold (play an hour, finish five games, play seven days in a row, start a game before 7 in the morning…) and a platinum **Tandem master** for earning all the others. Each one is celebrated as you earn it.
 
 They're worked out from your play history each time, so they never disagree with it; only the day each was first earned is kept.
+
+### RetroAchievements
+
+Sign in with your RetroAchievements username and Web API key in **Settings › Library & art › Accounts › RetroAchievements** (on retroachievements.org: **Settings › Keys**). Each game is matched to its RetroAchievements set the first time you highlight it:
+
+- **By the file's hash**, worked out on the handheld the way RetroAchievements does it: for cartridges and DS, and for discs: PlayStation, PlayStation 2 and PSP (their boot files), Sega CD and Saturn (the disc's header) and PC Engine CD (its boot program), from `.cue`/`.bin`, `.iso`, `.img` and `.cso` images. A game on several discs is matched by disc 1. CHD, PBP and Dreamcast images aren't read yet; those games are matched by title.
+- **Else by its title.** **Edit details › Achievements** picks another set by hand, or none.
+
+Then:
+
+- **The bottom screen** shows your progress under the highlighted game's play time.
+- **<kbd>Y</kbd> › Achievements** on the game lists the whole set: how many you have and your points (and how many in hardcore and softcore), then each achievement with its badge (grey while locked), description, points, how rare it is (the share of the game's players who have it), when you got it and in which mode, and a **Missable** tag on the ones you can miss for good. The other screen shows the highlighted one with its whole description.
+
+  | Button | What it does |
+  | --- | --- |
+  | <kbd>L1</kbd> / <kbd>R1</kbd> | Filter: All, Locked, Unlocked, Missable (with how many each) |
+  | <kbd>Y</kbd> | Sort: the set's order, rarest first, most points first |
+  | <kbd>A</kbd> | Hints: players' comments on this achievement, from RetroAchievements |
+  | <kbd>X</kbd> | Ask RetroAchievements again |
+  | <kbd>B</kbd> | Back from the hints, then close |
+
+  The hints are fetched when you press <kbd>A</kbd>, and only then. They can give the game away, so they stay blurred until you press <kbd>A</kbd> again (or tap one); **More** (or <kbd>X</kbd>) loads the next ones. The filter and sort stay as you left them until Tandem closes.
+- **While you play** (Game art and Tandem companion styles on the bottom screen), an **Achievements** chip opens the set under the game: the ones still to get first, with **Locked**, **Missable** and **All** to tap. Tap an achievement to open its description and its players' hints; that tap is the only thing that fetches them, and they are blurred until you tap them. The controller stays with the game. The page shows what was kept from the last look; **Look up again** asks RetroAchievements anew. Nothing is checked while you play otherwise.
+
+The list is kept on the handheld after it is fetched, so it opens at once and in private mode; **Sign out** deletes it. Hidden games are never matched, listed or looked up. What RetroAchievements receives is in [Privacy](privacy.md#what-is-sent-and-to-whom).
 
 ### Steam achievements
 

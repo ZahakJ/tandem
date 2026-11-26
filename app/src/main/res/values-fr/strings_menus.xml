@@ -39,6 +39,7 @@
     <string name="menus_game_manual_help">La notice ou le guide du jeu, page par page : %1$s</string>
     <string name="menus_game_achievements">Succès</string>
     <string name="menus_game_achievements_help">Tous les succès Steam de ce jeu, avec leur rareté.</string>
+    <string name="menus_game_achievements_ra_help">Tous les succès RetroAchievements de ce jeu, avec filtres, rareté et indices des joueurs.</string>
     <string name="menus_game_edit">Modifier les infos</string>
     <!-- Beside Edit details: how many details are locked (kept as the user set them). -->
     <plurals name="menus_game_edit_locked">
@@ -263,4 +264,25 @@
     <string name="menus_app_icon_packs">Depuis tes packs d’icônes</string>
     <!-- What a pick in Files is for, in its button hint ("Open · use picture"). -->
     <string name="menus_pick_picture">l’image</string>
+    <string name="menus_search_filter_system">Système</string>
+    <string name="menus_search_filter_genre">Genre</string>
+    <string name="menus_search_filter_year">Année</string>
+    <string name="menus_search_filter_rating">Note</string>
+    <string name="menus_search_filter_status">Statut</string>
+    <string name="menus_search_filter_played">Joué</string>
+    <string name="menus_search_filter_any">Tous</string>
+    <string name="menus_search_filter_only">♥ Seulement</string>
+    <string name="menus_search_filter_never">Jamais joué</string>
+    <string name="menus_search_filter_clear">Effacer les filtres</string>
+    <plurals name="menus_search_filter_set">
+        <item quantity="one">%1$d actif</item>
+        <item quantity="other">%1$d actifs</item>
+    </plurals>
+    <plurals name="menus_search_filter_stars">
+        <item quantity="one">%1$d★ et plus</item>
+        <item quantity="other">%1$d★ et plus</item>
+    </plurals>
+    <string name="menus_search_filter_none">Aucun jeu ne passe ces filtres</string>
+    <string name="menus_search_filter_tip">Ou appuie sur Haut pour filtrer : système, genre, année…</string>
+    <string name="menus_search_filter_move">Filtre suivant</string>
 </resources>

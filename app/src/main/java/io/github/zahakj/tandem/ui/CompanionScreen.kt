@@ -139,7 +139,7 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
     val motion = !Themes.still && !Store.settings.reduceMotion
     // Notes (CompanionNotes.kt) never dim: reading one, or typing on the keyboard, isn't a touch here. Another game
     // starts on its own face, not on the last game's notes.
-    LaunchedEffect(info.key) { CompanionNotes.follow(info.key); CompanionManual.follow(info.key) }
+    LaunchedEffect(info.key) { CompanionNotes.follow(info.key); CompanionManual.follow(info.key); CompanionAchievements.follow(info.key) }
     // A manual being read (ManualReader.kt) doesn't dim either: a page is read for minutes without a touch.
     val notes = CompanionNotes.open
     // Bright, dimmed or dark (ScreenOff.kt), from the mode, the Off after setting and when the panel was last touched
@@ -149,7 +149,9 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
     val manual = CompanionManual.open
     // Nor does the Deck (DeckPanel.kt): a dimmed keyboard would swallow its first key to wake up.
     val deck = activity.face.value == GameCompanion.DECK
-    val reading = notes || manual || deck
+    // Nor the achievements page (RaCompanion.kt): a hint is read, not touched.
+    val achievements = CompanionAchievements.open
+    val reading = notes || manual || deck || achievements
     val darkMode = info.mode == GameCompanion.DARK
     val offAfterMs = HomeStore.settings.companionOffAfter * 60_000L
     val touched = activity.touchedAt.value
@@ -220,6 +222,7 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
                     .background(Brush.radialGradient(listOf(tint.copy(alpha = 0.22f), Color.Transparent), radius = 900f)),
             ) {
                 val which = when {
+                    achievements -> 5
                     notes -> 2
                     manual -> 3
                     deck -> 4
@@ -228,6 +231,7 @@ fun CompanionScreen(info: CompanionInfo, activity: CompanionActivity) {
                 }
                 Crossfade(which, animationSpec = tween(400), label = "companion-mode") { w ->
                     when (w) {
+                        5 -> CompanionAchievementsPanel(info)
                         4 -> DeckPanel(info, activity)
                         3 -> CompanionManualPanel(info)
                         2 -> CompanionNotesPanel(info, activity)
@@ -435,6 +439,7 @@ private fun ArtFace(
                 DeckChip(info, activity)
                 GameScreenChip(activity)
                 ManualChip(info)
+                AchievementsChip(info) { t, c, tap -> SmallChip(t, c, tap) }
             }
         }
     }
@@ -587,6 +592,7 @@ private fun CompanionFace(
                 DeckChip(info, activity)
                 GameScreenChip(activity)
                 ManualChip(info)
+                AchievementsChip(info) { t, c, tap -> SmallChip(t, c, tap) }
             }
         }
         Spacer(Modifier.weight(1f))

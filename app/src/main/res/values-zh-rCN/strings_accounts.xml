@@ -216,4 +216,47 @@
     <plurals name="accounts_steam_more">
         <item quantity="other">……还有 %1$d 个成就。这一局太猛了！</item>
     </plurals>
+    <string name="accounts_ra_list_all">全部</string>
+    <string name="accounts_ra_list_locked">未解锁</string>
+    <string name="accounts_ra_list_unlocked">已解锁</string>
+    <string name="accounts_ra_list_missable">可错过</string>
+    <string name="accounts_ra_list_filter">筛选</string>
+    <string name="accounts_ra_list_sort_default">原始顺序</string>
+    <string name="accounts_ra_list_sort_rarity">最稀有优先</string>
+    <string name="accounts_ra_list_sort_points">分数最高</string>
+    <string name="accounts_ra_list_hints">提示</string>
+    <string name="accounts_ra_list_asking">正在询问 RetroAchievements…</string>
+    <string name="accounts_ra_list_failed">连不上 RetroAchievements</string>
+    <string name="accounts_ra_list_failed_text">之前也没有保存的内容。按 X 重试。</string>
+    <string name="accounts_ra_list_private">隐私模式下 Tandem 不联网：这是之前保存的内容</string>
+    <string name="accounts_ra_list_none_text">RetroAchievements 没有列出这款游戏的成就。</string>
+    <string name="accounts_ra_list_empty">这里空空的</string>
+    <string name="accounts_ra_list_empty_text">没有符合这个筛选的成就。用 L1 和 R1 换一个。</string>
+    <string name="accounts_ra_list_hardcore_on">硬核 · %1$s</string>
+    <string name="accounts_ra_list_hardcore_unlocked">硬核模式解锁</string>
+    <plurals name="accounts_ra_list_points">
+        <item quantity="other">%1$d / %2$d 分</item>
+    </plurals>
+    <plurals name="accounts_ra_list_hardcore">
+        <item quantity="other">硬核 %1$d 个</item>
+    </plurals>
+    <plurals name="accounts_ra_list_softcore">
+        <item quantity="other">软核 %1$d 个</item>
+    </plurals>
+    <plurals name="accounts_ra_list_pts">
+        <item quantity="other">%1$d 分</item>
+    </plurals>
+    <string name="accounts_ra_hints_title">玩家提示</string>
+    <string name="accounts_ra_hints_asking">正在获取提示…</string>
+    <string name="accounts_ra_hints_asking_text">玩家对这个成就的评论，来自 RetroAchievements。</string>
+    <string name="accounts_ra_hints_failed">没能获取提示</string>
+    <string name="accounts_ra_hints_failed_text">RetroAchievements 没有回应。稍后再试试。</string>
+    <string name="accounts_ra_hints_private">隐私模式下 Tandem 不联网，所以不会获取提示。</string>
+    <string name="accounts_ra_hints_none">还没有提示</string>
+    <string name="accounts_ra_hints_none_text">还没有人评论这个成就。去 retroachievements.org 当第一个吧。</string>
+    <string name="accounts_ra_hints_spoilers">提示可能剧透，所以先打上了马赛克。按 A 显示。</string>
+    <string name="accounts_ra_hints_spoilers_tap">提示可能剧透，所以先打上了马赛克。点一下显示。</string>
+    <string name="accounts_ra_hints_show">显示提示</string>
+    <string name="accounts_ra_hints_more">更多 · %1$d / %2$d</string>
+    <string name="accounts_ra_hints_more_short">更多</string>
 </resources>

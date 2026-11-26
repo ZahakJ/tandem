@@ -153,6 +153,18 @@ object Collections {
         }
     }
 
+    /**
+     * What search's filters (data/SearchFilter.kt) look at in [g]: the smart-folder view without the emulator, which
+     * no filter asks about. [tidied] is shared across one pass, as genre names repeat.
+     */
+    fun filterView(g: Game, tidied: HashMap<String, String>): SmartGame {
+        val m = g.meta
+        return SmartGame(
+            g.key, g.title, g.platform.id, genresOf(g, tidied), m.year, m.favorite, m.everPlayed, null,
+            m.lastPlayed, m.playSeconds, m.firstSeen, m.status, m.rating, m.developer, m.publisher,
+        )
+    }
+
     /** The package of the emulator [g] starts with, picked as [Platform.playerFor] does; null for Android games. */
     private fun emulatorOf(g: Game, players: HashMap<String, List<LaunchSpec>>): String? {
         if (g.platform.isApps) return null

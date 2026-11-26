@@ -152,4 +152,9 @@
         <item quantity="one">%1$d disc</item>
         <item quantity="other">%1$d discs</item>
     </plurals>
+    <!-- The in-game achievements page on the bottom screen (RaCompanion.kt): its chip on the companion, and its notes. -->
+    <string name="screens_comp_achievements">Achievements</string>
+    <string name="screens_comp_ach_no_game">Tandem can\'t find this game in your library right now.</string>
+    <string name="screens_comp_ach_empty">Nothing left under this filter. Nicely done!</string>
+    <string name="screens_comp_ach_tap">Tap an achievement for players\' hints.</string>
 </resources>

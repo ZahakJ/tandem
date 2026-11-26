@@ -40,6 +40,7 @@
     <string name="menus_game_manual_help">The game\'s manual or guide, page by page: %1$s</string>
     <string name="menus_game_achievements">Achievements</string>
     <string name="menus_game_achievements_help">Every Steam achievement of this game, with how rare each one is.</string>
+    <string name="menus_game_achievements_ra_help">Every RetroAchievements achievement of this game, with filters, rarity and players\' hints.</string>
     <string name="menus_game_edit">Edit details</string>
     <!-- Beside Edit details: how many details are locked (kept as the user set them). -->
     <plurals name="menus_game_edit_locked">
@@ -264,4 +265,31 @@
     <string name="menus_app_icon_packs">From your icon packs</string>
     <!-- What a pick in Files is for, in its button hint ("Open · use picture"). -->
     <string name="menus_pick_picture">picture</string>
+    <!-- Search's filter chips (SearchFilters.kt): each chip's name, with its value under it. -->
+    <string name="menus_search_filter_system">System</string>
+    <string name="menus_search_filter_genre">Genre</string>
+    <string name="menus_search_filter_year">Year</string>
+    <string name="menus_search_filter_rating">Rating</string>
+    <string name="menus_search_filter_status">Status</string>
+    <string name="menus_search_filter_played">Played</string>
+    <!-- A chip's value while it doesn't filter, and the first choice in its sheet. -->
+    <string name="menus_search_filter_any">Any</string>
+    <!-- The Favorites chip's value while on. -->
+    <string name="menus_search_filter_only">♥ Only</string>
+    <string name="menus_search_filter_never">Never played</string>
+    <string name="menus_search_filter_clear">Clear filters</string>
+    <!-- Under Clear filters: how many are set. -->
+    <plurals name="menus_search_filter_set">
+        <item quantity="one">%1$d set</item>
+        <item quantity="other">%1$d set</item>
+    </plurals>
+    <!-- The lowest rating, in stars of five. -->
+    <plurals name="menus_search_filter_stars">
+        <item quantity="one">%1$d★ and up</item>
+        <item quantity="other">%1$d★ and up</item>
+    </plurals>
+    <string name="menus_search_filter_none">No games pass these filters</string>
+    <string name="menus_search_filter_tip">Or press Up for filters: system, genre, year…</string>
+    <!-- Button hint for L1 / R1 on the filter row. -->
+    <string name="menus_search_filter_move">Next filter</string>
 </resources>

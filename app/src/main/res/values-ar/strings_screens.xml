@@ -149,4 +149,8 @@
         <item quantity="many">%1$d قرصًا</item>
         <item quantity="other">%1$d قرص</item>
     </plurals>
+    <string name="screens_comp_achievements">الإنجازات</string>
+    <string name="screens_comp_ach_no_game">لا يجد Tandem هذه اللعبة في مكتبتك الآن.</string>
+    <string name="screens_comp_ach_empty">لم يبقَ شيء تحت هذه التصفية. أحسنت!</string>
+    <string name="screens_comp_ach_tap">المس إنجازًا لترى تلميحات اللاعبين.</string>
 </resources>

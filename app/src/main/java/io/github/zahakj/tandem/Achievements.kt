@@ -33,8 +33,28 @@ object RetroAchievements {
 
     data class Profile(val user: String, val picUrl: String, val points: Int, val softPoints: Int, val memberSince: String, val richPresence: String, val motto: String)
     data class Earned(val title: String, val description: String, val points: Int, val badgeUrl: String, val game: String, val console: String, val date: String, val hardcore: Boolean)
-    data class Achievement(val title: String, val description: String, val points: Int, val badgeUrl: String, val earned: Boolean, val earnedHardcore: Boolean, val order: Int)
-    data class Progress(val raId: Int, val title: String, val total: Int, val earned: Int, val earnedHardcore: Boolean, val achievements: List<Achievement>)
+    data class Achievement(
+        val title: String, val description: String, val points: Int, val badgeUrl: String, val earned: Boolean, val earnedHardcore: Boolean, val order: Int,
+        /** RetroAchievements' id, for its comments (hints). */
+        val id: Int = 0,
+        /** RetroAchievements' type, lowercase: "missable", "progression", "win_condition", or "". */
+        val type: String = "",
+        /** How many players have it, in either mode and in hardcore. */
+        val awarded: Int = 0,
+        val awardedHardcore: Int = 0,
+        /** When the user earned it, as RetroAchievements writes it (UTC); "" while locked. */
+        val earnedAt: String = "",
+    )
+    data class Progress(
+        val raId: Int, val title: String, val total: Int, val earned: Int, val earnedHardcore: Boolean, val achievements: List<Achievement>,
+        /** How many have played the game, for each achievement's rarity; 0 when unknown. */
+        val players: Int = 0,
+        /** Points in the set, the user's points in it, and how many (and how many points) were earned in hardcore. */
+        val points: Int = 0,
+        val earnedPoints: Int = 0,
+        val hardcoreCount: Int = 0,
+        val hardcorePoints: Int = 0,
+    )
     private data class RaGame(val id: Int, val title: String, val hashes: Set<String>)
 
     private var filesDir: File? = null
@@ -42,7 +62,15 @@ object RetroAchievements {
     private val consoleLists = HashMap<Int, List<RaGame>>()
     private val progressCache = HashMap<Int, Pair<Long, Progress>>()
 
-    fun init(ctx: Context) { filesDir = ctx.applicationContext.filesDir }
+    fun init(ctx: Context) {
+        filesDir = ctx.applicationContext.filesDir
+        // Disc games (and PC Engine) were matched by title alone before RaDisc.kt: the ones that found nothing are
+        // looked up again, by hash, the next time they are highlighted. Matches found stay.
+        if (HomeStore.ra.discHashes < RaDisc.REVISION) HomeStore.updateRa { r ->
+            val retry = RaDisc.CONSOLES + RaDisc.PC_ENGINE
+            r.copy(matches = r.matches.filterNot { (k, v) -> v == 0 && consoleId(k.substringBefore('/')) in retry }, discHashes = RaDisc.REVISION)
+        }
+    }
 
     val enabled: Boolean get() = HomeStore.ra.let { it.enabled && it.user.isNotBlank() && it.key.isNotBlank() }
 
@@ -59,7 +87,7 @@ object RetroAchievements {
         "gba" -> 5
         "gbc" -> 6
         "nes", "famicom", "fds" -> 7
-        "pcengine", "tg16" -> 8
+        "pcengine", "tg16", "pcenginecd", "tgcd" -> 8
         "segacd", "megacd" -> 9
         "sega32x", "32x" -> 10
         "mastersystem", "sms" -> 11
@@ -169,7 +197,7 @@ object RetroAchievements {
         if (!enabled || Privacy.isHidden(game)) return null
         val console = consoleId(game.platform.id) ?: return null
         val list = consoleGames(console) ?: return null
-        val hash = withContext(Dispatchers.IO) { runCatching { RaHash.compute(game.file, console) }.getOrNull() }
+        val hash = withContext(Dispatchers.IO) { runCatching { RaHash.forGame(game, console) }.getOrNull() }
         val byHash = hash?.let { h -> list.filter { h in it.hashes } }.orEmpty()
         val ranked = withContext(Dispatchers.Default) { rank(listOf(game.title, game.fileTitle), list.map { it.id to it.title }, limit) }
         return (byHash.map { Candidate(it.id, it.title, true) } + ranked.map { (id, t) -> Candidate(id, t, false) })
@@ -208,39 +236,56 @@ object RetroAchievements {
         title.lowercase().replace(Regex("""\s*[(\[][^)\]]*[)\]]"""), "").replace("&", "and")
             .split(Regex("""[^a-z0-9]+""")).filter { it.isNotEmpty() && it != "the" }.toSet()
 
-    /** The user's progress in [game], or null when it isn't on RetroAchievements (or achievements are off). */
-    suspend fun progress(game: Game): Progress? {
+    /**
+     * The user's progress in [game], or null when it isn't on RetroAchievements (or achievements are off). Asked
+     * again once the last answer is [maxAgeMs] old; when asking fails (offline, private mode), the copy kept on disk
+     * from the last time answers instead.
+     */
+    suspend fun progress(game: Game, maxAgeMs: Long = PROGRESS_TTL_MS): Progress? {
         if (!enabled || Privacy.isHidden(game)) return null
         val id = gameId(game) ?: return null
         synchronized(this) {
-            progressCache[id]?.let { (at, p) -> if (System.currentTimeMillis() - at < PROGRESS_TTL_MS) return p }
+            progressCache[id]?.let { (at, p) -> if (System.currentTimeMillis() - at < maxAgeMs) return p }
         }
-        val text = call("API_GetGameInfoAndUserProgress.php", mapOf("g" to "$id", "u" to HomeStore.ra.user)) ?: return null
-        val p = runCatching {
-            val o = JSONObject(text)
-            val list = o.optJSONObject("Achievements")?.let { a -> a.keys().asSequence().mapNotNull { a.optJSONObject(it) }.toList() } ?: emptyList()
-            val achievements = list.map { x ->
-                Achievement(
-                    title = x.optString("Title"),
-                    description = x.optString("Description"),
-                    points = x.optInt("Points"),
-                    badgeUrl = "$MEDIA/Badge/${x.optString("BadgeName")}.png",
-                    earned = x.optString("DateEarned").isNotBlank() && !x.isNull("DateEarned"),
-                    earnedHardcore = x.optString("DateEarnedHardcore").isNotBlank() && !x.isNull("DateEarnedHardcore"),
-                    order = x.optInt("DisplayOrder"),
-                )
-            }.sortedBy { it.order }
-            Progress(
-                raId = id,
-                title = o.optString("Title"),
-                total = o.optInt("NumAchievements", achievements.size),
-                earned = o.optInt("NumAwardedToUser"),
-                earnedHardcore = o.optInt("NumAwardedToUserHardcore") > 0,
-                achievements = achievements,
-            )
-        }.getOrNull() ?: return null
+        val text = call("API_GetGameInfoAndUserProgress.php", mapOf("g" to "$id", "u" to HomeStore.ra.user))
+        val p = text?.let { withContext(Dispatchers.Default) { RaList.parseProgress(id, it, MEDIA) } } ?: return stored(game)
         synchronized(this) { progressCache[id] = System.currentTimeMillis() to p }
+        progressFile(id)?.let { f -> withContext(Dispatchers.IO) { runCatching { f.parentFile?.mkdirs(); f.writeText(text) } } }
         return p
+    }
+
+    /**
+     * The progress kept on disk from the last time [game] was asked about, without asking anyone: what the list and
+     * the in-game page show at once. Only for a game already matched.
+     */
+    suspend fun stored(game: Game): Progress? {
+        if (!enabled || Privacy.isHidden(game)) return null
+        val id = knownMatch(game)?.takeIf { it > 0 } ?: return null
+        synchronized(this) { progressCache[id]?.let { return it.second } }
+        val f = progressFile(id) ?: return null
+        val p = withContext(Dispatchers.IO) { runCatching { if (f.isFile) RaList.parseProgress(id, f.readText(), MEDIA) else null }.getOrNull() } ?: return null
+        // Kept as old, so the next look asks again.
+        synchronized(this) { progressCache.putIfAbsent(id, 0L to p) }
+        return p
+    }
+
+    /** Progress files are small (a set's text, tens of KB): one per game looked at, deleted on signing out. */
+    private fun progressFile(id: Int): File? = filesDir?.let { File(it, "ra/progress-$id.json") }
+
+    /**
+     * Comments (community hints) on achievements, fetched one achievement at a time when the user asks (RaList.Hints):
+     * never while signed out or in private mode ([call]), and callers check the game isn't hidden.
+     */
+    val hints = RaList.Hints { id, offset, count ->
+        if (!enabled) null
+        else call("API_GetComments.php", mapOf("i" to "$id", "t" to "2", "c" to "$count", "o" to "$offset"))
+    }
+
+    /** Forgets the progress and hints fetched (signing out): from memory and from the disk. */
+    fun forgetProgress() {
+        invalidate()
+        hints.clear()
+        filesDir?.let { File(it, "ra").listFiles { f -> f.name.startsWith("progress-") }?.forEach { it.delete() } }
     }
 
     /** Finds the RetroAchievements game for [game]: by file hash first, then by title. Remembered once found. */
@@ -251,7 +296,7 @@ object RetroAchievements {
         HomeStore.ra.matches[game.key]?.let { return it.takeIf { id -> id > 0 } }
         val console = consoleId(game.platform.id) ?: return null
         val list = consoleGames(console) ?: return null
-        val hash = withContext(Dispatchers.IO) { runCatching { RaHash.compute(game.file, console) }.getOrNull() }
+        val hash = withContext(Dispatchers.IO) { runCatching { RaHash.forGame(game, console) }.getOrNull() }
         val wanted = setOf(norm(game.title), norm(game.fileTitle))
         val match = hash?.let { h -> list.firstOrNull { h in it.hashes } }
             ?: list.firstOrNull { !it.title.startsWith("~") && norm(it.title) in wanted }
@@ -299,14 +344,32 @@ private object BuildConfigLite { const val VERSION = "0.2" }
 
 /**
  * RetroAchievements' game hashes, for the systems where they're simple enough to compute here (an MD5 of the
- * ROM, sometimes minus a header, and a special recipe for DS). Other systems are matched by title instead.
+ * ROM, sometimes minus a header, a special recipe for DS, and the disc recipes in RaDisc.kt for PlayStation,
+ * PlayStation 2, PSP, Sega CD, Saturn and PC Engine CD). Other systems are matched by title instead.
  */
 object RaHash {
     private const val MAX_BYTES = 64L * 1024 * 1024
 
+    /**
+     * The file whose hash stands for [game]: disc 1 of a multi-disc game (Discs.kt), the first entry of a playlist
+     * found standing alone, else the game's own file. RetroAchievements matches a set by its first disc.
+     */
+    fun fileFor(game: Game): File {
+        game.discs.firstOrNull()?.let { return it }
+        val f = game.file
+        if (!f.extension.equals(Discs.PLAYLIST, ignoreCase = true)) return f
+        return Discs.resolve(f, Discs.read(f)).firstOrNull() ?: f
+    }
+
+    fun forGame(game: Game, console: Int): String? = compute(fileFor(game), console)
+
     fun compute(file: File, console: Int): String? {
         if (console == 18) return if (file.extension.equals("nds", true)) nds(file) else null
-        if (console !in setOf(1, 2, 3, 4, 5, 6, 7, 10, 11, 13, 14, 15, 24, 25, 28, 51, 53)) return null
+        if (console in RaDisc.CONSOLES) return RaDisc.hash(file, console)
+        // PC Engine: a CD from its cue sheet, else a HuCard (below).
+        if (console == RaDisc.PC_ENGINE && file.extension.equals("cue", true)) return RaDisc.hash(file, console)
+        if (console == RaDisc.PC_ENGINE && file.extension.lowercase() !in setOf("pce", "sgx", "zip")) return null
+        if (console !in setOf(1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 13, 14, 15, 24, 25, 28, 51, 53)) return null
         if (file.extension.equals("zip", true)) {
             ZipFile(file).use { zip ->
                 val entries = zip.entries().asSequence().filter { !it.isDirectory }.toList()
@@ -325,6 +388,8 @@ object RaHash {
         when (console) {
             7 -> if (data.startsWith("NES\u001a") || data.startsWith("FDS\u001a")) skip = 16
             3 -> if (data.size % 8192 == 512) skip = 512
+            // A HuCard dump with a 512-byte copier header before its 128 KB banks.
+            8 -> if (data.size % 0x20000 == 512) skip = 512
             13 -> if (data.startsWith("LYNX\u0000")) skip = 64
             51 -> if (data.size > 128 && String(data, 1, 9, Charsets.ISO_8859_1) == "ATARI7800") skip = 128
             2 -> data = n64BigEndian(data)

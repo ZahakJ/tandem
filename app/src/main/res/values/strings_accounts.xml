@@ -288,4 +288,64 @@
         <item quantity="one">…and %1$d more achievement. What a session!</item>
         <item quantity="other">…and %1$d more achievements. What a session!</item>
     </plurals>
+    <!-- A RetroAchievements game's achievements (Y › Achievements, RaUi.kt). Filter chips: -->
+    <string name="accounts_ra_list_all">All</string>
+    <string name="accounts_ra_list_locked">Locked</string>
+    <string name="accounts_ra_list_unlocked">Unlocked</string>
+    <!-- RetroAchievements' "missable" type: can be missed for good in a playthrough. Also a tag on such an achievement. -->
+    <string name="accounts_ra_list_missable">Missable</string>
+    <!-- Button hint for L1 / R1. -->
+    <string name="accounts_ra_list_filter">Filter</string>
+    <!-- Sorts, shown as the Y button hint (the one in use). -->
+    <string name="accounts_ra_list_sort_default">Set order</string>
+    <string name="accounts_ra_list_sort_rarity">Rarest first</string>
+    <string name="accounts_ra_list_sort_points">Most points</string>
+    <!-- Button hint for A: opens players' hints for the achievement. -->
+    <string name="accounts_ra_list_hints">Hints</string>
+    <string name="accounts_ra_list_asking">Asking RetroAchievements…</string>
+    <string name="accounts_ra_list_failed">Couldn\'t reach RetroAchievements</string>
+    <string name="accounts_ra_list_failed_text">Nothing was kept from an earlier look either. X tries again.</string>
+    <string name="accounts_ra_list_private">Private mode keeps Tandem offline: this is what was kept</string>
+    <string name="accounts_ra_list_none_text">RetroAchievements lists no achievements for this game.</string>
+    <string name="accounts_ra_list_empty">Nothing here</string>
+    <string name="accounts_ra_list_empty_text">No achievement fits this filter. L1 and R1 pick another.</string>
+    <!-- %1$s a date. -->
+    <string name="accounts_ra_list_hardcore_on">Hardcore · %1$s</string>
+    <string name="accounts_ra_list_hardcore_unlocked">Unlocked in hardcore</string>
+    <!-- Points earned of the set's points: %1$d earned, %2$d in all (the count). -->
+    <plurals name="accounts_ra_list_points">
+        <item quantity="one">%1$d / %2$d point</item>
+        <item quantity="other">%1$d / %2$d points</item>
+    </plurals>
+    <!-- How many achievements were earned in hardcore / softcore. -->
+    <plurals name="accounts_ra_list_hardcore">
+        <item quantity="one">%1$d in hardcore</item>
+        <item quantity="other">%1$d in hardcore</item>
+    </plurals>
+    <plurals name="accounts_ra_list_softcore">
+        <item quantity="one">%1$d in softcore</item>
+        <item quantity="other">%1$d in softcore</item>
+    </plurals>
+    <!-- An achievement's points, on a small pill. -->
+    <plurals name="accounts_ra_list_pts">
+        <item quantity="one">%1$d pt</item>
+        <item quantity="other">%1$d pts</item>
+    </plurals>
+    <!-- Players' comments on one achievement, fetched only when asked (A or a tap). -->
+    <string name="accounts_ra_hints_title">Hints from players</string>
+    <string name="accounts_ra_hints_asking">Asking for hints…</string>
+    <string name="accounts_ra_hints_asking_text">Players\' comments on this achievement, from RetroAchievements.</string>
+    <string name="accounts_ra_hints_failed">Couldn\'t get the hints</string>
+    <string name="accounts_ra_hints_failed_text">RetroAchievements didn\'t answer. Try again in a moment.</string>
+    <string name="accounts_ra_hints_private">Private mode keeps Tandem offline, so no hints are fetched.</string>
+    <string name="accounts_ra_hints_none">No hints yet</string>
+    <string name="accounts_ra_hints_none_text">Nobody has commented on this one. You could be the first, on retroachievements.org.</string>
+    <string name="accounts_ra_hints_spoilers">Hints can spoil the game, so they\'re blurred. A shows them.</string>
+    <string name="accounts_ra_hints_spoilers_tap">Hints can spoil the game, so they\'re blurred. Tap one to show them.</string>
+    <!-- Button hint for A. -->
+    <string name="accounts_ra_hints_show">Show hints</string>
+    <!-- A card that loads more comments: %1$d loaded of %2$d. -->
+    <string name="accounts_ra_hints_more">More · %1$d of %2$d</string>
+    <!-- Button hint for X. -->
+    <string name="accounts_ra_hints_more_short">More</string>
 </resources>

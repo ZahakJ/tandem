@@ -27,6 +27,7 @@
     <string name="menus_game_manual_help">ゲームの説明書や攻略本を1ページずつ：%1$s</string>
     <string name="menus_game_achievements">実績</string>
     <string name="menus_game_achievements_help">このゲームのSteam実績をすべて、達成率つきで表示します。</string>
+    <string name="menus_game_achievements_ra_help">このゲームのRetroAchievements実績をすべて。絞り込み、レア度、プレイヤーのヒントつき。</string>
     <string name="menus_game_edit">情報を編集</string>
     <plurals name="menus_game_edit_locked">
         <item quantity="other">%1$d個ロック中</item>
@@ -196,4 +197,23 @@
     <string name="menus_app_icon_packs_none">アイコンパックが見つかりません。機種アイコン入りのテーマパックがあれば、ここに出てきます</string>
     <string name="menus_app_icon_packs">アイコンパックから</string>
     <string name="menus_pick_picture">画像</string>
+    <string name="menus_search_filter_system">機種</string>
+    <string name="menus_search_filter_genre">ジャンル</string>
+    <string name="menus_search_filter_year">年</string>
+    <string name="menus_search_filter_rating">評価</string>
+    <string name="menus_search_filter_status">ステータス</string>
+    <string name="menus_search_filter_played">プレイ</string>
+    <string name="menus_search_filter_any">すべて</string>
+    <string name="menus_search_filter_only">♥ だけ</string>
+    <string name="menus_search_filter_never">未プレイ</string>
+    <string name="menus_search_filter_clear">絞り込みを解除</string>
+    <plurals name="menus_search_filter_set">
+        <item quantity="other">%1$d件</item>
+    </plurals>
+    <plurals name="menus_search_filter_stars">
+        <item quantity="other">%1$d★以上</item>
+    </plurals>
+    <string name="menus_search_filter_none">この絞り込みに合うゲームはありません</string>
+    <string name="menus_search_filter_tip">上を押すと絞り込みも: 機種、ジャンル、年…</string>
+    <string name="menus_search_filter_move">次の絞り込み</string>
 </resources>

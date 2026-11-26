@@ -27,6 +27,7 @@
     <string name="menus_game_manual_help">كتيّب اللعبة أو دليلها، صفحة صفحة: %1$s</string>
     <string name="menus_game_achievements">الإنجازات</string>
     <string name="menus_game_achievements_help">كل إنجازات Steam في هذه اللعبة، ومدى ندرة كل منها.</string>
+    <string name="menus_game_achievements_ra_help">كل إنجازات RetroAchievements في هذه اللعبة، مع التصفية والندرة وتلميحات اللاعبين.</string>
     <string name="menus_game_edit">تعديل التفاصيل</string>
     <plurals name="menus_game_edit_locked">
         <item quantity="zero">لا شيء مقفل</item>
@@ -236,4 +237,33 @@
     <string name="menus_app_icon_packs_none">لا توجد حزم أيقونات. وحزم السمات التي فيها أيقونات منصّات تعرضها هنا</string>
     <string name="menus_app_icon_packs">من حزم أيقوناتك</string>
     <string name="menus_pick_picture">الصورة</string>
+    <string name="menus_search_filter_system">الجهاز</string>
+    <string name="menus_search_filter_genre">النوع</string>
+    <string name="menus_search_filter_year">السنة</string>
+    <string name="menus_search_filter_rating">التقييم</string>
+    <string name="menus_search_filter_status">الحالة</string>
+    <string name="menus_search_filter_played">اللعب</string>
+    <string name="menus_search_filter_any">الكل</string>
+    <string name="menus_search_filter_only">♥ فقط</string>
+    <string name="menus_search_filter_never">لم تُلعب قط</string>
+    <string name="menus_search_filter_clear">امسح التصفية</string>
+    <plurals name="menus_search_filter_set">
+        <item quantity="zero">%1$d مضبوطة</item>
+        <item quantity="one">واحدة مضبوطة</item>
+        <item quantity="two">اثنتان مضبوطتان</item>
+        <item quantity="few">%1$d مضبوطة</item>
+        <item quantity="many">%1$d مضبوطة</item>
+        <item quantity="other">%1$d مضبوطة</item>
+    </plurals>
+    <plurals name="menus_search_filter_stars">
+        <item quantity="zero">%1$d★ فأكثر</item>
+        <item quantity="one">%1$d★ فأكثر</item>
+        <item quantity="two">%1$d★ فأكثر</item>
+        <item quantity="few">%1$d★ فأكثر</item>
+        <item quantity="many">%1$d★ فأكثر</item>
+        <item quantity="other">%1$d★ فأكثر</item>
+    </plurals>
+    <string name="menus_search_filter_none">لا ألعاب تجتاز هذه التصفية</string>
+    <string name="menus_search_filter_tip">أو اضغط للأعلى للتصفية: الجهاز، النوع، السنة…</string>
+    <string name="menus_search_filter_move">التصفية التالية</string>
 </resources>

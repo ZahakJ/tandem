@@ -217,4 +217,47 @@
     <plurals name="accounts_steam_more">
         <item quantity="other">…さらに実績を%1$d個。すごいプレイでした！</item>
     </plurals>
+    <string name="accounts_ra_list_all">すべて</string>
+    <string name="accounts_ra_list_locked">未解除</string>
+    <string name="accounts_ra_list_unlocked">解除済み</string>
+    <string name="accounts_ra_list_missable">取り逃し注意</string>
+    <string name="accounts_ra_list_filter">絞り込み</string>
+    <string name="accounts_ra_list_sort_default">本来の順</string>
+    <string name="accounts_ra_list_sort_rarity">レアな順</string>
+    <string name="accounts_ra_list_sort_points">ポイント順</string>
+    <string name="accounts_ra_list_hints">ヒント</string>
+    <string name="accounts_ra_list_asking">RetroAchievementsに問い合わせ中…</string>
+    <string name="accounts_ra_list_failed">RetroAchievementsにつながりませんでした</string>
+    <string name="accounts_ra_list_failed_text">前に保存したものもありません。Xでもう一度。</string>
+    <string name="accounts_ra_list_private">プライベートモード中はオフライン。保存済みの内容を表示しています</string>
+    <string name="accounts_ra_list_none_text">RetroAchievementsにはこのゲームの実績がありません。</string>
+    <string name="accounts_ra_list_empty">ここには何もありません</string>
+    <string name="accounts_ra_list_empty_text">この絞り込みに合う実績はありません。L1とR1でほかを選べます。</string>
+    <string name="accounts_ra_list_hardcore_on">ハードコア · %1$s</string>
+    <string name="accounts_ra_list_hardcore_unlocked">ハードコアで解除</string>
+    <plurals name="accounts_ra_list_points">
+        <item quantity="other">%1$d / %2$dポイント</item>
+    </plurals>
+    <plurals name="accounts_ra_list_hardcore">
+        <item quantity="other">ハードコア%1$d</item>
+    </plurals>
+    <plurals name="accounts_ra_list_softcore">
+        <item quantity="other">ソフトコア%1$d</item>
+    </plurals>
+    <plurals name="accounts_ra_list_pts">
+        <item quantity="other">%1$dポイント</item>
+    </plurals>
+    <string name="accounts_ra_hints_title">プレイヤーのヒント</string>
+    <string name="accounts_ra_hints_asking">ヒントを取得中…</string>
+    <string name="accounts_ra_hints_asking_text">この実績についてのプレイヤーのコメントです。RetroAchievementsから。</string>
+    <string name="accounts_ra_hints_failed">ヒントを取得できませんでした</string>
+    <string name="accounts_ra_hints_failed_text">RetroAchievementsから応答がありません。少ししてからもう一度どうぞ。</string>
+    <string name="accounts_ra_hints_private">プライベートモード中はオフラインなので、ヒントは取得しません。</string>
+    <string name="accounts_ra_hints_none">ヒントはまだありません</string>
+    <string name="accounts_ra_hints_none_text">この実績にはまだ誰もコメントしていません。retroachievements.orgで一番乗りしよう。</string>
+    <string name="accounts_ra_hints_spoilers">ヒントはネタバレになるかも。だからぼかしてあります。Aで表示。</string>
+    <string name="accounts_ra_hints_spoilers_tap">ヒントはネタバレになるかも。だからぼかしてあります。タップで表示。</string>
+    <string name="accounts_ra_hints_show">ヒントを見る</string>
+    <string name="accounts_ra_hints_more">もっと見る · %1$d / %2$d</string>
+    <string name="accounts_ra_hints_more_short">もっと</string>
 </resources>

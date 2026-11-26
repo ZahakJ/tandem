@@ -289,7 +289,7 @@ Rumble stays on the handheld. While a controller plays as the built-in one, Andr
 - Play (or Resume), Favorite, Status (Backlog, Playing, Finished, Completed, Shelved, Endless or none; see [Game status](library.md#game-status)), Add to Up next, Pin to home (icon grid).
 - On a game from [This week](library.md#this-week)'s board: Other picks for this row, Not for me, Played it elsewhere.
 - Build native version and Building natively (Switch games Peanuts Native can build; see [Switch games](switch.md#peanuts-native)).
-- Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Achievements (Steam games, once signed in), Edit details.
+- Notes, Manual (only when the game has one; see [Manuals and guides](library.md#manuals-and-guides)), Achievements (Steam and RetroAchievements games, once signed in; see [RetroAchievements](library.md#retroachievements)), Edit details.
 - **More…**: Emulator (the installed ones that take this file), Start on (top or bottom screen), Bottom screen while playing, Performance mode, Fan mode and Refresh rate (AYN handhelds; see [Performance profiles](ayn-thor.md#performance-profiles)), Choose artwork, Scrape this game, Hide this game, Play sessions… and Reset play history (once played), Delete game… (Uninstall app… for an Android game), View options.
 
 Each choice in More (Emulator, Start on…) lists its options with <kbd>A</kbd>, the one in use ticked; <kbd>◀</kbd> / <kbd>▶</kbd> step through them too.
@@ -499,9 +499,14 @@ Find any game by typing a few letters. <kbd>X</kbd> opens search from almost any
 | <kbd>▶</kbd> into the results, then <kbd>A</kbd> | Play the game |
 | <kbd>X</kbd> | Delete a letter |
 | <kbd>Y</kbd> on a result | Its game menu |
+| <kbd>▲</kbd> from the first row of results | The filters (or <kbd>▶</kbd> from the keys when there are no results yet) |
+| <kbd>L1</kbd> / <kbd>R1</kbd> on the filters | The previous or next filter |
+| <kbd>A</kbd> on a filter | Its values, **Any** first; Favorites just turns on or off |
 | <kbd>B</kbd> | Back to the keys, then close |
 
 Results appear on the right as you type. Search ignores case, accents and punctuation, and also finds systems, apps and settings: they show as chips above the games.
+
+**Filters** sit in a row above the results: **System**, **Genre**, **Year** (a decade), **Rating** (2 to 5 stars and up), **Status**, **Played** (played or never played) and **Favorites**. They narrow what you typed, and with nothing typed they browse the whole library ("unplayed SNES platformers"). The count under the results is every match. **Clear filters**, at the end of the row once one is set, puts them all back to Any. They stay as you left them until Tandem closes, and work only on the handheld. They mean what the same rules mean in a [smart folder](library.md#smart-folders).
 
 ![Search with the letters zeld typed on the on-screen keyboard, and thirteen matching Zelda games on the right.](../../site/assets/screenshots/search.webp "Search: the keyboard on the left, results on the right")
 

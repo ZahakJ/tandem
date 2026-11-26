@@ -298,4 +298,67 @@
         <item quantity="many">…و%1$d إنجازًا آخر. يا لها من جلسة!</item>
         <item quantity="other">…و%1$d إنجاز آخر. يا لها من جلسة!</item>
     </plurals>
+    <string name="accounts_ra_list_all">الكل</string>
+    <string name="accounts_ra_list_locked">مقفلة</string>
+    <string name="accounts_ra_list_unlocked">مفتوحة</string>
+    <string name="accounts_ra_list_missable">قد تفوتك</string>
+    <string name="accounts_ra_list_filter">تصفية</string>
+    <string name="accounts_ra_list_sort_default">الترتيب الأصلي</string>
+    <string name="accounts_ra_list_sort_rarity">الأندر أولًا</string>
+    <string name="accounts_ra_list_sort_points">الأعلى نقاطًا</string>
+    <string name="accounts_ra_list_hints">تلميحات</string>
+    <string name="accounts_ra_list_asking">أسأل RetroAchievements…</string>
+    <string name="accounts_ra_list_failed">تعذّر الوصول إلى RetroAchievements</string>
+    <string name="accounts_ra_list_failed_text">ولا توجد نسخة محفوظة من قبل. اضغط X لتحاول مجددًا.</string>
+    <string name="accounts_ra_list_private">الوضع الخاص يُبقي Tandem دون اتصال: هذه آخر نسخة محفوظة</string>
+    <string name="accounts_ra_list_none_text">لا يذكر RetroAchievements أي إنجازات لهذه اللعبة.</string>
+    <string name="accounts_ra_list_empty">لا شيء هنا</string>
+    <string name="accounts_ra_list_empty_text">لا إنجاز يطابق هذه التصفية. اختر غيرها بـ L1 وR1.</string>
+    <string name="accounts_ra_list_hardcore_on">hardcore · %1$s</string>
+    <string name="accounts_ra_list_hardcore_unlocked">مفتوح في hardcore</string>
+    <plurals name="accounts_ra_list_points">
+        <item quantity="zero">%1$d / %2$d نقطة</item>
+        <item quantity="one">%1$d / %2$d نقطة</item>
+        <item quantity="two">%1$d / %2$d نقطة</item>
+        <item quantity="few">%1$d / %2$d نقاط</item>
+        <item quantity="many">%1$d / %2$d نقطة</item>
+        <item quantity="other">%1$d / %2$d نقطة</item>
+    </plurals>
+    <plurals name="accounts_ra_list_hardcore">
+        <item quantity="zero">%1$d في hardcore</item>
+        <item quantity="one">%1$d في hardcore</item>
+        <item quantity="two">%1$d في hardcore</item>
+        <item quantity="few">%1$d في hardcore</item>
+        <item quantity="many">%1$d في hardcore</item>
+        <item quantity="other">%1$d في hardcore</item>
+    </plurals>
+    <plurals name="accounts_ra_list_softcore">
+        <item quantity="zero">%1$d في softcore</item>
+        <item quantity="one">%1$d في softcore</item>
+        <item quantity="two">%1$d في softcore</item>
+        <item quantity="few">%1$d في softcore</item>
+        <item quantity="many">%1$d في softcore</item>
+        <item quantity="other">%1$d في softcore</item>
+    </plurals>
+    <plurals name="accounts_ra_list_pts">
+        <item quantity="zero">%1$d نقطة</item>
+        <item quantity="one">نقطة واحدة</item>
+        <item quantity="two">نقطتان</item>
+        <item quantity="few">%1$d نقاط</item>
+        <item quantity="many">%1$d نقطة</item>
+        <item quantity="other">%1$d نقطة</item>
+    </plurals>
+    <string name="accounts_ra_hints_title">تلميحات اللاعبين</string>
+    <string name="accounts_ra_hints_asking">أجلب التلميحات…</string>
+    <string name="accounts_ra_hints_asking_text">تعليقات اللاعبين على هذا الإنجاز، من RetroAchievements.</string>
+    <string name="accounts_ra_hints_failed">تعذّر جلب التلميحات</string>
+    <string name="accounts_ra_hints_failed_text">لم يردّ RetroAchievements. جرّب بعد قليل.</string>
+    <string name="accounts_ra_hints_private">الوضع الخاص يُبقي Tandem دون اتصال، فلا تُجلب أي تلميحات.</string>
+    <string name="accounts_ra_hints_none">لا تلميحات بعد</string>
+    <string name="accounts_ra_hints_none_text">لم يعلّق أحد على هذا الإنجاز بعد. قد تكون أول من يفعل على retroachievements.org.</string>
+    <string name="accounts_ra_hints_spoilers">قد تحرق التلميحات المفاجأة، لذا أخفيناها خلف ضباب. اضغط A لتظهر.</string>
+    <string name="accounts_ra_hints_spoilers_tap">قد تحرق التلميحات المفاجأة، لذا أخفيناها خلف ضباب. المس أحدها لتظهر.</string>
+    <string name="accounts_ra_hints_show">أظهر التلميحات</string>
+    <string name="accounts_ra_hints_more">المزيد · %1$d من %2$d</string>
+    <string name="accounts_ra_hints_more_short">المزيد</string>
 </resources>

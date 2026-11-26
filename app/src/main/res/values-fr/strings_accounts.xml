@@ -288,4 +288,51 @@
         <item quantity="one">…et %1$d autre succès. Quelle session !</item>
         <item quantity="other">…et %1$d autres succès. Quelle session !</item>
     </plurals>
+    <string name="accounts_ra_list_all">Tous</string>
+    <string name="accounts_ra_list_locked">Verrouillés</string>
+    <string name="accounts_ra_list_unlocked">Débloqués</string>
+    <string name="accounts_ra_list_missable">Manquables</string>
+    <string name="accounts_ra_list_filter">Filtrer</string>
+    <string name="accounts_ra_list_sort_default">Ordre d’origine</string>
+    <string name="accounts_ra_list_sort_rarity">Plus rares d’abord</string>
+    <string name="accounts_ra_list_sort_points">Plus de points</string>
+    <string name="accounts_ra_list_hints">Indices</string>
+    <string name="accounts_ra_list_asking">Je demande à RetroAchievements…</string>
+    <string name="accounts_ra_list_failed">Impossible de joindre RetroAchievements</string>
+    <string name="accounts_ra_list_failed_text">Et rien n’a été gardé d’une fois précédente. X pour réessayer.</string>
+    <string name="accounts_ra_list_private">Le mode privé garde Tandem hors ligne : voici ce qui a été gardé</string>
+    <string name="accounts_ra_list_none_text">RetroAchievements ne liste aucun succès pour ce jeu.</string>
+    <string name="accounts_ra_list_empty">Rien ici</string>
+    <string name="accounts_ra_list_empty_text">Aucun succès pour ce filtre. L1 et R1 en choisissent un autre.</string>
+    <string name="accounts_ra_list_hardcore_on">Hardcore · %1$s</string>
+    <string name="accounts_ra_list_hardcore_unlocked">Débloqué en hardcore</string>
+    <plurals name="accounts_ra_list_points">
+        <item quantity="one">%1$d / %2$d point</item>
+        <item quantity="other">%1$d / %2$d points</item>
+    </plurals>
+    <plurals name="accounts_ra_list_hardcore">
+        <item quantity="one">%1$d en hardcore</item>
+        <item quantity="other">%1$d en hardcore</item>
+    </plurals>
+    <plurals name="accounts_ra_list_softcore">
+        <item quantity="one">%1$d en softcore</item>
+        <item quantity="other">%1$d en softcore</item>
+    </plurals>
+    <plurals name="accounts_ra_list_pts">
+        <item quantity="one">%1$d pt</item>
+        <item quantity="other">%1$d pts</item>
+    </plurals>
+    <string name="accounts_ra_hints_title">Indices des joueurs</string>
+    <string name="accounts_ra_hints_asking">Je cherche des indices…</string>
+    <string name="accounts_ra_hints_asking_text">Les commentaires des joueurs sur ce succès, depuis RetroAchievements.</string>
+    <string name="accounts_ra_hints_failed">Impossible d’avoir les indices</string>
+    <string name="accounts_ra_hints_failed_text">RetroAchievements n’a pas répondu. Réessaie dans un instant.</string>
+    <string name="accounts_ra_hints_private">Le mode privé garde Tandem hors ligne : aucun indice n’est récupéré.</string>
+    <string name="accounts_ra_hints_none">Pas encore d’indice</string>
+    <string name="accounts_ra_hints_none_text">Personne n’a encore commenté celui-ci. Sois le premier, sur retroachievements.org !</string>
+    <string name="accounts_ra_hints_spoilers">Les indices peuvent divulgâcher le jeu, alors ils sont floutés. A pour les voir.</string>
+    <string name="accounts_ra_hints_spoilers_tap">Les indices peuvent divulgâcher le jeu, alors ils sont floutés. Touche-en un pour les voir.</string>
+    <string name="accounts_ra_hints_show">Voir les indices</string>
+    <string name="accounts_ra_hints_more">Plus · %1$d sur %2$d</string>
+    <string name="accounts_ra_hints_more_short">Plus</string>
 </resources>
