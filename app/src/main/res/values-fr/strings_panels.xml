@@ -21,8 +21,7 @@
     <string name="panels_start_hidden">Masqués</string>
     <string name="panels_start_settings">Paramètres</string>
     <string name="panels_start_layout">Disposition</string>
-    <string name="panels_layout_hint_try">Essayer</string>
-    <string name="panels_layout_hint_adjust">Régler</string>
+    <string name="panels_layout_hint_size">Taille : %1$s</string>
     <string name="panels_layout_hint_keep">Garder</string>
     <string name="panels_layout_hint_cancel">Annuler</string>
     <!-- A new version of Tandem: "Tandem 0.8.0 is out". -->

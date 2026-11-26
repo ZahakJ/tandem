@@ -438,6 +438,12 @@ fun appearanceSections(): List<SettingSection> {
                 look = { on -> StillnessScene(on) },
                 en = "Reduce motion",
             ) { on -> Store.updateSettings { it.copy(reduceMotion = on) } },
+            toggle(
+                Tx.s(R.string.look_travel), Glyph.Highlight, Palette.Mint, Tx.s(R.string.look_travel_help),
+                look.highlightTravel,
+                look = { on -> TravelScene(on) },
+                en = "Travelling highlight",
+            ) { on -> updateLook { it.copy(highlightTravel = on) } }.copy(keywords = "highlight ring cursor focus travel glide spring slide move lift icon grid"),
         )),
         SettingSection(Tx.s(R.string.look_group_wallpaper), en = "Wallpaper", rows = listOf(
             choice(
@@ -1009,6 +1015,7 @@ internal val LayoutBlurbs = mapOf(
     "console" to R.string.look_layout_console_help,
     "orbit" to R.string.look_layout_orbit_help,
     "spotlight" to R.string.look_layout_spotlight_help,
+    "stage" to R.string.look_layout_stage_help,
 )
 
 /** Every home layout as a live sketch in the current theme. A switches to it. */
@@ -1305,6 +1312,45 @@ fun LayoutPreview(
                 for (i in 0 until 3) bar(x(px + i * 16 * u, 12 * u), 78 * u, 12 * u, t.text, 3f)
                 for (i in 0 until 4) drawCircle(accents[i % accents.size], 2.4f * u, Offset(x(px + 2.4f * u + i * 12 * u, 0f), 89 * u))
             }
+            "stage" -> {
+                // The highlighted game's art fading in towards the end, the strip of short names on top, the game's
+                // words above the row and the row of covers, the second one big and ringed, the group's name under it.
+                when (look.stageBackdrop) {
+                    "dim" -> drawRect(Brush.radialGradient(listOf(t.card, t.backgroundDeep), Offset(w * 0.6f, h * 0.4f), w * 0.7f))
+                    "blur" -> drawRect(
+                        Brush.linearGradient(
+                            listOf(androidx.compose.ui.graphics.lerp(t.peach, t.background, 0.45f), androidx.compose.ui.graphics.lerp(t.sky, t.background, 0.4f)),
+                            Offset(w, 0f), Offset(0f, h),
+                        ),
+                    )
+                    else -> {
+                        val dx = kotlin.math.sin((drift?.value ?: 0f) * 2 * Math.PI).toFloat() * w * 0.06f
+                        drawRect(Brush.linearGradient(listOf(t.peach, t.lavender, t.sky), Offset(w + dx, 0f), Offset(dx, h)))
+                        drawCircle(t.butter.copy(alpha = 0.7f), 15 * u, Offset(w * 0.72f + dx, 26 * u))
+                    }
+                }
+                drawRect(Brush.horizontalGradient(listOf(t.background, t.background.copy(alpha = 0.15f))))
+                drawRect(Brush.verticalGradient(listOf(Color.Transparent, t.background), h * 0.45f, h))
+                val sw = w * 0.5f
+                drawRoundRect(t.card.copy(alpha = 0.85f), Offset((w - sw) / 2, 3 * u), Size(sw, 8 * u), CornerRadius(4 * u))
+                val chip = (sw - 8 * u) / 5
+                for (i in 0 until 5) drawRoundRect(if (i == 2) accents[1] else t.muted.copy(alpha = 0.5f), Offset((w - sw) / 2 + 4 * u + i * chip, 4.5f * u), Size(chip - 2 * u, 5 * u), CornerRadius(2.5f * u))
+                bar(8 * u, 17 * u, w * 0.3f, t.text, 7f)
+                bar(8 * u, 27 * u, w * 0.22f, accents[1], 3f)
+                bar(8 * u, 33 * u, w * 0.36f, t.muted, 2.5f)
+                bar(8 * u, 38 * u, w * 0.3f, t.muted, 2.5f)
+                bar(8 * u, 44 * u, w * 0.16f, t.mint, 2.5f)
+                val ch = h * when (look.stageCovers) { "s" -> 0.22f; "l" -> 0.32f; else -> 0.27f }
+                val cw = ch * when (look.cardShape) { "portrait" -> 0.72f; "landscape" -> 1.45f; else -> 1f }
+                val base = h - 10 * u
+                for (i in 0 until 9) {
+                    val s = if (i == 1) 1.18f else 1f
+                    val x = 8 * u + i * (cw + 3 * u) - (cw * s - cw) / 2 + if (i > 1) (cw * 0.18f) / 2 else 0f
+                    if (x > w) break
+                    tile(x, base - ch * s, cw * s, ch * s, i + 1, focused = i == 1)
+                }
+                bar(8 * u, h - 6 * u, w * 0.2f, t.text, 2.5f)
+            }
             "view-carousel" -> {
                 val cw = 44 * u
                 for (d in listOf(-2, -1, 1, 2)) {
@@ -1366,7 +1412,7 @@ fun LayoutPreview(
 fun CornerHints() {
     val look = Store.settings.look
     val show = look.cornerHints && !isSettingsRoute(Nav.route) &&
-        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled || SpotlightMode.enabled) && Nav.route == Route.Home)
+        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled || SpotlightMode.enabled || StageMode.enabled) && Nav.route == Route.Home)
     val alpha by animateFloatAsState(if (show) 1f else 0f, Motion.fade(250), label = "hints")
     if (alpha == 0f) return
     val game = Selection.current is Selected.GameItem

@@ -503,4 +503,28 @@
     <string name="home_orbit_holds_systems">المنصّات فقط</string>
     <string name="home_orbit_continue_card">بطاقة «تابِع»</string>
     <string name="home_orbit_continue_card_help">اللعبة التي تعمل الآن، وإلا فآخر لعبة لعبتها، كبطاقة واقفة بجانب الأغلفة. الزر A يعيدك إليها («استئناف» ما دامت تعمل، والزر Y يغلقها).</string>
+    <string name="home_strip_continue">تابِع اللعب</string>
+    <string name="home_continue_last">آخر ما لعبت</string>
+    <string name="home_continue_hint_play">العب</string>
+    <string name="home_continue_hint_options">خيارات</string>
+    <string name="home_layout_stage">المسرح</string>
+    <string name="home_stage_see_all">عرض الكل</string>
+    <plurals name="home_stage_see_all_games">
+        <item quantity="zero">لا ألعاب</item>
+        <item quantity="one">لعبة واحدة</item>
+        <item quantity="two">اللعبتان كلتاهما</item>
+        <item quantity="few">الألعاب الـ%1$d كلها</item>
+        <item quantity="many">الألعاب الـ%1$d كلها</item>
+        <item quantity="other">الألعاب الـ%1$d كلها</item>
+    </plurals>
+    <string name="home_stage_settings">المسرح</string>
+    <string name="home_stage_holds">صفحات المسرح</string>
+    <string name="home_stage_holds_help">الصفحات التي يقلّبها الزرّان L1 وR1: منصّاتك ومجموعاتك وتطبيقات Tandem، أو بعضها. صفحة «تابِع اللعب» أولًا دائمًا.</string>
+    <string name="home_stage_covers">حجم الأغلفة</string>
+    <string name="home_stage_covers_help">حجم الأغلفة في الأسفل. ويغيّره أيضًا الزرّان L2 / R2 وأنت تجرّب التخطيطات من Start.</string>
+    <string name="home_stage_covers_s">صغير</string>
+    <string name="home_stage_covers_m">متوسط</string>
+    <string name="home_stage_covers_l">كبير</string>
+    <string name="home_stage_backdrop">خلفية المسرح</string>
+    <string name="home_stage_backdrop_help">ما يملأ الشاشة خلف اللعبة المحدّدة: صورتها الفنية، أو غلافها مموّهًا، أو لون السمة فقط.</string>
 </resources>

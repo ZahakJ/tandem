@@ -19,11 +19,27 @@ These work on almost every screen.
 | <kbd>Start</kbd> (hold) | Quick settings: brightness, volume, Wi-Fi, Battery saver and the like |
 | <kbd>Select</kbd> (tap) | Surprise me: jump to a random game you have never played |
 | <kbd>Select</kbd> (hold), or <kbd>Select</kbd> + <kbd>Start</kbd> | Game switcher: every running game, to resume or close |
-| <kbd>L1</kbd> / <kbd>R1</kbd> | Previous or next system, collection or genre (on the icon grid and inside its folders and systems: bigger or smaller icons; in Stats: tabs) |
-| <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on home, <kbd>R2</kbd> opens the side panel; on the icon grid <kbd>L2</kbd> shows the Recently played strip) |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | The group before or after. On Home each layout steps through its groups (see [L1 and R1 on Home](#l1-and-r1-on-home)); inside a system, collection or genre, the previous or next one; in Settings the page before or after; in Stats the tabs. On the icon grid and inside its folders: bigger or smaller icons. Held on its own a moment, it keeps going, four steps a second |
+| <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on home, <kbd>R2</kbd> opens the side panel; on the icon grid <kbd>L2</kbd> shows the Recently played strip, and on its Continue card both step through your last games; on Orbit's ring and Stage's row they make the bigger jump, see [L1 and R1 on Home](#l1-and-r1-on-home)) |
 | <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd> | Private mode off: turn it on at once. Private mode on: show hidden games (after your PIN), or tuck them away again. See [Private mode](privacy.md#private-mode) |
 
 Every screen remembers what you had highlighted. Going back, or returning from a game, puts the highlight where you left it.
+
+### L1 and R1 on Home
+
+On every home layout the shoulders mean one thing: the **group** before or after. A group is Continue (the game running or the last ones played), each system with games, each collection, and the apps. <kbd>R1</kbd> is always the next group and <kbd>L1</kbd> the one before; in Arabic the groups run from the right, so the next one is on the left. They only ever move what is on screen: never a home under a popup, a folder or the Start panel.
+
+| Layout | <kbd>L1</kbd> / <kbd>R1</kbd> | <kbd>L2</kbd> / <kbd>R2</kbd> | Where it says so |
+| --- | --- | --- | --- |
+| Shelves | The shelf above or below (stops at the first and last) | <kbd>L2</kbd> a page up, <kbd>R2</kbd> the side panel | The other screen: **L1 R1 Rows** |
+| Carousel | The card before or after, wrapping round | As on Shelves | A row of the groups' short names (3DS, GBA, Switch…) under the cards, the one you're on filled; tap one to go there |
+| List, Console | The row or tile before or after, wrapping round (from the dock too) | As on Shelves | The group before, the one you're on and the one after, over the preview (List) or along the top (Console) |
+| Orbit | Turn the ring one orb | On the ring: the first system, collection or app before or after (off the ring <kbd>R2</kbd> is the side panel) | <kbd>L1</kbd> and <kbd>R1</kbd> at the ends of the ring |
+| Spotlight | The group before or after, from its top | As on Shelves | Either side of the group's name over the rail |
+| Stage | Slide to the page before or after | On the row: the letter before or after | The strip of short names along the top |
+| Icon grid | Bigger or smaller icons (the grid is yours to arrange, so it has no groups to page) | <kbd>L2</kbd> the Recently played strip; on the Continue card, the game before or after | **L1 Zoom R1** in the top corner |
+
+The other screen's button pill names the shoulders too; inside a system it names the systems either side (**L1 GBA · R1 PSX**).
 
 <details>
 <summary>Button prompts and analog triggers</summary>
@@ -64,7 +80,7 @@ Some bindings can't work and are refused with the reason:
 
 **Swap A and B** and **Swap X and Y** are the same thing as bindings: they swap Open with Back and Game options with Swap screens / Search (an older setup's swaps become bindings on first start). Hints use + and − for Start and Select in the Nintendo style.
 
-A button that a hold or chord uses waits for its release before it does its tap: with the defaults that is <kbd>Select</kbd>, <kbd>Start</kbd> (holds), <kbd>L1</kbd> and <kbd>R1</kbd> (part of <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd>), so <kbd>L1</kbd> and <kbd>R1</kbd> turn pages as you let go.
+A button that a hold or chord uses waits for its release before it does its tap: with the defaults that is <kbd>Select</kbd>, <kbd>Start</kbd> (holds), <kbd>L1</kbd> and <kbd>R1</kbd> (part of <kbd>L1</kbd> + <kbd>R1</kbd> + <kbd>Select</kbd>), so <kbd>L1</kbd> and <kbd>R1</kbd> turn pages as you let go. Held on its own for half a second, a shoulder starts turning them, four a second, until you let go or press another button (the private-mode chord still works, and nothing more turns once it fires). The icon grid's zoom takes one step a press.
 
 The controller's own **Nintendo button labels** switch is applied first; bindings name buttons as printed on the controller. Bindings work while Tandem is in front; outside it, the **Controller Home button** service keeps using the guide button whatever Controller Home is bound to.
 
@@ -109,7 +125,7 @@ Switches for the device (brightness, Wi-Fi, Battery saver, the screensaver) are 
 | Stats & trophies | The Stats screen; beside it, the trophies earned so far |
 | New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
 | Sort ▸ | On the icon grid: close the gaps, or the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
-| Layout | The home layouts along the bottom of the screen, to try live (see [Switching layouts](#switching-layouts)); the one in use is named beside it. Among a system's or collection's games this row is **Games view**, the same way |
+| Layout | Try every home layout on the home itself (see [Switching layouts](#switching-layouts)); the one in use is named beside it. Among a system's or collection's games this row is **Games view**, the same way |
 | Edit grid | On the icon grid: the highlighted tile starts moving; other layouts get Edit widgets |
 | Undo | For 15 minutes after a change on the icon grid, with what it takes back beside it (older steps: <kbd>Y</kbd> › **More › Undo last change**) |
 | Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
@@ -122,16 +138,17 @@ Themes, sounds and music are in **Settings › Look & feel** and **Settings › 
 
 ### Switching layouts
 
-<kbd>Start</kbd> › **Layout** lays every home layout along the bottom of the screen as a card, each a small live sketch in your theme, the one in use ticked. The home stays in sight above them (from another screen, Tandem goes home first).
+<kbd>Start</kbd> › **Layout** puts the home itself in try-on mode: the Start panel closes, nothing covers the home, and thin brackets in its corners say you're trying layouts (from another screen, Tandem goes home first). A pill along the top says what the buttons do, and the other screen shows a card of the layout you're trying.
 
 | Press | What it does |
 | --- | --- |
-| <kbd>◀</kbd> / <kbd>▶</kbd>, <kbd>L1</kbd> / <kbd>R1</kbd> | Highlight the next card. Once it rests a moment the home behind turns into that layout, rising in, with the highlight on the same game, system or collection |
-| <kbd>▼</kbd> / <kbd>▲</kbd> | Onto the card's own setting and back: the icon grid's icon size, the shelves' card size, what Orbit holds, Spotlight's rail side. <kbd>◀</kbd> / <kbd>▶</kbd> then change it, live too |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | The layout before or after, wrapping round. It goes on live, rising in, with the highlight on the same game, system or collection, and a popup names it for a moment: Pip, its name, a line about it and a dot for each layout |
+| D-pad | Moves inside the layout as usual, so you can feel it |
+| <kbd>L2</kbd> / <kbd>R2</kbd> | The layout's own size, live: the icon grid's icon size, the shelves' card size, what Orbit holds, Spotlight's rail side, Stage's cover size |
 | <kbd>A</kbd> | Keep what shows (saved) |
-| <kbd>B</kbd> or <kbd>Start</kbd> | Put back the layout you had, and its setting, as if nothing happened |
+| <kbd>B</kbd> or <kbd>Start</kbd> | Put back the layout you had, and its size, as if nothing happened |
 
-Each layout keeps its own settings: switching to another and back finds the first as you left it. Inside a system or collection, <kbd>Start</kbd> › **Games view** does the same with Grid, List, Carousel, Shelf and Case (on Grid, <kbd>▼</kbd> reaches the card size). The same choices are in **Settings › Home & layout**.
+Each layout keeps its own settings: switching to another and back finds the first as you left it. Inside a system or collection, <kbd>Start</kbd> › **Games view** does the same with Grid, List, Carousel, Shelf and Case (on Grid, <kbd>L2</kbd> / <kbd>R2</kbd> change the card size). The same choices are in **Settings › Home & layout**.
 
 ## The top bar
 
@@ -331,13 +348,17 @@ The 3DS-style home: a grid of icons, folders and widgets you arrange yourself.
 | <kbd>Y</kbd> (hold) | Pick the tile up to move it (below). A ring runs round the tile while you hold; at the end of it (0.4 s) the tile lifts off with a buzz. Let go sooner and it's a tap |
 | <kbd>X</kbd> | Swap the screens. Inside a folder: the next view (Grid, Shelf, Case, Carousel; see [Home folders](library.md#home-folders)) |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | Bigger or smaller icons. With fixed rows (**Rows of icons**), <kbd>L1</kbd> means fewer rows and <kbd>R1</kbd> more, from 1 to 5 (1 to 3 on the bottom screen); <kbd>L1</kbd> on the biggest automatic size steps on to fixed rows. Tiles ease to their new size and the highlighted one stays where it is. |
-| <kbd>L2</kbd> | Show or hide the Recently played strip (or set it to always show) |
-| <kbd>R2</kbd> | The side panel (see [The side panel](#the-side-panel)) |
+| <kbd>L2</kbd> | Show or hide the Recently played strip (or set it to always show). On the Continue card: the game before |
+| <kbd>R2</kbd> | The side panel (see [The side panel](#the-side-panel)). On the Continue card: the game after |
 | <kbd>B</kbd> | Back to the first icon |
 
 At **1 row** the grid looks like the 3DS HOME menu zoomed all the way in: one row of big icons in the middle of the screen, and the highlighted item's kind, name, count or play time and a strip of its art above it.
 
 **On the Resume page:** <kbd>A</kbd> resumes the game, <kbd>Y</kbd> closes it (press twice: closing loses unsaved progress), <kbd>X</kbd> opens the game switcher when more than one game runs. A long press there opens the game's options, never Close.
+
+**The Continue card.** With no game running, the same wide card leads the grid with your last games (**Settings › Home & layout › Grid shape › Continue card** turns it off). On it <kbd>L2</kbd> / <kbd>R2</kbd> step through up to five of them (the running ones first), the card sliding the way you went and its dots saying where you are; <kbd>A</kbd> plays (or resumes), <kbd>Y</kbd> opens the game's options (or closes a running one, twice). Hidden games never show on it.
+
+**The travelling highlight.** The highlight ring glides from icon to icon on a little spring and the icon it lands on lifts; **Settings › Look & feel › Motion › Travelling highlight** makes it jump instead (so does **Reduce motion**).
 
 **Moving a tile.** Hold <kbd>Y</kbd> on it: it rises off the grid, sways a little, and glides from spot to spot. The hints at the top say what each button does:
 

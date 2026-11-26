@@ -529,4 +529,25 @@
     <string name="home_orbit_holds_systems">Systèmes seulement</string>
     <string name="home_orbit_continue_card">Carte Continuer</string>
     <string name="home_orbit_continue_card_help">Le jeu lancé en ce moment, sinon ton dernier jeu, en carte posée à gauche des jaquettes. A le relance (Reprendre s’il tourne encore, et Y le ferme).</string>
+    <string name="home_strip_continue">Continuer</string>
+    <string name="home_continue_last">DERNIÈRES PARTIES</string>
+    <string name="home_continue_hint_play">Jouer</string>
+    <string name="home_continue_hint_options">Options</string>
+    <string name="home_layout_stage">Scène</string>
+    <string name="home_stage_see_all">Tout voir</string>
+    <plurals name="home_stage_see_all_games">
+        <item quantity="one">Le jeu</item>
+        <item quantity="many">Les %1$d jeux</item>
+        <item quantity="other">Les %1$d jeux</item>
+    </plurals>
+    <string name="home_stage_settings">Scène</string>
+    <string name="home_stage_holds">Pages de la Scène</string>
+    <string name="home_stage_holds_help">Les pages que L1 et R1 font défiler : tes systèmes, tes collections et les applis de Tandem, ou moins. Continuer vient toujours en premier.</string>
+    <string name="home_stage_covers">Taille des jaquettes</string>
+    <string name="home_stage_covers_help">La taille des jaquettes en bas. L2 / R2 la changent aussi quand tu essaies les dispositions depuis Start.</string>
+    <string name="home_stage_covers_s">Petite</string>
+    <string name="home_stage_covers_m">Moyenne</string>
+    <string name="home_stage_covers_l">Grande</string>
+    <string name="home_stage_backdrop">Fond de la Scène</string>
+    <string name="home_stage_backdrop_help">Ce qui remplit l’écran derrière le jeu sélectionné : son illustration, sa jaquette floutée, ou juste la couleur du thème.</string>
 </resources>

@@ -344,4 +344,6 @@
     <string name="settings_sub_droiddeck_help">Les jeux installés dans DroidDeck, de toutes les boutiques, direct dans ta bibliothèque.</string>
     <string name="settings_sub_gamenative">GameNative</string>
     <string name="settings_sub_gamenative_help">Les jeux téléchargés dans GameNative, de toutes les boutiques, direct dans ta bibliothèque.</string>
+    <string name="settings_continue_card">Carte Continuer</string>
+    <string name="settings_continue_card_help">Sans jeu lancé, la grille d’icônes commence par une grande carte de tes dernières parties. Place le curseur dessus et L2 / R2 passent de l’une à l’autre ; A lance le jeu, Y ouvre ses options. Les jeux cachés n’y apparaissent jamais. Un jeu lancé prend la carte dans tous les cas (page Reprendre).</string>
 </resources>

@@ -20,6 +20,8 @@ data class Look(
     // Overrides of the theme (null = theme decides).
     val highlight: String? = null,
     val highlightThickness: Float? = null,
+    /** On the icon grid one ring travels from tile to tile on a spring instead of jumping (ui/TravelRing.kt). */
+    val highlightTravel: Boolean = true,
     val focusScale: Float? = null,
     val corner: Float? = null,
     val material: String? = null,
@@ -40,7 +42,7 @@ data class Look(
     /** How much a picture or video wallpaper is darkened, so text stays readable. */
     val wallDim: Float = 0.35f,
 
-    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list", "console", "orbit" or "spotlight". */
+    /** Home screen layout: "shelves" (rows), "grid", "carousel", "list", "console", "orbit", "spotlight" or "stage". */
     val homeLayout: String = "shelves",
     /** The Spotlight home's rail of covers: "left" or "right" (the whole layout mirrored). */
     val spotlightRail: String = "left",
@@ -52,6 +54,12 @@ data class Look(
     val orbitGroups: String = "all",
     /** The Orbit home's Continue card (the last game played) beside the spotlight's covers. */
     val orbitContinue: Boolean = true,
+    /** What the Stage home's pages are: "all" (systems, collections, apps), "games" (systems and collections) or "systems". */
+    val stageGroups: String = "all",
+    /** The Stage home's covers: "s", "m" or "l". */
+    val stageCovers: String = "m",
+    /** What fills the Stage home behind its words and covers: "art", "blur" or "dim", as on Spotlight. */
+    val stageBackdrop: String = "art",
     /** How games show inside a system or collection: "grid", "list" or "carousel". */
     val gameView: String = "grid",
     /** Open folders and collections as a popup over the current screen instead of a new page. */

@@ -17,8 +17,7 @@
     <string name="panels_start_hidden">已隐藏</string>
     <string name="panels_start_settings">设置</string>
     <string name="panels_start_layout">布局</string>
-    <string name="panels_layout_hint_try">试试</string>
-    <string name="panels_layout_hint_adjust">调整</string>
+    <string name="panels_layout_hint_size">大小：%1$s</string>
     <string name="panels_layout_hint_keep">保留</string>
     <string name="panels_layout_hint_cancel">取消</string>
     <string name="panels_start_update">Tandem %1$s 已发布</string>

@@ -751,7 +751,7 @@ fun WidgetHost() {
             when {
                 b == Button.Y && WidgetUi.moving == null && (Nav.route == Route.Home || onWidgets) ->
                     WidgetUi.focused?.let { WidgetUi.openMenu(it, WidgetUi.focusedArea, WidgetUi.focusedInEditor) }
-                onWidgets && (b == Button.L1 || b == Button.R1) -> { WidgetUi.moving = null; WidgetUi.editorTab = 1 - WidgetUi.editorTab }
+                onWidgets && (b == Button.L1 || b == Button.R1) && !io.github.zahakj.tandem.Buttons.repeat -> { WidgetUi.moving = null; WidgetUi.editorTab = 1 - WidgetUi.editorTab }
             }
         }
     }

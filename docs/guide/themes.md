@@ -68,6 +68,7 @@ The layout gallery at the top of **Settings › Home & layout** picks how your h
 | **Icon grid** | Systems, folders, Android apps and Tandem's own apps as big tiles, with a dock along the bottom ([more](#the-icon-grid)) |
 | **Orbit** | Tandem's own home: a ring of round icons with a fan of games above ([more](#orbit)) |
 | **Spotlight** | One game's art across the whole screen, with a rail of covers ([more](#spotlight)) |
+| **Stage** | A page for each group, a row of covers on each, the highlighted game's art behind; <kbd>L1</kbd> / <kbd>R1</kbd> slide the pages ([more](#stage)) |
 
 **Inside a system or collection**, games show as a grid, a list, a carousel, spines on a bookshelf (**Shelf**) or cartridges in a case (**Case**). Pick one with **Games view**, or step through them with the view button at the top of the system (next to Stats, or next to Sort when folders open as popups). You also choose the grid size, the card shape (rounded, square, circle, tall box art or wide) and whether titles show.
 
@@ -83,7 +84,7 @@ The icon grid is the home most like a console menu: big tiles you arrange yourse
 - **Folders** of your own: <kbd>Y</kbd> on a tile › **Edit** › **Organize** › **Move to folder…**. Folders open as a popup or a full page, and you can [design each one](#folder-design). <kbd>Y</kbd> lifts a tile where it sits with **Open** and **Edit** beside it; holding <kbd>Y</kbd> picks it up to move it (see [the lift](controls.md#y-on-the-icon-grid-the-lift)).
 - **Empty spots** sit after the last icon and wherever one was taken away. <kbd>A</kbd> or <kbd>Y</kbd> on one opens a small card with Pip (New ›, Sort ›, Search, Edit grid ›, Settings) to make a folder or add something right there, and moved icons can be dropped into them. <kbd>Start</kbd> › **Sort** › **Home: close the gaps** (or <kbd>Y</kbd> on an empty spot › **Sort ›** › **Tidy up**) closes them. See [Controls](controls.md#empty-spots).
 - **The other screen** shows a spotlight of the highlighted tile, or the classic details. A highlighted game gets a title card, like the 3DS menu's banners.
-- <kbd>X</kbd> **swaps the screens** here and on Orbit. To make <kbd>X</kbd> always search, or always swap, use **Settings › Controls**.
+- <kbd>X</kbd> **swaps the screens** here, on Orbit and on Stage. To make <kbd>X</kbd> always search, or always swap, use **Settings › Controls**.
 
 <details>
 <summary>What's on a game's title card</summary>
@@ -108,10 +109,11 @@ Orbit is Tandem's own home: your systems, then your collections, then Tandem's a
 | <kbd>A</kbd> | Open the system, collection or app | Play the game (a running one comes back where it is), open the app |
 | <kbd>B</kbd> | Back round to the first orb | Back to the orbit |
 | <kbd>Y</kbd> | The system's or collection's view menu | The game menu, or the app's options. On a game still running, press it twice to close the game (a long press on the Continue card opens the game menu) |
-| <kbd>L1</kbd> / <kbd>R1</kbd> | Jump to the first system, collection or app | The same, and back to the orbit |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | Turn the ring one orb | The same, and back to the orbit |
+| <kbd>L2</kbd> / <kbd>R2</kbd> | Jump to the first system, collection or app before or after | <kbd>L2</kbd> a page up, <kbd>R2</kbd> the side panel |
 | <kbd>X</kbd> | Swap the two screens (as on the icon grid; **Settings › Controls › X button** changes it) | |
 
-<kbd>Start</kbd>, the quick panel (hold <kbd>Start</kbd>) and the side panel (<kbd>R2</kbd>) work as on every home. The other screen shows the highlighted system, collection or game as usual (**Settings › Two screens › Other screen**).
+<kbd>Start</kbd>, the quick panel (hold <kbd>Start</kbd>) and the side panel (<kbd>R2</kbd> off the ring) work as on every home. The other screen shows the highlighted system, collection or game as usual (**Settings › Two screens › Other screen**).
 
 **Settings for Orbit.** Two rows in **Settings › Home & layout › Home screen** shape it while Orbit is in use: **Orbit holds** (systems, collections and apps; systems and collections; or systems only) and **Continue card**.
 
@@ -159,6 +161,31 @@ Spotlight is the quiet, game-first home: the highlighted game's art fills the sc
 - **The X button setting:** if you set **Settings › Controls › X button** to swap everywhere or to search, <kbd>X</kbd> does that here too, and the story opens by touch.
 
 </details>
+
+### Stage
+
+Stage is horizontal both ways: each group is a page of its own, and each page is a row of covers.
+
+- **The pages:** Continue (the game running now and the last ones you played) first, then each system with games, each collection, and the apps. <kbd>L1</kbd> / <kbd>R1</kbd> slide the whole page out the way you pressed and the next one in, landing on the game you last had there (else the one you played last, else the first).
+- **The row** of covers runs along the bottom: the highlighted one is bigger and ringed in the highlight's colour, a running game carries a mint dot, and once you're a third of the way along the row scrolls so the highlight stays put. A system's or collection's row ends with **See all**, which opens it.
+- **The game** takes over the backdrop (its key art, slowly moving if **Moving art** is on), with its logo, a line of facts, two lines of its story and its play time above the row.
+- **The strip** of short names along the top shows where you are among the pages; the group's name and size sit bottom left, what <kbd>A</kbd> and <kbd>Y</kbd> do bottom right.
+- **The bottom screen** shows the game as on every layout; on a page turn it shows the group's own card for a moment first.
+
+| Press | Does |
+| --- | --- |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | Move along the row; hold to skim (faster the longer you hold). It stops at the ends |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | The page before or after, wrapping round, from anywhere on the home |
+| <kbd>L2</kbd> / <kbd>R2</kbd> | The letter before or after in the row (in a short row, its first or last cover) |
+| <kbd>▲</kbd> | Onto the strip: <kbd>◀</kbd> / <kbd>▶</kbd> flip pages there, <kbd>A</kbd> or <kbd>▼</kbd> comes back down; <kbd>▲</kbd> again reaches the top bar |
+| <kbd>▼</kbd> | The dock |
+| <kbd>A</kbd> | Play (or Resume), open **See all** or the app |
+| <kbd>Y</kbd> | The game menu; on a running game, press it twice to close it |
+| <kbd>B</kbd> | Back to the first cover; from there, to Continue |
+| <kbd>Select</kbd> | Surprise me: slides to the game's page and lands on it |
+| <kbd>X</kbd> | Swap the screens (as on the icon grid; **Settings › Controls › X button** changes it) |
+
+**Settings for Stage.** Three rows in **Settings › Home & layout › Home screen** shape it while Stage is in use: **Stage holds** (systems, collections and apps; systems and collections; or systems only), **Cover size** (small, medium, large; <kbd>L2</kbd> / <kbd>R2</kbd> while trying layouts from <kbd>Start</kbd>) and **Stage backdrop** (the art, the cover blurred, or the theme's colour). By touch, drag sideways to turn the page, tap a cover to highlight it and again to play, tap a name on the strip to go there. With **Reduce motion** pages cross-fade instead of sliding.
 
 ### Folder design
 

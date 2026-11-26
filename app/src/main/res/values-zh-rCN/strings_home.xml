@@ -407,4 +407,23 @@
     <string name="home_orbit_holds_systems">仅平台</string>
     <string name="home_orbit_continue_card">“继续游玩”卡片</string>
     <string name="home_orbit_continue_card_help">正在运行的游戏（没有就是你上次玩的那款），化作一张卡片立在封面左边。按 A 接着玩（游戏还在运行时就是“继续游戏”，按 Y 关闭它）。</string>
+    <string name="home_strip_continue">继续游玩</string>
+    <string name="home_continue_last">最近玩过</string>
+    <string name="home_continue_hint_play">开玩</string>
+    <string name="home_continue_hint_options">选项</string>
+    <string name="home_layout_stage">舞台</string>
+    <string name="home_stage_see_all">查看全部</string>
+    <plurals name="home_stage_see_all_games">
+        <item quantity="other">全部 %1$d 款游戏</item>
+    </plurals>
+    <string name="home_stage_settings">舞台</string>
+    <string name="home_stage_holds">舞台页面</string>
+    <string name="home_stage_holds_help">L1 和 R1 翻动的页面：你的平台、合集和 Tandem 的应用，或其中一部分。“继续游玩”总在最前面。</string>
+    <string name="home_stage_covers">封面大小</string>
+    <string name="home_stage_covers_help">底部封面的大小。从 Start 试布局时，L2 / R2 也能调整它。</string>
+    <string name="home_stage_covers_s">小</string>
+    <string name="home_stage_covers_m">中</string>
+    <string name="home_stage_covers_l">大</string>
+    <string name="home_stage_backdrop">舞台背景</string>
+    <string name="home_stage_backdrop_help">选中游戏背后铺满屏幕的内容：它的主视觉图、模糊的封面，或只用主题色。</string>
 </resources>

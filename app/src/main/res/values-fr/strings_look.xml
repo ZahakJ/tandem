@@ -591,4 +591,7 @@
     <string name="look_art_set_neon">Néon d’arcade</string>
     <string name="look_art_set_paper">Cartouche en papier</string>
     <string name="look_art_set_mono">Mono tout en finesse</string>
+    <string name="look_travel">Curseur qui glisse</string>
+    <string name="look_travel_help">Sur la grille d’icônes, le curseur glisse d’une icône à l’autre avec un petit rebond, et l’icône où il se pose se soulève. Désactivé, il saute. « Réduire les animations » le désactive aussi.</string>
+    <string name="look_layout_stage_help">Horizontal dans les deux sens : chaque système, collection et Continuer est une page, L1 et R1 font glisser la page entière, et Gauche et Droite parcourent sa rangée de jaquettes pendant que l’illustration du jeu sélectionné remplit l’écran.</string>
 </resources>

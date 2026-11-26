@@ -440,8 +440,8 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             })
             add(MenuAction("new", Tx.s(R.string.panels_start_new), Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
             add(MenuAction("sort", Tx.s(R.string.panels_start_sort), Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
-            // Every home layout (or, among a system's or collection's games, every games view) along the bottom of the
-            // screen, tried live behind it (LayoutSwitch.kt). The one in use is named beside it.
+            // Try-on mode for every home layout (or, among a system's or collection's games, every games view): the panel
+            // closes and L1 / R1 put each on live (LayoutSwitch.kt). The one in use is named beside it.
             val look = Store.settings.look
             val r = Nav.route
             if (r is Route.System || r is Route.Collection) add(

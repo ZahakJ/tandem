@@ -157,10 +157,18 @@ object Buttons {
     /** Whether the press being handled means [c]. Only meaningful inside a handler or collector. */
     fun has(c: Command): Boolean = c in commands
 
+    /**
+     * The press being handled is a held shoulder repeating (ChordEngine.REPEATS), not a press of its own. A screen
+     * where a repeat would do harm (a zoom that lays the whole grid out again, a switch that flips back) ignores it.
+     */
+    var repeat: Boolean = false
+        private set
+
     /** Called on the main thread for every press. [commands] are the commands this press means, see [has]. */
-    fun press(b: Button, commands: Set<Command> = setOf(b.command)) {
+    fun press(b: Button, commands: Set<Command> = setOf(b.command), repeat: Boolean = false) {
         // Collectors run a little later, on the main dispatcher, so the set stays until the next press.
         this.commands = commands
+        this.repeat = repeat
         for (h in handlers.asReversed().toList()) if (h(b)) return
         presses.tryEmit(b)
     }

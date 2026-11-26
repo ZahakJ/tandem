@@ -15,7 +15,7 @@ class SettingsPlanTest {
     private val features = listOf(
         "Appearance", "AchievementsUi", "CocoonSetup", "ControllerSettings", "DeckPanel", "DiscordSettings", "Flair", "GameFoldersScreen", "HomeMode",
         "Perf", "PerformanceSettings", "ScrapeScreen", "ScreenOffSettings", "Settings", "SoundSettings", "SteamUi", "SystemsScreen", "Widgets",
-        "SettingsCatalog", "Orbit", "SpotlightHome", "LanguageSettings",
+        "SettingsCatalog", "Orbit", "SpotlightHome", "StageHome", "LanguageSettings",
     )
 
     /** Rows that aren't picked by label: galleries, and groups taken whole ([SettingsPlan.ALL], the theme pack's audio). */
@@ -90,12 +90,12 @@ class SettingsPlanTest {
     @Test fun pagesStayShort() {
         for ((id, groups) in SettingsPlan.pages) {
             // The most a page can show with any one layout (layout-only rows of the others never show together).
-            val most = listOf("grid", "orbit", "spotlight", "rows").maxOf { layout ->
+            val most = listOf("grid", "orbit", "spotlight", "stage", "rows").maxOf { layout ->
                 // About Tandem stands in for Updates in builds without the updater, so never both.
                 groups.flatMap { it.main }.filter { it.label != "About Tandem" }.count { pk ->
                     when (pk.layout) {
                         null -> true; "grid" -> layout == "grid"; "nogrid" -> layout != "grid"; "orbit" -> layout == "orbit"
-                        "spotlight" -> layout == "spotlight"; "other" -> layout == "orbit" || layout == "rows"; else -> layout == "rows"
+                        "spotlight" -> layout == "spotlight"; "stage" -> layout == "stage"; "other" -> layout == "orbit" || layout == "stage" || layout == "rows"; else -> layout == "rows"
                     }
                 }
             }

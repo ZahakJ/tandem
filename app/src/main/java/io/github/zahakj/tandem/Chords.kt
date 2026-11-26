@@ -86,7 +86,7 @@ object Chords {
     private fun carry(outs: List<ChordEngine.Out>, raw: Int): Int? {
         var forward: Int? = null
         for (o in outs) when (o) {
-            is ChordEngine.Out.Fire -> fire(o.commands)
+            is ChordEngine.Out.Fire -> fire(o.commands, o.repeat)
             is ChordEngine.Out.Pass -> if (o.command == Command.ControllerHome) HomeButton.press(o.down) else forward = passCode(o.command)
             // A and B that no longer mean Open or Back must not reach the screens as keys either: Compose takes
             // BUTTON_A as select and BUTTON_B as back wherever a key handler looks at it.
@@ -103,7 +103,7 @@ object Chords {
     }
 
     /** The commands of one binding, as one press: the direct ones run here, the rest arrive in [Buttons] together. */
-    private fun fire(commands: List<Command>) {
+    private fun fire(commands: List<Command>, repeat: Boolean = false) {
         for (c in commands) when (c) {
             Command.QuickPanel -> Panels.toggleQuick()
             Command.Switcher, Command.SwitcherChord -> Panels.openSwitcher()
@@ -111,7 +111,7 @@ object Chords {
             else -> Unit
         }
         val buttons = commands.filter { it.kind == Command.Kind.Button }
-        buttons.firstOrNull()?.carrier?.let { Buttons.press(it, buttons.toSet()) }
+        buttons.firstOrNull()?.carrier?.let { Buttons.press(it, buttons.toSet(), repeat) }
     }
 
     private fun schedule() {

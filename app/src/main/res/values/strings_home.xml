@@ -530,4 +530,30 @@
     <string name="home_orbit_holds_systems">Systems only</string>
     <string name="home_orbit_continue_card">Continue card</string>
     <string name="home_orbit_continue_card_help">The game running now, else the last one you played, as a card standing left of the covers. A picks it up again (Resume while it runs, and Y closes it).</string>
+    <!-- The shoulders' strip over a home layout: the Continue group's short name (keep it short) -->
+    <string name="home_strip_continue">Continue</string>
+    <!-- The icon grid's wide first card when no game is running: its heading over the last game played (capitals, like CONTINUE) -->
+    <string name="home_continue_last">LAST PLAYED</string>
+    <!-- Button hints on that card -->
+    <string name="home_continue_hint_play">Play</string>
+    <string name="home_continue_hint_options">Options</string>
+    <!-- The Stage home layout's name: each group is a page of covers, L1 / R1 flip pages -->
+    <string name="home_layout_stage">Stage</string>
+    <!-- The card at the end of a system's or collection's row on Stage: opens the whole system (keep it short) -->
+    <string name="home_stage_see_all">See all</string>
+    <!-- Under the group's name while "See all" is highlighted -->
+    <plurals name="home_stage_see_all_games">
+        <item quantity="one">All %1$d game</item>
+        <item quantity="other">All %1$d games</item>
+    </plurals>
+    <string name="home_stage_settings">Stage</string>
+    <string name="home_stage_holds">Stage holds</string>
+    <string name="home_stage_holds_help">Which pages L1 and R1 flip through: your systems, collections and Tandem\'s apps, or fewer of them. Continue always comes first.</string>
+    <string name="home_stage_covers">Cover size</string>
+    <string name="home_stage_covers_help">How big the covers along the bottom are. L2 / R2 change it too while you try layouts from Start.</string>
+    <string name="home_stage_covers_s">Small</string>
+    <string name="home_stage_covers_m">Medium</string>
+    <string name="home_stage_covers_l">Large</string>
+    <string name="home_stage_backdrop">Stage backdrop</string>
+    <string name="home_stage_backdrop_help">What fills the screen behind the highlighted game: its key art, its cover blurred, or just the theme\'s colour.</string>
 </resources>

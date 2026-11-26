@@ -140,4 +140,5 @@
     <string name="screens_status_help">قائمة الانتظار، قيد اللعب، أنهيتها… اللعبة في قائمة الانتظار تنتقل إلى «قيد اللعب» وحدها بعد أن تلعبها مدة.</string>
     <string name="screens_status_no_status">بلا حالة</string>
     <string name="screens_status_progress">%1$s من ~%2$s</string>
+    <string name="screens_switch_zoom">التكبير</string>
 </resources>

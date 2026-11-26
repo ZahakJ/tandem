@@ -64,13 +64,14 @@ Colours, wallpaper, icons, motion, the language and the calendar: how Tandem loo
 | --- | --- | --- |
 | Animation style | the theme's | Bouncy, Smooth, Minimal, or Off (changes happen instantly). |
 | Reduce motion | Off | Stills moving wallpapers, panning art and bouncy animations everywhere. |
+| Travelling highlight | On | On the icon grid the highlight glides from icon to icon on a little spring and the icon it lands on lifts. Off (or with Reduce motion), it jumps. |
 | Floating titles | On | Logos, icons and titles float gently and rise in when they change. |
 | Motion intensity | Normal | How far things float and bounce: Subtle, Normal or Lively. |
 | Swap animation | Scatter | How the screens trade places: Scatter, Push, Flip, Depth, Fade or Instant. |
 
 ## Home & layout
 
-What the home screen is made of, and how games show inside a system. The page opens with the gallery of the seven home layouts: Shelves, Icon grid, Carousel, List, Console, Orbit and Spotlight (see [Home layouts](themes.md#home-layouts)). The Home screen group shows only the rows for the layout you use.
+What the home screen is made of, and how games show inside a system. The page opens with the gallery of the eight home layouts: Shelves, Icon grid, Carousel, List, Console, Orbit, Spotlight and Stage (see [Home layouts](themes.md#home-layouts)). The Home screen group shows only the rows for the layout you use.
 
 | Group | Setting | Default | What it does |
 | --- | --- | --- | --- |
@@ -86,6 +87,9 @@ What the home screen is made of, and how games show inside a system. The page op
 | Home screen (Spotlight) | Spotlight rail | Left | Which side the rail of covers runs down; the whole layout mirrors. |
 | Home screen (Spotlight) | Spotlight backdrop | Art | Behind the game: its Art, its Blurred cover, or Dim (the theme's colour). |
 | Home screen (Spotlight) | Spotlight motion | On | The art drifts and zooms in very slowly (never with Reduce motion). |
+| Home screen (Stage) | Stage holds | Systems, collections, apps | Which pages L1 / R1 flip through: all three, Systems and collections, or Systems only. Continue always comes first. |
+| Home screen (Stage) | Cover size | Medium | How big the covers along the bottom are: Small, Medium or Large. |
+| Home screen (Stage) | Stage backdrop | Art | Behind the game: its Art, its Blurred cover, or Dim (the theme's colour). |
 | Home screen (Shelves, Carousel, List, Console) | Home rows | Continue · Systems · Collections | Which rows the home shows, and in what order. |
 | Home screen (Shelves, Carousel, List, Console) | System tiles | Pastel | The look of the system tiles: Pastel, Solid colour, Glass or Minimal. |
 | Home screen (every layout but the icon grid and Spotlight) | Open folders | Page | A system or collection opens as a Page, a Fullscreen page (the top bar slides away), or a Popup. |
@@ -104,6 +108,7 @@ What the home screen is made of, and how games show inside a system. The page op
 | Icon roundness, Space between icons | Rounded (20 %), 26 % | Corners from Sharp to Circle, each step named and shown on live tiles; the gap between icons. One tile can keep its own corners (Y › Edit › Look › Corners). |
 | Hero split | No split | Art of the highlighted icon above the grid, taking up to half the screen. |
 | Animated icons | Always | Uploaded GIFs and animated WebPs on tiles play Always, While highlighted, or Off. They always rest while a game runs and with Reduce motion. |
+| Continue card | On | With no game running, a wide card of your last games leads the grid; on it L2 / R2 step through them. Off: only a running game gets the card (Resume page). |
 
 **Home & layout › How games show**
 

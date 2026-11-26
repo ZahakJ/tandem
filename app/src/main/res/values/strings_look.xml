@@ -596,4 +596,8 @@
     <string name="look_art_set_neon">Neon Arcade</string>
     <string name="look_art_set_paper">Paper Cartridge</string>
     <string name="look_art_set_mono">Minimal Mono</string>
+    <!-- Motion: the highlight ring glides from icon to icon on the icon grid instead of jumping -->
+    <string name="look_travel">Travelling highlight</string>
+    <string name="look_travel_help">On the icon grid the highlight glides from icon to icon on a little spring, and the icon it lands on lifts. Off, it jumps. Reduce motion turns it off too.</string>
+    <string name="look_layout_stage_help">Horizontal both ways: each system, collection and Continue is a page, L1 and R1 slide the whole page across, and Left and Right move along its row of covers while the highlighted game\'s art fills the screen.</string>
 </resources>

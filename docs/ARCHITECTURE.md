@@ -182,6 +182,14 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   art's settle delay; tested in `SpotlightHomeLayoutTest`) and `ui/SpotlightHome.kt` (`SpotlightHome`: the rail as one
   focusable stage composing only the tiles near its `Animatable` offset, the art behind under one fade mask, the
   panel, `spotlightHomeSettings()`). Groups are `GridCatalog` tiles. Not `ui/Spotlight.kt`, the icon grid's other screen.
+- Stage, a page per group: `ui/StageLayout.kt` (pure: landing cover, row scroll and window, letter jumps, B's order;
+  tested in `StageLayoutTest`) and `ui/StageHome.kt` (`StageHome`: one focusable stage, pages in an `AnimatedContent`
+  sliding by the flip's direction, covers placed from one `Animatable` in the layout phase, `stageSettings()`).
+- Across the home layouts: `ui/GroupPaging.kt` (what L1 / R1 step through, pure, `GroupPagingTest`), `ui/GroupStrip.kt`
+  (the shoulders' strip), `ui/TravelRing.kt` (the icon grid's travelling highlight, drawn in one overlay),
+  `ui/ContinueDeck.kt` (the games behind the grid's Continue card, `ContinueDeckTest`) and `ui/LayoutSwitch.kt`
+  (Start › Layout's try-on mode). The other screen shows systems, folders and apps through `ui/Spotlight.kt` on every
+  layout.
 - Icon grid: `ui/IconGrid.kt` (`GridCatalog`, `IconGridHome`, move mode, tile menu, user folders, `FolderSheet`),
   `ui/IconArt.kt` (`TileArt`), `ui/IconPacks.kt` (pack art and smart-folder art), `ui/PanelMorph.kt` (folder popups
   grow from their tile), `ui/Spotlight.kt` (the other screen in this mode). Smart folders: `data/SmartRule.kt` (the

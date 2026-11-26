@@ -494,4 +494,7 @@
     <string name="look_art_set_neon">ネオン街ゲーセン</string>
     <string name="look_art_set_paper">紙ラベルのカセット</string>
     <string name="look_art_set_mono">すっきりモノトーン</string>
+    <string name="look_travel">すべるカーソル</string>
+    <string name="look_travel_help">アイコングリッドで、カーソルがアイコンからアイコンへばねのようにすべり、止まったアイコンが少し浮きます。オフにするとパッと移ります。「動きを減らす」でもオフになります。</string>
+    <string name="look_layout_stage_help">ページもゲームも横に並びます：機種、コレクション、「つづきから」がそれぞれ1ページ。L1とR1でページごとスライドし、左右でパッケージの列を動くと、選択中のゲームのアートが画面いっぱいに広がります。</string>
 </resources>

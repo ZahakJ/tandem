@@ -505,7 +505,9 @@ private fun Modifier.railKeys(st: RailState, railLeft: Boolean, ctx: android.con
 @Composable
 private fun RailHeader(st: RailState, modifier: Modifier) {
     val g = st.currentGroup ?: return
+    // L1 and R1 either side of the group's name: they turn to the group before and after (GroupStrip.kt).
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+        if (st.groups.size > 1) { ButtonHint("L1", "", Palette.Lavender); Spacer(Modifier.width(6.dp)) }
         Box(Modifier.size(10.dp).clip(CircleShape).background(g.color))
         Spacer(Modifier.width(8.dp))
         Text(
@@ -514,6 +516,7 @@ private fun RailHeader(st: RailState, modifier: Modifier) {
         )
         Spacer(Modifier.width(6.dp))
         Text("${st.index + 1}/${st.count}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
+        if (st.groups.size > 1) { Spacer(Modifier.width(6.dp)); ButtonHint("R1", "", Palette.Lavender) }
     }
 }
 

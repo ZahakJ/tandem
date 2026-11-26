@@ -31,6 +31,8 @@ object LayoutFocus {
     /** The home route's key Orbit and Spotlight hold while their stage has the highlight (Orbit.STAGE, SpotlightMode.STAGE). */
     const val ORBIT_STAGE = "orbit"
     const val SPOTLIGHT_STAGE = "spotlight"
+    /** The home route's key Stage holds while its pages have the highlight (StageMode.STAGE). */
+    const val STAGE_STAGE = "stage"
 
     /** The group a grid, Orbit or Spotlight shows the spot in: its system, its collection or its app. */
     private fun group(s: LayoutSpot): String? = s.system?.let { "s:$it" } ?: s.collection?.let { "col:$it" } ?: s.app?.let { "app:$it" }
@@ -48,6 +50,15 @@ object LayoutFocus {
         // Spotlight keeps every app in one group of its own.
         "spotlight" -> LayoutTarget(
             SPOTLIGHT_STAGE, group = if (s.app != null && s.system == null && s.collection == null) "apps" else group(s),
+            item = s.game ?: s.app?.let { "app:$it" },
+        )
+        // Stage: a game on its system's page, a system or collection on its own; the apps have a page of their own.
+        "stage" -> LayoutTarget(
+            STAGE_STAGE,
+            group = when {
+                s.app != null && s.system == null && s.collection == null -> "apps"
+                else -> group(s)
+            },
             item = s.game ?: s.app?.let { "app:$it" },
         )
         // Carousel, List and Console: one entry per system and collection.

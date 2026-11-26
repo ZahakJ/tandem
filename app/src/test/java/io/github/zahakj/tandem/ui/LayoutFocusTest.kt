@@ -21,6 +21,15 @@ class LayoutFocusTest {
         assertEquals("s:switch", LayoutFocus.target("shelves", zelda).home)
     }
 
+    @Test fun stageFlipsToTheGamesPageAndLandsOnIt() {
+        val stage = LayoutFocus.target("stage", zelda)
+        assertEquals(LayoutFocus.STAGE_STAGE, stage.home)
+        assertEquals("s:switch", stage.group)
+        assertEquals("zelda", stage.item)
+        assertEquals("col:fav", LayoutFocus.target("stage", LayoutSpot(collection = "fav")).group)
+        assertEquals("apps", LayoutFocus.target("stage", LayoutSpot(app = "com.limelight")).group)
+    }
+
     @Test fun orbitAndSpotlightTurnToTheGroup() {
         val orbit = LayoutFocus.target("orbit", zelda)
         assertEquals(LayoutFocus.ORBIT_STAGE, orbit.home)

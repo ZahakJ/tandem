@@ -321,4 +321,6 @@
     <string name="settings_sub_droiddeck_help">الألعاب التي ثبّتّها في DroidDeck، من كل المتاجر، مباشرةً في مكتبتك.</string>
     <string name="settings_sub_gamenative">GameNative</string>
     <string name="settings_sub_gamenative_help">الألعاب التي نزّلتها في GameNative، من كل المتاجر، مباشرةً في مكتبتك.</string>
+    <string name="settings_continue_card">بطاقة «تابِع»</string>
+    <string name="settings_continue_card_help">إن لم تكن هناك لعبة تعمل، تبدأ شبكة الأيقونات ببطاقة عريضة لآخر الألعاب التي لعبتها. حدّدها وتنقّل بينها بالزرّين L2 / R2؛ الزر A يشغّل اللعبة والزر Y يفتح خياراتها. الألعاب المخفية لا تظهر عليها أبدًا. وأيّ لعبة تعمل تأخذ البطاقة في كل الأحوال (صفحة الاستئناف).</string>
 </resources>

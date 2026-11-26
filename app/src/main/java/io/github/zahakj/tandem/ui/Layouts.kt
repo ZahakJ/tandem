@@ -86,6 +86,7 @@ val HomeLayouts: List<Pair<String, String>>
         "console" to Tx.s(R.string.home_layout_console),
         "orbit" to Tx.s(R.string.home_layout_orbit),
         "spotlight" to Tx.s(R.string.home_layout_spotlight),
+        "stage" to Tx.s(R.string.home_layout_stage),
     )
 
 /** How games show inside a system or collection. */
@@ -301,10 +302,11 @@ private fun homeEntries(libs: List<PlatformLibrary>): List<HomeEntry> {
 /** Every home layout except Shelves (which lives in Screens.kt). */
 @Composable
 fun HomeLayout(libs: List<PlatformLibrary>) {
-    // The icon grid lives in IconGrid.kt, Orbit in Orbit.kt, Spotlight in SpotlightHome.kt.
+    // The icon grid lives in IconGrid.kt, Orbit in Orbit.kt, Spotlight in SpotlightHome.kt, Stage in StageHome.kt.
     if (Store.settings.look.homeLayout == "grid") return IconGridHome(libs)
     if (Store.settings.look.homeLayout == "orbit") return OrbitHome(libs)
     if (Store.settings.look.homeLayout == "spotlight") return SpotlightHome(libs)
+    if (Store.settings.look.homeLayout == "stage") return StageHome(libs)
     val entries = homeEntries(libs)
     // The Continue entry can keep the highlight while its game changes (the running one closed, say), and its card only
     // says what it holds when the highlight arrives: say the new game, so the other screen and Y act on it.
@@ -313,6 +315,19 @@ fun HomeLayout(libs: List<PlatformLibrary>) {
         if (continuing != null && FocusMemory.get(Route.Home.key) == CONTINUE_ENTRY && Nav.route == Route.Home && !Nav.overlayOpen &&
             io.github.zahakj.tandem.Selection.current is Selected.GameItem
         ) io.github.zahakj.tandem.Selection.current = continuing.selected
+    }
+    // L1 / R1: the group before or after. Each card or row here is a group, so the highlight moves one along, wrapping
+    // round, from anywhere on the home (from the dock it goes back to the groups).
+    val latest = androidx.compose.runtime.rememberUpdatedState(entries)
+    InterceptButtons(true) { b ->
+        if ((b != io.github.zahakj.tandem.Button.L1 && b != io.github.zahakj.tandem.Button.R1) || !GroupPaging.free) return@InterceptButtons false
+        val keys = latest.value.map { it.key }
+        val route = Route.Home.key
+        val now = FocusMemory.get(route)?.takeIf { it in keys } ?: GroupPaging.last.takeIf { it in keys }
+        val to = GroupPaging.step(keys, now, if (b == io.github.zahakj.tandem.Button.R1) 1 else -1) ?: return@InterceptButtons true
+        FocusMemory.remember(route, to)
+        Nav.focusTick++
+        true
     }
     when (Store.settings.look.homeLayout) {
         "carousel" -> HomeCarousel(entries)
@@ -392,6 +407,7 @@ fun Coverflow(routeKey: String, items: List<FlowItem>, cardWidth: Dp, cardHeight
                     val focusMe = Modifier.size(cardWidth, cardHeight).remembersFocus(routeKey, item.key, i == start)
                     val onFocus = {
                         FocusMemory.remember(routeKey, item.key)
+                        if (routeKey == Route.Home.key) GroupPaging.last = item.key
                         io.github.zahakj.tandem.Selection.current = item.selected
                         scope.launch { if (still) state.scrollToItem(i) else state.animateScrollToItem(i) }
                         Unit
@@ -416,18 +432,35 @@ internal fun FlowCaption(title: String, subtitle: String, color: Color) {
     }
 }
 
+/** The shoulders' strip over the home's groups (GroupStrip.kt); a tap on a name goes there. */
+@Composable
+private fun HomeStrip(entries: List<HomeEntry>, current: String?, modifier: Modifier, chips: Int = 0) {
+    val groups = remember(entries) { entries.filter { !it.key.startsWith("empty:") }.map { StripGroup(it.key, stripLabel(it.key, it.title), it.color) } }
+    GroupStrip(groups, current, modifier, chips = chips) { key ->
+        FocusMemory.remember(Route.Home.key, key)
+        Nav.focusTick++
+    }
+}
+
 @Composable
 private fun HomeCarousel(entries: List<HomeEntry>) {
     val items = entries.map { e -> FlowItem(e.key, e.title, e.subtitle, e.color, e.selected, e.game, e.games, e.open) }
     val current = entries.firstOrNull { it.key == FocusMemory.get(Route.Home.key) } ?: entries.firstOrNull()
+    val now = if (Store.settings.look.nowPlaying) nowPlaying() else null
     Column(Modifier.fillMaxSize()) {
         if (Store.settings.look.dockTop) DockBar()
-        if (Store.settings.look.nowPlaying) nowPlaying()?.let { NowPlayingCard(it) }
+        if (now != null) NowPlayingCard(now)
         Coverflow(Route.Home.key, items, 190.dp, 190.dp, Modifier.fillMaxWidth().weight(1f))
         // Read Selection so the caption follows focus.
         val sel = io.github.zahakj.tandem.Selection.current
         val shown = entries.firstOrNull { it.selected == sel } ?: current
         if (shown != null) FlowCaption(shown.title, shown.subtitle, shown.color)
+        // The cards are the groups, so the shoulders' strip is a row of their short names under them (it steps
+        // aside for the Now playing card, which needs the room).
+        if (now == null) HomeStrip(
+            entries, entries.firstOrNull { it.selected == sel }?.key ?: GroupPaging.last ?: shown?.key,
+            Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp), chips = 9,
+        )
         Spacer(Modifier.height(10.dp))
         if (!Store.settings.look.dockTop) DockBar() else Spacer(Modifier.height(18.dp))
     }
@@ -470,6 +503,9 @@ private fun HomeList(entries: List<HomeEntry>) {
     var focusedKey by remember { mutableStateOf(FocusMemory.get(route) ?: entries.firstOrNull()?.key) }
     val focused = entries.firstOrNull { it.key == focusedKey } ?: entries.firstOrNull()
     val listState = rememberLazyListState()
+    // L1 / R1 move the remembered row (maybe one scrolled away): bring it into view so it can take the focus.
+    val nowRow = if (Store.settings.look.nowPlaying && nowPlaying() != null) 1 else 0
+    KeepInView(listState, Nav.focusTick.let { entries.indexOfFirst { it.key == FocusMemory.get(route) }.let { i -> if (i < 0) -1 else i + nowRow } })
     Row(Modifier.fillMaxSize().padding(horizontal = 14.dp)) {
         LazyColumn(
             Modifier.weight(1.1f).fillMaxHeight().fadingEdges(listState),
@@ -482,7 +518,7 @@ private fun HomeList(entries: List<HomeEntry>) {
                 ListRow(
                     e.title, e.subtitle, e.short.takeIf { e.game == null && e.short.length > 1 }, e.color,
                     Modifier.remembersFocus(route, e.key, i == 0), art = { EntryArt(e) },
-                    onFocus = { FocusMemory.remember(route, e.key); focusedKey = e.key; io.github.zahakj.tandem.Selection.current = e.selected },
+                    onFocus = { FocusMemory.remember(route, e.key); GroupPaging.last = e.key; focusedKey = e.key; io.github.zahakj.tandem.Selection.current = e.selected },
                     onClick = e.open,
                 )
             }
@@ -491,6 +527,8 @@ private fun HomeList(entries: List<HomeEntry>) {
         Spacer(Modifier.width(16.dp))
         Box(Modifier.weight(0.9f).fillMaxHeight().padding(top = FocusRoom, bottom = 22.dp, end = 8.dp).clip(RoundedCornerShape(24.dp))) {
             if (focused != null) EntryPreview(focused)
+            // Where L1 and R1 go, over the preview of the row they move from.
+            HomeStrip(entries, focused?.key, Modifier.align(Alignment.TopCenter).padding(top = 12.dp, start = 12.dp, end = 12.dp).darkChip().padding(horizontal = 6.dp, vertical = 4.dp))
         }
     }
 }
@@ -537,6 +575,8 @@ private fun HomeConsole(entries: List<HomeEntry>) {
         }
         Column(Modifier.fillMaxSize()) {
             if (Store.settings.look.dockTop) DockBar()
+            // Where L1 and R1 go: the tiles along the bottom are the groups.
+            HomeStrip(entries, focused?.key, Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp).darkChip().padding(horizontal = 6.dp, vertical = 4.dp))
             Spacer(Modifier.weight(1f))
             if (focused != null) {
                 Column(Modifier.padding(start = 30.dp, end = 30.dp, bottom = 4.dp).riseIn(focused.key, 0, 16.dp).floating(focused.key.hashCode(), bob = 3.dp, tilt = 0f)) {
@@ -546,6 +586,8 @@ private fun HomeConsole(entries: List<HomeEntry>) {
             }
             val start = remember { entries.indexOfFirst { it.key == FocusMemory.get(route) }.coerceAtLeast(0) }
             val rowState = rememberLazyListState(initialFirstVisibleItemIndex = start)
+            // L1 / R1 move the remembered tile (maybe one scrolled away): bring it into view so it can take the focus.
+            KeepInView(rowState, Nav.focusTick.let { entries.indexOfFirst { it.key == FocusMemory.get(route) } })
             LazyRow(
                 Modifier.fadingEdges(rowState, horizontal = true).focusRow(),
                 state = rowState,
@@ -554,7 +596,7 @@ private fun HomeConsole(entries: List<HomeEntry>) {
             ) {
                 itemsIndexed(entries, key = { _, e -> e.key }) { i, e ->
                     EntryTile(e, Modifier.size(132.dp).remembersFocus(route, e.key, i == start)) {
-                        FocusMemory.remember(route, e.key); focusedKey = e.key; io.github.zahakj.tandem.Selection.current = e.selected
+                        FocusMemory.remember(route, e.key); GroupPaging.last = e.key; focusedKey = e.key; io.github.zahakj.tandem.Selection.current = e.selected
                     }
                 }
             }

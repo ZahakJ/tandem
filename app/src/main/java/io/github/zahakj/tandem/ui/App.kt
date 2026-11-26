@@ -492,7 +492,9 @@ private fun Main(resumes: Int) {
                 Button.Start -> if (Nav.inSettings) Nav.toggleSettings() else StartMenu.show()
                 Button.Select -> surpriseMe()
                 // In a system or collection opened from the grid, bigger or smaller cards.
-                Button.L1, Button.R1 -> if (Nav.route == Route.Home && FolderPopup.route != null) IconGrid.zoomTap(if (b == Button.R1) 1 else -1)
+                // Elsewhere the previous or next system, collection or settings page; on Home itself each layout steps
+                // through its groups (GroupPaging.kt), so it is no business of this.
+                Button.L1, Button.R1 -> if (Nav.route == Route.Home && FolderPopup.route != null) { if (!Buttons.repeat) IconGrid.zoomTap(if (b == Button.R1) 1 else -1) }
                     else cycle(if (b == Button.R1) 1 else -1)
                 // L2 / R2: in a list of games, the previous or next letter (or year, rating); elsewhere a page up or down.
                 // On home itself (any layout) the Side panel command opens the side panel (SidePanel.kt); it shares R2
@@ -524,7 +526,8 @@ private fun Main(resumes: Int) {
     PaddedScrolling {
         // While a popup is open the screen keeps its focus but ignores the D-pad and A, so nothing behind the
         // popup can be moved to or started.
-        Box(Modifier.fillMaxSize().menuBackdrop().onPreviewKeyEvent { (Nav.overlayOpen || Layers.top != null) && !Layers.focusInPopup && it.isNavKey() }) {
+        // Trying layouts (Start › Layout), A keeps the one on screen instead of opening what is highlighted.
+        Box(Modifier.fillMaxSize().menuBackdrop().onPreviewKeyEvent { LayoutSwitch.onKey(it) || (Nav.overlayOpen || Layers.top != null) && !Layers.focusInPopup && it.isNavKey() }) {
             // The top bar lies over the screens instead of pushing them down: each screen keeps a fixed room for it
             // (none on fullscreen ones), and the bar only fades and slides in its layer. Resizing the screen area
             // during a transition would re-lay out Home's grid (sized from its height) and Settings on every frame.

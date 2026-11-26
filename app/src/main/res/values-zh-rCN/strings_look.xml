@@ -493,4 +493,7 @@
     <string name="look_art_set_neon">霓虹街机厅</string>
     <string name="look_art_set_paper">纸标签卡带</string>
     <string name="look_art_set_mono">极简黑白</string>
+    <string name="look_travel">滑动的选中框</string>
+    <string name="look_travel_help">在图标网格上，选中框会像弹簧一样从一个图标滑到另一个，落下的图标会微微浮起。关闭后选中框直接跳过去。“减弱动态效果”也会关闭它。</string>
+    <string name="look_layout_stage_help">两个方向都横向：每个平台、合集和“继续游玩”各是一页，L1 和 R1 整页滑过，左右键在一排封面间移动，选中游戏的主视觉图铺满屏幕。</string>
 </resources>

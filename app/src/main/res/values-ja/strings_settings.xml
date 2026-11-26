@@ -260,4 +260,6 @@
     <string name="settings_sub_droiddeck_help">DroidDeckに入れたゲームを、どのストアのものでもそのままライブラリへ。</string>
     <string name="settings_sub_gamenative">GameNative</string>
     <string name="settings_sub_gamenative_help">GameNativeでダウンロードしたゲームを、どのストアのものでもそのままライブラリへ。</string>
+    <string name="settings_continue_card">「つづきから」カード</string>
+    <string name="settings_continue_card_help">起動中のゲームがないとき、アイコングリッドの先頭に最近遊んだゲームの大きなカードが出ます。カーソルを合わせてL2 / R2で切り替え、Aで遊び、Yでそのゲームのオプションを開きます。隠したゲームは出ません。起動中のゲームがあれば、カードはそのゲームの再開ページになります。</string>
 </resources>

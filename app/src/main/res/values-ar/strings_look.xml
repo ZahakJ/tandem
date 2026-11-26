@@ -569,4 +569,7 @@
     <string name="look_art_set_neon">سهرة النيون</string>
     <string name="look_art_set_paper">خرطوشة بملصق ورقي</string>
     <string name="look_art_set_mono">لون واحد هادئ</string>
+    <string name="look_travel">تحديد ينساب</string>
+    <string name="look_travel_help">في شبكة الأيقونات ينساب التحديد من أيقونة إلى أخرى بنابض خفيف، وترتفع الأيقونة التي يحطّ عليها. عند إيقافه يقفز التحديد قفزًا. ويوقفه «تقليل الحركة» أيضًا.</string>
+    <string name="look_layout_stage_help">أفقي في الاتجاهين: كل منصّة ومجموعة وصفحة «تابِع اللعب» صفحةٌ وحدها، يقلّبها الزرّان L1 وR1 كاملةً، ويتنقّل اليمين واليسار في صفّ أغلفتها بينما تملأ صورة اللعبة المحدّدة الشاشة.</string>
 </resources>

@@ -26,6 +26,8 @@ data class ExtrasSettings(
     val focusLabels: Boolean = true,
     /** Coming Home while a game runs lands on the Resume page left of the icon grid. */
     val resumeLanding: Boolean = true,
+    /** With no game running, the icon grid's wide first card shows the last games played (L2 / R2 step through them). */
+    val continueCard: Boolean = true,
     /** A light tick from the motor on every highlight move: "off", "light" or "firm" (ui/Feel.kt). */
     val feelMoves: String = "light",
     /** Animated pictures (GIF, animated WebP) on tiles play "always", only while "focused", or never ("off"). */

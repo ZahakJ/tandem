@@ -364,14 +364,26 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
         if (runCatching { stageReq.requestFocus() }.isFailure) Nav.focusTick++
     }
 
-    // L1 / R1: the first orb of the group before or after (systems, collections, apps), from anywhere on the home.
+    // L1 / R1: the ring turns one orb (each orb is a group, GroupPaging.kt), from anywhere on the home. L2 / R2 on the
+    // ring: the first orb of the section before or after (systems, collections, apps), the bigger jump L2 / R2 make
+    // elsewhere. Off the ring R2 still opens the side panel.
     InterceptButtons(true) { b ->
-        val free = Nav.route == Route.Home && !Nav.overlayOpen && Layers.top == null && FolderPopup.route == null
-        if (!free || (b != io.github.zahakj.tandem.Button.L1 && b != io.github.zahakj.tandem.Button.R1) || st.count == 0) return@InterceptButtons false
-        val to = OrbitLayout.groupJump(st.orbs.map { it.group }, st.frontIndex, if (b == io.github.zahakj.tandem.Button.R1) 1 else -1)
-        if (to != st.frontIndex) st.show(to)
-        if (!st.focused) focusStage()
-        true
+        if (!GroupPaging.free || st.count == 0) return@InterceptButtons false
+        val by = if (b == io.github.zahakj.tandem.Button.R1 || b == io.github.zahakj.tandem.Button.R2) 1 else -1
+        when (b) {
+            io.github.zahakj.tandem.Button.L1, io.github.zahakj.tandem.Button.R1 -> {
+                st.step(by)
+                if (!st.focused) focusStage()
+                true
+            }
+            io.github.zahakj.tandem.Button.L2, io.github.zahakj.tandem.Button.R2 -> {
+                if (!st.focused) return@InterceptButtons false
+                val to = OrbitLayout.groupJump(st.orbs.map { it.group }, st.frontIndex, by)
+                if (to != st.frontIndex) st.show(to)
+                true
+            }
+            else -> false
+        }
     }
     // B: from the covers, the Continue card or the dock, back to the orbit; on the orbit, back round to the first orb
     // (Home never leaves Tandem, as on the other layouts).
@@ -467,6 +479,8 @@ fun OrbitHome(libs: List<PlatformLibrary>) {
                 st, part,
                 Modifier.offset(y = baseY + orbD / 2 + captionGap).align(Alignment.TopCenter).widthIn(max = w * 0.56f).height(captionH),
             )
+            // L1 and R1 at the ring's ends, level with the caption: each turns the ring one orb that way.
+            if (orbs.size > 1) ShoulderEnds(Modifier.offset(y = baseY + orbD / 2 + captionGap + 8.dp).fillMaxWidth().padding(horizontal = 22.dp))
         }
 
         // The spotlight: the covers on their floor with the Continue card beside them, a note for an orb with

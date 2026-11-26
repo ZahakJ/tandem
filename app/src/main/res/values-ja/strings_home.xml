@@ -407,4 +407,23 @@
     <string name="home_orbit_holds_systems">機種のみ</string>
     <string name="home_orbit_continue_card">「つづきから」カード</string>
     <string name="home_orbit_continue_card_help">起動中のゲーム（なければ最後に遊んだゲーム）を、パッケージの列の左に立つカードとして表示します。Aでつづきから遊べます（起動中なら再開、Yで終了）。</string>
+    <string name="home_strip_continue">つづきから</string>
+    <string name="home_continue_last">最近遊んだ</string>
+    <string name="home_continue_hint_play">遊ぶ</string>
+    <string name="home_continue_hint_options">オプション</string>
+    <string name="home_layout_stage">ステージ</string>
+    <string name="home_stage_see_all">すべて見る</string>
+    <plurals name="home_stage_see_all_games">
+        <item quantity="other">全%1$d本</item>
+    </plurals>
+    <string name="home_stage_settings">ステージ</string>
+    <string name="home_stage_holds">ステージのページ</string>
+    <string name="home_stage_holds_help">L1とR1でめくるページ：機種、コレクション、Tandemのアプリ、またはその一部。「つづきから」がいつも最初です。</string>
+    <string name="home_stage_covers">パッケージの大きさ</string>
+    <string name="home_stage_covers_help">下に並ぶパッケージの大きさ。Startからレイアウトを試している間はL2 / R2でも変えられます。</string>
+    <string name="home_stage_covers_s">小</string>
+    <string name="home_stage_covers_m">中</string>
+    <string name="home_stage_covers_l">大</string>
+    <string name="home_stage_backdrop">ステージの背景</string>
+    <string name="home_stage_backdrop_help">選択中のゲームの後ろに映すもの：キーアート、ぼかしたパッケージ、またはテーマの色だけ。</string>
 </resources>

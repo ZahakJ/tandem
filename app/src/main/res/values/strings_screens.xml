@@ -145,4 +145,6 @@
     <string name="screens_status_no_status">No status</string>
     <!-- Play time against HowLongToBeat: "12 h of ~40 h". %1$s and %2$s are times. -->
     <string name="screens_status_progress">%1$s of ~%2$s</string>
+    <!-- After the L1 / R1 buttons on the icon grid: they make the icons bigger or smaller (keep it short) -->
+    <string name="screens_switch_zoom">Zoom</string>
 </resources>

@@ -300,8 +300,8 @@ object Bindings {
  */
 class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private val holdMs: Long = Bindings.HOLD_MS) {
     sealed interface Out {
-        /** The commands bound to one binding, as one press. */
-        data class Fire(val commands: List<Command>) : Out
+        /** The commands bound to one binding, as one press; [repeat] when it is a held shoulder's repeat ([REPEATS]). */
+        data class Fire(val commands: List<Command>, val repeat: Boolean = false) : Out
         /** A pass-through command's button went down or up: hand this event on as that command. */
         data class Pass(val command: Command, val pad: Pad, val down: Boolean) : Out
         /** Nothing is bound to the button: the event goes on as it is. */
@@ -315,6 +315,8 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
     private val forwarded = HashSet<Pad>()
     private var holdPad: Pad? = null
     private var holdStart = 0L
+    /** A shoulder held on its own that repeats its tap ([REPEATS]), or is about to. */
+    private var repeatPad: Pad? = null
 
     /**
      * The hold under way: the command it will fire, from when to when (the host's clock), for drawing it charging up.
@@ -344,6 +346,7 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
         // Another button joins: whatever was held becomes a modifier, and no hold is running any more.
         for (p in held) if (p in deferred) used += p
         holdPad = null
+        repeatPad = null
         deadline = null
         held += pad
         if (held.size > 1) {
@@ -359,6 +362,11 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
                 holdPad = pad
                 holdStart = now
                 deadline = now + if (Command.Grab in hold) minOf(holdMs, Bindings.GRAB_MS) else holdMs
+            } else if (held.size == 1 && repeatsOn(map, pad)) {
+                // It waits for its release because of a chord (L1 + R1 + Select), so holding it would do nothing: held on
+                // its own a while, it pages instead, at a steady pace, until it is let go or another button joins.
+                repeatPad = pad
+                deadline = now + REPEAT_DELAY_MS
             }
             return emptyList()
         }
@@ -376,6 +384,7 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
         val map = bindings()
         val wasHeld = held.remove(pad)
         if (holdPad == pad) { holdPad = null; deadline = null }
+        if (repeatPad == pad) { repeatPad = null; deadline = null }
         val tap = tapOf(map, pad)
         val pass = tap.firstOrNull { it.kind == Command.Kind.Pass }
         val out = when {
@@ -395,6 +404,14 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
     fun tick(now: Long): List<Out> {
         val at = deadline ?: return emptyList()
         if (now < at) return emptyList()
+        repeatPad?.let { pad ->
+            if (pad !in held || held.size > 1) { repeatPad = null; deadline = null; return emptyList() }
+            // Its release then does nothing: the pages it turned were its tap.
+            used += pad
+            deadline = now + REPEAT_EVERY_MS
+            val tap = tapOf(bindings(), pad)
+            return if (tap.isEmpty()) emptyList() else listOf(Out.Fire(tap, repeat = true))
+        }
         val pad = holdPad
         holdPad = null
         deadline = null
@@ -410,7 +427,23 @@ class ChordEngine(private val bindings: () -> Map<Command, Binding?>, private va
         used.clear()
         forwarded.clear()
         holdPad = null
+        repeatPad = null
         deadline = null
+    }
+
+    /** Whether [pad] held alone repeats its tap: it has no hold of its own, and its tap only pages ([REPEATS]). */
+    private fun repeatsOn(map: Map<Command, Binding?>, pad: Pad): Boolean {
+        val tap = tapOf(map, pad)
+        return tap.isNotEmpty() && tap.all { it in REPEATS }
+    }
+
+    companion object {
+        /** Commands a held button repeats: the shoulders' Previous and Next, which only page. */
+        val REPEATS = setOf(Command.Previous, Command.Next)
+        /** How long a shoulder is held alone before it repeats: past a quick press, and past a chord's first finger. */
+        const val REPEAT_DELAY_MS = 450L
+        /** Then a page this often (four a second). */
+        const val REPEAT_EVERY_MS = 250L
     }
 }
 

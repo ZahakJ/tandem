@@ -165,6 +165,40 @@ class BindingsTest {
         assertEquals(listOf(fire(Command.Next)), e.up(Pad.R1, 260))
     }
 
+    @Test fun aHeldShoulderRepeatsAndItsReleaseAddsNothing() {
+        val e = engine()
+        assertEquals(emptyList<Out>(), e.down(Pad.R1, 0))
+        assertEquals(ChordEngine.REPEAT_DELAY_MS, e.deadline)
+        assertEquals(emptyList<Out>(), e.tick(ChordEngine.REPEAT_DELAY_MS - 1))
+        assertEquals(listOf(Out.Fire(listOf(Command.Next), repeat = true)), e.tick(ChordEngine.REPEAT_DELAY_MS))
+        val next = ChordEngine.REPEAT_DELAY_MS + ChordEngine.REPEAT_EVERY_MS
+        assertEquals(next, e.deadline)
+        assertEquals(listOf(Out.Fire(listOf(Command.Next), repeat = true)), e.tick(next))
+        assertEquals(emptyList<Out>(), e.up(Pad.R1, next + 30))
+        assertNull(e.deadline)
+        // A quick press is still one page, on its release.
+        e.down(Pad.L1, 2000)
+        assertEquals(listOf(fire(Command.Previous)), e.up(Pad.L1, 2100))
+    }
+
+    @Test fun theHiddenChordStopsARepeatAndStillFires() {
+        val e = engine()
+        e.down(Pad.L1, 0)
+        assertEquals(1, e.tick(ChordEngine.REPEAT_DELAY_MS).size)
+        assertEquals(emptyList<Out>(), e.down(Pad.R1, 600))
+        assertNull(e.deadline)
+        assertEquals(listOf(fire(Command.Hidden)), e.down(Pad.Select, 620))
+        assertEquals(emptyList<Out>(), e.tick(5000))
+        for (p in listOf(Pad.Select, Pad.R1, Pad.L1)) assertEquals(emptyList<Out>(), e.up(p, 700))
+    }
+
+    @Test fun onlyPagingRepeats() {
+        // Select waits for its release too (the switcher), but holding it is the switcher, not a repeat.
+        val e = engine()
+        e.down(Pad.Select, 0)
+        assertEquals(listOf(fire(Command.Switcher)), e.tick(500))
+    }
+
     @Test fun sharedButtonsFireTogether() {
         assertEquals(listOf(fire(Command.PageDown, Command.SidePanel)), engine().down(Pad.R2, 0))
     }

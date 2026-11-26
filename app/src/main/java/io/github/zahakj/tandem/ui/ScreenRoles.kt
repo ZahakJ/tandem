@@ -60,7 +60,7 @@ object ScreenRoles {
     fun xSwaps(): Boolean = if (io.github.zahakj.tandem.LibraryGuest.up) false else when (Store.settings.look.xButton) {
         "swap" -> true
         "search" -> false
-        else -> (IconGrid.enabled || Orbit.enabled) && Nav.route == Route.Home
+        else -> (IconGrid.enabled || Orbit.enabled || StageMode.enabled) && Nav.route == Route.Home
     }
 
     /** X: swaps the screens when that's what X does here. Returns false when X should search instead. */

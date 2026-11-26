@@ -82,10 +82,18 @@ import java.util.Date
  */
 
 object Spotlight {
-    /** Spotlight is used in icon grid mode (unless the classic details were chosen) for games, systems and folders. */
-    fun wanted(s: Selected): Boolean =
-        IconGrid.enabled && Store.settings.look.gridDetails == "spotlight" &&
+    /**
+     * Spotlight is used in icon grid mode (unless the classic details were chosen) for games, systems and folders. On
+     * every other layout (and inside a system) it shows systems, folders, collections and apps the same way: the
+     * hero across the whole screen, the logo, the name card and the button pill, never half art and half wallpaper.
+     * Games there keep the layout's own details (ArtDetails, which already fill the screen).
+     */
+    fun wanted(s: Selected): Boolean = if (IconGrid.enabled) {
+        Store.settings.look.gridDetails == "spotlight" &&
             (s is Selected.GameItem || s is Selected.System || s is Selected.Group || s is Selected.App)
+    } else {
+        !Nav.inSettings && (s is Selected.System || s is Selected.Group || s is Selected.App)
+    }
 }
 
 /** What the spotlight shows. */
@@ -266,7 +274,7 @@ private fun ItemSpot(s: Spot, shift: () -> Float, front: () -> Float) {
                 else -> Box(Modifier.swapArrive(slot, 110f, 0f, -flow * 40f * px, 0.5f, 120f).riseIn(s.key, 0).floating(s.key.hashCode())) { BigIcon(s.art, s.color, big, s.style) }
             }
             Spacer(Modifier.height(18.dp))
-            NameCard(s.title, listOf(s.type, s.detail).filter { it.isNotBlank() }.joinToString(" · "), Modifier.widthIn(min = 220.dp, max = cardMax).swapArrive(slot, 200f, 0f, 36f * px, 0.96f).riseIn(s.key, 1, 28.dp), s.blurb)
+            NameCard(s.title, listOf(s.type, s.detail).filter { it.isNotBlank() }.joinToString(" · "), Modifier.widthIn(min = 220.dp, max = cardMax).swapArrive(slot, 200f, 0f, 36f * px, 0.96f).riseIn(s.key, 1, 28.dp), s.blurb, glow = s.color)
         }
     }
 }
@@ -493,9 +501,10 @@ private fun CoverCard(s: Spot, size: Dp) {
 
 /** The rounded name card under the icon. */
 @Composable
-private fun NameCard(title: String, detail: String, modifier: Modifier, blurb: String = "") {
+private fun NameCard(title: String, detail: String, modifier: Modifier, blurb: String = "", glow: Color = Color.Black) {
     Column(
-        modifier.graphicsLayer { shape = RoundedCornerShape(22.dp); clip = true; shadowElevation = 12f * density }
+        // A soft glow in the item's own colour round the card, under its shadow.
+        modifier.graphicsLayer { shape = RoundedCornerShape(22.dp); clip = true; shadowElevation = 16f * density; ambientShadowColor = glow; spotShadowColor = glow }
             .background(Palette.Card.copy(alpha = 0.94f)).padding(horizontal = 22.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -568,6 +577,8 @@ private fun SpotHints(s: Spot, modifier: Modifier) {
             ButtonHint("A", Tx.s(if (s.game == null) R.string.home_spot_hint_open else if (resumable) R.string.home_spot_hint_resume else R.string.home_spot_hint_play), Palette.Mint)
             ButtonHint("Y", Tx.s(R.string.home_spot_hint_options), Palette.Butter)
             if (ScreenRoles.xSwaps()) ButtonHint("X", Tx.s(R.string.home_spot_hint_swap), Palette.Sky)
+            // What L1 / R1 do here (the groups, the shelves, the zoom, the systems either side), in the same pill.
+            ListSwitchHint()
         }
     }
 }

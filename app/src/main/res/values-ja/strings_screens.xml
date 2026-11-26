@@ -110,4 +110,5 @@
     <string name="screens_status_help">積みゲー、プレイ中、クリア済み…積みゲーのゲームは、しばらく遊ぶと自動でプレイ中になります。</string>
     <string name="screens_status_no_status">ステータスなし</string>
     <string name="screens_status_progress">%1$s / 約%2$s</string>
+    <string name="screens_switch_zoom">ズーム</string>
 </resources>

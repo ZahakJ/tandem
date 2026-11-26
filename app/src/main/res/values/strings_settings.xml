@@ -346,4 +346,6 @@
     <!-- Library & art › GameNative: the subpage for the games downloaded in GameNative (an app's name, the same everywhere). -->
     <string name="settings_sub_gamenative">GameNative</string>
     <string name="settings_sub_gamenative_help">The games you\'ve downloaded in GameNative, from every store, straight into your library.</string>
+    <string name="settings_continue_card">Continue card</string>
+    <string name="settings_continue_card_help">With no game running, the icon grid starts with a wide card of the last games you played. Highlight it and L2 / R2 step through them; A plays, Y has the game\'s options. Hidden games never show on it. A running game takes the card either way (Resume page).</string>
 </resources>

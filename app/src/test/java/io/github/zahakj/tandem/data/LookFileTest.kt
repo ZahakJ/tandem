@@ -122,7 +122,7 @@ class LookFileTest {
             "accent", "highlightColor", "highlight", "highlightThickness", "focusScale", "corner", "material", "iconStyle",
             "artSet", "systemArtSets", "motion", "swapStyle", "floating", "intensity", "wallTop", "wallBottom", "wallDim",
             "homeLayout", "homeSections", "systemTiles", "spotlightRail", "spotlightBackdrop", "spotlightMotion", "orbitGroups",
-            "orbitContinue", "gameView", "folderPopup", "fullscreenFolders", "cardShape", "shelfLook", "gridSize", "gridHeroSplit",
+            "orbitContinue", "stageGroups", "stageCovers", "stageBackdrop", "gameView", "folderPopup", "fullscreenFolders", "cardShape", "shelfLook", "gridSize", "gridHeroSplit",
             "gridAcross", "gridRows", "gridScroll", "gridRoundness", "gridGap", "gridLabels", "gridDetails", "gridFolders",
             "dockStyle", "dockTop", "dockAutoHide", "dockBackground", "dockCount", "dockIconShape",
             "bottomMode", "heroSplit", "heroLogoScale", "heroFolderLogoScale", "heroGradient", "kenBurns", "soundPack", "soundtrack",

@@ -109,4 +109,5 @@
     <string name="screens_status_help">待玩、在玩、已通关等。待玩的游戏玩上一阵子后，会自动变成“在玩”。</string>
     <string name="screens_status_no_status">无状态</string>
     <string name="screens_status_progress">%1$s / 约 %2$s</string>
+    <string name="screens_switch_zoom">缩放</string>
 </resources>

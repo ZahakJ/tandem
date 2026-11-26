@@ -260,4 +260,6 @@
     <string name="settings_sub_droiddeck_help">你在 DroidDeck 里装好的游戏，不管来自哪个商店，直接进游戏库。</string>
     <string name="settings_sub_gamenative">GameNative</string>
     <string name="settings_sub_gamenative_help">你在 GameNative 里下载的游戏，不管来自哪个商店，直接进游戏库。</string>
+    <string name="settings_continue_card">“继续游玩”卡片</string>
+    <string name="settings_continue_card_help">没有游戏在运行时，图标网格最前面会有一张大卡片，展示你最近玩过的游戏。选中它后用 L2 / R2 切换，A 开玩，Y 打开这款游戏的选项。隐藏的游戏不会出现在上面。有游戏在运行时，这张卡片总是它的继续游戏页。</string>
 </resources>
