@@ -109,6 +109,7 @@ Switches for the device (brightness, Wi-Fi, Battery saver, the screensaver) are 
 | Stats & trophies | The Stats screen; beside it, the trophies earned so far |
 | New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
 | Sort ▸ | On the icon grid: close the gaps, or the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
+| Layout | The home layouts along the bottom of the screen, to try live (see [Switching layouts](#switching-layouts)); the one in use is named beside it. Among a system's or collection's games this row is **Games view**, the same way |
 | Edit grid | On the icon grid: the highlighted tile starts moving; other layouts get Edit widgets |
 | Undo | For 15 minutes after a change on the icon grid, with what it takes back beside it (older steps: <kbd>Y</kbd> › **More › Undo last change**) |
 | Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
@@ -118,6 +119,19 @@ Switches for the device (brightness, Wi-Fi, Battery saver, the screensaver) are 
 Themes, sounds and music are in **Settings › Look & feel** and **Settings › Sound & music**, and in the **Themes** app.
 
 ![The Start panel folded open from the left: All apps, Search, Stats & trophies, then New, Sort and Edit widgets (Edit grid on the icon grid), then Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
+
+### Switching layouts
+
+<kbd>Start</kbd> › **Layout** lays every home layout along the bottom of the screen as a card, each a small live sketch in your theme, the one in use ticked. The home stays in sight above them (from another screen, Tandem goes home first).
+
+| Press | What it does |
+| --- | --- |
+| <kbd>◀</kbd> / <kbd>▶</kbd>, <kbd>L1</kbd> / <kbd>R1</kbd> | Highlight the next card. Once it rests a moment the home behind turns into that layout, rising in, with the highlight on the same game, system or collection |
+| <kbd>▼</kbd> / <kbd>▲</kbd> | Onto the card's own setting and back: the icon grid's icon size, the shelves' card size, what Orbit holds, Spotlight's rail side. <kbd>◀</kbd> / <kbd>▶</kbd> then change it, live too |
+| <kbd>A</kbd> | Keep what shows (saved) |
+| <kbd>B</kbd> or <kbd>Start</kbd> | Put back the layout you had, and its setting, as if nothing happened |
+
+Each layout keeps its own settings: switching to another and back finds the first as you left it. Inside a system or collection, <kbd>Start</kbd> › **Games view** does the same with Grid, List, Carousel, Shelf and Case (on Grid, <kbd>▼</kbd> reaches the card size). The same choices are in **Settings › Home & layout**.
 
 ## The top bar
 
@@ -413,7 +427,7 @@ One tile can keep its own: <kbd>Y</kbd> › **Edit** › **Look** › **Corners*
 
 ### Feel each move
 
-Tandem gives a very light tick from the handheld's motor each time the highlight moves (grids, menus, the edit screen: wherever the move sound plays), and a fuller one when a tile is picked up or dropped. Holding a direction gives a gentle patter instead of a constant buzz. **Settings › Controls › Buttons › Feel each move**: **Light** (the default), **Firm**, or **Off**. It goes through Android's own touch feedback, so Android's **Vibration & haptics › Touch feedback** must be on.
+Tandem gives a very light tick from the handheld's motor each time the highlight moves (grids, menus, the edit screen: wherever the move sound plays), a slightly fuller one for each page, tab or section turned with <kbd>L1</kbd> / <kbd>R1</kbd> (one sound and one tick per press, however the highlight settles on the new page), and a fuller one still when a tile is picked up or dropped. Holding a direction gives a gentle patter instead of a constant buzz. **Settings › Controls › Buttons › Feel each move**: **Light** (the default), **Firm**, or **Off**. It goes through Android's own touch feedback, so Android's **Vibration & haptics › Touch feedback** must be on.
 
 ## Built-in apps
 

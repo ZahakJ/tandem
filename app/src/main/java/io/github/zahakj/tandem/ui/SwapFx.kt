@@ -210,6 +210,38 @@ object SwapFx {
         }
     }
 
+    private val arrivals = IntArray(2)
+
+    /**
+     * [slot]'s content changed whole (a home layout or games view tried from Start, LayoutSwitch): it rises in again
+     * the way the startup arrival brings a screen in, whole. A new arrival before one ends starts over. Nothing while a
+     * swap or the startup arrival runs, or with reduce motion.
+     */
+    fun arrive(slot: ScreenSlot) {
+        val i = slot.ordinal
+        if (swapping || intro[i] || !Flair.entering) return
+        val gen = ++arrivals[i]
+        val clock = clock(slot)
+        clock.floatValue = 0f
+        scope.launch {
+            try {
+                withFrameNanos { }
+                val start = withFrameNanos { it }
+                while (arrivals[i] == gen) {
+                    val t = (withFrameNanos { it } - start) / 1_000_000f
+                    if (arrivals[i] != gen) break
+                    clock.floatValue = t
+                    if (t >= ARRIVE_MS) break
+                }
+            } finally {
+                if (arrivals[i] == gen) clock.floatValue = IDLE
+            }
+        }
+    }
+
+    /** How long a whole screen's arrival runs (it is still by about half a second). */
+    private const val ARRIVE_MS = 700f
+
     /** A held [slot] that never showed: from now on it shows normally, with no arrival. */
     fun introDrop(slot: ScreenSlot) {
         val i = slot.ordinal

@@ -5,6 +5,7 @@ import io.github.zahakj.tandem.R
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -88,6 +89,8 @@ object FolderDesign {
     var saved by mutableStateOf(FolderStyle.DEFAULT)
         private set
     var page by mutableStateOf<Page?>(null)
+    /** Which way the last L1 / R1 went (-1, 1), so the next page slides in from that side; 0 for A and B. */
+    internal var turned = 0
     /** Which picture slot a file picked from the device goes to. */
     internal var picking: Page? = null
 
@@ -113,6 +116,7 @@ object FolderDesign {
 
     /** A choice was kept: back to the rows, or (opened straight on a page) back to the edit screen. */
     fun done() {
+        turned = 0
         if (direct) close() else page = null
     }
 
@@ -186,8 +190,10 @@ fun FolderDesignHost() {
             val i = if (now == null) (if (b == Button.R1) -1 else 0) else pages.indexOf(now)
             val next = pages[(i + (if (b == Button.R1) 1 else -1) + pages.size) % pages.size]
             FolderDesign.draft = FolderDesign.saved
+            FolderDesign.turned = if (b == Button.R1) 1 else -1
             FolderDesign.page = next
-            Sounds.move()
+            // One page turn, one sound and one feel: the highlight settling on the new page stays quiet (SettleGate).
+            Sounds.page()
         }
         true
     }
@@ -228,7 +234,7 @@ fun FolderDesignHost() {
     OverlayPanel(visible, onClose = {
         when {
             FolderDesign.page == null || FolderDesign.direct -> FolderDesign.close()
-            else -> { FolderDesign.draft = FolderDesign.saved; FolderDesign.page = null }
+            else -> { FolderDesign.draft = FolderDesign.saved; FolderDesign.turned = 0; FolderDesign.page = null }
         }
     }) {
         val k = shownKey ?: return@OverlayPanel
@@ -250,9 +256,29 @@ fun FolderDesignHost() {
         Column(Modifier.fillMaxSize().background(Palette.Card, RoundedCornerShape(26.dp)).padding(top = 14.dp)) {
             Header(plain, preview)
             Row(Modifier.fillMaxWidth().weight(1f).padding(start = 6.dp, end = 18.dp, bottom = 12.dp)) {
-                Box(Modifier.weight(1f).fillMaxHeight()) {
-                    val page = FolderDesign.page
-                    if (page == null) Rows(k, plain) else ChoicePage(k, page, plain, pictures, launchPick)
+                // L1 / R1 slide the next page in from the side they point to; A and B (into a page and back out of
+                // it) the way the edit screen's pages go. A short slide and fade, both pages in layers.
+                val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion
+                val toEnd = if (isRtl) -1 else 1
+                androidx.compose.animation.AnimatedContent(
+                    FolderDesign.page, Modifier.weight(1f).fillMaxHeight(),
+                    transitionSpec = {
+                        val turned = FolderDesign.turned
+                        val dir = when {
+                            turned != 0 -> turned
+                            targetState == null -> -1
+                            else -> 1
+                        } * toEnd
+                        if (still) androidx.compose.animation.fadeIn(androidx.compose.animation.core.tween(0)) togetherWith androidx.compose.animation.fadeOut(androidx.compose.animation.core.tween(0))
+                        else (androidx.compose.animation.slideInHorizontally(androidx.compose.animation.core.tween(220, easing = Motion.EmphasizedDecelerate)) { dir * it / 6 } +
+                            androidx.compose.animation.fadeIn(androidx.compose.animation.core.tween(180)))
+                            .togetherWith(androidx.compose.animation.slideOutHorizontally(androidx.compose.animation.core.tween(150)) { -dir * it / 8 } + androidx.compose.animation.fadeOut(androidx.compose.animation.core.tween(110)))
+                    },
+                    label = "design-page",
+                ) { page ->
+                    Box(Modifier.fillMaxSize()) {
+                        if (page == null) Rows(k, plain) else ChoicePage(k, page, plain, pictures, launchPick)
+                    }
                 }
                 Spacer(Modifier.width(12.dp))
                 PreviewPane(preview, Modifier.width(232.dp).fillMaxHeight())
@@ -279,7 +305,13 @@ private fun Header(plain: GridItem, preview: GridItem) {
                     val on = p == FolderDesign.page
                     Box(
                         Modifier.background(if (on) Palette.Mint.copy(alpha = 0.3f) else Color.Transparent, RoundedCornerShape(50))
-                            .swallowTaps { FolderDesign.draft = FolderDesign.saved; FolderDesign.page = p; Sounds.page() }
+                            .swallowTaps {
+                                val from = FolderDesign.page?.ordinal ?: -1
+                                FolderDesign.draft = FolderDesign.saved
+                                FolderDesign.turned = if (p.ordinal >= from) 1 else -1
+                                FolderDesign.page = p
+                                Sounds.page()
+                            }
                             .padding(horizontal = 10.dp, vertical = 4.dp),
                     ) { Text(p.label, style = MaterialTheme.typography.labelMedium, color = if (on) Palette.Text else Palette.Muted, maxLines = 1) }
                 }
@@ -302,6 +334,7 @@ private fun Rows(key: String, plain: GridItem) {
     KeepInView(state, rows.indexOf(target))
     fun open(p: FolderDesign.Page, current: String) {
         FocusMemory.remember(FolderDesign.pageRoute(key, p), current)
+        FolderDesign.turned = 0
         FolderDesign.page = p
     }
     LazyColumn(
@@ -463,6 +496,12 @@ private fun ChoicePage(key: String, page: FolderDesign.Page, plain: GridItem, pi
                     maxLines = 1, overflow = TextOverflow.Ellipsis,
                 )
             }
+        } else if (choice.id == "device") item(key = choice.id, span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+            // Upload your own: a whole line, with room to say every kind of picture it takes and how big.
+            FocusCard(
+                Modifier.fillMaxWidth().height(76.dp).takesFocus(route, choice.id, choice.id == target),
+                glow = Palette.Mint, shape = RoundedCornerShape(16.dp), onClick = { choice.action?.invoke() },
+            ) { UploadCard() }
         } else item(key = choice.id) {
             val c = choice
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -506,7 +545,8 @@ private fun ChoicePage(key: String, page: FolderDesign.Page, plain: GridItem, pi
 /** The heading a choice sits under on its page (a string id), or 0 for none (colours). */
 private fun choiceSection(page: FolderDesign.Page, id: String): Int = when {
     page == FolderDesign.Page.Colour -> 0
-    id == "device" -> R.string.grid_design_group_upload
+    // Upload your own says what it is itself.
+    id == "device" -> 0
     id.startsWith("file:") -> R.string.grid_design_group_yours
     id.startsWith("glyph:") -> R.string.grid_design_group_glyphs
     id.startsWith("emoji:") -> R.string.grid_design_group_emoji
@@ -520,12 +560,8 @@ private fun choicesFor(
 ): List<Choice> {
     val strong = FolderLooks.strongGames(plain.games).take(60)
     // First on every picture page: a picture (or a GIF or animated WebP, which moves) from the device.
-    val device = Choice("device", Tx.s(R.string.grid_design_upload), base, action = { pickFile(page) }) { s ->
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            GlyphIcon(Glyph.Plus, Palette.Mint, Modifier.size(s * 0.3f))
-            Text(Tx.s(R.string.grid_design_upload_formats), style = MaterialTheme.typography.labelSmall, color = Palette.Mint, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        }
-    }
+    // Drawn by UploadCard, a whole line of its own.
+    val device = Choice("device", Tx.s(R.string.grid_design_upload), base, action = { pickFile(page) }) { _ -> }
     return when (page) {
         FolderDesign.Page.Icon -> buildList {
             add(device)
@@ -580,6 +616,28 @@ private fun choicesFor(
             for (g in strong.filter { Libraries.of(it)?.logo(it) != null }.take(12)) title("ref:${g.key}", g.title, base.copy(logo = FolderStyle.LOGO_GAME, logoRef = g.key))
             for (f in pictures) title("file:${f.path}", f.nameWithoutExtension, base.copy(logo = FolderStyle.LOGO_FILE, logoFile = f.path))
         }
+    }
+}
+
+/** Upload your own: what it is and, beside it, every kind of picture it takes and how big, nothing cut off. */
+@Composable
+private fun UploadCard() {
+    Row(
+        Modifier.fillMaxSize().background(Palette.CardHigh).padding(horizontal = 14.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        GlyphChip(Glyph.Plus, Palette.Mint, 40.dp)
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(0.9f)) {
+            ShrinkText(Tx.s(R.string.grid_design_upload), MaterialTheme.typography.titleSmall, Modifier.fillMaxWidth(), maxLines = 1)
+            ShrinkText(Tx.s(R.string.grid_design_upload_sub), MaterialTheme.typography.labelMedium, Modifier.fillMaxWidth(), maxLines = 1, color = Palette.Mint)
+        }
+        Spacer(Modifier.width(12.dp))
+        // About a hundred letters on two or three lines (more than half the card's width is theirs).
+        Text(
+            Tx.s(R.string.grid_design_upload_details), Modifier.weight(1.1f), style = MaterialTheme.typography.labelSmall,
+            color = Palette.Muted, maxLines = 3, overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

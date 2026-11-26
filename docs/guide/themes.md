@@ -31,7 +31,7 @@ When the accent you pick would be hard to see on the theme, Tandem nudges it tow
 
 ## Home layouts
 
-The layout gallery at the top of **Settings › Home & layout** picks how your home screen looks. Try them all: switching back is one press.
+The layout gallery at the top of **Settings › Home & layout** picks how your home screen looks. Try them all: switching back is one press. Quicker still, <kbd>Start</kbd> › **Layout** tries each one live over your home, with its size beside it, and <kbd>B</kbd> puts back the one you had (see [Switching layouts](controls.md#switching-layouts)).
 
 | Layout | What it is |
 | --- | --- |
@@ -135,8 +135,8 @@ Spotlight is the quiet, game-first home: the highlighted game's art fills the sc
 
 Give any folder, system, collection or genre on the icon grid a look of its own: <kbd>Y</kbd> on it › **Edit** › **Look**, then **Artwork**, **Colour**, **Hero** or **Logo**. Each opens the artwork studio straight on that page; **Shape**, **Corners** and **Cover frame** change right there on the edit screen (see [Controls](controls.md#the-edit-screen)).
 
-1. The studio's pages (**Icon**, **Colour**, **Hero**, **Title**) sit as tabs at the top; <kbd>L1</kbd> / <kbd>R1</kbd> move between them.
-2. The choices come in groups: **Upload** first, then what's made from the folder's own contents, covers and icons (or game art), Tandem's glyphs, emoji and your pictures.
+1. The studio's pages (**Icon**, **Colour**, **Hero**, **Title**) sit as tabs at the top; <kbd>L1</kbd> / <kbd>R1</kbd> slide from one to the next.
+2. **Upload your own** comes first, a card across the page with every kind of picture it takes and how big; then the choices in groups: what's made from the folder's own contents, covers and icons (or game art), Tandem's glyphs, emoji and your pictures.
 3. Highlight a choice to preview it beside the grid and on the other screen; <kbd>A</kbd> keeps it and takes you back to the edit screen, <kbd>B</kbd> goes back without changing anything. Each choice is saved as you make it.
 
 | Part | Choices |

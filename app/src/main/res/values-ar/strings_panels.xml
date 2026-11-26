@@ -16,6 +16,11 @@
     <string name="panels_start_edit_widgets">تعديل الأدوات</string>
     <string name="panels_start_hidden">المخفية</string>
     <string name="panels_start_settings">الإعدادات</string>
+    <string name="panels_start_layout">التخطيط</string>
+    <string name="panels_layout_hint_try">جرّب</string>
+    <string name="panels_layout_hint_adjust">اضبط</string>
+    <string name="panels_layout_hint_keep">احتفظ به</string>
+    <string name="panels_layout_hint_cancel">إلغاء</string>
     <string name="panels_start_update">صدر Tandem %1$s</string>
     <plurals name="panels_start_trophies">
         <item quantity="zero">لا جوائز بعد</item>

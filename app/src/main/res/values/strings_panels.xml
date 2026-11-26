@@ -20,6 +20,13 @@
     <string name="panels_start_edit_widgets">Edit widgets</string>
     <string name="panels_start_hidden">Hidden</string>
     <string name="panels_start_settings">Settings</string>
+    <!-- Start: the row that shows every home layout along the bottom of the screen to try (LayoutSwitch.kt); the one in use is named beside it. -->
+    <string name="panels_start_layout">Layout</string>
+    <!-- The layout switcher's button hints. Keep them short. Left / Right try a layout live, Up / Down reach its size (or rail side, or what Orbit holds), A keeps it, B puts back the one before. -->
+    <string name="panels_layout_hint_try">Try</string>
+    <string name="panels_layout_hint_adjust">Adjust</string>
+    <string name="panels_layout_hint_keep">Keep</string>
+    <string name="panels_layout_hint_cancel">Cancel</string>
     <!-- A new version of Tandem: "Tandem 0.8.0 is out". -->
     <string name="panels_start_update">Tandem %1$s is out</string>
     <!-- Beside Stats & trophies: how many trophies are earned. -->

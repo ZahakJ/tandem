@@ -992,7 +992,7 @@ private fun PreviewLines() {
 
 
 /** What each home layout is like, for the side panel (layout id to string). */
-private val LayoutBlurbs = mapOf(
+internal val LayoutBlurbs = mapOf(
     "shelves" to R.string.look_layout_shelves_help,
     "grid" to R.string.look_layout_grid_help,
     "carousel" to R.string.look_layout_carousel_help,

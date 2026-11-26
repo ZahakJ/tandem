@@ -620,12 +620,14 @@
     <string name="grid_edit_corners_chip">Own corners · %1$s</string>
     <!-- The artwork studio: a picture, GIF or animated WebP from the device. -->
     <string name="grid_design_upload">Upload your own</string>
-    <string name="grid_design_upload_formats">PNG · JPEG · WebP · GIF</string>
+    <!-- Under Upload your own: what it takes, in short. -->
+    <string name="grid_design_upload_sub">Picture or animated GIF</string>
+    <!-- Beside it on the same card: everything it takes and how big (the same limits as the upload messages below). -->
+    <string name="grid_design_upload_details">PNG, JPEG, WebP, GIF or HEIC. Stills up to 24 MB; animations up to 8 MB and 1024 pixels on their longest side.</string>
     <string name="grid_design_upload_too_big">That picture is too big. Stills up to 24 MB, animations up to 8 MB.</string>
     <string name="grid_design_upload_too_large">That animation is too large: 1024 pixels on its longest side at most.</string>
     <string name="grid_design_upload_not_picture">That isn\'t a picture Tandem can use: PNG, JPEG, WebP, GIF or HEIC.</string>
     <!-- Headings over the artwork studio's choices. -->
-    <string name="grid_design_group_upload">Upload</string>
     <string name="grid_design_group_styles">Made from what\'s inside</string>
     <string name="grid_design_group_covers">Covers and icons</string>
     <string name="grid_design_group_game_art">Game art</string>

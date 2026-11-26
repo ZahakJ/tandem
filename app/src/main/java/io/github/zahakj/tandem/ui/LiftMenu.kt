@@ -176,6 +176,15 @@ internal fun LiftLayout(s: MenuSpec, lift: () -> Float) {
 
 private val LiftCardWidth = 236.dp
 private val LiftRowHeight = 44.dp
+private val RowShape = RoundedCornerShape(percent = 50)
+
+/**
+ * A row's picture of its value (the edit screen's artwork, colour, hero and logo): 7 dp clear of the highlight's top
+ * and bottom, and [RowEndRoom] in from its end, where the pill's round end (a 22 dp radius) is still 39 dp tall, so the
+ * picture's corners stay inside the ring with room to spare.
+ */
+private val RowPictureHeight = LiftRowHeight - 14.dp
+private val RowEndRoom = 12.dp
 
 /** How big Pip is on a compact menu: a friend beside a tile, the host on an empty spot. */
 private fun pipSize(p: PipPeek) = when (p) {
@@ -206,12 +215,8 @@ private fun LiftCard(s: MenuSpec, fromRight: Boolean, lift: () -> Float) {
     val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion
     Column {
         if (s.pip != PipPeek.None) {
-            // Worried over something that can't be taken back, excited inside a group, happy otherwise.
-            val mood = when {
-                focusedAction?.hold == true || focusedAction?.color == Palette.Peach -> 3
-                level != "main" -> 1
-                else -> 0
-            }
+            // Worried over something that can't be taken back, excited inside a group, happy otherwise (PipMoods).
+            val mood = PipMoods.lift(focusedAction?.id, deeper = level != "main")
             PerchedPip(s.pip, mood, level, fromRight, still, lift)
         }
         Column(
@@ -429,7 +434,12 @@ private fun LiftRow(a: MenuAction, routeKey: String, wanted: Boolean, index: Int
             .then(if (hold != null) Modifier.holdToConfirm(hold, requester).holdFill(hold, color, LiftRowHeight / 2) else Modifier)
             .sideSteps(a.step)
             .onFocusChanged { if (it.isFocused) { Sounds.move(); onFocused(); a.onFocus?.invoke() } else pressed = false }
-            .graphicsLayer { val sc = if (pressed) 0.97f else if (focused) 1.015f else 1f; scaleX = sc; scaleY = sc }
+            // Clipped to the highlight's own shape (a pill as tall as the row), so nothing in the row ever pokes out of it.
+            .graphicsLayer {
+                val sc = if (pressed) 0.97f else if (focused) 1.015f else 1f
+                scaleX = sc; scaleY = sc
+                shape = RowShape; clip = true
+            }
             .focusable(interactionSource = interaction)
             .onKeyEvent { e ->
                 val select = e.key == Key.DirectionCenter || e.key == Key.Enter || e.key == Key.NumPadEnter || e.key == Key.ButtonA
@@ -445,7 +455,9 @@ private fun LiftRow(a: MenuAction, routeKey: String, wanted: Boolean, index: Int
                     onTap = { runCatching { requester.requestFocus() }; click() },
                 )
             }
-            .padding(horizontal = 7.dp),
+            // The icon chip sits in the pill's round start; the end leaves the pill's round end room for a picture or
+            // a value (see [RowPictureHeight]).
+            .padding(start = 7.dp, end = RowEndRoom),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -466,7 +478,7 @@ private fun LiftRow(a: MenuAction, routeKey: String, wanted: Boolean, index: Int
         }
         if (a.preview != null) {
             Spacer(Modifier.width(8.dp))
-            a.preview.invoke(LiftRowHeight - 8.dp)
+            a.preview.invoke(RowPictureHeight)
         } else if (a.value != null) {
             Spacer(Modifier.width(6.dp))
             ValueChip(a.value, color, cycles = a.step != null && a.choices == null, maxWidth = 96.dp)

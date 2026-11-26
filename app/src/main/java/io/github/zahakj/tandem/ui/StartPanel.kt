@@ -440,6 +440,19 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             })
             add(MenuAction("new", Tx.s(R.string.panels_start_new), Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
             add(MenuAction("sort", Tx.s(R.string.panels_start_sort), Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
+            // Every home layout (or, among a system's or collection's games, every games view) along the bottom of the
+            // screen, tried live behind it (LayoutSwitch.kt). The one in use is named beside it.
+            val look = Store.settings.look
+            val r = Nav.route
+            if (r is Route.System || r is Route.Collection) add(
+                MenuAction("gameview", Tx.s(R.string.look_games_view), Glyph.Grid, Palette.Butter, value = GameViews.firstOrNull { it.first == look.gameView }?.second) {
+                    StartMenu.go { LayoutSwitch.show(LayoutSwitch.Kind.Games) }
+                },
+            ) else add(
+                MenuAction("layout", Tx.s(R.string.panels_start_layout), Glyph.Home, Palette.Butter, value = HomeLayouts.firstOrNull { it.first == look.homeLayout }?.second?.substringBefore(" (")) {
+                    StartMenu.go { LayoutSwitch.show(LayoutSwitch.Kind.Home) }
+                },
+            )
             if (grid) {
                 add(MenuAction("edit", Tx.s(R.string.panels_start_edit_grid), Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
                 // Only for a while after a change on the grid: an undo kept from days ago (they are saved) would

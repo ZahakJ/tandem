@@ -165,7 +165,16 @@ object Sounds {
 
     // --- What the UI calls ------------------------------------------------------------------------------------
 
-    fun move() { play(Sfx.Move); Feel.move() }
+    /**
+     * The highlight moved: a tick, felt too. Not while Tandem is hushed, nor for the highlight settling on a page
+     * just turned (one L1 / R1 is one [page], whatever focus does next).
+     */
+    fun move() {
+        val now = SystemClock.uptimeMillis()
+        if (now < quietUntil || !settle.allowMove(now)) return
+        play(Sfx.Move)
+        Feel.move()
+    }
     fun select() { play(Sfx.Select) }
     fun back() { play(Sfx.Back) }
     fun error() { play(Sfx.Error) }
@@ -192,7 +201,13 @@ object Sounds {
     fun saverIn() { play(Sfx.SaverIn) }
     fun saverOut() { play(Sfx.SaverOut) }
     /** L1 / R1 turned to the next system, collection, settings page or tab. */
-    fun page() { play(Sfx.Page) }
+    fun page() {
+        settle.page(SystemClock.uptimeMillis())
+        play(Sfx.Page)
+        Feel.page()
+    }
+
+    private val settle = SettleGate()
     /** The two screens traded places. */
     fun swap() { play(Sfx.Swap) }
 
@@ -305,6 +320,7 @@ object Sounds {
     fun onDirection(dx: Int, dy: Int, repeat: Int) {
         row += dy; col += dx
         holding = repeat > 0
+        settle.direction(SystemClock.uptimeMillis())
     }
 
     /**

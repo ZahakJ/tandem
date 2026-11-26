@@ -89,7 +89,7 @@ A "›" step after a page is its subpage.
 | (share, `look_share` app preferences for the name, author and description) | Look & feel › Share › Share my look (its own page: save, Show QR, share to the gallery; ShareLookScreen) | link |
 | (get) | Look & feel › Share › Get a look (its own page: a file, a link, the community gallery; GetLookScreen) | link |
 | (reset) | Look & feel › Start over › Reset look (keeps buttons, screens, sounds and music) | action |
-| `Look.homeLayout` | Home & layout › Layout gallery | gallery |
+| `Look.homeLayout` | Home & layout › Layout gallery (also Start › Layout, which can change `gridAcross`, `gridSize`, `orbitGroups` or `spotlightRail` on the card tried) | gallery |
 | `Look.gridAcross` | Home & layout › Home screen › Icon size (icon grid; also L1/R1 on the grid) | choice |
 | `Look.gridScroll` | Home & layout › Home screen › Scrolling (icon grid) | choice |
 | `Look.gridLabels`, `ExtrasSettings.focusLabels` | Home & layout › Home screen › Icon names (icon grid: Always, Highlighted, Off) | choice |
@@ -104,7 +104,7 @@ A "›" step after a page is its subpage.
 | `Look.folderPopup`, `fullscreenFolders` | Home & layout › Home screen › Open folders (other layouts) | choice |
 | `Look.orbitGroups`, `orbitContinue` | Home & layout › Home screen › Orbit holds / Continue card (Orbit) | choice / toggle |
 | `Look.spotlightRail`, `spotlightBackdrop`, `spotlightMotion` | Home & layout › Home screen › Spotlight rail (left, right) / Spotlight backdrop (art, blurred cover, dim) / Spotlight motion (Spotlight) | choice / choice / toggle |
-| `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › How games show (Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
+| `Look.gameView`, `gridSize`, `cardShape`, `shelfLook`, `Settings.showTitles` | Home & layout › How games show (also Start › Games view in a system or collection; Shelf look: Wood, Matte or Open bookcase for the Shelf view) | choice / toggle |
 | `HomeSettings.showDock`, `dock`, `Look.dockStyle`, `dockTop`, `dockAutoHide` | Home & layout › Dock & widgets › Dock › Apps dock / Choose dock apps / Dock style / Dock on top / Auto-hide dock | toggle / link / choice |
 | `WidgetStore.widgets`, `WidgetConfig.homeEnabled` | Home & layout › Dock & widgets › Widgets › Customize widgets / Widgets on the home screen | link / toggle |
 | `WidgetConfig.gridPlace` | Home & layout › Dock & widgets › Widgets › Widgets on the grid (icon grid: In cells, As a row) | choice |

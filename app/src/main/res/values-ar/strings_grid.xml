@@ -609,10 +609,11 @@
     <string name="grid_edit_corners_follow">الشبكة · %1$s</string>
     <string name="grid_edit_corners_chip">زوايا خاصة · %1$s</string>
     <string name="grid_design_upload">ارفع صورتك</string>
+    <string name="grid_design_upload_sub">صورة أو GIF متحرّك</string>
+    <string name="grid_design_upload_details">PNG أو JPEG أو WebP أو GIF أو HEIC. الصور الثابتة حتى 24 ميغابايت، والمتحرّكة حتى 8 ميغابايت و1024 بكسل على أطول ضلع.</string>
     <string name="grid_design_upload_too_big">الصورة كبيرة جدًا. الصور الثابتة حتى 24 ميغابايت، والمتحرّكة حتى 8 ميغابايت.</string>
     <string name="grid_design_upload_too_large">أبعاد الصورة المتحرّكة كبيرة: 1024 بكسل على أطول ضلع كحدّ أقصى.</string>
     <string name="grid_design_upload_not_picture">هذه ليست صورة يستطيع Tandem استخدامها: PNG أو JPEG أو WebP أو GIF أو HEIC.</string>
-    <string name="grid_design_group_upload">رفع</string>
     <string name="grid_design_group_styles">مصنوعة مما بداخله</string>
     <string name="grid_design_group_covers">أغلفة وأيقونات</string>
     <string name="grid_design_group_game_art">صور الألعاب</string>

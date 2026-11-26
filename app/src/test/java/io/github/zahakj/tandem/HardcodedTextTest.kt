@@ -67,6 +67,7 @@ class HardcodedTextTest {
         "ui/IconGrid.kt",
         "ui/LiftMenu.kt",
         "ui/TileEditor.kt",
+        "ui/LayoutSwitch.kt",
         "ui/EditSections.kt",
         "ui/AnimatedArt.kt",
         "ui/Feel.kt",

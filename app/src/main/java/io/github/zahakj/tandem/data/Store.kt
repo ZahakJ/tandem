@@ -214,6 +214,14 @@ object Store {
         writer.execute { atomicWrite(settingsFile, json.encodeToString(snapshot)) }
     }
 
+    /**
+     * Changes the settings on screen only, without saving them: a layout tried from Start (LayoutSwitch). The next
+     * [updateSettings] saves whatever is on screen; to drop the try, call this again with the old values.
+     */
+    fun previewSettings(change: (Settings) -> Settings) {
+        synchronized(this) { settings = change(settings) }
+    }
+
     private val metaQueued = java.util.concurrent.atomic.AtomicBoolean(false)
 
     /**

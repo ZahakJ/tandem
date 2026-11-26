@@ -77,8 +77,8 @@ object TileEditor {
         private set
     var section by mutableStateOf(EditSection.Look)
 
-    /** The highlighted row can't be taken back (Delete, Uninstall…): Pip looks worried. */
-    internal var risky by mutableStateOf(false)
+    /** The highlighted row's id, for Pip's face (PipMoods: worried only over a row that can't be taken back). */
+    internal var focusedRow by mutableStateOf<String?>(null)
 
     /** A section was picked with L1 / R1 (otherwise the screen opens on [EditSections.opening]). */
     internal var chosen = false
@@ -89,7 +89,7 @@ object TileEditor {
         ActionMenu.choosing = null
         ActionMenu.group = null
         chosen = false
-        risky = false
+        focusedRow = null
         target = TileMenuTarget(key, folder)
     }
 
@@ -367,11 +367,7 @@ private fun EditorPreview(item: GridItem, modifier: Modifier) {
         bump.snapTo(0.9f)
         bump.animateTo(1f, androidx.compose.animation.core.spring(0.45f, 420f))
     }
-    val mood = when {
-        TileEditor.risky -> 3
-        TileEditor.section == EditSection.Look -> 1
-        else -> 0
-    }
+    val mood = PipMoods.editor(TileEditor.focusedRow, TileEditor.section)
     val own = item.style?.takeIf { it.ownCorners }?.corners
     BoxWithConstraints(modifier) {
         // What doesn't scale: the gaps, the name and its kind, the corners chip, the label under the other screen.
@@ -556,7 +552,7 @@ private fun SectionPane(t: TileMenuTarget, spec: MenuSpec?, sections: Map<EditSe
             )
             Box(Modifier.fillMaxWidth().weight(1f).fadingEdges(state).verticalScroll(state)) {
                 Column {
-                    LiftRows(routeKey, shownRows, onFocus = { a -> TileEditor.risky = a.hold || a.color == Palette.Peach })
+                    LiftRows(routeKey, shownRows, onFocus = { a -> TileEditor.focusedRow = a.id })
                     if (title == null && shownRows.size <= 4) SectionTip(section)
                 }
             }

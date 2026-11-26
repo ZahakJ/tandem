@@ -587,6 +587,8 @@ private fun Main(resumes: Int) {
         TileEditorHost()
         FolderDesignHost()
         SmartFolderFormHost()
+        // Start › Layout: the home layouts along the bottom, tried live behind it.
+        LayoutSwitchHost()
         StartPanelHost()
         // Search sits below the menus, so Y on a result opens the game menu on top of it.
         SearchOverlay()
