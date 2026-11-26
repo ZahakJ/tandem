@@ -163,6 +163,8 @@ data class SharedLook(
         soundPack = soundPack ?: look.soundPack,
         soundFiles = if (soundPack != null) "none" else look.soundFiles,
         soundtrack = soundtrack ?: look.soundtrack,
+        // A soundtrack that comes with a look was chosen by someone, so a later default change leaves it alone.
+        soundtrackPicked = soundtrack != null || look.soundtrackPicked,
     )
 
     /**
@@ -226,7 +228,7 @@ data class SharedLook(
         heroGradient = heroGradient.oneOf("fade", "strong", "vignette", "none"),
         kenBurns = kenBurns,
         soundPack = soundPack.oneOf(*Ids.soundPack),
-        soundtrack = soundtrack.oneOf("calm", "meadow"),
+        soundtrack = soundtrack.oneOf("plaza", "calm", "meadow"),
     )
 
     companion object {

@@ -32,7 +32,7 @@ The words Tandem uses in Arabic, chosen once and used everywhere. Read this befo
 Tandem, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB, SteamGridDB,
 ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, system and console
 names (Switch, PlayStation, Game Boy…: Nintendo and Sony market them in Latin letters in the Arab world), game
-titles, song titles and soundtrack names (Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG),
+titles, song titles and soundtrack names (Plaza, Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG),
 button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD", "USB", "Wi-Fi", "GPL-3.0".
 
 ## Android's own words (match the device)

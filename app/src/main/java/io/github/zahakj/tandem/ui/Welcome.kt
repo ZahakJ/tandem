@@ -75,11 +75,11 @@ object Welcome {
     internal var shown by mutableStateOf(false)
 
     fun finish() {
-        // The soundtrack is written down now, so a later start doesn't take this setup for one from before Calm.
-        // A new setup's welcome is its tour: this version's What's new counts as seen (WhatsNewRules).
+        // A new setup's welcome is its tour: this version's What's new counts as seen (WhatsNewRules). The soundtrack
+        // isn't written down: until one is picked, it is the default (Look.soundtrackId), whatever that becomes.
         Store.updateSettings {
             it.copy(
-                welcomeDone = true, look = it.look.copy(soundtrack = it.look.soundtrack ?: "calm"),
+                welcomeDone = true,
                 whatsNewSeen = it.whatsNewSeen ?: io.github.zahakj.tandem.WhatsNewRules.minorOf(io.github.zahakj.tandem.BuildConfig.VERSION_NAME),
             )
         }

@@ -175,7 +175,7 @@ Clicks, chimes, Pip's voice and the music while you browse.
 | Sounds | Custom sounds | | Shown with Custom: which recorded pack plays (Cocoon's from `ROMs/assets/sounds`, or a theme pack's own). |
 | Sounds | Sound volume | 50 % | How loud UI sounds are, compared with the system volume. |
 | Sounds | Pip's voice | On | Pip hums a few soft notes when it has something to tell you. |
-| Music | Music | My music | Music while you browse, and where it comes from: **Off**, **My music** (your songs from `ROMs/tandem/music`: MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Calm unless you pick Meadow Tales (a setup from before Calm keeps Meadow Tales). It fades out while a game runs and stays quiet while another app plays. |
+| Music | Music | My music | Music while you browse, and where it comes from: **Off**, **My music** (your songs from `ROMs/tandem/music`: MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Plaza** (bright, catchy menu music on marimba, whistle and bossa guitar, the default), **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Plaza unless you pick another (one you picked stays yours). It fades out while a game runs and stays quiet while another app plays. |
 | Music | Music volume | 40 % | How loud the music plays. |
 | Music | Shuffle my music | On | Plays your music folder in a random order. |
 | Music | Next song | | Skips to another song. |

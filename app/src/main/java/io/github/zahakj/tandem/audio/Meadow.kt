@@ -7,7 +7,7 @@ import io.github.zahakj.tandem.audio.Drum.Snare
 import io.github.zahakj.tandem.audio.Drum.Wood
 
 /**
- * "Meadow Tales": Tandem's orchestral soundtrack, picked in Sound & music ([Calm] is the default). Six original
+ * "Meadow Tales": Tandem's orchestral soundtrack, picked in Sound & music ([Plaza] is the default). Six original
  * pieces for a small acoustic orchestra (piano, strings, woodwinds, horn, accordion, mandolin, harp, celesta and soft
  * percussion) in a warm, pastoral, storybook style: lyrical melodies, waltzes, added-ninth and major-seventh harmony
  * with Lydian and Dorian colours, and rubato.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Arabic. Sound and music. Song titles and the soundtracks' names (Calm, Meadow Tales) stay as they are.
+<!-- Arabic. Sound and music. Song titles and the soundtracks' names (Plaza, Calm, Meadow Tales) stay as they are.
      See docs/i18n/glossary-ar.md. -->
 <resources>
     <string name="sound_group">الصوت والموسيقى</string>
@@ -33,14 +33,14 @@
 
     <string name="sound_music">الموسيقى</string>
     <string name="sound_music_folder">موسيقاي</string>
-    <string name="sound_music_help_empty">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ المجلد فارغ الآن، لذا تُعزف الموسيقى المدمجة (%1$s). موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</string>
+    <string name="sound_music_help_empty">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ المجلد فارغ الآن، لذا تُعزف الموسيقى المدمجة (%1$s). موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</string>
     <plurals name="sound_music_help_found">
-        <item quantity="zero">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ لم أجد أي أغنية بعد. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
-        <item quantity="one">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنية واحدة. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
-        <item quantity="two">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنيتين. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
-        <item quantity="few">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغانٍ. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
-        <item quantity="many">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
-        <item quantity="other">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Calm، بيانو وهارب وسيليستا بهدوء ونعومة، أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="zero">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ لم أجد أي أغنية بعد. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="one">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنية واحدة. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="two">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت أغنيتين. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="few">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغانٍ. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="many">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
+        <item quantity="other">موسيقى ترافقك وأنت تتصفّح؛ تخفت وتتوقف حين تبدأ لعبة، وتصمت حين يشغّل تطبيق آخر صوتًا. «موسيقاي» تشغّل أغانيك من ROMs/tandem/music (MP3 وOGG وOpus وFLAC وM4A وWAV)؛ وجدت %1$d أغنية. موسيقى Tandem الخاصة: Plaza، ماريمبا وصفير وبوسا نوفا بخفّة وإشراق؛ أو Calm، بيانو وهارب وسيليستا بهدوء ونعومة؛ أو Meadow Tales، أوركسترا صغيرة.</item>
     </plurals>
     <string name="sound_music_folder_empty">أضف أغاني إلى ROMs/tandem/music أولًا</string>
     <string name="sound_shuffle">تشغيل موسيقاي عشوائيًا</string>
@@ -88,4 +88,8 @@
     <string name="sound_mood_forest_spirits">أرواح صغيرة ترقص بين الأشجار العتيقة</string>
     <string name="sound_mood_summer_rain">بيانو ومطر خفيف في عصر صيفي كسول</string>
     <string name="sound_mood_flying_home">تحليق فوق الحقول في الطريق إلى البيت</string>
+    <string name="sound_mood_plaza">لحنٌ يُصفَّر وماريمبا في ساحة صغيرة مشمسة</string>
+    <string name="sound_mood_shop">غيتار نايلون وإيقاع بوسا نوفا وأنت تتجوّل بين الرفوف</string>
+    <string name="sound_mood_lounge">فالس من صندوق موسيقى للساعات الهادئة</string>
+    <string name="sound_mood_passby">نغمة قصيرة مبهجة للأخبار السعيدة</string>
 </resources>

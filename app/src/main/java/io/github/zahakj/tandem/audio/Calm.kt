@@ -3,7 +3,7 @@ package io.github.zahakj.tandem.audio
 import io.github.zahakj.tandem.R
 
 /**
- * "Calm": Tandem's default soundtrack, the first music a new user hears. Two short, slow pieces for soft piano,
+ * "Calm": the quietest of Tandem's soundtracks (the default before [Plaza]). Two short, slow pieces for soft piano,
  * celesta and harp over a warm pad: few notes, long rests, low and gentle, so it sits behind browsing rather than in
  * front of it. Meadow Tales ([Meadow]) is the fuller, orchestral choice.
  *

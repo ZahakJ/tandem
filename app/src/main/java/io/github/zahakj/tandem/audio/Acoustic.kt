@@ -78,7 +78,8 @@ internal object Tables {
 
 /** Partials (frequency, amplitude, 60 dB decay time) for the modal instruments. */
 internal object Modes {
-    fun isModal(o: Osc) = o == Osc.Piano || o == Osc.Celesta || o == Osc.Glockenspiel || o == Osc.Timpani
+    fun isModal(o: Osc) = o == Osc.Piano || o == Osc.Celesta || o == Osc.Glockenspiel || o == Osc.Timpani ||
+        o == Osc.Marimba || o == Osc.Vibes || o == Osc.MusicBox
 
     /**
      * Fills [freq], [amp], [t60] and returns how many partials there are. [vel] is the raw key velocity (0..1), which
@@ -127,6 +128,30 @@ internal object Modes {
                 add(f0 * 2.76, 0.32 * (0.5 + vel * 0.5), t * 0.35)
                 add(f0 * 5.4, 0.14 * vel, t * 0.15)
                 add(f0 * 8.93, 0.05 * vel, t * 0.07)
+            }
+            Osc.Marimba -> {
+                // The bar is tuned so its first overtone sits two octaves up (4x) and the next near 10x; the tube under
+                // it feeds the fundamental. Low bars ring longer; the overtones are gone in a blink, so it stays mellow.
+                val t = (1.6 * (262.0 / f0).pow(0.55)).coerceIn(0.35, 2.4)
+                add(f0, 1.0, t)
+                add(f0 * 3.98, 0.2 * (0.35 + vel), minOf(t * 0.18, 0.14))
+                add(f0 * 9.9, 0.05 * vel, 0.03)
+            }
+            Osc.Vibes -> {
+                // Aluminium bars: the same two-octave overtone, brighter and much longer; the motor's tremolo is the voice's.
+                val t = (5.5 * (440.0 / f0).pow(0.35)).coerceIn(2.0, 8.0)
+                add(f0, 1.0, t)
+                add(f0 * 4.0, 0.16 * (0.4 + vel), t * 0.16)
+                add(f0 * 10.0, 0.035 * vel, 0.07)
+                add(f0 * 1.0011, 0.18, t * 0.8)
+            }
+            Osc.MusicBox -> {
+                // A steel tine: a sweet fundamental, a glassy inharmonic partial that fades quickly, a faint octave.
+                val t = (2.6 * (523.0 / f0).pow(0.45)).coerceIn(0.9, 4.0)
+                add(f0, 1.0, t)
+                add(f0 * 2.0, 0.07, t * 0.4)
+                add(f0 * 5.93, 0.14 * (0.4 + vel), 0.12)
+                add(f0 * 13.4, 0.03 * vel, 0.025)
             }
             Osc.Timpani -> {
                 // Circular membrane modes as tuned by the kettle; the principal tone is the first one here.

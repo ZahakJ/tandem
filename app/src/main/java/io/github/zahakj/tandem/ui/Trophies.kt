@@ -91,7 +91,7 @@ object Trophies {
             if (first) fresh = emptyList()
         }) {
             val t = fresh.maxByOrNull { it.tier.ordinal } ?: return@inBackground
-            Sounds.achievement()
+            Sounds.goodNews()
             val more = fresh.size - 1
             Toasts.show(if (more > 0) Tx.p(R.plurals.stats_trophy_new_more, more, more, t.tier.label, t.title) else Tx.s(R.string.stats_trophy_new, t.tier.label, t.title, t.detail), 5000)
         }

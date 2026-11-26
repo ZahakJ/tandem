@@ -9,7 +9,7 @@ import org.junit.Test
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-/** The Calm soundtrack plays through cleanly and quieter than Meadow Tales; old setups keep Meadow Tales. */
+/** The Calm soundtrack plays through cleanly and quieter than Meadow Tales; Plaza is the default, picked soundtracks stay. */
 class CalmTest {
     private val rate = 48000
 
@@ -42,11 +42,19 @@ class CalmTest {
         }
     }
 
-    @Test fun calmIsTheDefaultButOldSetupsKeepMeadow() {
-        assertEquals("calm", Store.keepSoundtrack(Settings()).look.soundtrackId)
-        assertEquals("meadow", Store.keepSoundtrack(Settings(welcomeDone = true)).look.soundtrackId)
-        val chosen = Settings(welcomeDone = true, look = Look(soundtrack = "calm"))
-        assertEquals("calm", Store.keepSoundtrack(chosen).look.soundtrackId)
+    @Test fun plazaIsTheDefaultButPickedSoundtracksStay() {
+        // New setups, and ones that never chose, play Plaza.
+        assertEquals("plaza", Store.keepSoundtrack(Settings()).look.soundtrackId)
+        assertEquals("plaza", Store.keepSoundtrack(Settings(welcomeDone = true)).look.soundtrackId)
+        // Calm as the welcome wrote it down (the old default) follows the default to Plaza...
+        val oldDefault = Settings(welcomeDone = true, look = Look(soundtrack = "calm"))
+        assertEquals("plaza", Store.keepSoundtrack(oldDefault).look.soundtrackId)
+        // ...but Calm picked on purpose stays, and so does Meadow Tales.
+        val picked = Settings(welcomeDone = true, look = Look(soundtrack = "calm", soundtrackPicked = true))
+        assertEquals("calm", Store.keepSoundtrack(picked).look.soundtrackId)
+        assertEquals("meadow", Store.keepSoundtrack(Settings(welcomeDone = true, look = Look(soundtrack = "meadow"))).look.soundtrackId)
+        // Plaza picked stays Plaza.
+        assertEquals("plaza", Store.keepSoundtrack(Settings(look = Look(soundtrack = "plaza", soundtrackPicked = true))).look.soundtrackId)
         assertEquals(Calm.all, Tracks.of("calm"))
         assertEquals(Meadow.all, Tracks.of("meadow"))
     }

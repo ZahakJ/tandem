@@ -169,11 +169,14 @@ data class Look(
      */
     val myMusic: Boolean = true,
     /**
-     * The built-in soundtrack (audio/Tracks.kt): "calm" or "meadow" (Meadow Tales). Null until chosen, which reads
-     * as Calm ([soundtrackId]); a setup from before Calm, whose welcome is done, reads as Meadow Tales (Store.reload),
-     * so an update doesn't change the music someone is used to.
+     * The built-in soundtrack (audio/Tracks.kt): "plaza", "calm" or "meadow" (Meadow Tales). Null until chosen, which
+     * reads as Plaza, the default ([soundtrackId]). Calm, the default before Plaza, was written down for every setup
+     * when its welcome finished; unless it was picked ([soundtrackPicked]) it moves to Plaza with the default
+     * (Store.keepSoundtrack). Meadow Tales stays.
      */
     val soundtrack: String? = null,
+    /** [soundtrack] was chosen on purpose (in Sound & music, or with a look), so a new default leaves it alone. */
+    val soundtrackPicked: Boolean = false,
     /** Shuffle the files in ROMs/tandem/music. */
     val musicShuffle: Boolean = true,
     /** Pip babbles when it shows a message. */
@@ -186,7 +189,7 @@ data class Look(
     /** System icon style for drawn icons ("neon", "pixel"...), or null for the theme's own. */
     val iconStyle: String? = null,
 ) {
-    val soundtrackId: String get() = soundtrack ?: "calm"
+    val soundtrackId: String get() = soundtrack ?: io.github.zahakj.tandem.audio.Tracks.DEFAULT
 }
 
 /** Which parts of a theme pack are used. Each can be switched off on its own in Theme packs. */

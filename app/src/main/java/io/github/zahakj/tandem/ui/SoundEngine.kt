@@ -20,6 +20,7 @@ import io.github.zahakj.tandem.audio.Song
 internal object SynthEngine {
     private const val FRAMES = 1024
     const val FADE_SECONDS = 0.6f
+    const val QUICK_SECONDS = 0.15f
 
     @Volatile private var thread: Thread? = null
     @Volatile private var pending: Song? = null
@@ -31,6 +32,10 @@ internal object SynthEngine {
         private set
     /** Called on the audio thread each time a song has played through once (for shuffle). */
     @Volatile var onLooped: (() -> Unit)? = null
+    /** Called on the audio thread once a song that plays only once (a jingle) has rung out. */
+    @Volatile var onFinished: (() -> Unit)? = null
+    /** How long switching songs takes (each way): [FADE_SECONDS], or [QUICK_SECONDS] for a jingle cutting in. */
+    @Volatile private var switchSeconds = FADE_SECONDS
 
     val running: Boolean get() = thread != null
 
@@ -38,11 +43,16 @@ internal object SynthEngine {
         (ctx.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
             .getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)?.toIntOrNull()?.takeIf { it in 22050..96000 } ?: 48000
 
-    /** Starts (or switches to) [song]. Switching fades the old song out and the new one in. */
+    /**
+     * Starts (or switches to) [song]. Switching fades the old song out and the new one in; [quick] does it in a blink,
+     * for a jingle that has news to tell.
+     */
     @Synchronized
-    fun play(ctx: Context, song: Song) {
+    fun play(ctx: Context, song: Song, quick: Boolean = false) {
         stopping = false
-        if (player?.song?.id != song.id) pending = song
+        switchSeconds = if (quick) QUICK_SECONDS else FADE_SECONDS
+        // The latest wish wins: asking for what is already playing calls off a switch still waiting.
+        pending = if (player?.song?.id != song.id) song else null
         if (thread == null) start(outputRate(ctx)) else restart = true
     }
 
@@ -79,6 +89,8 @@ internal object SynthEngine {
         var gain = 0f
         var lastLoop = 0
         var faded = false
+        // Frames played since a one-shot song ended; its notes ring on a little before it counts as over.
+        var after = 0
         try {
             track.play()
             while (true) {
@@ -87,10 +99,11 @@ internal object SynthEngine {
                     pending = null
                     player = Player(next, rate, seed = (System.nanoTime() and 0xFFFF).toInt())
                     lastLoop = 0
+                    after = 0
                 }
                 val p = player ?: break
                 val want = if (stopping || pending != null) 0f else volume
-                val step = 1f / ((if (stopping) fadeOut else FADE_SECONDS) * rate)
+                val step = 1f / ((if (stopping) fadeOut else switchSeconds) * rate)
                 p.render(buf, FRAMES)
                 var i = 0
                 while (i < buf.size) {
@@ -100,6 +113,7 @@ internal object SynthEngine {
                 }
                 track.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
                 if (p.loops != lastLoop) { lastLoop = p.loops; onLooped?.invoke() }
+                if (p.finished && after >= 0) { after += FRAMES; if (after >= rate) { after = -1; onFinished?.invoke() } }
                 if (stopping && gain <= 0f) { faded = true; break }
             }
             if (faded) {

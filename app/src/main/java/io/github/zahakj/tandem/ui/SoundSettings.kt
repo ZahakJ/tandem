@@ -163,7 +163,7 @@ fun soundSettings(trackCount: Int): SettingSection {
                     if (trackCount == 0) Tx.s(R.string.sound_music_help_empty, Tracks.soundtracks.first { it.first == look.soundtrackId }.second)
                     else Tx.p(R.plurals.sound_music_help_found, trackCount),
                 ),
-                // The soundtracks' names (Calm, Meadow Tales) are names, the same in every language.
+                // The soundtracks' names (Plaza, Calm, Meadow Tales) are names, the same in every language.
                 listOf("off" to Tx.s(R.string.common_off), "folder" to Tx.s(R.string.sound_music_folder)) + Tracks.soundtracks,
                 musicNow,
                 preview = nowCard,
@@ -172,10 +172,10 @@ fun soundSettings(trackCount: Int): SettingSection {
                 when (v) {
                     "off" -> updateLook { it.copy(music = false) }
                     "folder" -> updateLook { it.copy(music = true, myMusic = true) }
-                    else -> updateLook { it.copy(music = true, myMusic = false, soundtrack = v) }
+                    else -> updateLook { it.copy(music = true, myMusic = false, soundtrack = v, soundtrackPicked = true) }
                 }
                 if (v == "folder" && trackCount == 0) Toasts.show(Tx.s(R.string.sound_music_folder_empty))
-            }.copy(keywords = "music from soundtrack bgm background folder songs built-in calm meadow tales mute quiet"),
+            }.copy(keywords = "music from soundtrack bgm background folder songs built-in plaza calm meadow tales mute quiet"),
             toggle(Tx.s(R.string.sound_shuffle), Glyph.Refresh, Palette.Peach, Tx.s(R.string.sound_shuffle_help), look.musicShuffle, en = "Shuffle my music") { on ->
                 updateLook { it.copy(musicShuffle = on) }
             },
@@ -239,6 +239,9 @@ fun SoundCues() {
         if (saver != wasSaver) { if (saver) Sounds.saverIn() else Sounds.saverOut(); wasSaver = saver }
         Music.dim(saver)
     }
+    // Where Tandem is, for a soundtrack whose music follows it (Plaza: home, Settings, the screensaver).
+    val scene = when { saver -> Tracks.Scene.Idle; Nav.inSettings -> Tracks.Scene.Settings; else -> Tracks.Scene.Home }
+    LaunchedEffect(scene) { Music.scene(scene) }
 
     val problem = LaunchFx.problem
     LaunchedEffect(problem) { if (problem != null) { Sounds.error(); Sounds.pipSays("Oh no, that one won't start"); Music.gameClosed() } } // tx-ok: never shown, it only shapes the babble

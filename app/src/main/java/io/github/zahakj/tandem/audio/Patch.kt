@@ -50,6 +50,12 @@ enum class Osc {
      * than noise, so it is clean and round; [Patch.tremolo] re-picks it for mandolin tremolo.
      */
     Plucked,
+    /** Marimba: rosewood bars over tuned tubes, a round woody tone whose bright overtones die almost at once. */
+    Marimba,
+    /** Vibraphone: long-ringing aluminium bars with the motor's gentle tremolo. */
+    Vibes,
+    /** Music box: a plucked steel comb tine, sweet and a little glassy. */
+    MusicBox,
 }
 
 /**

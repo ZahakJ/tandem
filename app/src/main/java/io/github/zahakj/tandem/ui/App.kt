@@ -421,6 +421,9 @@ private suspend fun scanOnce(ctx: Context, announce: Boolean, onlyIfChanged: Boo
     io.github.zahakj.tandem.FileChecks.clear()
     // A hidden folder that was renamed stays hidden: found again before the new scan is shown.
     io.github.zahakj.tandem.HiddenFolders.follow(libs)
+    // Games that weren't there before (not the first library of all): the soundtrack's good-news jingle, if it has one.
+    val had = Libraries.all?.flatMapTo(HashSet()) { l -> l.games.map { it.key } }
+    if (had != null && libs.any { l -> l.games.any { it.key !in had } }) Music.jingle()
     Libraries.all = libs
     // New games (and ones a scrape never reached) get their description from the LaunchBox database on the device.
     io.github.zahakj.tandem.data.DetailsFill.request()

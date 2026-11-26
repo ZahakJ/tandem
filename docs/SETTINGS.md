@@ -134,7 +134,7 @@ A "›" step after a page is its subpage.
 | `Look.sounds`, `soundPack`, `soundVolume` | Sound & music › Sounds › UI sounds (Off, Tandem's 8 packs, then **Custom** when any recorded pack is on the device) / Sound volume | choice / slider |
 | `Look.soundFiles` | Sound & music › Sounds › Custom sounds (shown while UI sounds is Custom: Cocoon's sound packs in `ROMs/assets/sounds`, then theme packs' own `sounds`; `none` is no recorded pack) | choice |
 | `Look.pipVoice` | Sound & music › Sounds › Pip's voice (a few soft hummed notes with Pip's messages) | toggle |
-| `Look.music`, `myMusic`, `soundtrack`, `musicVolume` | Sound & music › Music › Music (Off, My music, Calm, Meadow Tales; `soundtrack` null reads as Calm, or as Meadow Tales for a setup from before Calm) / Music volume | choice / slider |
+| `Look.music`, `myMusic`, `soundtrack`, `soundtrackPicked`, `musicVolume` | Sound & music › Music › Music (Off, My music, Plaza, Calm, Meadow Tales; `soundtrack` null reads as Plaza; picking one sets `soundtrackPicked`, and a `"calm"` that wasn't picked, the old default the welcome wrote down, reads as Plaza) / Music volume | choice / slider |
 | `Look.musicShuffle` | Sound & music › Music › Shuffle my music | toggle |
 | (next song) | Sound & music › Music › Next song | action |
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |

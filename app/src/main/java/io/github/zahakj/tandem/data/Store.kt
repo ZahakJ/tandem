@@ -190,11 +190,12 @@ object Store {
     }
 
     /**
-     * Calm became the default soundtrack after Meadow Tales: a setup that got past the welcome without choosing one
-     * keeps Meadow Tales. A new one is given Calm for good when its welcome finishes (Welcome.finish).
+     * Plaza became the default soundtrack after Calm. Calm was written down for every setup when its welcome finished,
+     * picked or not: unless it was picked ([Look.soundtrackPicked]), it is forgotten, so the setup follows the default
+     * to Plaza. Meadow Tales (chosen, or kept from before Calm) and anything picked stay as they are.
      */
     internal fun keepSoundtrack(s: Settings): Settings =
-        if (s.welcomeDone && s.look.soundtrack == null) s.copy(look = s.look.copy(soundtrack = "meadow")) else s
+        if (s.look.soundtrack == "calm" && !s.look.soundtrackPicked) s.copy(look = s.look.copy(soundtrack = null)) else s
 
     /** Shared "nothing known" value, so looking up a game without details doesn't allocate. */
     private val NoMeta = GameMeta()

@@ -311,10 +311,11 @@ Videos play muted and looping, and stop whenever Tandem isn't on screen, so they
 - **Theme pack:** when your theme pack brings music or recorded sounds of its own (Cocoon themes link theirs from `ROMs/assets/music` and `ROMs/assets/sounds`), **Theme pack music** and **Theme pack sounds** switch them on or off. The same switches are on the pack in **Manage packs**. While they're on, they play instead of the choices below.
 - **Sounds:** **UI sounds** is Off, one of Tandem's nine packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air, and **Thock**: deep, muted keyboard thocks with a thud under every sound), or **Custom**, which picks among every recorded pack you have (Cocoon's in `ROMs/assets/sounds`, or a theme pack's own). Sounds a recorded pack doesn't have come from Tandem's pack. With **Pip's voice** on (and UI sounds on), Pip hums a few soft notes when it has something to tell you.
 - **Music:** **Music** is Off, **My music** (your own MP3, OGG, Opus, FLAC, M4A or WAV files from `ROMs/tandem/music/`), or one of Tandem's own soundtracks:
-  - **Calm** (the default): two slow, soft pieces for piano, harp and celesta.
+  - **Plaza** (the default): bright, catchy menu music for marimba, vibraphone, a whistled tune, bossa guitar and brushes. Its music follows where you are: **Plaza** on the home screen, **Shop** (a cozy bossa nova) in Settings and **Lounge** (a music-box waltz) on the screensaver; **Passby**, a ten-second jingle, cuts in for good news (new games found, a new trophy or achievement) at most once a minute.
+  - **Calm**: two slow, soft pieces for piano, harp and celesta.
   - **Meadow Tales**: six original pieces for a small orchestra.
 
-  **Music volume** and **Next song** sit below it. A soundtrack plays through its pieces in turn (**Shuffle my music** mixes up your own). Music fades out when a game starts and back in when you return.
+  **Music volume** and **Next song** sit below it. Calm and Meadow Tales play through their pieces in turn; Plaza keeps the piece of the moment until you go somewhere else (**Next song** still moves it on). **Shuffle my music** mixes up your own. Music fades out when a game starts and back in when you return.
 
 > [!TIP]
 > To save battery, **Battery saver** in Quick settings (hold <kbd>Start</kbd>) stills the screens and turns the music off in one go, and puts back exactly what it changed when you turn it off.

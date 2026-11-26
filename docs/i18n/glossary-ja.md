@@ -31,7 +31,7 @@ The words Tandem uses in Japanese, chosen once and used everywhere. Read this be
 
 Tandem, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB, SteamGridDB,
 ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, game titles, song
-titles and soundtrack names (Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV), button
+titles and soundtrack names (Plaza, Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV), button
 letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home, D-pad is 十字ボタン), "USB", "Wi-Fi", "GPL-3.0", "PIN".
 System names come from `platforms.json` and stay as they are there.
 

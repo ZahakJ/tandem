@@ -90,7 +90,7 @@ object SteamUnlocks {
         if (toasts.isEmpty()) return
         job?.cancel()
         job = MainScope().launch {
-            Sounds.achievement()
+            Sounds.goodNews()
             toasts.forEachIndexed { i, t ->
                 if (i > 0) delay(SHOW_MS + 400)
                 Toasts.show(t.text, SHOW_MS, icon = t.icon)

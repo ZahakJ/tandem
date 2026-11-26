@@ -267,6 +267,8 @@ internal class Voice(private val rate: Int) {
             }
             if (osc == Osc.Accordion) amp *= (1 + 0.07 * Wave.sinAny(sec * 0.45 + seed)).toFloat()
         }
+        // The vibraphone's motor: slowly turning discs in its tubes make every note pulse gently.
+        if (osc == Osc.Vibes) amp *= (0.8 + 0.2 * Wave.sinAny(sec * 5.2 + seed)).toFloat()
         if (p.tremolo > 0 && stage < 2 && sec >= nextStrike) {
             val strength = 0.55 + 0.35 * noise.unit()
             if (osc == Osc.Plucked) pick(p, strength.toFloat() * 0.9f, fresh = false) else if (isModal) restrike(strength * 0.5)
@@ -356,7 +358,7 @@ internal class Voice(private val rate: Int) {
                     tone + br
                 }
                 Osc.Noise -> noise.next().toDouble()
-                Osc.Piano, Osc.Celesta, Osc.Glockenspiel, Osc.Timpani -> {
+                Osc.Piano, Osc.Celesta, Osc.Glockenspiel, Osc.Timpani, Osc.Marimba, Osc.Vibes, Osc.MusicBox -> {
                     var acc = 0.0
                     for (k in 0 until mN) {
                         val re = mRe[k]; val im = mIm[k]

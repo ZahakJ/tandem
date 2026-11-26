@@ -316,7 +316,7 @@ private val Synonyms = mapOf(
     "Video snaps" to "preview videos battery",
     "Moving art" to "ken burns pan zoom",
     "UI sounds" to "clicks beeps sfx effects mute sound pack recorded cocoon",
-    "Music" to "soundtrack bgm mute quiet background music from folder songs built-in calm meadow tales",
+    "Music" to "soundtrack bgm mute quiet background music from folder songs built-in plaza calm meadow tales",
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",

@@ -32,7 +32,7 @@ reviewing any `values-zh-rCN/strings_*.xml`. When a choice changes, change it he
 
 Tandem, Pip, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB,
 SteamGridDB, ScreenScraper, HowLongToBeat, Twitch, Eden Duo, Peanuts Native, GameNative, Winlator, DroidDeck, the
-emulators, system names (from `platforms.json`), game titles, song titles and soundtrack names (Calm, Meadow
+emulators, system names (from `platforms.json`), game titles, song titles and soundtrack names (Plaza, Calm, Meadow
 Tales), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV, APK), button letters (A, B, X, Y, L1, R1, L2,
 R2, Start, Select, Home; the D-pad is 十字键), Xbox, PlayStation, "Wi-Fi", "USB", "MTP", "PIN", "API", "ID", "GPL-3.0", "OLED", "LCD", "HOME 菜单" (Nintendo China's own words for
 the 3DS menu). **Deck** stays Deck: it is Tandem's name for the keyboard and trackpad, and Chinese players know
