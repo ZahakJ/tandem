@@ -183,6 +183,8 @@ object LookShare {
 
     /** Re-encodes [src] into [work]/[path] at most [max] pixels on a side; a PNG for .png paths, else WebP. */
     private fun add(src: File, work: File, path: String, max: Int, into: MutableMap<String, File>) {
+        // Art fetched from the web for a system (or scraped for a game) is someone else's: it stays on the handheld.
+        if (LookFile.localOnly(src.path)) return
         val out = File(work, path)
         val png = path.endsWith(".png")
         if (reencode(src, out, max, max, if (png) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.WEBP_LOSSY, if (png) 100 else 82)) into[path] = out

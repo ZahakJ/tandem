@@ -564,4 +564,22 @@
     <string name="scrape_test_libretro_failed">تعذّرت قراءة قائمة المصغّرات</string>
     <string name="scrape_test_nothing">البحث لم يجد شيئًا</string>
     <string name="scrape_test_hltb_found">%1$s: %2$s للقصة الرئيسية، و%3$s لـ 100%%</string>
+    <string name="scrape_system_art_title">صور المنصّات</string>
+    <string name="scrape_system_art_detail">صور الأجهزة وشعاراتها وخلفياتها لمنصّاتك، لا لألعابك</string>
+    <string name="scrape_system_art_unreachable">تعذّر الوصول إلى %1$s</string>
+    <string name="scrape_system_art_running">صور المنصّات قيد الجلب بالفعل</string>
+    <string name="scrape_system_art_metered">أنت على بيانات الجوّال. صور المنصّات بضعة ميغابايتات.</string>
+    <string name="scrape_system_art_metered_go">اجلب على أي حال</string>
+    <string name="scrape_system_art_nothing">لا منصّات لجلب صورها</string>
+    <string name="scrape_system_art_started">جارٍ جلب صور منصّاتك…</string>
+    <string name="scrape_system_art_started_one">جارٍ جلب صور %1$s…</string>
+    <plurals name="scrape_system_art_done">
+        <item quantity="zero">وُجدت صور لـ %1$d من %2$d منصّة</item>
+        <item quantity="one">وُجدت صور لـ %1$d من %2$d منصّة</item>
+        <item quantity="two">وُجدت صور لـ %1$d من %2$d منصّة</item>
+        <item quantity="few">وُجدت صور لـ %1$d من %2$d منصّات</item>
+        <item quantity="many">وُجدت صور لـ %1$d من %2$d منصّة</item>
+        <item quantity="other">وُجدت صور لـ %1$d من %2$d منصّة</item>
+    </plurals>
+    <string name="scrape_system_art_done_none">لم تُوجد صور لهذه المنصّات</string>
 </resources>

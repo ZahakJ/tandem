@@ -8,6 +8,8 @@ Here is every moment Tandem talks to the internet. Almost all of them start with
 
 - **Scraping**: **Settings › Library & art › Scrape library**, <kbd>Y</kbd> › **Scrape these games** on a system, or <kbd>Y</kbd> › **Scrape this game** on a game. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
 - <kbd>Y</kbd> › **Choose artwork** on a game, which asks your sources for pictures of that one game.
+- **Fetch system art** (**Settings › Look & feel › System icons**, the **Scrape library** screen, or a system's **Edit › Look › Artwork**), which fetches photos, logos and backdrops of your systems themselves, never anything about your games. See [System art](scraping.md#system-art).
+- **Fetch system art** (**Settings › Look & feel › System icons**, the **Scrape library** screen, or a system's **Edit › Look › Artwork**), which fetches photos, logos and backdrops of your systems themselves. See [System art](scraping.md#system-art).
 - **Test** on a source's card, which looks up one well-known game, never one of yours.
 - **The LaunchBox database**, downloaded only after you agree to it. A scrape you start refreshes a month-old copy, on Wi-Fi only.
 - **RetroAchievements**, only after you sign in with your username and web API key, and for **Find match** in a game's Edit details when you open it (never for a hidden game).
@@ -41,6 +43,12 @@ This is exactly what each service receives. Each source can be switched off in *
 | IGDB | Only with your own Twitch client ID and secret | Your client ID and secret (to Twitch, for a short-lived token), then the game's title and system. |
 | SteamGridDB | Only with your own API key | Your API key and the game's title. |
 | HowLongToBeat | Off until you switch it on | The game's title. |
+| System art: Wikidata and Wikimedia Commons | When you fetch system art; no account | Wikidata: the Wikidata ids of your systems, in one query. Commons: the file names Wikidata gave back. Then the pictures, by their addresses. |
+| System art: RetroArch's icons (on GitHub) | When you fetch system art; no account | Each system's libretro name ("Nintendo - Game Boy"), as part of its icon's address. |
+| System art: ScreenScraper and IGDB | When you fetch system art, only when switched on and set up | ScreenScraper: your login and developer ID, to read its list of every system (which of them you have isn't sent), then the pictures. IGDB: your client ID and secret (to Twitch), then the IGDB ids of your systems. |
+| System art: Wikidata and Wikimedia Commons | When you fetch system art, no account | Wikidata: the Wikidata ids of your systems (one query). Commons: the file names Wikidata gave. Then the pictures, by address. Nothing about your games. |
+| System art: RetroArch icons (GitHub) | When you fetch system art, no account | Each system's libretro name ("Nintendo - Game Boy"), as part of the icon's address. |
+| System art: ScreenScraper and IGDB | When you fetch system art, only when set up | ScreenScraper: your login and developer ID, for its list of every system (it learns nothing about which you have). IGDB: your client ID and secret (to Twitch), then the IGDB ids of your systems. |
 | RetroAchievements | Only when signed in | Your username and web API key, the system's public game list (cached for a week), and the ID of a matched game to get your progress. Games are matched by a hash computed on the device; the file itself is never sent. |
 | Steam store pictures | After a scan, for `.steam` shortcuts missing art | The app id in the shortcut, as part of the picture's address. |
 | Steam Web API | Only with your own key and account | Your key and your SteamID64 (or the profile name you typed, once, to find it), and the app id of each Steam game in your library, to read its achievements and their names and icons. The share of players who have each one is asked for with the app id alone. |
@@ -140,6 +148,7 @@ Everything Tandem knows lives on your device. Here is each piece, where it sits 
 | A salted hash of your private mode PIN, and the count of wrong tries | `private-pin.json` in Tandem's private no-backup storage | To check the PIN. Never in Tandem's backups or Android's backups |
 | What Tandem turned off to go offline for a hidden game | `offline.json` in Tandem's private no-backup storage, only while it is offline | To put airplane mode and Wi-Fi back, even after a restart |
 | Downloaded artwork, logos and video snaps | `ROMs/downloaded_media/<system>/…` | So they are yours to keep, in the layout other frontends read. **Clear downloaded media** removes only what Tandem downloaded |
+| System art you fetched (console photos, logos, backdrops), and who made each | `ROMs/tandem/art/systems/<system>/`, with `credits.json`; the icons and heroes made from them in Tandem's cache | To dress your systems. Never put in a shared look; **Clear downloaded media** removes it. See [System art](scraping.md#system-art) |
 | Switch saves replaced by the save sync | `ROMs/tandem/save-sync/backups/<title ID>/<app>/` | So a save that was overwritten can be put back. The newest 20 per game and app are kept. See [Switch games](switch.md#backups) |
 | Game manuals and guides, and the page each was left at | `ROMs/manuals/<system>/` (your files, and copies of the ones you pick in Edit details); `manual-pages.json` in Tandem's private storage | Read on either screen. Never sent anywhere, never deleted by Tandem. See [Manuals and guides](library.md#manuals-and-guides) |
 | Looks you save, and looks you get | `ROMs/tandem/looks/` (files you save with **Share my look**); `ROMs/tandem/themes/<name>/` (each look you use, as a theme pack); the name, author and description you typed, in Android app preferences; the gallery's list and previews in Tandem's cache | To share and use looks. A look file holds only look settings and pictures, never anything about your games or accounts |
@@ -161,7 +170,7 @@ Every permission Tandem asks for, and the one thing each is for. The optional on
 
 | Permission | Used for |
 | --- | --- |
-| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs, play stats exports, Switch save-sync backups), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
+| All files access | Reading the `ROMs` folder and its artwork. Tandem writes only to `ROMs/tandem/` (backups, imported theme packs, play stats exports, Switch save-sync backups, system art you fetch), `ROMs/downloaded_media/` (artwork you scrape), `ROMs/screenshots/` and `ROMs/clips/` (the companion's Screenshot and Clip buttons) and `ROMs/notes/` (your notes). |
 | Internet | Scraping, RetroAchievements, Steam achievements, the Discord status and the look gallery, only when you start or connect them, and the daily update check (see above). |
 | Install apps, and uninstall apps | Installing a new Tandem when you press **Update**; opening Android's uninstall screen for **Uninstall app…** on an Android game. |
 | Do Not Disturb access | **Immersion mode**: Do Not Disturb while a game plays. |

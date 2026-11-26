@@ -116,6 +116,29 @@ game without one, the Discord status looks one up the first time it shows the ga
 then SteamGridDB if you entered a key (only sources that are on). The answer, or a miss, is kept in
 `discord-covers.json` in the cache folder; a miss is tried again after a week.
 
+## System art
+
+Art for the systems themselves (console photos, logos, backdrops), fetched only when the user asks
+(`data/SystemArtFetch.kt`; for users: [System art](guide/scraping.md#system-art)):
+
+| Source | Gives | How | Auth |
+| --- | --- | --- | --- |
+| Wikidata + Wikimedia Commons | Photo (P18), logo (P154, SVG rendered as see-through PNG) | One SPARQL query on `query.wikidata.org` with the systems' Wikidata ids (`ScrapeSystems.wikidata`), then Commons `imageinfo` (`iiurlwidth=1280`, licence and artist from `extmetadata`) | None |
+| RetroArch assets | Icon (`xmb/systematic/png/<libretro name>.png`, CC BY 4.0) | By the libretro name | None |
+| ScreenScraper | `wheel-hd`/`wheel`, `photo`, `illustration`, `controller`, `fanart`, `background`, `screenmarquee` | `systemesListe.php` once (every system, ~MBs), the user's region first | User's dev id (and login) |
+| IGDB | Platform logo | `platforms` with `platform_logo.image_id`, `t_720p` | User's Twitch app |
+
+LaunchBox's `Metadata.xml` lists platforms (`<Platform>`, with alternate names) but no platform pictures, and
+libretro's thumbnails are per game, so neither is used. Pictures are saved as
+`ROMs/tandem/art/systems/<id>/<source>-<kind>.<ext>` (`ss`, `wiki`, `igdb`, `ra`; at most 1920 px for fanart,
+backgrounds and banners, 1280 px for the rest) through `Media.saveSystemArt`, so they are in the downloaded-media
+manifest, with `credits.json` beside them. `ui/WebArt.kt` makes icons (384 px, fitted on the system colour; photos on
+white lose the white by a flood fill from the edges) and heroes (1920×1080; backdrops fill it, other pictures sit in the
+middle 1040 px so the bottom screen's 1240×1080 cut shows them whole) into the cache. Which picture shows is
+`SystemArt.choose` and `ArtSets.pick`: uploads, then the system's own pick (`FolderStyle.webIcon/webHero/webLogo`) or
+own set, then `Look.systemArt` (photos, logos, fanart), then the global set, the pack and the drawn art. Tests:
+`SystemArtTest` (mapping, parsing made-up answers, precedence), `LookFileTest.fetchedSystemArtNeverTravels`.
+
 ## Code
 
 `data/ScrapeConfig.kt` (settings, sources, modes), `data/Scraper.kt` (the run and per-game worker),

@@ -57,6 +57,8 @@ Colours, wallpaper, icons, motion, the language and the calendar: how Tandem loo
 | Icon style | the theme's | How Tandem draws system icons when no pack has art for them: pixel, neon, LCD, chrome, plastic, sticker and more. |
 | Icons from | Auto | Where system icons, heroes and logos come from: the theme pack's own (Auto), another pack's, or always drawn by Tandem. |
 | Art set | Off | Tandem's own drawn icon, hero and logo for every system in one style: Pastel Pop, Neon Arcade, Paper Cartridge or Minimal Mono. A system can wear another set in its **Edit › Look › Artwork**. See [Themes › Art sets](themes.md#art-sets). |
+| Real art | Off | Real console photos, logos or fanart backdrops (fetched with **Fetch system art**) on every system at once: **Console photos**, **Logos** or **Fanart backdrops**. Comes before the art set where a system has a fitting picture; **Off** puts back what was there. See [System art](scraping.md#system-art). |
+| Fetch system art | | Downloads photos, logos, banners and backdrops of your systems from Wikimedia Commons and RetroArch (no account), and ScreenScraper and IGDB when set up. <kbd>A</kbd> again stops it. Only system names and ids are sent. |
 
 **Look & feel › Motion**
 

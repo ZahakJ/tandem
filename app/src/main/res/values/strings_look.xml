@@ -600,4 +600,28 @@
     <string name="look_travel">Travelling highlight</string>
     <string name="look_travel_help">On the icon grid the highlight glides from icon to icon on a little spring, and the icon it lands on lifts. Off, it jumps. Reduce motion turns it off too.</string>
     <string name="look_layout_stage_help">Horizontal both ways: each system, collection and Continue is a page, L1 and R1 slide the whole page across, and Left and Right move along its row of covers while the highlighted game\'s art fills the screen.</string>
+    <!-- Look & feel › System icons › Real art: console photos, logos and backdrops fetched from the web, for every system at once. -->
+    <string name="look_real_art">Real art</string>
+    <string name="look_real_art_help">Real console photos, logos or backdrops on every system at once. Change one system in its Edit › Look › Artwork.</string>
+    <!-- No real art: the art set, the pack or Tandem's drawn icons, as before. -->
+    <string name="look_real_art_off">Off</string>
+    <!-- The styles: what every system's icon shows (photo of the console, its logo) and, for the last, a backdrop as the hero. -->
+    <string name="look_real_art_photos">Console photos</string>
+    <string name="look_real_art_logos">Logos</string>
+    <string name="look_real_art_fanart">Fanart backdrops</string>
+    <!-- Shown in the preview when no system art has been downloaded yet. -->
+    <string name="look_real_art_none_yet">No system art yet. Fetch system art first.</string>
+    <!-- Toast when a style is chosen with no system art downloaded; its button is look_fetch_art_go. -->
+    <string name="look_real_art_need_fetch">No system art on this handheld yet</string>
+    <!-- Toast with Undo after choosing: %1$s is the style ("Console photos"). -->
+    <string name="look_real_art_done">Real art: %1$s</string>
+    <!-- Look & feel › System icons › Fetch system art. -->
+    <string name="look_fetch_art">Fetch system art</string>
+    <string name="look_fetch_art_help">Downloads photos, logos and backdrops of your systems. Only system names are sent; the pictures stay here.</string>
+    <string name="look_fetch_art_go">Fetch</string>
+    <string name="look_fetch_art_none">Not fetched yet</string>
+    <plurals name="look_fetch_art_have">
+        <item quantity="one">%1$d system has art</item>
+        <item quantity="other">%1$d systems have art</item>
+    </plurals>
 </resources>

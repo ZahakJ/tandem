@@ -48,6 +48,7 @@ Every picture is Tandem's own drawing: a silhouette of the *kind* of device (a c
 - **One system, another set.** <kbd>Y</kbd> on a system › **Edit** › **Look** › **Artwork**: the studio lists **Tandem sets** for that system on its Icon, Hero and Title pages. A system's own set wins over the one for every system, and **Pack art** keeps the pack's art (or Tandem's drawn icon) for just that system. **Theme** follows the set for every system again.
 - **Your own pictures come first.** A picture you upload as a system's icon, hero or logo shows instead of any set, for that part only.
 - **Everywhere.** The grid, Spotlight, the bottom screen, the Systems page, search and the other menus all show the set.
+- **Or real art.** For real console photos, logos and backdrops instead of drawings, fetch them with **Fetch system art** and pick a style in **Settings › Look & feel › System icons › Real art** (or one picture per system under **From the web** in its studio). Real art comes before the set for every system where a system has a fitting picture; a system's own set still wins. It stays on the handheld and never goes in a shared look. See [System art](scraping.md#system-art).
 
 <details>
 <summary>Where it is kept, and what travels</summary>
@@ -197,10 +198,10 @@ Give any folder, system, collection or genre on the icon grid a look of its own:
 
 | Part | Choices |
 | --- | --- |
-| Icon | **Theme** (the pack's art, else Tandem's drawn art), for a system one of the [Tandem sets](#art-sets), a game's cover or an app's icon from inside, a cover **Mosaic** of four, a **Fan** of three, a **Genre** look (its glyph on a badge over a fan of covers), one of Tandem's glyphs or an emoji on the folder colour, or a picture |
+| Icon | **Theme** (the pack's art, else Tandem's drawn art), for a system one of the [Tandem sets](#art-sets), a picture fetched **From the web** ([System art](scraping.md#system-art)), a game's cover or an app's icon from inside, a cover **Mosaic** of four, a **Fan** of three, a **Genre** look (its glyph on a badge over a fan of covers), one of Tandem's glyphs or an emoji on the folder colour, or a picture |
 | Colour | **Theme**, **From the art** (the main colour of the icon's picture), or a swatch. It colours the tile, its highlight ring and the sweep on the other screen |
-| Hero | **Theme** (the pack's hero; a folder of games uses the hero of its favourite or most played game), for a system a Tandem set's hero, a game's hero, a picture, a **Colour sweep**, or a **Cover wall** (rows of the covers inside drifting past) |
-| Title | **Theme** (the pack's logo, else the icon), for a system a Tandem set's logo, the name as text in three weights and three sizes, a game's logo, or a picture |
+| Hero | **Theme** (the pack's hero; a folder of games uses the hero of its favourite or most played game), for a system a Tandem set's hero or a fetched backdrop or photo, a game's hero, a picture, a **Colour sweep**, or a **Cover wall** (rows of the covers inside drifting past) |
+| Title | **Theme** (the pack's logo, else the icon), for a system a Tandem set's logo or a fetched logo, the name as text in three weights and three sizes, a game's logo, or a picture |
 | Shape | The grid's, a rounded square or a circle |
 | Corners | **Grid** (Icon roundness), or this tile's own, from square to round. See [Corners](controls.md#corners) |
 | Cover frame | Whether a game cover used as the icon wears the theme's cover frame (when the theme has frames) |

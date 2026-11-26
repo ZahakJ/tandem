@@ -59,7 +59,11 @@ import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Library
 import io.github.zahakj.tandem.Selection
+import io.github.zahakj.tandem.data.ArtSlot
 import io.github.zahakj.tandem.data.FolderStyle
+import io.github.zahakj.tandem.data.SystemArt
+import io.github.zahakj.tandem.data.SystemArtFetch
+import io.github.zahakj.tandem.data.WebOption
 import io.github.zahakj.tandem.data.IconGridStore
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.styleOf
@@ -246,7 +250,7 @@ fun FolderDesignHost() {
         }
         val draft = FolderDesign.draft
         // A set's pictures are drawn in the background: the preview looks again when they are ready.
-        val preview = remember(plain, draft, SetArt.revision) { FolderLooks.restyle(plain, draft) }
+        val preview = remember(plain, draft, SetArt.revision, WebArt.revision, SystemArtFetch.revision) { FolderLooks.restyle(plain, draft) }
         LaunchedEffect(k) { if (plain.kind == TileKind.System) plain.platformId?.let(SetArt::warmSystem) }
         // Live on the other screen too: Spotlight shows the highlighted tile, so the preview stands in for it.
         LaunchedEffect(preview) { IconGrid.spot = preview; Selection.current = preview.selected }
@@ -402,7 +406,7 @@ private fun iconLabel(plain: GridItem, s: FolderStyle): String = when (s.icon) {
     FolderStyle.ICON_GLYPH -> Tx.s(R.string.grid_design_glyph)
     FolderStyle.ICON_EMOJI -> s.emoji ?: Tx.s(R.string.grid_design_emoji)
     FolderStyle.ICON_FILE -> s.iconFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
-    else -> Tx.s(R.string.grid_design_theme)
+    else -> webLabel(s.webIcon) ?: Tx.s(R.string.grid_design_theme)
 }
 
 private fun heroLabel(plain: GridItem, s: FolderStyle): String = when (s.hero) {
@@ -410,21 +414,24 @@ private fun heroLabel(plain: GridItem, s: FolderStyle): String = when (s.hero) {
     FolderStyle.HERO_WALL -> Tx.s(R.string.grid_design_cover_wall)
     FolderStyle.HERO_GAME -> FolderLooks.gameOf(plain, s.heroRef)?.title ?: Tx.s(R.string.grid_design_game_hero)
     FolderStyle.HERO_FILE -> s.heroFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
-    else -> Tx.s(R.string.grid_design_theme)
+    else -> webLabel(s.webHero) ?: Tx.s(R.string.grid_design_theme)
 }
 
 private fun titleLabel(plain: GridItem, s: FolderStyle): String = when (s.logo) {
     FolderStyle.LOGO_TEXT -> Tx.s(R.string.grid_design_text, weightName(s.textWeight), sizeName(s.textSize))
     FolderStyle.LOGO_GAME -> FolderLooks.gameOf(plain, s.logoRef)?.title?.let { Tx.s(R.string.grid_design_logo, it) } ?: Tx.s(R.string.grid_design_logo_any)
     FolderStyle.LOGO_FILE -> s.logoFile?.let { File(it).name } ?: Tx.s(R.string.grid_design_picture)
-    else -> Tx.s(R.string.grid_design_theme)
+    else -> webLabel(s.webLogo) ?: Tx.s(R.string.grid_design_theme)
 }
+
+/** A web picture's name ("Console photo · Wikimedia Commons"), for a slot showing one. */
+private fun webLabel(id: String?): String? = WebOption.parse(id)?.let(SystemArtUi::optionLabel)
 
 private fun weightName(w: Int) = Tx.s(when { w <= 600 -> R.string.grid_design_weight_light; w >= 900 -> R.string.grid_design_weight_heavy; else -> R.string.grid_design_weight_bold })
 private fun sizeName(s: Int) = Tx.s(when (s) { 0 -> R.string.grid_design_size_small; 2 -> R.string.grid_design_size_large; else -> R.string.grid_design_size_medium })
 
 private fun iconId(s: FolderStyle) = when (s.icon) {
-    FolderStyle.ICON_AUTO -> if (s.artSet != null) "set:${s.artSet}" else s.icon
+    FolderStyle.ICON_AUTO -> if (s.webIcon != null) "web:${s.webIcon}" else if (s.artSet != null) "set:${s.artSet}" else s.icon
     FolderStyle.ICON_GAME -> "ref:${s.iconRef}"
     FolderStyle.ICON_GLYPH -> "glyph:${s.glyph}"
     FolderStyle.ICON_GENRE -> "genre:${s.glyph}"
@@ -440,14 +447,14 @@ private fun colourId(s: FolderStyle) = when {
 }
 
 private fun heroId(s: FolderStyle) = when (s.hero) {
-    FolderStyle.HERO_AUTO -> if (s.artSet != null) "set:${s.artSet}" else s.hero
+    FolderStyle.HERO_AUTO -> if (s.webHero != null) "web:${s.webHero}" else if (s.artSet != null) "set:${s.artSet}" else s.hero
     FolderStyle.HERO_GAME -> "ref:${s.heroRef}"
     FolderStyle.HERO_FILE -> "file:${s.heroFile}"
     else -> s.hero
 }
 
 private fun titleId(s: FolderStyle) = when (s.logo) {
-    FolderStyle.LOGO_AUTO -> if (s.artSet != null) "set:${s.artSet}" else s.logo
+    FolderStyle.LOGO_AUTO -> if (s.webLogo != null) "web:${s.webLogo}" else if (s.artSet != null) "set:${s.artSet}" else s.logo
     FolderStyle.LOGO_TEXT -> "text:${s.textWeight}:${s.textSize}"
     FolderStyle.LOGO_GAME -> "ref:${s.logoRef}"
     FolderStyle.LOGO_FILE -> "file:${s.logoFile}"
@@ -470,7 +477,7 @@ private fun ChoicePage(key: String, page: FolderDesign.Page, plain: GridItem, pi
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val base = FolderDesign.saved
     val wide = page == FolderDesign.Page.Hero || page == FolderDesign.Page.Title
-    val choices = remember(page, plain, base, pictures, io.github.zahakj.tandem.Lang.revision.intValue) { choicesFor(ctx, page, plain, base, pictures, pickFile, scope) }
+    val choices = remember(page, plain, base, pictures, io.github.zahakj.tandem.Lang.revision.intValue, SystemArtFetch.revision, SystemArtFetch.run?.finished) { choicesFor(ctx, page, plain, base, pictures, pickFile, scope) }
     val route = FolderDesign.pageRoute(key, page)
     val target = rememberFocusTarget(route, choices.map { it.id })
     val state = rememberLazyGridState()
@@ -552,6 +559,7 @@ private fun choiceSection(page: FolderDesign.Page, id: String): Int = when {
     page == FolderDesign.Page.Colour -> 0
     // Upload your own says what it is itself.
     id == "device" -> 0
+    id == "fetch" || id.startsWith("web:") -> R.string.grid_design_group_web
     id.startsWith("set:") -> R.string.grid_design_group_sets
     id.startsWith("file:") -> R.string.grid_design_group_yours
     id.startsWith("glyph:") -> R.string.grid_design_group_glyphs
@@ -572,13 +580,14 @@ private fun choicesFor(
         FolderDesign.Page.Icon -> buildList {
             add(device)
             fun icon(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { s -> StyledTile(plain, st, s) })
-            icon(FolderStyle.ICON_AUTO, Tx.s(R.string.grid_design_theme), base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null, artSet = null))
+            icon(FolderStyle.ICON_AUTO, Tx.s(R.string.grid_design_theme), base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null, artSet = null, webIcon = null))
             if (FolderLooks.sources(plain, 2).size >= 2) {
                 icon(FolderStyle.ICON_MOSAIC, Tx.s(R.string.grid_design_mosaic), base.copy(icon = FolderStyle.ICON_MOSAIC))
                 icon(FolderStyle.ICON_FAN, Tx.s(R.string.grid_design_fan), base.copy(icon = FolderStyle.ICON_FAN))
                 val g = FolderLooks.glyph(base.glyph) ?: genreIcon(plain.title)
                 icon("genre:${g.name}", Tx.s(R.string.grid_design_genre), base.copy(icon = FolderStyle.ICON_GENRE, glyph = g.name))
             }
+            webChoices(plain, base, page)?.let { addAll(it) }
             setChoices(plain, base, page)?.let { addAll(it) }
             for (g in strong.filter { Libraries.of(it)?.box(it) != null }.take(18)) icon("ref:game:${g.key}", g.title, base.copy(icon = FolderStyle.ICON_GAME, iconRef = "game:${g.key}"))
             val apps = (plain.art as? TileArt.Folder)?.inside.orEmpty().filterIsInstance<TileArt.App>().take(12)
@@ -607,9 +616,10 @@ private fun choicesFor(
         FolderDesign.Page.Hero -> buildList {
             add(device)
             fun hero(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { _ -> HeroThumb(plain, st) })
-            hero(FolderStyle.HERO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null))
+            hero(FolderStyle.HERO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null, webHero = null))
             hero(FolderStyle.HERO_SWEEP, Tx.s(R.string.grid_design_colour_sweep), base.copy(hero = FolderStyle.HERO_SWEEP))
             if (plain.games.size >= 4) hero(FolderStyle.HERO_WALL, Tx.s(R.string.grid_design_cover_wall), base.copy(hero = FolderStyle.HERO_WALL))
+            webChoices(plain, base, page)?.let { addAll(it) }
             setChoices(plain, base, page)?.let { addAll(it) }
             for (g in strong.filter { FolderLooks.gameHero(it) != null }.take(12)) hero("ref:${g.key}", g.title, base.copy(hero = FolderStyle.HERO_GAME, heroRef = g.key))
             for (f in pictures) hero("file:${f.path}", f.nameWithoutExtension, base.copy(hero = FolderStyle.HERO_FILE, heroFile = f.path))
@@ -617,10 +627,11 @@ private fun choicesFor(
         FolderDesign.Page.Title -> buildList {
             add(device)
             fun title(id: String, label: String, st: FolderStyle) = add(Choice(id, label, st) { _ -> TitleThumb(plain, st) })
-            title(FolderStyle.LOGO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null))
+            title(FolderStyle.LOGO_AUTO, Tx.s(R.string.grid_design_theme), base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null, webLogo = null))
             for (size in 0..2) for (w in listOf(600, 800, 900)) {
                 title("text:$w:$size", Tx.s(R.string.grid_design_weight_size, weightName(w), sizeName(size)), base.copy(logo = FolderStyle.LOGO_TEXT, textWeight = w, textSize = size))
             }
+            webChoices(plain, base, page)?.let { addAll(it) }
             setChoices(plain, base, page)?.let { addAll(it) }
             for (g in strong.filter { Libraries.of(it)?.logo(it) != null }.take(12)) title("ref:${g.key}", g.title, base.copy(logo = FolderStyle.LOGO_GAME, logoRef = g.key))
             for (f in pictures) title("file:${f.path}", f.nameWithoutExtension, base.copy(logo = FolderStyle.LOGO_FILE, logoFile = f.path))
@@ -657,10 +668,11 @@ private fun UploadCard() {
  */
 private fun setChoices(plain: GridItem, base: FolderStyle, page: FolderDesign.Page): List<Choice>? {
     val id = plain.platformId?.takeIf { plain.kind == TileKind.System } ?: return null
+    // A set chosen on a page also puts that page's part back from a web picture to the set.
     fun styled(set: String) = when (page) {
-        FolderDesign.Page.Hero -> base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null, artSet = set)
-        FolderDesign.Page.Title -> base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null, artSet = set)
-        else -> base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null, iconFile = null, artSet = set)
+        FolderDesign.Page.Hero -> base.copy(hero = FolderStyle.HERO_AUTO, heroRef = null, heroFile = null, artSet = set, webHero = null)
+        FolderDesign.Page.Title -> base.copy(logo = FolderStyle.LOGO_AUTO, logoRef = null, logoFile = null, artSet = set, webLogo = null)
+        else -> base.copy(icon = FolderStyle.ICON_AUTO, iconRef = null, iconFile = null, artSet = set, webIcon = null)
     }
     return buildList {
         for (set in ArtSet.entries) add(Choice("set:${set.id}", set.label, styled(set.id)) { s ->
@@ -672,7 +684,8 @@ private fun setChoices(plain: GridItem, base: FolderStyle, page: FolderDesign.Pa
                 else -> Box(Modifier.size(s).clip(RoundedCornerShape(s * 0.2f))) { SetIconPreview(set.id, id) }
             }
         })
-        if (Store.settings.look.artSet != null) {
+        // Also keeps the system out of real art for every system (Look.systemArt).
+        if (Store.settings.look.artSet != null || Store.settings.look.systemArt != null) {
             val st = styled(io.github.zahakj.tandem.data.ArtSets.PACK)
             add(Choice("set:${io.github.zahakj.tandem.data.ArtSets.PACK}", Tx.s(R.string.grid_design_set_none), st) { s ->
                 when (page) {
@@ -685,11 +698,61 @@ private fun setChoices(plain: GridItem, base: FolderStyle, page: FolderDesign.Pa
     }
 }
 
+/**
+ * A system's real art on [page] (null for any other tile): Fetch from the web (again), then every picture fetched for
+ * it that suits the page, each made as it would show (an icon on the system's colour, a hero, a see-through logo).
+ */
+private fun webChoices(plain: GridItem, base: FolderStyle, page: FolderDesign.Page): List<Choice>? {
+    val id = plain.platformId?.takeIf { plain.kind == TileKind.System } ?: return null
+    val slot = when (page) {
+        FolderDesign.Page.Hero -> ArtSlot.Hero
+        FolderDesign.Page.Title -> ArtSlot.Logo
+        FolderDesign.Page.Icon -> ArtSlot.Icon
+        else -> return null
+    }
+    val run = SystemArtFetch.run?.takeIf { !it.finished }
+    val options = SystemArt.forSlot(slot, WebArt.available(id, slot).keys)
+    return buildList {
+        val fetchLabel = when {
+            run != null -> Tx.s(R.string.grid_design_web_fetching)
+            options.isEmpty() -> Tx.s(R.string.grid_design_web_fetch)
+            else -> Tx.s(R.string.grid_design_web_refetch)
+        }
+        add(Choice("fetch", fetchLabel, base, action = { SystemArtUi.fetch(listOf(id)) }) { s ->
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                if (run != null) ProgressBar(run.fraction, Modifier.fillMaxWidth(0.7f))
+                else GlyphChip(Glyph.Download, Palette.Peach, if (page == FolderDesign.Page.Icon) s * 0.5f else 40.dp)
+            }
+        })
+        for (o in options) {
+            val st = SystemArt.withChoice(base, slot, o.id)
+            add(Choice("web:${o.id}", SystemArtUi.optionLabel(o), st) { s -> WebThumb(id, o, slot, plain, s) })
+        }
+    }
+}
+
+/** A fetched picture as [slot] would show it, made in the background: the system's colour until it is ready. */
+@Composable
+private fun WebThumb(id: String, o: WebOption, slot: ArtSlot, plain: GridItem, s: Dp) {
+    val file = remember(id, o, slot, WebArt.revision, SystemArtFetch.revision) { WebArt.file(id, o, slot) }
+    val m = when (slot) {
+        ArtSlot.Icon -> Modifier.size(s).clip(RoundedCornerShape(s * 0.2f))
+        else -> Modifier.fillMaxSize()
+    }
+    Box(m.background(if (slot == ArtSlot.Logo) lerp(plain.color, Palette.Night, 0.35f) else plain.color), contentAlignment = Alignment.Center) {
+        if (file != null) AsyncImage(
+            rememberSizedRequest(file, if (slot == ArtSlot.Icon) 256 else 480), null,
+            if (slot == ArtSlot.Logo) Modifier.fillMaxWidth(0.8f).fillMaxHeight(0.7f) else Modifier.fillMaxSize(),
+            contentScale = if (slot == ArtSlot.Logo) ContentScale.Fit else ContentScale.Crop,
+        )
+    }
+}
+
 /** A small picture of the hero [st] gives. */
 @Composable
 private fun HeroThumb(plain: GridItem, st: FolderStyle) {
     val item = remember(plain, st) { FolderLooks.restyle(plain, st) }
-    val hero = remember(item, SetArt.revision) { FolderLooks.hero(item) }
+    val hero = remember(item, SetArt.revision, WebArt.revision) { FolderLooks.hero(item) }
     HeroPicture(item, hero, Modifier.fillMaxSize())
 }
 
@@ -713,7 +776,7 @@ internal fun HeroPicture(item: GridItem, hero: File?, modifier: Modifier) {
 @Composable
 internal fun TitleArt(item: GridItem, scale: Float) {
     val st = item.style ?: FolderStyle.DEFAULT
-    val logo = remember(item, SetArt.revision) { FolderLooks.logo(item) }
+    val logo = remember(item, SetArt.revision, WebArt.revision) { FolderLooks.logo(item) }
     when {
         st.logo == FolderStyle.LOGO_TEXT -> FolderTitle(item.title, st, Modifier.padding(6.dp), scale)
         logo != null -> AsyncImage(rememberSizedRequest(logo, 480), null, Modifier.fillMaxWidth(0.8f).fillMaxHeight(0.7f), contentScale = ContentScale.Fit)
@@ -734,7 +797,7 @@ private fun PreviewPane(preview: GridItem, modifier: Modifier) {
             },
         ) { TileArtView(preview.art, tile) }
         Spacer(Modifier.height(14.dp))
-        val hero = remember(preview, SetArt.revision) { FolderLooks.hero(preview) }
+        val hero = remember(preview, SetArt.revision, WebArt.revision) { FolderLooks.hero(preview) }
         Box(
             Modifier.fillMaxWidth().aspectRatio(16f / 9f).graphicsLayer { shape = RoundedCornerShape(14.dp); clip = true },
             contentAlignment = Alignment.Center,

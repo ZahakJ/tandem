@@ -11,6 +11,8 @@ Only when you ask it to look something up online:
   "Scrape this game" in a game's Y menu).
 - **Choose artwork** in a game's Y menu, which asks every configured source for pictures of that one game.
 - **Test** on a source's setup card, which looks up one well-known game ("Super Mario Odyssey"), never yours.
+- **Fetch system art** (Settings › Look & feel › System icons, the Scrape library screen, or "From the web" in a
+  system's artwork studio), which fetches photos, logos and backdrops of the systems themselves (`SystemArtFetch.kt`).
 - **Downloading the LaunchBox database**, only after you agree to it (the LaunchBox card, the welcome, or the
   question when you start a scrape that needs it). A scrape you start refreshes a month-old copy, only on Wi-Fi.
 
@@ -74,6 +76,9 @@ Each source can be turned off in Settings › Library & art › Set up sources; 
 | IGDB (id.twitch.tv, api.igdb.com, images.igdb.com) | Only if you entered a Twitch client ID and secret | Your client ID and secret (to Twitch, for an access token kept in memory), then the game's title and system. |
 | SteamGridDB (steamgriddb.com) | Only if you entered an API key | Your API key and the game's title (also for the Discord status's cover lookup, when connected). |
 | HowLongToBeat (howlongtobeat.com) | Off until you turn it on, no account | The game's title. |
+| Wikidata (query.wikidata.org) and Wikimedia Commons (commons.wikimedia.org, upload.wikimedia.org) | When you fetch system art, no account | Wikidata: one SPARQL query naming your systems' Wikidata ids (only well-formed `Q` ids). Commons: the file names Wikidata gave (photo P18, logo P154), for their picture addresses, licence and author; then those pictures. Nothing about your games. |
+| RetroArch assets (raw.githubusercontent.com/libretro/retroarch-assets) | When you fetch system art, no account | Each system's libretro name, as the icon's file name. |
+| ScreenScraper and IGDB, for system art | When you fetch system art, only if set up and switched on | ScreenScraper: your login and developer ID for `systemesListe` (every system it knows; which ones you have isn't sent), then the chosen pictures. IGDB: your client ID and secret (to Twitch), then your systems' IGDB platform ids, then their logos from images.igdb.com. |
 | Steam's video servers | Only for video snaps from LaunchBox | The trailer's address. |
 | Steam's store CDN (cdn.cloudflare.steamstatic.com) | After a library scan, for `.steam` shortcuts missing art | The app id in the shortcut, as part of the picture's address. |
 | RetroAchievements (retroachievements.org, media.retroachievements.org) | Only after you sign in (Settings › Library & art › Accounts) | Your username and web API key; the console's public game list with hashes (cached for a week); the ID of a matched game, for your progress in it; badge pictures. Games are matched by a hash computed on the device, the file is never sent. **Find match** in Edit details uses the same cached game list and sends nothing about the game; an ID you type or "No achievements" stays on the device. |
@@ -106,6 +111,11 @@ it, as Android would. In private mode the cards show only the app and the time.
 - Downloaded pictures and clips: `ROMs/downloaded_media/<system>/<icon|hero|logo|screenshot_title|screenshot_gameplay|videos>/`.
   Tandem keeps a list of files it downloaded (in its private storage) so "Clear downloaded media" deletes only
   those, never art from other apps or pictures you chose by hand.
+- System art you fetch: `ROMs/tandem/art/systems/<system>/<source>-<kind>.<ext>` with `credits.json` (source, licence,
+  author, page, as the source gives them), listed with the other downloads so "Clear downloaded media" removes it; the
+  icons and heroes made from it in the cache (`web-art/`). Which picture each system wears is in `icon-grid.json`
+  (`webIcon`, `webHero`, `webLogo`), the choice for every system in `settings.json` (`Look.systemArt`). None of it is
+  ever written into a shared look (`LookFile.localOnly`, and no `SharedLook` field for it).
 - Notes (the Notes app and the companion's Notes): plain Markdown files in `ROMs/notes/<notebook>/<name>.md`, their
   pictures in `<name>.assets/` beside them (screenshots, drawings with their `.strokes.json`, pictures copied from the
   Gallery), and a `.game` file in each game's notebook naming the game. Nothing in them is sent anywhere; there is no

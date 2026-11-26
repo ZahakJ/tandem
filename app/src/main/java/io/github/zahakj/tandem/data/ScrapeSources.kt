@@ -164,6 +164,23 @@ object Media {
     /** Copies a picture the user picked on the device. */
     fun saveLocal(game: Game, kind: MediaKind, data: ByteArray): File? = save(game, kind, data)
 
+    /**
+     * Saves a picture fetched for a system (SystemArtFetch) as [dir]/[stem].<ext>, scaled to at most [maxPx] on a side
+     * (PNG when something in it is see-through, else JPEG) and listed with the other downloads, so Clear downloaded
+     * media removes it too. Null when [data] isn't a picture.
+     */
+    fun saveSystemArt(dir: File, stem: String, data: ByteArray, maxPx: Int): File? {
+        val (bytes, ext) = synchronized(decodeLock) { encodeScaled(data, maxPx) } ?: return null
+        dir.mkdirs()
+        val target = File(dir, "$stem.$ext")
+        val tmp = File(dir, ".$stem.$ext.part")
+        tmp.writeBytes(bytes)
+        dir.listFiles { f -> f.nameWithoutExtension == stem && f.name != target.name && !f.name.startsWith(".") }?.forEach { it.delete() }
+        if (!tmp.renameTo(target)) { tmp.delete(); return null }
+        record(target)
+        return target
+    }
+
     private fun isMp4(d: ByteArray) = d.size > 12 && String(d, 4, 4, Charsets.US_ASCII) == "ftyp"
 
     /** Matroska / WebM files start with the EBML magic number (Steam trailers from LaunchBox are WebM). */
@@ -522,11 +539,14 @@ class ScreenScraper(private val s: ScrapeSettings) {
         return null
     }
 
-    private fun call(url: String): JSONObject {
+    /** Every system ScreenScraper knows, with its media (systemesListe), as JSON text for SystemArt.ssSystems. */
+    fun systemsJson(): String = call("$base/systemesListe.php?${auth()}", maxBytes = 40 shl 20).toString()
+
+    private fun call(url: String, maxBytes: Int = 8 shl 20): JSONObject {
         var wait = 1500L
         repeat(4) { attempt ->
             try {
-                return JSONObject(Net.text(url))
+                return JSONObject(String(Net.bytes(url, maxBytes = maxBytes)))
             } catch (e: HttpError) {
                 when (e.code) {
                     429 -> if (attempt < 3) { Thread.sleep(wait); wait *= 2 } else throw e

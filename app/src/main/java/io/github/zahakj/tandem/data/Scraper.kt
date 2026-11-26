@@ -697,6 +697,11 @@ object Scraper {
         val changes = Store.meta.filter { (_, m) -> MediaKind.entries.any { k -> k.get(m)?.let { !File(it).isFile } == true } }
             .mapValues { { m: GameMeta -> MediaKind.entries.fold(m) { acc, k -> if (k.get(acc)?.let { !File(it).isFile } == true) k.set(acc, null) else acc } } }
         Store.updateAll(changes)
+        // System art went with the rest: its folders (and their credits) go once no picture is left in them.
+        File(io.github.zahakj.tandem.Library.romsDir, SystemArt.ROOT).listFiles().orEmpty().filter { d ->
+            d.isDirectory && d.listFiles().orEmpty().none { WebOption.ofFile(it.name) != null }
+        }.forEach { it.deleteRecursively() }
+        SystemArtFetch.forget()
         return result
     }
 }

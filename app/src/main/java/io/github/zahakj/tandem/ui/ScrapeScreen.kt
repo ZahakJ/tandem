@@ -472,6 +472,14 @@ private fun ScrapeSetup() {
                 }
                 item("h:acc") { SectionTitle(Tx.s(R.string.scrape_setup_sources), Palette.Butter, Modifier.padding(top = 6.dp)) }
                 item("sources") { SourcesCard(Modifier.remembersFocus(route, "sources", false)) }
+                // Art for the systems themselves (console photos, logos, backdrops), not for the games.
+                item("h:systems") { SectionTitle(Tx.s(R.string.scrape_system_art_title), Palette.Peach, Modifier.padding(top = 6.dp)) }
+                item("systemart") {
+                    PickRow(
+                        Tx.s(R.string.look_fetch_art), Tx.s(R.string.scrape_system_art_detail), SystemArtUi.status(), Palette.Peach,
+                        Modifier.remembersFocus(route, "systemart", false), glyph = Glyph.Download,
+                    ) { if (io.github.zahakj.tandem.data.SystemArtFetch.running) io.github.zahakj.tandem.data.SystemArtFetch.cancel() else SystemArtUi.fetch() }
+                }
             }
         }
         // Summary and the start button.

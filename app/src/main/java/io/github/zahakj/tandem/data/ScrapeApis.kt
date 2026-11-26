@@ -73,6 +73,13 @@ class Igdb(private val clientId: String, private val secret: String) {
         }
     }
 
+    /** Each of IGDB's [platforms]' logo image id (only the platform ids are sent). */
+    fun platformLogos(platforms: Collection<Int>): Map<Int, String> {
+        if (platforms.isEmpty()) return emptyMap()
+        val body = "fields id,platform_logo.image_id; where id = (${platforms.distinct().sorted().joinToString(",")}); limit 500;"
+        return SystemArt.igdbLogos(query("platforms", body).toString())
+    }
+
     /** The closest game to [title] on IGDB [platform] (or any platform when null), if it's close enough. */
     fun search(title: String, platform: Int?): IgdbGame? {
         val clean = Library.cleanTitle(title).replace("\"", "").replace("\\", "").trim()

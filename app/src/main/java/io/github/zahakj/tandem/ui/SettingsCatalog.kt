@@ -226,7 +226,7 @@ object SettingsPlan {
             ),
         ),
         "look/wallpaper" to listOf(Group("Wallpaper", R.string.settings_group_wallpaper, p("Wallpaper", "Top screen", "Bottom screen", "Picture dimming"))),
-        "look/icons" to listOf(Group("System icons", R.string.look_group_icons, p("System icons", "Icon style", "Icons from", "Art set"))),
+        "look/icons" to listOf(Group("System icons", R.string.look_group_icons, p("System icons", "Icon style", "Icons from", "Art set", "Real art", "Fetch system art"))),
         "look/motion" to listOf(
             Group("Motion", R.string.settings_group_motion, p("Motion", "Animation style", "Reduce motion", "Travelling highlight") + p("Motion & home", "Floating titles", "Motion intensity") + p("Icon grid", "Swap animation")),
         ),

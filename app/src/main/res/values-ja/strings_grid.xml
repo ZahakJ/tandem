@@ -501,4 +501,17 @@
     <string name="grid_design_group_yours">自分の画像</string>
     <string name="grid_design_group_sets">Tandemのアートセット</string>
     <string name="grid_design_set_none">パックのアート</string>
+    <string name="grid_design_group_web">ウェブから</string>
+    <string name="grid_design_web_fetch">ウェブから取得</string>
+    <string name="grid_design_web_refetch">もう一度取得</string>
+    <string name="grid_design_web_fetching">取得中…</string>
+    <string name="grid_design_web_option">%1$s・%2$s</string>
+    <string name="grid_design_web_photo">本体の写真</string>
+    <string name="grid_design_web_logo">ロゴ</string>
+    <string name="grid_design_web_icon">アイコン</string>
+    <string name="grid_design_web_illustration">イラスト</string>
+    <string name="grid_design_web_controller">コントローラー</string>
+    <string name="grid_design_web_fanart">ファンアート</string>
+    <string name="grid_design_web_background">背景</string>
+    <string name="grid_design_web_banner">バナー</string>
 </resources>

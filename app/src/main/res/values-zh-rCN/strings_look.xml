@@ -496,4 +496,20 @@
     <string name="look_travel">滑动的选中框</string>
     <string name="look_travel_help">在图标网格上，选中框会像弹簧一样从一个图标滑到另一个，落下的图标会微微浮起。关闭后选中框直接跳过去。“减弱动态效果”也会关闭它。</string>
     <string name="look_layout_stage_help">两个方向都横向：每个平台、合集和“继续游玩”各是一页，L1 和 R1 整页滑过，左右键在一排封面间移动，选中游戏的主视觉图铺满屏幕。</string>
+    <string name="look_real_art">真实图片</string>
+    <string name="look_real_art_help">一次给所有平台换上真机照片、标志或背景。单个平台可在 编辑 › 外观 › 图片 里更换。</string>
+    <string name="look_real_art_off">关</string>
+    <string name="look_real_art_photos">真机照片</string>
+    <string name="look_real_art_logos">标志</string>
+    <string name="look_real_art_fanart">同人画背景</string>
+    <string name="look_real_art_none_yet">还没有平台图片。请先刮削平台图片。</string>
+    <string name="look_real_art_need_fetch">这台掌机上还没有平台图片</string>
+    <string name="look_real_art_done">真实图片：%1$s</string>
+    <string name="look_fetch_art">刮削平台图片</string>
+    <string name="look_fetch_art_help">下载各平台的照片、标志和背景。只发送平台名称，图片只留在本机。</string>
+    <string name="look_fetch_art_go">刮削</string>
+    <string name="look_fetch_art_none">尚未刮削</string>
+    <plurals name="look_fetch_art_have">
+        <item quantity="other">%1$d 个平台有图片</item>
+    </plurals>
 </resources>

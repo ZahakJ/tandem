@@ -119,6 +119,7 @@ website menus are quoted the way Steam France writes them.
 | Icon style | Style des icônes | |
 | System icons | Icônes des systèmes | |
 | Art set (Tandem's drawn icons, heroes, logos) | Collection de visuels | Set names are transcreated: Pastel bonbon, Néon d’arcade, Cartouche en papier, Mono tout en finesse |
+| System art / Fetch system art / Real art | Visuels des systèmes / Récupérer les visuels des systèmes / Vrais visuels | Photos and logos of the systems themselves, from the web. Styles: Photos de consoles, Logos, Fonds en fanart |
 | Dock (apps dock) | Dock | |
 | Folder / Smart folder | Dossier / Dossier intelligent | |
 | Smart folder rules | Règles | « Modifier les règles » |

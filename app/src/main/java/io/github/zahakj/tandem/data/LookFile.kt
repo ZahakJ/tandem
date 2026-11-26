@@ -401,6 +401,15 @@ object LookFile {
     /** True for a path a `.tandem` file may hold. Nothing else is written or read. */
     fun allowed(path: String): Boolean = ALLOWED.any { it.matches(path) }
 
+    /**
+     * True for a picture on the handheld that never goes into a look, whatever it would be called there: system art
+     * fetched from the web (SystemArt.ROOT) and scraped media are third-party art and stay on the device.
+     */
+    fun localOnly(source: String): Boolean {
+        val p = "/" + source.replace('\\', '/').trimStart('/')
+        return "/${SystemArt.ROOT}/" in p || "/downloaded_media/" in p
+    }
+
     private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
     private val pretty = Json(json) { prettyPrint = true }
 

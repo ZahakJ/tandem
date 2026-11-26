@@ -572,4 +572,25 @@
     <string name="look_travel">تحديد ينساب</string>
     <string name="look_travel_help">في شبكة الأيقونات ينساب التحديد من أيقونة إلى أخرى بنابض خفيف، وترتفع الأيقونة التي يحطّ عليها. عند إيقافه يقفز التحديد قفزًا. ويوقفه «تقليل الحركة» أيضًا.</string>
     <string name="look_layout_stage_help">أفقي في الاتجاهين: كل منصّة ومجموعة وصفحة «تابِع اللعب» صفحةٌ وحدها، يقلّبها الزرّان L1 وR1 كاملةً، ويتنقّل اليمين واليسار في صفّ أغلفتها بينما تملأ صورة اللعبة المحدّدة الشاشة.</string>
+    <string name="look_real_art">صور حقيقية</string>
+    <string name="look_real_art_help">صور حقيقية للأجهزة أو شعارات أو خلفيات على كل المنصّات معًا. لمنصّة واحدة: تعديل › المظهر › الصور.</string>
+    <string name="look_real_art_off">معطّل</string>
+    <string name="look_real_art_photos">صور الأجهزة</string>
+    <string name="look_real_art_logos">الشعارات</string>
+    <string name="look_real_art_fanart">خلفيات من فن المعجبين</string>
+    <string name="look_real_art_none_yet">لا صور للمنصّات بعد. اجلب صور المنصّات أولًا.</string>
+    <string name="look_real_art_need_fetch">لا صور للمنصّات على هذا الجهاز بعد</string>
+    <string name="look_real_art_done">صور حقيقية: %1$s</string>
+    <string name="look_fetch_art">جلب صور المنصّات</string>
+    <string name="look_fetch_art_help">ينزّل صور منصّاتك وشعاراتها وخلفياتها. لا يُرسل إلا أسماء المنصّات، والصور تبقى هنا.</string>
+    <string name="look_fetch_art_go">اجلب</string>
+    <string name="look_fetch_art_none">لم تُجلب بعد</string>
+    <plurals name="look_fetch_art_have">
+        <item quantity="zero">لا منصّة لها صور</item>
+        <item quantity="one">منصّة واحدة لها صور</item>
+        <item quantity="two">منصّتان لهما صور</item>
+        <item quantity="few">%1$d منصّات لها صور</item>
+        <item quantity="many">%1$d منصّة لها صور</item>
+        <item quantity="other">%1$d منصّة لها صور</item>
+    </plurals>
 </resources>

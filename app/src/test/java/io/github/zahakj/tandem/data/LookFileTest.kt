@@ -152,6 +152,29 @@ class LookFileTest {
         assertFalse(LookFile.allowed("systems/snes/icon.gif"))
     }
 
+    /**
+     * Real system art fetched from the web is third-party art: neither the choice for every system nor a system's own
+     * picks travel in a look, and no picture of it is ever copied in, whatever the look file would call it.
+     */
+    @Test fun fetchedSystemArtNeverTravels() {
+        val d = SharedLook.serializer().descriptor
+        val fields = (0 until d.elementsCount).map { d.getElementName(it) }.toSet()
+        for (never in listOf("systemArt", "webIcon", "webHero", "webLogo")) assertFalse("$never is in a look", never in fields)
+        val s = privateSettings().let { it.copy(look = it.look.copy(systemArt = SystemArt.PHOTOS, artSet = ArtSets.NEON)) }
+        val styles = mapOf("s:gba" to FolderStyle(webIcon = "wiki-photo", webHero = "ss-fanart", webLogo = "ss-logo", artSet = ArtSets.PAPER))
+        val look = SharedLook.of(s.look, s, ExtrasSettings(), "theme", "theme", systemSets = ArtSets.perSystem(styles))
+        val text = LookFile.encode(LookManifest(name = "x", look = look))
+        for (word in listOf("photos", "wiki-photo", "ss-fanart", "ss-logo", "\"systemArt\"")) assertFalse("$word leaked", text.contains(word))
+        // The sets still travel, by id.
+        assertTrue(text.contains(ArtSets.PAPER))
+        // The pictures: nothing from tandem/art/systems (or scraped media) is ever copied into a look.
+        assertTrue(LookFile.localOnly("/storage/emulated/0/ROMs/tandem/art/systems/gba/wiki-photo.jpg"))
+        assertTrue(LookFile.localOnly("/storage/emulated/0/ROMs/downloaded_media/gba/covers/x.png"))
+        assertFalse(LookFile.localOnly("/storage/emulated/0/ROMs/tandem/packs/neon/systems/gba/icon.png"))
+        assertFalse(LookFile.allowed("tandem/art/systems/gba/wiki-photo.jpg"))
+        assertFalse(LookFile.allowed("systems/gba/wiki-photo.jpg"))
+    }
+
     @Test fun wallpaperPathsNeverTravel() {
         val l = SharedLook(wallTop = "file:/storage/emulated/0/x.jpg", wallBottom = "../x").sanitized()
         assertEquals(null, l.wallTop)

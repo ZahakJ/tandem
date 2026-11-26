@@ -9,15 +9,16 @@ package io.github.zahakj.tandem.data
  * - the set for every system: Look.artSet (settings.json, the Look part of a backup, Share my look);
  * - one system's own set: FolderStyle.artSet of its tile "s:<id>" (icon-grid.json, the Layout part of a backup);
  * - pictures the user uploaded: FolderStyle.iconFile / heroFile / logoFile (copies in ROMs/tandem/art/folders);
- * - the drawn pictures themselves: a cache (cacheDir/art-sets), drawn again whenever it is missing.
+ * - the drawn pictures themselves: a cache (cacheDir/art-sets), drawn again whenever it is missing;
+ * - real art fetched from the web, and which of it each system or every system wears: SystemArt.kt.
  * None of these is touched by a rescan or by Icons from (Look.iconPack).
  */
 
 /** Which art a system's icon, hero or logo comes from, strongest first. */
-enum class ArtSource { Upload, Set, Pack, Drawn }
+enum class ArtSource { Upload, Web, Set, Pack, Drawn }
 
-/** What one slot of a system shows: [set] for [ArtSource.Set], [file] for [ArtSource.Upload]. */
-data class ArtPick(val source: ArtSource, val set: String? = null, val file: String? = null)
+/** What one slot of a system shows: [set] for [ArtSource.Set], [file] for [ArtSource.Upload], [web] for [ArtSource.Web]. */
+data class ArtPick(val source: ArtSource, val set: String? = null, val file: String? = null, val web: String? = null)
 
 object ArtSets {
     const val PASTEL = "pastel"
@@ -51,12 +52,19 @@ object ArtSets {
     }
 
     /**
-     * What one slot shows, strongest first: a picture the user [upload]ed for it; else the system's set
-     * ([setFor]); else the art pack's picture when it has one ([packHas]); else Tandem's drawn art.
+     * What one slot shows, strongest first: a picture the user [upload]ed for it; else the web picture the system
+     * picked itself ([webMine]); else the system's own set ([perSystem]; [PACK] keeps the pack's art); else the web
+     * picture the style for every system gives it ([webGlobal]); else the global set ([global]); else the art pack's
+     * picture when it has one ([packHas]); else Tandem's drawn art. The web picks are only ones still on the handheld
+     * (SystemArt.choose works them out).
      */
-    fun pick(upload: String?, perSystem: String?, global: String?, packHas: Boolean): ArtPick {
+    fun pick(upload: String?, perSystem: String?, global: String?, packHas: Boolean, webMine: String? = null, webGlobal: String? = null): ArtPick {
         if (!upload.isNullOrBlank()) return ArtPick(ArtSource.Upload, file = upload)
-        setFor(perSystem, global)?.let { return ArtPick(ArtSource.Set, set = it) }
+        if (webMine != null) return ArtPick(ArtSource.Web, web = webMine)
+        if (perSystem == PACK) return if (packHas) ArtPick(ArtSource.Pack) else ArtPick(ArtSource.Drawn)
+        if (isSet(perSystem)) return ArtPick(ArtSource.Set, set = perSystem)
+        if (webGlobal != null) return ArtPick(ArtSource.Web, web = webGlobal)
+        if (isSet(global)) return ArtPick(ArtSource.Set, set = global)
         return if (packHas) ArtPick(ArtSource.Pack) else ArtPick(ArtSource.Drawn)
     }
 

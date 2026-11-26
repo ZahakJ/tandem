@@ -638,4 +638,21 @@
     <string name="grid_design_group_sets">Tandem sets</string>
     <!-- Artwork studio, for a system when an art set is on for every system: keep the pack's art (or Tandem's drawn icon) here. -->
     <string name="grid_design_set_none">Pack art</string>
+    <!-- Artwork studio, for a system: a heading over the pictures fetched from the web for it (Fetch system art). -->
+    <string name="grid_design_group_web">From the web</string>
+    <!-- A choice that fetches this system's art; again when some is there already; while it runs. -->
+    <string name="grid_design_web_fetch">Fetch from the web</string>
+    <string name="grid_design_web_refetch">Fetch again</string>
+    <string name="grid_design_web_fetching">Fetching…</string>
+    <!-- A fetched picture: %1$s what it shows (grid_design_web_photo…), %2$s where it came from (Wikimedia Commons, ScreenScraper, IGDB, RetroArch). -->
+    <string name="grid_design_web_option">%1$s · %2$s</string>
+    <!-- What a fetched picture of a system shows. -->
+    <string name="grid_design_web_photo">Console photo</string>
+    <string name="grid_design_web_logo">Logo</string>
+    <string name="grid_design_web_icon">Icon</string>
+    <string name="grid_design_web_illustration">Illustration</string>
+    <string name="grid_design_web_controller">Controller</string>
+    <string name="grid_design_web_fanart">Fanart</string>
+    <string name="grid_design_web_background">Background</string>
+    <string name="grid_design_web_banner">Banner</string>
 </resources>

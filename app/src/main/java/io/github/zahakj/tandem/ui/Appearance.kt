@@ -424,7 +424,7 @@ fun appearanceSections(): List<SettingSection> {
                 updateLook { it.copy(artSet = v.ifEmpty { null }) }
                 SetArt.warmLibrary()
             },
-        )),
+        ) + SystemArtUi.rows()),
         SettingSection(Tx.s(R.string.look_group_motion), en = "Motion", rows = listOf(
             choice(
                 Tx.s(R.string.look_animation), Glyph.Motion, Palette.Mint, Tx.s(R.string.look_animation_help),

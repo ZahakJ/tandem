@@ -515,4 +515,23 @@
     <string name="scrape_test_nothing">The search found nothing</string>
     <!-- "Super Mario Odyssey: 12½ h main story, 60 h for 100%": %1$s the title, %2$s and %3$s times. -->
     <string name="scrape_test_hltb_found">%1$s: %2$s main story, %3$s for 100%%</string>
+    <!-- System art (Fetch system art): pictures of the systems themselves, not of the games. -->
+    <string name="scrape_system_art_title">System art</string>
+    <string name="scrape_system_art_detail">Console photos, logos and backdrops for your systems, not your games</string>
+    <!-- %1$s is a source's name (Wikimedia Commons). -->
+    <string name="scrape_system_art_unreachable">Couldn\'t reach %1$s</string>
+    <string name="scrape_system_art_running">Already fetching system art</string>
+    <!-- Asked before fetching on mobile data; the button is scrape_system_art_metered_go. -->
+    <string name="scrape_system_art_metered">You\'re on mobile data. System art is a few megabytes.</string>
+    <string name="scrape_system_art_metered_go">Fetch anyway</string>
+    <string name="scrape_system_art_nothing">No systems to fetch art for</string>
+    <string name="scrape_system_art_started">Fetching art for your systems…</string>
+    <!-- %1$s is a system's name. -->
+    <string name="scrape_system_art_started_one">Fetching art for %1$s…</string>
+    <!-- When it's done: %1$d systems got art, of %2$d asked for (the quantity follows %2$d). -->
+    <plurals name="scrape_system_art_done">
+        <item quantity="one">Found art for %1$d of %2$d system</item>
+        <item quantity="other">Found art for %1$d of %2$d systems</item>
+    </plurals>
+    <string name="scrape_system_art_done_none">Found no art for these systems</string>
 </resources>

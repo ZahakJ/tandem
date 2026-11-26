@@ -18,7 +18,7 @@ object IconPacks {
     val version: Int
         get() {
             val look = Store.settings.look
-            return listOf(System.identityHashCode(ThemePacks.packs), System.identityHashCode(ThemePacks.assetPacks), look.iconPack, look.theme, look.packParts, look.accent, look.artSet, SetArt.revision).hashCode()
+            return listOf(System.identityHashCode(ThemePacks.packs), System.identityHashCode(ThemePacks.assetPacks), look.iconPack, look.theme, look.packParts, look.accent, look.artSet, SetArt.revision, look.systemArt, WebArt.revision, io.github.zahakj.tandem.data.SystemArtFetch.revision).hashCode()
         }
 
     fun systemIcon(platformId: String): File? = ThemePacks.systemIcon(platformId)

@@ -515,4 +515,18 @@
     <string name="scrape_test_nothing">La recherche n’a rien donné</string>
     <!-- "Super Mario Odyssey: 12½ h main story, 60 h for 100%": %1$s the title, %2$s and %3$s times. -->
     <string name="scrape_test_hltb_found">%1$s : %2$s pour l’histoire, %3$s pour le 100 %%</string>
+    <string name="scrape_system_art_title">Visuels des systèmes</string>
+    <string name="scrape_system_art_detail">Photos de consoles, logos et fonds pour vos systèmes, pas pour vos jeux</string>
+    <string name="scrape_system_art_unreachable">Impossible de joindre %1$s</string>
+    <string name="scrape_system_art_running">Les visuels des systèmes sont déjà en cours de récupération</string>
+    <string name="scrape_system_art_metered">Vous êtes en données mobiles. Les visuels des systèmes pèsent quelques Mo.</string>
+    <string name="scrape_system_art_metered_go">Récupérer quand même</string>
+    <string name="scrape_system_art_nothing">Aucun système pour lequel récupérer des visuels</string>
+    <string name="scrape_system_art_started">Récupération des visuels de vos systèmes…</string>
+    <string name="scrape_system_art_started_one">Récupération des visuels de %1$s…</string>
+    <plurals name="scrape_system_art_done">
+        <item quantity="one">Visuels trouvés pour %1$d système sur %2$d</item>
+        <item quantity="other">Visuels trouvés pour %1$d systèmes sur %2$d</item>
+    </plurals>
+    <string name="scrape_system_art_done_none">Aucun visuel trouvé pour ces systèmes</string>
 </resources>

@@ -168,6 +168,51 @@ Scraped pictures are saved in `ROMs/downloaded_media/<system>/<kind>/`, named li
 
 </details>
 
+## System art
+
+Scraping fetches art for your **games**. **System art** is art for the **systems themselves**: a photo of the console, its logo, a banner, fanart or a background, a controller, the kind of pictures other frontends show on their system screens. Like scraping, it is only fetched when you ask.
+
+> [!TIP]
+> **Real art for every system:** **Settings › Look & feel › System icons › Fetch system art**, then **Real art** › **Console photos**, **Logos** or **Fanart backdrops**.
+
+**Fetch system art** is in three places, and fetches for every system in your library or just one:
+
+- **Settings › Look & feel › System icons › Fetch system art**: every system. Press <kbd>A</kbd> again while it runs to stop it.
+- **Settings › Library & art › Scrape library**, at the bottom: **System art › Fetch system art**, every system.
+- <kbd>Y</kbd> on a system › **Edit** › **Look** › **Artwork**: **From the web › Fetch from the web** on the Icon, Hero or Title page, that system only.
+
+The row shows how far it is (**12/40**), then how many systems have art; a toast says when it starts and when it is done. On mobile data it asks first; in private mode it doesn't run.
+
+Where it comes from, in the order Tandem prefers them when two give the same kind of picture:
+
+| Source | What it gives a system | Account |
+| --- | --- | --- |
+| **ScreenScraper** | Wheel (logo), photo, illustration, controller, fanart, background and marquee (banner) | Only when you've set it up for scraping |
+| **Wikimedia Commons** (through Wikidata) | A photo of the console (most are Evan-Amos's public-domain photos) and its logo, see-through | None |
+| **IGDB** | The platform's logo | Only when you've set it up for scraping |
+| **RetroArch** | RetroArch's own coloured system icon (CC BY 4.0, by libretro) | None |
+
+ScreenScraper and IGDB are asked only when they are switched on and set up in **Set up sources**. LaunchBox's games index has no pictures of the systems, and libretro's thumbnails are for games only, so neither is asked.
+
+### Choosing it
+
+- **For every system at once:** **Settings › Look & feel › System icons › Real art**. **Console photos** puts each console's photo on its icon (fitted on the system's colour, never cut; a photo shot on white loses the white around it) and on its hero; **Logos** puts the logo on the icon and fanart or the photo on the hero; **Fanart backdrops** puts fanart (else a background, then the photo) on the hero. Each also uses the logo as the title over the hero. A system with nothing that fits keeps what it had. A toast offers **Undo**, and **Off** puts back what was there before: your art set, the pack's art or Tandem's drawn icons, all untouched.
+- **For one system:** <kbd>Y</kbd> › **Edit** › **Look** › **Artwork**. The Icon, Hero and Title pages have a **From the web** group with every picture fetched for that system that suits the page, each shown as it will look, and named by what it is and where it came from (**Console photo · Wikimedia Commons**). The Title page only lists pictures that can float over the hero (logos and icons). **Theme** goes back to following the choice for every system; **Pack art** keeps this system out of it.
+
+The order, strongest first: a picture you uploaded, then a system's own choice (a web picture, an art set or **Pack art**), then **Real art** for every system, then the [art set](themes.md#art-sets) for every system, then the pack's art, then Tandem's drawn icon.
+
+Icons are made square on the system's colour with room around the picture; heroes fill 16:9 for the top screen with the console kept in the middle, so the bottom screen (which shows the middle of a hero) has all of it too; big pictures are scaled down (at most 1920 pixels wide for backdrops, 1280 for the rest).
+
+<details>
+<summary>Where system art is saved, and what travels</summary>
+
+- The pictures are saved in `ROMs/tandem/art/systems/<system>/`, named by source and kind (`wiki-photo.jpg`, `ss-logo.png`, `ra-icon.png`), with `credits.json` beside them saying where each came from, who made it and under which licence, as the source says. ES-DE and Cocoon keep system art only inside themes, so there is no shared layout to follow. They are listed with your other downloads: **Clear downloaded media** removes them too, and systems then go back to what they showed before.
+- The icon and hero made from them are kept in Tandem's cache and made again when needed.
+- **Real art** is a look setting (**Backup › Look**); each system's own choice is kept with the icon grid (**Backup › Layout & folders**). Rescans and **Icons from** don't change either. A backup records the choices, not the pictures: after restoring on another handheld, fetch system art there.
+- **It stays on the handheld.** System art is other people's work and the makers' trademarks: it is never put in a shared look (neither the pictures nor the choices), and Tandem ships none of it.
+
+</details>
+
 ## When a scrape finds nothing
 
 Find what you're seeing in the left column; the right one says why and what to do.

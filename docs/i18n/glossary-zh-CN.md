@@ -106,6 +106,7 @@ the word from Steam Deck.
 | Icon style | 图标画风 | 画风 is the gamer's word for art style |
 | System icons | 平台图标 | |
 | Art set (Tandem's drawn icons, heroes, logos) | 美术套组 | Set names are transcreated: 马卡龙糖果、霓虹街机厅、纸标签卡带、极简黑白 |
+| System art / Fetch system art / Real art | 平台图片 / 刮削平台图片 / 真实图片 | Photos and logos of the systems themselves, from the web. Styles: 真机照片、标志、同人画背景 |
 | Dock (apps dock) | 程序坞 | Apple China's word; known to every phone user |
 | Folder / Smart folder | 文件夹 / 智能文件夹 | |
 | Smart folder rules | 规则 | 「编辑规则」 |

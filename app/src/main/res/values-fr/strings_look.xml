@@ -594,4 +594,21 @@
     <string name="look_travel">Curseur qui glisse</string>
     <string name="look_travel_help">Sur la grille d’icônes, le curseur glisse d’une icône à l’autre avec un petit rebond, et l’icône où il se pose se soulève. Désactivé, il saute. « Réduire les animations » le désactive aussi.</string>
     <string name="look_layout_stage_help">Horizontal dans les deux sens : chaque système, collection et Continuer est une page, L1 et R1 font glisser la page entière, et Gauche et Droite parcourent sa rangée de jaquettes pendant que l’illustration du jeu sélectionné remplit l’écran.</string>
+    <string name="look_real_art">Vrais visuels</string>
+    <string name="look_real_art_help">De vraies photos, logos ou fonds sur tous les systèmes d’un coup. Pour un seul système : Modifier › Allure › Visuels.</string>
+    <string name="look_real_art_off">Désactivé</string>
+    <string name="look_real_art_photos">Photos de consoles</string>
+    <string name="look_real_art_logos">Logos</string>
+    <string name="look_real_art_fanart">Fonds en fanart</string>
+    <string name="look_real_art_none_yet">Pas encore de visuels de systèmes. Récupérez-les d’abord.</string>
+    <string name="look_real_art_need_fetch">Pas encore de visuels de systèmes sur cette console</string>
+    <string name="look_real_art_done">Vrais visuels : %1$s</string>
+    <string name="look_fetch_art">Récupérer les visuels des systèmes</string>
+    <string name="look_fetch_art_help">Télécharge photos, logos et fonds de vos systèmes. Seuls leurs noms sont envoyés, les images restent ici.</string>
+    <string name="look_fetch_art_go">Récupérer</string>
+    <string name="look_fetch_art_none">Pas encore récupérés</string>
+    <plurals name="look_fetch_art_have">
+        <item quantity="one">%1$d système a des visuels</item>
+        <item quantity="other">%1$d systèmes ont des visuels</item>
+    </plurals>
 </resources>

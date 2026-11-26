@@ -54,6 +54,14 @@ data class FolderStyle(
      * Null follows the global set. Pictures the user uploaded for a slot still win over any set.
      */
     val artSet: String? = null,
+    /**
+     * For a system tile: the picture fetched from the web its icon, hero and title show ("ss-photo", "wiki-logo"…, a
+     * file in ROMs/tandem/art/systems/<id>; SystemArt.kt), each only while its slot follows its auto art. Null follows
+     * the choice for every system (Look.systemArt). Never in a shared look.
+     */
+    val webIcon: String? = null,
+    val webHero: String? = null,
+    val webLogo: String? = null,
 ) {
     /** Nothing changed from the theme: the same as having no style at all. */
     val isDefault: Boolean get() = this == DEFAULT
@@ -72,7 +80,7 @@ data class FolderStyle(
     fun shapeOnly(): FolderStyle = FolderStyle(shape = shape, corners = corners)
 
     /** A short stable key for everything that changes the icon's picture (bitmap caches use it). */
-    fun iconHash(): String = listOf(icon, iconRef, glyph, emoji, iconFile, color, shape, frame, artSet).joinToString("|").hashCode().toUInt().toString(36)
+    fun iconHash(): String = listOf(icon, iconRef, glyph, emoji, iconFile, color, shape, frame, artSet, webIcon).joinToString("|").hashCode().toUInt().toString(36)
 
     companion object {
         const val ICON_AUTO = "auto"

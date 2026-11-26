@@ -188,7 +188,8 @@ object FolderLooks {
      */
     private fun systemArt(plain: GridItem, style: FolderStyle): TileArt? {
         val id = plain.platformId ?: return null
-        if (plain.kind != TileKind.System || id == AndroidApps.PLATFORM_ID && style.artSet == null && Store.settings.look.artSet == null) return null
+        if (plain.kind != TileKind.System) return null
+        if (id == AndroidApps.PLATFORM_ID && style.artSet == null && Store.settings.look.artSet == null && WebArt.choice(id, style, io.github.zahakj.tandem.data.ArtSlot.Icon) == null) return null
         val f = ThemePacks.systemIcon(id, style) ?: return TileArt.Monogram(Libraries.byId(id)?.platform?.shortName ?: plain.title, plain.color)
         return TileArt.Picture(f)
     }

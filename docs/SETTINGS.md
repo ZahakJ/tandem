@@ -80,6 +80,8 @@ A "›" step after a page is its subpage.
 | `Look.wallDim` | Look & feel › Wallpaper › Picture dimming | slider |
 | `Look.iconPack` | Look & feel › System icons › Icons from | choice |
 | `Look.artSet` | Look & feel › System icons › Art set (Tandem's drawn sets for every system: Pastel, Neon, Paper, Mono; a system's own set is `FolderStyle.artSet`, chosen in its Edit › Look › Artwork) | choice |
+| `Look.systemArt` | Look & feel › System icons › Real art (fetched system art for every system: photos, logos, fanart; a system's own pick is `FolderStyle.webIcon` / `webHero` / `webLogo`, chosen under From the web in its Edit › Look › Artwork) | choice |
+| (fetch system art) | Look & feel › System icons › Fetch system art (also on the Scrape library screen; `SystemArtFetch`) | action |
 | `Look.iconStyle` | Look & feel › System icons › Icon style | choice |
 | `Look.motion` | Look & feel › Motion › Animation style | choice |
 | `Settings.reduceMotion` | Look & feel › Motion › Reduce motion | toggle |

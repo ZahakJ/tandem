@@ -98,6 +98,12 @@ data class Look(
      * the user uploaded come first.
      */
     val artSet: String? = null,
+    /**
+     * Real art fetched from the web for every system ([SystemArt.styles]: "photos", "logos", "fanart"); null for none.
+     * Comes before [artSet] where a system has a fitting picture, after a system's own choice. Stays on the handheld:
+     * never in a shared look.
+     */
+    val systemArt: String? = null,
     /** Show the "Now playing" card on the home screen while a game runs in the background. */
     val nowPlaying: Boolean = true,
     /** How long to rest on a game before its video snap starts, in ms. */

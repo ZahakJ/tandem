@@ -621,4 +621,17 @@
     <string name="grid_design_group_yours">Tes images</string>
     <string name="grid_design_group_sets">Collections Tandem</string>
     <string name="grid_design_set_none">Visuels du pack</string>
+    <string name="grid_design_group_web">Depuis le web</string>
+    <string name="grid_design_web_fetch">Récupérer depuis le web</string>
+    <string name="grid_design_web_refetch">Récupérer à nouveau</string>
+    <string name="grid_design_web_fetching">Récupération…</string>
+    <string name="grid_design_web_option">%1$s · %2$s</string>
+    <string name="grid_design_web_photo">Photo de la console</string>
+    <string name="grid_design_web_logo">Logo</string>
+    <string name="grid_design_web_icon">Icône</string>
+    <string name="grid_design_web_illustration">Illustration</string>
+    <string name="grid_design_web_controller">Manette</string>
+    <string name="grid_design_web_fanart">Fanart</string>
+    <string name="grid_design_web_background">Fond</string>
+    <string name="grid_design_web_banner">Bannière</string>
 </resources>

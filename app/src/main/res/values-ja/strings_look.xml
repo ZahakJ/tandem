@@ -497,4 +497,20 @@
     <string name="look_travel">すべるカーソル</string>
     <string name="look_travel_help">アイコングリッドで、カーソルがアイコンからアイコンへばねのようにすべり、止まったアイコンが少し浮きます。オフにするとパッと移ります。「動きを減らす」でもオフになります。</string>
     <string name="look_layout_stage_help">ページもゲームも横に並びます：機種、コレクション、「つづきから」がそれぞれ1ページ。L1とR1でページごとスライドし、左右でパッケージの列を動くと、選択中のゲームのアートが画面いっぱいに広がります。</string>
+    <string name="look_real_art">本物のアート</string>
+    <string name="look_real_art_help">本体の写真やロゴ、背景を全機種にまとめて。1機種だけなら 編集 › 見た目 › アートワーク から。</string>
+    <string name="look_real_art_off">オフ</string>
+    <string name="look_real_art_photos">本体の写真</string>
+    <string name="look_real_art_logos">ロゴ</string>
+    <string name="look_real_art_fanart">ファンアートの背景</string>
+    <string name="look_real_art_none_yet">機種アートがまだありません。先に機種アートを取得してください。</string>
+    <string name="look_real_art_need_fetch">この本体にはまだ機種アートがありません</string>
+    <string name="look_real_art_done">本物のアート：%1$s</string>
+    <string name="look_fetch_art">機種アートを取得</string>
+    <string name="look_fetch_art_help">機種の写真、ロゴ、背景をダウンロード。送るのは機種名だけで、画像はこの本体に残ります。</string>
+    <string name="look_fetch_art_go">取得</string>
+    <string name="look_fetch_art_none">未取得</string>
+    <plurals name="look_fetch_art_have">
+        <item quantity="other">%1$d機種にアートあり</item>
+    </plurals>
 </resources>

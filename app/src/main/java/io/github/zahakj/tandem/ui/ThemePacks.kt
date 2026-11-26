@@ -309,22 +309,26 @@ object ThemePacks {
         if (names.isEmpty()) null else art { if (kind == "icon") it.icons else it.heroes }?.system(names, kind)
 
     /**
-     * A system's square icon: its art set's (SetArt.kt, when the system or Look.artSet picks one), else the pack's, or
+     * A system's square icon: real art fetched for it (WebArt.kt, when the system or Look.systemArt picks some), else its
+     * art set's (SetArt.kt, when the system or Look.artSet picks one), else the pack's, or
      * null to draw Tandem's own. [style] is the system tile's style to decide by (a preview's draft); null reads the saved one.
      */
     fun systemIcon(platformId: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        WebArt.choice(platformId, style, io.github.zahakj.tandem.data.ArtSlot.Icon)?.let { return WebArt.file(platformId, it, io.github.zahakj.tandem.data.ArtSlot.Icon) }
         SetArt.setOf(platformId, style)?.let { return SetArt.file(it, platformId, SetArt.Kind.Icon) }
         return packSystemIcon(platformId)
     }
 
     /** A 16:9 hero picture for a system: its art set's, else the pack's. */
     fun systemHero(id: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        WebArt.choice(id, style, io.github.zahakj.tandem.data.ArtSlot.Hero)?.let { return WebArt.file(id, it, io.github.zahakj.tandem.data.ArtSlot.Hero) }
         SetArt.setOf(id, style)?.let { return SetArt.file(it, id, SetArt.Kind.Hero) }
         return art { it.heroes }?.system(systemIds(id), "hero")
     }
 
     /** A wide logo for a system (shown over its hero): its art set's, else the pack's. */
     fun systemLogo(id: String, style: io.github.zahakj.tandem.data.FolderStyle? = null): File? {
+        WebArt.choice(id, style, io.github.zahakj.tandem.data.ArtSlot.Logo)?.let { return WebArt.file(id, it, io.github.zahakj.tandem.data.ArtSlot.Logo) }
         SetArt.setOf(id, style)?.let { return SetArt.file(it, id, SetArt.Kind.Logo) }
         return art { it.heroes }?.system(systemIds(id), "logo")
     }

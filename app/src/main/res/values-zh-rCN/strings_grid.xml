@@ -501,4 +501,17 @@
     <string name="grid_design_group_yours">你的图片</string>
     <string name="grid_design_group_sets">Tandem 美术套组</string>
     <string name="grid_design_set_none">图标包的图片</string>
+    <string name="grid_design_group_web">来自网络</string>
+    <string name="grid_design_web_fetch">从网络刮削</string>
+    <string name="grid_design_web_refetch">重新刮削</string>
+    <string name="grid_design_web_fetching">刮削中…</string>
+    <string name="grid_design_web_option">%1$s · %2$s</string>
+    <string name="grid_design_web_photo">真机照片</string>
+    <string name="grid_design_web_logo">标志</string>
+    <string name="grid_design_web_icon">图标</string>
+    <string name="grid_design_web_illustration">插画</string>
+    <string name="grid_design_web_controller">手柄</string>
+    <string name="grid_design_web_fanart">同人画</string>
+    <string name="grid_design_web_background">背景</string>
+    <string name="grid_design_web_banner">横幅</string>
 </resources>

@@ -622,4 +622,17 @@
     <string name="grid_design_group_yours">صورك</string>
     <string name="grid_design_group_sets">مجموعات Tandem</string>
     <string name="grid_design_set_none">صور الحزمة</string>
+    <string name="grid_design_group_web">من الإنترنت</string>
+    <string name="grid_design_web_fetch">اجلب من الإنترنت</string>
+    <string name="grid_design_web_refetch">اجلب من جديد</string>
+    <string name="grid_design_web_fetching">جارٍ الجلب…</string>
+    <string name="grid_design_web_option">%1$s · %2$s</string>
+    <string name="grid_design_web_photo">صورة الجهاز</string>
+    <string name="grid_design_web_logo">شعار</string>
+    <string name="grid_design_web_icon">أيقونة</string>
+    <string name="grid_design_web_illustration">رسم توضيحي</string>
+    <string name="grid_design_web_controller">يد التحكم</string>
+    <string name="grid_design_web_fanart">فن المعجبين</string>
+    <string name="grid_design_web_background">خلفية</string>
+    <string name="grid_design_web_banner">لافتة</string>
 </resources>

@@ -409,4 +409,17 @@
     <string name="scrape_test_libretro_failed">サムネイルの一覧を読めませんでした</string>
     <string name="scrape_test_nothing">検索では何も見つかりませんでした</string>
     <string name="scrape_test_hltb_found">%1$s：メイン%2$s、100%%で%3$s</string>
+    <string name="scrape_system_art_title">機種アート</string>
+    <string name="scrape_system_art_detail">ゲームではなく機種そのものの写真、ロゴ、背景</string>
+    <string name="scrape_system_art_unreachable">%1$sにつながりません</string>
+    <string name="scrape_system_art_running">機種アートを取得中です</string>
+    <string name="scrape_system_art_metered">モバイルデータ通信中です。機種アートは数MBあります。</string>
+    <string name="scrape_system_art_metered_go">それでも取得</string>
+    <string name="scrape_system_art_nothing">取得する機種がありません</string>
+    <string name="scrape_system_art_started">機種アートを取得しています…</string>
+    <string name="scrape_system_art_started_one">%1$sのアートを取得しています…</string>
+    <plurals name="scrape_system_art_done">
+        <item quantity="other">%2$d機種のうち%1$d機種のアートが見つかりました</item>
+    </plurals>
+    <string name="scrape_system_art_done_none">これらの機種のアートは見つかりませんでした</string>
 </resources>
