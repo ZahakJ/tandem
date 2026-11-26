@@ -634,4 +634,45 @@
     <string name="grid_design_web_fanart">Fanart</string>
     <string name="grid_design_web_background">Fond</string>
     <string name="grid_design_web_banner">Bannière</string>
+    <string name="grid_form_combine">Correspondance</string>
+    <string name="grid_form_combine_all">Toutes les règles</string>
+    <string name="grid_form_combine_any">Une seule règle</string>
+    <string name="grid_form_combine_help">Toutes les règles : un jeu doit les passer toutes. Une seule règle : une suffit, donc « Favoris » et « RPG » donnent tous les favoris et tous les RPG. Les règles laissées sur Tous ne comptent pas.</string>
+    <string name="grid_form_rating_from">Note à partir de</string>
+    <string name="grid_form_rating_to">Note jusqu’à</string>
+    <string name="grid_form_rating_help">La note du jeu sur cinq étoiles, d’après ses détails ou une récupération. Les jeux sans note sont écartés dès que l’une des deux est réglée.</string>
+    <string name="grid_form_stars_at_least">★ %1$s ou plus</string>
+    <string name="grid_form_stars_at_most">★ %1$s ou moins</string>
+    <string name="grid_form_developer">Développeur contient</string>
+    <string name="grid_form_developer_help">Les jeux dont le développeur contient ce texte, majuscules ou non : « Capcom », « Nintendo ». Les jeux sans développeur sont écartés.</string>
+    <string name="grid_form_publisher">Éditeur contient</string>
+    <string name="grid_form_publisher_help">Les jeux dont l’éditeur contient ce texte, majuscules ou non : « Square », « SEGA ». Les jeux sans éditeur sont écartés.</string>
+    <string name="grid_form_played_more">Joué plus de</string>
+    <string name="grid_form_played_more_help">Les jeux auxquels vous avez joué plus longtemps que ça, toutes sessions comprises.</string>
+    <string name="grid_form_played_less">Joué moins de</string>
+    <string name="grid_form_played_less_help">Les jeux auxquels vous avez joué moins longtemps que ça, toutes sessions comprises ; ceux jamais lancés comptent aussi.</string>
+    <plurals name="grid_form_hours">
+        <item quantity="one">%1$d heure</item>
+        <item quantity="other">%1$d heures</item>
+    </plurals>
+    <string name="grid_form_last">Dernière partie</string>
+    <string name="grid_form_last_help">Les jeux joués ces derniers jours, ceux qui ne l’ont pas été (jamais lancés compris), ou ceux jamais lancés.</string>
+    <plurals name="grid_form_last_within">
+        <item quantity="one">Depuis hier</item>
+        <item quantity="other">Ces %1$d derniers jours</item>
+    </plurals>
+    <plurals name="grid_form_last_not_within">
+        <item quantity="one">Pas aujourd’hui</item>
+        <item quantity="other">Pas depuis %1$d jours</item>
+    </plurals>
+    <string name="grid_form_last_never">Jamais</string>
+    <plurals name="grid_smart_more_hours">
+        <item quantity="one">Plus de %1$d h</item>
+        <item quantity="other">Plus de %1$d h</item>
+    </plurals>
+    <plurals name="grid_smart_less_hours">
+        <item quantity="one">Moins de %1$d h</item>
+        <item quantity="other">Moins de %1$d h</item>
+    </plurals>
+    <string name="grid_smart_any_of">Au choix : %1$s</string>
 </resources>

@@ -111,4 +111,5 @@
     <plurals name="data_backup_days_ago">
         <item quantity="other">%1$d 天前</item>
     </plurals>
+    <string name="data_sort_system">平台</string>
 </resources>

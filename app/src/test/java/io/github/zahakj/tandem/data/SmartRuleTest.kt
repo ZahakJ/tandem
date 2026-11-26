@@ -155,4 +155,63 @@ class SmartRuleTest {
         assertEquals(listOf("Super Mario World"), SmartRule(statuses = listOf(SmartRule.STATUS_NONE)).run(games))
         assertEquals(4, SmartRule().run(games).size)
     }
+
+    // --- Rating, developer and publisher, play time, last played, any rule ---------------------------------------
+
+    private val day = 24 * 60 * 60 * 1000L
+    private val now = 1_000 * day
+    private val rated = listOf(
+        pokemon.copy(rating = 0.8f, developer = "Game Freak", publisher = "Nintendo", playSeconds = 30 * 3600, lastPlayed = now - 2 * day),
+        zelda.copy(rating = 0.95f, developer = "Grezzo", publisher = "Nintendo", playSeconds = 3 * 3600, lastPlayed = now - 60 * day, played = true),
+        bravely.copy(rating = 0.6f, developer = "Silicon Studio", publisher = "Square Enix", playSeconds = 0, lastPlayed = 0),
+        homebrew,
+    )
+    private fun SmartRule.at(games: List<SmartGame> = rated) = games.filter { matches(it, now) }.map { it.title }
+
+    @Test
+    fun ratingBoundsLeaveUnratedGamesOut() {
+        assertEquals(listOf("Pokémon X", "The Legend of Zelda"), SmartRule(ratingFrom = 0.8f).at())
+        assertEquals(listOf("Bravely Default"), SmartRule(ratingTo = 0.6f).at())
+        assertEquals(listOf("Pokémon X"), SmartRule(ratingFrom = 0.7f, ratingTo = 0.9f).at())
+    }
+
+    @Test
+    fun developerAndPublisherAreContainsWithoutCase() {
+        assertEquals(listOf("Pokémon X"), SmartRule(developer = "game freak").at())
+        assertEquals(listOf("Pokémon X", "The Legend of Zelda"), SmartRule(publisher = "NINTENDO").at())
+        assertEquals(listOf("Bravely Default"), SmartRule(publisher = " square ").at())
+        assertEquals(4, SmartRule(developer = "  ").at().size)
+    }
+
+    @Test
+    fun playTimeMoreAndLessThan() {
+        assertEquals(listOf("Pokémon X"), SmartRule(playedMoreHours = 10).at())
+        assertEquals(listOf("The Legend of Zelda", "Bravely Default", "Homebrew Demo"), SmartRule(playedLessHours = 10).at())
+        assertEquals(listOf("The Legend of Zelda"), SmartRule(playedMoreHours = 2, playedLessHours = 5).at())
+    }
+
+    @Test
+    fun lastPlayedWithinNotWithinAndNever() {
+        assertEquals(listOf("Pokémon X"), SmartRule(lastPlayed = "within:7").at())
+        assertEquals(listOf("Pokémon X", "The Legend of Zelda"), SmartRule(lastPlayed = "within:90").at())
+        // Not in 30 days: Zelda, and the games never played.
+        assertEquals(listOf("The Legend of Zelda", "Bravely Default", "Homebrew Demo"), SmartRule(lastPlayed = "notwithin:30").at())
+        assertEquals(listOf("Bravely Default", "Homebrew Demo"), SmartRule(lastPlayed = SmartRule.LAST_NEVER).at())
+        // A value this version doesn't understand doesn't filter.
+        assertEquals(4, SmartRule(lastPlayed = "sometime:3").at().size)
+        assertEquals(4, SmartRule(lastPlayed = "within:0").at().size)
+    }
+
+    @Test
+    fun anyRuleIsEnough() {
+        val r = SmartRule(match = SmartRule.MATCH_ANY, developer = "grezzo", ratingTo = 0.6f)
+        assertEquals(listOf("The Legend of Zelda", "Bravely Default"), r.at())
+        assertEquals(listOf("The Legend of Zelda"), r.copy(match = SmartRule.MATCH_ALL, ratingTo = null).at())
+        // Nothing set matches everything, either way.
+        assertEquals(4, SmartRule(match = SmartRule.MATCH_ANY).at().size)
+        // Favourites or Super Mario: every favourite and every Mario.
+        assertEquals(listOf("Pokémon X", "Super Mario World"), SmartRule(match = SmartRule.MATCH_ANY, favorites = true, pattern = "mario").run())
+        // An unknown match value reads as all.
+        assertEquals(listOf("Pokémon X"), SmartRule(match = "most", favorites = true, systems = listOf("n3ds")).run())
+    }
 }

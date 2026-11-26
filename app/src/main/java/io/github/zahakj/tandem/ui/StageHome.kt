@@ -361,7 +361,7 @@ fun StageHome(libs: List<PlatformLibrary>) {
                 st.show(p, 1)
                 st.goTo(st.entries.indexOfFirst { it.key == pick.key })
                 if (!st.focused) focusStage()
-                Toasts.show(Tx.s(R.string.home_surprise, pick.title))
+                SlotSpin.roll(pick, pool)
                 true
             }
             else -> false

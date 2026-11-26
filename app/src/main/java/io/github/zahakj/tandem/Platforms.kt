@@ -76,8 +76,13 @@ data class Platform(
     }
 
     /** The players for [game], out of [all]: the ones that open its file, and for an app's game the apps that have it. */
-    fun playersFor(game: Game, all: List<LaunchSpec> = players): List<LaunchSpec> =
-        AppLibraries.playersFor(game, playersFor(game.file.name, all))
+    fun playersFor(game: Game, all: List<LaunchSpec> = players): List<LaunchSpec> {
+        val byFile = playersFor(game.file.name, all)
+        // A multi-disc game also goes to players that take its discs but not playlists (they get disc 1, Discs.kt).
+        val disc = game.discs.firstOrNull()?.let { playersFor(it.name, all) }.orEmpty()
+        val both = if (disc.isEmpty()) byFile else all.filter { it in byFile || it in disc }
+        return AppLibraries.playersFor(game, both)
+    }
 
     /**
      * The players that open [fileName], out of [all]. A file a player [LaunchSpec.owns] (a streamed game's .moonlight)
@@ -127,6 +132,8 @@ data class LaunchSpec(
     val origin: String? = null,
     /** Its [accept]ed files are its alone: no other player of the system is offered for them ("own": true). */
     val owns: Boolean = false,
+    /** It can't open a multi-disc game's .m3u (as a shared document): it is handed disc 1 instead ("firstDisc": true; Discs.kt). */
+    val firstDisc: Boolean = false,
 ) {
     val packageName: String get() = component.substringBefore('/')
 
@@ -268,6 +275,7 @@ object Platforms {
             accept = l.optJSONArray("extensions").strings().takeIf { it.isNotEmpty() }
                 ?.let { exts -> Regex(".*\\.(" + exts.joinToString("|") { Regex.escape(it.lowercase()) } + ")", RegexOption.IGNORE_CASE) },
             owns = l.optBoolean("own"),
+            firstDisc = l.optBoolean("firstDisc"),
         )
     }
 

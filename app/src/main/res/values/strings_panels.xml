@@ -136,4 +136,6 @@
     <string name="panels_side_cant_clear">This one can\'t be cleared</string>
     <string name="panels_side_allow_access">Turn on Tandem here, then come back</string>
     <string name="panels_side_private">Hidden in private mode</string>
+    <!-- Start › Sort: puts favourites at the top of game lists (a ✓ shows when on). -->
+    <string name="panels_start_sort_favs_first">Favorites first</string>
 </resources>

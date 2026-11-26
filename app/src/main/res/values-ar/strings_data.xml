@@ -147,4 +147,5 @@
         <item quantity="many">قبل %1$d يومًا</item>
         <item quantity="other">قبل %1$d يوم</item>
     </plurals>
+    <string name="data_sort_system">المنصّة</string>
 </resources>

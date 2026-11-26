@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import io.github.zahakj.tandem.Game
 import io.github.zahakj.tandem.data.SortOrder
 import io.github.zahakj.tandem.data.Store
+import io.github.zahakj.tandem.Library
 import kotlinx.coroutines.delay
 
 /*
@@ -56,7 +57,10 @@ object QuickJump {
 
     /** The label a game is grouped under for jumping, for the current sort. */
     fun labelOf(g: Game, index: Int, sort: SortOrder): String = when (sort) {
-        SortOrder.Name -> g.title.trimStart().firstOrNull()?.uppercaseChar()?.let { if (it.isLetter()) it.toString() else "#" } ?: "#"
+        // The letter the name sorts under ("The Legend of Zelda" is an L); favourites first are a heart.
+        SortOrder.Name -> if (Store.settings.favoritesFirst && g.meta.favorite) "♥"
+            else Library.nameKey(g).firstOrNull()?.uppercaseChar()?.let { if (it.isLetter()) it.toString() else "#" } ?: "#"
+        SortOrder.System -> g.platform.shortName
         SortOrder.Year -> g.meta.year?.toString() ?: Tx.s(R.string.home_jump_unknown_year)
         SortOrder.Rating -> g.meta.rating?.let { "★".repeat((it * 5).toInt().coerceIn(0, 5)).ifEmpty { Tx.s(R.string.home_jump_unrated) } } ?: Tx.s(R.string.home_jump_unrated)
         else -> Tx.s(R.string.home_jump_page, index / PAGE + 1)

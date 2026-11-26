@@ -110,4 +110,7 @@
     <string name="screens_status_no_status">无状态</string>
     <string name="screens_status_progress">%1$s / 约 %2$s</string>
     <string name="screens_switch_zoom">缩放</string>
+    <plurals name="screens_discs">
+        <item quantity="other">%1$d 张光盘</item>
+    </plurals>
 </resources>

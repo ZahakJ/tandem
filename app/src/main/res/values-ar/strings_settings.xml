@@ -323,4 +323,20 @@
     <string name="settings_sub_gamenative_help">الألعاب التي نزّلتها في GameNative، من كل المتاجر، مباشرةً في مكتبتك.</string>
     <string name="settings_continue_card">بطاقة «تابِع»</string>
     <string name="settings_continue_card_help">إن لم تكن هناك لعبة تعمل، تبدأ شبكة الأيقونات ببطاقة عريضة لآخر الألعاب التي لعبتها. حدّدها وتنقّل بينها بالزرّين L2 / R2؛ الزر A يشغّل اللعبة والزر Y يفتح خياراتها. الألعاب المخفية لا تظهر عليها أبدًا. وأيّ لعبة تعمل تأخذ البطاقة في كل الأحوال (صفحة الاستئناف).</string>
+    <string name="settings_sub_sort">الترتيب والأقراص</string>
+    <string name="settings_sub_sort_help">ترتيب ظهور الألعاب، وقوائم التشغيل للألعاب ذات الأقراص المتعددة.</string>
+    <string name="settings_library_favs_first">المفضّلة أولًا</string>
+    <string name="settings_library_favs_first_help">تتصدّر مفضّلاتك كل قائمة بالترتيب المختار، ثم البقية. اللعبة التي تضيفها للمفضّلة والقائمة مفتوحة تنتقل في المرة القادمة التي تفتحها، فلا يقفز شيء من تحتك.</string>
+    <string name="settings_library_articles">تجاهل «ال» و«The»</string>
+    <string name="settings_library_articles_help">الترتيب بالاسم يتخطّى The أو A أو An في البداية، فتأتي The Legend of Zelda تحت L، ويتخطّى «ال» في أول العنوان العربي. وكذلك Le وLa وLes وL’ بالفرنسية، وDer وDie وDas بالألمانية، وEl وLa وLos وLas بالإسبانية (لغة Tandem أو لغة الجهاز).</string>
+    <string name="settings_report">إرسال تقرير خطأ</string>
+    <string name="settings_report_value">لا يُرسَل شيء تلقائيًا</string>
+    <string name="settings_report_action">حفظ</string>
+    <string name="settings_report_help">يحفظ ملف zip في ROMs/tandem/reports فيه إصدار Tandem، وجهازك وإصدار Android، والإعدادات المهمّة، وسجلّ Tandem نفسه. تُزال منه أولًا مفاتيح الحسابات وكلمات المرور والبريد الإلكتروني وعناوين IP وأسماء الألعاب المخفية وأسماء مجلداتك وملفاتك. ثم تختار: تشاركه (في بلاغ على GitHub أو في بريد)، أو تتركه مكانه.</string>
+    <string name="settings_report_making">جارٍ حفظ تقرير الخطأ…</string>
+    <string name="settings_report_failed">تعذّر حفظ تقرير الخطأ</string>
+    <string name="settings_report_saved">حُفظ تقرير الخطأ</string>
+    <string name="settings_report_saved_detail">إنه في %1$s. لم يُرسَل شيء. شاركه لترفقه ببلاغ على GitHub أو ببريد، أو انسخه عبر USB لاحقًا.</string>
+    <string name="settings_report_share">مشاركة…</string>
+    <string name="settings_report_share_failed">تعذّرت المشاركة؛ ما زال الملف في ROMs/tandem/reports</string>
 </resources>

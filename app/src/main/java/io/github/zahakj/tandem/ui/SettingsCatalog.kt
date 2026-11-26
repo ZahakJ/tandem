@@ -150,6 +150,7 @@ object SettingsPlan {
         Sub("controls/pads", "controls", "Connected controllers", R.string.settings_sub_pads, Glyph.Gamepad, R.string.settings_sub_pads_help),
         Sub("controls/deck", "controls", "Deck", R.string.settings_sub_deck, Glyph.Text, R.string.settings_sub_deck_help),
         Sub("library/accounts", "library", "Accounts", R.string.settings_sub_accounts, Glyph.Trophy, R.string.settings_sub_accounts_help),
+        Sub("library/sort", "library", "Sorting & discs", R.string.settings_sub_sort, Glyph.Sort, R.string.settings_sub_sort_help),
         Sub("library/droiddeck", "library", "DroidDeck", R.string.settings_sub_droiddeck, Glyph.Cartridge, R.string.settings_sub_droiddeck_help),
         Sub("library/gamenative", "library", "GameNative", R.string.settings_sub_gamenative, Glyph.Cartridge, R.string.settings_sub_gamenative_help),
         Sub("play/perf", "play", "Performance & sleep", R.string.settings_sub_perf, Glyph.Battery, R.string.settings_sub_perf_help),
@@ -208,7 +209,7 @@ object SettingsPlan {
         "library" to listOf(
             Group(
                 "Games & systems", R.string.settings_group_games_systems,
-                p("Game folders", "Game folders") + p("Library", "Rescan games") + p("Game folders", "Watch game folders") + p("Library", "Sort games by") +
+                p("Game folders", "Game folders") + p("Library", "Rescan games") + p("Game folders", "Watch game folders") + link("library/sort") +
                     p("Systems & launching", "Systems and emulators", "Android apps") + link("library/droiddeck") + link("library/gamenative"),
             ),
             Group("Artwork & accounts", R.string.settings_group_artwork_accounts, p("Artwork & details", "Scrape library", "Set up sources", "Clear downloaded media") + link("library/accounts")),
@@ -250,6 +251,7 @@ object SettingsPlan {
             Group("Discord", R.string.settings_group_discord, p("Discord", "Discord status", "Disconnect Discord")),
         ),
         "library/droiddeck" to listOf(Group("DroidDeck", R.string.settings_sub_droiddeck, p("DroidDeck", "DroidDeck library", "Show DroidDeck games"))),
+        "library/sort" to listOf(Group("Sorting & discs", R.string.settings_sub_sort, p("Library", "Sort games by", "Favorites first", "Ignore The and A", "Make playlists"))),
         "library/gamenative" to listOf(Group("GameNative", R.string.settings_sub_gamenative, p("GameNative", "GameNative library", "Show GameNative games"))),
         "play/perf" to listOf(
             Group(
@@ -272,7 +274,7 @@ object SettingsPlan {
             Group(
                 "Updates", R.string.settings_updates,
                 // Updates in builds with the updater; About Tandem in those without. What's new in every build.
-                p("About", "Updates", "About Tandem", "What's new", "Show what's new", "Check automatically"),
+                p("About", "Updates", "About Tandem", "What's new", "Show what's new", "Check automatically", "Send a bug report"),
             ),
         ),
         "play/dev" to listOf(Group("For tinkerers", R.string.settings_group_tinkerers, p("Developer", "Frame timing overlay", "Tour every theme"))),

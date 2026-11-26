@@ -146,4 +146,8 @@
     <!-- Play time against HowLongToBeat: "12 h of ~40 h". %1$s and %2$s are times. -->
     <string name="screens_status_progress">%1$s sur ~%2$s</string>
     <string name="screens_switch_zoom">Zoom</string>
+    <plurals name="screens_discs">
+        <item quantity="one">%1$d disque</item>
+        <item quantity="other">%1$d disques</item>
+    </plurals>
 </resources>

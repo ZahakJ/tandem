@@ -614,6 +614,8 @@ private fun Main(resumes: Int) {
         // What's new after an update (ui/whatsnew): opens by itself once per new version, over the home.
         io.github.zahakj.tandem.ui.whatsnew.WhatsNewOverlay()
         io.github.zahakj.tandem.ui.whatsnew.WhatsNewHost()
+        // Surprise me's reel of covers, over the screen it lands on (SlotSpin.kt).
+        SlotSpinOverlay()
         ConfirmOverlay()
         TextEntryOverlay()
         // Over everything that can ask for it, the keyboard too.
@@ -867,7 +869,7 @@ private fun surpriseMe() {
         Nav.route is Route.System -> Nav.replace(route)
         else -> Nav.go(route)
     }
-    Toasts.show(Tx.s(R.string.home_surprise, pick.title))
+    SlotSpin.roll(pick, pool)
 }
 
 @Composable

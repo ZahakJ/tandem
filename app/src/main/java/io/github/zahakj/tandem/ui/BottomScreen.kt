@@ -496,6 +496,8 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         meta.playStatus?.let { chip(it.chip, it.color) }
         chip(game.platform.shortName, color)
+        // A multi-disc game shown as one tile (Discs.kt).
+        if (game.discs.size > 1) chip(Tx.p(R.plurals.screens_discs, game.discs.size), Palette.Sky)
         meta.year?.let { chip("$it", Palette.Butter) }
         meta.genres.map(Collections::tidyGenre).distinctBy { it.lowercase() }.take(3).forEach { chip(it, Palette.Lavender) }
         meta.rating?.let { chip("★ ${"%.1f".format(io.github.zahakj.tandem.Lang.locale, it * 5)}", Palette.Peach) }

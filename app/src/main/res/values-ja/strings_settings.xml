@@ -262,4 +262,20 @@
     <string name="settings_sub_gamenative_help">GameNativeでダウンロードしたゲームを、どのストアのものでもそのままライブラリへ。</string>
     <string name="settings_continue_card">「つづきから」カード</string>
     <string name="settings_continue_card_help">起動中のゲームがないとき、アイコングリッドの先頭に最近遊んだゲームの大きなカードが出ます。カーソルを合わせてL2 / R2で切り替え、Aで遊び、Yでそのゲームのオプションを開きます。隠したゲームは出ません。起動中のゲームがあれば、カードはそのゲームの再開ページになります。</string>
+    <string name="settings_sub_sort">並び順とディスク</string>
+    <string name="settings_sub_sort_help">ゲームの並び順と、複数ディスクのゲームのプレイリスト。</string>
+    <string name="settings_library_favs_first">お気に入りを先頭に</string>
+    <string name="settings_library_favs_first_help">お気に入りがどのリストでも先頭に来て（選んだ並び順で）、そのあとに残りが続きます。リストを開いたままお気に入りにしたゲームは、次に開いたときに移動するので、目の前で飛び回りません。</string>
+    <string name="settings_library_articles">「The」「A」を無視</string>
+    <string name="settings_library_articles_help">名前順で並べるとき、先頭の The・A・An を飛ばすので、The Legend of Zelda は L に入ります。Tandem や端末の言語に合わせて、フランス語の Le・La・Les・L’、ドイツ語の Der・Die・Das、スペイン語の El・La・Los・Las、アラビア語タイトルの先頭の ال も飛ばします。</string>
+    <string name="settings_report">不具合を報告</string>
+    <string name="settings_report_value">自動送信はしません</string>
+    <string name="settings_report_action">保存</string>
+    <string name="settings_report_help">Tandem のバージョン、端末と Android のバージョン、関係する設定、Tandem 自身のログを zip にして ROMs/tandem/reports に保存します。アカウントのキー、パスワード、メールアドレス、IP アドレス、隠したゲームの名前、フォルダーやファイルの名前は先に取り除きます。あとは共有するか（GitHub の Issue やメールへ）、そのまま置いておくか選べます。</string>
+    <string name="settings_report_making">不具合レポートを保存中…</string>
+    <string name="settings_report_failed">不具合レポートを保存できませんでした</string>
+    <string name="settings_report_saved">不具合レポートを保存しました</string>
+    <string name="settings_report_saved_detail">%1$s にあります。何も送信していません。共有して GitHub の Issue やメールに添付するか、あとで USB でコピーしてください。</string>
+    <string name="settings_report_share">共有…</string>
+    <string name="settings_report_share_failed">共有できませんでした。ファイルは ROMs/tandem/reports に残っています</string>
 </resources>

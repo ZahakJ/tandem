@@ -348,4 +348,32 @@
     <string name="settings_sub_gamenative_help">The games you\'ve downloaded in GameNative, from every store, straight into your library.</string>
     <string name="settings_continue_card">Continue card</string>
     <string name="settings_continue_card_help">With no game running, the icon grid starts with a wide card of the last games you played. Highlight it and L2 / R2 step through them; A plays, Y has the game\'s options. Hidden games never show on it. A running game takes the card either way (Resume page).</string>
+    <!-- Library & art subpage: the sort order and multi-disc games. Keep short. -->
+    <string name="settings_sub_sort">Sorting &amp; discs</string>
+    <string name="settings_sub_sort_help">The order games are listed in, and playlists for games on several discs.</string>
+    <!-- Settings row: favourites at the top of every sorted list. -->
+    <string name="settings_library_favs_first">Favorites first</string>
+    <string name="settings_library_favs_first_help">Your favorites lead every list, in the chosen order, then the rest. A game you favorite while a list is open moves the next time you open it, so nothing jumps under you.</string>
+    <!-- Settings row: sort by name without a leading The, A, An (and Le, La… in French). Keep short. -->
+    <string name="settings_library_articles">Ignore “The” and “A”</string>
+    <string name="settings_library_articles_help">Sorting by name skips a leading The, A or An, so The Legend of Zelda is under L. Le, La, Les and L’ too in French, Der, Die and Das in German, El, La, Los and Las in Spanish (Tandem\'s language or the device\'s), and ال at the start of an Arabic title.</string>
+    <!-- Settings row (Play & system › Updates): saves a bug report file. -->
+    <string name="settings_report">Send a bug report</string>
+    <!-- Value of the bug report row. Keep short. -->
+    <string name="settings_report_value">Nothing sent by itself</string>
+    <!-- What A does on the bug report row. Keep short. -->
+    <string name="settings_report_action">Save</string>
+    <string name="settings_report_help">Saves a zip in ROMs/tandem/reports with Tandem\'s version, your device and Android version, the settings that matter, and Tandem\'s own log. Account keys, passwords, e-mails, IP addresses, hidden games\' names and the names of your folders and files are taken out first. Then you choose: share it (to a GitHub issue or an e-mail), or leave it where it is.</string>
+    <!-- Toast while the bug report is being saved. -->
+    <string name="settings_report_making">Saving a bug report…</string>
+    <!-- Toast: the bug report couldn't be saved. -->
+    <string name="settings_report_failed">Couldn\'t save the bug report</string>
+    <!-- Title of the popup after saving a bug report. -->
+    <string name="settings_report_saved">Bug report saved</string>
+    <!-- Popup text: %1$s is where the file is, like ROMs/tandem/reports/tandem-report-20261126-101500.zip. -->
+    <string name="settings_report_saved_detail">It\'s in %1$s. Nothing was sent. Share it to attach it to a GitHub issue or an e-mail, or copy it over USB later.</string>
+    <!-- Button and share sheet title: share the bug report. Keep short. -->
+    <string name="settings_report_share">Share…</string>
+    <!-- Toast: no app could take the shared report. -->
+    <string name="settings_report_share_failed">Couldn\'t share it; the file is still in ROMs/tandem/reports</string>
 </resources>

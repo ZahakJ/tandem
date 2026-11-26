@@ -425,7 +425,9 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
                 Store.updateSettings { it.copy(sort = o) }
                 Toasts.show(Tx.s(R.string.panels_start_sorted_games, o.label))
             }
-        }
+        } + MenuAction(
+            "games-favs", Tx.s(R.string.panels_start_sort_favs_first), Glyph.Heart, Palette.Peach, value = if (Store.settings.favoritesFirst) "✓" else null,
+        ) { Store.updateSettings { it.copy(favoritesFirst = !it.favoritesFirst) } }
         // Three groups, each thing in one place: going places, the home screen, then Settings. A row that only
         // sometimes means something (Switch games, Undo, Hidden, an update) shows only then.
         else -> buildList {

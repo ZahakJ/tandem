@@ -132,4 +132,5 @@
     <string name="panels_side_cant_clear">Celle-ci ne peut pas être effacée</string>
     <string name="panels_side_allow_access">Active Tandem ici, puis reviens</string>
     <string name="panels_side_private">Masqué en mode privé</string>
+    <string name="panels_start_sort_favs_first">Favoris en premier</string>
 </resources>

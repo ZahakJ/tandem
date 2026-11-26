@@ -514,4 +514,40 @@
     <string name="grid_design_web_fanart">同人画</string>
     <string name="grid_design_web_background">背景</string>
     <string name="grid_design_web_banner">横幅</string>
+    <string name="grid_form_combine">匹配方式</string>
+    <string name="grid_form_combine_all">全部条件</string>
+    <string name="grid_form_combine_any">任一条件</string>
+    <string name="grid_form_combine_help">全部条件：游戏要满足你设的每一条。任一条件：满足一条就行，所以“收藏”加“RPG”会得到所有收藏和所有 RPG。保持“全部”的条件不计入。</string>
+    <string name="grid_form_rating_from">评分下限</string>
+    <string name="grid_form_rating_to">评分上限</string>
+    <string name="grid_form_rating_help">游戏的五星评分，来自详情或抓取。只要设了其中一个，没有评分的游戏就不算在内。</string>
+    <string name="grid_form_stars_at_least">★ %1$s 及以上</string>
+    <string name="grid_form_stars_at_most">★ %1$s 及以下</string>
+    <string name="grid_form_developer">开发商包含</string>
+    <string name="grid_form_developer_help">开发商名称包含这段文字的游戏，不分大小写：如“Capcom”“Nintendo”。没有开发商信息的游戏不算在内。</string>
+    <string name="grid_form_publisher">发行商包含</string>
+    <string name="grid_form_publisher_help">发行商名称包含这段文字的游戏，不分大小写：如“Square”“SEGA”。没有发行商信息的游戏不算在内。</string>
+    <string name="grid_form_played_more">游玩超过</string>
+    <string name="grid_form_played_more_help">所有游玩时段加起来超过这个时长的游戏。</string>
+    <string name="grid_form_played_less">游玩少于</string>
+    <string name="grid_form_played_less_help">所有游玩时段加起来少于这个时长的游戏；从没玩过的也算。</string>
+    <plurals name="grid_form_hours">
+        <item quantity="other">%1$d 小时</item>
+    </plurals>
+    <string name="grid_form_last">上次游玩</string>
+    <string name="grid_form_last_help">最近几天玩过的游戏、这几天没玩过的游戏（包括从没玩过的），或从没玩过的游戏。</string>
+    <plurals name="grid_form_last_within">
+        <item quantity="other">最近 %1$d 天内</item>
+    </plurals>
+    <plurals name="grid_form_last_not_within">
+        <item quantity="other">%1$d 天没玩</item>
+    </plurals>
+    <string name="grid_form_last_never">从未玩过</string>
+    <plurals name="grid_smart_more_hours">
+        <item quantity="other">超过 %1$d 小时</item>
+    </plurals>
+    <plurals name="grid_smart_less_hours">
+        <item quantity="other">不到 %1$d 小时</item>
+    </plurals>
+    <string name="grid_smart_any_of">任一：%1$s</string>
 </resources>

@@ -57,8 +57,38 @@ object SmartFolders {
         if (rule.favorites) parts += Tx.s(R.string.grid_smart_favorites)
         if (rule.played != SmartRule.PLAYED_ANY) parts += SmartRule.playedLabel(rule.played)
         rule.emulator?.let { parts += emulatorName(it) }
+        rule.ratingFrom?.let { parts += starsAtLeast(it) }
+        rule.ratingTo?.let { parts += starsAtMost(it) }
+        if (rule.developer.isNotBlank()) parts += rule.developer.trim()
+        if (rule.publisher.isNotBlank()) parts += rule.publisher.trim()
+        rule.playedMoreHours?.let { parts += Tx.p(R.plurals.grid_smart_more_hours, it) }
+        rule.playedLessHours?.let { parts += Tx.p(R.plurals.grid_smart_less_hours, it) }
+        lastPlayedLabel(rule.lastPlayed)?.let { parts += it }
         if (rule.random > 0) parts += Tx.s(R.string.grid_smart_random, rule.random)
+        if (parts.size > 1 && rule.match == SmartRule.MATCH_ANY) return Tx.s(R.string.grid_smart_any_of, parts.joinToString(" · "))
         return parts.ifEmpty { listOf(Tx.s(R.string.grid_smart_every_game)) }.joinToString(" · ")
+    }
+
+    /** All rules or any rule ([SmartRule.match]). */
+    fun combineLabel(m: String) = Tx.s(if (m == SmartRule.MATCH_ANY) R.string.grid_form_combine_any else R.string.grid_form_combine_all)
+
+    /** "4.5" or "4": a rating (0..1) as stars out of five. */
+    private fun stars(r: Float): String {
+        val s = Math.round(r * 10f) / 2f
+        return if (s % 1f == 0f) "${s.toInt()}" else String.format(io.github.zahakj.tandem.Lang.locale, "%.1f", s)
+    }
+
+    fun starsAtLeast(r: Float) = Tx.s(R.string.grid_form_stars_at_least, stars(r))
+    fun starsAtMost(r: Float) = Tx.s(R.string.grid_form_stars_at_most, stars(r))
+
+    /** [SmartRule.lastPlayed] in words ("In the last 30 days"); null for any. */
+    fun lastPlayedLabel(v: String): String? {
+        val (kind, days) = SmartRule(lastPlayed = v).lastPlayedRule() ?: return null
+        return when (kind) {
+            SmartRule.LAST_WITHIN -> Tx.p(R.plurals.grid_form_last_within, days)
+            SmartRule.LAST_NOT_WITHIN -> Tx.p(R.plurals.grid_form_last_not_within, days)
+            else -> Tx.s(R.string.grid_form_last_never)
+        }
     }
 
     fun yearsLabel(rule: SmartRule): String? = when {

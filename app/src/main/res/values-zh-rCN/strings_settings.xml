@@ -262,4 +262,20 @@
     <string name="settings_sub_gamenative_help">你在 GameNative 里下载的游戏，不管来自哪个商店，直接进游戏库。</string>
     <string name="settings_continue_card">“继续游玩”卡片</string>
     <string name="settings_continue_card_help">没有游戏在运行时，图标网格最前面会有一张大卡片，展示你最近玩过的游戏。选中它后用 L2 / R2 切换，A 开玩，Y 打开这款游戏的选项。隐藏的游戏不会出现在上面。有游戏在运行时，这张卡片总是它的继续游戏页。</string>
+    <string name="settings_sub_sort">排序与光盘</string>
+    <string name="settings_sub_sort_help">游戏的排列顺序，以及多光盘游戏的播放列表。</string>
+    <string name="settings_library_favs_first">收藏优先</string>
+    <string name="settings_library_favs_first_help">收藏的游戏按所选顺序排在每个列表最前，其余随后。列表打开时新收藏的游戏，下次打开才会移动，不会在你眼前跳来跳去。</string>
+    <string name="settings_library_articles">忽略 “The” 和 “A”</string>
+    <string name="settings_library_articles_help">按名称排序时跳过开头的 The、A 或 An，所以 The Legend of Zelda 归在 L 下。按 Tandem 或设备的语言，也跳过法语的 Le、La、Les、L’，德语的 Der、Die、Das，西班牙语的 El、La、Los、Las，以及阿拉伯语标题开头的 ال。</string>
+    <string name="settings_report">发送错误报告</string>
+    <string name="settings_report_value">不会自动发送</string>
+    <string name="settings_report_action">保存</string>
+    <string name="settings_report_help">在 ROMs/tandem/reports 中保存一个 zip，包含 Tandem 版本、你的设备和 Android 版本、相关设置，以及 Tandem 自己的日志。账号密钥、密码、邮箱、IP 地址、隐藏游戏的名称和你的文件夹与文件名称都会先去掉。之后由你决定：分享出去（附到 GitHub issue 或邮件），或者留在原处。</string>
+    <string name="settings_report_making">正在保存错误报告…</string>
+    <string name="settings_report_failed">无法保存错误报告</string>
+    <string name="settings_report_saved">错误报告已保存</string>
+    <string name="settings_report_saved_detail">文件在 %1$s。没有发送任何内容。可以分享出去附到 GitHub issue 或邮件，也可以之后通过 USB 拷走。</string>
+    <string name="settings_report_share">分享…</string>
+    <string name="settings_report_share_failed">无法分享；文件仍在 ROMs/tandem/reports</string>
 </resources>

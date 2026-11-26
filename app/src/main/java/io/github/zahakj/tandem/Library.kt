@@ -22,6 +22,8 @@ data class Game(
     val fileTitle: String,
     val group: String?,
     val root: File? = null,
+    /** A game on several discs (Discs.kt): every disc in order, [file] being its playlist or disc 1. Empty for most games. */
+    val discs: List<File> = emptyList(),
 ) {
     val stem: String get() = file.nameWithoutExtension
 
@@ -164,6 +166,13 @@ object Library {
         // The games' manuals (ROMs/manuals) are matched by name like their art, so they are looked for with the games.
         Manuals.index(libs, quick)
         ScanCache.save()
+        // Discs that were games of their own before they were one multi-disc game hand it their records (Discs.kt).
+        val moves = Discs.moves(libs.flatMap { it.games }, Store.meta, io.github.zahakj.tandem.data.HomeStore.sessions.mapTo(HashSet()) { it.k })
+        if (moves.isNotEmpty()) {
+            Store.updateAll(moves.mapNotNull { (key, m) -> m.first?.let { merged -> key to { _: GameMeta -> merged } } }.toMap())
+            moves.values.flatMap { it.second }.forEach { Store.remove(it) }
+            io.github.zahakj.tandem.data.HomeStore.rekey(moves.flatMap { (key, m) -> m.second.map { it to key } }.toMap())
+        }
         // Remember when each game first showed up, for "Recently added".
         val now = System.currentTimeMillis()
         val known = Store.meta
@@ -232,14 +241,34 @@ object Library {
     /** "Mario Kart 7 (USA) (En,Fr,Es)" -> "Mario Kart 7". */
     fun cleanTitle(stem: String): String = GameFinder.cleanTitle(stem)
 
-    fun sorted(games: List<Game>, order: SortOrder): List<Game> = when (order) {
-        SortOrder.Name -> games.sortedBy { it.title.lowercase() }
-        SortOrder.Recent -> games.sortedWith(compareByDescending<Game> { it.meta.lastPlayed }.thenBy { it.title.lowercase() })
-        SortOrder.MostPlayed -> games.sortedWith(compareByDescending<Game> { it.meta.playSeconds }.thenBy { it.title.lowercase() })
-        SortOrder.Year -> games.sortedWith(compareBy<Game> { it.meta.year ?: Int.MAX_VALUE }.thenBy { it.title.lowercase() })
-        SortOrder.Rating -> games.sortedWith(compareByDescending<Game> { it.meta.rating ?: -1f }.thenBy { it.title.lowercase() })
-        SortOrder.Added -> games.sortedWith(compareByDescending<Game> { it.meta.firstSeen }.thenBy { it.title.lowercase() })
+    /** The key [g] sorts by when games go by name: without a leading article unless that's switched off (SortKeys). */
+    fun nameKey(g: Game, articles: List<String> = io.github.zahakj.tandem.data.SortKeys.current()): String =
+        io.github.zahakj.tandem.data.SortKeys.name(g.title, articles, Store.settings.ignoreArticles)
+
+    /**
+     * [games] in [order], names compared by [nameKey]. With [favorites] (the favourites' keys as the list opened,
+     * when Favourites first is on) those come first, each part in [order].
+     */
+    fun sorted(games: List<Game>, order: SortOrder, favorites: Set<String>? = null): List<Game> {
+        val articles = io.github.zahakj.tandem.data.SortKeys.current()
+        val keyed = games.map { it to nameKey(it, articles) }
+        val byName = compareBy<Pair<Game, String>> { it.second }
+        val cmp: Comparator<Pair<Game, String>> = when (order) {
+            SortOrder.Name -> byName
+            SortOrder.Recent -> compareByDescending<Pair<Game, String>> { it.first.meta.lastPlayed }.then(byName)
+            SortOrder.MostPlayed -> compareByDescending<Pair<Game, String>> { it.first.meta.playSeconds }.then(byName)
+            SortOrder.Year -> compareBy<Pair<Game, String>> { it.first.meta.year ?: Int.MAX_VALUE }.then(byName)
+            SortOrder.Rating -> compareByDescending<Pair<Game, String>> { it.first.meta.rating ?: -1f }.then(byName)
+            SortOrder.Added -> compareByDescending<Pair<Game, String>> { it.first.meta.firstSeen }.then(byName)
+            SortOrder.System -> compareBy<Pair<Game, String>> { it.first.platform.name.lowercase() }.then(byName)
+        }
+        val first = if (favorites.isNullOrEmpty()) cmp else compareBy<Pair<Game, String>> { it.first.key !in favorites }.then(cmp)
+        return keyed.sortedWith(first).map { it.first }
     }
+
+    /** The favourites' keys among [games] now, for [sorted], or null when Favourites first is off. */
+    fun favoritesNow(games: List<Game>): Set<String>? =
+        if (!Store.settings.favoritesFirst) null else games.filter { it.meta.favorite }.mapTo(HashSet()) { it.key }
 }
 
 /**
@@ -293,9 +322,16 @@ class ArtIndex(artIds: List<String>, quick: Boolean = false, roots: List<File> =
     }
 
     fun find(kind: Kind, game: Game): File? {
-        val key = game.stem.lowercase()
-        for (root in LibraryRoots.artOrder(game.root?.path, main)) perRoot[root]?.byKind?.get(kind)?.get(key)?.let { return it }
+        val order = LibraryRoots.artOrder(game.root?.path, main)
+        for (key in artKeys(game)) for (root in order) perRoot[root]?.byKind?.get(kind)?.get(key)?.let { return it }
         return null
+    }
+
+    /** The names a game's art is under: its file's, then a multi-disc game's first disc's (art scraped before the discs were one game). */
+    private fun artKeys(game: Game): List<String> {
+        val own = game.stem.lowercase()
+        val disc = game.discs.firstOrNull()?.nameWithoutExtension?.lowercase()
+        return if (disc == null || disc == own) listOf(own) else listOf(own, disc)
     }
 
     /**
@@ -303,7 +339,8 @@ class ArtIndex(artIds: List<String>, quick: Boolean = false, roots: List<File> =
      * kinds its root has none of from the ROMs folder.
      */
     fun wides(game: Game): List<File> {
-        val key = game.stem.lowercase()
+        val keys = artKeys(game)
+        val key = keys.firstOrNull { k -> perRoot.values.any { it.wides.containsKey(k) } } ?: keys.first()
         val order = LibraryRoots.artOrder(game.root?.path, main)
         if (order.size == 1) return perRoot[order[0]]?.wides?.get(key).orEmpty()
         val out = ArrayList<File>()

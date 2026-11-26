@@ -285,6 +285,10 @@ private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
         "name" to SettingRow(Tx.s(R.string.grid_form_name), f.name, Palette.Butter, Glyph.Text, help = Tx.s(R.string.grid_form_name_help), action = Tx.s(R.string.grid_form_type)) {
             TextEntry.ask(Tx.s(R.string.grid_folder_name_title), f.name) { n -> n.trim().takeIf { it.isNotEmpty() }?.let { f.name = it } }
         },
+        "combine" to chooser(
+            Tx.s(R.string.grid_form_combine), SmartRule.MATCHES, r.match, Palette.Butter, Glyph.Layers,
+            Tx.s(R.string.grid_form_combine_help), SmartFolders::combineLabel,
+        ) { v -> set { it.copy(match = v) } },
         "systems" to SettingRow(
             Tx.s(R.string.grid_form_systems),
             when (r.systems.size) { 0 -> Tx.s(R.string.grid_form_any); 1 -> SmartFolders.systemName(r.systems[0]); else -> Tx.p(R.plurals.grid_systems, r.systems.size) },
@@ -322,6 +326,38 @@ private fun RuleRows(choices: FormChoices, onHelp: (String?) -> Unit) {
             Tx.s(R.string.grid_form_status_help),
             ::statusChoiceLabel,
         ) { v -> set { it.copy(statuses = v) } },
+        "ratingFrom" to chooser(
+            Tx.s(R.string.grid_form_rating_from), SmartRule.RATINGS, r.ratingFrom, Palette.Peach, Glyph.Star,
+            Tx.s(R.string.grid_form_rating_help), { v -> v?.let { SmartFolders.starsAtLeast(it) } ?: Tx.s(R.string.grid_form_any) },
+        ) { v -> set { it.copy(ratingFrom = v, ratingTo = it.ratingTo?.takeIf { to -> v == null || to >= v }) } },
+        "ratingTo" to chooser(
+            Tx.s(R.string.grid_form_rating_to), SmartRule.RATINGS, r.ratingTo, Palette.Peach, Glyph.Star,
+            Tx.s(R.string.grid_form_rating_help), { v -> v?.let { SmartFolders.starsAtMost(it) } ?: Tx.s(R.string.grid_form_any) },
+        ) { v -> set { it.copy(ratingTo = v, ratingFrom = it.ratingFrom?.takeIf { from -> v == null || from <= v }) } },
+        "developer" to SettingRow(
+            Tx.s(R.string.grid_form_developer), r.developer.ifBlank { Tx.s(R.string.grid_form_pattern_anything) }, Palette.Lavender, Glyph.Pencil,
+            help = Tx.s(R.string.grid_form_developer_help), action = Tx.s(R.string.grid_form_type),
+        ) {
+            TextEntry.ask(Tx.s(R.string.grid_form_developer), r.developer, onChange = { t -> set { it.copy(developer = t) } }) { t -> set { it.copy(developer = t.trim()) } }
+        },
+        "publisher" to SettingRow(
+            Tx.s(R.string.grid_form_publisher), r.publisher.ifBlank { Tx.s(R.string.grid_form_pattern_anything) }, Palette.Lavender, Glyph.Pencil,
+            help = Tx.s(R.string.grid_form_publisher_help), action = Tx.s(R.string.grid_form_type),
+        ) {
+            TextEntry.ask(Tx.s(R.string.grid_form_publisher), r.publisher, onChange = { t -> set { it.copy(publisher = t) } }) { t -> set { it.copy(publisher = t.trim()) } }
+        },
+        "more" to chooser(
+            Tx.s(R.string.grid_form_played_more), SmartRule.HOURS, r.playedMoreHours, Palette.Mint, Glyph.Clock,
+            Tx.s(R.string.grid_form_played_more_help), { h -> h?.let { Tx.p(R.plurals.grid_form_hours, it) } ?: Tx.s(R.string.grid_form_any) },
+        ) { v -> set { it.copy(playedMoreHours = v, playedLessHours = it.playedLessHours?.takeIf { less -> v == null || less > v }) } },
+        "less" to chooser(
+            Tx.s(R.string.grid_form_played_less), SmartRule.HOURS, r.playedLessHours, Palette.Mint, Glyph.Clock,
+            Tx.s(R.string.grid_form_played_less_help), { h -> h?.let { Tx.p(R.plurals.grid_form_hours, it) } ?: Tx.s(R.string.grid_form_any) },
+        ) { v -> set { it.copy(playedLessHours = v, playedMoreHours = it.playedMoreHours?.takeIf { more -> v == null || more < v }) } },
+        "last" to chooser(
+            Tx.s(R.string.grid_form_last), SmartRule.LAST_PLAYED, r.lastPlayed, Palette.Sky, Glyph.Play,
+            Tx.s(R.string.grid_form_last_help), { v -> SmartFolders.lastPlayedLabel(v) ?: Tx.s(R.string.grid_form_any) },
+        ) { v -> set { it.copy(lastPlayed = v) } },
         "random" to chooser(
             Tx.s(R.string.grid_form_random), SmartRule.RANDOMS, r.random, Palette.Butter, Glyph.Sparkle,
             Tx.s(R.string.grid_form_random_help), { if (it == 0) Tx.s(R.string.grid_form_random_all) else Tx.s(R.string.grid_smart_random, it) },

@@ -79,7 +79,7 @@ With USB debugging (or wireless debugging) on:
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-`./gradlew installDebug` builds and installs in one step. To see what Tandem logs:
+`./gradlew installDebug` builds and installs in one step. To see what Tandem logs (on the device, **Settings › Play & system › Updates › Send a bug report** saves the same lines, redacted, without adb):
 
 ```sh
 adb logcat -s Tandem

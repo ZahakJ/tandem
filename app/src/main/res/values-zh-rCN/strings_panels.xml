@@ -104,4 +104,5 @@
     <string name="panels_side_cant_clear">这条无法清除</string>
     <string name="panels_side_allow_access">在这里开启 Tandem，然后回来</string>
     <string name="panels_side_private">隐私模式下已隐藏</string>
+    <string name="panels_start_sort_favs_first">收藏优先</string>
 </resources>

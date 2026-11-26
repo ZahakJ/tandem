@@ -100,9 +100,12 @@ object Launcher {
             ?: return LaunchProblem.NoEmulator(game, game.platform.playersFor(game, game.platform.allPlayers).firstOrNull())
         if (!game.file.exists()) return LaunchProblem.FileMissing(game)
         // A shortcut of the user's for a DroidDeck or GameNative game starts from Tandem's file, which has every app's id.
-        val file = AppLibraries.launchFile(game, chosen) ?: game.file
+        // A multi-disc game's playlist, or disc 1 for an emulator that can't open one (Discs.kt).
+        val disc = Discs.launchFile(game, chosen)?.takeIf { it.exists() }
+        val file = AppLibraries.launchFile(game, chosen) ?: disc ?: game.file
         val spec = chosen.forFile(file)
-        val uri = documentUri(ctx, game.file) ?: Uri.fromFile(game.file)
+        val shared = disc ?: game.file
+        val uri = documentUri(ctx, shared) ?: Uri.fromFile(shared)
         val intent = try {
             LaunchIntents.build(spec, game, uri, file)
         } catch (e: BadShortcutException) {

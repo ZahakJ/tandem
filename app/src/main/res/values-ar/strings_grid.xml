@@ -635,4 +635,65 @@
     <string name="grid_design_web_fanart">فن المعجبين</string>
     <string name="grid_design_web_background">خلفية</string>
     <string name="grid_design_web_banner">لافتة</string>
+    <string name="grid_form_combine">المطابقة</string>
+    <string name="grid_form_combine_all">كل القواعد</string>
+    <string name="grid_form_combine_any">أي قاعدة</string>
+    <string name="grid_form_combine_help">كل القواعد: يجب أن تجتاز اللعبة كل قاعدة تضعها. أي قاعدة: تكفي واحدة، فـ«المفضّلة» و«RPG» تجمعان كل لعبة مفضّلة وكل لعبة RPG. القواعد المتروكة على «الكل» لا تُحسب.</string>
+    <string name="grid_form_rating_from">التقييم من</string>
+    <string name="grid_form_rating_to">التقييم حتى</string>
+    <string name="grid_form_rating_help">تقييم اللعبة من خمس نجوم، من تفاصيلها أو من الجلب. تُستبعد الألعاب بلا تقييم متى ضُبط أحدهما.</string>
+    <string name="grid_form_stars_at_least">★ %1$s أو أكثر</string>
+    <string name="grid_form_stars_at_most">★ %1$s أو أقل</string>
+    <string name="grid_form_developer">المطوّر يحوي</string>
+    <string name="grid_form_developer_help">الألعاب التي يحوي اسم مطوّرها هذا النص، بأي حالة أحرف: «Capcom» أو «Nintendo». تُستبعد الألعاب بلا مطوّر.</string>
+    <string name="grid_form_publisher">الناشر يحوي</string>
+    <string name="grid_form_publisher_help">الألعاب التي يحوي اسم ناشرها هذا النص، بأي حالة أحرف: «Square» أو «SEGA». تُستبعد الألعاب بلا ناشر.</string>
+    <string name="grid_form_played_more">لُعبت أكثر من</string>
+    <string name="grid_form_played_more_help">الألعاب التي لعبتها أطول من هذا، بكل جلساتها معًا.</string>
+    <string name="grid_form_played_less">لُعبت أقل من</string>
+    <string name="grid_form_played_less_help">الألعاب التي لعبتها أقل من هذا، بكل جلساتها معًا؛ والتي لم تُلعب قط تُحسب أيضًا.</string>
+    <plurals name="grid_form_hours">
+        <item quantity="zero">%1$d ساعة</item>
+        <item quantity="one">ساعة واحدة</item>
+        <item quantity="two">ساعتان</item>
+        <item quantity="few">%1$d ساعات</item>
+        <item quantity="many">%1$d ساعة</item>
+        <item quantity="other">%1$d ساعة</item>
+    </plurals>
+    <string name="grid_form_last">آخر لعب</string>
+    <string name="grid_form_last_help">الألعاب التي لُعبت في الأيام الأخيرة التي تختارها، أو التي لم تُلعب فيها (ومعها التي لم تُلعب قط)، أو التي لم تُلعب قط.</string>
+    <plurals name="grid_form_last_within">
+        <item quantity="zero">في آخر يوم</item>
+        <item quantity="one">في آخر يوم</item>
+        <item quantity="two">في آخر يومين</item>
+        <item quantity="few">في آخر %1$d أيام</item>
+        <item quantity="many">في آخر %1$d يومًا</item>
+        <item quantity="other">في آخر %1$d يوم</item>
+    </plurals>
+    <plurals name="grid_form_last_not_within">
+        <item quantity="zero">ليس اليوم</item>
+        <item quantity="one">ليس اليوم</item>
+        <item quantity="two">ليس منذ يومين</item>
+        <item quantity="few">ليس منذ %1$d أيام</item>
+        <item quantity="many">ليس منذ %1$d يومًا</item>
+        <item quantity="other">ليس منذ %1$d يوم</item>
+    </plurals>
+    <string name="grid_form_last_never">أبدًا</string>
+    <plurals name="grid_smart_more_hours">
+        <item quantity="zero">أكثر من %1$d س</item>
+        <item quantity="one">أكثر من ساعة</item>
+        <item quantity="two">أكثر من ساعتين</item>
+        <item quantity="few">أكثر من %1$d س</item>
+        <item quantity="many">أكثر من %1$d س</item>
+        <item quantity="other">أكثر من %1$d س</item>
+    </plurals>
+    <plurals name="grid_smart_less_hours">
+        <item quantity="zero">أقل من %1$d س</item>
+        <item quantity="one">أقل من ساعة</item>
+        <item quantity="two">أقل من ساعتين</item>
+        <item quantity="few">أقل من %1$d س</item>
+        <item quantity="many">أقل من %1$d س</item>
+        <item quantity="other">أقل من %1$d س</item>
+    </plurals>
+    <string name="grid_smart_any_of">أيٌّ من: %1$s</string>
 </resources>

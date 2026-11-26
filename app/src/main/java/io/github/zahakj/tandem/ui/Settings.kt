@@ -223,7 +223,15 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
             Tx.s(R.string.settings_library_sort), Glyph.Sort, Palette.Mint, Tx.s(R.string.settings_library_sort_help),
             SortOrder.entries.map { it.name to it.label }, s.sort.name,
             en = "Sort games by",
-        ) { v -> Store.updateSettings { it.copy(sort = SortOrder.valueOf(v)) } }.copy(keywords = "order alphabetical recent"),
+        ) { v -> Store.updateSettings { it.copy(sort = SortOrder.valueOf(v)) } }.copy(keywords = "order alphabetical recent system console platform"),
+        toggle(
+            Tx.s(R.string.settings_library_favs_first), Glyph.Heart, Palette.Peach, Tx.s(R.string.settings_library_favs_first_help), s.favoritesFirst,
+            en = "Favorites first",
+        ) { v -> Store.updateSettings { it.copy(favoritesFirst = v) } }.copy(keywords = "favorites favourites top pinned first sort order hearts"),
+        toggle(
+            Tx.s(R.string.settings_library_articles), Glyph.Text, Palette.Mint, Tx.s(R.string.settings_library_articles_help), s.ignoreArticles,
+            en = "Ignore The and A",
+        ) { v -> Store.updateSettings { it.copy(ignoreArticles = v) } }.copy(keywords = "articles the a an le la les der die das el los las sort name alphabetical"),
         SettingRow(
             Tx.s(R.string.settings_library_hidden),
             if (io.github.zahakj.tandem.Privacy.enabled) Tx.s(R.string.settings_library_hidden_private) else onOff(s.showHidden), Palette.Lavender, Glyph.Eye,
@@ -245,6 +253,7 @@ fun librarySettings(onRescan: () -> Unit): SettingSection {
             en = "Rescan games",
             onClick = onRescan,
         ),
+        playlistsRow(androidx.compose.ui.platform.LocalContext.current),
     ))
 }
 
@@ -388,7 +397,20 @@ fun aboutSettings(): SettingSection {
                 en = "About Tandem",
             ) { Toasts.show(Tx.s(R.string.settings_about_hi)) },
         )
-    } + io.github.zahakj.tandem.ui.whatsnew.whatsNewRows())
+    } + io.github.zahakj.tandem.ui.whatsnew.whatsNewRows() + reportRow())
+}
+
+/** Send a bug report (BugReport.kt): a redacted zip in ROMs/tandem/reports, shared only if asked. */
+@Composable
+private fun reportRow(): SettingRow {
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+    return SettingRow(
+        Tx.s(R.string.settings_report), Tx.s(R.string.settings_report_value), Palette.Peach, Glyph.Info,
+        help = Tx.s(R.string.settings_report_help),
+        keywords = "bug report log logcat crash problem issue github send share debug help support adb",
+        action = Tx.s(R.string.settings_report_action),
+        en = "Send a bug report",
+    ) { io.github.zahakj.tandem.BugReport.make(ctx) }
 }
 
 /**

@@ -328,7 +328,11 @@ fun SystemScreen(route: Route.System) {
         if (!gone) return@LaunchedEffect
         if (FolderPopup.route == route) FolderPopup.back() else if (Nav.route == route) Nav.back()
     }
-    val games = remember(lib, meta, showHidden, route.folder, sort) { Library.sorted(Collections.visible(lib.gamesIn(route.folder)), sort) }
+    // Favourites first holds the favourites as the list opened, so favouriting a game here doesn't move it away.
+    val favsFirst = Store.settings.favoritesFirst
+    val ignore = Store.settings.ignoreArticles
+    val favs = remember(lib, showHidden, route.folder, sort, favsFirst) { Library.favoritesNow(lib.gamesIn(route.folder)) }
+    val games = remember(lib, meta, showHidden, route.folder, sort, favs, ignore) { Library.sorted(Collections.visible(lib.gamesIn(route.folder)), sort, favs) }
     val nothing = lib.gamesIn(route.folder).isEmpty() && folders.isEmpty()
     GameGrid(
         route.key, folders, games,
@@ -351,7 +355,10 @@ fun CollectionScreen(route: Route.Collection) {
     // Play-based collections and smart folders keep their own order; the rest follow the chosen sort.
     val smart = route.id.startsWith(Collections.SMART)
     val ordered = route.id in ORDERED_COLLECTIONS || smart || route.id.startsWith(Collections.PLAYED)
-    val games = remember(c, sort) { c?.games.orEmpty().let { if (ordered) it else Library.sorted(it, sort) } }
+    val favsFirst = Store.settings.favoritesFirst
+    val ignore = Store.settings.ignoreArticles
+    val favs = remember(route.id, libs, showHidden, sort, favsFirst) { if (ordered) null else Library.favoritesNow(c?.games.orEmpty()) }
+    val games = remember(c, sort, favs, ignore) { c?.games.orEmpty().let { if (ordered) it else Library.sorted(it, sort, favs) } }
     val empty = if (smart) Empty(Tx.s(R.string.home_none_smart), Tx.s(R.string.home_none_smart_detail), Tx.s(R.string.home_none_smart_edit)) {
         FolderPopup.close(); SmartFolderForm.edit(route.id.removePrefix(Collections.SMART))
     } else when (route.id) {

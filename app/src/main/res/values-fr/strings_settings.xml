@@ -346,4 +346,20 @@
     <string name="settings_sub_gamenative_help">Les jeux téléchargés dans GameNative, de toutes les boutiques, direct dans ta bibliothèque.</string>
     <string name="settings_continue_card">Carte Continuer</string>
     <string name="settings_continue_card_help">Sans jeu lancé, la grille d’icônes commence par une grande carte de tes dernières parties. Place le curseur dessus et L2 / R2 passent de l’une à l’autre ; A lance le jeu, Y ouvre ses options. Les jeux cachés n’y apparaissent jamais. Un jeu lancé prend la carte dans tous les cas (page Reprendre).</string>
+    <string name="settings_sub_sort">Tri et disques</string>
+    <string name="settings_sub_sort_help">L’ordre dans lequel les jeux s’affichent, et les playlists des jeux sur plusieurs disques.</string>
+    <string name="settings_library_favs_first">Favoris en premier</string>
+    <string name="settings_library_favs_first_help">Vos favoris ouvrent chaque liste, dans l’ordre choisi, puis le reste. Un jeu ajouté aux favoris pendant qu’une liste est ouverte bouge la prochaine fois que vous l’ouvrez : rien ne saute sous vos yeux.</string>
+    <string name="settings_library_articles">Ignorer « Le » et « The »</string>
+    <string name="settings_library_articles_help">Le tri par nom saute un The, A ou An initial : The Legend of Zelda se range à L. Aussi Le, La, Les et L’ en français, Der, Die et Das en allemand, El, La, Los et Las en espagnol (langue de Tandem ou de l’appareil), et ال au début d’un titre arabe.</string>
+    <string name="settings_report">Envoyer un rapport de bug</string>
+    <string name="settings_report_value">Rien n’est envoyé tout seul</string>
+    <string name="settings_report_action">Enregistrer</string>
+    <string name="settings_report_help">Enregistre un zip dans ROMs/tandem/reports avec la version de Tandem, votre appareil et sa version d’Android, les réglages utiles et le journal de Tandem lui-même. Clés de compte, mots de passe, e-mails, adresses IP, noms des jeux masqués et noms de vos dossiers et fichiers en sont retirés d’abord. Ensuite, à vous de voir : le partager (dans un ticket GitHub ou un e-mail), ou le laisser où il est.</string>
+    <string name="settings_report_making">Enregistrement du rapport…</string>
+    <string name="settings_report_failed">Impossible d’enregistrer le rapport</string>
+    <string name="settings_report_saved">Rapport enregistré</string>
+    <string name="settings_report_saved_detail">Il se trouve dans %1$s. Rien n’a été envoyé. Partagez-le pour le joindre à un ticket GitHub ou à un e-mail, ou copiez-le plus tard par USB.</string>
+    <string name="settings_report_share">Partager…</string>
+    <string name="settings_report_share_failed">Partage impossible ; le fichier reste dans ROMs/tandem/reports</string>
 </resources>

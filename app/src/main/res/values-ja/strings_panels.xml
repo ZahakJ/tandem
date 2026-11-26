@@ -104,4 +104,5 @@
     <string name="panels_side_cant_clear">この通知は消去できません</string>
     <string name="panels_side_allow_access">ここでTandemをオンにして、戻ってきてください</string>
     <string name="panels_side_private">プライベートモードで非表示</string>
+    <string name="panels_start_sort_favs_first">お気に入りを先頭に</string>
 </resources>

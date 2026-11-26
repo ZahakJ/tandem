@@ -453,4 +453,26 @@
     <string name="library_gamenative_help_checking">GameNativeをのぞいています…</string>
     <string name="library_gamenative_show">GameNativeのゲームを表示</string>
     <string name="library_gamenative_show_help">GameNativeでダウンロードしたSteam、Epic、GOG、Amazonのゲームが自動的にPCゲームに並び、そのままGameNativeで起動します。DroidDeckにもあるゲームはタイル1枚にまとまり、最後に遊んだほうで起動します。向こうでアンインストールすると消えますが、プレイ時間は残ります。</string>
+    <string name="library_playlists_row">プレイリストを作る（.m3u）</string>
+    <string name="library_playlists_help">複数ディスクのゲームはすでに1枚のタイルにまとまっています。エミュレーターによっては .m3u プレイリストがないとディスクを入れ替えられないので、まだないゲームのディスクの横に作ります。ファイルの移動や名前の変更はしません。元に戻すには、作った .m3u を消すだけです。</string>
+    <string name="library_playlists_none">必要なし</string>
+    <plurals name="library_playlists_count">
+        <item quantity="other">未作成 %1$d 本</item>
+    </plurals>
+    <plurals name="library_playlists_ask">
+        <item quantity="other">プレイリストを%1$d個作りますか？</item>
+    </plurals>
+    <string name="library_playlists_line">%1$s：%2$s → %3$s</string>
+    <plurals name="library_playlists_discs">
+        <item quantity="other">ディスク%1$d枚</item>
+    </plurals>
+    <plurals name="library_playlists_more">
+        <item quantity="other">…ほか%1$d本</item>
+    </plurals>
+    <string name="library_playlists_yes">作る</string>
+    <plurals name="library_playlists_done">
+        <item quantity="other">プレイリストを%1$d個作りました</item>
+    </plurals>
+    <string name="library_playlists_failed">プレイリストを書き込めませんでした</string>
+    <string name="library_playlists_nothing">複数ディスクのゲームにはすべてプレイリストがあります</string>
 </resources>

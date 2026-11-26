@@ -566,4 +566,31 @@
     <string name="library_gamenative_help_checking">Petit coup d’œil dans GameNative…</string>
     <string name="library_gamenative_show">Afficher les jeux GameNative</string>
     <string name="library_gamenative_show_help">Les jeux téléchargés dans GameNative, de Steam, Epic, GOG ou Amazon, rejoignent tes jeux PC tout seuls et se lancent direct dans GameNative. Un jeu que DroidDeck a aussi ne fait qu’une vignette, qui se lance là où tu y as joué en dernier. Désinstalles-en un là-bas et il s’en va ; son temps de jeu reste.</string>
+    <string name="library_playlists_row">Créer des playlists (.m3u)</string>
+    <string name="library_playlists_help">Les jeux sur plusieurs disques n’ont déjà qu’une tuile. Certains émulateurs ne changent de disque qu’avec une playlist .m3u : ceci en écrit une à côté des disques de chaque jeu qui n’en a pas. Aucun fichier n’est déplacé ni renommé ; pour annuler, supprimez le .m3u créé.</string>
+    <string name="library_playlists_none">Rien à faire</string>
+    <plurals name="library_playlists_count">
+        <item quantity="one">%1$d jeu sans playlist</item>
+        <item quantity="other">%1$d jeux sans playlist</item>
+    </plurals>
+    <plurals name="library_playlists_ask">
+        <item quantity="one">Écrire %1$d playlist ?</item>
+        <item quantity="other">Écrire %1$d playlists ?</item>
+    </plurals>
+    <string name="library_playlists_line">%1$s : %2$s → %3$s</string>
+    <plurals name="library_playlists_discs">
+        <item quantity="one">%1$d disque</item>
+        <item quantity="other">%1$d disques</item>
+    </plurals>
+    <plurals name="library_playlists_more">
+        <item quantity="one">…et %1$d autre</item>
+        <item quantity="other">…et %1$d autres</item>
+    </plurals>
+    <string name="library_playlists_yes">Les écrire</string>
+    <plurals name="library_playlists_done">
+        <item quantity="one">%1$d playlist écrite</item>
+        <item quantity="other">%1$d playlists écrites</item>
+    </plurals>
+    <string name="library_playlists_failed">Impossible d’écrire les playlists</string>
+    <string name="library_playlists_nothing">Chaque jeu sur plusieurs disques a déjà sa playlist</string>
 </resources>

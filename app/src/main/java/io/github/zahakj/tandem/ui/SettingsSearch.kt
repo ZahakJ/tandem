@@ -132,6 +132,8 @@ private fun SearchBody() {
 @Composable
 internal fun settingsHits(): List<Hit> {
     val cats = settingsCatalog()
+    // A subpage holding a row of its own name (Updates) is found once: by that row, which opens the subpage.
+    val twins = cats.filter { c -> c.parent != null && c.sections.any { s -> s.rows.any { it.en == c.en } } }.map { it.parent to it.en }.toSet()
     return buildList {
         for (c in cats) {
             // A subpage is found by its row on its page; the seven pages by their tiles.
@@ -145,6 +147,7 @@ internal fun settingsHits(): List<Hit> {
             val page = c.parent?.let { Tx.s(R.string.settings_search_where_in, SettingsCategories.title(it), c.title) } ?: c.title
             for (s in c.sections) {
                 for (r in s.rows) {
+                    if (r.opens && (c.id to r.en) in twins) continue
                     val key = rowKey(s.en, r.en)
                     add(
                         Hit(

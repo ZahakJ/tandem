@@ -147,4 +147,9 @@
     <string name="screens_status_progress">%1$s of ~%2$s</string>
     <!-- After the L1 / R1 buttons on the icon grid: they make the icons bigger or smaller (keep it short) -->
     <string name="screens_switch_zoom">Zoom</string>
+    <!-- Chip on the bottom screen for a game on several discs shown as one tile. Keep short. -->
+    <plurals name="screens_discs">
+        <item quantity="one">%1$d disc</item>
+        <item quantity="other">%1$d discs</item>
+    </plurals>
 </resources>

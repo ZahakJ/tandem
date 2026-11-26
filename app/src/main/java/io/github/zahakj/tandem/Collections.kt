@@ -104,9 +104,9 @@ object Collections {
         ThisWeek.board()
     }
 
-    /** Sorts by title, lowercasing each title once instead of on every comparison. */
+    /** Sorts by title (without a leading article, Library.nameKey), keying each title once instead of on every comparison. */
     private fun byTitle(games: List<Game>): List<Game> =
-        games.map { it.title.lowercase() to it }.sortedBy { it.first }.map { it.second }
+        io.github.zahakj.tandem.data.SortKeys.current().let { a -> games.map { Library.nameKey(it, a) to it }.sortedBy { it.first }.map { it.second } }
 
     /** Every game that may be shown (hidden ones only while they are revealed). Same as visible(Libraries.games). */
     fun visibleGames(): List<Game> = memo().all
@@ -141,13 +141,14 @@ object Collections {
     private fun computeSmart(all: List<Game>, id: String, rule: SmartRule): List<Game> {
         val tidied = HashMap<String, String>()
         val players = HashMap<String, List<LaunchSpec>>()
+        val articles = io.github.zahakj.tandem.data.SortKeys.current()
         return rule.apply(all, sessionSeed xor id.hashCode().toLong()) { g ->
             val m = g.meta
             SmartGame(
                 g.key, g.title, g.platform.id, genresOf(g, tidied), m.year, m.favorite, m.everPlayed,
                 // Only looked up when the rule asks: it reads the installed emulators.
                 if (rule.emulator != null) emulatorOf(g, players) else null,
-                m.lastPlayed, m.playSeconds, m.firstSeen, m.status,
+                m.lastPlayed, m.playSeconds, m.firstSeen, m.status, m.rating, m.developer, m.publisher, Library.nameKey(g, articles),
             )
         }
     }

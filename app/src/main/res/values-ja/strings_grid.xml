@@ -514,4 +514,40 @@
     <string name="grid_design_web_fanart">ファンアート</string>
     <string name="grid_design_web_background">背景</string>
     <string name="grid_design_web_banner">バナー</string>
+    <string name="grid_form_combine">一致条件</string>
+    <string name="grid_form_combine_all">すべての条件</string>
+    <string name="grid_form_combine_any">どれかの条件</string>
+    <string name="grid_form_combine_help">すべての条件：設定した条件をすべて満たすゲームだけ。どれかの条件：ひとつ満たせば十分なので、「お気に入り」と「RPG」ならお気に入り全部とRPG全部が入ります。「すべて」のままの条件は数えません。</string>
+    <string name="grid_form_rating_from">評価（下限）</string>
+    <string name="grid_form_rating_to">評価（上限）</string>
+    <string name="grid_form_rating_help">ゲームの5つ星評価（詳細やスクレイプから）。どちらかを設定すると、評価のないゲームは入りません。</string>
+    <string name="grid_form_stars_at_least">★%1$s以上</string>
+    <string name="grid_form_stars_at_most">★%1$s以下</string>
+    <string name="grid_form_developer">開発元に含む</string>
+    <string name="grid_form_developer_help">開発元にこの文字を含むゲーム（大文字小文字は区別しません）。例：「Capcom」「Nintendo」。開発元のないゲームは入りません。</string>
+    <string name="grid_form_publisher">販売元に含む</string>
+    <string name="grid_form_publisher_help">販売元にこの文字を含むゲーム（大文字小文字は区別しません）。例：「Square」「SEGA」。販売元のないゲームは入りません。</string>
+    <string name="grid_form_played_more">プレイ時間（以上）</string>
+    <string name="grid_form_played_more_help">全セッションの合計でこれより長く遊んだゲーム。</string>
+    <string name="grid_form_played_less">プレイ時間（未満）</string>
+    <string name="grid_form_played_less_help">全セッションの合計でこれより短いゲーム。一度も遊んでいないゲームも入ります。</string>
+    <plurals name="grid_form_hours">
+        <item quantity="other">%1$d時間</item>
+    </plurals>
+    <string name="grid_form_last">最後に遊んだ日</string>
+    <string name="grid_form_last_help">選んだ日数のあいだに遊んだゲーム、遊んでいないゲーム（一度も遊んでいないものも）、または一度も遊んでいないゲーム。</string>
+    <plurals name="grid_form_last_within">
+        <item quantity="other">過去%1$d日以内</item>
+    </plurals>
+    <plurals name="grid_form_last_not_within">
+        <item quantity="other">%1$d日以上遊んでいない</item>
+    </plurals>
+    <string name="grid_form_last_never">未プレイ</string>
+    <plurals name="grid_smart_more_hours">
+        <item quantity="other">%1$d時間以上</item>
+    </plurals>
+    <plurals name="grid_smart_less_hours">
+        <item quantity="other">%1$d時間未満</item>
+    </plurals>
+    <string name="grid_smart_any_of">いずれか：%1$s</string>
 </resources>

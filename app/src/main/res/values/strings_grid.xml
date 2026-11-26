@@ -655,4 +655,64 @@
     <string name="grid_design_web_fanart">Fanart</string>
     <string name="grid_design_web_background">Background</string>
     <string name="grid_design_web_banner">Banner</string>
+    <!-- Smart folder form row: whether a game must pass all the rules set, or any one of them. -->
+    <string name="grid_form_combine">Match</string>
+    <!-- Option of the Match row. Keep short. -->
+    <string name="grid_form_combine_all">All rules</string>
+    <!-- Option of the Match row. Keep short. -->
+    <string name="grid_form_combine_any">Any rule</string>
+    <string name="grid_form_combine_help">All rules: a game must pass every rule you set. Any rule: one is enough, so \"Favourites\" and \"RPG\" gives every favourite and every RPG. Rules left at Any don\'t count.</string>
+    <!-- Smart folder form row: the lowest rating. -->
+    <string name="grid_form_rating_from">Rating from</string>
+    <!-- Smart folder form row: the highest rating. -->
+    <string name="grid_form_rating_to">Rating up to</string>
+    <string name="grid_form_rating_help">The game\'s rating out of five stars, from its details or a scrape. Games without a rating are left out once either is set.</string>
+    <!-- A rating bound: %1$s is a number of stars out of five, like 4 or 4.5. Keep short. -->
+    <string name="grid_form_stars_at_least">★ %1$s or more</string>
+    <!-- A rating bound: %1$s is a number of stars out of five. Keep short. -->
+    <string name="grid_form_stars_at_most">★ %1$s or less</string>
+    <!-- Smart folder form row: text the developer's name must contain. -->
+    <string name="grid_form_developer">Developer has</string>
+    <string name="grid_form_developer_help">Games whose developer contains this text, in any case: \"Capcom\", \"Nintendo\". Games without one are left out.</string>
+    <!-- Smart folder form row: text the publisher's name must contain. -->
+    <string name="grid_form_publisher">Publisher has</string>
+    <string name="grid_form_publisher_help">Games whose publisher contains this text, in any case: \"Square\", \"SEGA\". Games without one are left out.</string>
+    <!-- Smart folder form row: play time more than. -->
+    <string name="grid_form_played_more">Played more than</string>
+    <string name="grid_form_played_more_help">Games you have played longer than this, all sessions together.</string>
+    <!-- Smart folder form row: play time less than. -->
+    <string name="grid_form_played_less">Played less than</string>
+    <string name="grid_form_played_less_help">Games you have played less than this, all sessions together; never-played games count too.</string>
+    <!-- A play time bound in hours, on the form. Keep short. -->
+    <plurals name="grid_form_hours">
+        <item quantity="one">%1$d hour</item>
+        <item quantity="other">%1$d hours</item>
+    </plurals>
+    <!-- Smart folder form row: when the game was last played. -->
+    <string name="grid_form_last">Last played</string>
+    <string name="grid_form_last_help">Games played in the last days you pick, games not played in them (never-played ones too), or games never played.</string>
+    <!-- Last played option: in the last %1$d days. Keep short. -->
+    <plurals name="grid_form_last_within">
+        <item quantity="one">In the last day</item>
+        <item quantity="other">In the last %1$d days</item>
+    </plurals>
+    <!-- Last played option: not played in the last %1$d days (or never). Keep short. -->
+    <plurals name="grid_form_last_not_within">
+        <item quantity="one">Not today</item>
+        <item quantity="other">Not in %1$d days</item>
+    </plurals>
+    <!-- Last played option: never played. Keep short. -->
+    <string name="grid_form_last_never">Never</string>
+    <!-- In a smart folder's summary: played more than %1$d hours. Keep short. -->
+    <plurals name="grid_smart_more_hours">
+        <item quantity="one">Over %1$d h</item>
+        <item quantity="other">Over %1$d h</item>
+    </plurals>
+    <!-- In a smart folder's summary: played less than %1$d hours. Keep short. -->
+    <plurals name="grid_smart_less_hours">
+        <item quantity="one">Under %1$d h</item>
+        <item quantity="other">Under %1$d h</item>
+    </plurals>
+    <!-- A smart folder's summary when any one rule is enough: %1$s is the rules joined with ·. -->
+    <string name="grid_smart_any_of">Any of: %1$s</string>
 </resources>

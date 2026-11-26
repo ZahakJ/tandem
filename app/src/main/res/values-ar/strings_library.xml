@@ -548,4 +548,51 @@
     <string name="library_gamenative_help_checking">نظرة سريعة داخل GameNative…</string>
     <string name="library_gamenative_show">إظهار ألعاب GameNative</string>
     <string name="library_gamenative_show_help">الألعاب التي تنزّلها في GameNative، من Steam أو Epic أو GOG أو Amazon، تنضمّ إلى ألعاب الكمبيوتر وحدها وتبدأ فيه مباشرةً. وإن كانت في DroidDeck أيضًا، فهي مربع واحد يبدأ حيث لعبتها آخر مرة. احذف لعبة هناك فتغادر من هنا، ويبقى وقت لعبك فيها.</string>
+    <string name="library_playlists_row">إنشاء قوائم تشغيل (.m3u)</string>
+    <string name="library_playlists_help">الألعاب ذات الأقراص المتعددة تظهر في مربع واحد أصلًا. لكن بعض المحاكيات لا تبدّل الأقراص إلا بقائمة تشغيل .m3u: هذا يكتب واحدة بجانب أقراص كل لعبة ليست لها قائمة. لا يُنقل أي ملف ولا يُعاد تسميته؛ وللتراجع احذف ملف .m3u الذي أنشأه.</string>
+    <string name="library_playlists_none">لا حاجة</string>
+    <plurals name="library_playlists_count">
+        <item quantity="zero">لا ألعاب بلا قائمة</item>
+        <item quantity="one">لعبة واحدة بلا قائمة</item>
+        <item quantity="two">لعبتان بلا قائمة</item>
+        <item quantity="few">%1$d ألعاب بلا قائمة</item>
+        <item quantity="many">%1$d لعبة بلا قائمة</item>
+        <item quantity="other">%1$d لعبة بلا قائمة</item>
+    </plurals>
+    <plurals name="library_playlists_ask">
+        <item quantity="zero">كتابة %1$d قائمة تشغيل؟</item>
+        <item quantity="one">كتابة قائمة تشغيل واحدة؟</item>
+        <item quantity="two">كتابة قائمتَي تشغيل؟</item>
+        <item quantity="few">كتابة %1$d قوائم تشغيل؟</item>
+        <item quantity="many">كتابة %1$d قائمة تشغيل؟</item>
+        <item quantity="other">كتابة %1$d قائمة تشغيل؟</item>
+    </plurals>
+    <string name="library_playlists_line">%1$s: %2$s ← %3$s</string>
+    <plurals name="library_playlists_discs">
+        <item quantity="zero">%1$d أقراص</item>
+        <item quantity="one">قرص واحد</item>
+        <item quantity="two">قرصان</item>
+        <item quantity="few">%1$d أقراص</item>
+        <item quantity="many">%1$d قرصًا</item>
+        <item quantity="other">%1$d قرص</item>
+    </plurals>
+    <plurals name="library_playlists_more">
+        <item quantity="zero">…و%1$d غيرها</item>
+        <item quantity="one">…ولعبة أخرى</item>
+        <item quantity="two">…ولعبتان أخريان</item>
+        <item quantity="few">…و%1$d ألعاب أخرى</item>
+        <item quantity="many">…و%1$d لعبة أخرى</item>
+        <item quantity="other">…و%1$d لعبة أخرى</item>
+    </plurals>
+    <string name="library_playlists_yes">اكتبها</string>
+    <plurals name="library_playlists_done">
+        <item quantity="zero">لم تُكتب أي قائمة</item>
+        <item quantity="one">كُتبت قائمة تشغيل واحدة</item>
+        <item quantity="two">كُتبت قائمتا تشغيل</item>
+        <item quantity="few">كُتبت %1$d قوائم تشغيل</item>
+        <item quantity="many">كُتبت %1$d قائمة تشغيل</item>
+        <item quantity="other">كُتبت %1$d قائمة تشغيل</item>
+    </plurals>
+    <string name="library_playlists_failed">تعذّرت كتابة قوائم التشغيل</string>
+    <string name="library_playlists_nothing">لكل لعبة متعددة الأقراص قائمة تشغيلها أصلًا</string>
 </resources>

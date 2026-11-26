@@ -91,7 +91,9 @@ data class TimeToBeat(val main: Int = 0, val extra: Int = 0, val complete: Int =
 
 enum class SortOrder(@androidx.annotation.StringRes private val labelRes: Int) {
     Name(R.string.data_sort_name), Recent(R.string.data_sort_recent), MostPlayed(R.string.data_sort_most),
-    Year(R.string.data_sort_year), Rating(R.string.data_sort_rating), Added(R.string.data_sort_added);
+    Year(R.string.data_sort_year), Rating(R.string.data_sort_rating), Added(R.string.data_sort_added),
+    /** By system, then by name: for lists that mix systems (collections); one system's list reads as by name. */
+    System(R.string.data_sort_system);
 
     val label: String get() = Tx.s(labelRes)
 }
@@ -99,6 +101,10 @@ enum class SortOrder(@androidx.annotation.StringRes private val labelRes: Int) {
 @Serializable
 data class Settings(
     val sort: SortOrder = SortOrder.Name,
+    /** Sorting by name skips a leading "The", "A"… (SortKeys). */
+    val ignoreArticles: Boolean = true,
+    /** Favourites first in every list sorted by [sort], as it was when the list opened. */
+    val favoritesFirst: Boolean = false,
     val showHidden: Boolean = false,
     val showTitles: Boolean = false,
     val autoImportDone: Boolean = false,

@@ -577,4 +577,42 @@
     <!-- The switch for the whole feature. -->
     <string name="library_gamenative_show">Show GameNative games</string>
     <string name="library_gamenative_show_help">Games downloaded in GameNative, from Steam, Epic, GOG or Amazon, join your PC games on their own and start straight in GameNative. A game DroidDeck has too is one tile that starts where you last played it. Uninstall one there and it leaves; its play time stays.</string>
+    <!-- Settings row (Library & art): writes .m3u playlists for games on several discs. -->
+    <string name="library_playlists_row">Make playlists (.m3u)</string>
+    <string name="library_playlists_help">Games on several discs show as one tile already. Some emulators change discs only with an .m3u playlist: this writes one beside the discs of each game that has none. No file is moved or renamed; to undo, delete the .m3u it made.</string>
+    <!-- Value of the Make playlists row when every multi-disc game has one. -->
+    <string name="library_playlists_none">None needed</string>
+    <!-- Value of the Make playlists row: how many multi-disc games have no playlist. -->
+    <plurals name="library_playlists_count">
+        <item quantity="one">%1$d game without one</item>
+        <item quantity="other">%1$d games without one</item>
+    </plurals>
+    <!-- Title of the confirm popup before writing playlists. -->
+    <plurals name="library_playlists_ask">
+        <item quantity="one">Write %1$d playlist?</item>
+        <item quantity="other">Write %1$d playlists?</item>
+    </plurals>
+    <!-- One line of the preview: %1$s the game, %2$s its discs ("3 discs"), %3$s the playlist file name. -->
+    <string name="library_playlists_line">%1$s: %2$s → %3$s</string>
+    <!-- In the preview line: how many discs a game has. -->
+    <plurals name="library_playlists_discs">
+        <item quantity="one">%1$d disc</item>
+        <item quantity="other">%1$d discs</item>
+    </plurals>
+    <!-- Last line of the preview: games not listed above. -->
+    <plurals name="library_playlists_more">
+        <item quantity="one">…and %1$d more</item>
+        <item quantity="other">…and %1$d more</item>
+    </plurals>
+    <!-- Confirm button: write the playlists. Keep short. -->
+    <string name="library_playlists_yes">Write them</string>
+    <!-- Toast with Undo after writing playlists. -->
+    <plurals name="library_playlists_done">
+        <item quantity="one">Wrote %1$d playlist</item>
+        <item quantity="other">Wrote %1$d playlists</item>
+    </plurals>
+    <!-- Toast: no playlist could be written (storage refused). -->
+    <string name="library_playlists_failed">Couldn\'t write the playlists</string>
+    <!-- Toast: every multi-disc game already has a playlist. -->
+    <string name="library_playlists_nothing">Every multi-disc game has its playlist already</string>
 </resources>

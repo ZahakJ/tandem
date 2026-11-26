@@ -138,4 +138,6 @@
         <item quantity="one">%1$d day ago</item>
         <item quantity="other">%1$d days ago</item>
     </plurals>
+    <!-- Sort order: by system, then by name. Keep short. -->
+    <string name="data_sort_system">System</string>
 </resources>

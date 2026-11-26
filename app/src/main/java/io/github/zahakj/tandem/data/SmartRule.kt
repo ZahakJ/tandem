@@ -5,8 +5,8 @@ import io.github.zahakj.tandem.R
 import kotlinx.serialization.Serializable
 
 /**
- * What a smart folder holds ([HomeFolder.rule]): every game that passes all of the set conditions, sorted by
- * [sort]. A condition left at its default doesn't filter, so the default rule matches the whole library. Choices
+ * What a smart folder holds ([HomeFolder.rule]): every game that passes all of the set conditions (or any,
+ * [match]), sorted by [sort]. A condition left at its default doesn't filter, so the default rule matches the whole library. Choices
  * are strings (like [FolderStyle]'s), so a value from a newer version reads as the default instead of failing the
  * whole of icon-grid.json. Pure data: no Android, so it is unit tested.
  */
@@ -34,6 +34,19 @@ data class SmartRule(
     val statuses: List<String> = emptyList(),
     /** [SORT_NAME], [SORT_RECENT], [SORT_MOST], [SORT_ADDED] or [SORT_SYSTEM]. */
     val sort: String = SORT_NAME,
+    /** [MATCH_ALL]: a game passes every condition set; [MATCH_ANY]: at least one of them. */
+    val match: String = MATCH_ALL,
+    /** Rating bounds, 0..1 like [GameMeta.rating]; a game without a rating never matches once either is set. */
+    val ratingFrom: Float? = null,
+    val ratingTo: Float? = null,
+    /** Text the developer or the publisher must contain (no case); empty: anyone. */
+    val developer: String = "",
+    val publisher: String = "",
+    /** Play time bounds in hours: more than [playedMoreHours], less than [playedLessHours]. */
+    val playedMoreHours: Int? = null,
+    val playedLessHours: Int? = null,
+    /** "" any; "within:N" played in the last N days; "notwithin:N" not played in them (or never); [LAST_NEVER] never played. */
+    val lastPlayed: String = "",
 ) {
     /** The compiled [pattern], or null when it is empty, plain text, or not a valid expression ([patternError]). */
     @kotlinx.serialization.Transient
@@ -42,27 +55,57 @@ data class SmartRule(
     /** True when [pattern] is meant as an expression but doesn't parse: such a rule matches nothing. */
     val patternError: Boolean get() = regex && pattern.isNotEmpty() && compiled == null
 
-    /** Whether [g] passes every condition (all but [random] and [sort], which work on the whole list). */
-    fun matches(g: SmartGame): Boolean {
-        if (systems.isNotEmpty() && g.system !in systems) return false
-        if (genres.isNotEmpty() && g.genres.none { have -> genres.any { it.equals(have, ignoreCase = true) } }) return false
-        if (pattern.isNotEmpty()) {
-            if (regex) { if (compiled?.containsMatchIn(g.title) != true) return false }
-            else if (!g.title.contains(pattern, ignoreCase = true)) return false
+    /**
+     * Whether [g] passes the conditions (all but [random] and [sort], which work on the whole list): every one set,
+     * or with [MATCH_ANY] at least one. No condition set matches every game either way. [now] is for [lastPlayed].
+     */
+    fun matches(g: SmartGame, now: Long = System.currentTimeMillis()): Boolean {
+        val checks = checks(g, now)
+        if (checks.isEmpty()) return true
+        return if (match == MATCH_ANY) checks.any { it() } else checks.all { it() }
+    }
+
+    /** One check per condition that is set, in the form's order. */
+    private fun checks(g: SmartGame, now: Long): List<() -> Boolean> = buildList {
+        if (systems.isNotEmpty()) add { g.system in systems }
+        if (genres.isNotEmpty()) add { g.genres.any { have -> genres.any { it.equals(have, ignoreCase = true) } } }
+        if (pattern.isNotEmpty()) add { if (regex) compiled?.containsMatchIn(g.title) == true else g.title.contains(pattern, ignoreCase = true) }
+        if (yearFrom != null || yearTo != null) add {
+            val y = g.year
+            y != null && (yearFrom == null || y >= yearFrom) && (yearTo == null || y <= yearTo)
         }
-        if (yearFrom != null || yearTo != null) {
-            val y = g.year ?: return false
-            if (yearFrom != null && y < yearFrom) return false
-            if (yearTo != null && y > yearTo) return false
-        }
-        if (favorites && !g.favorite) return false
+        if (favorites) add { g.favorite }
         when (played) {
-            PLAYED_YES -> if (!g.played) return false
-            PLAYED_NO -> if (g.played) return false
+            PLAYED_YES -> add { g.played }
+            PLAYED_NO -> add { !g.played }
         }
-        if (emulator != null && g.emulator != emulator) return false
-        if (statuses.isNotEmpty() && (g.status ?: STATUS_NONE) !in statuses) return false
-        return true
+        if (emulator != null) add { g.emulator == emulator }
+        if (statuses.isNotEmpty()) add { (g.status ?: STATUS_NONE) in statuses }
+        if (ratingFrom != null || ratingTo != null) add {
+            val r = g.rating
+            // A hair of slack: a rating of 0.8 is "at least 4 stars" however it was rounded.
+            r != null && (ratingFrom == null || r >= ratingFrom - 0.001f) && (ratingTo == null || r <= ratingTo + 0.001f)
+        }
+        if (developer.isNotBlank()) add { g.developer?.contains(developer.trim(), ignoreCase = true) == true }
+        if (publisher.isNotBlank()) add { g.publisher?.contains(publisher.trim(), ignoreCase = true) == true }
+        if (playedMoreHours != null) add { g.playSeconds > playedMoreHours * 3600L }
+        if (playedLessHours != null) add { g.playSeconds < playedLessHours * 3600L }
+        lastPlayedRule()?.let { (kind, days) ->
+            val since = now - days * DAY_MS
+            when (kind) {
+                LAST_WITHIN -> add { g.lastPlayed > 0 && g.lastPlayed >= since }
+                LAST_NOT_WITHIN -> add { g.lastPlayed < since }
+                else -> add { g.lastPlayed == 0L && !g.played }
+            }
+        }
+    }
+
+    /** [lastPlayed] read: its kind and days ("within:30" is within, 30); null for any, or a value not understood. */
+    fun lastPlayedRule(): Pair<String, Int>? {
+        if (lastPlayed == LAST_NEVER) return LAST_NEVER to 0
+        val kind = lastPlayed.substringBefore(':')
+        val days = lastPlayed.substringAfter(':', "").toIntOrNull()?.takeIf { it > 0 } ?: return null
+        return if (kind == LAST_WITHIN || kind == LAST_NOT_WITHIN) kind to days else null
     }
 
     /**
@@ -71,14 +114,15 @@ data class SmartRule(
      */
     fun <T> apply(all: List<T>, seed: Long, view: (T) -> SmartGame): List<T> {
         if (patternError) return emptyList()
-        var out = all.filter { matches(view(it)) }
+        val now = System.currentTimeMillis()
+        var out = all.filter { matches(view(it), now) }
         if (random > 0 && out.size > random) out = out.sortedBy { pickRank(seed, view(it).key) }.take(random)
         return sorted(out, view)
     }
 
     private fun <T> sorted(games: List<T>, view: (T) -> SmartGame): List<T> {
         val keyed = games.map { view(it) to it }
-        val byTitle = compareBy<Pair<SmartGame, T>> { it.first.title.lowercase() }
+        val byTitle = compareBy<Pair<SmartGame, T>> { it.first.sortName }
         val order = when (sort) {
             SORT_RECENT -> compareByDescending<Pair<SmartGame, T>> { it.first.lastPlayed }.then(byTitle)
             SORT_MOST -> compareByDescending<Pair<SmartGame, T>> { it.first.playSeconds }.then(byTitle)
@@ -99,6 +143,19 @@ data class SmartRule(
         const val SORT_MOST = "most"
         const val SORT_ADDED = "added"
         const val SORT_SYSTEM = "system"
+        const val MATCH_ALL = "all"
+        const val MATCH_ANY = "any"
+        val MATCHES = listOf(MATCH_ALL, MATCH_ANY)
+        const val LAST_WITHIN = "within"
+        const val LAST_NOT_WITHIN = "notwithin"
+        const val LAST_NEVER = "never"
+        /** The choices offered for [lastPlayed]. */
+        val LAST_PLAYED = listOf("", "within:1", "within:7", "within:30", "within:90", "within:365", "notwithin:30", "notwithin:90", "notwithin:365", LAST_NEVER)
+        /** The choices offered for the play time bounds, in hours. */
+        val HOURS = listOf<Int?>(null, 1, 2, 5, 10, 20, 50, 100)
+        /** The choices offered for the rating bounds: stars out of five, as 0..1. */
+        val RATINGS = listOf<Float?>(null, 0.2f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1f)
+        private const val DAY_MS = 24 * 60 * 60 * 1000L
         val SORTS = listOf(SORT_NAME, SORT_RECENT, SORT_MOST, SORT_ADDED, SORT_SYSTEM)
         val PLAYS = listOf(PLAYED_ANY, PLAYED_YES, PLAYED_NO)
         /** The choices offered for [random]. */
@@ -148,6 +205,12 @@ data class SmartGame(
     val added: Long = 0,
     /** The [GameStatus] id, or null. */
     val status: String? = null,
+    /** 0..1, or null when unknown. */
+    val rating: Float? = null,
+    val developer: String? = null,
+    val publisher: String? = null,
+    /** What the title sorts by (lowercase, a leading article skipped: Library.nameKey). */
+    val sortName: String = title.lowercase(),
 )
 
 /** Where a folder's games start: [OPEN_TOP], [OPEN_BOTTOM], or null for each game's own choice ([HomeFolder.openOn]). */

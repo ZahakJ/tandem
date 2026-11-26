@@ -141,4 +141,12 @@
     <string name="screens_status_no_status">بلا حالة</string>
     <string name="screens_status_progress">%1$s من ~%2$s</string>
     <string name="screens_switch_zoom">التكبير</string>
+    <plurals name="screens_discs">
+        <item quantity="zero">%1$d أقراص</item>
+        <item quantity="one">قرص واحد</item>
+        <item quantity="two">قرصان</item>
+        <item quantity="few">%1$d أقراص</item>
+        <item quantity="many">%1$d قرصًا</item>
+        <item quantity="other">%1$d قرص</item>
+    </plurals>
 </resources>

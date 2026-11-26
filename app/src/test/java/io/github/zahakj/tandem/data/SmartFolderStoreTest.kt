@@ -57,6 +57,25 @@ class SmartFolderStoreTest {
     }
 
     @Test
+    fun theNewerRulesSurviveSavingAndReading() {
+        val rule = SmartRule(
+            match = SmartRule.MATCH_ANY, ratingFrom = 0.7f, ratingTo = 0.9f, developer = "Capcom", publisher = "Nintendo",
+            playedMoreHours = 2, playedLessHours = 50, lastPlayed = "notwithin:90",
+        )
+        val back = GridJson.decode(GridJson.encode(IconGridConfig(folders = listOf(HomeFolder("f1", "Mix", rule = rule)))))
+        assertEquals(rule, back.folders.single().rule)
+    }
+
+    @Test
+    fun aRuleSavedBeforeTheNewerRulesReadsAsBefore() {
+        val old = """{"order":["folder:f1"],"folders":[{"id":"f1","name":"RPGs","rule":{"genres":["RPG"],"played":"unplayed"}}]}"""
+        val r = GridJson.decode(old).folders.single().rule!!
+        assertEquals(SmartRule(genres = listOf("RPG"), played = SmartRule.PLAYED_NO), r)
+        assertEquals(SmartRule.MATCH_ALL, r.match)
+        assertEquals("", r.lastPlayed)
+    }
+
+    @Test
     fun aDefaultRuleIsStillASmartFolder() {
         val back = GridJson.decode(GridJson.encode(IconGridConfig(folders = listOf(HomeFolder("f1", "All", rule = SmartRule())))))
         assertEquals(SmartRule(), back.folders.single().rule)

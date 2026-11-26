@@ -164,4 +164,6 @@ Sessions shorter than ten seconds don't count (the game still becomes your last 
 
 ### Reporting a bug
 
-Open a [bug report](https://github.com/ZahakJ/tandem/issues/new?template=bug_report.yml). It helps to include your device, Android version, Tandem version (Android's app info screen shows it), the emulator involved, and the steps that lead to the problem. If you can, a log from `adb logcat -s Tandem` while it happens is the most useful thing of all.
+Right after the problem happens, choose **Settings › Play & system › Updates › Send a bug report**. Tandem saves a zip in `ROMs/tandem/reports/` with its version, your device and Android version, the settings that matter and its own log, with account keys, passwords, e-mail and IP addresses, hidden games' names and your folder and file names taken out. Nothing is sent: share it from the popup, or copy it over USB.
+
+Then open a [bug report](https://github.com/ZahakJ/tandem/issues/new?template=bug_report.yml), attach the zip, and say which emulator was involved and the steps that lead to the problem. (With a computer, `adb logcat -s Tandem` while it happens works too.)

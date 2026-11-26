@@ -452,4 +452,26 @@
     <string name="library_gamenative_help_checking">正在瞄一眼 GameNative…</string>
     <string name="library_gamenative_show">显示 GameNative 游戏</string>
     <string name="library_gamenative_show_help">在 GameNative 里下载的 Steam、Epic、GOG、Amazon 游戏会自动加入 PC 游戏，一按就在 GameNative 里启动。DroidDeck 里也有的游戏只占一个图块，从你上次玩它的那边启动。在那边卸载后它就离开，游玩时间还在。</string>
+    <string name="library_playlists_row">生成播放列表（.m3u）</string>
+    <string name="library_playlists_help">多光盘游戏本来就只显示为一个图块。有些模拟器只有借助 .m3u 播放列表才能换盘：这里会在还没有播放列表的游戏光盘旁边写一个。不会移动或重命名任何文件；想撤销，删掉生成的 .m3u 即可。</string>
+    <string name="library_playlists_none">无需生成</string>
+    <plurals name="library_playlists_count">
+        <item quantity="other">%1$d 款游戏尚无</item>
+    </plurals>
+    <plurals name="library_playlists_ask">
+        <item quantity="other">生成 %1$d 个播放列表？</item>
+    </plurals>
+    <string name="library_playlists_line">%1$s：%2$s → %3$s</string>
+    <plurals name="library_playlists_discs">
+        <item quantity="other">%1$d 张光盘</item>
+    </plurals>
+    <plurals name="library_playlists_more">
+        <item quantity="other">……还有 %1$d 款</item>
+    </plurals>
+    <string name="library_playlists_yes">生成</string>
+    <plurals name="library_playlists_done">
+        <item quantity="other">已生成 %1$d 个播放列表</item>
+    </plurals>
+    <string name="library_playlists_failed">无法写入播放列表</string>
+    <string name="library_playlists_nothing">所有多光盘游戏都已有播放列表</string>
 </resources>

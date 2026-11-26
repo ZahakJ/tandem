@@ -1,5 +1,5 @@
 {
- "_comment": "Systems Tandem knows about. Copy this file to ROMs/tandem/platforms.json to customise it. 'folders' are looked up under the ROMs folder (or full paths); subfolders become folders in Tandem. 'aliases' are other names for the system (used to match Cocoon/Daijisho platform files). Each system lists its 'players' (emulators); the first installed one is the default. A player is either {\"core\": \"mgba\"} (RetroArch with that core; add \"package\" for another RetroArch build) or {\"component\": \"pkg/activity\", \"action\": ..., \"game\": ..., \"extras\": {...}}. 'game' says how the emulator receives the game: 'data' (shared link as the intent data), 'data-file' (file:// link), 'extra-uri:<key>' (shared link in a string extra), 'extra-path:<key>' (file path in a string extra) or 'none'. Extras keep their JSON type: string, list (string array), true/false, number; templated numbers are written {\"int\": \"{file.id}\"} (also long, float, bool, uri); add \"optional\": true to leave one out for a file without the tag it names. 'data' and 'type' are templates for the intent data and MIME type. Templates: {file.path} {file.uri} {file.fileuri} {file.name} {file.stem} {file.ext} {file.dir} {file.mime} {file.id} (the id inside a small shortcut file such as a Vita .dpt or GameNative .pcgame) {file.text} {tags.<name>} (a '[name] value' line in the file) {storage} {roms} {package}. 'byExtension' changes a player for one extension, or 'dir' for games that are folders. 'store' is where to get the emulator (GitHub releases open in Obtainium when it is installed); without it the Play Store is used. 'note' marks launch details still to verify on a device. Component '*' opens the file with the default app.",
+ "_comment": "Systems Tandem knows about. Copy this file to ROMs/tandem/platforms.json to customise it. 'folders' are looked up under the ROMs folder (or full paths); subfolders become folders in Tandem. 'aliases' are other names for the system (used to match Cocoon/Daijisho platform files). Each system lists its 'players' (emulators); the first installed one is the default. A player is either {\"core\": \"mgba\"} (RetroArch with that core; add \"package\" for another RetroArch build) or {\"component\": \"pkg/activity\", \"action\": ..., \"game\": ..., \"extras\": {...}}. 'game' says how the emulator receives the game: 'data' (shared link as the intent data), 'data-file' (file:// link), 'extra-uri:<key>' (shared link in a string extra), 'extra-path:<key>' (file path in a string extra) or 'none'. Extras keep their JSON type: string, list (string array), true/false, number; templated numbers are written {\"int\": \"{file.id}\"} (also long, float, bool, uri); add \"optional\": true to leave one out for a file without the tag it names. 'data' and 'type' are templates for the intent data and MIME type. Templates: {file.path} {file.uri} {file.fileuri} {file.name} {file.stem} {file.ext} {file.dir} {file.mime} {file.id} (the id inside a small shortcut file such as a Vita .dpt or GameNative .pcgame) {file.text} {tags.<name>} (a '[name] value' line in the file) {storage} {roms} {package}. 'firstDisc': true hands a multi-disc game's first disc to a player that can't open its .m3u playlist. 'byExtension' changes a player for one extension, or 'dir' for games that are folders. 'store' is where to get the emulator (GitHub releases open in Obtainium when it is installed); without it the Play Store is used. 'note' marks launch details still to verify on a device. Component '*' opens the file with the default app.",
  "platforms": [
   {
    "id": "n3ds",
@@ -205,7 +205,8 @@
      "name": "Dolphin",
      "component": "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
      "action": "android.intent.action.MAIN",
-     "game": "extra-uri:AutoStartFile"
+     "game": "extra-uri:AutoStartFile",
+     "firstDisc": true
     },
     {
      "name": "RetroArch · Dolphin",
@@ -243,7 +244,8 @@
      "name": "Dolphin",
      "component": "org.dolphinemu.dolphinemu/org.dolphinemu.dolphinemu.ui.main.MainActivity",
      "action": "android.intent.action.MAIN",
-     "game": "extra-uri:AutoStartFile"
+     "game": "extra-uri:AutoStartFile",
+     "firstDisc": true
     },
     {
      "name": "RetroArch · Dolphin",
@@ -646,6 +648,7 @@
      "component": "com.armsx2/com.armsx2.MainActivity",
      "action": "android.intent.action.VIEW",
      "game": "data",
+     "firstDisc": true,
      "store": "https://github.com/ARMSX2/ARMSX2/releases",
      "note": "verify: MainActivity is an alias of com.armsx2.Main"
     },
@@ -654,6 +657,7 @@
      "component": "xyz.aethersx2.android/xyz.aethersx2.android.EmulationActivity",
      "action": "android.intent.action.MAIN",
      "game": "extra-uri:bootPath",
+     "firstDisc": true,
      "store": "https://github.com/Trixarian/NetherSX2-patch/releases"
     },
     {

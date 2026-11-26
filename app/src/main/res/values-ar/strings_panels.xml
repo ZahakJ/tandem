@@ -119,4 +119,5 @@
     <string name="panels_side_cant_clear">هذا الإشعار لا يُمسح</string>
     <string name="panels_side_allow_access">فعّل Tandem هنا، ثم عُد</string>
     <string name="panels_side_private">مخفي في الوضع الخاص</string>
+    <string name="panels_start_sort_favs_first">المفضّلة أولًا</string>
 </resources>

@@ -17,7 +17,7 @@ These work on almost every screen.
 | <kbd>Y</kbd> | Options for the highlighted thing (see [Y menus](#y-menus)) |
 | <kbd>Start</kbd> (tap) | The Start panel (see [The Start panel](#the-start-panel)); in Settings, close Settings |
 | <kbd>Start</kbd> (hold) | Quick settings: brightness, volume, Wi-Fi, Battery saver and the like |
-| <kbd>Select</kbd> (tap) | Surprise me: jump to a game from [This week](library.md#this-week)'s board, then to one you have never played |
+| <kbd>Select</kbd> (tap) | Surprise me: a reel of covers spins for a second and lands on a game from [This week](library.md#this-week)'s board, then on one you have never played, which the list then shows. Any button stops the reel; with **Reduce motion** it just jumps there |
 | <kbd>Select</kbd> (hold), or <kbd>Select</kbd> + <kbd>Start</kbd> | Game switcher: every running game, to resume or close |
 | <kbd>L1</kbd> / <kbd>R1</kbd> | The group before or after. On Home each layout steps through its groups (see [L1 and R1 on Home](#l1-and-r1-on-home)); inside a system, collection or genre, the previous or next one; in Settings the page before or after; in Stats the tabs. On the icon grid and inside its folders: bigger or smaller icons. Held on its own a moment, it keeps going, four steps a second |
 | <kbd>L2</kbd> / <kbd>R2</kbd> | In a list of games, the previous or next letter (or year, rating); in other long lists and grids a page up or down (on home, <kbd>R2</kbd> opens the side panel; on the icon grid <kbd>L2</kbd> shows the Recently played strip, and on its Continue card both step through your last games; on Orbit's ring and Stage's row they make the bigger jump, see [L1 and R1 on Home](#l1-and-r1-on-home)) |

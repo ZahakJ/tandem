@@ -73,6 +73,19 @@ Tandem looks through every game folder and `ROMs` once each, when it starts and 
 ![The Nintendo 3DS screen with genre folders first: Action and Adventure, Platformers, Puzzle, RPG and Strategy, and more, each with a fan of covers and a game count.](../../site/assets/screenshots/system-grid.webp "A system with its folders first")
 ![The bottom screen for a highlighted folder: a fan of its covers above the folder's name, Action and Adventure, and its 25 games.](../../site/assets/screenshots/folder-bottom.webp "A highlighted folder on the bottom screen")
 
+### Multi-disc games
+
+A game on several discs is **one tile**, with a **3 discs** chip on the bottom screen.
+
+- **With an `.m3u` playlist** in the folder, the playlist is the game, and the discs it lists (beside it or in a subfolder) are not games of their own.
+- **Without one**, files in the same folder whose names differ only in a disc mark are one game: `Final Fantasy VII (USA) (Disc 1).chd`, `(Disc 2)`, `(Disc 3)`. `[CD 2]`, `(Disk 2 of 3)` and a trailing ` CD2` count too, for files of the same kind. The game is disc 1.
+
+Starting it, Tandem hands the emulator the playlist, so DuckStation, RetroArch and the others can change discs from their own menus. **Dolphin, ARMSX2 and NetherSX2** can't open a playlist handed over by Android, so they get disc 1, and you change discs in their menu (`firstDisc` in [`platforms.json`](platforms.md#using-your-own-platformsjson)). A game grouped by names starts on disc 1 everywhere.
+
+**Make playlists (.m3u)** in **Settings › Library & art › Sorting & discs** writes a playlist next to the discs of every game grouped by names, for emulators that change discs only with one. It first shows what it will write ("Metal Gear Solid: 2 discs → `Metal Gear Solid (USA).m3u`") and moves or renames nothing. Its toast has **Undo**; later, delete the `.m3u` it made (each starts with `# Made by Tandem`).
+
+Play time, favourites and details stay with the game: it keeps the playlist's key, or disc 1's. What other discs had as tiles of their own before (play time, sessions, a favourite) joins it once, at the next scan. Art scraped for disc 1 shows for the playlist too.
+
 ## Artwork
 
 Tandem uses the artwork you already have, laid out the way ES-DE and similar frontends do it, and can download the rest for you.
@@ -319,6 +332,7 @@ A smart folder fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". 
 
 | Rule | What it does |
 | --- | --- |
+| Match | **All rules** (the default): a game must pass every rule you set. **Any rule**: one is enough, so Favorites only with Genres RPG gives every favorite and every RPG. Rules left at Any don't count either way. |
 | Systems | Only games from the systems you pick. None picked: every system. |
 | Genres | Games with any of the genres you pick. Games without genres use their subfolder, as in Genres above. |
 | Title has | Titles containing this text, in any case. With **Match as** set to **Regex**, the text is a regular expression searched anywhere in the title. A pattern that isn't valid matches nothing, and the form says so. |
@@ -328,6 +342,10 @@ A smart folder fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". 
 | Status | Games with any of the [statuses](#game-status) you pick; **None** is games without one, and Finished takes Completed games too. |
 | How many | **All**, or a random 5, 10, 20 or 50 of the matches. The pick stays the same until Tandem next starts. |
 | Emulator | Only games that start with this emulator, by their own choice or their system's default. |
+| Rating from, Rating up to | The game's rating out of five stars, in half stars. Games without a rating are left out once either is set. |
+| Developer has, Publisher has | Developers or publishers containing this text, in any case (`Capcom`, `Square`). |
+| Played more than, Played less than | Play time, all sessions together, in hours (1 to 100). Less than takes games never played too. |
+| Last played | **In the last** 1, 7, 30, 90 or 365 days; **Not in** 30, 90 or 365 days (games never played too); or **Never**. |
 | Sort | A–Z, Recently played, Most played, Date added or System. The folder keeps this order; the global **Sort by** doesn't apply. |
 | Open games on | **Top**, **Bottom** or **Default**. Games opened from inside the folder start on that screen, unless the game has its own screen setting. |
 
@@ -341,15 +359,18 @@ A smart folder fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". 
 - **Open games on** works for ordinary folders too.
 - Smart folders can be designed, renamed, hidden and deleted like any folder.
 - Hidden games appear in them only while hidden games are showing, and hiding a smart folder hides the folder, not its games.
-- They are stored in `icon-grid.json` with the rest of the grid.
+- They are stored in `icon-grid.json` with the rest of the grid. Folders made before Match and the newer rules existed read as they did: every rule, none of the new ones.
+- **Last played** counts days from when the folder was last worked out (any change to the library or a game's details, or a new start).
 
 </details>
 
 ## Sorting and display
 
-<kbd>Y</kbd> on a system or collection screen, while a folder is highlighted, opens the **View** menu (also in **Settings › Library & art** and **Settings › Home & layout › How games show**).
+<kbd>Y</kbd> on a system or collection screen, while a folder is highlighted, opens the **View** menu (also in **Settings › Library & art › Sorting & discs** and **Settings › Home & layout › How games show**).
 
-- **Sort by**: Name, Recently played, Most played, Release year, Rating or Recently added. Continue playing, Most played and Recently added keep their own order.
+- **Sort by**: Name, Recently played, Most played, Release year, Rating, Recently added or System (by system, then name: for collections that mix systems). Continue playing, Most played and Recently added keep their own order.
+- **Names skip a leading article:** The Legend of Zelda sorts under L, and so does the letter <kbd>L2</kbd> / <kbd>R2</kbd> jump to. English The, A and An always; Le, La, Les and L' in French, Der, Die and Das in German, El, La, Los and Las in Spanish when Tandem or the device speaks that language; ال at the start of an Arabic title. Japanese and Chinese have none. **Ignore “The” and “A”** in **Settings › Library & art › Sorting & discs** switches it off.
+- **Favorites first** (same page, or <kbd>Start</kbd> › **Sort**) puts your favorites at the top of every sorted list, each part in the chosen order. A game you favorite while a list is open moves the next time you open it.
 - **Game titles**: show the name under each tile, or only the art.
 - **Hidden games**: show or hide them.
 
@@ -493,7 +514,7 @@ Some games aren't really in your games folder:
 <details>
 <summary>Multi-file games, and what Tandem will never delete</summary>
 
-**Multi-file games take their parts with them:** a `.cue` its `.bin` tracks, a `.gdi` its tracks, an `.m3u` playlist its discs (and their tracks), a `.ccd` its `.img` and `.sub`, an `.mds` its `.mdf`, and a folder game (a PS3 `Game.ps3` folder, say) everything inside it. A part that another playlist or cue sheet in the same folder still uses stays, and the popup says so.
+**Multi-file games take their parts with them:** a `.cue` its `.bin` tracks, a `.gdi` its tracks, an `.m3u` playlist its discs (and their tracks), a [multi-disc game](#multi-disc-games) without a playlist every disc, a `.ccd` its `.img` and `.sub`, an `.mds` its `.mdf`, and a folder game (a PS3 `Game.ps3` folder, say) everything inside it. A part that another playlist or cue sheet in the same folder still uses stays, and the popup says so.
 
 **Safety.** Tandem only ever deletes inside the ROMs folder, the folders you added in Systems, and `downloaded_media`. It checks where every file really is, and refuses when a file or a link inside a game points somewhere else. It never deletes a whole system folder, or a folder that holds other games. A running game has to be closed first (the popup offers to close it). A hidden game can be deleted while hidden games are showing; in private mode its name never appears in a toast, and nothing about it is logged.
 

@@ -59,5 +59,5 @@ body:
     attributes:
       label: Logs or screenshots
       description: |
-        A log helps most: connect with adb and run `adb logcat -s Tandem` while the problem happens. Screenshots or a short video are great for anything visual.
+        A log helps most: right after the problem, choose Settings › Play & system › Updates › Send a bug report in Tandem and attach the zip it saves (it is redacted; nothing is sent by itself). With a computer, `adb logcat -s Tandem` works too. Screenshots or a short video are great for anything visual.
       render: text
