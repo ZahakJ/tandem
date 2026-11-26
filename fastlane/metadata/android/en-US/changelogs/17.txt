@@ -1,0 +1,7 @@
+- Y lifts a tile in place: Open or Edit. Hold Y to move it.
+- A new edit screen, your own pictures and GIFs as art, per-tile corners.
+- Start › Layout tries every layout live. New Stage layout.
+- L1/R1 means next group on every layout; a gliding highlight; a Continue card.
+- Real system art from the web, or Tandem's own drawn art sets.
+- DroidDeck and GameNative games show up on their own.
+- Share your look; Thock sounds; a light buzz on every move.

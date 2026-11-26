@@ -119,7 +119,7 @@ After the first scan, Pip walks you through a few choices. Every step can be ski
    - **Orbit**: systems on an orbit of round icons.
    - **Minimal**: a compact list, no music.
 
-   **Settings › Home & layout** has all seven layouts any time.
+   **Settings › Home & layout** has all eight layouts any time, and **Start › Layout** tries them live on your own home.
 3. **I found your Cocoon things** (only when Cocoon files are on the device): **Bring my Cocoon setup over** copies your Cocoon home, dock and theme from its newest backup, or **Wear** its theme pack.
 4. **Artwork & details**: the art sources, no-account ones first. **Get LaunchBox (105 MB, Wi-Fi)** downloads LaunchBox's index for art with no account; <kbd>A</kbd> on a source shows how to set it up. Skipping is fine: see [Get artwork](#get-artwork).
 5. **Pick up right where you left off**: allow Tandem in Shizuku for [resume](resume.md), or **Skip for now**.
