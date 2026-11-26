@@ -68,10 +68,13 @@ object Collections {
             )
         }
         val home: List<GameCollection> by lazy { everyOne.filter { it.games.isNotEmpty() } }
-        /** Every genre name a smart folder can pick, read as [computeGenres] reads them (single games too). */
+        /**
+         * Every genre a smart folder can pick, read as [computeGenres] reads them (single games too), one name per
+         * bucket (data/Genres.kt) as search's Genre filter offers them.
+         */
         val genreNames: List<String> by lazy {
             val tidied = HashMap<String, String>()
-            all.flatMapTo(sortedSetOf(String.CASE_INSENSITIVE_ORDER)) { g -> genresOf(g, tidied) }.toList()
+            io.github.zahakj.tandem.data.Genres.choices(all.flatMap { g -> genresOf(g, tidied) })
         }
 
         /** Smart folders' games by folder id and rule: the folders' own, and the editor's previews. */

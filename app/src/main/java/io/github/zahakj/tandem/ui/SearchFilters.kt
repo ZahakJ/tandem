@@ -159,7 +159,8 @@ internal fun SearchFilterSheet(views: List<Pair<Game, SmartGame>>) {
         val c = shown ?: return@remember emptyList()
         val list = when (c) {
             Chip.System -> views.map { it.first.platform }.distinctBy { it.id }.sortedBy { it.name.lowercase() }.map { PickOption(it.id, it.name) }
-            Chip.Genre -> views.flatMap { it.second.genres }.distinctBy { it.lowercase() }.sortedBy { it.lowercase() }.map { PickOption(it, it) }
+            // One per bucket (Genres.kt): "Platform" and "Platformers" are one choice, "RPG & Strategy" counts for both.
+            Chip.Genre -> io.github.zahakj.tandem.data.Genres.choices(views.flatMap { it.second.genres }).map { PickOption(it, it) }
             Chip.Year -> SearchFilter.decades(views.mapNotNull { it.second.year }).map { PickOption("$it", SearchFilters.years(it, it + 9)) }
             Chip.Rating -> SearchFilter.RATINGS.map { PickOption("$it", SearchFilters.stars(it)) }
             Chip.Status -> (GameStatus.entries.map { it.id } + SmartRule.STATUS_NONE).map { PickOption(it, SearchFilters.statusLabel(it)) }

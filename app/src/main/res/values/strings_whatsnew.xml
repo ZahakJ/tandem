@@ -81,4 +81,41 @@
     <string name="whatsnew_090_share_title">Share it, hear it, feel it</string>
     <string name="whatsnew_090_share_body">Send your look as a file, a link or a QR code, or grab one from the community gallery. Then try Thock\'s deep keyboard sounds and a light buzz on every move.</string>
     <string name="whatsnew_090_share_short">Share &amp; Thock</string>
+
+    <!-- The 0.10 deck. "short" is the slide's name on the dots and the other screen: keep it very short. -->
+    <!-- Under "Tandem 0.10" at the top of the deck. -->
+    <string name="whatsnew_0100_tagline">Picked, spun and sorted</string>
+
+    <string name="whatsnew_0100_week_title">This week, picked for you</string>
+    <string name="whatsnew_0100_week_body">Every Monday, a board of games from your own shelves, each with its reason: pick up where you left off, almost there, short tonight. X re-rolls a row, Y says Not for me.</string>
+    <string name="whatsnew_0100_week_short">This week</string>
+
+    <string name="whatsnew_0100_surprise_title">Surprise me, with a spin</string>
+    <string name="whatsnew_0100_surprise_body">Select spins a reel of covers that lands on something to play, from this week\'s picks first. Any button stops the reel.</string>
+    <string name="whatsnew_0100_surprise_short">Surprise me</string>
+
+    <string name="whatsnew_0100_discs_title">Many discs, one game</string>
+    <string name="whatsnew_0100_discs_body">A game on several discs is one tile now. Your emulator wants an .m3u? Settings › Library &amp; art writes one beside the discs.</string>
+    <string name="whatsnew_0100_discs_short">Multi-disc</string>
+
+    <string name="whatsnew_0100_smart_title">Sorted, smarter</string>
+    <string name="whatsnew_0100_smart_body">Names sort without “The”, favourites can come first, and smart folders learn rating, developer, publisher, play time and last played, with All or Any.</string>
+    <string name="whatsnew_0100_smart_short">Sorting &amp; rules</string>
+
+    <string name="whatsnew_0100_search_title">Search, with filters</string>
+    <string name="whatsnew_0100_search_body">Press Up in search for system, genre, year, rating, status, played and favourites. Type nothing and they browse your whole library.</string>
+    <string name="whatsnew_0100_search_short">Search filters</string>
+
+    <string name="whatsnew_0100_ra_title">Achievements, up close</string>
+    <string name="whatsnew_0100_ra_body">A RetroAchievements game\'s whole list, with filters, sorts and players\' hints, on the other screen while you play too. Disc games now match by their hash.</string>
+    <string name="whatsnew_0100_ra_short">RetroAchievements</string>
+
+    <string name="whatsnew_0100_settings_title">Settings, at a glance</string>
+    <string name="whatsnew_0100_settings_body">Settings opens on eight tiles, each with a tiny live sketch of what\'s inside. Something odd? Send a bug report saves one for you, no computer needed.</string>
+    <string name="whatsnew_0100_settings_short">Settings</string>
+
+    <!-- The last slide: a new soundtrack made for this version. -->
+    <string name="whatsnew_0100_music_title">A new cozy soundtrack</string>
+    <string name="whatsnew_0100_music_body">Fresh music to browse by, soft and warm, like a blanket for your library. Turn it up in Settings › Sound &amp; music.</string>
+    <string name="whatsnew_0100_music_short">Soundtrack</string>
 </resources>

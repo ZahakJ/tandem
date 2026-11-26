@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Button
 import io.github.zahakj.tandem.Buttons
@@ -545,21 +546,23 @@ fun ListScrolling(state: LazyListState, pad: Dp = 40.dp, content: @Composable ()
  * row, a gallery's title), and [extra] above that (the list's top padding, so the first item shows the very top),
  * in the same scroll as the child. A second scroll for the heading, started after the first, fought it: while the
  * D-pad was held it cancelled the scroll to the next row and pulled the list back up to a heading left behind.
+ * With [whole], down to its bottom too (the chips and names under a row's covers).
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Modifier.showsFromTop(extra: Dp = 0.dp): Modifier {
+fun Modifier.showsFromTop(extra: Dp = 0.dp, whole: Boolean = false): Modifier {
     val px = with(LocalDensity.current) { extra.toPx() }
-    val responder = remember(px) {
+    val height = remember { floatArrayOf(0f) }
+    val responder = remember(px, whole) {
         object : androidx.compose.foundation.relocation.BringIntoViewResponder {
             override fun calculateRectForParent(localRect: androidx.compose.ui.geometry.Rect) =
-                localRect.copy(top = minOf(localRect.top, 0f) - px)
+                localRect.copy(top = minOf(localRect.top, 0f) - px, bottom = if (whole) maxOf(localRect.bottom, height[0]) else localRect.bottom)
 
             // The item doesn't scroll; the list it sits in does.
             override suspend fun bringChildIntoView(localRect: () -> androidx.compose.ui.geometry.Rect?) = Unit
         }
     }
-    return bringIntoViewResponder(responder)
+    return (if (whole) onSizeChanged { height[0] = it.height.toFloat() } else this).bringIntoViewResponder(responder)
 }
 
 @OptIn(ExperimentalFoundationApi::class)

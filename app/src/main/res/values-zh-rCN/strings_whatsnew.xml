@@ -57,4 +57,39 @@
     <string name="whatsnew_090_share_title">分享、聆听、感受</string>
     <string name="whatsnew_090_share_body">把你的风格用文件、链接或二维码发出去，或者从社区画廊挑一个。再试试“麻将音”厚实的键盘敲击声，每次移动还会轻轻一震。</string>
     <string name="whatsnew_090_share_short">分享与麻将音</string>
+
+    <!-- 0.10 的幻灯片 -->
+    <string name="whatsnew_0100_tagline">挑一挑，转一转，理一理</string>
+
+    <string name="whatsnew_0100_week_title">本周推荐，为你挑好了</string>
+    <string name="whatsnew_0100_week_body">每周一，从你自己的游戏库里挑出一块推荐板，每款都附上理由：从上次停下的地方继续、就差一点通关、今晚就能玩完。X 重新抽这一排，Y 说「不感兴趣」。</string>
+    <string name="whatsnew_0100_week_short">本周推荐</string>
+
+    <string name="whatsnew_0100_surprise_title">随机来一款，转起来</string>
+    <string name="whatsnew_0100_surprise_body">按 Select，封面转盘转起来，停在一款游戏上，优先从本周推荐里挑。按任意键都能叫停。</string>
+    <string name="whatsnew_0100_surprise_short">随机来一款</string>
+
+    <string name="whatsnew_0100_discs_title">多张光盘，一款游戏</string>
+    <string name="whatsnew_0100_discs_body">多光盘游戏现在只占一个图块。模拟器要 .m3u？设置 › 游戏库与图片 会在光盘旁边帮你生成。</string>
+    <string name="whatsnew_0100_discs_short">多光盘</string>
+
+    <string name="whatsnew_0100_smart_title">排序更聪明</string>
+    <string name="whatsnew_0100_smart_body">名称排序会跳过「The」，收藏可以排在最前；智能文件夹新增评分、开发商、发行商、游玩时长和上次游玩等规则，还能选全部条件或任一条件。</string>
+    <string name="whatsnew_0100_smart_short">排序与规则</string>
+
+    <string name="whatsnew_0100_search_title">搜索，加上筛选</string>
+    <string name="whatsnew_0100_search_body">在搜索里按上键，按平台、类型、年份、评分、状态、玩过与否和收藏筛选。什么都不输入，就能逛遍整个游戏库。</string>
+    <string name="whatsnew_0100_search_short">搜索筛选</string>
+
+    <string name="whatsnew_0100_ra_title">成就，看个仔细</string>
+    <string name="whatsnew_0100_ra_body">RetroAchievements 的完整成就列表，带筛选、排序和玩家提示，玩的时候另一屏也能看。光盘游戏现在按哈希值匹配。</string>
+    <string name="whatsnew_0100_ra_short">RetroAchievements</string>
+
+    <string name="whatsnew_0100_settings_title">设置一目了然</string>
+    <string name="whatsnew_0100_settings_body">设置首页是八个图块，每块都有一幅会动的小速写，展示里面的内容。遇到怪事？「发送错误报告」帮你存一份，不用电脑。</string>
+    <string name="whatsnew_0100_settings_short">设置</string>
+
+    <string name="whatsnew_0100_music_title">温馨的新配乐</string>
+    <string name="whatsnew_0100_music_body">全新的背景音乐，柔和温暖，像给游戏库盖上一条小毯子。在 设置 › 声音与音乐 里调大音量吧。</string>
+    <string name="whatsnew_0100_music_short">配乐</string>
 </resources>

@@ -284,7 +284,7 @@ Hidden games are left out of everything unless **Show hidden games** is on.
 | New in your library | Added in the last two weeks and not played yet (not right after the first scan, when everything is new). |
 | More … for you, Something different | Your favourite genre, and a genre you rarely play. |
 
-A row shows only when something fits it. The bottom screen says why the highlighted game is there in a sentence ("About 2 h left by HowLongToBeat.", "Same studio as Hades, which you finished: Supergiant Games."), with the facts behind it as chips (time left, achievements, your time in its genre).
+A row shows only when something fits it. The bottom screen says why the highlighted game is there in a sentence ("About 2 h left by HowLongToBeat.", "Same studio as Hades, which you finished: Supergiant Games."), with the facts behind it as chips (time left, achievements, your time in its genre, up to three). While the board is open (a page, or a popup on the icon grid) the reason shows in large type (on the icon grid, in place of the game's story) with a **This week** chip and the row's name, and the button hints are the board's own: <kbd>X</kbd> Re-roll, <kbd>Y</kbd> Options. As a popup the board fits its height: the Pick of the week card shrinks so the first row shows under it, and the highlighted row always shows whole, names included.
 
 - **It stays put all week.** The picks are drawn with the week (Monday to Sunday) and a number made once on your handheld, so the board is the same every time you open it, and different from anyone else's. A game you start leaves its row (another takes its place); a new week brings a new board. Games shown in the last four weeks stay out while there is anything else to show, and no one system or genre fills the board.
 - <kbd>X</kbd> on a row draws it again, a little further down its list. <kbd>Y</kbd> on a pick has **Other picks for this row**, **Not for me** (it is never suggested again) and **Played it elsewhere** (marks it Finished without a play session), each with Undo; **Add to Up next** puts it at the top of the board.
@@ -327,7 +327,7 @@ Folders made before shortcuts existed keep their contents off the home grid, as 
 A smart folder fills itself from rules, like "Unplayed 3DS RPGs" or "Pokémon". Its contents update when the library, a game's details or its play history change, and the tile shows how many games are inside.
 
 1. Press <kbd>Start</kbd> › **New** › **Smart folder…**.
-2. Set the rules. <kbd>A</kbd> on a choice shows all its options in a grid (<kbd>◀</kbd> / <kbd>▶</kbd> steps through them too); **Systems** opens a grid of your systems with their icons and **Genres** one of genre chips, ticked while picked. The other screen shows the matching games as you go.
+2. Set the rules. <kbd>A</kbd> on a choice shows all its options in a grid (<kbd>◀</kbd> / <kbd>▶</kbd> steps through them too); **Systems** opens a grid of your systems with their icons and **Genres** one of genre chips, ticked while picked. Genres are offered once however your scrapers spell them ("Platform" and "Platformers", "Role Playing Game" and "Role-Playing" are one chip), and a game counts for each part of a genre like "RPG & Strategy"; This week groups genres the same way. The other screen shows the matching games as you go.
 3. <kbd>Start</kbd> or **Make the folder** saves; <kbd>B</kbd> leaves without saving.
 
 | Rule | What it does |

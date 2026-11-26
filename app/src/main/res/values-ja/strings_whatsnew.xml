@@ -57,4 +57,39 @@
     <string name="whatsnew_090_share_title">シェアして、聴いて、感じて</string>
     <string name="whatsnew_090_share_body">自分のスタイルをファイルやリンク、QRコードで送ったり、コミュニティのギャラリーからもらったり。さらに、コトコトの深いキーボード音と、カーソルが動くたびの軽い振動もどうぞ。</string>
     <string name="whatsnew_090_share_short">シェアとコトコト</string>
+
+    <!-- 0.10 のスライド -->
+    <string name="whatsnew_0100_tagline">選んで、回して、すっきり整理</string>
+
+    <string name="whatsnew_0100_week_title">今週のおすすめ、届きました</string>
+    <string name="whatsnew_0100_week_body">毎週月曜、あなたのライブラリからゲームを選んだボードが届きます。「前回の続きから」「クリアまであと少し」「今夜サクッと」と理由つき。Xで段を引き直し、Yで「興味なし」。</string>
+    <string name="whatsnew_0100_week_short">今週のおすすめ</string>
+
+    <string name="whatsnew_0100_surprise_title">おまかせは、くるくるリールで</string>
+    <string name="whatsnew_0100_surprise_body">Selectでパッケージのリールが回り、遊ぶゲームでピタッと止まります。まずは今週のおすすめから。どのボタンでも止められます。</string>
+    <string name="whatsnew_0100_surprise_short">おまかせ</string>
+
+    <string name="whatsnew_0100_discs_title">ディスクが何枚でも、ひとつのゲーム</string>
+    <string name="whatsnew_0100_discs_body">複数ディスクのゲームはタイル1枚にまとまりました。エミュレーターが.m3uを欲しがるなら、設定 › ライブラリとアートでディスクの隣に書き出せます。</string>
+    <string name="whatsnew_0100_discs_short">複数ディスク</string>
+
+    <string name="whatsnew_0100_smart_title">並び順、かしこく</string>
+    <string name="whatsnew_0100_smart_body">名前は「The」を除いて並び、お気に入りを先頭にもできます。スマートフォルダには評価、開発元、販売元、プレイ時間、最後に遊んだ日の条件と、「すべて」「どれか」が加わりました。</string>
+    <string name="whatsnew_0100_smart_short">並び順と条件</string>
+
+    <string name="whatsnew_0100_search_title">検索に絞り込み</string>
+    <string name="whatsnew_0100_search_body">検索で上を押すと、機種、ジャンル、年、評価、ステータス、プレイ、お気に入りで絞り込めます。何も入力しなければ、ライブラリ全体を眺められます。</string>
+    <string name="whatsnew_0100_search_short">絞り込み</string>
+
+    <string name="whatsnew_0100_ra_title">実績を、じっくり</string>
+    <string name="whatsnew_0100_ra_body">RetroAchievementsの実績一覧をまるごと。絞り込み、並び替え、プレイヤーのヒントつきで、遊んでいる間はもう一方の画面にも。ディスクのゲームはハッシュで照合します。</string>
+    <string name="whatsnew_0100_ra_short">RetroAchievements</string>
+
+    <string name="whatsnew_0100_settings_title">設定がひと目でわかる</string>
+    <string name="whatsnew_0100_settings_body">設定は8枚のタイルから。どれも中身を映す小さな動くスケッチつきです。困ったときは「不具合を報告」で、パソコンなしでレポートを保存できます。</string>
+    <string name="whatsnew_0100_settings_short">設定</string>
+
+    <string name="whatsnew_0100_music_title">ほっこり新BGM</string>
+    <string name="whatsnew_0100_music_body">ライブラリを眺めるお供に、やさしくてあたたかい新しいBGM。毛布みたいにくるんでくれます。設定 › サウンドとBGMで音量を上げてどうぞ。</string>
+    <string name="whatsnew_0100_music_short">BGM</string>
 </resources>

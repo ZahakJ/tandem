@@ -58,4 +58,39 @@
     <string name="whatsnew_090_share_title">Partage, écoute, ressens</string>
     <string name="whatsnew_090_share_body">Envoie ton look en fichier, en lien ou en QR code, ou pioches-en un dans la galerie de la communauté. Puis essaie les sons de clavier profonds de Thock et une légère vibration à chaque déplacement.</string>
     <string name="whatsnew_090_share_short">Partage et Thock</string>
+
+    <!-- Le diaporama de la 0.10 -->
+    <string name="whatsnew_0100_tagline">Choisi, tiré au sort, bien rangé</string>
+
+    <string name="whatsnew_0100_week_title">Cette semaine, rien que pour toi</string>
+    <string name="whatsnew_0100_week_body">Chaque lundi, un tableau de jeux tirés de ta propre bibliothèque, chacun avec sa raison : à reprendre, presque fini, vite fait ce soir. X relance une rangée, Y dit Pas pour moi.</string>
+    <string name="whatsnew_0100_week_short">Cette semaine</string>
+
+    <string name="whatsnew_0100_surprise_title">Surprends-moi, version machine à sous</string>
+    <string name="whatsnew_0100_surprise_body">Select fait tourner un rouleau de jaquettes qui s’arrête sur un jeu, d’abord parmi les choix de la semaine. N’importe quel bouton l’arrête.</string>
+    <string name="whatsnew_0100_surprise_short">Surprends-moi</string>
+
+    <string name="whatsnew_0100_discs_title">Plusieurs disques, un seul jeu</string>
+    <string name="whatsnew_0100_discs_body">Un jeu sur plusieurs disques n’a plus qu’une vignette. Ton émulateur veut un .m3u ? Paramètres › Bibliothèque et visuels l’écrit à côté des disques.</string>
+    <string name="whatsnew_0100_discs_short">Multi-disque</string>
+
+    <string name="whatsnew_0100_smart_title">Mieux rangé</string>
+    <string name="whatsnew_0100_smart_body">Les noms se trient sans « The », les favoris peuvent passer devant, et les dossiers intelligents gagnent note, développeur, éditeur, temps de jeu et dernière partie, avec Toutes ou Une seule.</string>
+    <string name="whatsnew_0100_smart_short">Tri et règles</string>
+
+    <string name="whatsnew_0100_search_title">La recherche, avec filtres</string>
+    <string name="whatsnew_0100_search_body">Appuie sur Haut dans la recherche pour filtrer par système, genre, année, note, statut, joué et favoris. Sans rien taper, ils parcourent toute ta bibliothèque.</string>
+    <string name="whatsnew_0100_search_short">Filtres</string>
+
+    <string name="whatsnew_0100_ra_title">Les succès, de près</string>
+    <string name="whatsnew_0100_ra_body">La liste complète des succès RetroAchievements d’un jeu, avec filtres, tris et indices des joueurs, aussi sur l’autre écran pendant que tu joues. Les jeux sur disque se reconnaissent à leur empreinte.</string>
+    <string name="whatsnew_0100_ra_short">RetroAchievements</string>
+
+    <string name="whatsnew_0100_settings_title">Les paramètres d’un coup d’œil</string>
+    <string name="whatsnew_0100_settings_body">Les paramètres s’ouvrent sur huit vignettes, chacune avec un petit croquis vivant de ce qu’elle contient. Un souci ? Envoyer un rapport de bug en prépare un, sans ordinateur.</string>
+    <string name="whatsnew_0100_settings_short">Paramètres</string>
+
+    <string name="whatsnew_0100_music_title">Une nouvelle bande-son toute douce</string>
+    <string name="whatsnew_0100_music_body">De la musique neuve pour flâner dans ta bibliothèque, douce et chaleureuse comme un plaid. Monte le son dans Paramètres › Son et musique.</string>
+    <string name="whatsnew_0100_music_short">Bande-son</string>
 </resources>

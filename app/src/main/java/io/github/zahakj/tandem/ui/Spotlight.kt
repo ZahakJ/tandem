@@ -476,6 +476,14 @@ private fun GameSpot(s: Spot, game: Game, shift: () -> Float, front: () -> Float
                 if (meta.favorite) Pill("♥", Palette.Peach, Modifier.darkChip())
                 GameExtrasBadges(game, Modifier.darkChip())
             }
+            // On This week's board: why it is there, large, with the facts behind it, in place of the credits and story.
+            if (WeekBoardOn.pickOf(game) != null) {
+                Column(
+                    Modifier.widthIn(max = textW).padding(top = 10.dp).riseIn(game.key, delayMs = 360, distance = 12.dp, fromScale = 0.97f),
+                    verticalArrangement = Arrangement.spacedBy(7.dp),
+                ) { WeekReason(game, onArt = true, large = true) }
+                return@Column
+            }
             val credits = remember(meta, Lang.revision.intValue) { creditsLine(meta) }
             if (credits != null) {
                 Text(
@@ -666,6 +674,14 @@ private fun SpotHints(s: Spot, modifier: Modifier) {
             ButtonHint("A", Tx.s(if (IconGrid.moving?.carried == true) R.string.home_spot_hint_paste else R.string.home_spot_hint_add), Palette.Mint)
             ButtonHint("Y", Tx.s(R.string.home_spot_hint_options), Palette.Butter)
             if (ScreenRoles.xSwaps()) ButtonHint("X", Tx.s(R.string.home_spot_hint_swap), Palette.Sky)
+        } else if (s.game != null && WeekBoardOn.pickOf(s.game) != null) {
+            // On This week's board: its own buttons (X re-rolls the row there, never swaps the screens).
+            val resumable = RunningGames.list.any { it.game?.key == s.game.key }
+            ButtonHint("A", Tx.s(if (resumable) R.string.home_spot_hint_resume else R.string.home_spot_hint_play), Palette.Mint)
+            ButtonHint("X", Tx.s(R.string.week_hint_reroll), Palette.Sky)
+            ButtonHint("Y", Tx.s(R.string.home_spot_hint_options), Palette.Butter)
+            // As a page L1 / R1 still flip to the lists either side; in a popup they do nothing.
+            if (!WeekBoardOn.popup) ListSwitchHint()
         } else {
             val resumable = s.game != null && RunningGames.list.any { it.game?.key == s.game.key }
             ButtonHint("A", Tx.s(if (s.game == null) R.string.home_spot_hint_open else if (resumable) R.string.home_spot_hint_resume else R.string.home_spot_hint_play), Palette.Mint)

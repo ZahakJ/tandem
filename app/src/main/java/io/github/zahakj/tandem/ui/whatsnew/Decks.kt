@@ -38,7 +38,7 @@ class Deck(val version: String, @StringRes val tagline: Int, val slides: List<Sl
 
 object Decks {
     /** Every deck, oldest first. A new minor version adds its own at the end. */
-    val all: List<Deck> by lazy { listOf(deck090) }
+    val all: List<Deck> by lazy { listOf(deck090, deck0100) }
 
     val versions: List<String> get() = all.map { it.version }
 
@@ -57,5 +57,24 @@ private val deck090 = Deck(
         Slide("art", R.string.whatsnew_090_art_title, R.string.whatsnew_090_art_body, R.string.whatsnew_090_art_short, Glyph.Image, Tint.Peach, 1) { ArtVisual() },
         Slide("library", R.string.whatsnew_090_library_title, R.string.whatsnew_090_library_body, R.string.whatsnew_090_library_short, Glyph.Gamepad, Tint.Sky, 0) { LibraryVisual() },
         Slide("share", R.string.whatsnew_090_share_title, R.string.whatsnew_090_share_body, R.string.whatsnew_090_share_short, Glyph.Heart, Tint.Lavender, 1) { ShareVisual() },
+    ),
+)
+
+/**
+ * 0.10: This week, Surprise me's reel, multi-disc games, smarter sorting and rules, search filters, RetroAchievements
+ * up close, the Settings home, and the new soundtrack last (its words and picture stand in until the music is final:
+ * a cozy tune, an equaliser and notes). Pictures in Visuals010.kt.
+ */
+private val deck0100 = Deck(
+    "0.10.0", R.string.whatsnew_0100_tagline,
+    listOf(
+        Slide("week", R.string.whatsnew_0100_week_title, R.string.whatsnew_0100_week_body, R.string.whatsnew_0100_week_short, Glyph.Star, Tint.Butter, 1) { WeekVisual() },
+        Slide("surprise", R.string.whatsnew_0100_surprise_title, R.string.whatsnew_0100_surprise_body, R.string.whatsnew_0100_surprise_short, Glyph.Sparkle, Tint.Peach, 1) { SurpriseVisual() },
+        Slide("discs", R.string.whatsnew_0100_discs_title, R.string.whatsnew_0100_discs_body, R.string.whatsnew_0100_discs_short, Glyph.Layers, Tint.Sky, 0) { DiscsVisual() },
+        Slide("smart", R.string.whatsnew_0100_smart_title, R.string.whatsnew_0100_smart_body, R.string.whatsnew_0100_smart_short, Glyph.Sort, Tint.Lavender, 0) { SmartVisual() },
+        Slide("search", R.string.whatsnew_0100_search_title, R.string.whatsnew_0100_search_body, R.string.whatsnew_0100_search_short, Glyph.Search, Tint.Mint, 0) { SearchVisual() },
+        Slide("ra", R.string.whatsnew_0100_ra_title, R.string.whatsnew_0100_ra_body, R.string.whatsnew_0100_ra_short, Glyph.Trophy, Tint.Butter, 1) { AchievementsVisual() },
+        Slide("settings", R.string.whatsnew_0100_settings_title, R.string.whatsnew_0100_settings_body, R.string.whatsnew_0100_settings_short, Glyph.Grid, Tint.Peach, 0) { SettingsVisual() },
+        Slide("music", R.string.whatsnew_0100_music_title, R.string.whatsnew_0100_music_body, R.string.whatsnew_0100_music_short, Glyph.Music, Tint.Lavender, 1) { MusicVisual() },
     ),
 )

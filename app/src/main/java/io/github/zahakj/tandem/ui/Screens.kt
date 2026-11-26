@@ -343,9 +343,9 @@ fun SystemScreen(route: Route.System) {
 }
 
 @Composable
-fun CollectionScreen(route: Route.Collection) {
+fun CollectionScreen(route: Route.Collection, popup: Boolean = false) {
     // This week opens as its board: a row per slot, each pick with its reason (WeekBoardUi.kt).
-    if (route.id == io.github.zahakj.tandem.ThisWeek.ID) return WeekBoardScreen(route.key)
+    if (route.id == io.github.zahakj.tandem.ThisWeek.ID) return WeekBoardScreen(route.key, popup)
     val meta = Store.meta
     val showHidden = Privacy.view
     val sort = Store.settings.sort

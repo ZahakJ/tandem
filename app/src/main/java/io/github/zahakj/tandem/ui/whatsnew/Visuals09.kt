@@ -86,23 +86,23 @@ import kotlin.math.sin
  */
 
 /** Sample systems: an id the art sets draw, and its short name (system names are never translated). */
-private val Samples = listOf(
+internal val Samples = listOf(
     "snes" to "SNES", "gba" to "GBA", "n64" to "N64", "psx" to "PS1", "genesis" to "Genesis", "nds" to "DS", "gb" to "Game Boy", "switch" to "Switch",
 )
 
 /** The art set the pictures wear: the user's own when one is on, else Pastel Pop. */
-private fun sampleSet(): String = Store.settings.look.artSet?.takeIf { ArtSets.isSet(it) } ?: ArtSets.PASTEL
+internal fun sampleSet(): String = Store.settings.look.artSet?.takeIf { ArtSets.isSet(it) } ?: ArtSets.PASTEL
 
 /** A system tile as the grid draws it with an art set. */
 @Composable
-private fun SampleTile(k: Int, size: Dp, modifier: Modifier = Modifier, corner: Dp = 14.dp) {
+internal fun SampleTile(k: Int, size: Dp, modifier: Modifier = Modifier, corner: Dp = 14.dp) {
     val (id, short) = Samples[k % Samples.size]
     Box(modifier.size(size).clip(RoundedCornerShape(corner))) { SetIconPreview(sampleSet(), id, short) }
 }
 
 /** Box art for a sample game, drawn in the theme's colours (a sun over two hills). */
 @Composable
-private fun SampleCover(k: Int, modifier: Modifier = Modifier) {
+internal fun SampleCover(k: Int, modifier: Modifier = Modifier) {
     Canvas(modifier) {
         val a = Palette.accents
         val c1 = a[k % a.size]
@@ -118,7 +118,7 @@ private fun SampleCover(k: Int, modifier: Modifier = Modifier) {
 
 /** A row of a popup card like the lift's: an icon chip, the label and maybe a value chip. */
 @Composable
-private fun MenuPill(glyph: Glyph, label: String, color: Color, modifier: Modifier = Modifier, value: String? = null, sub: String? = null) {
+internal fun MenuPill(glyph: Glyph, label: String, color: Color, modifier: Modifier = Modifier, value: String? = null, sub: String? = null) {
     Row(modifier.fillMaxWidth().height(if (sub != null) 44.dp else 34.dp).padding(horizontal = 5.dp), verticalAlignment = Alignment.CenterVertically) {
         GlyphChip(glyph, color, size = 24.dp, round = true)
         Spacer(Modifier.width(8.dp))
@@ -137,7 +137,7 @@ private fun MenuPill(glyph: Glyph, label: String, color: Color, modifier: Modifi
 
 /** The gliding highlight of a popup card: a pill ringed in [color], at [y] (dp) from the card's first row. */
 @Composable
-private fun RowHighlight(color: Color, height: Dp, y: () -> Float) {
+internal fun RowHighlight(color: Color, height: Dp, y: () -> Float) {
     Box(
         Modifier.offset { IntOffset(0, (y() * density).roundToInt()) }.fillMaxWidth().height(height)
             .clip(RoundedCornerShape(50)).background(color.copy(alpha = 0.2f)).border(2.dp, color, RoundedCornerShape(50)),
@@ -146,7 +146,7 @@ private fun RowHighlight(color: Color, height: Dp, y: () -> Float) {
 
 /** A short line in a pill: what a part of a picture is called. */
 @Composable
-private fun Caption(glyph: Glyph, text: String, color: Color, modifier: Modifier = Modifier) {
+internal fun Caption(glyph: Glyph, text: String, color: Color, modifier: Modifier = Modifier) {
     Row(
         modifier.clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.92f)).padding(start = 3.dp, end = 10.dp, top = 3.dp, bottom = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -159,7 +159,7 @@ private fun Caption(glyph: Glyph, text: String, color: Color, modifier: Modifier
 
 /** Slides between the values of a loop's step, from the end side, as Tandem's pages turn. */
 @Composable
-private fun <T> Turning(value: T, modifier: Modifier = Modifier, content: @Composable (T) -> Unit) {
+internal fun <T> Turning(value: T, modifier: Modifier = Modifier, content: @Composable (T) -> Unit) {
     val sign = startSign
     val still = showcaseStill()
     AnimatedContent(

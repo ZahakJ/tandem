@@ -63,6 +63,7 @@ it. To write one:
    lines.
 2. Give each slide a picture: preferably a live piece of Tandem drawn by its own composables with sample data (the
    0.9 deck in `Visuals09.kt` uses the art sets, the layout sketches, the L1/R1 strip, the try-on popup, a QR code,
+   Pip; the 0.10 deck in `Visuals010.kt` reuses its sample covers and draws This week's reasons, the Settings tiles,
    Pip), laid out at the design size (360 × 232 dp) from the start side so it mirrors in Arabic, its parts
    arriving one after another (`Modifier.arrive(i)`) and then looping (`rememberLoop`), holding a telling still
    frame with Reduce motion. A drawing in a `Canvas` comes next; a picture file is the last resort.

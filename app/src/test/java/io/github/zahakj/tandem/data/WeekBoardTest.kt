@@ -73,7 +73,7 @@ class WeekBoardTest {
     @Test fun everySlotFindsItsGames() {
         val b = build()
         val pick = row(b, WeekSlot.Pick)!!.picks.single()
-        val rpgs = library.filter { it.playSeconds == 0L && it.genres.any { g -> WeekBoard.bucket(g) == "rpg" } && !it.hidden }.map { it.key }
+        val rpgs = library.filter { it.playSeconds == 0L && it.genres.any { g -> "rpg" in Genres.buckets(g) } && !it.hidden }.map { it.key }
         assertTrue("the hero is an RPG you haven't started: ${pick.key}", pick.key in rpgs)
         assertTrue(pick.why is WeekWhy.Taste)
         assertEquals("Role-Playing", (pick.why as WeekWhy.Taste).genre)
@@ -209,7 +209,7 @@ class WeekBoardTest {
         val finished = library.map { if (it.key == hero) it.copy(status = "finished", statusAt = now, finishedAt = now) else it }
         val after = build(finished)
         assertNull(after.pickOf(hero))
-        assertTrue(WeekBoard.Taste(finished, now).genre.getValue(WeekBoard.bucket("Role-Playing")) > 0.0)
+        assertTrue(WeekBoard.Taste(finished, now).genre.getValue(Genres.buckets("Role-Playing").first()) > 0.0)
         assertTrue(WeekBoard.Taste.weight(finished.first { it.key == hero }, now) > 0.0)
     }
 
@@ -290,11 +290,11 @@ class WeekBoardTest {
     }
 
     @Test fun genresFallIntoBuckets() {
-        assertEquals("rpg", WeekBoard.bucket("Action RPG"))
-        assertEquals("rpg", WeekBoard.bucket("Role-Playing"))
-        assertEquals("racing", WeekBoard.bucket("Racing"))
-        assertEquals("adventure", WeekBoard.bucket("Action-Adventure"))
-        assertEquals("my folder", WeekBoard.bucket(" My Folder "))
+        assertEquals("rpg", Genres.buckets("Action RPG").first())
+        assertEquals("rpg", Genres.buckets("Role-Playing").first())
+        assertEquals("racing", Genres.buckets("Racing").first())
+        assertEquals("adventure", Genres.buckets("Action-Adventure").first())
+        assertEquals("my folder", Genres.buckets(" My Folder ").first())
     }
 
     @Test fun seriesComeFromTitles() {

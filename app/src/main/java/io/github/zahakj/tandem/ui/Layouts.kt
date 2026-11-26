@@ -157,10 +157,15 @@ fun FolderPopupHost() {
         val look = Store.settings.look
         val header = rememberHeaderFocus()
         val smart = SmartFolders.folderOf(r)
-        FolderSheet(title, null, color, onBack = { FolderPopup.back() }, art = SmartFolders.art(r) ?: folderArtFor(r), header = header, actions = {
+        // This week's board has no sort or view: its week and its buttons (X Re-roll, Y Options) take their place,
+        // and the board below gets the whole height.
+        val week = r is Route.Collection && r.id == io.github.zahakj.tandem.ThisWeek.ID && io.github.zahakj.tandem.ThisWeek.enabled
+        FolderSheet(title, if (week) weekOfText() else null, color, onBack = { FolderPopup.back() }, art = SmartFolders.art(r) ?: folderArtFor(r), header = if (week) null else header, actions = {
             // Sort and view, reachable with Up from the first row (or a tap): Up lands on the one above (Focus.kt).
             // A smart folder keeps its own sort (Y › Edit rules…).
-            if (r != Route.Genres) {
+            if (week) {
+                WeekBoardHints()
+            } else if (r != Route.Genres) {
                 if (smart == null) FocusCard(
                     Modifier.height(36.dp).headerControl(header, "sort"), glow = Palette.Sky, shape = RoundedCornerShape(50),
                     onClick = { Store.updateSettings { it.copy(sort = io.github.zahakj.tandem.data.SortOrder.entries[(it.sort.ordinal + 1) % io.github.zahakj.tandem.data.SortOrder.entries.size]) } },
@@ -186,7 +191,7 @@ fun FolderPopupHost() {
         }) {
             when (r) {
                 is Route.System -> SystemScreen(r)
-                is Route.Collection -> CollectionScreen(r)
+                is Route.Collection -> CollectionScreen(r, popup = true)
                 Route.Genres -> GenresScreen()
                 else -> {}
             }

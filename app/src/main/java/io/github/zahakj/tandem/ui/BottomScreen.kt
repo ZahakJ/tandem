@@ -513,8 +513,9 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
         if (meta.favorite) chip(Tx.s(R.string.screens_favorite), Palette.Peach)
         GameExtrasBadges(game)
     }
-    // On this week's board: why, with the facts behind it.
-    WeekReason(game, onArt)
+    // On this week's board: why, with the facts behind it (larger while the board itself is on show).
+    val onBoard = WeekBoardOn.pickOf(game) != null
+    WeekReason(game, onArt, large = onBoard)
     creditsLine(meta)?.let {
         Text(it, style = MaterialTheme.typography.labelLarge.art(), color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
@@ -536,9 +537,12 @@ private fun ColumnScope.GameInfo(game: Game, resumable: Boolean, descriptionLine
         ButtonHint("A", Tx.s(if (resumable) R.string.screens_hint_resume else R.string.screens_hint_play), Palette.Mint)
         // A game still open: Y closes it (twice), as on the icon grid's Resume card.
         if (resumable) ButtonHint("Y", Tx.s(R.string.common_close), Palette.Peach) else ButtonHint("Y", Tx.s(R.string.screens_hint_options), Palette.Butter)
-        // On Spotlight X opens the whole story, unless the X button setting gave it away.
-        if (SpotlightMode.enabled && SpotlightMode.ownsX) ButtonHint("X", Tx.s(R.string.screens_hint_more), Palette.Sky) else ButtonHint("X", Tx.s(R.string.screens_hint_search), Palette.Sky)
-        ListSwitchHint()
+        // On This week's board X re-rolls the row; on Spotlight X opens the whole story, unless the X button setting
+        // gave it away.
+        if (onBoard) ButtonHint("X", Tx.s(R.string.week_hint_reroll), Palette.Sky)
+        else if (SpotlightMode.enabled && SpotlightMode.ownsX) ButtonHint("X", Tx.s(R.string.screens_hint_more), Palette.Sky) else ButtonHint("X", Tx.s(R.string.screens_hint_search), Palette.Sky)
+        // The board as a popup: L1 / R1 do nothing there.
+        if (!onBoard || !WeekBoardOn.popup) ListSwitchHint()
     }
 }
 

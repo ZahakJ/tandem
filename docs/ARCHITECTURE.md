@@ -102,7 +102,8 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   achievement's comments only when asked. Screens: `ui/RaUi.kt` (Y › Achievements) and `ui/RaCompanion.kt` (the
   in-game page on the bottom screen).
 - Search filters: `data/SearchFilter.kt` (pure, a `SmartRule` underneath) and `ui/SearchFilters.kt` (the chips and
-  their sheets), used by `SearchOverlay` in `ui/Overlays.kt`.
+  their sheets), used by `SearchOverlay` in `ui/Overlays.kt`. Genres: `data/Genres.kt` (pure) buckets scrapers' spellings and
+  compounds, one vocabulary for the Genre filter, smart-folder genre rules and This week.
 - `SteamApi.kt` (pure: Steam Web API addresses, parsing of GetPlayerAchievements, GetSchemaForGame and
   GetGlobalAchievementPercentagesForApp, the merge, the new-unlock diff, account and app id reading) and
   `SteamAchievements.kt` (fetching with the user's own key, the per-game cache in `filesDir/steam/<app id>.json`,

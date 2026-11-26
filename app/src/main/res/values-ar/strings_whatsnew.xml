@@ -62,4 +62,39 @@
     <string name="whatsnew_090_share_title">شاركها، اسمعها، واشعر بها</string>
     <string name="whatsnew_090_share_body">أرسل إطلالتك ملفًا أو رابطًا أو رمز QR، أو خذ واحدة من معرض المجتمع. ثم جرّب نقرات لوحة المفاتيح العميقة في «طقطقة»، واهتزازًا خفيفًا مع كل حركة.</string>
     <string name="whatsnew_090_share_short">المشاركة و«طقطقة»</string>
+
+    <!-- مجموعة 0.10 -->
+    <string name="whatsnew_0100_tagline">اختيارات، ودورة حظ، وترتيب أذكى</string>
+
+    <string name="whatsnew_0100_week_title">هذا الأسبوع، اخترناه لك</string>
+    <string name="whatsnew_0100_week_body">كل يوم اثنين، لوحة ألعاب من مكتبتك أنت، ولكل لعبة سببها: أكمل من حيث توقفت، اقتربت من النهاية، قصيرة تكفيها سهرة. وX يعيد سحب الصف، وY لتقول «ليست لي».</string>
+    <string name="whatsnew_0100_week_short">هذا الأسبوع</string>
+
+    <string name="whatsnew_0100_surprise_title">فاجئني… مع دورة حظ</string>
+    <string name="whatsnew_0100_surprise_body">يدير Select بكرة من الأغلفة تتوقف عند لعبة تلعبها، من اختيارات هذا الأسبوع أولًا. وأيّ زر يوقف البكرة.</string>
+    <string name="whatsnew_0100_surprise_short">فاجئني</string>
+
+    <string name="whatsnew_0100_discs_title">أقراص كثيرة، لعبة واحدة</string>
+    <string name="whatsnew_0100_discs_body">اللعبة الموزّعة على عدة أقراص صارت مربعًا واحدًا. يحتاج محاكيك ملف ‎.m3u؟ الإعدادات › المكتبة والصور تكتبه بجانب الأقراص.</string>
+    <string name="whatsnew_0100_discs_short">متعدد الأقراص</string>
+
+    <string name="whatsnew_0100_smart_title">ترتيب أذكى</string>
+    <string name="whatsnew_0100_smart_body">الأسماء تُرتَّب دون «The»، والمفضّلة قد تأتي أولًا، والمجلدات الذكية تعرف الآن التقييم والمطوّر والناشر ووقت اللعب وآخر لعب، مع «كل القواعد» أو «أي قاعدة».</string>
+    <string name="whatsnew_0100_smart_short">الترتيب والقواعد</string>
+
+    <string name="whatsnew_0100_search_title">بحث مع تصفية</string>
+    <string name="whatsnew_0100_search_body">اضغط للأعلى في البحث لتصفّي بالجهاز والنوع والسنة والتقييم والحالة واللعب والمفضّلة. ودون كتابة شيء تتصفّح بها مكتبتك كلها.</string>
+    <string name="whatsnew_0100_search_short">تصفية البحث</string>
+
+    <string name="whatsnew_0100_ra_title">الإنجازات عن قرب</string>
+    <string name="whatsnew_0100_ra_body">قائمة إنجازات اللعبة كاملة من RetroAchievements، بالتصفية والترتيب وتلميحات اللاعبين، وعلى الشاشة الأخرى أثناء اللعب أيضًا. وألعاب الأقراص تُطابَق الآن بالبصمة.</string>
+    <string name="whatsnew_0100_ra_short">RetroAchievements</string>
+
+    <string name="whatsnew_0100_settings_title">الإعدادات بنظرة واحدة</string>
+    <string name="whatsnew_0100_settings_body">تُفتح الإعدادات على ثمانية مربعات، في كلٍّ منها رسم حيّ صغير لما بداخله. شيء غريب؟ «إرسال تقرير خطأ» يحفظ لك تقريرًا، بلا حاسوب.</string>
+    <string name="whatsnew_0100_settings_short">الإعدادات</string>
+
+    <string name="whatsnew_0100_music_title">موسيقى جديدة دافئة</string>
+    <string name="whatsnew_0100_music_body">ألحان جديدة تتصفّح على أنغامها، هادئة ودافئة كبطانية فوق مكتبتك. ارفع صوتها من الإعدادات › الصوت والموسيقى.</string>
+    <string name="whatsnew_0100_music_short">الموسيقى</string>
 </resources>

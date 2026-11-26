@@ -3,6 +3,7 @@ package io.github.zahakj.tandem.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -25,6 +26,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +39,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import io.github.zahakj.tandem.Button
@@ -179,11 +187,50 @@ object WeekText {
 
 // ---------------------------------------------------------------------------------------------------- the board
 
-private const val HERO = "pick"
+/**
+ * The board while it is on show, as a page or a popup: the other screen then says why the highlighted game is on it
+ * (large, in place of its description on Spotlight) and shows the board's own buttons, X Re-roll and Y Options.
+ */
+object WeekBoardOn {
+    private var count by mutableIntStateOf(0)
+    /** Opened as a popup (the icon grid's folders): L1 / R1 don't flip lists there. */
+    var popup by mutableStateOf(false)
+        private set
+    val shown: Boolean get() = count > 0
 
-/** The board, when This week is opened (as a page or a popup): Y on a pick has the feedback rows, X re-rolls its row. */
+    /** The pick [game] is on the board on show, or null (no board on show, or not one of its games). */
+    fun pickOf(game: Game): WeekPick? = if (shown) ThisWeek.pickOf(game) else null
+
+    @Composable
+    internal fun Showing(popup: Boolean) {
+        DisposableEffect(popup) {
+            count++
+            this@WeekBoardOn.popup = popup
+            onDispose { count-- }
+        }
+    }
+}
+
+/** The board's own buttons, in its header (or the popup's). */
 @Composable
-fun WeekBoardScreen(routeKey: String) {
+fun WeekBoardHints() {
+    Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+        ButtonHint("X", Tx.s(R.string.week_hint_reroll), Palette.Sky)
+        ButtonHint("Y", Tx.s(R.string.screens_hint_options), Palette.Butter)
+    }
+}
+
+/** "Week of 23 Nov", under the board's title. */
+fun weekOfText(): String =
+    Tx.s(R.string.week_header_of, Dates.text(WeekBoard.mondayOf(System.currentTimeMillis(), ZoneId.systemDefault()), DateKind.DayMonth))
+
+/**
+ * The board, when This week is opened (as a page or a [popup]): Y on a pick has the feedback rows, X re-rolls its row.
+ * Sized to the room it gets: the Pick of the week card shrinks so the first row shows under it, covers shrink when a
+ * row would not fit whole, and the highlighted row always comes into view whole, its chips and names included.
+ */
+@Composable
+fun WeekBoardScreen(routeKey: String, popup: Boolean = false) {
     val ctx = LocalContext.current
     // Rebuilt (cheaply, from the cache) when the library, the details, what is hidden, Up next or the board's own file change.
     val board = remember(Libraries.all, Store.meta, Privacy.view, WeekStore.state, WidgetStore.config.upNext, Lang.revision.intValue) { ThisWeek.board() }
@@ -198,6 +245,7 @@ fun WeekBoardScreen(routeKey: String) {
         }
         return
     }
+    WeekBoardOn.Showing(popup)
     val keys = remember(rows) { rows.flatMap { (_, picks) -> picks.map { (p, _) -> "w:${p.key}" } } }
     val target = rememberFocusTarget(routeKey, keys)
     // The row the highlight is in: X re-rolls it.
@@ -214,50 +262,54 @@ fun WeekBoardScreen(routeKey: String) {
     }
     val outer = rememberRouteListState(routeKey)
     val targetRow = rows.indexOfFirst { (_, picks) -> picks.any { (p, _) -> "w:${p.key}" == target } }
-    // The header is item 0; the rows follow.
-    KeepInView(outer, if (targetRow < 0) -1 else targetRow + 1)
-    val monday = remember(board.week) { WeekBoard.mondayOf(System.currentTimeMillis(), ZoneId.systemDefault()) }
-    LazyColumn(
-        Modifier.fillMaxSize().fadingEdges(outer), state = outer,
-        contentPadding = PaddingValues(top = 8.dp, bottom = 40.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        item("head") {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(Tx.s(R.string.week_title), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(Tx.s(R.string.week_header_of, Dates.text(monday, DateKind.DayMonth)), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    // In a popup the header (the week, X and Y) is the popup's own; on a page it is item 0 and the rows follow.
+    val head = if (popup) 0 else 1
+    KeepInView(outer, if (targetRow < 0) -1 else targetRow + head)
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val fit = rememberBoardFit(maxHeight)
+        ListScrolling(outer, pad = KeepRoom) {
+            LazyColumn(
+                Modifier.fillMaxSize().fadingEdges(outer), state = outer,
+                contentPadding = PaddingValues(top = if (popup) 0.dp else 8.dp, bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                if (!popup) item("head") {
+                    Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(Tx.s(R.string.week_title), style = MaterialTheme.typography.titleLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Text(weekOfText(), style = MaterialTheme.typography.labelLarge, color = Palette.Muted, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                        WeekBoardHints()
+                    }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                    ButtonHint("X", Tx.s(R.string.week_hint_reroll), Palette.Sky)
-                    ButtonHint("Y", Tx.s(R.string.screens_hint_options), Palette.Butter)
-                }
-            }
-        }
-        for ((row, picks) in rows) {
-            item(row.slot.id) {
-                Column(Modifier.showsFromTop()) {
-                    if (row.slot == WeekSlot.Pick) {
-                        val (p, g) = picks.first()
-                        val key = "w:${p.key}"
-                        HeroCard(
-                            g, p, Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = FocusRoom).height(170.dp).takesFocus(routeKey, key, key == target),
-                            onFocus = { focusedSlot.value = WeekSlot.Pick; Selection.current = Selected.GameItem(g) },
-                        ) { Launcher.launch(ctx, g) }
-                    } else {
-                        SectionTitle(WeekText.title(row), WeekText.color(row.slot), Modifier.padding(start = 22.dp, end = 22.dp))
-                        val state = rememberRouteListState("$routeKey:${row.slot.id}")
-                        KeepInView(state, picks.indexOfFirst { (p, _) -> "w:${p.key}" == target })
-                        PaddedScrolling {
-                            LazyRow(
-                                Modifier.fadingEdges(state, horizontal = true).focusRow(), state = state,
-                                contentPadding = PaddingValues(horizontal = 22.dp, vertical = FocusRoom), horizontalArrangement = Arrangement.spacedBy(14.dp),
-                            ) {
-                                items(picks, key = { it.first.key }) { (p, g) ->
-                                    val key = "w:${p.key}"
-                                    PickCard(
-                                        g, p, Modifier.takesFocus(routeKey, key, key == target),
-                                        onFocus = { focusedSlot.value = row.slot; Selection.current = Selected.GameItem(g) },
-                                    ) { Launcher.launch(ctx, g) }
+                for ((row, picks) in rows) {
+                    item(row.slot.id) {
+                        // The whole row comes into view with its highlighted cover: the heading, chips and names too.
+                        Column(Modifier.showsFromTop(whole = true)) {
+                            if (row.slot == WeekSlot.Pick) {
+                                val (p, g) = picks.first()
+                                val key = "w:${p.key}"
+                                HeroCard(
+                                    g, p, Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = FocusRoom).height(fit.hero).takesFocus(routeKey, key, key == target),
+                                    compact = fit.hero < 150.dp,
+                                    onFocus = { focusedSlot.value = WeekSlot.Pick; Selection.current = Selected.GameItem(g) },
+                                ) { Launcher.launch(ctx, g) }
+                            } else {
+                                SectionTitle(WeekText.title(row), WeekText.color(row.slot), Modifier.padding(start = 22.dp, end = 22.dp))
+                                val state = rememberRouteListState("$routeKey:${row.slot.id}")
+                                KeepInView(state, picks.indexOfFirst { (p, _) -> "w:${p.key}" == target })
+                                PaddedScrolling {
+                                    LazyRow(
+                                        Modifier.fadingEdges(state, horizontal = true).focusRow(), state = state,
+                                        contentPadding = PaddingValues(horizontal = 22.dp, vertical = FocusRoom), horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                    ) {
+                                        items(picks, key = { it.first.key }) { (p, g) ->
+                                            val key = "w:${p.key}"
+                                            PickCard(
+                                                g, p, fit.card, Modifier.takesFocus(routeKey, key, key == target),
+                                                onFocus = { focusedSlot.value = row.slot; Selection.current = Selected.GameItem(g) },
+                                            ) { Launcher.launch(ctx, g) }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -268,9 +320,31 @@ fun WeekBoardScreen(routeKey: String) {
     }
 }
 
+/** How big the board's pieces are in the room it has. */
+private class BoardFit(val hero: Dp, val card: DpSize)
+
+@Composable
+private fun rememberBoardFit(height: Dp): BoardFit {
+    val base = Grid.homeCard
+    val fontScale = LocalDensity.current.fontScale
+    return remember(height, base, fontScale) {
+        // A row: its heading, the cover with room for its glow, the chip and the name (the words grow with the font).
+        val words = (30 + 22 + 19) * fontScale
+        val around = (FocusRoom * 2).value + 6 + 6
+        // A row fits whole between the list's faded edges; covers shrink (keeping their shape) when it wouldn't.
+        val roomForCard = height.value - words - around - FadeEdge.value * 2
+        val scale = (roomForCard / base.height.value).coerceIn(0.6f, 1f)
+        val card = DpSize(base.width * scale, base.height * scale)
+        val row = words + around + card.height.value
+        // Pick of the week leaves room for the first row under it.
+        val hero = (height.value - row - (FocusRoom * 2).value - 6).coerceIn(120f, 170f)
+        BoardFit(hero.dp, card)
+    }
+}
+
 /** Pick of the week: wide, with the game's hero art fading in from the end side, the box, its name and why. */
 @Composable
-private fun HeroCard(g: Game, p: WeekPick, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
+private fun HeroCard(g: Game, p: WeekPick, modifier: Modifier, compact: Boolean, onFocus: () -> Unit, onClick: () -> Unit) {
     val lib = Libraries.of(g)
     val art = remember(g.key, g.meta.hero, g.meta.screenshot) { lib?.let { it.hero(g) ?: it.screenshot(g) } }
     val rtl = isRtl
@@ -281,12 +355,16 @@ private fun HeroCard(g: Game, p: WeekPick, modifier: Modifier, onFocus: () -> Un
                 val stops = if (rtl) arrayOf(0f to 1f, 0.45f to 0.85f, 0.75f to 0f) else arrayOf(0.25f to 0f, 0.55f to 0.85f, 1f to 1f)
                 AsyncImage(art, null, Modifier.fillMaxSize().fadeMaskHorizontal(*stops), contentScale = ContentScale.Crop)
             }
-            Row(Modifier.fillMaxSize().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            // Short (a popup, a small screen): the name on one line in a smaller size, so the reason still shows whole.
+            Row(Modifier.fillMaxSize().padding(if (compact) 10.dp else 14.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.fillMaxHeight().aspectRatio(0.75f).clip(RoundedCornerShape(10.dp))) { GameArt(g) }
                 Spacer(Modifier.width(16.dp))
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(if (compact) 3.dp else 5.dp)) {
                     Pill(WeekText.tag(WeekSlot.Pick), WeekText.color(WeekSlot.Pick))
-                    Text(g.title, style = MaterialTheme.typography.headlineSmall.onArt(), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        g.title, style = (if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineSmall).onArt(),
+                        maxLines = if (compact) 1 else 2, overflow = TextOverflow.Ellipsis,
+                    )
                     Text(WeekText.why(p), style = MaterialTheme.typography.bodyMedium.onArt(), color = Palette.Text, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
@@ -296,8 +374,7 @@ private fun HeroCard(g: Game, p: WeekPick, modifier: Modifier, onFocus: () -> Un
 
 /** A pick in a row: its cover, and the reason on a chip under it. */
 @Composable
-private fun PickCard(g: Game, p: WeekPick, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    val size = Grid.homeCard
+private fun PickCard(g: Game, p: WeekPick, size: DpSize, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
     Column(Modifier.width(size.width), horizontalAlignment = Alignment.CenterHorizontally) {
         GameCard(g, modifier.size(size), onFocus = onFocus, onClick = onClick, showTitle = false)
         Spacer(Modifier.height(6.dp))
@@ -317,12 +394,13 @@ private fun lerpColor(a: Color, b: Color, t: Float) = androidx.compose.ui.graphi
 // ---------------------------------------------------------------------------------------------------- bottom screen
 
 /**
- * On the bottom screen, under a game's chips: why it is on this week's board, in large type, with the slot's tag
- * and the facts behind it. Nothing for a game that isn't on the board (or while This week is off).
+ * On the bottom screen, under a game's chips: why it is on this week's board, in large type ([large], bigger still
+ * while the board is on show), with the slot's tag and up to three facts behind it. Nothing for a game that isn't on
+ * the board (or while This week is off).
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ColumnScope.WeekReason(game: Game, onArt: Boolean) {
+fun ColumnScope.WeekReason(game: Game, onArt: Boolean, large: Boolean = false) {
     val board = remember(Libraries.all, Store.meta, Privacy.view, WeekStore.state, WidgetStore.config.upNext) { ThisWeek.board() }
     val p = remember(board, game.key) { if (ThisWeek.enabled) board.pickOf(game.key) else null } ?: return
     val c = WeekText.color(p.slot)
@@ -330,8 +408,9 @@ fun ColumnScope.WeekReason(game: Game, onArt: Boolean) {
         Pill(Tx.s(R.string.week_title), Palette.readable(c), if (onArt) Modifier.darkChip() else Modifier)
         Text(WeekText.tag(p.slot), style = MaterialTheme.typography.labelLarge.let { if (onArt) it.onArt() else it }, color = c, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
-    Text(WeekText.why(p), style = MaterialTheme.typography.titleMedium.let { if (onArt) it.onArt() else it }, maxLines = 2, overflow = TextOverflow.Ellipsis)
-    val facts = WeekText.facts(p)
+    val big = if (large) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleMedium
+    Text(WeekText.why(p), style = big.let { if (onArt) it.onArt() else it }, maxLines = if (large) 3 else 2, overflow = TextOverflow.Ellipsis)
+    val facts = WeekText.facts(p).take(3)
     if (facts.isNotEmpty()) FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
         for (f in facts) if (onArt) Pill(f, Palette.readable(Palette.Sky), Modifier.darkChip()) else Pill(f, Palette.Sky)
     }

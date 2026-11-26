@@ -1,0 +1,7 @@
+- This week: picks from your library every Monday, each with its reason.
+- Surprise me spins a reel of covers. Multi-disc games are one tile.
+- Smarter sorting; smart folders gain rating, developer, play time rules.
+- Search filters: system, genre, year, rating, status and more.
+- RetroAchievements: full lists, players' hints, disc matching.
+- Settings home of eight live tiles; bug reports without adb.
+- A What's new tour after each update; a new cozy soundtrack.

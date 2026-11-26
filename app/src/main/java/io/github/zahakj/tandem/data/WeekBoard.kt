@@ -176,48 +176,8 @@ object WeekBoard {
 
     // ------------------------------------------------------------------------------------------------ genres
 
-    /**
-     * Genre buckets: free-text genres (LaunchBox's, ScreenScraper's, a subfolder's name) by keyword, most specific
-     * first, so "Action RPG" counts as RPG and "Action-Adventure" as adventure. Anything else is its own bucket.
-     */
-    private val Buckets: List<Pair<String, List<String>>> = listOf(
-        "rpg" to listOf("rpg", "role", "jrpg"),
-        "metroidvania" to listOf("metroidvania"),
-        "roguelike" to listOf("rogue"),
-        "horror" to listOf("horror", "survival"),
-        "rhythm" to listOf("rhythm", "music", "danc"),
-        "fighting" to listOf("fight", "versus"),
-        "beatemup" to listOf("beat 'em", "beat-'em", "beat em", "brawler"),
-        "shooter" to listOf("shoot", "shmup", "fps", "gun", "bullet"),
-        "racing" to listOf("racing", "driving", "race", "kart"),
-        "sports" to listOf("sport", "soccer", "football", "golf", "tennis", "basketball", "baseball", "hockey", "skate", "wrestl", "boxing"),
-        "puzzle" to listOf("puzzle", "match"),
-        "strategy" to listOf("strateg", "tactic", "rts", "4x", "tower defen"),
-        "simulation" to listOf("simulat", "sim", "life", "farm", "management", "tycoon"),
-        "platformer" to listOf("platform", "jump"),
-        "stealth" to listOf("stealth"),
-        "visualnovel" to listOf("visual novel", "novel", "mystery", "interactive fiction"),
-        "party" to listOf("party", "mini-game", "minigame"),
-        "board" to listOf("board", "card", "casino", "pinball", "trivia", "quiz"),
-        "sandbox" to listOf("sandbox", "open world", "building", "craft"),
-        "adventure" to listOf("adventure", "point"),
-        "action" to listOf("action", "hack", "slash", "arcade"),
-    )
-
-    /** The bucket a genre falls in: one of [Buckets], or the genre itself, lowercased. */
-    fun bucket(genre: String): String {
-        bucketOf[genre]?.let { return it }
-        val g = genre.trim().lowercase()
-        val b = Buckets.firstOrNull { (_, words) -> words.any { it in g } }?.first ?: g
-        // A library has a few hundred genre spellings at most; looked up for every game on every build.
-        if (bucketOf.size > 4096) bucketOf.clear()
-        bucketOf[genre] = b
-        return b
-    }
-
-    private val bucketOf = java.util.concurrent.ConcurrentHashMap<String, String>()
-
-    fun bucketsOf(g: WeekGame): List<String> = g.genres.map(::bucket).filter { it.isNotEmpty() }.distinct()
+    /** A game's genre buckets, as search and smart folders see them (Genres.kt): "RPG & Strategy" is both. */
+    fun bucketsOf(g: WeekGame): List<String> = Genres.bucketsOf(g.genres)
 
     /**
      * A title's series, for "more of the same": what comes before a colon, a dash or a bracket, without a trailing
@@ -230,7 +190,6 @@ object WeekBoard {
     }
 
     private val SeriesTail = Regex("""\s+(\d+|[ivx]+|x|zero|advance|ds|64|dx|plus|deluxe)$""")
-    private val Spaces = Regex("""\s+""")
 
     // ------------------------------------------------------------------------------------------------ taste
 
@@ -250,13 +209,7 @@ object WeekBoard {
         val empty: Boolean
 
         init {
-            val names = HashMap<String, HashMap<String, Int>>()
-            for (g in games) for (raw in g.genres) {
-                val t = raw.trim().replace(Spaces, " ").replaceFirstChar { it.uppercase() }
-                if (t.isEmpty()) continue
-                names.getOrPut(bucket(t)) { HashMap() }.merge(t, 1, Int::plus)
-            }
-            for ((b, counts) in names) genreName[b] = counts.entries.sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key }).first().key
+            genreName.putAll(Genres.names(games.asSequence().flatMap { it.genres }.asIterable()))
             var any = false
             for (g in games) {
                 val w = weight(g, now)

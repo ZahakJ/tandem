@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
 data class SmartRule(
     /** Platform ids; empty: every system. */
     val systems: List<String> = emptyList(),
-    /** Genre names, matched without case; empty: any genre. */
+    /** Genre names, matched by their buckets (Genres.kt: spelling, case and compounds don't matter); empty: any genre. */
     val genres: List<String> = emptyList(),
     /** Text the title must contain (no case); empty: any title. */
     val pattern: String = "",
@@ -68,7 +68,8 @@ data class SmartRule(
     /** One check per condition that is set, in the form's order. */
     private fun checks(g: SmartGame, now: Long): List<() -> Boolean> = buildList {
         if (systems.isNotEmpty()) add { g.system in systems }
-        if (genres.isNotEmpty()) add { g.genres.any { have -> genres.any { it.equals(have, ignoreCase = true) } } }
+        // By bucket (Genres.kt): "Platformers" finds "Platform", "Action & Adventure" either.
+        if (genres.isNotEmpty()) add { genres.any { Genres.matches(it, g.genres) } }
         if (pattern.isNotEmpty()) add { if (regex) compiled?.containsMatchIn(g.title) == true else g.title.contains(pattern, ignoreCase = true) }
         if (yearFrom != null || yearTo != null) add {
             val y = g.year
