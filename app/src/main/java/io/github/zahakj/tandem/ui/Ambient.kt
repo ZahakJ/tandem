@@ -271,7 +271,10 @@ val LocalInScreensaver = staticCompositionLocalOf { false }
 fun rememberAmbient(enabled: Boolean = true, livelyOnly: Boolean = false): Boolean {
     val inSaver = LocalInScreensaver.current
     // The screensaver scene runs in Tandem's own overlay or in Android's dream service (no resumed activity there).
-    val on = enabled && if (inSaver) true else rememberResumed() && !Screensaver.active
+    // Called every time, not only once enabled: a composable called on one side of && changes the caller's
+    // structure the moment it turns on (a card just highlighted), and the focus it was taking was dropped.
+    val resumed = rememberResumed()
+    val on = enabled && (inSaver || resumed && !Screensaver.active)
     DisposableEffect(on, livelyOnly) {
         val stop = if (on) Ambient.watch(livelyOnly) else null
         onDispose { stop?.invoke() }
