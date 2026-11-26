@@ -38,7 +38,7 @@ the landing page (`site/index.html`) and the README. They are WebP, resized to
 | --- | --- | --- |
 | `guide/welcome-home.webp` | Top | The welcome's first step, four homes |
 | `guide/welcome-art.webp` | Top | The welcome's Artwork & details step |
-| `guide/settings-home.webp` | Top | Settings, its seven tiles |
+| `guide/settings-home.webp` | Top | Settings, its eight tiles |
 | `guide/settings-library-art.webp` | Top | Library & art with Set up sources highlighted |
 | `guide/set-up-sources.webp` | Top | The Artwork & details setup popup |
 | `guide/launchbox-card.webp` | Top | LaunchBox's source card |

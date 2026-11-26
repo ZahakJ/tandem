@@ -2,11 +2,12 @@
 
 Every row in Tandem's Settings, page by page: what it does in plain words, and what it is set to until you change it. Open Settings with <kbd>Start</kbd> › **Settings**.
 
-![Settings opened on its seven tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system.](../../site/assets/screenshots/guide/settings-home.webp "Settings: one tile per page")
+<!-- Screenshot to retake: site/assets/screenshots/guide/settings-home.webp (and settings-arabic.webp), Settings home now eight equal tiles in a four by two grid, Search the last one, each tile with its live sketch, Look & feel highlighted. -->
+![Settings opened on its eight tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system and Search.](../../site/assets/screenshots/guide/settings-home.webp "Settings: one tile per page, and Search")
 
-**Finding a setting.** Settings opens on seven tiles, one per page. A page is a few short groups, the settings people change most first, and nothing is folded away.
+**Finding a setting.** Settings opens on eight tiles of one size, four by two: the seven pages, then **Search**. They all wear your theme's accent, and each shows a tiny live sketch of what is set inside, so a glance tells you where things stand: your theme's colours on **Look & feel**, your home layout on **Home & layout**, which screen has the games on **Two screens** (the other only an outline with one screen), an equaliser on **Sound & music** that dances while sounds or music play, which buttons select and go back on **Controls**, how many games you have on **Library & art**, and the battery (with a dot when an update is waiting) on **Play & system**. The panel beside them lists the main settings of the highlighted page with their values. A page is a few short groups, the settings people change most first, and nothing is folded away.
 
-- <kbd>X</kbd> searches every row on every page by its name or by what it does ("nintendo", "bigger", "quiet"); <kbd>A</kbd> on a result takes you to it.
+- <kbd>X</kbd> (or the **Search** tile) searches every row on every page by its name or by what it does ("nintendo", "bigger", "quiet"); <kbd>A</kbd> on a result takes you to it.
 - A row with **›** that names a group of settings (**Wallpaper ›**, **Dock & widgets ›**, **Accounts ›**) opens a short page of its own; <kbd>B</kbd> goes back to the page it came from.
 - <kbd>L1</kbd> / <kbd>R1</kbd> flip pages, <kbd>B</kbd> goes back to the tiles, <kbd>Start</kbd> closes Settings.
 

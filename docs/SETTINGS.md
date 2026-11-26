@@ -1,6 +1,6 @@
 # Settings: where everything lives
 
-Settings opens on seven tiles, one per page (four, then three), each summarising what is set, under a search bar.
+Settings opens on eight equal tiles, four by two: one per page, then Search, each with a tiny live sketch of what is set.
 Each page is a few short groups, the rows people change most first, and nothing folds away: a page fits in about a
 screen and a half. A coherent set of rarer rows (the wallpapers, the dock and widgets, accounts, performance) is a
 short **subpage**, opened from one › row on its page; B goes back to the page. X searches every row of every page and

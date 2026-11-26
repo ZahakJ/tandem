@@ -513,7 +513,7 @@ The private mode PIN has its own keypad, laid out like a phone's: the D-pad and 
 
 ## Settings
 
-Settings opens on seven tiles, one per page, each showing what is set now. On a page:
+Settings opens on eight tiles, one per page and then Search, each with a tiny sketch of what is set now. On a page:
 
 | Button | What it does |
 | --- | --- |

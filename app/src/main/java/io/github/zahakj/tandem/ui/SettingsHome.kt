@@ -11,20 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,92 +30,78 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.border
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.Tx
-import io.github.zahakj.tandem.data.Store
 
 /*
- * The first Settings screen: seven big tiles, one per page, each saying what is set right now, and a search bar on
- * top (X works anywhere in Settings). The side panel shows
- * what's inside the highlighted page, with the values of its main settings, so a glance often answers the question
- * without opening anything.
+ * The first Settings screen: eight tiles of one size in a four by two grid, the seven pages and Search (X works
+ * anywhere in Settings too). The tiles are one set in the theme's accent (SettingsTiles.kt), each with a tiny live
+ * sketch of what is set inside. The side panel, as tall as the grid, shows what's inside the highlighted page with
+ * the values of its main settings, so a glance often answers the question without opening anything (the bottom
+ * screen shows the page's summary too; with one screen the panel is the only place).
  */
 
 private const val SEARCH_KEY = "search"
 
 @Composable
 fun SettingsScreen() {
-    val ctx = LocalContext.current
     // The seven pages; their subpages open from rows on them.
     val cats = settingsCatalog().filter { it.parent == null }
     val routeKey = Route.Settings.key
-    val keys = listOf(SEARCH_KEY) + cats.map { "cat:${it.id}" }
-    // The first visit opens on the first page's tile, not the search bar.
+    val keys = cats.map { "cat:${it.id}" } + SEARCH_KEY
+    // The first visit opens on the first page's tile.
     remember { if (FocusMemory.get(routeKey) == null) FocusMemory.remember(routeKey, "cat:look") }
     val target = rememberFocusTarget(routeKey, keys)
     var focused by remember { mutableStateOf(FocusMemory.get(routeKey) ?: "cat:look") }
-    val state = rememberRouteListState(routeKey)
-    // Seven pages: four tiles, then three wider ones, so the grid is always full (no empty slots).
-    val rows = if (cats.size == 7) listOf(cats.take(4), cats.drop(4)) else cats.chunked(3)
-    KeepInView(
-        state,
-        when {
-            target == SEARCH_KEY -> 0
-            target?.startsWith("cat:") == true -> 1 + rows.indexOfFirst { r -> r.any { "cat:${it.id}" == target } }.coerceAtLeast(0)
-            else -> -1
-        },
-    )
-    fun onFocus(key: String, title: String, value: String, detail: String, color: androidx.compose.ui.graphics.Color, action: String) {
+    // The tiles rise in, one after another, each time Settings is opened (not when coming back from a page).
+    val layer = LocalLayer.current
+    val active = layer !is KeptLayer || !layer.dormant
+    val opens = remember { intArrayOf(0) }
+    val openKey = remember(active) { if (active && Nav.dir >= 0) ++opens[0] else opens[0] }
+    val accent = Palette.Accent
+    fun onFocus(key: String, title: String, value: String, detail: String, action: String) {
         FocusMemory.remember(routeKey, key)
         focused = key
-        Selection.current = Selected.Setting(title, value, detail, color, action)
+        Selection.current = Selected.Setting(title, value, detail, accent, action)
     }
+    // Eight tiles: the pages in order, Search last.
+    val tiles = cats.map { it.id } + SEARCH_KEY
+    val rows = tiles.chunked(4)
+    val shape = RoundedCornerShape(Themes.live.corner.coerceIn(8f, 26f).dp + 4.dp)
     Row(Modifier.fillMaxSize().padding(start = 14.dp, end = 22.dp)) {
-        LazyColumn(
-            Modifier.weight(1.45f).fillMaxHeight().fadingEdges(state),
-            state = state,
-            contentPadding = PaddingValues(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 40.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+        // The grid and the panel share their top and bottom edges; the tiles share the height equally.
+        Column(
+            Modifier.weight(1.5f).fillMaxHeight().padding(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 22.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            item(key = "search") {
-                FocusCard(
-                    Modifier.fillMaxWidth().height(42.dp).takesFocus(routeKey, SEARCH_KEY, target == SEARCH_KEY),
-                    glow = Palette.Sky, shape = RoundedCornerShape(50),
-                    onFocus = {
-                        onFocus(SEARCH_KEY, Tx.s(R.string.settings_home_search), "", Tx.s(R.string.settings_home_search_help), Palette.Sky, Tx.s(R.string.settings_hint_search))
-                    },
-                    onClick = { SettingsSearch.show() },
-                ) {
-                    Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        GlyphIcon(Glyph.Search, Palette.Muted, Modifier.size(20.dp))
-                        Spacer(Modifier.width(10.dp))
-                        Text(Tx.s(R.string.settings_home_search), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = Palette.Muted, maxLines = 1)
-                        ButtonHint("X", "")
-                    }
-                }
-            }
             rows.forEachIndexed { r, row ->
-                item(key = "cats$r") {
-                    Row(Modifier.fillMaxWidth().focusRow(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        row.forEach { c ->
-                            val key = "cat:${c.id}"
-                            CategoryTile(
-                                c, Modifier.weight(1f).height(128.dp).takesFocus(routeKey, key, key == target),
-                                onFocus = { onFocus(key, c.title, c.summary, c.blurb, c.color, Tx.s(R.string.settings_a_open)) },
-                            ) { Nav.go(c.route) }
+                Row(Modifier.fillMaxWidth().weight(1f).focusRow(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                    row.forEachIndexed { i, id ->
+                        val index = r * 4 + i
+                        val tileMod = Modifier.weight(1f).fillMaxHeight().riseIn(openKey, delayMs = 30L + index * 45L, distance = 26.dp, fromScale = 0.92f)
+                        if (id == SEARCH_KEY) {
+                            SettingsHomeTile(
+                                Tx.s(R.string.settings_hint_search), Glyph.Search, tileMod.takesFocus(routeKey, SEARCH_KEY, target == SEARCH_KEY), shape,
+                                onFocus = { onFocus(SEARCH_KEY, Tx.s(R.string.settings_home_search), "", Tx.s(R.string.settings_home_search_help), Tx.s(R.string.settings_hint_search)) },
+                                onClick = { SettingsSearch.show() },
+                            ) { SettingsTileHint(SEARCH_KEY) }
+                        } else {
+                            val c = cats.first { it.id == id }
+                            val key = "cat:$id"
+                            SettingsHomeTile(
+                                c.title, c.icon, tileMod.takesFocus(routeKey, key, key == target), shape,
+                                onFocus = { onFocus(key, c.title, c.summary, c.blurb, Tx.s(R.string.settings_a_open)) },
+                                onClick = { Nav.go(c.route) },
+                            ) { SettingsTileHint(id) }
                         }
                     }
+                    // A short last row keeps its tiles the same size as the others.
+                    repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
         }
@@ -132,7 +112,7 @@ fun SettingsScreen() {
         ) {
             AnimatedContent(focused, transitionSpec = { fadeIn(tween(160, delayMillis = 70)) togetherWith fadeOut(tween(70)) }, label = "settings-side") { key ->
                 when {
-                    key.startsWith("cat:") -> cats.firstOrNull { "cat:${it.id}" == key }?.let { CategoryPanel(it) }
+                    key.startsWith("cat:") -> cats.firstOrNull { "cat:${it.id}" == key }?.let { CategoryPanel(it, tint = accent) }
                     else -> SearchPanel()
                 }
             }
@@ -162,65 +142,20 @@ fun SettingsPage(id: String) {
 }
 
 /**
- * A page's tile: its icon and name, centred, nothing else (the page's state is in the side panel, which has room).
- * Every tile is built the same way in its own colour: a soft wash from the top, a glow behind a glossy icon tile, and
- * the name under it, so the seven read as one set.
+ * What's inside a page: its blurb, its main settings with their values, and its groups. [tint] colours it all in one
+ * colour (the Settings home's accent) instead of the page's and its rows' own.
  */
-@Composable
-private fun CategoryTile(c: SettingsCategory, modifier: Modifier, onFocus: () -> Unit, onClick: () -> Unit) {
-    FocusCard(modifier, glow = c.color, shape = RoundedCornerShape(22.dp), onFocus = onFocus, onClick = onClick) {
-        // The tile's own colour, deepened, behind everything (no dark band): see UI-RULES §5.
-        Box(
-            Modifier.fillMaxSize()
-                .background(Brush.verticalGradient(listOf(lerp(c.color, Palette.Night, 0.70f), lerp(c.color, Palette.Night, 0.86f))))
-                .drawBehind {
-                    // A pool of the tile's colour behind the icon, so each tile glows from its middle.
-                    drawCircle(
-                        Brush.radialGradient(
-                            listOf(c.color.copy(alpha = 0.30f), Color.Transparent),
-                            center = Offset(size.width / 2, size.height * 0.42f), radius = size.minDimension * 0.62f,
-                        ),
-                        radius = size.minDimension * 0.62f, center = Offset(size.width / 2, size.height * 0.42f),
-                    )
-                },
-        )
-        Column(
-            Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // The icon on a glossy tile of its colour: lit at the top, a fine rim.
-            Box(
-                Modifier.size(48.dp).clip(RoundedCornerShape(16.dp))
-                    .background(Brush.linearGradient(listOf(lerp(c.color, Color.White, 0.18f), lerp(c.color, Palette.Night, 0.30f))))
-                    .border(1.dp, Color.White.copy(alpha = 0.18f), RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center,
-            ) { GlyphIcon(c.icon, readableOn(c.color), Modifier.padding(12.dp)) }
-            Spacer(Modifier.height(8.dp))
-            // One size on every tile: a long name wraps onto a second line (at a word, or a phrase in Japanese and
-            // Chinese) and only shrinks if even two lines can't hold it. Centred in its own box, so a one-line name
-            // sits in the middle of a wide tile too.
-            Box(Modifier.fillMaxWidth().heightIn(min = 50.dp), contentAlignment = Alignment.Center) {
-                ShrinkText(
-                    c.title, MaterialTheme.typography.titleMedium.copy(lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.15f),
-                    Modifier.heightIn(max = 80.dp), maxLines = 2, minScale = 0.82f,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                )
-            }
-        }
-    }
-}
-
-/** What's inside a page: its blurb, its main settings with their values, and its groups. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
+fun CategoryPanel(c: SettingsCategory, inside: Boolean = false, tint: Color? = null) {
     Column(Modifier.fillMaxSize()) {
+        val own = tint?.let { Palette.readable(it) }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(c.icon, c.color, 44.dp)
+            GlyphChip(c.icon, tint ?: c.color, 44.dp)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 ShrinkText(c.title, MaterialTheme.typography.titleLarge, maxLines = 1)
-                if (c.summary.isNotBlank()) PartsText(c.summary, MaterialTheme.typography.titleSmall, color = c.color)
+                if (c.summary.isNotBlank()) PartsText(c.summary, MaterialTheme.typography.titleSmall, color = own ?: c.color)
             }
         }
         Spacer(Modifier.height(10.dp))
@@ -232,14 +167,14 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
                     ShrinkText(r.label, MaterialTheme.typography.labelLarge, Modifier.weight(1f), maxLines = 2)
                     Spacer(Modifier.width(8.dp))
                     // A value can be a long name (a theme's): two lines, shrinking a little, before any "…".
-                    ShrinkText(r.shownValue, MaterialTheme.typography.labelLarge, Modifier.weight(0.8f, fill = false), maxLines = 2, color = r.color, textAlign = androidx.compose.ui.text.style.TextAlign.End)
+                    ShrinkText(r.shownValue, MaterialTheme.typography.labelLarge, Modifier.weight(0.8f, fill = false), maxLines = 2, color = own ?: r.color, textAlign = androidx.compose.ui.text.style.TextAlign.End)
                 }
             }
         }
         if (!inside) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ButtonHint("A", Tx.s(R.string.settings_a_open), c.color)
-                ButtonHint("X", Tx.s(R.string.settings_hint_search), Palette.Sky)
+                ButtonHint("A", Tx.s(R.string.settings_a_open), tint ?: c.color)
+                ButtonHint("X", Tx.s(R.string.settings_hint_search), tint ?: Palette.Sky)
                 ButtonHint("B", Tx.s(R.string.common_back), Palette.Muted)
             }
         } else {
@@ -259,7 +194,7 @@ fun CategoryPanel(c: SettingsCategory, inside: Boolean = false) {
 private fun SearchPanel() {
     Column(Modifier.fillMaxSize()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            GlyphChip(Glyph.Search, Palette.Sky, 40.dp)
+            GlyphChip(Glyph.Search, Palette.Accent, 40.dp)
             Spacer(Modifier.width(12.dp))
             Text(Tx.s(R.string.settings_home_search), style = MaterialTheme.typography.titleLarge, maxLines = 1)
         }
@@ -269,7 +204,7 @@ private fun SearchPanel() {
             Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = Palette.Muted, overflow = TextOverflow.Ellipsis,
         )
         FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ButtonHint("A", Tx.s(R.string.settings_hint_search), Palette.Sky)
+            ButtonHint("A", Tx.s(R.string.settings_hint_search), Palette.Accent)
             ButtonHint("B", Tx.s(R.string.common_back), Palette.Muted)
         }
     }
