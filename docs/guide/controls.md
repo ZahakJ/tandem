@@ -142,7 +142,7 @@ Themes, sounds and music are in **Settings › Look & feel** and **Settings › 
 
 | Press | What it does |
 | --- | --- |
-| <kbd>L1</kbd> / <kbd>R1</kbd> | The layout before or after, wrapping round. It goes on live, rising in, with the highlight on the same game, system or collection, and a popup names it for a moment: Pip, its name, a line about it and a dot for each layout |
+| <kbd>L1</kbd> / <kbd>R1</kbd> | The layout before or after, wrapping round. It goes on live, rising in, with the highlight on the same game, system or collection, and a popup names it for a moment: Pip, its name and a dot for each layout |
 | D-pad | Moves inside the layout as usual, so you can feel it |
 | <kbd>L2</kbd> / <kbd>R2</kbd> | The layout's own size, live: the icon grid's icon size, the shelves' card size, what Orbit holds, Spotlight's rail side, Stage's cover size |
 | <kbd>A</kbd> | Keep what shows (saved) |

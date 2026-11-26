@@ -407,11 +407,9 @@ private fun TryOnPopup(modifier: Modifier) {
         delay(1500)
         shown.animateTo(0f, tween(if (still) 0 else 260))
     }
-    val kind = LayoutSwitch.kind
     val options = LayoutSwitch.options()
     val index = LayoutSwitch.index
     val (id, name) = options.getOrNull(index) ?: return
-    val blurb = if (kind == LayoutSwitch.Kind.Home) LayoutBlurbs[id] else null
     Column(
         modifier.widthIn(max = 420.dp)
             .graphicsLayer {
@@ -434,11 +432,7 @@ private fun TryOnPopup(modifier: Modifier) {
             )
             if (LayoutSwitch.inUse() == id) { Spacer(Modifier.width(8.dp)); Text("✓", style = MaterialTheme.typography.titleMedium, color = Palette.Butter) }
         }
-        if (blurb != null) Text(
-            Tx.s(blurb), Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall, color = Palette.Muted,
-            maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center,
-        )
-        LayoutDots(options.size, index, Modifier.padding(top = 10.dp))
+        LayoutDots(options.size, index, Modifier.padding(top = 8.dp))
     }
 }
 
