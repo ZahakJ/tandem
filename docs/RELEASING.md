@@ -33,19 +33,58 @@ The release workflow stops with a clear error if any of them is missing. The sec
 ## Cutting a release
 
 1. Update `versionCode` (add one) and `versionName` in `app/build.gradle.kts`.
-2. Add a changelog for F-Droid: `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, a few plain lines, under 500 characters.
-3. Tick off what shipped in `ROADMAP.md`.
-4. Commit, then tag and push:
+2. **A new minor version (x.Y.0) needs a What's new deck** (see [What's new](#whats-new) below). The unit tests
+   fail until it has one (`WhatsNewTest`). A patch (x.Y.z) needs nothing: it shows its minor's deck.
+3. Add a changelog for F-Droid: `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, a few plain lines, under 500 characters.
+4. Tick off what shipped in `ROADMAP.md`.
+5. Commit, then tag and push:
 
    ```sh
    git tag v0.3.0
    git push origin main v0.3.0
    ```
 
-5. The [release workflow](../.github/workflows/release.yml) checks that the tag matches `versionName`, builds the release APK, signs it, and creates the GitHub Release with `tandem-<version>.apk`, a `SHA256SUMS` file and generated notes. If you drafted the release by hand first, it uploads the files to your draft instead.
-6. Edit the release notes on GitHub to say what changed for players, in plain words.
+6. The [release workflow](../.github/workflows/release.yml) checks that the tag matches `versionName`, builds the release APK, signs it, and creates the GitHub Release with `tandem-<version>.apk`, a `SHA256SUMS` file and generated notes. If you drafted the release by hand first, it uploads the files to your draft instead.
+7. Edit the release notes on GitHub to say what changed for players, in plain words. Write them as **bold part titles** (or `##` headings) with `-` points under each: the update popup turns every part into a card of its own.
 
 To rebuild a release (for example after fixing a secret), run the workflow from the Actions tab with **Run workflow** and the tag name. It replaces the files on the existing release.
+
+## What's new
+
+Players see a release twice: **before** updating, in the update popup's preview (the release notes as cards, plus
+the release's screenshots), and **after**, in the What's new deck on the first start of the new version.
+
+**Every minor version (x.Y.0) has a deck** (`app/src/main/java/.../ui/whatsnew/`). `WhatsNewTest` reads `versionName`
+from `app/build.gradle.kts` and fails the build when its minor version has none, so a version bump without a deck
+can't ship. Bug-fix versions (x.Y.z) need nothing: they show their minor's deck, and only to someone who hasn't seen
+it. To write one:
+
+1. Pick the 6 to 8 things players will love most; group small ones. One slide each, a punchy title and one or two
+   lines.
+2. Give each slide a picture: preferably a live piece of Tandem drawn by its own composables with sample data (the
+   0.9 deck in `Visuals09.kt` uses the art sets, the layout sketches, the L1/R1 strip, the try-on popup, a QR code,
+   Pip), laid out at the design size (360 × 232 dp) from the start side so it mirrors in Arabic, its parts
+   arriving one after another (`Modifier.arrive(i)`) and then looping (`rememberLoop`), holding a telling still
+   frame with Reduce motion. A drawing in a `Canvas` comes next; a picture file is the last resort.
+3. Put its strings in `res/values/strings_whatsnew.xml` (`whatsnew_<version>_<slide>_title`, `_body`, `_short`) and
+   translate them into all four other languages (`values-ar`, `values-ja`, `values-zh-rCN`, `values-fr`, per
+   [TRANSLATING.md](TRANSLATING.md) and the glossaries): the test checks every language has every string.
+4. Add the `Deck` to `Decks.all` in `ui/whatsnew/Decks.kt`, after the older ones.
+
+To see it on the handheld: Settings › Play & system › **What's new in x.Y** (and search finds "what's new"), or make it
+open by itself again by taking `"whatsNewSeen"` out of Tandem's `files/settings.json`.
+
+**Screenshots for the preview (optional).** Attach pictures named `whatsnew-*.webp` (or `.png`) to the GitHub release,
+for example `whatsnew-1-lift.webp`, `whatsnew-2-stage.webp`; the popup shows up to eight, in name order, big, beside
+the notes. Take them on the handheld in **the public look**, never your own setup:
+
+- the **Pastel Night** theme, with **Tandem's drawn icons** (no icon pack or art set from elsewhere);
+- **only Tandem's own apps** in the dock;
+- **no personal information**: no account names, notes, photos, play history you'd rather keep, or file paths with
+  your name;
+- **family-friendly games** only.
+
+WebP at about 1600 px wide keeps each one well under the popup's 6 MB limit.
 
 ## Checking a release
 

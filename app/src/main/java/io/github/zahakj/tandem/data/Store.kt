@@ -119,6 +119,10 @@ data class Settings(
     val watchFolders: Boolean = true,
     /** Look for a new Tandem on GitHub once a day (Updates.kt); only in builds with the updater (BuildConfig.SELF_UPDATE). */
     val checkUpdates: Boolean = true,
+    /** The newest What's new deck seen ("0.9.0"; ui/whatsnew/WhatsNew.kt); null before the first. */
+    val whatsNewSeen: String? = null,
+    /** Show What's new by itself on the first start of a new version (Settings › Play & system › Show what's new). */
+    val whatsNew: Boolean = true,
 )
 
 /** The settings Battery saver changes, as they were before it went on. */

@@ -23,9 +23,11 @@ saved like scraped art (`data/SteamArt.kt`). It sends only the app id, needs no 
 hidden game and is blocked in private mode. Apart from the update check below, this is the one lookup Tandem makes
 without being asked; a failed one is tried again after the next scan.
 
-**Update check.** Once a day while Tandem is open (and when you press A on **Updates** in Settings › Play & system), Tandem asks GitHub's API for its latest release (`api.github.com/repos/ZahakJ/tandem/releases/latest`). The
+**Update check.** Once a day while Tandem is open (and when you press A on **Updates** in Settings › Play & system › Updates), Tandem asks GitHub's API for its latest release (`api.github.com/repos/ZahakJ/tandem/releases/latest`). The
 request carries nothing but Tandem's user agent; GitHub sees your IP address, as with any download. Only when you
-press **Update** does it download that release's APK and `SHA256SUMS` from github.com (`Updates.kt`). Turn the daily check off
+press **Update** does it download that release's APK and `SHA256SUMS` from github.com (`Updates.kt`). Opening the
+update popup (which only you do) also downloads the release's screenshots, the `whatsnew-*.webp|png` files attached to
+it, from github.com to Tandem's cache, for the preview; they are deleted once the update is installed. Turn the daily check off
 with **Check automatically** (next to Updates); it is blocked in private mode, and builds made with
 `-PselfUpdate=false` (for F-Droid) have no update check at all.
 

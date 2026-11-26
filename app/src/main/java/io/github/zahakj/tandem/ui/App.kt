@@ -227,7 +227,8 @@ object Nav {
     /** True while any popup is showing (game menu, view menu, search, keyboard, feature panels, a launch). */
     val overlayOpen: Boolean
         get() = menuFor != null || groupMenu || search || TextEntry.request != null || GameEditor.isOpen ||
-            Confirm.request != null || DeleteGame.request != null || Panels.anyOpen || openPanels > 0 || LaunchFx.busy || SettingsSearch.open || Welcome.open
+            Confirm.request != null || DeleteGame.request != null || Panels.anyOpen || openPanels > 0 || LaunchFx.busy || SettingsSearch.open || Welcome.open ||
+            io.github.zahakj.tandem.ui.whatsnew.WhatsNew.open
 }
 
 object Toasts {
@@ -610,6 +611,9 @@ private fun Main(resumes: Int) {
         ArtSetupOverlay()
         BackupUi.Host()
         UpdateOverlay()
+        // What's new after an update (ui/whatsnew): opens by itself once per new version, over the home.
+        io.github.zahakj.tandem.ui.whatsnew.WhatsNewOverlay()
+        io.github.zahakj.tandem.ui.whatsnew.WhatsNewHost()
         ConfirmOverlay()
         TextEntryOverlay()
         // Over everything that can ask for it, the keyboard too.

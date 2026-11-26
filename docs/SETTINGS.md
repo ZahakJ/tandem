@@ -63,7 +63,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 | Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
 | Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons; Controllers (Connected controllers ›, Deck ›) |
 | Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems (DroidDeck ›, GameNative ›); Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
-| Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, For tinkerers ›) |
+| Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, Updates ›, For tinkerers ›) |
 
 ## Every setting and where it is
 
@@ -180,8 +180,11 @@ A "›" step after a page is its subpage.
 | Backups (`data/Backup.kt`, `ui/BackupScreen.kt`) | Play & system › Your data › Back up (parts to include, account keys) and Restore (backups newest first, X deletes; then parts to put back) | link |
 | (import my Cocoon setup, import gamelists) | Play & system › Your data › Import my Cocoon setup / Undo Cocoon import / Import details | action |
 | Play stats, export | Start › Stats & trophies (the Stats screen); Play & system › Your data › Export play stats (CSV in `ROMs/tandem`) | link / action |
-| Update check (`Updates.kt`) | Play & system › Tandem › Updates (this version and the update's state: Up to date, 0.4.1 available, Downloading 42 %, Verifying, or what went wrong; A checks, or shows the update). Builds with `-PselfUpdate=false` show About Tandem (version and licence) instead | action |
-| `Settings.checkUpdates` | Play & system › Tandem › Check automatically (once a day while Tandem is open, with a toast once and the Start panel row; off, only Updates looks; not in builds with `-PselfUpdate=false`) | toggle |
+| Update check (`Updates.kt`) | Play & system › Updates › Updates (this version and the update's state: Up to date, 0.4.1 available, Downloading 42 %, Verifying, or what went wrong; A checks, or shows the update). Builds with `-PselfUpdate=false` show About Tandem (version and licence) instead | action |
+| What's new (`ui/whatsnew/`) | Play & system › Updates › What's new in 0.9 (opens the current version's deck; its slides play in the side panel). In every build | action |
+| `Settings.whatsNew` | Play & system › Updates › Show what's new (the deck opens by itself once on the first start of a new minor version; off, never, and the version counts as seen) | toggle |
+| `Settings.whatsNewSeen` | The newest deck seen ("0.9.0"); set when a deck closes, or quietly on a fresh install (its welcome) and with Show what's new off. Not a row | n/a |
+| `Settings.checkUpdates` | Play & system › Updates › Check automatically (once a day while Tandem is open, with a toast once and the Start panel row; off, only Updates looks; not in builds with `-PselfUpdate=false`) | toggle |
 | Frame timing overlay, theme tour (`dev` preferences, `DevTools`) | Play & system › For tinkerers › Frame timing overlay / Tour every theme | switch / action |
 | `Settings.welcomeDone` | Shown once after the first scan; not a row | n/a |
 | Game switcher, quick settings panel | Hold Select / hold Start anywhere, or what they are rebound to (a note under Controls › Buttons shows the live bindings) | n/a |

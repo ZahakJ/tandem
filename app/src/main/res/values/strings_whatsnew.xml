@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- What's new (ui/whatsnew): after an update, a deck of slides about what the new version brought; and the
+         preview of a new version in the update popup (ui/UpdatePopup.kt). Playful, short: the slides sit beside a
+         picture on a small screen. -->
+
+    <!-- The deck's frame -->
+    <!-- A small label at the top of the deck and on the other screen. -->
+    <string name="whatsnew_eyebrow">What\'s new</string>
+    <!-- The deck's heading. %1$s is the version, short ("0.9"). -->
+    <string name="whatsnew_deck_title">Tandem %1$s</string>
+    <!-- Button hint beside ◀▶ / L1 R1: they walk the slides. Keep it short. -->
+    <string name="whatsnew_hint_slides">Slides</string>
+    <!-- Button hint beside B. Keep it short. -->
+    <string name="whatsnew_hint_close">Close</string>
+    <!-- The button that goes to the next slide. -->
+    <string name="whatsnew_next">Next</string>
+    <!-- The same button on the last slide: closes the deck. Playful. -->
+    <string name="whatsnew_done">Let\'s play!</string>
+
+    <!-- Settings › Play & system › Tandem -->
+    <!-- A row that opens the deck again. %1$s is the version, short ("0.9"). -->
+    <string name="whatsnew_row">What\'s new in %1$s</string>
+    <plurals name="whatsnew_row_slides">
+        <item quantity="one">%1$d slide</item>
+        <item quantity="other">%1$d slides</item>
+    </plurals>
+    <string name="whatsnew_row_help">A quick tour of what this version brought, slide by slide. It shows once by itself after an update; A shows it again.</string>
+    <!-- What A does on that row. -->
+    <string name="whatsnew_row_action">Show</string>
+    <string name="whatsnew_switch">Show what\'s new</string>
+    <string name="whatsnew_switch_help">After an update to a new version, the tour of what it brought opens once by itself. Off, it never does; the row above still shows it.</string>
+
+    <!-- Settings › Play & system › Updates (a short page of its own): what it holds, under its row and in search. -->
+    <string name="whatsnew_sub_help">This version and new ones: check, update, and see what each brought.</string>
+
+    <!-- The update popup's preview -->
+    <!-- Above "0.8.2 → Tandem 0.9.0" at the top of the update popup. -->
+    <string name="whatsnew_preview_eyebrow">A new Tandem is here</string>
+    <!-- %1$s is the download's size ("24 MB"). -->
+    <string name="whatsnew_preview_size">%1$s download</string>
+    <!-- %1$s is the day the version came out ("Nov 26"). -->
+    <string name="whatsnew_preview_date">Out %1$s</string>
+    <!-- Button hint beside L1 R1 under the release's screenshots. Keep it short. -->
+    <string name="whatsnew_preview_pictures">Pictures</string>
+    <!-- Under the notes when the new version brings a What's new tour. -->
+    <string name="whatsnew_preview_tour">After the update, Pip shows you around what\'s new.</string>
+
+    <!-- The 0.9 deck. "short" is the slide's name on the dots and the other screen: keep it very short. -->
+    <!-- Under "Tandem 0.9" at the top of the deck. -->
+    <string name="whatsnew_090_tagline">Lift, try on, glide</string>
+
+    <string name="whatsnew_090_lift_title">Lift it with Y</string>
+    <string name="whatsnew_090_lift_body">Y on a tile lifts it right where it sits, with Open and Edit. Hold Y to pick it up and move it. On an empty spot, Y brings New, Sort and Search.</string>
+    <string name="whatsnew_090_lift_short">Lift with Y</string>
+
+    <string name="whatsnew_090_edit_title">Make every tile yours</string>
+    <string name="whatsnew_090_edit_body">Edit is one screen now: Look, Options and Organize, with a live preview. Upload your own icon, hero or logo (GIFs move!) and round each tile\'s corners just so.</string>
+    <string name="whatsnew_090_edit_short">Edit &amp; upload</string>
+
+    <string name="whatsnew_090_tryon_title">Try every layout on</string>
+    <string name="whatsnew_090_tryon_body">Start › Layout puts each layout on your real home. L1 and R1 flip through them, A keeps one, B puts everything back.</string>
+    <string name="whatsnew_090_tryon_short">Layout try-on</string>
+
+    <string name="whatsnew_090_stage_title">Take the Stage</string>
+    <string name="whatsnew_090_stage_body">A new layout: a page per system or collection, the game\'s art filling the screen behind its row. L1 and R1 slide from page to page.</string>
+    <string name="whatsnew_090_stage_short">Stage</string>
+
+    <string name="whatsnew_090_glide_title">Glide all over</string>
+    <string name="whatsnew_090_glide_body">L1 and R1 jump between groups on every layout, with a strip showing where you land. The highlight glides from icon to icon, and the Continue card leads the way.</string>
+    <string name="whatsnew_090_glide_short">L1 · R1 &amp; Continue</string>
+
+    <string name="whatsnew_090_art_title">Systems, dressed up</string>
+    <string name="whatsnew_090_art_body">Fetch real console photos and logos, or dress every system in one of four art sets drawn by Tandem: Pastel Pop, Neon Arcade, Paper Cartridge or Minimal Mono.</string>
+    <string name="whatsnew_090_art_short">System art</string>
+
+    <string name="whatsnew_090_library_title">More games, found for you</string>
+    <string name="whatsnew_090_library_body">Games from DroidDeck (every store) and GameNative turn up on their own, one tile each. Needs root until those apps share their library.</string>
+    <string name="whatsnew_090_library_short">DroidDeck &amp; GameNative</string>
+
+    <string name="whatsnew_090_share_title">Share it, hear it, feel it</string>
+    <string name="whatsnew_090_share_body">Send your look as a file, a link or a QR code, or grab one from the community gallery. Then try Thock\'s deep keyboard sounds and a light buzz on every move.</string>
+    <string name="whatsnew_090_share_short">Share &amp; Thock</string>
+</resources>

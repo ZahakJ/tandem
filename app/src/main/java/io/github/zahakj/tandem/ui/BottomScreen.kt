@@ -350,6 +350,15 @@ fun BottomContent() {
             TryOnHints(Modifier.align(Alignment.BottomEnd).padding(14.dp))
         }
     }
+    // What's new on the other screen: the deck's slides, the one on show lit, so both screens say the same.
+    androidx.compose.animation.AnimatedVisibility(
+        io.github.zahakj.tandem.ui.whatsnew.WhatsNew.open, Modifier.fillMaxSize(),
+        enter = fadeIn(Motion.fade(180)) + androidx.compose.animation.scaleIn(Motion.move(), initialScale = 0.92f), exit = fadeOut(Motion.fade(140)),
+    ) {
+        Box(Modifier.fillMaxSize().background(Palette.NightDeep.copy(alpha = 0.6f)).swallowTaps(), contentAlignment = Alignment.Center) {
+            io.github.zahakj.tandem.ui.whatsnew.WhatsNewCompanion(Modifier.padding(20.dp))
+        }
+    }
     // A running scrape's card, along the bottom edge (under the screensaver's dimming, which BottomExtras draws).
     ScrapeCard()
     BottomExtras(bannerTop = if (spotlight) pillClear else 0.dp)

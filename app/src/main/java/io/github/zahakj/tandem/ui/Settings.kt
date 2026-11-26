@@ -388,7 +388,7 @@ fun aboutSettings(): SettingSection {
                 en = "About Tandem",
             ) { Toasts.show(Tx.s(R.string.settings_about_hi)) },
         )
-    })
+    } + io.github.zahakj.tandem.ui.whatsnew.whatsNewRows())
 }
 
 /**

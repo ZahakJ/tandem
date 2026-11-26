@@ -155,6 +155,7 @@ object SettingsPlan {
         Sub("play/perf", "play", "Performance & sleep", R.string.settings_sub_perf, Glyph.Battery, R.string.settings_sub_perf_help),
         Sub("play/privacy", "play", "Privacy & hidden", R.string.settings_sub_privacy, Glyph.Shield, R.string.settings_sub_privacy_help),
         Sub("play/data", "play", "Your data", R.string.settings_sub_data, Glyph.Save, R.string.settings_sub_data_help),
+        Sub("play/updates", "play", "Updates", R.string.settings_updates, Glyph.Download, R.string.whatsnew_sub_help),
         Sub("play/dev", "play", "For tinkerers", R.string.settings_sub_dev, Glyph.Chart, R.string.settings_sub_dev_help),
     )
 
@@ -220,9 +221,7 @@ object SettingsPlan {
             ),
             Group(
                 "Tandem", R.string.settings_group_tandem,
-                link("play/privacy") + link("play/data") + p("Home & play", "Use Tandem as the Home screen") +
-                    // Updates in builds with the updater; About Tandem in those without.
-                    p("About", "Updates", "About Tandem", "Check automatically") + link("play/dev"),
+                link("play/privacy") + link("play/data") + p("Home & play", "Use Tandem as the Home screen") + link("play/updates") + link("play/dev"),
             ),
         ),
         "look/wallpaper" to listOf(Group("Wallpaper", R.string.settings_group_wallpaper, p("Wallpaper", "Top screen", "Bottom screen", "Picture dimming"))),
@@ -264,6 +263,13 @@ object SettingsPlan {
                 "Your data", R.string.settings_group_your_data,
                 p("Your data", "Back up", "Restore") + p("From Cocoon", "Import my Cocoon setup", "Undo Cocoon import") + p("Your data", "Import details") +
                     p("Home & play", "Export play stats"),
+            ),
+        ),
+        "play/updates" to listOf(
+            Group(
+                "Updates", R.string.settings_updates,
+                // Updates in builds with the updater; About Tandem in those without. What's new in every build.
+                p("About", "Updates", "About Tandem", "What's new", "Show what's new", "Check automatically"),
             ),
         ),
         "play/dev" to listOf(Group("For tinkerers", R.string.settings_group_tinkerers, p("Developer", "Frame timing overlay", "Tour every theme"))),

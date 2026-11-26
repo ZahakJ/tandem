@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatsnew_eyebrow">الجديد</string>
+    <string name="whatsnew_deck_title">Tandem %1$s</string>
+    <string name="whatsnew_hint_slides">الشرائح</string>
+    <string name="whatsnew_hint_close">إغلاق</string>
+    <string name="whatsnew_next">التالي</string>
+    <string name="whatsnew_done">هيّا نلعب!</string>
+
+    <string name="whatsnew_row">الجديد في %1$s</string>
+    <plurals name="whatsnew_row_slides">
+        <item quantity="zero">لا شرائح</item>
+        <item quantity="one">شريحة واحدة</item>
+        <item quantity="two">شريحتان</item>
+        <item quantity="few">%1$d شرائح</item>
+        <item quantity="many">%1$d شريحة</item>
+        <item quantity="other">%1$d شريحة</item>
+    </plurals>
+    <string name="whatsnew_row_help">جولة سريعة على ما جاء به هذا الإصدار، شريحة تلو شريحة. تظهر وحدها مرة واحدة بعد التحديث، وA يعرضها من جديد.</string>
+    <string name="whatsnew_row_action">اعرض</string>
+    <string name="whatsnew_switch">اعرض الجديد</string>
+    <string name="whatsnew_switch_help">بعد التحديث إلى إصدار جديد، تُفتح جولة ما جاء به مرة واحدة من تلقاء نفسها. عند الإيقاف لا تُفتح أبدًا، والصف الذي فوقه يعرضها متى شئت.</string>
+
+    <string name="whatsnew_sub_help">هذا الإصدار والإصدارات الجديدة: تحقّق وحدّث، وشاهد ما جاء به كل منها.</string>
+
+    <string name="whatsnew_preview_eyebrow">وصل Tandem جديد!</string>
+    <string name="whatsnew_preview_size">التنزيل %1$s</string>
+    <string name="whatsnew_preview_date">صدر في %1$s</string>
+    <string name="whatsnew_preview_pictures">الصور</string>
+    <string name="whatsnew_preview_tour">بعد التحديث، يأخذك بيب في جولة على الجديد.</string>
+
+    <string name="whatsnew_090_tagline">ارفع، جرّب، وتنقّل بخفّة</string>
+
+    <string name="whatsnew_090_lift_title">ارفعه بزر Y</string>
+    <string name="whatsnew_090_lift_body">اضغط Y على مربع فيرتفع في مكانه ومعه «فتح» و«تعديل». واضغط Y مطوّلًا لتحمله وتنقله. وعلى مكان فارغ، يأتيك Y بـ«جديد» و«ترتيب» و«بحث».</string>
+    <string name="whatsnew_090_lift_short">الرفع بزر Y</string>
+
+    <string name="whatsnew_090_edit_title">كل مربع على ذوقك</string>
+    <string name="whatsnew_090_edit_body">صار التعديل شاشة واحدة: المظهر والخيارات والتنظيم، مع معاينة حيّة. حمّل أيقونتك أو صورتك البارزة أو شعارك (وصور GIF تتحرّك!)، واضبط استدارة زوايا كل مربع كما تحب.</string>
+    <string name="whatsnew_090_edit_short">التعديل وصورك</string>
+
+    <string name="whatsnew_090_tryon_title">جرّب كل التخطيطات</string>
+    <string name="whatsnew_090_tryon_body">في Start › التخطيط تجرّب كل تخطيط على رئيستك نفسها، حيًّا. L1 وR1 للتنقّل بينها، وA للاحتفاظ بأحدها، وB ليعود كل شيء كما كان.</string>
+    <string name="whatsnew_090_tryon_short">تجربة التخطيطات</string>
+
+    <string name="whatsnew_090_stage_title">اعتلِ المسرح</string>
+    <string name="whatsnew_090_stage_body">تخطيط جديد: صفحة لكل منصّة أو مجموعة، وصور اللعبة تملأ الشاشة خلف صفّها. وL1 وR1 تنقلانك من صفحة إلى أخرى.</string>
+    <string name="whatsnew_090_stage_short">المسرح</string>
+
+    <string name="whatsnew_090_glide_title">تنقّل بانسياب</string>
+    <string name="whatsnew_090_glide_body">L1 وR1 تقفزان بين المجموعات في كل التخطيطات، مع شريط يريك أين ستحطّ. والتحديد ينساب من أيقونة إلى أخرى، وبطاقة «تابِع اللعب» في المقدّمة.</string>
+    <string name="whatsnew_090_glide_short">L1 · R1 و«تابِع اللعب»</string>
+
+    <string name="whatsnew_090_art_title">منصّاتك بأبهى حلّة</string>
+    <string name="whatsnew_090_art_body">اجلب صورًا حقيقية للأجهزة وشعاراتها، أو ألبِس كل منصّاتك واحدة من أربع مجموعات صور رسمها Tandem: حلوى الباستيل، سهرة النيون، خرطوشة بملصق ورقي، أو لون واحد هادئ.</string>
+    <string name="whatsnew_090_art_short">صور المنصّات</string>
+
+    <string name="whatsnew_090_library_title">ألعاب أكثر، نجدها لك</string>
+    <string name="whatsnew_090_library_body">ألعاب DroidDeck (من كل متجر) وGameNative تظهر من تلقاء نفسها، مربع لكل لعبة. يحتاج ذلك إلى صلاحيات الجذر إلى أن يشارك التطبيقان مكتبتيهما.</string>
+    <string name="whatsnew_090_library_short">DroidDeck وGameNative</string>
+
+    <string name="whatsnew_090_share_title">شاركها، اسمعها، واشعر بها</string>
+    <string name="whatsnew_090_share_body">أرسل إطلالتك ملفًا أو رابطًا أو رمز QR، أو خذ واحدة من معرض المجتمع. ثم جرّب نقرات لوحة المفاتيح العميقة في «طقطقة»، واهتزازًا خفيفًا مع كل حركة.</string>
+    <string name="whatsnew_090_share_short">المشاركة و«طقطقة»</string>
+</resources>

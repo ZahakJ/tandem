@@ -64,9 +64,9 @@ No. Without it Tandem works fully as a frontend; games start fresh each time. Sh
 
 ### How do I update Tandem, or turn off update notifications?
 
-Installed from GitHub Releases, Tandem checks once a day and tells you when a new version is out: a message once, and a **Tandem 0.6.1 is out** row in the Start panel. Press <kbd>A</kbd> on it, then **Update**; nothing installs before that. <kbd>A</kbd> on **Settings › Play & system › Updates** checks at once.
+Installed from GitHub Releases, Tandem checks once a day and tells you when a new version is out: a message once, and a **Tandem 0.6.1 is out** row in the Start panel. Press <kbd>A</kbd> on it, then **Update**; nothing installs before that. <kbd>A</kbd> on **Settings › Play & system › Updates › Updates** checks at once.
 
-To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › Check automatically** off. Then update by hand whenever you like: <kbd>A</kbd> on **Updates**, then **Update**, or download the APK from the [releases page](https://github.com/ZahakJ/tandem/releases/latest). See [Software updates](getting-started.md#software-updates).
+To stop the daily check, its message and the Start panel row, switch **Settings › Play & system › Updates › Check automatically** off. Then update by hand whenever you like: <kbd>A</kbd> on **Updates**, then **Update**, or download the APK from the [releases page](https://github.com/ZahakJ/tandem/releases/latest). See [Software updates](getting-started.md#software-updates).
 
 ### Which app does a Switch game play in?
 

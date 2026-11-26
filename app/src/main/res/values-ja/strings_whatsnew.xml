@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatsnew_eyebrow">新機能</string>
+    <string name="whatsnew_deck_title">Tandem %1$s</string>
+    <string name="whatsnew_hint_slides">スライド</string>
+    <string name="whatsnew_hint_close">閉じる</string>
+    <string name="whatsnew_next">つぎへ</string>
+    <string name="whatsnew_done">遊ぼう！</string>
+
+    <string name="whatsnew_row">%1$sの新機能</string>
+    <plurals name="whatsnew_row_slides">
+        <item quantity="other">%1$d枚</item>
+    </plurals>
+    <string name="whatsnew_row_help">このバージョンの新しいところを、スライドで手早くご案内。アップデートのあとに一度だけ自動で開きます。Aでもう一度見られます。</string>
+    <string name="whatsnew_row_action">見る</string>
+    <string name="whatsnew_switch">新機能を表示</string>
+    <string name="whatsnew_switch_help">新しいバージョンにアップデートしたあと、新機能のご案内が一度だけ自動で開きます。オフにすると開きません。上の項目からはいつでも見られます。</string>
+
+    <string name="whatsnew_sub_help">このバージョンと新しいバージョン。確認やアップデート、新機能のご案内もここから。</string>
+
+    <string name="whatsnew_preview_eyebrow">新しいTandemが届きました！</string>
+    <string name="whatsnew_preview_size">ダウンロード %1$s</string>
+    <string name="whatsnew_preview_date">%1$s公開</string>
+    <string name="whatsnew_preview_pictures">画像</string>
+    <string name="whatsnew_preview_tour">アップデートしたら、ピップが新機能をご案内します。</string>
+
+    <string name="whatsnew_090_tagline">持ち上げて、試着して、すべるように</string>
+
+    <string name="whatsnew_090_lift_title">Yでひょいっと</string>
+    <string name="whatsnew_090_lift_body">タイルでYを押すと、その場でふわっと持ち上がり「開く」と「編集」が出ます。Yを長押しすればつかんで移動。空いた場所なら、Yで「新しく追加」「並べ替え」「検索」がすぐそこに。</string>
+    <string name="whatsnew_090_lift_short">Yで持ち上げ</string>
+
+    <string name="whatsnew_090_edit_title">どのタイルも自分好みに</string>
+    <string name="whatsnew_090_edit_body">編集はひとつの画面に。「見た目」「オプション」「整理」を、ライブプレビューを見ながら。アイコンもキービジュアルもロゴも自分の画像にできます（GIFは動きます！）。角の丸みもタイルごとに。</string>
+    <string name="whatsnew_090_edit_short">編集とアップロード</string>
+
+    <string name="whatsnew_090_tryon_title">レイアウトを試着しよう</string>
+    <string name="whatsnew_090_tryon_body">Start › レイアウトで、いまのホームにレイアウトをそのまま着せ替え。L1とR1で切り替え、Aで決定、Bで元どおり。</string>
+    <string name="whatsnew_090_tryon_short">レイアウトの試着</string>
+
+    <string name="whatsnew_090_stage_title">ステージに立とう</string>
+    <string name="whatsnew_090_stage_body">新しいレイアウトです。機種やコレクションごとに1ページ、ゲームのアートが列のうしろいっぱいに広がります。L1とR1でページをめくれます。</string>
+    <string name="whatsnew_090_stage_short">ステージ</string>
+
+    <string name="whatsnew_090_glide_title">すいすい移動</string>
+    <string name="whatsnew_090_glide_body">どのレイアウトでもL1とR1でグループを行き来でき、行き先はストリップでひと目でわかります。カーソルはアイコンからアイコンへすべるように動き、先頭には「つづきから」カード。</string>
+    <string name="whatsnew_090_glide_short">L1 · R1と「つづきから」</string>
+
+    <string name="whatsnew_090_art_title">機種をおめかし</string>
+    <string name="whatsnew_090_art_body">本物の本体写真やロゴを取得したり、Tandemが描いた4つのアートセットで全機種を着飾ったり。ゆめかわパステル、ネオン街ゲーセン、紙ラベルのカセット、すっきりモノトーンからどうぞ。</string>
+    <string name="whatsnew_090_art_short">機種アート</string>
+
+    <string name="whatsnew_090_library_title">ゲームがもっと見つかる</string>
+    <string name="whatsnew_090_library_body">DroidDeck（どのストアのゲームも）とGameNativeのゲームが、1本ずつタイルになって自動で並びます。それぞれのアプリがライブラリを共有するまではrootが必要です。</string>
+    <string name="whatsnew_090_library_short">DroidDeckとGameNative</string>
+
+    <string name="whatsnew_090_share_title">シェアして、聴いて、感じて</string>
+    <string name="whatsnew_090_share_body">自分のスタイルをファイルやリンク、QRコードで送ったり、コミュニティのギャラリーからもらったり。さらに、コトコトの深いキーボード音と、カーソルが動くたびの軽い振動もどうぞ。</string>
+    <string name="whatsnew_090_share_short">シェアとコトコト</string>
+</resources>

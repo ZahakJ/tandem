@@ -259,8 +259,7 @@ What happens when you start a game, plus privacy, your data and updates.
 | Tandem | Privacy & hidden › | | Opens **Privacy & hidden** (below). |
 | Tandem | Your data › | | Opens **Your data** (below). |
 | Tandem | Use Tandem as the Home screen | Off | Asks Android to make Tandem your Home app. |
-| Tandem | Updates | | This version, and where an update stands: *Up to date*, *0.6.1 available* (<kbd>A</kbd> opens the notes and Update), the download's progress, or what went wrong. <kbd>A</kbd> asks GitHub at once. See [Software updates](getting-started.md#software-updates). Builds without the updater (F-Droid) show **About Tandem** (the version and licence) instead. |
-| Tandem | Check automatically | On | Look for a new Tandem once a day while it is open, say so once and show it in the Start panel. Off, only <kbd>A</kbd> on **Updates** looks. |
+| Tandem | Updates › | | Opens **Updates** (below); its row shows where an update stands. |
 | Tandem | For tinkerers › | | Opens **For tinkerers** (below). |
 
 **Play & system › Performance & sleep**
@@ -288,6 +287,15 @@ What happens when you start a game, plus privacy, your data and updates.
 | Undo Cocoon import | | Puts back the grid, look and dock you had before importing. Shown after an import. |
 | Import details | | Fills in names, descriptions and artwork links from `gamelist.xml` files (ES-DE, Cocoon backups). Only blanks are filled. |
 | Export play stats | | Writes `ROMs/tandem/play-stats.csv`. Your stats themselves are under <kbd>Start</kbd> › **Stats & trophies**. |
+
+**Play & system › Updates**
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Updates | | This version, and where an update stands: *Up to date*, *0.6.1 available* (<kbd>A</kbd> opens the preview and Update), the download's progress, or what went wrong. <kbd>A</kbd> asks GitHub at once. See [Software updates](getting-started.md#software-updates). Builds without the updater (F-Droid) show **About Tandem** (the version and licence) instead. |
+| What's new in 0.9 | | <kbd>A</kbd> opens the tour of what this version brought, slide by slide (the side panel plays its pictures). See [What's new after an update](getting-started.md#whats-new-after-an-update). |
+| Show what's new | On | After an update to a new version, the tour opens once by itself. Off, it never does; **What's new** still shows it. |
+| Check automatically | On | Look for a new Tandem once a day while it is open, say so once and show it in the Start panel. Off, only <kbd>A</kbd> on **Updates** looks. |
 
 **Play & system › For tinkerers**
 

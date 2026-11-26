@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatsnew_eyebrow">新内容</string>
+    <string name="whatsnew_deck_title">Tandem %1$s</string>
+    <string name="whatsnew_hint_slides">翻页</string>
+    <string name="whatsnew_hint_close">关闭</string>
+    <string name="whatsnew_next">下一页</string>
+    <string name="whatsnew_done">开玩吧！</string>
+
+    <string name="whatsnew_row">%1$s 版新内容</string>
+    <plurals name="whatsnew_row_slides">
+        <item quantity="other">%1$d 页</item>
+    </plurals>
+    <string name="whatsnew_row_help">用几页幻灯片，快速带你看看这个版本有什么新东西。更新后会自动出现一次；按 A 随时再看。</string>
+    <string name="whatsnew_row_action">查看</string>
+    <string name="whatsnew_switch">显示新内容</string>
+    <string name="whatsnew_switch_help">更新到新版本后，新内容导览会自动打开一次。关掉后就不再自动打开，上面那一项随时都能看。</string>
+
+    <string name="whatsnew_sub_help">当前版本和新版本：检查、更新，再看看每个版本带来了什么。</string>
+
+    <string name="whatsnew_preview_eyebrow">新版 Tandem 来啦！</string>
+    <string name="whatsnew_preview_size">下载大小 %1$s</string>
+    <string name="whatsnew_preview_date">%1$s 发布</string>
+    <string name="whatsnew_preview_pictures">图片</string>
+    <string name="whatsnew_preview_tour">更新后，Pip 会带你逛逛新内容。</string>
+
+    <string name="whatsnew_090_tagline">抬一抬，试一试，滑一滑</string>
+
+    <string name="whatsnew_090_lift_title">按 Y 抬起来</string>
+    <string name="whatsnew_090_lift_body">在图块上按 Y，它会原地抬起，旁边出现“打开”和“编辑”。长按 Y 就能拿起来挪动。在空位上按 Y，“新建”“排序”“搜索”都在手边。</string>
+    <string name="whatsnew_090_lift_short">按 Y 抬起</string>
+
+    <string name="whatsnew_090_edit_title">每个图块都随你改</string>
+    <string name="whatsnew_090_edit_body">编辑合成了一个界面：外观、选项、整理，还带实时预览。图标、主视觉图和标志都能换成你自己的图片（GIF 还会动！），每个图块的圆角也能单独调。</string>
+    <string name="whatsnew_090_edit_short">编辑与上传</string>
+
+    <string name="whatsnew_090_tryon_title">布局随便试穿</string>
+    <string name="whatsnew_090_tryon_body">Start › 布局 会把每种布局直接套在你的主页上。L1 和 R1 切换，A 保留，B 一键还原。</string>
+    <string name="whatsnew_090_tryon_short">试穿布局</string>
+
+    <string name="whatsnew_090_stage_title">登上舞台</string>
+    <string name="whatsnew_090_stage_body">全新布局：每个平台或合集一页，游戏美图铺满整排游戏的背后。L1 和 R1 左右翻页。</string>
+    <string name="whatsnew_090_stage_short">舞台</string>
+
+    <string name="whatsnew_090_glide_title">一路丝滑</string>
+    <string name="whatsnew_090_glide_body">在任何布局里，L1 和 R1 都能在分组间跳转，小条会告诉你落在哪儿。选中框在图标间顺滑滑动，“继续游玩”卡片打头阵。</string>
+    <string name="whatsnew_090_glide_short">L1 · R1 与“继续游玩”</string>
+
+    <string name="whatsnew_090_art_title">给平台换新装</string>
+    <string name="whatsnew_090_art_body">刮削真机照片和标志，或者给所有平台套上 Tandem 亲手画的四套美术套组：马卡龙糖果、霓虹街机厅、纸标签卡带、极简黑白。</string>
+    <string name="whatsnew_090_art_short">平台图片</string>
+
+    <string name="whatsnew_090_library_title">更多游戏，自动找到</string>
+    <string name="whatsnew_090_library_body">DroidDeck（各大商店）和 GameNative 里的游戏会自己出现，一款游戏一个图块。在这两个应用开放游戏库之前，需要 root 权限。</string>
+    <string name="whatsnew_090_library_short">DroidDeck 与 GameNative</string>
+
+    <string name="whatsnew_090_share_title">分享、聆听、感受</string>
+    <string name="whatsnew_090_share_body">把你的风格用文件、链接或二维码发出去，或者从社区画廊挑一个。再试试“麻将音”厚实的键盘敲击声，每次移动还会轻轻一震。</string>
+    <string name="whatsnew_090_share_short">分享与麻将音</string>
+</resources>

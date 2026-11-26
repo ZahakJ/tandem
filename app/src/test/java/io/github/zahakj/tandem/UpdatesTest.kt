@@ -76,6 +76,63 @@ class UpdatesTest {
         assertEquals("What's new\n\n• Updates from GitHub\n• pm install with Shizuku\n\nThanks!", Releases.plainNotes(md))
     }
 
+    @Test fun releaseReadsScreenshotsSizeAndDate() {
+        val text = """
+            {"tag_name":"v0.9.0","published_at":"2026-11-26T15:21:10Z","body":"","assets":[
+              {"name":"tandem-0.9.0.apk","size":25165824,"browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/tandem-0.9.0.apk"},
+              {"name":"SHA256SUMS","browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/SHA256SUMS"},
+              {"name":"whatsnew-2-stage.png","browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/whatsnew-2-stage.png"},
+              {"name":"whatsnew-1-lift.webp","browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/whatsnew-1-lift.webp"},
+              {"name":"whatsnew-notes.txt","browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/whatsnew-notes.txt"},
+              {"name":"screenshot.webp","browser_download_url":"https://github.com/ZahakJ/tandem/releases/download/v0.9.0/screenshot.webp"}
+            ]}
+        """.trimIndent()
+        val r = Releases.parse(text)!!
+        assertEquals(listOf("whatsnew-1-lift.webp", "whatsnew-2-stage.png"), r.images.map { it.substringAfterLast('/') })
+        assertEquals(25165824L, r.apkSize)
+        assertEquals("2026-11-26T15:21:10Z", r.published)
+        // A release kept by an older Tandem (without these) still reads.
+        val old = kotlinx.serialization.json.Json { ignoreUnknownKeys = true }.decodeFromString(Release.serializer(), """{"version":"0.8.1","notes":"","apkName":"a","apkUrl":"b","sumsUrl":"c"}""")
+        assertTrue(old.images.isEmpty())
+        assertEquals(0L, old.apkSize)
+    }
+
+    @Test fun notesSplitIntoPartsByBoldLinesAndHeadings() {
+        val md = """
+            **Editing the grid**
+            - Y on a tile lifts it in place with Open and Edit. Hold Y to pick it up and move it; X marks more.
+            - Upload your own icon, hero or logo, **animated GIF** and WebP included.
+
+            **Layouts**
+            - Start › Layout tries every layout live on your own home: L1/R1 to switch, A to keep, B to cancel.
+
+            ## Also:
+            * Thock: a new sound pack with deep, muted keyboard thocks.
+            * A light buzz on every D-pad move (Settings › Controls › Buttons).
+        """.trimIndent()
+        val s = Releases.sections(md)
+        assertEquals(listOf("Editing the grid", "Layouts", "Also"), s.map { it.title })
+        assertEquals(2, s[0].items.size)
+        assertEquals("Upload your own icon, hero or logo, animated GIF and WebP included.", s[0].items[1])
+        assertEquals(listOf("Thock: a new sound pack with deep, muted keyboard thocks.", "A light buzz on every D-pad move (Settings › Controls › Buttons)."), s[2].items)
+    }
+
+    @Test fun notesKeepLeadingTextAndContinuationsAndDropTheRest() {
+        val md = "A big one.\r\n\r\n<!-- hidden\nnote -->\n![shot](https://x/y.png)\n---\n" +
+            "### Fixes\n1. The `dock` no longer\n   jumps after [a rescan](https://x).\n2) _Faster_ start\n\n**Empty**\n\nThanks!"
+        val s = Releases.sections(md)
+        assertEquals("", s[0].title)
+        assertEquals(listOf("A big one."), s[0].items)
+        assertEquals("Fixes", s[1].title)
+        assertEquals(listOf("The dock no longer jumps after a rescan.", "Faster start"), s[1].items)
+        // A bold line with nothing under it but a paragraph: the paragraph is its point.
+        assertEquals("Empty", s[2].title)
+        assertEquals(listOf("Thanks!"), s[2].items)
+        assertEquals(3, s.size)
+        assertTrue(Releases.sections("").isEmpty())
+        assertTrue(Releases.sections("**Only a title**").isEmpty())
+    }
+
     @Test fun signerMustMatchOrBeInTheRotationHistory() {
         assertTrue(Releases.sameSigner(setOf("a"), setOf("a"), setOf("a")))
         assertTrue(Releases.sameSigner(setOf("a"), setOf("b"), setOf("a", "b")))

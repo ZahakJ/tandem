@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="whatsnew_eyebrow">Nouveautés</string>
+    <string name="whatsnew_deck_title">Tandem %1$s</string>
+    <string name="whatsnew_hint_slides">Diapos</string>
+    <string name="whatsnew_hint_close">Fermer</string>
+    <string name="whatsnew_next">Suivant</string>
+    <string name="whatsnew_done">À toi de jouer !</string>
+
+    <string name="whatsnew_row">Nouveautés de la %1$s</string>
+    <plurals name="whatsnew_row_slides">
+        <item quantity="one">%1$d diapo</item>
+        <item quantity="other">%1$d diapos</item>
+    </plurals>
+    <string name="whatsnew_row_help">Un petit tour de ce qu’apporte cette version, diapo par diapo. Il s’ouvre une fois tout seul après une mise à jour ; A le relance.</string>
+    <string name="whatsnew_row_action">Voir</string>
+    <string name="whatsnew_switch">Afficher les nouveautés</string>
+    <string name="whatsnew_switch_help">Après une mise à jour vers une nouvelle version, le tour des nouveautés s’ouvre une fois tout seul. Désactivé, jamais ; la ligne du dessus le montre quand tu veux.</string>
+
+    <string name="whatsnew_sub_help">Cette version et les suivantes : vérifier, mettre à jour, et voir ce que chacune apporte.</string>
+
+    <string name="whatsnew_preview_eyebrow">Un nouveau Tandem est là !</string>
+    <string name="whatsnew_preview_size">%1$s à télécharger</string>
+    <string name="whatsnew_preview_date">Sorti le %1$s</string>
+    <string name="whatsnew_preview_pictures">Images</string>
+    <string name="whatsnew_preview_tour">Après la mise à jour, Pip te fait visiter les nouveautés.</string>
+
+    <string name="whatsnew_090_tagline">Soulève, essaie, glisse</string>
+
+    <string name="whatsnew_090_lift_title">Soulève-la avec Y</string>
+    <string name="whatsnew_090_lift_body">Y sur une vignette la soulève sur place, avec Ouvrir et Modifier. Maintiens Y pour l’attraper et la déplacer. Sur une place vide, Y fait apparaître Nouveau, Trier et Rechercher.</string>
+    <string name="whatsnew_090_lift_short">Soulever avec Y</string>
+
+    <string name="whatsnew_090_edit_title">Chaque vignette à ton goût</string>
+    <string name="whatsnew_090_edit_body">Modifier tient sur un seul écran : Allure, Options et Organiser, avec un aperçu en direct. Mets ta propre icône, bannière ou logo (les GIF bougent !) et arrondis les coins de chaque vignette comme il te plaît.</string>
+    <string name="whatsnew_090_edit_short">Modifier et importer</string>
+
+    <string name="whatsnew_090_tryon_title">Essaie chaque disposition</string>
+    <string name="whatsnew_090_tryon_body">Start › Disposition enfile chaque disposition sur ton vrai accueil. L1 et R1 pour passer de l’une à l’autre, A pour garder, B pour tout remettre comme avant.</string>
+    <string name="whatsnew_090_tryon_short">Essayage</string>
+
+    <string name="whatsnew_090_stage_title">En scène !</string>
+    <string name="whatsnew_090_stage_body">Une nouvelle disposition : une page par système ou collection, les visuels du jeu en grand derrière sa rangée. L1 et R1 font défiler les pages.</string>
+    <string name="whatsnew_090_stage_short">Scène</string>
+
+    <string name="whatsnew_090_glide_title">Ça glisse partout</string>
+    <string name="whatsnew_090_glide_body">L1 et R1 sautent d’un groupe à l’autre dans toutes les dispositions, avec une bande qui montre où tu atterris. Le curseur glisse d’icône en icône, et la carte Continuer ouvre la marche.</string>
+    <string name="whatsnew_090_glide_short">L1 · R1 et Continuer</string>
+
+    <string name="whatsnew_090_art_title">Tes systèmes sur leur trente-et-un</string>
+    <string name="whatsnew_090_art_body">Récupère de vraies photos de consoles et leurs logos, ou habille tous tes systèmes d’une des quatre collections de visuels dessinées par Tandem : Pastel bonbon, Néon d’arcade, Cartouche en papier ou Mono tout en finesse.</string>
+    <string name="whatsnew_090_art_short">Visuels des systèmes</string>
+
+    <string name="whatsnew_090_library_title">Plus de jeux, trouvés pour toi</string>
+    <string name="whatsnew_090_library_body">Les jeux de DroidDeck (toutes boutiques) et de GameNative apparaissent tout seuls, une vignette chacun. Root nécessaire tant que ces applis ne partagent pas leur bibliothèque.</string>
+    <string name="whatsnew_090_library_short">DroidDeck et GameNative</string>
+
+    <string name="whatsnew_090_share_title">Partage, écoute, ressens</string>
+    <string name="whatsnew_090_share_body">Envoie ton look en fichier, en lien ou en QR code, ou pioches-en un dans la galerie de la communauté. Puis essaie les sons de clavier profonds de Thock et une légère vibration à chaque déplacement.</string>
+    <string name="whatsnew_090_share_short">Partage et Thock</string>
+</resources>

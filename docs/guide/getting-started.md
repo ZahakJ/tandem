@@ -37,7 +37,7 @@ Once a day while Tandem is open, it asks GitHub for the number of its latest rel
 
 To update:
 
-1. Press <kbd>A</kbd> on that row to read the release notes.
+1. Press <kbd>A</kbd> on that row to see what's coming: the jump from your version to the new one, the download's size and the day it came out, and the release notes as a card per part (each with its own glyph and colour). When the release comes with pictures, they show big beside the notes: <kbd>L1</kbd> and <kbd>R1</kbd> (or a swipe) walk them. <kbd>▲</kbd> <kbd>▼</kbd> scroll the notes.
 2. Choose **Update** (or **Not now**).
 3. Tandem downloads the APK, checks it, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm.
 
@@ -45,7 +45,7 @@ Tandem restarts on the new version with your data as it was.
 
 ![The update popup: Tandem 0.6.1 is out, its release notes, and the Update and Not now buttons.](../../site/assets/screenshots/guide/update-popup.webp "A new version, ready to install")
 
-**Checking by hand.** **Settings › Play & system › Updates** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (<kbd>A</kbd> opens the notes and Update), the download's progress, or what went wrong.
+**Checking by hand.** In **Settings › Play & system › Updates**, <kbd>A</kbd> on **Updates** asks GitHub at once and shows where things stand: *Up to date*, *0.6.1 available* (<kbd>A</kbd> opens the notes and Update), the download's progress, or what went wrong.
 
 ![Settings › Play & system: the Tandem group, with Updates showing 0.6.1 · Up to date, Check automatically and For tinkerers.](../../site/assets/screenshots/guide/about-updates.webp "Updates in Settings")
 
@@ -54,11 +54,20 @@ Tandem restarts on the new version with your data as it was.
 
 Before installing, Tandem checks the APK against the release's `SHA256SUMS` and against Tandem's own signing key, so only a genuine release goes in.
 
-Switch **Settings › Play & system › Check automatically** off and Tandem never asks GitHub by itself: no message, no Start panel row, and it updates only when you press <kbd>A</kbd> on **Updates** and then **Update**. Private mode skips the automatic check too.
+Switch **Settings › Play & system › Updates › Check automatically** off and Tandem never asks GitHub by itself: no message, no Start panel row, and it updates only when you press <kbd>A</kbd> on **Updates** and then **Update**. Private mode skips the automatic check too.
 
 You can also update by hand: download the new `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) and open it, or let [Obtainium](https://obtainium.imranr.dev/) do it. Builds made for F-Droid have no updater at all.
 
 </details>
+
+### What's new after an update
+
+The first time you open a new version (0.9, 0.10…), Pip walks you through what it brought: a few slides on the top screen, each with a live piece of Tandem drawn with sample systems (the lift's card, the layouts being tried on, a Stage page, the art sets) and a line or two about it. The bottom screen lists the slides with the one on show lit.
+
+- <kbd>◀</kbd> <kbd>▶</kbd>, <kbd>L1</kbd> <kbd>R1</kbd> or a swipe go back and forth (in Arabic, <kbd>◀</kbd> is the next slide); <kbd>A</kbd> is **Next**, then **Let's play!** on the last one; <kbd>B</kbd> closes it. A tap on a dot or on a name on the bottom screen goes straight there.
+- It shows once per version. A bug-fix update (0.9.1, 0.9.2) shows nothing new; if you skip versions, you see only the one you now have. A new install skips it (the welcome is your tour).
+- **Settings › Play & system › Updates › What's new in 0.9** shows it again whenever you like, and **Show what's new** (next to it) turns the automatic one off.
+- With **Reduce motion** on, the slides swap with a fade and the pictures hold still.
 
 ## Put your games in place
 

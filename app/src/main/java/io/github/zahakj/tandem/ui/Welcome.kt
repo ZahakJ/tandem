@@ -76,7 +76,13 @@ object Welcome {
 
     fun finish() {
         // The soundtrack is written down now, so a later start doesn't take this setup for one from before Calm.
-        Store.updateSettings { it.copy(welcomeDone = true, look = it.look.copy(soundtrack = it.look.soundtrack ?: "calm")) }
+        // A new setup's welcome is its tour: this version's What's new counts as seen (WhatsNewRules).
+        Store.updateSettings {
+            it.copy(
+                welcomeDone = true, look = it.look.copy(soundtrack = it.look.soundtrack ?: "calm"),
+                whatsNewSeen = it.whatsNewSeen ?: io.github.zahakj.tandem.WhatsNewRules.minorOf(io.github.zahakj.tandem.BuildConfig.VERSION_NAME),
+            )
+        }
         Nav.focusTick++
     }
 }

@@ -106,6 +106,7 @@ class HardcodedTextTest {
         "PrivacyPin.kt",
         "Updates.kt",
         "ui/UpdatePopup.kt",
+        "WhatsNewRules.kt", "ui/whatsnew/WhatsNew.kt", "ui/whatsnew/Decks.kt", "ui/whatsnew/DeckScreen.kt", "ui/whatsnew/Visuals09.kt",
         "ui/DiscordSettings.kt",
         "DiscordPresence.kt",
         "ui/AchievementsUi.kt",
