@@ -100,6 +100,23 @@ To see how a release looks to players (the Start panel row, the popup, Settings 
 older: `./gradlew assembleDebug -PupdateFrom=0.6.0`. It checks for updates as if it were 0.6.0, so the latest release
 shows up as new; a debug build can't install it (the signing keys differ), so Update stops with a message.
 
+### Before publishing: test it the way players get it
+
+Players update from the last release, with their own settings. A bug that only shows with one theme or one highlight
+style can leave them unable to reach Settings, and so unable to update. Before publishing:
+
+1. **Upgrade from the last release, signed.** Install the previous release's APK from GitHub on a test profile, then
+   install the new release-signed APK over it (`adb install -r`). Never put a newer build's data under an older
+   build: an older Tandem can't always read it.
+2. **Common setups.** On the upgraded copy, try each built-in theme (OLED included: it uses the Pulse highlight),
+   each highlight style, a theme pack and Arabic. On each: the home grid to the dock and back, Start and its rows,
+   Settings and a page or two, a Y menu, search.
+3. **A fresh install.** The welcome, then the same walk.
+4. **The update check.** With `-PupdateFrom` set to the last release, the Start panel row and the update preview
+   appear, and on a release build `Updates.daily` writes `checked_at` in `shared_prefs/updates.xml`.
+5. **A release that can lock players out** (focus lost, Settings unreachable) gets a fix release at once. The update
+   must stay reachable without the broken screen: the update toast and the Start panel's Update row.
+
 ## F-Droid
 
 The store listing lives in `fastlane/metadata/android/en-US/`, in the layout F-Droid reads: title, short and full description, changelogs and images. F-Droid builds apps from source itself; to submit Tandem, open a merge request on [fdroiddata](https://gitlab.com/fdroid/fdroiddata) with a build recipe pointing at this repository and the release tags. F-Droid can also publish our own signed APK when its build reproduces it byte for byte, which keeps one signature for every install source.
