@@ -134,16 +134,23 @@ object Buttons {
         presses.collect { if (LibraryGuest.accepts(clock)) emit(it) }
     }
     private val handlers = ArrayList<(Button) -> Boolean>()
+    /** Handlers that go before every one in [handlers], however late those were added ([intercept]'s front). */
+    private val fronts = ArrayList<(Button) -> Boolean>()
 
     /**
      * Popups that own some buttons (the keyboard's X and Start, for example) register here. The newest handler
      * sees a press first; when it returns true the press stops there and never reaches [events], so the screen
      * underneath can't act on the same press.
+     *
+     * A mode over screens that change while it lasts (Start › Layout's try-on: each layout put on adds its own
+     * handlers, newer than the mode's) registers with [front]: front handlers see every press before the others,
+     * whenever those were added.
      */
-    fun intercept(handler: (Button) -> Boolean, owner: Any? = null): () -> Unit {
+    fun intercept(handler: (Button) -> Boolean, owner: Any? = null, front: Boolean = false): () -> Unit {
         val h: (Button) -> Boolean = { b -> (owner == null || owner === ActiveHost.token) && handler(b) }
-        handlers += h
-        return { handlers -= h }
+        val list = if (front) fronts else handlers
+        list += h
+        return { list -= h }
     }
 
     /**
@@ -169,7 +176,7 @@ object Buttons {
         // Collectors run a little later, on the main dispatcher, so the set stays until the next press.
         this.commands = commands
         this.repeat = repeat
-        for (h in handlers.asReversed().toList()) if (h(b)) return
+        for (h in fronts.asReversed() + handlers.asReversed()) if (h(b)) return
         presses.tryEmit(b)
     }
 }

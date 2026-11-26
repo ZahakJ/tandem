@@ -337,13 +337,18 @@ fun BottomContent() {
     val spotlight = mode != "clock" && Spotlight.wanted(selected)
     // The wallpaper is the screen's own, drawn by its SwapStage. The details sit above a running scrape's card,
     // never under it.
-    Box(Modifier.fillMaxSize().clearOfScrapeCard()) { Details(selected, mode, spotlight) { pillClear = it } }
-    // Trying layouts (Start › Layout): a card of the one on the other screen, so both screens say the same.
+    // Trying layouts the details step back: their button pill (A Open, L1 R1 Groups) would say the wrong thing.
+    Box(Modifier.fillMaxSize().clearOfScrapeCard().awayWhileTrying()) { Details(selected, mode, spotlight) { pillClear = it } }
+    // Trying layouts (Start › Layout): a card of the one on the other screen, so both screens say the same, and the
+    // try-on's buttons where the details' button pill was.
     androidx.compose.animation.AnimatedVisibility(
         LayoutSwitch.open, Modifier.fillMaxSize(),
         enter = fadeIn(Motion.fade(180)) + androidx.compose.animation.scaleIn(Motion.move(), initialScale = 0.9f), exit = fadeOut(Motion.fade(140)),
     ) {
-        Box(Modifier.fillMaxSize().background(Palette.NightDeep.copy(alpha = 0.35f)), contentAlignment = Alignment.Center) { LayoutTryOnCard(Modifier.padding(24.dp)) }
+        Box(Modifier.fillMaxSize().background(Palette.NightDeep.copy(alpha = 0.35f)), contentAlignment = Alignment.Center) {
+            LayoutTryOnCard(Modifier.padding(24.dp))
+            TryOnHints(Modifier.align(Alignment.BottomEnd).padding(14.dp))
+        }
     }
     // A running scrape's card, along the bottom edge (under the screensaver's dimming, which BottomExtras draws).
     ScrapeCard()

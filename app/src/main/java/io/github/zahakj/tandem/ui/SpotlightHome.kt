@@ -507,7 +507,7 @@ private fun RailHeader(st: RailState, modifier: Modifier) {
     val g = st.currentGroup ?: return
     // L1 and R1 either side of the group's name: they turn to the group before and after (GroupStrip.kt).
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        if (st.groups.size > 1) { ButtonHint("L1", "", Palette.Lavender); Spacer(Modifier.width(6.dp)) }
+        if (st.groups.size > 1) { Box(Modifier.awayWhileTrying()) { ButtonHint("L1", "", Palette.Lavender) }; Spacer(Modifier.width(6.dp)) }
         Box(Modifier.size(10.dp).clip(CircleShape).background(g.color))
         Spacer(Modifier.width(8.dp))
         Text(
@@ -516,7 +516,7 @@ private fun RailHeader(st: RailState, modifier: Modifier) {
         )
         Spacer(Modifier.width(6.dp))
         Text("${st.index + 1}/${st.count}", style = MaterialTheme.typography.labelSmall, color = Palette.Muted, maxLines = 1)
-        if (st.groups.size > 1) { Spacer(Modifier.width(6.dp)); ButtonHint("R1", "", Palette.Lavender) }
+        if (st.groups.size > 1) { Spacer(Modifier.width(6.dp)); Box(Modifier.awayWhileTrying()) { ButtonHint("R1", "", Palette.Lavender) } }
     }
 }
 
@@ -1020,7 +1020,8 @@ private fun AppPanel(item: GridItem) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PanelHints(a: String, menu: Boolean, story: Boolean, expanded: Boolean, closes: Boolean = false) {
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    // Trying layouts, every one of these buttons means something else (the try-on pill says what).
+    FlowRow(Modifier.awayWhileTrying(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ButtonHint("A", a, Palette.Mint)
         // A game still running: Y closes it (press twice), as everywhere on the home screen.
         if (closes) ButtonHint("Y", Tx.s(R.string.home_running_hint_close), Palette.Peach)

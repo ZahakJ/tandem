@@ -1412,7 +1412,7 @@ fun LayoutPreview(
 fun CornerHints() {
     val look = Store.settings.look
     val show = look.cornerHints && !isSettingsRoute(Nav.route) &&
-        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !((IconGrid.enabled || Orbit.enabled || SpotlightMode.enabled || StageMode.enabled) && Nav.route == Route.Home)
+        Nav.menuFor == null && !Nav.search && !Nav.groupMenu && !LayoutSwitch.open && !((IconGrid.enabled || Orbit.enabled || SpotlightMode.enabled || StageMode.enabled) && Nav.route == Route.Home)
     val alpha by animateFloatAsState(if (show) 1f else 0f, Motion.fade(250), label = "hints")
     if (alpha == 0f) return
     val game = Selection.current is Selected.GameItem

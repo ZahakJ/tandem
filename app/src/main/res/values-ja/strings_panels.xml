@@ -20,6 +20,8 @@
     <string name="panels_layout_hint_size">サイズ：%1$s</string>
     <string name="panels_layout_hint_keep">決定</string>
     <string name="panels_layout_hint_cancel">キャンセル</string>
+    <string name="panels_layout_hint_layout">レイアウト</string>
+    <string name="panels_layout_hint_size_plain">サイズ</string>
     <string name="panels_start_update">Tandem %1$sが出ました</string>
     <plurals name="panels_start_trophies">
         <item quantity="other">トロフィー%1$d個</item>

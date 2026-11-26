@@ -20,6 +20,8 @@
     <string name="panels_layout_hint_size">الحجم: %1$s</string>
     <string name="panels_layout_hint_keep">احتفظ به</string>
     <string name="panels_layout_hint_cancel">إلغاء</string>
+    <string name="panels_layout_hint_layout">التخطيط</string>
+    <string name="panels_layout_hint_size_plain">الحجم</string>
     <string name="panels_start_update">صدر Tandem %1$s</string>
     <plurals name="panels_start_trophies">
         <item quantity="zero">لا جوائز بعد</item>

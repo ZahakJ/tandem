@@ -66,7 +66,7 @@ fun GroupStrip(
     if (groups.size < 2) return
     val at = groups.indexOfFirst { it.key == current }.coerceAtLeast(0)
     Row(modifier, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        ButtonHint("L1", "", Palette.Lavender)
+        Box(Modifier.awayWhileTrying()) { ButtonHint("L1", "", Palette.Lavender) }
         if (chips > 0) {
             BoxWithConstraints(Modifier.weight(1f, fill = false)) {
                 // About 64 dp a chip with its gap: as many as the room holds, never more than asked.
@@ -81,7 +81,7 @@ fun GroupStrip(
             Current(groups, at)
             Side(groups.firstOrNull { it.key == after }, onPick)
         }
-        ButtonHint("R1", "", Palette.Lavender)
+        Box(Modifier.awayWhileTrying()) { ButtonHint("R1", "", Palette.Lavender) }
     }
 }
 
@@ -149,8 +149,8 @@ private fun Chip(g: StripGroup, on: Boolean, onPick: ((String) -> Unit)?) {
 @Composable
 fun ShoulderEnds(modifier: Modifier = Modifier) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
-        ButtonHint("L1", "", Palette.Lavender)
+        Box(Modifier.awayWhileTrying()) { ButtonHint("L1", "", Palette.Lavender) }
         Spacer(Modifier.weight(1f))
-        ButtonHint("R1", "", Palette.Lavender)
+        Box(Modifier.awayWhileTrying()) { ButtonHint("R1", "", Palette.Lavender) }
     }
 }

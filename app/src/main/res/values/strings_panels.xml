@@ -26,6 +26,10 @@
     <string name="panels_layout_hint_size">Size: %1$s</string>
     <string name="panels_layout_hint_keep">Keep</string>
     <string name="panels_layout_hint_cancel">Cancel</string>
+    <!-- Trying layouts, on the other screen's button pill: beside L1 R1, which put on the layout before or after. -->
+    <string name="panels_layout_hint_layout">Layout</string>
+    <!-- Beside L2 R2 on the same pill: the tried layout's size, smaller or bigger. -->
+    <string name="panels_layout_hint_size_plain">Size</string>
     <!-- A new version of Tandem: "Tandem 0.8.0 is out". -->
     <string name="panels_start_update">Tandem %1$s is out</string>
     <!-- Beside Stats & trophies: how many trophies are earned. -->

@@ -188,7 +188,9 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
 - Across the home layouts: `ui/GroupPaging.kt` (what L1 / R1 step through, pure, `GroupPagingTest`), `ui/GroupStrip.kt`
   (the shoulders' strip), `ui/TravelRing.kt` (the icon grid's travelling highlight, drawn in one overlay),
   `ui/ContinueDeck.kt` (the games behind the grid's Continue card, `ContinueDeckTest`) and `ui/LayoutSwitch.kt`
-  (Start › Layout's try-on mode). The other screen shows systems, folders and apps through `ui/Spotlight.kt` on every
+  (Start › Layout's try-on mode: its buttons go through `InterceptButtons(front = true)`, before the handlers of
+  every layout put on under it, and `MainActivity` hands it A and B before any screen or Back handler,
+  `TryOnDispatchTest`; layouts fade their own hints with `Modifier.awayWhileTrying()`). The other screen shows systems, folders and apps through `ui/Spotlight.kt` on every
   layout.
 - Icon grid: `ui/IconGrid.kt` (`GridCatalog`, `IconGridHome`, move mode, tile menu, user folders, `FolderSheet`),
   `ui/IconArt.kt` (`TileArt`), `ui/IconPacks.kt` (pack art and smart-folder art), `ui/PanelMorph.kt` (folder popups

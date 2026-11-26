@@ -122,6 +122,12 @@ private class Spot(
     val glyph: TIcon? = null,
     /** The background is a wall of the covers inside ([CoverWall]) instead of a hero or the colour sweep. */
     val wall: Boolean = false,
+    /**
+     * The hero is a console photo (or another cut-out) on a wash of its colour, not a backdrop: this is the cut-out
+     * alone (WebArt.subjectBehind), and the screen is composed round it (SubjectSpot) instead of stacking the logo and
+     * the name card over the device.
+     */
+    val subject: File? = null,
 )
 
 private fun spotFor(s: Selected): Spot? {
@@ -137,9 +143,11 @@ private fun spotFor(s: Selected): Spot? {
         // A cover wall says what kind of games are inside: a few of their names under the folder's.
         val wall = item.style?.hero == io.github.zahakj.tandem.data.FolderStyle.HERO_WALL && item.games.isNotEmpty()
         val blurb = item.blurb.ifBlank { if (wall) FolderLooks.strongGames(item.games).take(3).joinToString(" · ") { it.title } else "" }
+        val hero = FolderLooks.hero(item)
         return Spot(
-            item.key, item.title, item.type, item.detail, item.color, item.art, FolderLooks.hero(item), FolderLooks.logo(item),
+            item.key, item.title, item.type, item.detail, item.color, item.art, hero, FolderLooks.logo(item),
             games = item.games, blurb = blurb, style = item.style, glyph = FolderLooks.sweepGlyph(item), wall = wall,
+            subject = if (wall) null else WebArt.subjectBehind(item.platformId, item.style, hero),
         )
     }
     return when (s) {
@@ -148,10 +156,11 @@ private fun spotFor(s: Selected): Spot? {
             val p = s.library.platform
             val color = SystemColors.of(p.id)
             val games = Collections.visible(s.library.games)
+            val hero = IconPacks.systemHero(p.id)
             Spot(
                 "s:${p.id}", p.name, Tx.s(R.string.home_spot_system), Tx.p(R.plurals.home_games_count, games.size), color,
                 IconPacks.systemIcon(p.id)?.let { TileArt.Picture(it) } ?: TileArt.Monogram(p.shortName, color),
-                IconPacks.systemHero(p.id), IconPacks.systemLogo(p.id), games = games,
+                hero, IconPacks.systemLogo(p.id), games = games, subject = WebArt.subjectBehind(p.id, null, hero),
             )
         }
         // Anything else that is a group (a subfolder, a genre, an app in the drawer): named for what it is.
@@ -232,6 +241,7 @@ fun SpotlightView(selected: Selected, onStatusPill: (Dp) -> Unit = {}) {
 /** A system, folder, collection or app: its colour sweep (or pack hero), the big icon and its name card. */
 @Composable
 private fun ItemSpot(s: Spot, shift: () -> Float, front: () -> Float) {
+    if (s.subject != null) return SubjectSpot(s, s.subject, shift, front)
     val slot = LocalScreenSlot.current
     val px = LocalDensity.current.density
     val flow = SwapFx.flow(slot)
@@ -277,6 +287,90 @@ private fun ItemSpot(s: Spot, shift: () -> Float, front: () -> Float) {
             NameCard(s.title, listOf(s.type, s.detail).filter { it.isNotBlank() }.joinToString(" · "), Modifier.widthIn(min = 220.dp, max = cardMax).swapArrive(slot, 200f, 0f, 36f * px, 0.96f).riseIn(s.key, 1, 28.dp), s.blurb, glow = s.color)
         }
     }
+}
+
+/**
+ * A system whose hero is its console photo (a cut-out on a wash of its colour): composed instead of stacked, so
+ * nothing covers the device. On a screen about as tall as it is wide (the bottom screen) the logo sits small in the
+ * status pill's row, the console has the middle and the name card the free space below it; on a wide one the console
+ * takes one side and the logo and the name card the other. The wash is the hero's own (its colour, a glow behind the
+ * console), drawn here.
+ */
+@Composable
+private fun SubjectSpot(s: Spot, subject: File, shift: () -> Float, front: () -> Float) {
+    val slot = LocalScreenSlot.current
+    val px = LocalDensity.current.density
+    val flow = SwapFx.flow(slot)
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val wide = maxWidth > maxHeight * 1.45f
+        Box(Modifier.fillMaxSize().swapSweep(slot).parallaxFill(shift, 0.14f)) { SubjectWash(s.color, wide, Modifier.fillMaxSize()) }
+        val top = 14.dp + 34.dp + 6.dp + bannerClear()
+        val bottom = 14.dp + SpotHintsHeight + 8.dp
+        val cardMax = if (wide) maxWidth * 0.42f else maxWidth * 0.72f
+        val logo = s.logo?.takeIf { s.style?.logo != io.github.zahakj.tandem.data.FolderStyle.LOGO_TEXT }
+        val content = Modifier.fillMaxSize().graphicsLayer { translationX = shift() * size.width * 0.05f; alpha = front() }
+        @Composable
+        fun Console(m: Modifier) = AsyncImage(
+            rememberSizedRequest(subject, 1000), null,
+            m.swapArrive(slot, 110f, 0f, -flow * 40f * px, 0.5f, 120f).riseIn(s.key, 0).floating(s.key.hashCode(), bob = 5.dp),
+            contentScale = ContentScale.Fit,
+        )
+        @Composable
+        fun Card(m: Modifier) = NameCard(
+            s.title, listOf(s.type, s.detail).filter { it.isNotBlank() }.joinToString(" · "),
+            m.widthIn(min = 200.dp, max = cardMax).swapArrive(slot, 200f, 0f, 36f * px, 0.96f).riseIn(s.key, 2, 28.dp), s.blurb, glow = s.color,
+        )
+        if (wide) {
+            Row(content.padding(start = 28.dp, end = 28.dp, top = top, bottom = bottom), verticalAlignment = Alignment.CenterVertically) {
+                Console(Modifier.weight(1.1f).fillMaxHeight().padding(end = 18.dp))
+                Column(Modifier.weight(0.9f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (logo != null) {
+                        AsyncImage(
+                            rememberSizedRequest(logo, 900), s.title,
+                            Modifier.fillMaxWidth(0.9f).heightIn(max = 110.dp).riseIn(s.key, 1, 20.dp), contentScale = ContentScale.Fit,
+                        )
+                        Spacer(Modifier.height(18.dp))
+                    }
+                    Card(Modifier)
+                }
+            }
+        } else {
+            Column(content.padding(start = 24.dp, end = 24.dp, top = 14.dp, bottom = bottom), horizontalAlignment = Alignment.CenterHorizontally) {
+                // In the status pill's row, on the other side of it: small, never over the console.
+                Box(Modifier.fillMaxWidth().height(34.dp), contentAlignment = Alignment.CenterStart) {
+                    if (logo != null) AsyncImage(
+                        rememberSizedRequest(logo, 700), s.title,
+                        Modifier.fillMaxWidth(0.5f).fillMaxHeight().riseIn(s.key, 1, 12.dp), contentScale = ContentScale.Fit,
+                        alignment = Alignment.CenterStart,
+                    )
+                }
+                Spacer(Modifier.height(6.dp + bannerClear()))
+                Console(Modifier.fillMaxWidth().weight(1f))
+                Spacer(Modifier.height(10.dp))
+                Card(Modifier)
+            }
+        }
+    }
+}
+
+/** The hero's wash, drawn: the colour lighter at the top and deeper at the bottom, a glow where the console sits. */
+@Composable
+private fun SubjectWash(color: Color, wide: Boolean, modifier: Modifier) {
+    Spacer(
+        modifier.drawWithCache {
+            val top = lerp(color, Color.White, 0.06f)
+            val bottomC = lerp(color, Color.Black, 0.6f)
+            val glow = lerp(color, Color.White, 0.45f)
+            val centre = Offset(size.width * (if (wide) 0.3f else 0.5f), size.height * 0.48f)
+            val radius = maxOf(size.width, size.height) * 0.5f
+            val wash = Brush.verticalGradient(listOf(top, bottomC))
+            val halo = Brush.radialGradient(listOf(glow.copy(alpha = 0.45f), glow.copy(alpha = 0f)), centre, radius)
+            onDrawBehind {
+                drawRect(wash)
+                drawRect(halo)
+            }
+        },
+    )
 }
 
 /**

@@ -40,7 +40,10 @@ import kotlin.math.min
  *   white (most of Wikimedia's) loses its white surround first, so the console sits on the colour;
  * - a hero: a backdrop (fanart, a background) filling 16:9, else the console on a deep wash of its colour, kept inside
  *   the middle of the picture so the bottom screen (1240×1080, cut from the middle) shows it whole too;
- * - a title: the logo itself, when it is see-through.
+ * - a title: the logo itself, when it is see-through;
+ * - for a hero made from a console (not a backdrop), the console alone too ([subjectBehind]), so the screens that show
+ *   the hero with a logo and a name over it (the other screen's Spotlight, the grid's hero banner) compose them round
+ *   the device instead of across it.
  *
  * Made once into cacheDir/web-art (made again when missing, when the picture or the system's colour changes) on one
  * background thread, and handed to the rest of Tandem as files, like the art sets (SetArt.kt).
@@ -51,6 +54,8 @@ object WebArt {
     const val ICON_PX = 384
     const val HERO_W = 1920
     const val HERO_H = 1080
+    /** The long side of a hero's cut-out at most ([subjectBehind]). */
+    const val SUBJECT_PX = 900
 
     /** Bumped (on the main thread, a little after a batch) when new pictures are ready: screens look again. */
     var revision by mutableIntStateOf(0)
@@ -93,7 +98,7 @@ object WebArt {
         val out = File(ctx.cacheDir, "web-art/${SystemArt.folderName(platformId)}/${option.id}-${slot.name.lowercase()}-$tag.$ext")
         if (ready[out.path] == true) return out
         if (out.isFile) { ready[out.path] = true; return out }
-        enqueue(src, option.kind, slot, color, out)
+        enqueue(out) { render(src, option.kind, slot, color, out) }
         revision
         return null
     }
@@ -102,11 +107,33 @@ object WebArt {
     fun pictureFor(platformId: String, style: FolderStyle?, slot: ArtSlot): File? =
         choice(platformId, style, slot)?.let { file(platformId, it, slot) }
 
-    private fun enqueue(src: File, kind: WebKind, slot: ArtSlot, color: Color, out: File) {
+    /**
+     * When [hero] is [platformId]'s web hero made from a cut-out picture (a console photo, a controller, an
+     * illustration: not a backdrop), that picture alone, trimmed, with its soft shadow and room round it for the shadow,
+     * so a screen can place it beside the logo and the name instead of drawing them over it (Spotlight.kt). Null for any
+     * other hero, and while it is being made.
+     */
+    fun subjectBehind(platformId: String?, style: FolderStyle?, hero: File?): File? {
+        if (platformId == null || hero == null) return null
+        val option = choice(platformId, style, ArtSlot.Hero) ?: return null
+        if (option.kind == WebKind.Fanart || option.kind == WebKind.Background) return null
+        if (file(platformId, option, ArtSlot.Hero) != hero) return null
+        val src = available(platformId, ArtSlot.Hero)[option] ?: return null
+        val ctx = runCatching { Tx.context }.getOrNull() ?: return null
+        val tag = listOf(VERSION, src.length(), src.lastModified()).hashCode().toUInt().toString(36)
+        val out = File(ctx.cacheDir, "web-art/${SystemArt.folderName(platformId)}/${option.id}-subject-$tag.png")
+        if (ready[out.path] == true) return out
+        if (out.isFile) { ready[out.path] = true; return out }
+        enqueue(out) { renderSubject(src, option.kind, out) }
+        revision
+        return null
+    }
+
+    private fun enqueue(out: File, make: () -> Unit) {
         if (!pending.add(out.path)) return
         worker.execute {
             try {
-                if (!out.isFile) runCatching { render(src, kind, slot, color, out) }
+                if (!out.isFile) runCatching { make() }
                 if (out.isFile) {
                     ready[out.path] = true
                     // Older makings of the same picture go.
@@ -188,6 +215,67 @@ object WebArt {
         }.getOrDefault(false)
         canvas.recycle()
         if (ok) tmp.renameTo(out) else tmp.delete()
+    }
+
+    /** The cut-out alone ([subjectBehind]): trimmed, at most [SUBJECT_PX] a side, its shadow below it. */
+    private fun renderSubject(src: File, kind: WebKind, out: File) {
+        val art = decode(src, 1200) ?: return
+        val cut = if (kind == WebKind.Photo || kind == WebKind.Controller) cutWhite(art) else art
+        val opaque = !hasClearEdge(cut)
+        val box = if (opaque) Rect(0, 0, cut.width, cut.height) else opaqueBounds(cut) ?: Rect(0, 0, cut.width, cut.height)
+        val scale = min(1f, SUBJECT_PX.toFloat() / max(box.width(), box.height()))
+        val sw = box.width() * scale
+        val sh = box.height() * scale
+        val margin = max(sw, sh) * 0.08f
+        val canvas = Bitmap.createBitmap((sw + margin * 2).toInt(), (sh + margin * 2).toInt(), Bitmap.Config.ARGB_8888)
+        val c = Canvas(canvas)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+        // A little above the middle, so the shadow below has its room.
+        val dst = RectF(margin, margin * 0.7f, margin + sw, margin * 0.7f + sh)
+        val drop = max(sw, sh) * 0.022f
+        if (opaque) {
+            val r = min(sw, sh) * 0.06f
+            val shadow = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = android.graphics.Color.BLACK; setShadowLayer(margin * 0.45f, 0f, drop, 0x66000000) }
+            c.drawRoundRect(dst, r, r, shadow)
+            c.save()
+            c.clipPath(android.graphics.Path().apply { addRoundRect(dst, r, r, android.graphics.Path.Direction.CW) })
+            c.drawBitmap(cut, box, dst, paint)
+            c.restore()
+        } else {
+            val alpha = cut.extractAlpha()
+            val shadow = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
+                color = 0x66000000
+                maskFilter = android.graphics.BlurMaskFilter(margin * 0.4f, android.graphics.BlurMaskFilter.Blur.NORMAL)
+            }
+            c.drawBitmap(alpha, box, RectF(dst).apply { offset(0f, drop) }, shadow)
+            alpha.recycle()
+            c.drawBitmap(cut, box, dst, paint)
+        }
+        if (cut !== art) cut.recycle()
+        art.recycle()
+        out.parentFile?.mkdirs()
+        val tmp = File(out.path + ".part")
+        val ok = runCatching { tmp.outputStream().use { o -> canvas.compress(Bitmap.CompressFormat.PNG, 100, o) } }.getOrDefault(false)
+        canvas.recycle()
+        if (ok) tmp.renameTo(out) else tmp.delete()
+    }
+
+    /** The smallest box holding every pixel of [b] that isn't (nearly) see-through, or null for none. */
+    private fun opaqueBounds(b: Bitmap): Rect? {
+        val w = b.width
+        val h = b.height
+        val px = IntArray(w * h)
+        b.getPixels(px, 0, w, 0, 0, w, h)
+        var l = w; var t = h; var r = -1; var btm = -1
+        for (y in 0 until h) for (x in 0 until w) {
+            if (px[y * w + x] ushr 24 > 16) {
+                if (x < l) l = x
+                if (x > r) r = x
+                if (y < t) t = y
+                if (y > btm) btm = y
+            }
+        }
+        return if (r < l || btm < t) null else Rect(l, t, r + 1, btm + 1)
     }
 
     /** The system's colour as a backdrop: lighter at the top, deeper at the bottom, a soft glow behind the middle. */

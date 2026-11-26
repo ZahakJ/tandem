@@ -138,7 +138,7 @@ Themes, sounds and music are in **Settings › Look & feel** and **Settings › 
 
 ### Switching layouts
 
-<kbd>Start</kbd> › **Layout** puts the home itself in try-on mode: the Start panel closes, nothing covers the home, and thin brackets in its corners say you're trying layouts (from another screen, Tandem goes home first). A pill along the top says what the buttons do, and the other screen shows a card of the layout you're trying.
+<kbd>Start</kbd> › **Layout** puts the home itself in try-on mode: the Start panel closes, nothing covers the home, and thin brackets in its corners say you're trying layouts (from another screen, Tandem goes home first). A pill takes the top bar's place and says what the buttons do (the top bar, and on the icon grid the highlighted name, step aside until you're done). The layouts' own button hints (the group strips' L1 and R1, Orbit's L1 and R1, Spotlight's and Stage's button lines, the grid's Zoom and its Continue card's L2 and R2) fade while you try, because the buttons mean the try-on's things on every layout, Spotlight and Stage included. The other screen shows a card of the layout you're trying, with the same buttons in its pill: **L1 R1 Layout · L2 R2 Size · A Keep · B Cancel**.
 
 | Press | What it does |
 | --- | --- |

@@ -624,8 +624,9 @@ private fun StageFooter(page: StagePage, e: StageEntry?, modifier: Modifier) {
         )
         val g = e?.game
         val runs = g != null && RunningGames.list.any { it.game?.key == g.key }
+        // Trying layouts A keeps the layout instead (the try-on pill says so).
         Row(
-            Modifier.darkChip().padding(horizontal = 12.dp, vertical = 4.dp),
+            Modifier.awayWhileTrying().darkChip().padding(horizontal = 12.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
         ) {
             ButtonHint(

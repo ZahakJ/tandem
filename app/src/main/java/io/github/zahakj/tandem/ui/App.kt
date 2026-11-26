@@ -526,8 +526,8 @@ private fun Main(resumes: Int) {
     PaddedScrolling {
         // While a popup is open the screen keeps its focus but ignores the D-pad and A, so nothing behind the
         // popup can be moved to or started.
-        // Trying layouts (Start › Layout), A keeps the one on screen instead of opening what is highlighted.
-        Box(Modifier.fillMaxSize().menuBackdrop().onPreviewKeyEvent { LayoutSwitch.onKey(it) || (Nav.overlayOpen || Layers.top != null) && !Layers.focusInPopup && it.isNavKey() }) {
+        // (Trying layouts, A and B never get here: MainActivity hands them to LayoutSwitch.onKey first.)
+        Box(Modifier.fillMaxSize().menuBackdrop().onPreviewKeyEvent { (Nav.overlayOpen || Layers.top != null) && !Layers.focusInPopup && it.isNavKey() }) {
             // The top bar lies over the screens instead of pushing them down: each screen keeps a fixed room for it
             // (none on fullscreen ones), and the bar only fades and slides in its layer. Resizing the screen area
             // during a transition would re-lay out Home's grid (sized from its height) and Settings on every frame.
@@ -579,7 +579,8 @@ private fun Main(resumes: Int) {
                     }
                 }
             }
-            TopBarOverlay(!fullscreen)
+            // Trying layouts the bar steps aside: the try-on pill takes its place (LayoutSwitchHost).
+            TopBarOverlay(!fullscreen && !LayoutSwitch.open)
         }
         CornerHints()
         ScrapeBadge(fullscreen)

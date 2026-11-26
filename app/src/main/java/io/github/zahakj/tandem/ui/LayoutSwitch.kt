@@ -39,11 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,8 +62,9 @@ import kotlinx.coroutines.delay
  * it is among them. The D-pad moves inside the layout as usual, so it can be felt; the highlight stays on the same
  * game, system or collection (LayoutFocus). L2 / R2 change the layout's own size (the grid's icons, the shelves'
  * cards, what Orbit holds, Spotlight's rail side, Stage's covers), live too. A keeps what shows, saved once; B or
- * Start puts back what was there, nothing written. A pill along the top says all that; the other screen shows a card
- * of the layout being tried.
+ * Start puts back what was there, nothing written; all of them are the try-on's on every layout, ahead of the
+ * layouts' own handlers. A pill in the top bar's place says all that (the bar steps aside), the layouts' own button
+ * hints fade ([awayWhileTrying]), and the other screen shows a card of the layout being tried with the same buttons.
  */
 
 object LayoutSwitch {
@@ -91,6 +87,8 @@ object LayoutSwitch {
     private var spot = LayoutSpot()
     /** A went down while trying: its release keeps the layout (the release of the A that opened it doesn't). */
     private var aDown = false
+    /** The same for B: its release puts back what was there. */
+    private var bDown = false
 
     fun options(): List<Pair<String, String>> = if (kind == Kind.Home) HomeLayouts else GameViews
 
@@ -113,6 +111,7 @@ object LayoutSwitch {
         spot = spotOf(Selection.current)
         index = options().indexOfFirst { it.first == current(look) }.coerceAtLeast(0)
         aDown = false
+        bDown = false
         open = true
         popTick++
         Sounds.menuOpen()
@@ -164,16 +163,20 @@ object LayoutSwitch {
     }
 
     /**
-     * A while trying, from the app root before the screen sees it: only a release after a press made here keeps the
-     * layout. True when the key was used up.
+     * A and B while trying, from the activity (MainActivity) once the bindings have made them A and B, before any
+     * screen, layout or Back handler sees them: every layout has its own (Spotlight's B goes up its rail, Stage's
+     * leaves its strip), and one put on while trying is newer than anything here. A keeps, B puts back; only a
+     * release after a press made here counts, so the release of the A that chose Layout does nothing. [code] is the
+     * key's code; true when the key was used up.
      */
-    fun onKey(e: KeyEvent): Boolean {
+    fun onKey(code: Int, down: Boolean, repeat: Int): Boolean {
         if (!open) return false
-        val select = e.key == Key.DirectionCenter || e.key == Key.Enter || e.key == Key.NumPadEnter || e.key == Key.ButtonA
-        if (!select) return false
-        when (e.type) {
-            KeyEventType.KeyDown -> if (e.nativeKeyEvent.repeatCount == 0) aDown = true
-            KeyEventType.KeyUp -> if (aDown) { aDown = false; keep() }
+        val role = TryOnKeys.of(code) ?: return false
+        if (down) {
+            if (repeat == 0) { if (role == TryOnKeys.Role.Keep) aDown = true else bDown = true }
+        } else when (role) {
+            TryOnKeys.Role.Keep -> if (aDown) { aDown = false; keep() }
+            TryOnKeys.Role.Cancel -> if (bDown) { bDown = false; cancel() }
         }
         return true
     }
@@ -205,6 +208,7 @@ object LayoutSwitch {
     private fun finish() {
         open = false
         aDown = false
+        bDown = false
         before = null
         Nav.focusTick++
     }
@@ -243,6 +247,49 @@ object LayoutSwitch {
     }
 }
 
+/** What a key (as the activity has it once the bindings made Open and Back into A and B) does while trying layouts. */
+object TryOnKeys {
+    enum class Role { Keep, Cancel }
+
+    fun of(code: Int): Role? = when (code) {
+        android.view.KeyEvent.KEYCODE_BUTTON_A, android.view.KeyEvent.KEYCODE_DPAD_CENTER,
+        android.view.KeyEvent.KEYCODE_ENTER, android.view.KeyEvent.KEYCODE_NUMPAD_ENTER -> Role.Keep
+        android.view.KeyEvent.KEYCODE_BUTTON_B, android.view.KeyEvent.KEYCODE_BACK, android.view.KeyEvent.KEYCODE_ESCAPE -> Role.Cancel
+        else -> null
+    }
+}
+
+/**
+ * A layout's button hints whose buttons mean something else while trying layouts (L1 / R1 put on another layout,
+ * L2 / R2 change its size, A keeps, B cancels): they fade for as long as it lasts, keeping their room so nothing
+ * moves, and the try-on pill says what the buttons do instead.
+ */
+@Composable
+fun Modifier.awayWhileTrying(): Modifier {
+    val a by androidx.compose.animation.core.animateFloatAsState(if (LayoutSwitch.open) 0f else 1f, Motion.fade(160), label = "away-trying")
+    return graphicsLayer { alpha = a }
+}
+
+/** The other screen's button pill while trying: L1 R1 Layout · L2 R2 Size · A Keep · B Cancel. */
+@Composable
+fun TryOnHints(modifier: Modifier = Modifier) {
+    Row(
+        modifier.clip(RoundedCornerShape(50)).background(Palette.Card.copy(alpha = 0.9f)).padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            ButtonHint("L1", "", Palette.Lavender, onClick = { LayoutSwitch.step(-1) })
+            ButtonHint("R1", Tx.s(R.string.panels_layout_hint_layout), Palette.Lavender, onClick = { LayoutSwitch.step(1) })
+        }
+        if (LayoutSwitch.sizeLabel() != null) Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            ButtonHint("L2", "", Palette.Sky, onClick = { LayoutSwitch.size(-1) })
+            ButtonHint("R2", Tx.s(R.string.panels_layout_hint_size_plain), Palette.Sky, onClick = { LayoutSwitch.size(1) })
+        }
+        ButtonHint("A", Tx.s(R.string.panels_layout_hint_keep), Palette.Mint, onClick = { LayoutSwitch.keep() })
+        ButtonHint("B", Tx.s(R.string.panels_layout_hint_cancel), Palette.Peach, onClick = { LayoutSwitch.cancel() })
+    }
+}
+
 /** A layout's own size (or the one setting most like it): L2 / R2 while trying it. */
 private class Knob(val options: List<Pair<String, String>>, val get: (Look) -> String, val set: (Look, String) -> Look)
 
@@ -271,8 +318,10 @@ fun LayoutSwitchHost() {
     val open = LayoutSwitch.open
     BackHandler(open) { LayoutSwitch.cancel() }
     // Every button belongs to the try-on while it lasts (a Y menu or the side panel over a layout being tried would
-    // only confuse); the D-pad and A go through the screen as usual (A is caught at the root: LayoutSwitch.onKey).
-    InterceptButtons(open) { b ->
+    // only confuse), ahead of the layouts' own handlers: each layout put on adds its handlers then, newer than this
+    // one, and Spotlight's L1 / R1 turned its own groups instead of the layout. The D-pad goes through to the layout;
+    // A and B are caught in the activity (LayoutSwitch.onKey).
+    InterceptButtons(open, front = true) { b ->
         when (b) {
             Button.L1 -> LayoutSwitch.step(-1)
             Button.R1 -> LayoutSwitch.step(1)
@@ -293,7 +342,9 @@ fun LayoutSwitchHost() {
     AnimatedVisibility(open, enter = fadeIn(tween(if (still) 0 else 180)), exit = fadeOut(tween(if (still) 0 else 160))) {
         Box(Modifier.fillMaxSize()) {
             TryOnBrackets(Modifier.fillMaxSize())
-            TryOnPill(Modifier.align(Alignment.TopCenter).padding(top = 8.dp))
+            // Where the top bar was: the bar steps aside while trying (TopBarOverlay), and the icon grid's caption
+            // (the highlighted name, the zoom hint) fades, so the pill never covers a button or a name.
+            TryOnPill(Modifier.align(Alignment.TopCenter).padding(top = 6.dp))
             TryOnPopup(Modifier.align(Alignment.Center).offset(y = (-24).dp))
         }
     }

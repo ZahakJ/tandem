@@ -1,5 +1,6 @@
 package io.github.zahakj.tandem.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,8 +35,18 @@ fun SystemHeroDetails(platform: Platform, games: List<Game>, played: Long, hints
     val hero = ThemePacks.systemHero(platform.id) ?: return false
     val logo = ThemePacks.systemLogo(platform.id)
     val color = Palette.forName(platform.id)
+    // A console photo (WebArt.subjectBehind): the logo above it, the console below the logo, nothing over the device.
+    val subject = WebArt.subjectBehind(platform.id, null, hero)
     Column(Modifier.fillMaxSize()) {
-        Box(Modifier.fillMaxWidth().weight(0.58f)) {
+        if (subject != null) Column(
+            Modifier.fillMaxWidth().weight(0.58f)
+                .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(androidx.compose.ui.graphics.lerp(color, androidx.compose.ui.graphics.Color.White, 0.06f), androidx.compose.ui.graphics.Color.Transparent)))
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (logo != null) AsyncImage(logo, platform.name, Modifier.fillMaxWidth(0.5f).height(40.dp), contentScale = ContentScale.Fit)
+            AsyncImage(subject, null, Modifier.fillMaxWidth().weight(1f).padding(top = 6.dp), contentScale = ContentScale.Fit)
+        } else Box(Modifier.fillMaxWidth().weight(0.58f)) {
             AsyncImage(hero, platform.name, Modifier.fillMaxSize().heroFade(), contentScale = ContentScale.Crop)
             if (logo != null) {
                 AsyncImage(

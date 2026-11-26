@@ -224,9 +224,10 @@ object TopBarFocus {
 
     /**
      * Into the top bar from a screen whose own Up never leads there (Spotlight's rail moves on Up, so its top is the
-     * way in): the rightmost button, Quick, nearest the corner. False when there is no top bar.
+     * way in): the rightmost button, Quick, nearest the corner. False when there is no top bar (it steps aside while
+     * trying layouts, for the try-on pill).
      */
-    fun enter(): Boolean = chips.lastOrNull()?.let { runCatching { it.requestFocus() }.isSuccess } ?: false
+    fun enter(): Boolean = if (LayoutSwitch.open) false else chips.lastOrNull()?.let { runCatching { it.requestFocus() }.isSuccess } ?: false
 
     /** [requester]'s item on the screen (not in a popup or the top bar) took the focus. */
     fun noted(requester: FocusRequester) {
@@ -575,13 +576,16 @@ fun KeyEvent.isNavKey(): Boolean = when (key) {
     else -> false
 }
 
-/** While [enabled], [handler] sees controller buttons before anything else (see [Buttons.intercept]). */
+/**
+ * While [enabled], [handler] sees controller buttons before anything else (see [Buttons.intercept]); with [front],
+ * before every handler without it, even ones added later (a mode over screens that come and go under it).
+ */
 @Composable
-fun InterceptButtons(enabled: Boolean, handler: (Button) -> Boolean) {
+fun InterceptButtons(enabled: Boolean, front: Boolean = false, handler: (Button) -> Boolean) {
     val current by rememberUpdatedState(handler)
     val owner = androidx.compose.ui.platform.LocalContext.current.let { it as? io.github.zahakj.tandem.MainActivity ?: (it as? android.content.ContextWrapper)?.baseContext as? io.github.zahakj.tandem.MainActivity }
-    DisposableEffect(enabled) {
-        val remove = if (enabled) Buttons.intercept({ current(it) }, owner) else null
+    DisposableEffect(enabled, front) {
+        val remove = if (enabled) Buttons.intercept({ current(it) }, owner, front) else null
         onDispose { remove?.invoke() }
     }
 }

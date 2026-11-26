@@ -773,6 +773,7 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
             IconGrid.openFolder == null
         val at = FocusMemory.get(route)
         val mv = IconGrid.moving
+        val onCard = cardGame != null && HomeExtras.cardFocused
         when {
             // Select while moving: the tile goes back and is marked, and several can be picked (GridSelect.kt).
             mv != null && mv.folder == null && !mv.carried -> {
@@ -791,14 +792,19 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
                 at?.takeIf { it in view[1] }?.let { GridSelect.toggle(null, it) }
                 true
             }
-            // The wide card: Y closes the game it shows when that one is running (twice), else its options; X switches
-            // between running games; L2 / R2 step through the card's games.
-            at == HomeExtras.RESUME && cardGame != null && (b == Button.Y || b == Button.Grab) -> {
-                if (cardRunning != null) resumePageClose(ctx, cardRunning) else Nav.openMenu(cardGame)
+            // The wide card (while it really has the highlight): Y closes the game it shows when that one is running
+            // (twice), else its options; X switches between running games; L2 / R2 step through the card's games. R2
+            // is the card's before the side panel's, which shares it; it can come as the Side panel command alone
+            // (Page down rebound elsewhere), and is still R2 here while Side panel is on R2.
+            onCard && (b == Button.Y || b == Button.Grab) -> {
+                if (cardRunning != null) resumePageClose(ctx, cardRunning) else Nav.openMenu(cardGame!!)
                 true
             }
-            at == HomeExtras.RESUME && cardRunning != null && b == Button.X && RunningGames.list.size > 1 -> { Panels.openSwitcher(); true }
-            at == HomeExtras.RESUME && deck.size > 1 && (b == Button.L2 || b == Button.R2) -> { HomeExtras.stepCard(deck, if (b == Button.R2) 1 else -1); true }
+            onCard && cardRunning != null && b == Button.X && RunningGames.list.size > 1 -> { Panels.openSwitcher(); true }
+            onCard && deck.size > 1 && (b == Button.L2 || b == Button.R2 || b == Button.SidePanel && sidePanelOnR2()) -> {
+                HomeExtras.stepCard(deck, if (b == Button.L2) -1 else 1)
+                true
+            }
             // Y held on a tile: it lifts off the grid and the D-pad moves it (A drops it, B puts it back).
             b == Button.Grab && Panels.focusedApp == null && mv == null && at != null && at in view[1] && grabbable(at) -> {
                 pickUp(at, null, homeShown().slots)
@@ -965,7 +971,8 @@ fun IconGridHome(libs: List<PlatformLibrary>) {
             if (showDock) PillDock(dock, target, Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp).swapArrive(slot, 300f, 0f, 64f * px, 0.92f, 200f, damping = 0.7f).onPlaced { SwapFx.dock = it }.onFocusChanged { if (it.hasFocus) closeStrip() })
             GridCornerHints(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(dockH).swapArrive(slot, 340f, 0f, 20f * px))
             if (!onBottom) GridLogo(
-                moving == null && !single,
+                // Trying layouts the name gives way to the try-on pill, which sits in this strip.
+                moving == null && !single && !LayoutSwitch.open,
                 Modifier.align(Alignment.TopStart).fillMaxWidth().height(captionH).padding(start = 12.dp, end = 150.dp).swapArrive(slot, 220f, 0f, -flow * 16f * px),
             )
             // Where the other layouts show their groups, the grid says what its shoulders do: zoom.
@@ -1030,7 +1037,8 @@ private val CaptionHeight = 36.dp
 @Composable
 private fun ZoomHint(modifier: Modifier) {
     val covered = Nav.route != Route.Home || Nav.overlayOpen || Layers.top != null || IconGrid.menu != null || IconGrid.openFolder != null ||
-        IconGrid.adding || FolderPopup.route != null || StartMenu.open || IconGrid.moving != null || IconGrid.selecting != null
+        IconGrid.adding || FolderPopup.route != null || StartMenu.open || IconGrid.moving != null || IconGrid.selecting != null ||
+        LayoutSwitch.open
     val alpha by animateFloatAsState(if (covered) 0f else 0.85f, Motion.fade(if (covered) 90 else 220), label = "grid-zoom-hint")
     Row(modifier.graphicsLayer { this.alpha = alpha }, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         ButtonHint("L1", "", Palette.Lavender, tappable = !covered)
@@ -1449,15 +1457,24 @@ private fun GridHeroBanner(items: List<GridItem>, modifier: Modifier) {
     AnimatedContent(item, modifier, contentKey = { it.key }, transitionSpec = { fadeIn(Motion.fade(320)) togetherWith fadeOut(Motion.fade(220)) }, label = "grid-hero") { it ->
         val key = it.key
         val hero = remember(key) { heroFor(it) }
+        // A console photo for a hero: the console at the end side, clear of the name at the start, on its colour.
+        val subject = remember(key, hero, WebArt.revision) { WebArt.subjectBehind(it.platformId, it.style, hero) }
         Box(Modifier.fillMaxSize()) {
-            if (hero != null) {
+            if (subject != null) {
+                Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color.Transparent, it.color.copy(alpha = 0.55f)))))
+                coil.compose.AsyncImage(
+                    rememberSizedRequest(subject, 900), null,
+                    Modifier.align(Alignment.CenterEnd).fillMaxHeight().fillMaxWidth(0.45f).padding(vertical = 8.dp, horizontal = 30.dp).floating(key.hashCode(), bob = 3.dp, tilt = 0f),
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit,
+                )
+            } else if (hero != null) {
                 Box(Modifier.fillMaxSize().fadeMask(0f to 1f, 0.6f to 0.9f, 1f to 0f).fadeMaskHorizontal(0f to 0.4f, 0.55f to 1f)) {
                     KenBurns(hero, Modifier.fillMaxSize(), moving = Store.settings.look.kenBurns)
                 }
             } else {
                 Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(it.color.copy(alpha = 0.5f), Color.Transparent))))
             }
-            Column(Modifier.align(Alignment.BottomStart).padding(start = 30.dp, bottom = 6.dp, end = 30.dp).riseIn(key, 0, 14.dp).floating(key.hashCode(), bob = 3.dp, tilt = 0f)) {
+            Column(Modifier.align(Alignment.BottomStart).fillMaxWidth(if (subject != null) 0.55f else 1f).padding(start = 30.dp, bottom = 6.dp, end = 30.dp).riseIn(key, 0, 14.dp).floating(key.hashCode(), bob = 3.dp, tilt = 0f)) {
                 Text(it.type.uppercase(), style = MaterialTheme.typography.labelLarge, color = lerp(it.color, Color.White, 0.35f), maxLines = 1)
                 Text(it.title, style = MaterialTheme.typography.displaySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
@@ -2122,12 +2139,17 @@ private fun DockIcon(
     ) { content() }
 }
 
+/** The Side panel command is on R2 alone (its default), so a press of it there is R2 to the Continue card. */
+private fun sidePanelOnR2(): Boolean =
+    io.github.zahakj.tandem.data.ControllerStore.bindings[Command.SidePanel] == io.github.zahakj.tandem.Binding.of(io.github.zahakj.tandem.Pad.R2)
+
 /** Bottom corners: X swaps the screens (or searches), Y opens the tile menu. Tappable on a touch screen too. */
 @Composable
 private fun GridCornerHints(modifier: Modifier) {
     val ctx = LocalContext.current
     val swaps = ScreenRoles.xSwaps()
-    Box(modifier.padding(horizontal = 18.dp)) {
+    // Trying layouts X and Y do nothing (the try-on pill says what does).
+    Box(modifier.awayWhileTrying().padding(horizontal = 18.dp)) {
         CornerButton("X", if (swaps) Glyph.Swap else Glyph.Eye, Modifier.align(Alignment.CenterStart)) {
             if (swaps) ScreenRoles.toggle(ctx) else Nav.search = true
         }

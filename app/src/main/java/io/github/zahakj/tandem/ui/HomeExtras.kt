@@ -45,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -87,6 +88,13 @@ object HomeExtras {
 
     /** The game the wide first card shows, chosen with L2 / R2 (null: the first, a running game when there is one). */
     var cardKey by mutableStateOf<String?>(null)
+
+    /**
+     * The card holds the highlight right now. The grid's buttons ask this rather than the remembered item, which can
+     * name something else while the card keeps the focus (a layout tried and put back remembers where it was), and
+     * then R2 on the card opened the side panel.
+     */
+    var cardFocused = false
 
     /** L2 (-1) / R2 (+1) on the card: the game before or after in [deck]. */
     fun stepCard(deck: List<Game>, by: Int) {
@@ -155,8 +163,9 @@ fun ResumeLanding(running: RunningGame?) {
 @Composable
 fun ResumePage(game: Game, running: RunningGame?, deck: List<Game>, routeKey: String, target: String?, modifier: Modifier) {
     val ctx = LocalContext.current
+    androidx.compose.runtime.DisposableEffect(Unit) { onDispose { HomeExtras.cardFocused = false } }
     FocusCard(
-        modifier.takesFocus(routeKey, HomeExtras.RESUME, target == HomeExtras.RESUME), glow = SystemColors.of(game.platform.id), shape = RoundedCornerShape(28.dp),
+        modifier.onFocusChanged { HomeExtras.cardFocused = it.hasFocus }.takesFocus(routeKey, HomeExtras.RESUME, target == HomeExtras.RESUME), glow = SystemColors.of(game.platform.id), shape = RoundedCornerShape(28.dp),
         onFocus = { Selection.current = Selected.GameItem(game); IconGrid.spot = null; Panels.focusedApp = null },
         entry = true,
         // Y here may start closing the game, so a long press (which is Y elsewhere) opens the game's options instead.
@@ -270,12 +279,13 @@ private fun DeckDots(deck: List<Game>, shown: String, focused: Boolean) {
         Modifier.graphicsLayer { alpha = if (focused) 1f else 0.6f }.darkChip().padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp),
     ) {
-        ButtonHint("L2", "", Palette.Lavender, tappable = focused)
+        // Trying layouts L2 and R2 change the layout's size instead: the dots stay, the buttons fade.
+        Box(Modifier.awayWhileTrying()) { ButtonHint("L2", "", Palette.Lavender, tappable = focused && !LayoutSwitch.open) }
         deck.forEach { g ->
             val on = g.key == shown
             Box(Modifier.size(if (on) 8.dp else 6.dp).clip(CircleShape).background(if (on) Color.White else Color.White.copy(alpha = 0.4f)))
         }
-        ButtonHint("R2", "", Palette.Lavender, tappable = focused)
+        Box(Modifier.awayWhileTrying()) { ButtonHint("R2", "", Palette.Lavender, tappable = focused && !LayoutSwitch.open) }
     }
 }
 
