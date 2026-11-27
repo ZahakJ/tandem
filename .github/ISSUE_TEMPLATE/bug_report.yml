@@ -1,63 +1,25 @@
 name: Bug report
-description: Something crashes, looks wrong, or doesn't do what the docs say.
+description: Something broke or looks wrong.
 labels: [bug]
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for taking the time! The [troubleshooting page](https://zahakj.github.io/tandem/docs/faq/) answers the most common problems, so a quick look there first may save you the wait.
-
-        Found a security problem? Please don't file it here; see [SECURITY.md](https://github.com/ZahakJ/tandem/blob/main/SECURITY.md).
+      value: A few words is enough. We'll ask if we need more.
   - type: textarea
     id: what
     attributes:
-      label: What happened
-      description: What you saw, and what you expected instead.
-    validations:
-      required: true
-  - type: textarea
-    id: steps
-    attributes:
-      label: Steps to reproduce
-      placeholder: |
-        1. Highlight a 3DS game
-        2. Press A
-        3. ...
+      label: What happened?
+      description: What you did, what you saw, and what you expected.
     validations:
       required: true
   - type: input
     id: version
     attributes:
-      label: Tandem version
-      description: Android's app info screen for Tandem shows it, or the release you installed.
-      placeholder: "0.2.0"
-    validations:
-      required: true
-  - type: input
-    id: device
-    attributes:
-      label: Device and Android version
-      placeholder: "AYN Thor, Android 13"
-    validations:
-      required: true
-  - type: input
-    id: emulator
-    attributes:
-      label: Emulator involved, if any
-      description: Name and version, and whether you use the built-in platforms.json or your own.
-      placeholder: "Azahar 2125, built-in platforms.json"
-  - type: dropdown
-    id: shizuku
-    attributes:
-      label: Is Shizuku set up for Tandem?
-      options:
-        - "Yes"
-        - "No"
-        - "Not sure"
+      label: Device and Tandem version
+      description: The version is in Settings › Play & system › Updates.
+      placeholder: "AYN Thor, 0.10.0"
   - type: textarea
-    id: logs
+    id: media
     attributes:
-      label: Logs or screenshots
-      description: |
-        A log helps most: right after the problem, choose Settings › Play & system › Updates › Send a bug report in Tandem and attach the zip it saves (it is redacted; nothing is sent by itself). With a computer, `adb logcat -s Tandem` works too. Screenshots or a short video are great for anything visual.
-      render: text
+      label: Screenshot or video
+      description: Optional. Drag it in here. A bug report zip from Settings › Play & system › Updates › Send a bug report helps too.

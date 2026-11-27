@@ -94,7 +94,36 @@
     <string name="whatsnew_0100_settings_body">تُفتح الإعدادات على ثمانية مربعات، في كلٍّ منها رسم حيّ صغير لما بداخله. شيء غريب؟ «إرسال تقرير خطأ» يحفظ لك تقريرًا، بلا حاسوب.</string>
     <string name="whatsnew_0100_settings_short">الإعدادات</string>
 
-    <string name="whatsnew_0100_music_title">Plaza، موسيقى مشمسة جديدة</string>
-    <string name="whatsnew_0100_music_body">Plaza هي الموسيقى الافتراضية الجديدة: لحن بالصفير في الرئيسية، وبوسا نوفا دافئة في الإعدادات، وفالس من صندوق موسيقى لشاشة التوقف، ونغمة فرح صغيرة للأخبار السارة. غيّرها من الإعدادات › الصوت والموسيقى.</string>
+    <string name="whatsnew_0100_music_title">موسيقى جديدة دافئة</string>
+    <string name="whatsnew_0100_music_body">ألحان جديدة تتصفّح على أنغامها، هادئة ودافئة كبطانية فوق مكتبتك. ارفع صوتها من الإعدادات › الصوت والموسيقى.</string>
     <string name="whatsnew_0100_music_short">الموسيقى</string>
+
+    <string name="whatsnew_0110_tagline">أصدقاء جدد بالصدفة</string>
+    <string name="whatsnew_0110_pass_title">يا محاسن الصدف!</string>
+    <string name="whatsnew_0110_pass_body">صادِف جهاز Tandem آخر لتتبادلا البطاقات: شخصيتك وتحيتك ولعبتك المفضلة. عبر البلوتوث فقط، و«صدفة» متوقفة حتى تشغّلها من الإعدادات › اللعب والنظام › صدفة.</string>
+    <string name="whatsnew_0110_pass_short">صدفة</string>
+
+    <string name="whatsnew_0110_plaza_title">الساحة</string>
+    <string name="whatsnew_0110_plaza_body">كل من تصادفهم يلتقون في ساحة بلدة صغيرة: يتمشّون ويتسامرون ويجلسون على المقاعد ويلوّحون لك. لوّح لهم، وتصلهم تلويحتك في الصدفة القادمة.</string>
+    <string name="whatsnew_0110_plaza_short">الساحة</string>
+
+    <string name="whatsnew_0110_me_title">شخصيتك على ذوقك</string>
+    <string name="whatsnew_0110_me_body">في «أنا» تصنع شخصيتك: الوجه والعينان والتسريحات والقبعات والملابس وغيرها، وكلها برسم جديد أظرف. محتار؟ X يختار لك عشوائيًا، وY يتراجع عنه.</string>
+    <string name="whatsnew_0110_me_short">«أنا»</string>
+
+    <string name="whatsnew_0110_grooves_title">ثلاثة إيقاعات جديدة</string>
+    <string name="whatsnew_0110_grooves_body">Plaza وLagoon وTerrace بدل الموسيقى القديمة: إيقاعات خفيفة في الخلفية على الماريمبا والكاليمبا والأوتار، صُنعت داخل Tandem نفسه. اختر ما يحلو لك من الإعدادات › الصوت والموسيقى.</string>
+    <string name="whatsnew_0110_grooves_short">الإيقاعات</string>
+
+    <string name="whatsnew_0110_glyphs_title">لكل إعداد أيقونته</string>
+    <string name="whatsnew_0110_glyphs_body">رئيسية الإعدادات صارت بمربعات أرحب، ثلاثة في كل صف، ولكل إعداد أيقونة صغيرة خاصة به، فتجده من أول نظرة.</string>
+    <string name="whatsnew_0110_glyphs_short">أيقونات الإعدادات</string>
+
+    <string name="whatsnew_0110_switch_title">ألعاب Switch بحفظ واحد</string>
+    <string name="whatsnew_0110_switch_body">اللعبة التي بناها تطبيقا Peanuts كلاهما تعمل الآن في Peanuts Native الرسمي، فهو الذي يُحدَّث دائمًا. وحفظك من التطبيق الآخر ينتقل معها.</string>
+    <string name="whatsnew_0110_switch_short">حفظ Switch</string>
+
+    <string name="whatsnew_0110_steady_title">تحديد أثبت</string>
+    <string name="whatsnew_0110_steady_body">أعِد سحب صف في «هذا الأسبوع» ويبقى التحديد في مكانه. ولم يعد التحديد يُقصّ عند الحواف، وأصلحنا عطلًا كان يُغلق Tandem في النصوص المضبوطة على المقاس.</string>
+    <string name="whatsnew_0110_steady_short">إصلاحات</string>
 </resources>

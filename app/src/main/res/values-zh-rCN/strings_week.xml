@@ -8,6 +8,7 @@
     <string name="week_header_of">%1$s 起的一周</string>
     <string name="week_hint_reroll">重新抽</string>
     <string name="week_reroll_upnext">“接下来玩”是你自己的列表：X 只会重抽其他行</string>
+    <string name="week_reroll_none">这一行本周就这些了</string>
 
     <string name="week_tag_upnext">接下来玩</string>
     <string name="week_tag_pick">本周之选</string>

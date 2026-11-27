@@ -107,12 +107,12 @@ internal fun wallpaperKey(slot: ScreenSlot, look: io.github.zahakj.tandem.data.L
 internal fun isVideoKey(key: String) = key.substringAfterLast('.').lowercase() in ThemePacks.videoExtensions
 
 /**
- * Something covers the screens (a popup, a panel, the launch, the screensaver), nobody has used Tandem for minutes
- * ([Ambient.resting]), or something opaque fills this screen ([WallpaperCover]): wallpaper videos hold their frame.
+ * Something covers the screens (a popup, a panel, the launch, the screensaver), nobody has used Tandem for half a minute
+ * ([Ambient.settled]), or something opaque fills this screen ([WallpaperCover]): wallpaper videos hold their frame.
  */
 @Composable
 private fun wallpaperCovered(slot: ScreenSlot): Boolean =
-    Nav.overlayOpen || Layers.top != null || io.github.zahakj.tandem.Screensaver.active || Ambient.resting || WallpaperCover.covers(slot)
+    Nav.overlayOpen || Layers.top != null || io.github.zahakj.tandem.Screensaver.active || Ambient.settled || WallpaperCover.covers(slot)
 
 /**
  * Screens whose wallpaper is hidden right now under something opaque that fills them (Spotlight's game art, once it

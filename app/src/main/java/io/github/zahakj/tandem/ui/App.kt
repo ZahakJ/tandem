@@ -234,7 +234,8 @@ object Nav {
 object Toasts {
     const val DEFAULT_MS = 2800L
     var message by mutableStateOf<String?>(null)
-    private var serial = 0
+    // State, not a plain Int: the same text shown twice must still restart the timer that puts it away.
+    private var serial by androidx.compose.runtime.mutableIntStateOf(0)
     /** How long the current message stays up. */
     var shownMs = DEFAULT_MS
         private set
@@ -455,7 +456,18 @@ private fun Main(resumes: Int) {
     // details change, so the screens that show them find them ready instead of sorting the library mid-transition.
     if (!guest) LaunchedEffect(Unit) {
         androidx.compose.runtime.snapshotFlow { Triple(Libraries.all, Store.meta, io.github.zahakj.tandem.Privacy.view) }
-            .collectLatest { withContext(Dispatchers.Default) { Collections.warm() } }
+            .collectLatest {
+                withContext(Dispatchers.Default) { Collections.warm() }
+                // The Shelf's remembered cover shapes, read once in the background, so the first shelf opened finds them.
+                CoverShapes.load(ctx)
+            }
+    }
+    // The parts you and the people you met wear are read from text (AvatarArt.kt) in the background, a little after
+    // the start, so the Plaza's first frame doesn't parse them.
+    if (!guest) LaunchedEffect(Unit) {
+        androidx.compose.runtime.snapshotFlow {
+            io.github.zahakj.tandem.data.PlazaStore.data.let { d -> if (!d.made) emptyList() else listOf(d.me.avatar) + d.visitors.map { it.avatar } }
+        }.collectLatest { delay(3000); warmWorn(it) }
     }
     // Games copied in while Tandem is on screen show up by themselves (FolderWatch.kt); the guest copy watches nothing.
     if (!guest) io.github.zahakj.tandem.FolderWatchHost()
@@ -619,6 +631,9 @@ private fun Main(resumes: Int) {
         io.github.zahakj.tandem.ui.whatsnew.WhatsNewHost()
         // Surprise me's reel of covers, over the screen it lands on (SlotSpin.kt).
         SlotSpinOverlay()
+        // Tandem Pass: the permission primer, What others see, and newcomers greeted anywhere (PassSettings.kt, PlazaScreen.kt).
+        PassOverlays()
+        PlazaArrivals()
         ConfirmOverlay()
         TextEntryOverlay()
         // Over everything that can ask for it, the keyboard too.
@@ -910,7 +925,7 @@ private fun TopBar() {
         Route.Stats -> Tx.s(R.string.home_crumb_stats)
         Route.Widgets -> Tx.s(R.string.home_crumb_widgets)
         Route.Rebind -> path(Tx.s(R.string.home_crumb_controls), Tx.s(R.string.home_crumb_rebind))
-        is Route.Tool -> BuiltInApps.byId(r.id)?.title
+        is Route.Tool -> BuiltInApps.byId(r.id)?.title ?: PlazaUi.crumb(r.id)
         is Route.Manual -> Libraries.byKey(r.gameKey)?.title?.let { path(it, Tx.s(R.string.home_crumb_manual)) } ?: Tx.s(R.string.home_crumb_manual)
     }
     Row(Modifier.fillMaxWidth().height(TopBarHeight).topBarFocus().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {

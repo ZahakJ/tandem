@@ -2,44 +2,31 @@ package io.github.zahakj.tandem.audio
 
 /**
  * Tandem's built-in soundtracks, played by the synthesizer, so the music is GPL like the rest of the app and there
- * are no audio files to license: "Plaza" ([Plaza], the default), "Calm" ([Calm]) and "Meadow Tales" ([Meadow]). The
+ * are no audio files to license: three sister grooves ([Plaza]), "Plaza" (the default), "Lagoon" and "Terrace". The
  * chosen one is the music when the theme pack has none and the music folder isn't chosen (or is empty).
  *
- * Calm and Meadow Tales play through their pieces in turn. Plaza follows where you are instead ([forScene]): one
- * piece for the home screen, one for Settings, one for the screensaver, and a jingle ([jingle]) for good news.
+ * A soundtrack is one groove, and it plays everywhere: on the home screen, in Settings and under the screensaver
+ * (quieter there), looping without a seam. Next song moves on to the next groove for a while; good news brings in
+ * the shared jingle ([jingle]), then the groove comes back.
  */
 object Tracks {
-    /** The soundtracks by id, with their names (names, the same in every language): Plaza first, the default (Look.soundtrack). */
-    val soundtracks: List<Pair<String, String>> = listOf("plaza" to "Plaza", "calm" to "Calm", "meadow" to "Meadow Tales")
+    /** The soundtracks' ids, Plaza first (the default, Look.soundtrack), in [Plaza.all]'s order; known without building a note. */
+    val ids: List<String> = listOf("plaza", "lagoon", "terrace")
+
+    /** The soundtracks by id, with their names: the picker in Sound & music. */
+    val soundtracks: List<Pair<String, String>> get() = Plaza.all.map { it.id to it.title }
 
     /** The default soundtrack's id. */
     const val DEFAULT = "plaza"
 
-    /** The looping pieces of soundtrack [id] (an unknown id is Plaza). */
-    fun of(id: String): List<Song> = when (id) {
-        "meadow" -> Meadow.all
-        "calm" -> Calm.all
-        else -> Plaza.all
-    }
+    /** Soundtrack [id]'s groove; an unknown id (one that was removed, such as "calm" or "meadow") is Plaza. */
+    fun of(id: String): Song = Plaza.all.firstOrNull { it.id == id } ?: Plaza.all.first()
 
-    /** Where Tandem is, for soundtracks whose music follows it. */
-    enum class Scene { Home, Settings, Idle }
+    /** The short jingle for good news: the same for every soundtrack. */
+    val jingle: Song get() = Plaza.passby
 
-    /** The piece soundtrack [id] plays in [scene], or null when it simply plays its pieces in turn. */
-    fun forScene(id: String, scene: Scene): Song? {
-        if (id in setOf("calm", "meadow")) return null
-        val (plaza, shop, lounge) = Plaza.all
-        return when (scene) { Scene.Home -> plaza; Scene.Settings -> shop; Scene.Idle -> lounge }
-    }
-
-    /** Soundtrack [id]'s short jingle for good news, if it has one. */
-    fun jingle(id: String): Song? = if (id in setOf("calm", "meadow")) null else Plaza.passby
-
-    /** Every piece of every soundtrack. */
-    val all: List<Song> get() = Plaza.all + Plaza.passby + Calm.all + Meadow.all
+    /** Every built-in piece: the grooves and the jingle. */
+    val all: List<Song> get() = Plaza.all + Plaza.passby
 
     fun byId(id: String): Song? = all.firstOrNull { it.id == id }
-
-    /** Track ids with friendly names. */
-    val names: List<Pair<String, String>> get() = Plaza.names + Calm.names + Meadow.names
 }

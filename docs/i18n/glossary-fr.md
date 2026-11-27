@@ -38,7 +38,7 @@ The words Tandem uses in French, chosen once and used everywhere. Read this befo
 
 Tandem, Pip, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB,
 SteamGridDB, ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, game
-titles, song titles and soundtrack names (Plaza, Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG,
+titles, song titles and soundtrack names (Plaza, Lagoon, Terrace), file paths and formats (ROMs/…, gamelist.xml, PNG,
 CSV), button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), « USB », « Wi-Fi », « Bluetooth »,
 « GPL-3.0 », « PIN » (« code PIN »). System names come from `platforms.json` and stay as they are there,
 except Tandem's own Android Games system, which is « Jeux Android » (`library_android_games`; « les Jeux Android » in a sentence). Steam's
@@ -358,3 +358,21 @@ Rainbow road is Route arc-en-ciel, Mario Kart's French name; Tall grass is Haute
 | Lunar months | premier mois … douzième mois | A lunar day: « 13 du dixième mois » |
 | Leap month | … intercalaire | « sixième mois intercalaire » |
 | Year of the Horse… | année du Cheval | Rat, Buffle, Tigre, Lapin, Dragon, Serpent, Cheval, Chèvre (année de la Chèvre), Singe, Coq, Chien, Cochon |
+
+## Bump and the Plaza (strings_plaza.xml)
+
+| English | French | Why |
+| --- | --- | --- |
+| Bump (the feature; code and old builds: Tandem Pass) | Bump | A name, masculine (« Bump est activé »), and a sound in the toast: « Bump ! Tu es tombé·e sur Léa. » |
+| the Plaza | la Place | « sur la Place », capitalised as a place name; the soundtrack Plaza stays Plaza |
+| Me (the character maker) | Moi | « Modifier mon Moi » |
+| bump into (someone) | croiser / tomber sur | « croisé·e 3 fois », « Tu as croisé 12 Tandem »; « tomber sur » in the toast; status « En balade » |
+| card | carte | |
+| Face details (Me: freckles, face paint, a plaster...) | Petits détails | In the Extras tab, next to the glasses; « Détails du visage » was stiff |
+| Beard & moustache (Me) | Barbe et moustache | |
+| greeting | salutation | |
+| wave back | faire coucou | Warmer than « saluer de la main » |
+| block / blocked people | bloquer / personnes bloquées | |
+| someone (gender unknown) | point médian: croisé·e, ravi·e | We don't know who they are; keep it light |
+| Nearby devices | Appareils à proximité | Android's French |
+| safety number | numéro de sécurité | As Signal says it |

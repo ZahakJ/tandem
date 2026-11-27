@@ -358,7 +358,7 @@ internal class Voice(private val rate: Int) {
                     tone + br
                 }
                 Osc.Noise -> noise.next().toDouble()
-                Osc.Piano, Osc.Celesta, Osc.Glockenspiel, Osc.Timpani, Osc.Marimba, Osc.Vibes, Osc.MusicBox -> {
+                Osc.Piano, Osc.Celesta, Osc.Glockenspiel, Osc.Timpani, Osc.Marimba, Osc.Vibes, Osc.MusicBox, Osc.Kalimba -> {
                     var acc = 0.0
                     for (k in 0 until mN) {
                         val re = mRe[k]; val im = mIm[k]

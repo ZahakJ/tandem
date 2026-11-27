@@ -32,8 +32,8 @@ reviewing any `values-zh-rCN/strings_*.xml`. When a choice changes, change it he
 
 Tandem, Pip, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB,
 SteamGridDB, ScreenScraper, HowLongToBeat, Twitch, Eden Duo, Peanuts Native, GameNative, Winlator, DroidDeck, the
-emulators, system names (from `platforms.json`), game titles, song titles and soundtrack names (Plaza, Calm, Meadow
-Tales), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV, APK), button letters (A, B, X, Y, L1, R1, L2,
+emulators, system names (from `platforms.json`), game titles, song titles and soundtrack names (Plaza, Lagoon,
+Terrace), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV, APK), button letters (A, B, X, Y, L1, R1, L2,
 R2, Start, Select, Home; the D-pad is 十字键), Xbox, PlayStation, "Wi-Fi", "USB", "MTP", "PIN", "API", "ID", "GPL-3.0", "OLED", "LCD", "HOME 菜单" (Nintendo China's own words for
 the 3DS menu). **Deck** stays Deck: it is Tandem's name for the keyboard and trackpad, and Chinese players know
 the word from Steam Deck.
@@ -269,3 +269,21 @@ Bubbly 泡泡, Minimal 极简, Studio 录音棚, Glass 玻璃, Air 空气.
 | Lunar days | 初一 … 初十, 十一 … 二十, 廿一 … 廿九, 三十 | Written in code (`CalendarText.chineseDay`): 十月十三 |
 | Leap month | 闰六月 | |
 | The year | 丙午马年 | The stem and branch (丙午) are put before the animal year (马年) in code |
+
+## Bump and the Plaza (strings_plaza.xml)
+
+| English | Chinese | Why |
+| --- | --- | --- |
+| Bump (the feature; code and old builds: Tandem Pass) | 偶遇 | The everyday word for a happy chance meeting. “偶遇” in quotes inside a sentence, bare as a title, switch or channel name |
+| the Plaza | 广场 | The feature is translated; the soundtrack Plaza stays Plaza |
+| Me (the character maker) | 我 | Quoted when it names the screen: 编辑“我” |
+| bump into (someone) / bumping | 偶遇 / 偶遇中 | “偶遇了 Sam！”, “偶遇 3 次”, “已偶遇 12 台 Tandem”; 不期而遇 for variety. No longer 擦肩 |
+| card | 名片 | What is swapped is a calling card |
+| Face details (Me: freckles, face paint, a plaster...) | 脸部小点缀 | 点缀: a little touch, lighter than 装饰 |
+| Beard & moustache (Me) | 胡子 | One word covers both |
+| greeting | 招呼语 | |
+| wave back | 挥手回应 | |
+| block | 屏蔽 | As Chinese apps say it |
+| character (avatar) | 形象 | 捏 for making one ("捏一个你"), as players say |
+| Nearby devices | 附近的设备 | Android's Chinese |
+| safety number | 安全码 | |

@@ -186,7 +186,11 @@ fun TileArtView(art: TileArt, size: Dp, modifier: Modifier = Modifier) {
             is TileArt.App -> AppTileIcon(art.pkg, size)
             is TileArt.GameBox -> GameBoxArt(art.game, size)
             is TileArt.Folder -> FolderArt(art, size)
-            is TileArt.Tandem -> TandemIconTile(art.icon, art.color)
+            is TileArt.Tandem -> {
+                TandemIconTile(art.icon, art.color)
+                // The Plaza's tile shows how many people are new there (PlazaScreen.kt).
+                if (art.icon == TIcon.Plaza && size >= 40.dp) PlazaBadge(size, Modifier.align(Alignment.TopEnd))
+            }
             is TileArt.Rendered -> RenderedArt(art.spec, size)
             is TileArt.Animated -> AnimatedTileArt(art.file, art.color, size)
             is TileArt.Counted -> {

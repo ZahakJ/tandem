@@ -117,7 +117,7 @@ fun SettingsSearchOverlay() {
 
 @Composable
 private fun SearchBody() {
-    val hits = settingsHits()
+    val hits = rememberSettingsHits()
     val query = SettingsSearch.query
     val q = normalize(query)
     // Hits hold text in the language: a change of language makes them again.
@@ -126,6 +126,27 @@ private fun SearchBody() {
         else matchHits(hits, q, 40)
     }
     SearchPanes(query, q, results)
+}
+
+/**
+ * [settingsHits], made in a scope of its own: every page's rows were built again on each letter typed (the search
+ * recomposes for it), tens of milliseconds a key. Now only a change to something they show makes them again, and the
+ * search then recomposes with them.
+ */
+@Composable
+internal fun rememberSettingsHits(): List<Hit> {
+    val box = remember { HitsBox() }
+    SettingsHitsInto(box)
+    return box.hits
+}
+
+private class HitsBox {
+    var hits by mutableStateOf(emptyList<Hit>())
+}
+
+@Composable
+private fun SettingsHitsInto(box: HitsBox) {
+    box.hits = settingsHits()
 }
 
 /** Everything settings search can find, with live values. */
@@ -193,15 +214,29 @@ internal fun settingsHits(): List<Hit> {
 private fun englishWords(en: String, shown: String) = if (en == shown) "" else en
 
 /**
- * Hits for the normalized query [q], best first: every word typed must match. A word at the start of the label
- * beats one inside it, which beats a synonym, the group or the page, which beats the help text.
+ * [normalize], kept: the hits' texts are the same from one letter typed to the next (a few thousand strings, each an
+ * NFD pass and two regexes), so each is worked out once.
  */
-internal fun matchHits(hits: List<Hit>, q: String, limit: Int): List<Hit> {
+private fun normalizeKept(s: String): String {
+    NormalizedHits[s]?.let { return it }
+    if (NormalizedHits.size > 8192) NormalizedHits.clear()
+    return normalize(s).also { NormalizedHits[s] = it }
+}
+
+private val NormalizedHits = java.util.concurrent.ConcurrentHashMap<String, String>()
+
+/**
+ * Hits for the normalized query [q], best first: every word typed must match. A word at the start of the label
+ * beats one inside it, which beats a synonym, the group or the page, which beats the help text. Without [help], a
+ * word found only in the help text doesn't count: the home search's finds sit above the games, and "poke" found
+ * Rescan games there, by the example in its help (Pokemon Red.pdf), over every Pokémon game.
+ */
+internal fun matchHits(hits: List<Hit>, q: String, limit: Int, help: Boolean = true): List<Hit> {
     val tokens = q.split(" ").filter { it.isNotEmpty() }
     return hits.mapNotNull { h ->
-        val strong = normalize(h.strong)
-        val words = normalize(h.words)
-        val weak = normalize(h.weak)
+        val strong = normalizeKept(h.strong)
+        val words = normalizeKept(h.words)
+        val weak = normalizeKept(h.weak)
         var score = 0
         for (t in tokens) {
             score += when {
@@ -209,7 +244,7 @@ internal fun matchHits(hits: List<Hit>, q: String, limit: Int): List<Hit> {
                 strong.split(" ").any { it.startsWith(t) } -> 1
                 strong.contains(t) -> 2
                 words.split(" ").any { it.startsWith(t) } -> 3
-                weak.split(" ").any { it.startsWith(t) } -> 6
+                help && weak.split(" ").any { it.startsWith(t) } -> 6
                 else -> return@mapNotNull null
             }
         }
@@ -242,7 +277,7 @@ private fun SearchPanes(query: String, q: String, results: List<Hit>) {
                     val k = SEARCH_KEYS[i]
                     FocusCard(
                         Modifier.height(32.dp).takesFocus(KEYS_ROUTE, "key:$k", !SettingsSearch.inResults && keyTarget == "key:$k"),
-                        glow = Palette.Sky, shape = RoundedCornerShape(10.dp),
+                        glow = Palette.Sky, shape = RoundedCornerShape(10.dp), lifts = false,
                         onClick = {
                             SettingsSearch.query = when (k) {
                                 "⌫" -> query.dropLast(1)

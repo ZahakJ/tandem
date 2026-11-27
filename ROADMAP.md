@@ -32,7 +32,8 @@ A complete handheld frontend with nothing hidden: no telemetry, open formats, an
 - [x] Bottom-screen modes: details, art, animated art, clock, video snaps, widgets, and an in-game art or companion screen
 - [x] Game manuals and guides (PDF, pictures, text) read page by page, on the bottom screen while playing too
 - [x] Single-screen mode and swappable screens (X, animated)
-- [x] Background music and UI sounds (two soundtracks, five sound packs)
+- [x] Background music and UI sounds (three original grooves, nine sound packs)
+- [x] Bump and the Plaza: swap a small card with Tandems you pass, over Bluetooth, and meet them in a little square
 - [x] Screensaver, also as Android's screensaver
 - [x] Private mode for hidden games, folders and systems
 - [ ] Backup and restore of everything to `ROMs/tandem/` (today: library and settings; home grid, widgets and journal to do)

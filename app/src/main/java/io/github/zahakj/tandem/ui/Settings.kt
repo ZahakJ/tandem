@@ -106,6 +106,8 @@ data class SettingRow(
     val pick: ((String) -> Unit)? = null,
     /** A miniature of one option, for the picker's cards. */
     val optionLook: (@Composable (String) -> Unit)? = null,
+    /** A line on some options (by id), under their names on the picker's cards. */
+    val optionDetails: Map<String, String>? = null,
     /** One more card at the end of the picker that does something else (Type a colour…), and what it does. */
     val pickerExtra: Pair<String, () -> Unit>? = null,
     /** For number rows the theme can decide: whether it does now. Null for rows without a "Theme" value. */

@@ -31,7 +31,7 @@ The words Tandem uses in Japanese, chosen once and used everywhere. Read this be
 
 Tandem, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB, SteamGridDB,
 ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, game titles, song
-titles and soundtrack names (Plaza, Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV), button
+titles and soundtrack names (Plaza, Lagoon, Terrace), file paths and formats (ROMs/…, gamelist.xml, PNG, CSV), button
 letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home, D-pad is 十字ボタン), "USB", "Wi-Fi", "GPL-3.0", "PIN".
 System names come from `platforms.json` and stay as they are there.
 
@@ -276,3 +276,21 @@ Avoid モザイク for "mosaic" (in Japanese it means a censoring blur): Cover m
 | Lunar months | 正月, 二月 … 十二月 | A lunar day: 十月13日 |
 | Leap month | 閏六月 | |
 | The year | 丙午年 | Its stem (丙) is put before the branch year (午年) in code |
+
+## Bump and the Plaza (strings_plaza.xml)
+
+| English | Japanese | Why |
+| --- | --- | --- |
+| Bump (the feature; code and old builds: Tandem Pass) | ばったり | The everyday "ばったり会う": playful, original, far from any console maker's feature name. 「ばったり」 in brackets inside a sentence, bare as a title, switch or channel name |
+| the Plaza | ひろば | Soft hiragana, a place for everyone; the soundtrack Plaza stays Plaza |
+| Me (the character maker) | わたし | Quoted when it names the screen: 「わたし」を編集 |
+| bump into (someone) / bumping | ばったり会う / ばったり受付中 | 「サムさんとばったり！」, 「ばったり 3 回」, 「これまで 12 台の Tandem とばったり」. Never すれちがう / すれちがい: too close to a console maker's feature |
+| card | カード | |
+| Face details (Me: freckles, face paint, a plaster...) | 顔のアクセント | Playful, like a sticker on the cheek |
+| Beard & moustache (Me) | ひげ | One word covers both |
+| greeting | あいさつ | |
+| wave back | 手をふり返す | |
+| block | ブロック | Android and every app |
+| Surprise me (random look) | おまかせ | As elsewhere |
+| Nearby devices | 付近のデバイス | Android's Japanese |
+| safety number | 安全番号 | |

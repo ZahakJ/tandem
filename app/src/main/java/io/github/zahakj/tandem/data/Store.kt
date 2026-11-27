@@ -190,12 +190,14 @@ object Store {
     }
 
     /**
-     * Plaza became the default soundtrack after Calm. Calm was written down for every setup when its welcome finished,
-     * picked or not: unless it was picked ([Look.soundtrackPicked]), it is forgotten, so the setup follows the default
-     * to Plaza. Meadow Tales (chosen, or kept from before Calm) and anything picked stay as they are.
+     * The built-in soundtracks are Plaza and its two sisters now; the older ones (Calm, Meadow Tales) are gone. A
+     * setup that names one of those, picked or not, or any id Tandem doesn't know, forgets it (and that it was picked),
+     * so it follows the default to Plaza. Plaza, Lagoon and Terrace stay as they are.
      */
-    internal fun keepSoundtrack(s: Settings): Settings =
-        if (s.look.soundtrack == "calm" && !s.look.soundtrackPicked) s.copy(look = s.look.copy(soundtrack = null)) else s
+    internal fun keepSoundtrack(s: Settings): Settings {
+        val id = s.look.soundtrack ?: return s
+        return if (id in io.github.zahakj.tandem.audio.Tracks.ids) s else s.copy(look = s.look.copy(soundtrack = null, soundtrackPicked = false))
+    }
 
     /** Shared "nothing known" value, so looking up a game without details doesn't allocate. */
     private val NoMeta = GameMeta()

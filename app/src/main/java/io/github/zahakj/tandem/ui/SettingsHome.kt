@@ -8,6 +8,8 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -39,8 +41,8 @@ import io.github.zahakj.tandem.Selection
 import io.github.zahakj.tandem.Tx
 
 /*
- * The first Settings screen: eight tiles of one size in a four by two grid, the seven pages and Search (X works
- * anywhere in Settings too). The tiles are one set in the theme's accent (SettingsTiles.kt), each with a tiny live
+ * The first Settings screen: eight boxy tiles, three to a row, the seven pages and then Search, two columns wide (X
+ * works anywhere in Settings too). The tiles are one set in the theme's accent (SettingsTiles.kt), each with a tiny live
  * sketch of what is set inside. The side panel, as tall as the grid, shows what's inside the highlighted page with
  * the values of its main settings, so a glance often answers the question without opening anything (the bottom
  * screen shows the page's summary too; with one screen the panel is the only place).
@@ -69,39 +71,46 @@ fun SettingsScreen() {
         focused = key
         Selection.current = Selected.Setting(title, value, detail, accent, action)
     }
-    // Eight tiles: the pages in order, Search last.
+    // Eight tiles: the pages in order, Search last. Three to a row, so three rows of boxy tiles fill the grid's height
+    // (four by two would be tall pillars); Search, alone with Play & system on the last row, spans two columns.
     val tiles = cats.map { it.id } + SEARCH_KEY
-    val rows = tiles.chunked(4)
+    val rows = tiles.chunked(3)
     val shape = RoundedCornerShape(Themes.live.corner.coerceIn(8f, 26f).dp + 4.dp)
+    val gap = 14.dp
     Row(Modifier.fillMaxSize().padding(start = 14.dp, end = 22.dp)) {
-        // The grid and the panel share their top and bottom edges; the tiles share the height equally.
-        Column(
+        // The grid and the panel share their top and bottom edges. Every tile is one column wide and one row tall
+        // (Search two columns and the gap between), so the edges line up down and across with equal gutters.
+        BoxWithConstraints(
             Modifier.weight(1.5f).fillMaxHeight().padding(start = FocusRoomSide, end = FocusRoomSide, top = FocusRoom, bottom = 22.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            rows.forEachIndexed { r, row ->
-                Row(Modifier.fillMaxWidth().weight(1f).focusRow(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    row.forEachIndexed { i, id ->
-                        val index = r * 4 + i
-                        val tileMod = Modifier.weight(1f).fillMaxHeight().riseIn(openKey, delayMs = 30L + index * 45L, distance = 26.dp, fromScale = 0.92f)
-                        if (id == SEARCH_KEY) {
-                            SettingsHomeTile(
-                                Tx.s(R.string.settings_hint_search), Glyph.Search, tileMod.takesFocus(routeKey, SEARCH_KEY, target == SEARCH_KEY), shape,
-                                onFocus = { onFocus(SEARCH_KEY, Tx.s(R.string.settings_home_search), "", Tx.s(R.string.settings_home_search_help), Tx.s(R.string.settings_hint_search)) },
-                                onClick = { SettingsSearch.show() },
-                            ) { SettingsTileHint(SEARCH_KEY) }
-                        } else {
-                            val c = cats.first { it.id == id }
-                            val key = "cat:$id"
-                            SettingsHomeTile(
-                                c.title, c.icon, tileMod.takesFocus(routeKey, key, key == target), shape,
-                                onFocus = { onFocus(key, c.title, c.summary, c.blurb, Tx.s(R.string.settings_a_open)) },
-                                onClick = { Nav.go(c.route) },
-                            ) { SettingsTileHint(id) }
+            val col = (maxWidth - gap * 2) / 3
+            val rowH = (maxHeight - gap * (rows.size - 1)) / rows.size
+            // Every name in one size, the size the set fits in.
+            val nameStyle = tileNameStyle(cats.map { it.title } + Tx.s(R.string.settings_hint_search), col - TileNameInset)
+            Column(verticalArrangement = Arrangement.spacedBy(gap)) {
+                rows.forEachIndexed { r, row ->
+                    Row(Modifier.focusRow(), horizontalArrangement = Arrangement.spacedBy(gap)) {
+                        row.forEachIndexed { i, id ->
+                            val index = r * 3 + i
+                            val span = if (id == SEARCH_KEY) 4 - row.size else 1
+                            val tileMod = Modifier.size(col * span + gap * (span - 1), rowH).riseIn(openKey, delayMs = 30L + index * 45L, distance = 26.dp, fromScale = 0.92f)
+                            if (id == SEARCH_KEY) {
+                                SettingsHomeTile(
+                                    Tx.s(R.string.settings_hint_search), nameStyle, Glyph.Search, tileMod.takesFocus(routeKey, SEARCH_KEY, target == SEARCH_KEY), shape,
+                                    onFocus = { onFocus(SEARCH_KEY, Tx.s(R.string.settings_home_search), "", Tx.s(R.string.settings_home_search_help), Tx.s(R.string.settings_hint_search)) },
+                                    onClick = { SettingsSearch.show() },
+                                ) { SettingsTileHint(SEARCH_KEY) }
+                            } else {
+                                val c = cats.first { it.id == id }
+                                val key = "cat:$id"
+                                SettingsHomeTile(
+                                    c.title, nameStyle, c.icon, tileMod.takesFocus(routeKey, key, key == target), shape,
+                                    onFocus = { onFocus(key, c.title, c.summary, c.blurb, Tx.s(R.string.settings_a_open)) },
+                                    onClick = { Nav.go(c.route) },
+                                ) { SettingsTileHint(id) }
+                            }
                         }
                     }
-                    // A short last row keeps its tiles the same size as the others.
-                    repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
         }

@@ -326,7 +326,7 @@ fun Modifier.swapArrive(
     translationY = fromY * (1f - p)
     val s = fromScale + (1f - fromScale) * p
     scaleX = s; scaleY = s
-    alpha = (ms / fadeMs).coerceIn(0f, 1f)
+    fadeWhole((ms / fadeMs).coerceIn(0f, 1f))
 }
 
 /** The Spotlight's colour band or hero sweeping in diagonally, from the top right (bottom right on the bottom screen). */

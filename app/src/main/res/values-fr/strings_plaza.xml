@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plaza_app_title">La Place</string>
+    <string name="plaza_app_blurb">Toutes les personnes croisées grâce à Bump, réunies sur une petite place douillette.</string>
+    <string name="plaza_me_title">Moi</string>
+    <string name="plaza_unnamed">Ami·e</string>
+
+    <string name="plaza_greeting_1">Coucou !</string>
+    <string name="plaza_greeting_2">Ravi·e de te croiser !</string>
+    <string name="plaza_greeting_3">On joue ensemble un de ces jours ?</string>
+    <string name="plaza_greeting_4">Salut depuis mon canapé !</string>
+    <string name="plaza_greeting_5">Belle journée à toi !</string>
+    <string name="plaza_greeting_6">À vos manettes !</string>
+    <string name="plaza_greeting_7">Salut, camarade joueur !</string>
+    <string name="plaza_greeting_8">Encore un petit niveau…</string>
+    <string name="plaza_greeting_9">Tope là !</string>
+    <string name="plaza_greeting_10">Pause goûter ?</string>
+    <string name="plaza_greeting_11">Bonne chance pour ta quête !</string>
+    <string name="plaza_greeting_12">Pip te dit bonjour !</string>
+    <string name="plaza_greeting_13">Je collectionne toutes les étoiles !</string>
+    <string name="plaza_greeting_14">Je file sauver le monde !</string>
+    <string name="plaza_greeting_15">Trop chouette qu’on se soit croisés !</string>
+    <string name="plaza_greeting_16">Que tes sauvegardes restent sauves !</string>
+
+    <string name="plaza_tab_face">Visage</string>
+    <string name="plaza_tab_eyes">Yeux</string>
+    <string name="plaza_tab_hair">Cheveux</string>
+    <string name="plaza_tab_hat">Chapeaux</string>
+    <string name="plaza_tab_outfit">Tenue</string>
+    <string name="plaza_tab_extras">Extras</string>
+    <string name="plaza_tab_colour">Couleur</string>
+    <string name="plaza_tab_card">Carte</string>
+    <string name="plaza_part_shape">Forme du visage</string>
+    <string name="plaza_part_skin">Teint</string>
+    <string name="plaza_part_eyes">Yeux</string>
+    <string name="plaza_part_eye_color">Couleur des yeux</string>
+    <string name="plaza_part_brows">Sourcils</string>
+    <string name="plaza_part_mouth">Bouche</string>
+    <string name="plaza_part_cheeks">Joues</string>
+    <string name="plaza_part_hair">Coiffure</string>
+    <string name="plaza_part_hair_color">Couleur des cheveux</string>
+    <string name="plaza_part_headwear">Sur la tête</string>
+    <string name="plaza_part_top">Haut</string>
+    <string name="plaza_part_top_color">Couleur du haut</string>
+    <string name="plaza_part_glasses">Lunettes</string>
+    <string name="plaza_part_earrings">Boucles d’oreilles</string>
+    <string name="plaza_part_theme">Couleur de la carte</string>
+    <string name="plaza_part_face_extra">Petits détails</string>
+    <string name="plaza_part_beard">Barbe et moustache</string>
+    <string name="plaza_option_n">Choix %1$d sur %2$d</string>
+
+    <string name="plaza_card_name">Prénom</string>
+    <string name="plaza_card_name_ask">Ton nom sur la Place</string>
+    <string name="plaza_card_name_empty">Pas encore choisi</string>
+    <string name="plaza_card_greeting">Salutation</string>
+    <string name="plaza_card_greeting_pick">Choisis une salutation</string>
+    <string name="plaza_card_favorite">Jeu préféré</string>
+    <string name="plaza_card_favorite_none">Aucun</string>
+    <string name="plaza_card_favorite_pick">Choisis ton préféré</string>
+    <string name="plaza_card_favorite_clear">Pas de jeu préféré</string>
+    <string name="plaza_card_recent">Partager mon dernier jeu</string>
+    <string name="plaza_card_note">Ta carte ne montre que des titres de jeux : jamais ta bibliothèque, ton temps de jeu ni tes jeux masqués. Le dernier joué, seulement si tu l’actives.</string>
+    <string name="plaza_card_preview_header">Ce que les autres voient</string>
+
+    <string name="plaza_hint_random">Surprends-moi</string>
+    <string name="plaza_hint_undo">Annuler</string>
+    <string name="plaza_hint_done">Terminé</string>
+    <string name="plaza_undo_none">Rien à annuler pour l’instant.</string>
+
+    <string name="plaza_guide_1">Coucou ! On va te créer. Choisis un visage, des yeux, une coiffure et une tenue ; L1 et R1 changent d’onglet.</string>
+    <string name="plaza_guide_2">Envie de hasard ? X invente un look surprise, Y revient d’un pas en arrière.</string>
+    <string name="plaza_guide_3">Dans l’onglet Carte, choisis ton nom et ta salutation : c’est ce que verront les personnes que tu croises !</string>
+    <string name="plaza_guide_next">Suivant</string>
+    <string name="plaza_guide_go">C’est parti</string>
+    <string name="plaza_guide_step">%1$d sur %2$d</string>
+
+    <string name="plaza_filter_new">Nouveaux</string>
+    <string name="plaza_filter_all">Tout le monde</string>
+    <plurals name="plaza_met_count">
+        <item quantity="one">%1$d personne croisée</item>
+        <item quantity="many">%1$d de personnes croisées</item>
+        <item quantity="other">%1$d personnes croisées</item>
+    </plurals>
+    <string name="plaza_status_passing">En balade</string>
+    <string name="plaza_status_find_only">En balade (trouve les autres, mais reste introuvable)</string>
+    <string name="plaza_status_paused">En pause pendant le jeu</string>
+    <string name="plaza_status_off">Bump est désactivé</string>
+    <string name="plaza_status_not_made">Crée d’abord ton Moi</string>
+    <string name="plaza_status_needs">Autorisation Bluetooth requise</string>
+    <string name="plaza_status_bt_off">Le Bluetooth est désactivé</string>
+    <string name="plaza_status_private">En pause en mode privé</string>
+    <string name="plaza_status_old">Nécessite Android 12 ou plus récent</string>
+    <string name="plaza_status_no_bt">Pas de Bluetooth sur cette console</string>
+    <string name="plaza_empty_off">Active Bump et croise d’autres Tandem au fil de ta journée.</string>
+    <string name="plaza_empty_off_action">Configurer Bump</string>
+    <string name="plaza_empty_none">Personne pour l’instant. Emmène ta console en balade !</string>
+    <string name="plaza_empty_none_action">Modifier mon Moi</string>
+    <string name="plaza_empty_new">Personne de nouveau depuis ta dernière visite.</string>
+    <string name="plaza_empty_new_action">Voir tout le monde</string>
+    <string name="plaza_private_title">La Place se repose</string>
+    <string name="plaza_private_detail">Le mode privé est activé : Bump se met en pause et la Place reste fermée.</string>
+    <string name="plaza_hint_options">Options</string>
+    <string name="plaza_hint_me">Modifier mon Moi</string>
+    <string name="plaza_new_badge">Nouveau</string>
+
+    <string name="plaza_menu_wave">Lui faire coucou</string>
+    <string name="plaza_menu_unwave">Retirer mon coucou</string>
+    <string name="plaza_menu_hide">Masquer de la Place</string>
+    <string name="plaza_menu_block">Bloquer</string>
+    <string name="plaza_menu_note">Ton coucou lui parviendra la prochaine fois que vous vous croiserez. Une personne masquée revient quand vous vous recroisez ; une personne bloquée, jamais.</string>
+    <string name="plaza_waved_done">Tu feras coucou à %1$s la prochaine fois que vous vous croiserez.</string>
+    <string name="plaza_unwaved_done">Coucou retiré.</string>
+    <string name="plaza_hidden_done">%1$s est masqué·e jusqu’à votre prochaine rencontre.</string>
+    <string name="plaza_blocked_done">%1$s est bloqué·e.</string>
+
+    <plurals name="plaza_passed_times">
+        <item quantity="one">Croisé·e une fois</item>
+        <item quantity="many">Croisé·e %1$d de fois</item>
+        <item quantity="other">Croisé·e %1$d fois</item>
+    </plurals>
+    <string name="plaza_last_at">dernière fois à %1$s</string>
+    <string name="plaza_last_on">dernière fois le %1$s</string>
+    <string name="plaza_first_met">Première rencontre : %1$s</string>
+    <plurals name="plaza_their_passes">
+        <item quantity="one">A croisé %1$d Tandem</item>
+        <item quantity="many">A croisé %1$d de Tandem</item>
+        <item quantity="other">A croisé %1$d Tandem</item>
+    </plurals>
+    <plurals name="plaza_your_passes">
+        <item quantity="one">Tu as croisé %1$d Tandem</item>
+        <item quantity="many">Tu as croisé %1$d de Tandem</item>
+        <item quantity="other">Tu as croisé %1$d Tandem</item>
+    </plurals>
+    <string name="plaza_fav_label">Préféré</string>
+    <string name="plaza_recent_label">Joué récemment</string>
+    <string name="plaza_waved_at_you">T’a fait coucou !</string>
+    <string name="plaza_you_waved">Tu vas lui faire coucou</string>
+    <string name="plaza_wave_sent">Ton coucou est arrivé</string>
+
+    <string name="plaza_arrival">Bump ! Tu es tombé·e sur %1$s.</string>
+    <string name="plaza_arrival_open">Voir la Place</string>
+
+    <plurals name="plaza_start_new">
+        <item quantity="one">%1$d nouveau</item>
+        <item quantity="many">%1$d de nouveaux</item>
+        <item quantity="other">%1$d nouveaux</item>
+    </plurals>
+    <string name="plaza_start_off">Bump est désactivé</string>
+
+    <string name="plaza_settings_title">Bump</string>
+    <string name="plaza_settings_sub_help">Rencontre les Tandem du coin : ton personnage, ta carte et la Place.</string>
+    <string name="plaza_settings_on">Bump</string>
+    <string name="plaza_settings_on_help">Échange une petite carte avec les autres Tandem que tu croises, en Bluetooth uniquement. Rien d’autre ne quitte ta console et rien ne passe par internet. Désactivé tant que tu ne l’actives pas.</string>
+    <string name="plaza_settings_playing">Bump pendant le jeu</string>
+    <string name="plaza_settings_playing_help">Continue de croiser du monde quand un jeu est au premier plan, avec une notification. Désactivé : tout se met en pause en jeu, ce qui ménage la batterie.</string>
+    <string name="plaza_settings_me">Modifier mon Moi</string>
+    <string name="plaza_settings_me_help">Ton personnage, ton nom, ta salutation et ton jeu préféré.</string>
+    <string name="plaza_settings_preview">Ce que les autres voient</string>
+    <string name="plaza_settings_preview_help">Ce que ta carte contient exactement, et ce qu’elle ne contient jamais.</string>
+    <string name="plaza_settings_preview_action">Voir</string>
+    <string name="plaza_settings_open">Ouvrir la Place</string>
+    <string name="plaza_settings_open_help">Toutes les personnes croisées, qui se baladent.</string>
+    <string name="plaza_settings_blocked">Personnes bloquées</string>
+    <string name="plaza_settings_blocked_none">Aucune</string>
+    <plurals name="plaza_settings_blocked_n">
+        <item quantity="one">%1$d bloquée</item>
+        <item quantity="many">%1$d de bloquées</item>
+        <item quantity="other">%1$d bloquées</item>
+    </plurals>
+    <string name="plaza_settings_blocked_help">Les personnes bloquées n’apparaissent jamais sur la Place ; leurs cartes sont refusées et restent sans réponse. Maintiens A pour débloquer tout le monde.</string>
+    <string name="plaza_settings_blocked_none_toast">Personne n’est bloqué.</string>
+    <string name="plaza_settings_unblock_action">Tout débloquer</string>
+    <string name="plaza_unblock_title">Débloquer tout le monde ?</string>
+    <string name="plaza_unblock_detail">Ils pourront revenir sur la Place la prochaine fois que vous vous croiserez.</string>
+    <string name="plaza_settings_unblocked">Tout le monde est débloqué.</string>
+    <string name="plaza_settings_clear">Vider la Place</string>
+    <string name="plaza_settings_clear_help">Oublie toutes les personnes croisées. Les blocages, ta carte et ton compteur restent.</string>
+    <string name="plaza_clear_title">Vider la Place ?</string>
+    <string name="plaza_clear_detail">Toutes les personnes croisées quittent la Place. C’est définitif.</string>
+    <string name="plaza_clear_yes">Vider</string>
+    <string name="plaza_settings_cleared">La Place est de nouveau vide.</string>
+    <string name="plaza_settings_id">ID Bump</string>
+    <string name="plaza_settings_id_none">Pas encore créé</string>
+    <string name="plaza_settings_id_help">Le numéro de sécurité de ta clé Bump : %1$s. C’est le même que celui qu’afficherait Concord, et la clé ne quitte jamais cette console.</string>
+    <string name="plaza_settings_id_help_none">Ta clé Bump est créée sur cette console la première fois que tu actives Bump.</string>
+    <string name="plaza_settings_id_action">Voir</string>
+    <string name="plaza_settings_id_toast">Numéro de sécurité : %1$s</string>
+
+    <string name="plaza_on_toast">Bump est activé. Bonnes rencontres !</string>
+    <string name="plaza_bt_off_toast">Bump est activé. Allume le Bluetooth pour commencer à croiser du monde.</string>
+    <string name="plaza_old_android">Bump nécessite Android 12 ou plus récent.</string>
+    <string name="plaza_no_bluetooth">Cette console n’a pas de Bluetooth LE.</string>
+
+    <string name="plaza_primer_title">Bump utilise le Bluetooth</string>
+    <string name="plaza_primer_intro">Android va te demander l’accès aux appareils à proximité. Voici ce que Tandem en fait :</string>
+    <string name="plaza_primer_denied">Sans l’autorisation « Appareils à proximité », Bump reste désactivé. Tu peux l’accorder dans les paramètres d’Android.</string>
+    <string name="plaza_primer_scan_title">Trouver</string>
+    <string name="plaza_primer_scan">Chercher d’autres Tandem tout près, quelques secondes à la fois.</string>
+    <string name="plaza_primer_advertise_title">Être trouvé</string>
+    <string name="plaza_primer_advertise">Laisser les autres Tandem te trouver, avec un code au hasard qui change toutes les 15 minutes.</string>
+    <string name="plaza_primer_connect_title">Échanger les cartes</string>
+    <string name="plaza_primer_connect">Échanger ta carte avec un Tandem à portée, puis se quitter.</string>
+    <string name="plaza_primer_never">Jamais pour savoir où tu es : Tandem ne demande pas du tout ta position.</string>
+    <string name="plaza_primer_later">Plus tard</string>
+    <string name="plaza_primer_continue">Continuer</string>
+    <string name="plaza_primer_settings">Ouvrir les paramètres</string>
+
+    <string name="plaza_privacy_title">Ce que les autres voient</string>
+    <string name="plaza_privacy_sent">Sur ta carte</string>
+    <string name="plaza_privacy_item_character">Ton personnage</string>
+    <string name="plaza_privacy_item_name">Nom : %1$s</string>
+    <string name="plaza_privacy_item_greeting">Salutation : %1$s</string>
+    <string name="plaza_privacy_item_fav">Préféré : %1$s</string>
+    <string name="plaza_privacy_item_recent">Joué récemment : %1$s</string>
+    <plurals name="plaza_privacy_item_passes">
+        <item quantity="one">Ton compteur : %1$d Tandem croisé</item>
+        <item quantity="many">Ton compteur : %1$d de Tandem croisés</item>
+        <item quantity="other">Ton compteur : %1$d Tandem croisés</item>
+    </plurals>
+    <string name="plaza_privacy_item_key">Une clé qui prouve que la carte est la tienne</string>
+    <string name="plaza_privacy_never">Jamais envoyé</string>
+    <string name="plaza_privacy_never_1">Ta position, tes comptes ou ce que tu tapes</string>
+    <string name="plaza_privacy_never_2">Jeux masqués, temps de jeu, fichiers ou bibliothèque</string>
+    <string name="plaza_privacy_never_3">Rien du tout par internet</string>
+    <string name="plaza_privacy_how">Ta carte ne va qu’aux Tandem à portée de Bluetooth, signée pour qu’on ne puisse ni la falsifier ni la rejouer. Le mode privé met tout en pause.</string>
+    <string name="plaza_privacy_close">Compris</string>
+
+    <string name="plaza_note_channel">Bump</string>
+    <string name="plaza_note_title">Bump est activé</string>
+    <string name="plaza_note_text">Croise d’autres Tandem en Bluetooth pendant que tu joues.</string>
+</resources>

@@ -8,6 +8,7 @@
     <string name="week_header_of">%1$sからの1週間</string>
     <string name="week_hint_reroll">引き直す</string>
     <string name="week_reroll_upnext">「次に遊ぶ」はあなたのリストです。Xで引き直せるのはほかの列です</string>
+    <string name="week_reroll_none">今週のこの列は、これで全部です</string>
 
     <string name="week_tag_upnext">次に遊ぶ</string>
     <string name="week_tag_pick">今週の一本</string>

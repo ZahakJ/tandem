@@ -33,7 +33,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -173,7 +172,7 @@ internal fun GamePickPanel() {
                             val k = gameKey(g)
                             val on = k in picked
                             val already = k in taken
-                            Box(Modifier.aspectRatio(0.8f).alpha(if (already) 0.35f else 1f)) {
+                            Box(Modifier.aspectRatio(0.8f).dimWhole(if (already) 0.35f else 1f)) {
                                 GameCard(
                                     g, Modifier.fillMaxSize().takesFocus(PICK_ROUTE, k, focusTarget == k),
                                     onFocus = { Selection.current = Selected.GameItem(g) },

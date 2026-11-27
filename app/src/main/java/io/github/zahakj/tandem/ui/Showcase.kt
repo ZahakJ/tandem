@@ -5,9 +5,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -82,12 +79,12 @@ private const val SHOWCASE_HOLD_MS = 2200L
 @Composable
 internal fun showcaseStill(): Boolean = Store.settings.reduceMotion || Motion.style == AnimationStyle.Off
 
-/** 0 to 1 over [periodMs], round and round; 0 while showcases hold still. Read it in draw or layer lambdas. */
+/**
+ * 0 to 1 over [periodMs], round and round; 0 while showcases hold still, and holding its frame once Tandem has
+ * settled ([rememberIdleLoop]). Read it in draw or layer lambdas.
+ */
 @Composable
-internal fun loopClock(periodMs: Int): State<Float> {
-    if (showcaseStill()) return remember { mutableFloatStateOf(0f) }
-    return rememberInfiniteTransition(label = "loop").animateFloat(0f, 1f, infiniteRepeatable(tween(periodMs, easing = LinearEasing)), label = "t")
-}
+internal fun loopClock(periodMs: Int): State<Float> = rememberIdleLoop(periodMs, showcaseStill())
 
 /**
  * Plays [labels].size looks of a setting in turn ([frame] draws look i), starting on [current] (the one in use, or
@@ -103,7 +100,8 @@ fun Showcase(labels: List<String>, current: Int, modifier: Modifier = Modifier, 
     LaunchedEffect(current, n) {
         shown = start
         if (n < 2) return@LaunchedEffect
-        while (true) { delay(SHOWCASE_HOLD_MS); shown = (shown + 1) % n }
+        // Holds the look it is on once Tandem has settled (a change of look is a cross-fade's worth of frames).
+        while (true) { delay(SHOWCASE_HOLD_MS); Ambient.awaitAwake(); shown = (shown + 1) % n }
     }
     val i = shown.coerceIn(0, n - 1)
     Column(modifier.fillMaxWidth()) {
@@ -371,6 +369,7 @@ internal fun MotionStyleScene(style: AnimationStyle) {
         x.snapTo(0f)
         if (still) return@LaunchedEffect
         while (true) {
+            Ambient.awaitAwake()
             delay(450); x.animateTo(2f, moveIn(style))
             delay(450); x.animateTo(0f, moveIn(style))
         }

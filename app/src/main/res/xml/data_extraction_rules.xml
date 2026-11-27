@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   Android 12 and newer: keep account keys (RetroAchievements, scraping sources) out of cloud backups and device
-  transfers, and the LaunchBox index and its lookup cache too (both are rebuilt on the device).
+  transfers, and the LaunchBox index and its lookup cache too (both are rebuilt on the device). The Plaza (other
+  people's Bump cards) never goes to the cloud; a transfer to your own new device may carry it.
 -->
 <data-extraction-rules>
     <cloud-backup>
@@ -11,6 +12,7 @@
         <exclude domain="file" path="scraping.json" />
         <exclude domain="file" path="launchbox/" />
         <exclude domain="file" path="details-tried.tsv" />
+        <exclude domain="file" path="plaza.json" />
     </cloud-backup>
     <device-transfer>
         <exclude domain="file" path="achievements.json" />

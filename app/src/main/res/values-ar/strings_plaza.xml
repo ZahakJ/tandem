@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plaza_app_title">الساحة</string>
+    <string name="plaza_app_blurb">كل من صادفتهم، مجتمعون في ساحة صغيرة دافئة.</string>
+    <string name="plaza_me_title">أنا</string>
+    <string name="plaza_unnamed">صديق</string>
+
+    <string name="plaza_greeting_1">أهلًا وسهلًا!</string>
+    <string name="plaza_greeting_2">تشرّفت بلقائك!</string>
+    <string name="plaza_greeting_3">لنلعب معًا قريبًا!</string>
+    <string name="plaza_greeting_4">تحية من على الكنبة!</string>
+    <string name="plaza_greeting_5">يومك سعيد!</string>
+    <string name="plaza_greeting_6">هيّا نلعب!</string>
+    <string name="plaza_greeting_7">مرحبًا يا رفيق اللعب!</string>
+    <string name="plaza_greeting_8">مرحلة واحدة بعد…</string>
+    <string name="plaza_greeting_9">كفّك! ✋</string>
+    <string name="plaza_greeting_10">استراحة وجبة خفيفة؟</string>
+    <string name="plaza_greeting_11">بالتوفيق في مغامرتك!</string>
+    <string name="plaza_greeting_12">بيب يلقي عليك التحية!</string>
+    <string name="plaza_greeting_13">أجمع كل النجوم!</string>
+    <string name="plaza_greeting_14">في طريقي لإنقاذ العالم!</string>
+    <string name="plaza_greeting_15">سعيد أن طرقنا التقت!</string>
+    <string name="plaza_greeting_16">عسى حفظاتك تبقى سالمة!</string>
+
+    <string name="plaza_tab_face">الوجه</string>
+    <string name="plaza_tab_eyes">العيون</string>
+    <string name="plaza_tab_hair">الشعر</string>
+    <string name="plaza_tab_hat">القبعات</string>
+    <string name="plaza_tab_outfit">الملابس</string>
+    <string name="plaza_tab_extras">إضافات</string>
+    <string name="plaza_tab_colour">اللون</string>
+    <string name="plaza_tab_card">البطاقة</string>
+    <string name="plaza_part_shape">شكل الوجه</string>
+    <string name="plaza_part_skin">لون البشرة</string>
+    <string name="plaza_part_eyes">العيون</string>
+    <string name="plaza_part_eye_color">لون العيون</string>
+    <string name="plaza_part_brows">الحواجب</string>
+    <string name="plaza_part_mouth">الفم</string>
+    <string name="plaza_part_cheeks">الخدود</string>
+    <string name="plaza_part_hair">تسريحة الشعر</string>
+    <string name="plaza_part_hair_color">لون الشعر</string>
+    <string name="plaza_part_headwear">على الرأس</string>
+    <string name="plaza_part_top">القطعة العلوية</string>
+    <string name="plaza_part_top_color">لونها</string>
+    <string name="plaza_part_glasses">النظارات</string>
+    <string name="plaza_part_earrings">الأقراط</string>
+    <string name="plaza_part_theme">لون البطاقة</string>
+    <string name="plaza_part_face_extra">لمسات على الوجه</string>
+    <string name="plaza_part_beard">اللحية والشارب</string>
+    <string name="plaza_option_n">الخيار %1$d من %2$d</string>
+
+    <string name="plaza_card_name">الاسم</string>
+    <string name="plaza_card_name_ask">اسمك في الساحة</string>
+    <string name="plaza_card_name_empty">بلا اسم بعد</string>
+    <string name="plaza_card_greeting">التحية</string>
+    <string name="plaza_card_greeting_pick">اختر تحيتك</string>
+    <string name="plaza_card_favorite">لعبتك المفضّلة</string>
+    <string name="plaza_card_favorite_none">لا شيء</string>
+    <string name="plaza_card_favorite_pick">اختر لعبتك المفضّلة</string>
+    <string name="plaza_card_favorite_clear">بلا لعبة مفضّلة</string>
+    <string name="plaza_card_recent">شارك آخر ما لعبت</string>
+    <string name="plaza_card_note">تعرض بطاقتك أسماء الألعاب فقط، لا مكتبتك ولا وقت اللعب ولا الألعاب المخفية. وآخر ما لعبت لا يظهر إلا إذا شغّلته.</string>
+    <string name="plaza_card_preview_header">ما يراه الآخرون</string>
+
+    <string name="plaza_hint_random">فاجئني</string>
+    <string name="plaza_hint_undo">تراجع</string>
+    <string name="plaza_hint_done">تمّ</string>
+    <string name="plaza_undo_none">لا شيء للتراجع عنه بعد.</string>
+
+    <string name="plaza_guide_1">أهلًا! هيّا نصنعك. اختر وجهًا وعينين وشعرًا وملابس، وبدّل بين الأقسام بـ L1 وR1.</string>
+    <string name="plaza_guide_2">تحب المفاجآت؟ X يصنع لك إطلالة عشوائية، وY يتراجع خطوة.</string>
+    <string name="plaza_guide_3">في قسم البطاقة اختر اسمك وتحيتك. هذا ما سيراه كل من تصادفهم!</string>
+    <string name="plaza_guide_next">التالي</string>
+    <string name="plaza_guide_go">هيّا بنا</string>
+    <string name="plaza_guide_step">%1$d من %2$d</string>
+
+    <string name="plaza_filter_new">الجدد</string>
+    <string name="plaza_filter_all">الجميع</string>
+    <plurals name="plaza_met_count">
+        <item quantity="zero">لم تقابل أحدًا بعد</item>
+        <item quantity="one">قابلت شخصًا واحدًا</item>
+        <item quantity="two">قابلت شخصين</item>
+        <item quantity="few">قابلت %1$d أشخاص</item>
+        <item quantity="many">قابلت %1$d شخصًا</item>
+        <item quantity="other">قابلت %1$d شخص</item>
+    </plurals>
+    <string name="plaza_status_passing">بانتظار الصدف</string>
+    <string name="plaza_status_find_only">بانتظار الصدف: تَرى ولا تُرى</string>
+    <string name="plaza_status_paused">متوقف مؤقتًا أثناء اللعب</string>
+    <string name="plaza_status_off">«صدفة» متوقفة</string>
+    <string name="plaza_status_not_made">اصنع «أنا» أولًا</string>
+    <string name="plaza_status_needs">يحتاج إذن البلوتوث</string>
+    <string name="plaza_status_bt_off">البلوتوث متوقف</string>
+    <string name="plaza_status_private">يستريح في الوضع الخاص</string>
+    <string name="plaza_status_old">يحتاج Android 12 أو أحدث</string>
+    <string name="plaza_status_no_bt">لا بلوتوث في هذا الجهاز</string>
+    <string name="plaza_empty_off">شغّل «صدفة» وتعرّف إلى أجهزة Tandem أخرى وأنت تتنقّل في يومك.</string>
+    <string name="plaza_empty_off_action">جهّز «صدفة»</string>
+    <string name="plaza_empty_none">لا أحد بعد. خذ جهازك معك في جولة!</string>
+    <string name="plaza_empty_none_action">عدّل «أنا»</string>
+    <string name="plaza_empty_new">لا وجوه جديدة منذ آخر زيارة.</string>
+    <string name="plaza_empty_new_action">اعرض الجميع</string>
+    <string name="plaza_private_title">الساحة تستريح</string>
+    <string name="plaza_private_detail">الوضع الخاص مفعّل: تتوقف «صدفة» مؤقتًا وتبقى الساحة مغلقة.</string>
+    <string name="plaza_hint_options">خيارات</string>
+    <string name="plaza_hint_me">عدّل «أنا»</string>
+    <string name="plaza_new_badge">جديد</string>
+
+    <string name="plaza_menu_wave">لوّح له</string>
+    <string name="plaza_menu_unwave">اسحب تلويحتي</string>
+    <string name="plaza_menu_hide">إخفاء من الساحة</string>
+    <string name="plaza_menu_block">حظر</string>
+    <string name="plaza_menu_note">تصل التلويحة في المرة القادمة التي تلتقيان فيها صدفةً. من تخفيه يعود حين تصادفه ثانيةً، أما المحظور فلا يعود أبدًا.</string>
+    <string name="plaza_waved_done">ستلوّح لـ %1$s في المرة القادمة التي تلتقيان فيها صدفةً.</string>
+    <string name="plaza_unwaved_done">سحبت تلويحتك.</string>
+    <string name="plaza_hidden_done">أُخفي %1$s حتى تصادفه ثانيةً.</string>
+    <string name="plaza_blocked_done">حُظر %1$s.</string>
+
+    <plurals name="plaza_passed_times">
+        <item quantity="zero">لم تلتقيا صدفةً بعد</item>
+        <item quantity="one">التقيتما صدفةً مرة</item>
+        <item quantity="two">التقيتما صدفةً مرتين</item>
+        <item quantity="few">التقيتما صدفةً %1$d مرات</item>
+        <item quantity="many">التقيتما صدفةً %1$d مرة</item>
+        <item quantity="other">التقيتما صدفةً %1$d مرة</item>
+    </plurals>
+    <string name="plaza_last_at">آخرها الساعة %1$s</string>
+    <string name="plaza_last_on">آخرها في %1$s</string>
+    <string name="plaza_first_met">أول لقاء %1$s</string>
+    <plurals name="plaza_their_passes">
+        <item quantity="zero">لم يصادف أي جهاز Tandem بعد</item>
+        <item quantity="one">صادف جهاز Tandem واحدًا</item>
+        <item quantity="two">صادف جهازَي Tandem</item>
+        <item quantity="few">صادف %1$d أجهزة Tandem</item>
+        <item quantity="many">صادف %1$d جهاز Tandem</item>
+        <item quantity="other">صادف %1$d جهاز Tandem</item>
+    </plurals>
+    <plurals name="plaza_your_passes">
+        <item quantity="zero">لم تصادف أي جهاز Tandem بعد</item>
+        <item quantity="one">صادفت جهاز Tandem واحدًا</item>
+        <item quantity="two">صادفت جهازَي Tandem</item>
+        <item quantity="few">صادفت %1$d أجهزة Tandem</item>
+        <item quantity="many">صادفت %1$d جهاز Tandem</item>
+        <item quantity="other">صادفت %1$d جهاز Tandem</item>
+    </plurals>
+    <string name="plaza_fav_label">المفضّلة</string>
+    <string name="plaza_recent_label">لعبها مؤخرًا</string>
+    <string name="plaza_waved_at_you">لوّح لك!</string>
+    <string name="plaza_you_waved">ستلوّح له</string>
+    <string name="plaza_wave_sent">وصلته تلويحتك</string>
+
+    <string name="plaza_arrival">يا محاسن الصدف! صادفت %1$s</string>
+    <string name="plaza_arrival_open">إلى الساحة</string>
+
+    <plurals name="plaza_start_new">
+        <item quantity="zero">لا جديد</item>
+        <item quantity="one">واحد جديد</item>
+        <item quantity="two">اثنان جديدان</item>
+        <item quantity="few">%1$d جدد</item>
+        <item quantity="many">%1$d جديدًا</item>
+        <item quantity="other">%1$d جديد</item>
+    </plurals>
+    <string name="plaza_start_off">«صدفة» متوقفة</string>
+
+    <string name="plaza_settings_title">صدفة</string>
+    <string name="plaza_settings_sub_help">تعرّف إلى أجهزة Tandem القريبة: شخصيتك وبطاقتك والساحة.</string>
+    <string name="plaza_settings_on">صدفة</string>
+    <string name="plaza_settings_on_help">تتبادل بطاقة صغيرة مع أجهزة Tandem التي تصادفها، عبر البلوتوث فقط. لا يغادر جهازك شيء غيرها، ولا يتصل شيء بالإنترنت. متوقفة حتى تشغّلها.</string>
+    <string name="plaza_settings_playing">«صدفة» أثناء اللعب</string>
+    <string name="plaza_settings_playing_help">تبقى «صدفة» تعمل واللعبة أمامك، مع إشعار. عند إيقاف هذا الخيار تتوقف مؤقتًا أثناء اللعب، وهذا يوفّر البطارية.</string>
+    <string name="plaza_settings_me">عدّل «أنا»</string>
+    <string name="plaza_settings_me_help">شخصيتك واسمك وتحيتك ولعبتك المفضّلة.</string>
+    <string name="plaza_settings_preview">ما يراه الآخرون</string>
+    <string name="plaza_settings_preview_help">ما تحمله بطاقتك بالضبط، وما لا تحمله أبدًا.</string>
+    <string name="plaza_settings_preview_action">اعرض</string>
+    <string name="plaza_settings_open">افتح الساحة</string>
+    <string name="plaza_settings_open_help">كل من صادفتهم، يتجوّلون فيها.</string>
+    <string name="plaza_settings_blocked">المحظورون</string>
+    <string name="plaza_settings_blocked_none">لا أحد</string>
+    <plurals name="plaza_settings_blocked_n">
+        <item quantity="zero">لا أحد محظور</item>
+        <item quantity="one">شخص واحد محظور</item>
+        <item quantity="two">شخصان محظوران</item>
+        <item quantity="few">%1$d محظورين</item>
+        <item quantity="many">%1$d محظورًا</item>
+        <item quantity="other">%1$d محظور</item>
+    </plurals>
+    <string name="plaza_settings_blocked_help">المحظورون لا يظهرون في الساحة أبدًا، وتُرفض بطاقاتهم ولا يُرد عليها. اضغط A مطوّلًا لرفع الحظر عن الجميع.</string>
+    <string name="plaza_settings_blocked_none_toast">لا أحد محظور.</string>
+    <string name="plaza_settings_unblock_action">رفع الحظر عن الجميع</string>
+    <string name="plaza_unblock_title">رفع الحظر عن الجميع؟</string>
+    <string name="plaza_unblock_detail">قد يظهرون في الساحة من جديد حين تصادفهم.</string>
+    <string name="plaza_settings_unblocked">رُفع الحظر عن الجميع.</string>
+    <string name="plaza_settings_clear">إفراغ الساحة</string>
+    <string name="plaza_settings_clear_help">ينسى كل من قابلتهم. يبقى الحظر وبطاقتك وعدّاد صدفك كما هي.</string>
+    <string name="plaza_clear_title">إفراغ الساحة؟</string>
+    <string name="plaza_clear_detail">سيغادر الساحة كل من قابلتهم. لا يمكن التراجع عن هذا.</string>
+    <string name="plaza_clear_yes">إفراغ</string>
+    <string name="plaza_settings_cleared">الساحة فارغة من جديد.</string>
+    <string name="plaza_settings_id">معرّف «صدفة»</string>
+    <string name="plaza_settings_id_none">لم يُصنع بعد</string>
+    <string name="plaza_settings_id_help">رقم الأمان لمفتاح «صدفة» الخاص بك: %1$s. هو نفسه الذي سيعرضه Concord، والمفتاح لا يغادر هذا الجهاز أبدًا.</string>
+    <string name="plaza_settings_id_help_none">يُصنع مفتاح «صدفة» على هذا الجهاز أول مرة تشغّلها فيها.</string>
+    <string name="plaza_settings_id_action">اعرض</string>
+    <string name="plaza_settings_id_toast">رقم الأمان: %1$s</string>
+
+    <string name="plaza_on_toast">«صدفة» تعمل. أجمل الصدف بانتظارك!</string>
+    <string name="plaza_bt_off_toast">«صدفة» تعمل. شغّل البلوتوث لتبدأ الصدف.</string>
+    <string name="plaza_old_android">تحتاج «صدفة» إلى Android 12 أو أحدث.</string>
+    <string name="plaza_no_bluetooth">لا يدعم هذا الجهاز بلوتوث LE.</string>
+
+    <string name="plaza_primer_title">«صدفة» تستخدم البلوتوث</string>
+    <string name="plaza_primer_intro">سيسألك Android عن «الأجهزة المجاورة». إليك ما يفعله Tandem بهذا الإذن:</string>
+    <string name="plaza_primer_denied">دون إذن الأجهزة المجاورة تبقى «صدفة» متوقفة. يمكنك السماح به من إعدادات Android.</string>
+    <string name="plaza_primer_scan_title">يبحث</string>
+    <string name="plaza_primer_scan">يبحث عن أجهزة Tandem القريبة، بضع ثوانٍ في كل مرة.</string>
+    <string name="plaza_primer_advertise_title">يُعثر عليه</string>
+    <string name="plaza_primer_advertise">يتيح لأجهزة Tandem الأخرى أن تجد جهازك، برمز عشوائي يتغيّر كل 15 دقيقة.</string>
+    <string name="plaza_primer_connect_title">يتبادل البطاقات</string>
+    <string name="plaza_primer_connect">يتبادل بطاقتك مع جهاز Tandem قريب، ثم يفترقان.</string>
+    <string name="plaza_primer_never">لا يُستخدم أبدًا لمعرفة مكانك: Tandem لا يطلب موقعك إطلاقًا.</string>
+    <string name="plaza_primer_later">ليس الآن</string>
+    <string name="plaza_primer_continue">متابعة</string>
+    <string name="plaza_primer_settings">افتح الإعدادات</string>
+
+    <string name="plaza_privacy_title">ما يراه الآخرون</string>
+    <string name="plaza_privacy_sent">على بطاقتك</string>
+    <string name="plaza_privacy_item_character">شخصيتك</string>
+    <string name="plaza_privacy_item_name">الاسم: %1$s</string>
+    <string name="plaza_privacy_item_greeting">التحية: %1$s</string>
+    <string name="plaza_privacy_item_fav">المفضّلة: %1$s</string>
+    <string name="plaza_privacy_item_recent">لعبتها مؤخرًا: %1$s</string>
+    <plurals name="plaza_privacy_item_passes">
+        <item quantity="zero">عدّادك: لم تصادف أحدًا بعد</item>
+        <item quantity="one">عدّادك: جهاز Tandem واحد</item>
+        <item quantity="two">عدّادك: جهازا Tandem</item>
+        <item quantity="few">عدّادك: %1$d أجهزة Tandem</item>
+        <item quantity="many">عدّادك: %1$d جهاز Tandem</item>
+        <item quantity="other">عدّادك: %1$d جهاز Tandem</item>
+    </plurals>
+    <string name="plaza_privacy_item_key">مفتاح يثبت أن البطاقة لك</string>
+    <string name="plaza_privacy_never">لا يُرسل أبدًا</string>
+    <string name="plaza_privacy_never_1">موقعك، وحساباتك، وأي شيء تكتبه</string>
+    <string name="plaza_privacy_never_2">الألعاب المخفية، ووقت اللعب، وملفاتك ومكتبتك</string>
+    <string name="plaza_privacy_never_3">أي شيء عبر الإنترنت إطلاقًا</string>
+    <string name="plaza_privacy_how">لا تصل بطاقتك إلا لأجهزة Tandem في مدى البلوتوث، وهي موقّعة فلا يمكن تزويرها ولا إعادة بثّها. والوضع الخاص يوقف كل شيء مؤقتًا.</string>
+    <string name="plaza_privacy_close">فهمت</string>
+
+    <string name="plaza_note_channel">صدفة</string>
+    <string name="plaza_note_title">«صدفة» تعمل</string>
+    <string name="plaza_note_text">تبحث عن صدف مع أجهزة Tandem الأخرى عبر البلوتوث وأنت تلعب.</string>
+</resources>

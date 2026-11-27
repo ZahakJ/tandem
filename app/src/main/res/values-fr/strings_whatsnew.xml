@@ -90,7 +90,36 @@
     <string name="whatsnew_0100_settings_body">Les paramètres s’ouvrent sur huit vignettes, chacune avec un petit croquis vivant de ce qu’elle contient. Un souci ? Envoyer un rapport de bug en prépare un, sans ordinateur.</string>
     <string name="whatsnew_0100_settings_short">Paramètres</string>
 
-    <string name="whatsnew_0100_music_title">Plaza, une bande-son ensoleillée</string>
-    <string name="whatsnew_0100_music_body">Plaza est la nouvelle bande-son par défaut : un air sifflé à l’accueil, une petite bossa dans Paramètres, une valse de boîte à musique pour l’économiseur d’écran et une fanfare pour les bonnes nouvelles. À changer dans Paramètres › Son et musique.</string>
+    <string name="whatsnew_0100_music_title">Une nouvelle bande-son toute douce</string>
+    <string name="whatsnew_0100_music_body">De la musique neuve pour flâner dans ta bibliothèque, douce et chaleureuse comme un plaid. Monte le son dans Paramètres › Son et musique.</string>
     <string name="whatsnew_0100_music_short">Bande-son</string>
+
+    <string name="whatsnew_0110_tagline">Un coucou en passant</string>
+    <string name="whatsnew_0110_pass_title">Bump, des rencontres en chemin</string>
+    <string name="whatsnew_0110_pass_body">Croise un autre Tandem et vous échangez vos cartes : ton personnage, un petit mot, ton jeu préféré. Uniquement en Bluetooth, et désactivé tant que tu ne l’actives pas dans Paramètres › Jeu et système › Bump.</string>
+    <string name="whatsnew_0110_pass_short">Bump</string>
+
+    <string name="whatsnew_0110_plaza_title">La Place</string>
+    <string name="whatsnew_0110_plaza_body">Tous ceux que tu croises se retrouvent sur la Place, au cœur d’un petit village. Ils flânent, papotent, s’assoient sur les bancs et te font coucou. Réponds-leur : ils le verront la prochaine fois que vous vous croiserez.</string>
+    <string name="whatsnew_0110_plaza_short">Place</string>
+
+    <string name="whatsnew_0110_me_title">À ton image</string>
+    <string name="whatsnew_0110_me_body">Dans Moi, tu crées ton personnage : visage, yeux, coiffures, chapeaux, tenues et plus encore, tout redessiné, plus sympa. En panne d’idées ? X tire au sort, Y annule.</string>
+    <string name="whatsnew_0110_me_short">Moi</string>
+
+    <string name="whatsnew_0110_grooves_title">Trois nouveaux grooves</string>
+    <string name="whatsnew_0110_grooves_body">Plaza, Lagoon et Terrace remplacent les anciennes bandes-son : des grooves tout doux au marimba, au kalimba et aux cordes pincées, faits dans Tandem même. À choisir dans Paramètres › Son et musique.</string>
+    <string name="whatsnew_0110_grooves_short">Grooves</string>
+
+    <string name="whatsnew_0110_glyphs_title">Une icône par réglage</string>
+    <string name="whatsnew_0110_glyphs_body">L’accueil des Paramètres passe à des vignettes plus spacieuses, trois par rangée, et chaque réglage a sa petite icône, pour le repérer d’un coup d’œil.</string>
+    <string name="whatsnew_0110_glyphs_short">Icônes</string>
+
+    <string name="whatsnew_0110_switch_title">Switch : une seule sauvegarde</string>
+    <string name="whatsnew_0110_switch_body">Un jeu compilé dans les deux applis Peanuts se lance maintenant dans le Peanuts Native officiel, celui qui est tenu à jour. Ta sauvegarde de l’autre appli suit.</string>
+    <string name="whatsnew_0110_switch_short">Sauvegardes Switch</string>
+
+    <string name="whatsnew_0110_steady_title">Un curseur plus stable</string>
+    <string name="whatsnew_0110_steady_body">Relance une rangée dans Cette semaine et le curseur reste à sa place. Il n’est plus rogné sur les bords, et un plantage du texte ajusté est corrigé.</string>
+    <string name="whatsnew_0110_steady_short">Correctifs</string>
 </resources>

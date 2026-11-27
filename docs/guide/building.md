@@ -71,6 +71,15 @@ A debug build is signed with your computer's debug key; official releases are si
 > [!WARNING]
 > Uninstalling deletes Tandem's data, so back up first (**Settings › Play & system › Your data › Back up**).
 
+## Screenshots without a device
+
+`./gradlew testDebugUnitTest -Ptandem.shots=/some/folder --tests '*SettingsHomeShot*'` draws the Settings home at
+the Thor's top-screen size (1920×1080 at 369 dpi) in English, French, Arabic, Japanese and Chinese, with Robolectric,
+into PNGs in that folder (`app/build/shots` with a bare `-Ptandem.shots`). The top bar isn't drawn. Without the
+property nothing extra is fetched or run. The tests are in `app/src/shots`. `--tests '*SettingsGlyphShot*'` draws
+every glyph on a contact sheet (at a Settings row's badge size and four times that) and a few Settings pages.
+`--tests '*WhatsNew011Shot*'` draws the 0.11 What's new pictures at twice their design size, in English and Arabic.
+
 ## Installing on a device
 
 With USB debugging (or wireless debugging) on:

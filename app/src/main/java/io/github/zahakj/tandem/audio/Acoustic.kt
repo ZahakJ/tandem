@@ -79,7 +79,7 @@ internal object Tables {
 /** Partials (frequency, amplitude, 60 dB decay time) for the modal instruments. */
 internal object Modes {
     fun isModal(o: Osc) = o == Osc.Piano || o == Osc.Celesta || o == Osc.Glockenspiel || o == Osc.Timpani ||
-        o == Osc.Marimba || o == Osc.Vibes || o == Osc.MusicBox
+        o == Osc.Marimba || o == Osc.Vibes || o == Osc.MusicBox || o == Osc.Kalimba
 
     /**
      * Fills [freq], [amp], [t60] and returns how many partials there are. [vel] is the raw key velocity (0..1), which
@@ -152,6 +152,17 @@ internal object Modes {
                 add(f0 * 2.0, 0.07, t * 0.4)
                 add(f0 * 5.93, 0.14 * (0.4 + vel), 0.12)
                 add(f0 * 13.4, 0.03 * vel, 0.025)
+            }
+            Osc.Kalimba -> {
+                // A tine pressed down by a thumb: a round fundamental with a slow beat against its twin, the box's
+                // hum an octave down for a moment, and the tine's buzzy overtone (about 5.6x, not an octave) gone
+                // almost at once. Shorter than a music box.
+                val t = (1.5 * (440.0 / f0).pow(0.4)).coerceIn(0.6, 2.6)
+                add(f0, 1.0, t)
+                add(f0 * 1.0023, 0.16, t * 0.8)
+                add(f0 * 0.5, 0.1, 0.09)
+                add(f0 * 5.62, 0.1 * (0.3 + vel), 0.05)
+                add(f0 * 11.7, 0.02 * vel, 0.015)
             }
             Osc.Timpani -> {
                 // Circular membrane modes as tuned by the kettle; the principal tone is the first one here.

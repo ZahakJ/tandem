@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Sound and music: Settings › Sound & music (SoundSettings.kt), the music player (Sound.kt), the UI sound packs
-     (audio/Sfx.kt) and the built-in soundtracks' pieces (audio/Plaza.kt, audio/Calm.kt, audio/Meadow.kt). Keys start with sound_.
-     See docs/TRANSLATING.md. Song titles (Still Water, Lantern Town…) and the soundtracks' names (Plaza, Calm, Meadow Tales)
-     are names: they stay as they are and are not here. -->
+     (audio/Sfx.kt) and the built-in grooves (audio/Plaza.kt). Keys start with sound_. See docs/TRANSLATING.md.
+     The grooves' names (Plaza, Lagoon, Terrace) and the jingle's (Passby) are names: they stay as they are and are not here. -->
 <resources>
     <!-- Settings › Sound & music: the group titles. -->
     <string name="sound_group">Son et musique</string>
@@ -40,16 +39,16 @@
     <!-- Pip's speech bubble in the Pip's voice preview. -->
     <string name="sound_pip_hello">Salut ! Moi, c’est Pip !</string>
 
-    <!-- Music: Off, My music (the music folder), or a built-in soundtrack (Plaza, Calm, Meadow Tales: names). -->
+    <!-- Music: Off, My music (the music folder), or a built-in groove (Plaza, Lagoon, Terrace: names). -->
     <string name="sound_music">Musique</string>
     <!-- An option of Music: your own songs from the music folder. Short. -->
     <string name="sound_music_folder">Ma musique</string>
-    <!-- Music's help while the music folder is empty: %1$s is the built-in soundtrack that plays instead ("Plaza"). -->
-    <string name="sound_music_help_empty">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; le dossier est vide pour l’instant, alors c’est la bande-son intégrée qui joue (%1$s). Côté Tandem : Plaza, marimba, sifflet et bossa, vif et léger ; Calm, piano, harpe et célesta tout en douceur ; ou Meadow Tales, un petit orchestre.</string>
+    <!-- Music's help while the music folder is empty: %1$s is the built-in groove that plays instead ("Plaza"). -->
+    <string name="sound_music_help_empty">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; le dossier est vide pour l’instant, alors c’est la bande-son intégrée qui joue (%1$s). Côté Tandem : Plaza, marimba et balais ; Lagoon, une bossa au kalimba à la tombée du jour ; ou Terrace, des cordes pincées pleines de soleil pour le matin.</string>
     <!-- Music's help: %1$d is how many songs the music folder has. -->
     <plurals name="sound_music_help_found">
-        <item quantity="one">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceau trouvé. Côté Tandem : Plaza, marimba, sifflet et bossa, vif et léger ; Calm, piano, harpe et célesta tout en douceur ; ou Meadow Tales, un petit orchestre.</item>
-        <item quantity="other">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceaux trouvés. Côté Tandem : Plaza, marimba, sifflet et bossa, vif et léger ; Calm, piano, harpe et célesta tout en douceur ; ou Meadow Tales, un petit orchestre.</item>
+        <item quantity="one">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceau trouvé. Côté Tandem : Plaza, marimba et balais ; Lagoon, une bossa au kalimba à la tombée du jour ; ou Terrace, des cordes pincées pleines de soleil pour le matin.</item>
+        <item quantity="other">De la musique pendant que tu navigues ; elle s’estompe et s’arrête quand un jeu tourne, et se tait quand une autre appli joue. Ma musique lit tes propres morceaux depuis ROMs/tandem/music (MP3, OGG, Opus, FLAC, M4A, WAV) ; %1$d morceaux trouvés. Côté Tandem : Plaza, marimba et balais ; Lagoon, une bossa au kalimba à la tombée du jour ; ou Terrace, des cordes pincées pleines de soleil pour le matin.</item>
     </plurals>
     <string name="sound_music_folder_empty">Ajoute d’abord des morceaux dans ROMs/tandem/music</string>
     <string name="sound_shuffle">Ma musique en aléatoire</string>
@@ -97,19 +96,9 @@
     <string name="sound_pack_air">Brise</string>
     <string name="sound_pack_air_blurb">Souffles légers et notes pures et rondes. Calme et aérien.</string>
 
-    <!-- The mood of each built-in piece, under its title on the now-playing card. Calm: -->
-    <string name="sound_mood_still_water">Piano doux sur un lac tranquille au crépuscule</string>
-    <string name="sound_mood_soft_morning">Harpe et célesta aux premières lueurs</string>
-    <!-- Meadow Tales: -->
-    <string name="sound_mood_hillside_breeze">Flûte et piano sur une colline ensoleillée et venteuse</string>
-    <string name="sound_mood_lantern_town">Une valse à l’accordéon dans un petit village éclairé de lanternes</string>
-    <string name="sound_mood_seaside_train">Un petit train qui longe la côte, les vagues à la fenêtre</string>
-    <string name="sound_mood_forest_spirits">De petits esprits qui dansent entre les vieux arbres</string>
-    <string name="sound_mood_summer_rain">Piano et pluie douce, un après-midi d’été paresseux</string>
-    <string name="sound_mood_flying_home">Survoler les champs sur le chemin du retour</string>
-    <!-- Plaza: -->
-    <string name="sound_mood_plaza">Un air sifflé et du marimba sur une petite place ensoleillée</string>
-    <string name="sound_mood_shop">Guitare nylon et bossa nova, on flâne entre les rayons</string>
-    <string name="sound_mood_lounge">Une valse de boîte à musique pour les heures calmes</string>
+    <!-- The mood of each built-in groove (Plaza, Lagoon, Terrace), then Passby's: -->
+    <string name="sound_mood_plaza">Marimba et balais sur une place au soleil</string>
+    <string name="sound_mood_lagoon">Bossa au kalimba au bord de l’eau, le soir</string>
+    <string name="sound_mood_terrace">Guitare en arpèges sous le soleil du matin</string>
     <string name="sound_mood_passby">Une petite fanfare joyeuse pour les bonnes nouvelles</string>
 </resources>

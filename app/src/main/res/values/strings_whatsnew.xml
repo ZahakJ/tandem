@@ -114,9 +114,41 @@
     <string name="whatsnew_0100_settings_body">Settings opens on eight tiles, each with a tiny live sketch of what\'s inside. Something odd? Send a bug report saves one for you, no computer needed.</string>
     <string name="whatsnew_0100_settings_short">Settings</string>
 
-    <!-- The last slide: Plaza, the new default soundtrack, and its four pieces (home, Settings, the screensaver, the
-         jingle for good news). Plaza is a name: it stays as it is. -->
-    <string name="whatsnew_0100_music_title">Plaza, a sunny new soundtrack</string>
-    <string name="whatsnew_0100_music_body">Plaza is the new default: a whistled tune at home, a cozy bossa in Settings, a music-box waltz for the screensaver and a little fanfare for good news. Swap it in Settings › Sound &amp; music.</string>
+    <!-- The last slide: Plaza, the new default soundtrack, its two sister grooves (Lagoon, Terrace) and the jingle for
+         good news. Plaza, Lagoon and Terrace are names: they stay as they are. -->
+    <string name="whatsnew_0100_music_title">A new cozy soundtrack</string>
+    <string name="whatsnew_0100_music_body">Fresh music to browse by, soft and warm, like a blanket for your library. Turn it up in Settings › Sound &amp; music.</string>
     <string name="whatsnew_0100_music_short">Soundtrack</string>
+
+    <!-- 0.11: Bump, the Plaza, Me, three new grooves, an icon for every setting, Switch saves, and the quieter fixes.
+         Bump is the feature's name: use the word your glossary chose for it. Plaza, Lagoon and Terrace are the
+         soundtracks' names and stay as they are; Peanuts Native is an app's name. -->
+    <string name="whatsnew_0110_tagline">Bump into new friends</string>
+    <string name="whatsnew_0110_pass_title">Bump into people</string>
+    <string name="whatsnew_0110_pass_body">Pass another Tandem and you swap cards: your character, a greeting, a favourite game. Bluetooth only, and off until you turn it on in Settings › Play &amp; system › Bump.</string>
+    <string name="whatsnew_0110_pass_short">Bump</string>
+
+    <string name="whatsnew_0110_plaza_title">The Plaza</string>
+    <string name="whatsnew_0110_plaza_body">Everyone you bump into ends up in a little town square. They stroll, chat, sit on the benches and wave. Wave back, and they get it the next time you meet.</string>
+    <string name="whatsnew_0110_plaza_short">Plaza</string>
+
+    <string name="whatsnew_0110_me_title">Make yourself</string>
+    <string name="whatsnew_0110_me_body">Me is where you make your character: face, eyes, hairstyles, hats, outfits and more, all redrawn friendlier. Stuck? X picks something at random, Y takes it back.</string>
+    <string name="whatsnew_0110_me_short">Me</string>
+
+    <string name="whatsnew_0110_grooves_title">Three new grooves</string>
+    <string name="whatsnew_0110_grooves_body">Plaza, Lagoon and Terrace replace the old soundtracks: easy background grooves on marimba, kalimba and plucked strings, made right in Tandem. Pick one in Settings › Sound &amp; music.</string>
+    <string name="whatsnew_0110_grooves_short">Grooves</string>
+
+    <string name="whatsnew_0110_glyphs_title">Every setting, its own icon</string>
+    <string name="whatsnew_0110_glyphs_body">The Settings home has roomier tiles, three to a row, and every setting has a little icon of its own, so you spot it at a glance.</string>
+    <string name="whatsnew_0110_glyphs_short">Settings icons</string>
+
+    <string name="whatsnew_0110_switch_title">Switch games, one save</string>
+    <string name="whatsnew_0110_switch_body">A game built in both Peanuts apps now plays in the official Peanuts Native, the one kept up to date. Your save from the other one comes along.</string>
+    <string name="whatsnew_0110_switch_short">Switch saves</string>
+
+    <string name="whatsnew_0110_steady_title">A steadier highlight</string>
+    <string name="whatsnew_0110_steady_body">Re-roll a row in This week and the highlight stays where it was. Highlights no longer get cut off at the edges, and a crash in fitted text is gone.</string>
+    <string name="whatsnew_0110_steady_short">Fixes</string>
 </resources>

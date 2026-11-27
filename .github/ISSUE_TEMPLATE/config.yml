@@ -1,8 +1,8 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
-  - name: Security vulnerability
-    url: https://github.com/ZahakJ/tandem/security/advisories/new
-    about: Report privately. Please don't open a public issue for a security problem.
   - name: Help and troubleshooting
     url: https://zahakj.github.io/tandem/docs/faq/
-    about: Answers to common setup problems, from missing games to emulators that won't start.
+    about: Quick answers to common setup problems.
+  - name: Security problem
+    url: https://github.com/ZahakJ/tandem/security/advisories/new
+    about: Please report it privately instead of in a public issue.

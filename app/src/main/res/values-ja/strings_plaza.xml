@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plaza_app_title">ひろば</string>
+    <string name="plaza_app_blurb">ばったり会った人たちが集まる、ちいさなひろば。</string>
+    <string name="plaza_me_title">わたし</string>
+    <string name="plaza_unnamed">なかま</string>
+
+    <string name="plaza_greeting_1">こんにちは！</string>
+    <string name="plaza_greeting_2">はじめまして！</string>
+    <string name="plaza_greeting_3">こんど一緒に遊ぼう！</string>
+    <string name="plaza_greeting_4">ソファからこんにちは！</string>
+    <string name="plaza_greeting_5">すてきな一日を！</string>
+    <string name="plaza_greeting_6">さあ、ゲームの時間！</string>
+    <string name="plaza_greeting_7">やあ、ゲーム仲間！</string>
+    <string name="plaza_greeting_8">あと1ステージだけ…</string>
+    <string name="plaza_greeting_9">ハイタッチ！</string>
+    <string name="plaza_greeting_10">おやつ休憩する？</string>
+    <string name="plaza_greeting_11">冒険がんばってね！</string>
+    <string name="plaza_greeting_12">ピップもよろしくって！</string>
+    <string name="plaza_greeting_13">スター全部集めるぞ！</string>
+    <string name="plaza_greeting_14">ちょっと世界を救ってくる！</string>
+    <string name="plaza_greeting_15">ばったり会えてうれしい！</string>
+    <string name="plaza_greeting_16">セーブデータが無事でありますように！</string>
+
+    <string name="plaza_tab_face">顔</string>
+    <string name="plaza_tab_eyes">目</string>
+    <string name="plaza_tab_hair">髪</string>
+    <string name="plaza_tab_hat">帽子</string>
+    <string name="plaza_tab_outfit">服</string>
+    <string name="plaza_tab_extras">小物</string>
+    <string name="plaza_tab_colour">色</string>
+    <string name="plaza_tab_card">カード</string>
+    <string name="plaza_part_shape">顔の形</string>
+    <string name="plaza_part_skin">肌の色</string>
+    <string name="plaza_part_eyes">目</string>
+    <string name="plaza_part_eye_color">目の色</string>
+    <string name="plaza_part_brows">まゆ</string>
+    <string name="plaza_part_mouth">口</string>
+    <string name="plaza_part_cheeks">ほっぺ</string>
+    <string name="plaza_part_hair">髪型</string>
+    <string name="plaza_part_hair_color">髪の色</string>
+    <string name="plaza_part_headwear">頭にのせるもの</string>
+    <string name="plaza_part_top">トップス</string>
+    <string name="plaza_part_top_color">トップスの色</string>
+    <string name="plaza_part_glasses">メガネ</string>
+    <string name="plaza_part_earrings">イヤリング</string>
+    <string name="plaza_part_theme">カードの色</string>
+    <string name="plaza_part_face_extra">顔のアクセント</string>
+    <string name="plaza_part_beard">ひげ</string>
+    <string name="plaza_option_n">%2$d 個中 %1$d 番目</string>
+
+    <string name="plaza_card_name">名前</string>
+    <string name="plaza_card_name_ask">ひろばでの名前</string>
+    <string name="plaza_card_name_empty">未設定</string>
+    <string name="plaza_card_greeting">あいさつ</string>
+    <string name="plaza_card_greeting_pick">あいさつを選ぶ</string>
+    <string name="plaza_card_favorite">お気に入りのゲーム</string>
+    <string name="plaza_card_favorite_none">なし</string>
+    <string name="plaza_card_favorite_pick">お気に入りを選ぶ</string>
+    <string name="plaza_card_favorite_clear">お気に入りなし</string>
+    <string name="plaza_card_recent">最近遊んだゲームを見せる</string>
+    <string name="plaza_card_note">カードに載るのはゲームのタイトルだけ。ライブラリ、プレイ時間、非表示のゲームは載りません。最近遊んだゲームはオンにしたときだけ。</string>
+    <string name="plaza_card_preview_header">みんなに見えるもの</string>
+
+    <string name="plaza_hint_random">おまかせ</string>
+    <string name="plaza_hint_undo">元に戻す</string>
+    <string name="plaza_hint_done">完了</string>
+    <string name="plaza_undo_none">まだ戻せるものはありません。</string>
+
+    <string name="plaza_guide_1">こんにちは！あなたを作りましょう。顔、目、髪、服を選んでくださいね。L1 と R1 でタブを切り替えられます。</string>
+    <string name="plaza_guide_2">運だめししますか？X でおまかせコーデ、Y でひとつ前に戻せます。</string>
+    <string name="plaza_guide_3">カードのタブで名前とあいさつを決めましょう。ばったり会った人には、それが見えるんです！</string>
+    <string name="plaza_guide_next">次へ</string>
+    <string name="plaza_guide_go">はじめよう</string>
+    <string name="plaza_guide_step">%1$d / %2$d</string>
+
+    <string name="plaza_filter_new">新着</string>
+    <string name="plaza_filter_all">みんな</string>
+    <plurals name="plaza_met_count">
+        <item quantity="other">%1$d 人と出会った</item>
+    </plurals>
+    <string name="plaza_status_passing">ばったり受付中</string>
+    <string name="plaza_status_find_only">ばったり受付中（見つけられるが、見つけてもらえない）</string>
+    <string name="plaza_status_paused">プレイ中はおやすみ</string>
+    <string name="plaza_status_off">「ばったり」はオフ</string>
+    <string name="plaza_status_not_made">まず「わたし」を作りましょう</string>
+    <string name="plaza_status_needs">Bluetooth の許可が必要</string>
+    <string name="plaza_status_bt_off">Bluetooth がオフ</string>
+    <string name="plaza_status_private">プライベートモードでおやすみ中</string>
+    <string name="plaza_status_old">Android 12 以降が必要</string>
+    <string name="plaza_status_no_bt">この端末には Bluetooth がありません</string>
+    <string name="plaza_empty_off">「ばったり」をオンにして、出かけた先でほかの Tandem とばったり会いましょう。</string>
+    <string name="plaza_empty_off_action">「ばったり」を設定</string>
+    <string name="plaza_empty_none">まだ誰もいません。端末を持って、おでかけしてみましょう！</string>
+    <string name="plaza_empty_none_action">「わたし」を編集</string>
+    <string name="plaza_empty_new">前に見てから新しい人はいません。</string>
+    <string name="plaza_empty_new_action">みんなを見る</string>
+    <string name="plaza_private_title">ひろばはおやすみ中</string>
+    <string name="plaza_private_detail">プライベートモードがオンです。「ばったり」はおやすみして、ひろばも閉じています。</string>
+    <string name="plaza_hint_options">オプション</string>
+    <string name="plaza_hint_me">「わたし」を編集</string>
+    <string name="plaza_new_badge">NEW</string>
+
+    <string name="plaza_menu_wave">手をふり返す</string>
+    <string name="plaza_menu_unwave">手をふるのをやめる</string>
+    <string name="plaza_menu_hide">ひろばから隠す</string>
+    <string name="plaza_menu_block">ブロック</string>
+    <string name="plaza_menu_note">手をふったことは、次にばったり会ったときに届きます。隠した人はまたばったり会うと戻ってきますが、ブロックした人は二度と戻りません。</string>
+    <string name="plaza_waved_done">次にばったり会ったとき、%1$s さんに手をふります。</string>
+    <string name="plaza_unwaved_done">手をふるのをやめました。</string>
+    <string name="plaza_hidden_done">%1$s さんを、次にばったり会うまで隠しました。</string>
+    <string name="plaza_blocked_done">%1$s さんをブロックしました。</string>
+
+    <plurals name="plaza_passed_times">
+        <item quantity="other">ばったり %1$d 回</item>
+    </plurals>
+    <string name="plaza_last_at">最後は %1$s</string>
+    <string name="plaza_last_on">最後は %1$s</string>
+    <string name="plaza_first_met">はじめて会った日 %1$s</string>
+    <plurals name="plaza_their_passes">
+        <item quantity="other">これまで %1$d 台の Tandem とばったり</item>
+    </plurals>
+    <plurals name="plaza_your_passes">
+        <item quantity="other">これまで %1$d 台の Tandem とばったり会いました</item>
+    </plurals>
+    <string name="plaza_fav_label">お気に入り</string>
+    <string name="plaza_recent_label">最近遊んだ</string>
+    <string name="plaza_waved_at_you">手をふってくれた！</string>
+    <string name="plaza_you_waved">手をふり返す予定</string>
+    <string name="plaza_wave_sent">手をふったのが届いた</string>
+
+    <string name="plaza_arrival">%1$s さんとばったり！</string>
+    <string name="plaza_arrival_open">ひろばへ</string>
+
+    <plurals name="plaza_start_new">
+        <item quantity="other">新着 %1$d</item>
+    </plurals>
+    <string name="plaza_start_off">「ばったり」はオフ</string>
+
+    <string name="plaza_settings_title">ばったり</string>
+    <string name="plaza_settings_sub_help">近くの Tandem と出会う：あなたのキャラ、カード、そしてひろば。</string>
+    <string name="plaza_settings_on">ばったり</string>
+    <string name="plaza_settings_on_help">ばったり会ったほかの Tandem と、ちいさなカードを Bluetooth だけで交換します。それ以外は端末から出ず、インターネットにもつながりません。オンにするまでオフのままです。</string>
+    <string name="plaza_settings_playing">プレイ中もばったり</string>
+    <string name="plaza_settings_playing_help">ゲーム中も「ばったり」を続けます（通知が出ます）。オフならゲーム中はおやすみして、バッテリーを節約します。</string>
+    <string name="plaza_settings_me">「わたし」を編集</string>
+    <string name="plaza_settings_me_help">あなたのキャラ、名前、あいさつ、お気に入りのゲーム。</string>
+    <string name="plaza_settings_preview">みんなに見えるもの</string>
+    <string name="plaza_settings_preview_help">カードに載るものと、絶対に載らないものを確認できます。</string>
+    <string name="plaza_settings_preview_action">見る</string>
+    <string name="plaza_settings_open">ひろばを開く</string>
+    <string name="plaza_settings_open_help">ばったり会ったみんなが、のんびりお散歩しています。</string>
+    <string name="plaza_settings_blocked">ブロックした人</string>
+    <string name="plaza_settings_blocked_none">いません</string>
+    <plurals name="plaza_settings_blocked_n">
+        <item quantity="other">%1$d 人をブロック中</item>
+    </plurals>
+    <string name="plaza_settings_blocked_help">ブロックした人はひろばに出てこず、カードも受け取らず、返事もしません。A 長押しで全員のブロックを解除します。</string>
+    <string name="plaza_settings_blocked_none_toast">ブロックしている人はいません。</string>
+    <string name="plaza_settings_unblock_action">全員を解除</string>
+    <string name="plaza_unblock_title">全員のブロックを解除しますか？</string>
+    <string name="plaza_unblock_detail">次にばったり会うと、またひろばに出てくるかもしれません。</string>
+    <string name="plaza_settings_unblocked">全員のブロックを解除しました。</string>
+    <string name="plaza_settings_clear">ひろばをリセット</string>
+    <string name="plaza_settings_clear_help">出会った人を全部忘れます。ブロック、あなたのカード、ばったり回数はそのまま。</string>
+    <string name="plaza_clear_title">ひろばをリセットしますか？</string>
+    <string name="plaza_clear_detail">出会った人はみんなひろばからいなくなります。元に戻せません。</string>
+    <string name="plaza_clear_yes">リセット</string>
+    <string name="plaza_settings_cleared">ひろばがからっぽになりました。</string>
+    <string name="plaza_settings_id">ばったり ID</string>
+    <string name="plaza_settings_id_none">まだありません</string>
+    <string name="plaza_settings_id_help">あなたの「ばったり」の鍵の安全番号：%1$s。Concord で表示されるものと同じで、鍵はこの端末から出ません。</string>
+    <string name="plaza_settings_id_help_none">「ばったり」の鍵は、はじめてオンにしたときにこの端末で作られます。</string>
+    <string name="plaza_settings_id_action">見る</string>
+    <string name="plaza_settings_id_toast">安全番号：%1$s</string>
+
+    <string name="plaza_on_toast">「ばったり」がオンになりました。すてきな出会いがありますように！</string>
+    <string name="plaza_bt_off_toast">「ばったり」がオンになりました。Bluetooth をオンにすると、ばったりが始まります。</string>
+    <string name="plaza_old_android">「ばったり」には Android 12 以降が必要です。</string>
+    <string name="plaza_no_bluetooth">この端末は Bluetooth LE に対応していません。</string>
+
+    <string name="plaza_primer_title">「ばったり」は Bluetooth を使います</string>
+    <string name="plaza_primer_intro">Android が「付近のデバイス」の許可を求めます。Tandem がそれで何をするかはこちら：</string>
+    <string name="plaza_primer_denied">付近のデバイスの許可がないと、「ばったり」はオフのままです。Android の設定で許可できます。</string>
+    <string name="plaza_primer_scan_title">見つける</string>
+    <string name="plaza_primer_scan">近くのほかの Tandem を、数秒ずつ探します。</string>
+    <string name="plaza_primer_advertise_title">見つけてもらう</string>
+    <string name="plaza_primer_advertise">ほかの Tandem があなたを見つけられるようにします。目印は15分ごとに変わるランダムなコードです。</string>
+    <string name="plaza_primer_connect_title">カード交換</string>
+    <string name="plaza_primer_connect">届く範囲の Tandem とカードを交換して、すぐに離れます。</string>
+    <string name="plaza_primer_never">居場所を知るためには使いません。Tandem は位置情報をいっさい求めません。</string>
+    <string name="plaza_primer_later">あとで</string>
+    <string name="plaza_primer_continue">続ける</string>
+    <string name="plaza_primer_settings">設定を開く</string>
+
+    <string name="plaza_privacy_title">みんなに見えるもの</string>
+    <string name="plaza_privacy_sent">カードに載るもの</string>
+    <string name="plaza_privacy_item_character">あなたのキャラ</string>
+    <string name="plaza_privacy_item_name">名前：%1$s</string>
+    <string name="plaza_privacy_item_greeting">あいさつ：%1$s</string>
+    <string name="plaza_privacy_item_fav">お気に入り：%1$s</string>
+    <string name="plaza_privacy_item_recent">最近遊んだ：%1$s</string>
+    <plurals name="plaza_privacy_item_passes">
+        <item quantity="other">ばったり会った Tandem：%1$d 台</item>
+    </plurals>
+    <string name="plaza_privacy_item_key">カードがあなたのものだと示す鍵</string>
+    <string name="plaza_privacy_never">絶対に送らないもの</string>
+    <string name="plaza_privacy_never_1">居場所、アカウント、あなたが入力したもの</string>
+    <string name="plaza_privacy_never_2">非表示のゲーム、プレイ時間、ファイル、ライブラリ</string>
+    <string name="plaza_privacy_never_3">インターネット経由のものはいっさいなし</string>
+    <string name="plaza_privacy_how">カードは Bluetooth の届く範囲の Tandem にだけ届きます。署名つきなので、偽造も使い回しもできません。プライベートモードではすべて止まります。</string>
+    <string name="plaza_privacy_close">わかった</string>
+
+    <string name="plaza_note_channel">ばったり</string>
+    <string name="plaza_note_title">「ばったり」はオン</string>
+    <string name="plaza_note_text">プレイ中も Bluetooth で、ほかの Tandem とのばったりを待っています。</string>
+</resources>

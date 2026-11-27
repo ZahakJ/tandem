@@ -8,6 +8,7 @@
     <string name="week_header_of">أسبوع %1$s</string>
     <string name="week_hint_reroll">أعِد السحب</string>
     <string name="week_reroll_upnext">«على الدور» قائمتك أنت: زر X يعيد السحب في الصفوف الأخرى</string>
+    <string name="week_reroll_none">هذا كل ما في هذا الصف هذا الأسبوع</string>
 
     <string name="week_tag_upnext">على الدور</string>
     <string name="week_tag_pick">اختيار الأسبوع</string>

@@ -141,23 +141,24 @@ object SettingsPlan {
 
     val subs: List<Sub> = listOf(
         Sub("look/wallpaper", "look", "Wallpaper", R.string.settings_sub_wallpaper, Glyph.Image, R.string.settings_sub_wallpaper_help),
-        Sub("look/icons", "look", "System icons", R.string.look_group_icons, Glyph.Gamepad, R.string.settings_sub_icons_help),
+        Sub("look/icons", "look", "System icons", R.string.look_group_icons, Glyph.Handheld, R.string.settings_sub_icons_help),
         Sub("look/motion", "look", "Motion", R.string.settings_sub_motion, Glyph.Motion, R.string.settings_sub_motion_help),
-        Sub("home/grid", "home", "Grid shape", R.string.settings_sub_grid, Glyph.Corners, R.string.settings_sub_grid_help),
-        Sub("home/games", "home", "How games show", R.string.settings_sub_games, Glyph.Grid, R.string.settings_sub_games_help),
-        Sub("home/dock", "home", "Dock & widgets", R.string.settings_sub_dock, Glyph.Layers, R.string.settings_sub_dock_help),
-        Sub("screens/art", "screens", "Art & video", R.string.settings_sub_art, Glyph.Image, R.string.settings_sub_art_help),
+        Sub("home/grid", "home", "Grid shape", R.string.settings_sub_grid, Glyph.Dots9, R.string.settings_sub_grid_help),
+        Sub("home/games", "home", "How games show", R.string.settings_sub_games, Glyph.Covers, R.string.settings_sub_games_help),
+        Sub("home/dock", "home", "Dock & widgets", R.string.settings_sub_dock, Glyph.Dock, R.string.settings_sub_dock_help),
+        Sub("screens/art", "screens", "Art & video", R.string.settings_sub_art, Glyph.Film, R.string.settings_sub_art_help),
         Sub("controls/pads", "controls", "Connected controllers", R.string.settings_sub_pads, Glyph.Gamepad, R.string.settings_sub_pads_help),
-        Sub("controls/deck", "controls", "Deck", R.string.settings_sub_deck, Glyph.Text, R.string.settings_sub_deck_help),
-        Sub("library/accounts", "library", "Accounts", R.string.settings_sub_accounts, Glyph.Trophy, R.string.settings_sub_accounts_help),
+        Sub("controls/deck", "controls", "Deck", R.string.settings_sub_deck, Glyph.Keyboard, R.string.settings_sub_deck_help),
+        Sub("library/accounts", "library", "Accounts", R.string.settings_sub_accounts, Glyph.Person, R.string.settings_sub_accounts_help),
         Sub("library/sort", "library", "Sorting & discs", R.string.settings_sub_sort, Glyph.Sort, R.string.settings_sub_sort_help),
         Sub("library/droiddeck", "library", "DroidDeck", R.string.settings_sub_droiddeck, Glyph.Cartridge, R.string.settings_sub_droiddeck_help),
-        Sub("library/gamenative", "library", "GameNative", R.string.settings_sub_gamenative, Glyph.Cartridge, R.string.settings_sub_gamenative_help),
-        Sub("play/perf", "play", "Performance & sleep", R.string.settings_sub_perf, Glyph.Battery, R.string.settings_sub_perf_help),
+        Sub("library/gamenative", "library", "GameNative", R.string.settings_sub_gamenative, Glyph.Monitor, R.string.settings_sub_gamenative_help),
+        Sub("play/perf", "play", "Performance & sleep", R.string.settings_sub_perf, Glyph.MoonBolt, R.string.settings_sub_perf_help),
         Sub("play/privacy", "play", "Privacy & hidden", R.string.settings_sub_privacy, Glyph.Shield, R.string.settings_sub_privacy_help),
         Sub("play/data", "play", "Your data", R.string.settings_sub_data, Glyph.Save, R.string.settings_sub_data_help),
-        Sub("play/updates", "play", "Updates", R.string.settings_updates, Glyph.Download, R.string.whatsnew_sub_help),
-        Sub("play/dev", "play", "For tinkerers", R.string.settings_sub_dev, Glyph.Chart, R.string.settings_sub_dev_help),
+        Sub("play/updates", "play", "Updates", R.string.settings_updates, Glyph.Update, R.string.whatsnew_sub_help),
+        Sub("play/dev", "play", "For tinkerers", R.string.settings_sub_dev, Glyph.Wrench, R.string.settings_sub_dev_help),
+        Sub("play/pass", "play", "Bump", R.string.plaza_settings_title, Glyph.Bump, R.string.plaza_settings_sub_help),
     )
 
     fun sub(id: String): Sub? = subs.firstOrNull { it.id == id }
@@ -222,7 +223,7 @@ object SettingsPlan {
             ),
             Group(
                 "Tandem", R.string.settings_group_tandem,
-                link("play/privacy") + link("play/data") + p("Home & play", "Use Tandem as the Home screen") + link("play/updates") + link("play/dev"),
+                link("play/pass") + link("play/privacy") + link("play/data") + p("Home & play", "Use Tandem as the Home screen") + link("play/updates") + link("play/dev"),
             ),
         ),
         "look/wallpaper" to listOf(Group("Wallpaper", R.string.settings_group_wallpaper, p("Wallpaper", "Top screen", "Bottom screen", "Picture dimming"))),
@@ -278,6 +279,12 @@ object SettingsPlan {
             ),
         ),
         "play/dev" to listOf(Group("For tinkerers", R.string.settings_group_tinkerers, p("Developer", "Frame timing overlay", "Tour every theme"))),
+        "play/pass" to listOf(
+            Group(
+                "Bump", R.string.plaza_settings_title,
+                p("Bump", "Bump", "Bump while playing", "Edit Me", "What others see", "Open the Plaza", "Blocked people", "Clear Plaza", "Bump ID"),
+            ),
+        ),
     )
 
     /** The focus key of the row on its page that opens subpage [id] (its group and title, see [rowKey]). */
@@ -292,6 +299,81 @@ object SettingsPlan {
      * placed. None today; rather than drop a duplicate, take it out of the feature.
      */
     val dropped: List<Pick> = emptyList()
+
+    /**
+     * The glyph every row shows on its page, by its English label ("group/label" where two groups of a page share a
+     * label). It wins over the glyph the feature gives its row, so no two rows on a page share one and a glyph means
+     * the same thing wherever it shows (SettingsGlyphsTest). Subpage rows take [Sub.icon].
+     */
+    val glyphs: Map<String, Glyph> = mapOf(
+        // Look & feel
+        "Accent colour" to Glyph.Drop, "Highlight style" to Glyph.Highlight, "Surface" to Glyph.Glass,
+        "Share my look" to Glyph.Share, "Get a look" to Glyph.Download, "Language" to Glyph.Globe, "Calendar" to Glyph.Calendar,
+        "Reset look" to Glyph.Undo,
+        "Top screen" to Glyph.TopScreen, "Bottom screen" to Glyph.BottomScreen, "Picture dimming" to Glyph.Dim,
+        "Icon style" to Glyph.Shapes, "Icons from" to Glyph.Box, "Art set" to Glyph.Layers, "Real art" to Glyph.Image,
+        "Fetch system art" to Glyph.FetchArt,
+        "Animation style" to Glyph.Bounce, "Reduce motion" to Glyph.Snail, "Travelling highlight" to Glyph.HighlightMove,
+        "Floating titles" to Glyph.FloatText, "Motion intensity" to Glyph.Gauge, "Swap animation" to Glyph.Flip,
+        // Home & layout
+        "Icon size" to Glyph.IconSize, "Scrolling" to Glyph.Scroll, "Icon names" to Glyph.Tag, "Folders open" to Glyph.FolderOpen,
+        "Recently played strip" to Glyph.History, "Resume page" to Glyph.NowPlaying, "Orbit holds" to Glyph.Orbit,
+        "Continue ribbon" to Glyph.Ribbon, "Spotlight rail" to Glyph.Rail, "Spotlight backdrop" to Glyph.Backdrop,
+        "Spotlight motion" to Glyph.Motion, "Stage holds" to Glyph.Stage, "Stage cover size" to Glyph.Resize,
+        "Stage backdrop" to Glyph.Backdrop, "Home rows" to Glyph.Rows, "System tiles" to Glyph.Tiles, "Open folders" to Glyph.FolderOpen,
+        "Now playing" to Glyph.NowPlaying, "Clock" to Glyph.Clock, "Battery" to Glyph.Battery, "Screensaver" to Glyph.Screensaver,
+        "Rows of icons" to Glyph.GridRows, "Icon roundness" to Glyph.Corners, "Space between icons" to Glyph.Spacing,
+        "Hero split" to Glyph.Split, "Animated icons" to Glyph.AnimIcon, "Continue card" to Glyph.WideCard,
+        "Games view" to Glyph.Views, "Grid size" to Glyph.Grid, "Card shape" to Glyph.CardShape, "Shelf look" to Glyph.Shelf,
+        "Game titles" to Glyph.Text, "Weekly picks" to Glyph.Star, "Reset suggestions" to Glyph.Undo,
+        "Apps dock" to Glyph.Dock, "Choose dock apps" to Glyph.Checklist, "Dock style" to Glyph.Roller, "Dock on top" to Glyph.DockTop,
+        "Auto-hide dock" to Glyph.EyeOff, "Customize widgets" to Glyph.Widgets, "Widgets on the home screen" to Glyph.Home,
+        "Widgets on the grid" to Glyph.Grid,
+        // Two screens
+        "Single screen" to Glyph.OneScreen, "Swap screens" to Glyph.Swap, "Apps open on" to Glyph.OpenOn,
+        "Hold Back to move" to Glyph.HoldButton, "Keep auto-rotate off" to Glyph.Rotate, "Other screen" to Glyph.BottomDetails,
+        "Style" to Glyph.BottomDetails, "Bottom screen when idle" to Glyph.BottomWidgets, "Bottom screen while playing" to Glyph.BottomOff,
+        "Off after" to Glyph.Timer, "Voice in clips" to Glyph.Mic,
+        "Video snaps" to Glyph.Video, "Moving art" to Glyph.Pan, "Logo size" to Glyph.TextSize, "Art fade" to Glyph.Fade,
+        // Sound & music
+        "Theme pack music" to Glyph.Cassette, "Theme pack sounds" to Glyph.Box,
+        "UI sounds" to Glyph.Bell, "Custom sounds" to Glyph.Waveform, "Sound volume" to Glyph.Volume, "Pip's voice" to Glyph.Bubble,
+        "Music" to Glyph.Music, "Music volume" to Glyph.Headphones, "Shuffle my music" to Glyph.Shuffle, "Next song" to Glyph.Skip,
+        // Controls
+        "Button prompts" to Glyph.Buttons, "Swap A and B" to Glyph.SwapAB, "Swap X and Y" to Glyph.SwapXY, "X button" to Glyph.XButton,
+        "Rebind buttons" to Glyph.Rebind, "Feel each move" to Glyph.Vibrate, "Corner hints" to Glyph.CornerHint,
+        "Controller in games" to Glyph.Plug, "Always use a connected pad" to Glyph.Link,
+        "Controller Home button" to Glyph.HomeButton, "Hold the Home button" to Glyph.HoldButton,
+        "Trackpad sensitivity" to Glyph.Trackpad, "Default layout" to Glyph.Keyboard, "Key sounds" to Glyph.Volume, "Key haptics" to Glyph.Vibrate,
+        // Library & art
+        "Game folders" to Glyph.Folder, "Rescan games" to Glyph.Refresh, "Watch game folders" to Glyph.Eye,
+        "Systems and emulators" to Glyph.Handheld, "Android apps" to Glyph.Robot, "Scrape library" to Glyph.FetchArt,
+        "Set up sources" to Glyph.Sources, "Clear downloaded media" to Glyph.Trash,
+        "Account" to Glyph.Trophy, "Show achievements" to Glyph.Medal, "Look up games again" to Glyph.Search,
+        "RetroAchievements/Sign out" to Glyph.SignOut,
+        "Steam Web API key" to Glyph.Key, "Steam account" to Glyph.Person, "Look up achievements" to Glyph.Refresh,
+        "Steam/Sign out" to Glyph.Unlink,
+        "Discord status" to Glyph.Presence, "Disconnect Discord" to Glyph.Unplug,
+        "Sort games by" to Glyph.Sort, "Favorites first" to Glyph.Heart, "Ignore The and A" to Glyph.Strike, "Make playlists" to Glyph.Disc,
+        "DroidDeck library" to Glyph.Refresh, "Show DroidDeck games" to Glyph.Eye,
+        "GameNative library" to Glyph.Refresh, "Show GameNative games" to Glyph.Eye,
+        // Play & system
+        "Resume running games" to Glyph.Resume, "Close previous game" to Glyph.CloseWindow, "Ask before closing a game" to Glyph.AskBubble,
+        "Immersion mode" to Glyph.Fullscreen, "Launch animation" to Glyph.Rocket, "Use Tandem as the Home screen" to Glyph.Home,
+        "Performance mode" to Glyph.Bolt, "Fan mode" to Glyph.Fan, "Refresh rate" to Glyph.Hz, "Performance profiles" to Glyph.Sliders,
+        "Pause games in sleep" to Glyph.Moon,
+        "Private mode" to Glyph.Shield, "Show hidden games" to Glyph.Eye, "Offline for hidden games" to Glyph.WifiOff, "Private mode PIN" to Glyph.Lock,
+        "Back up" to Glyph.Save, "Restore" to Glyph.Restore, "Import my Cocoon setup" to Glyph.Download, "Undo Cocoon import" to Glyph.Undo,
+        "Import details" to Glyph.FileIn, "Export play stats" to Glyph.Export,
+        "Updates" to Glyph.Update, "About Tandem" to Glyph.Info, "What's new" to Glyph.Gift, "Show what's new" to Glyph.Megaphone,
+        "Check automatically" to Glyph.Refresh, "Send a bug report" to Glyph.Bug,
+        "Frame timing overlay" to Glyph.Chart, "Tour every theme" to Glyph.Theme,
+        "Bump" to Glyph.Bump, "Bump while playing" to Glyph.GamepadSpark, "Edit Me" to Glyph.FacePencil, "What others see" to Glyph.CardEye,
+        "Open the Plaza" to Glyph.Fountain, "Blocked people" to Glyph.PersonOff, "Clear Plaza" to Glyph.Trash, "Bump ID" to Glyph.Fingerprint,
+    )
+
+    /** The glyph row [label] of group [section] shows on its page; null for rows the plan doesn't know (a controller). */
+    fun glyph(section: String, label: String): Glyph? = glyphs[rowKey(section, label)] ?: glyphs[label]
 }
 
 /** Words people search for that a row's label doesn't contain (rows can also list their own `keywords`). */
@@ -316,7 +398,7 @@ private val Synonyms = mapOf(
     "Video snaps" to "preview videos battery",
     "Moving art" to "ken burns pan zoom",
     "UI sounds" to "clicks beeps sfx effects mute sound pack recorded cocoon",
-    "Music" to "soundtrack bgm mute quiet background music from folder songs built-in plaza calm meadow tales",
+    "Music" to "soundtrack bgm mute quiet background music from folder songs built-in plaza lagoon terrace grooves",
     "Button prompts" to "xbox playstation nintendo glyphs",
     "Swap A and B" to "nintendo confirm cancel back",
     "Swap X and Y" to "search options",
@@ -338,14 +420,18 @@ private class RowPool(sections: List<SettingSection>) {
         }
     }
 
-    fun take(pick: SettingsPlan.Pick): SettingRow? = rows.remove(rowKey(pick.section, pick.label))?.second
+    fun take(pick: SettingsPlan.Pick): SettingRow? = rows.remove(rowKey(pick.section, pick.label))?.second?.let { glyphed(pick.section, it) }
 
     /** Every row of group [section], in order (for groups whose rows change, like connected controllers). */
     fun takeAll(section: String): List<SettingRow> {
         val prefix = rowKey(section, "")
         val keys = rows.keys.filter { it.startsWith(prefix) }
-        return keys.mapNotNull { rows.remove(it)?.second }
+        return keys.mapNotNull { rows.remove(it)?.second?.let { r -> glyphed(section, r) } }
     }
+
+    /** [row] with the glyph the plan gives it on its page ([SettingsPlan.glyphs]). */
+    private fun glyphed(section: String, row: SettingRow): SettingRow =
+        SettingsPlan.glyph(section, row.en)?.takeIf { it != row.icon }?.let { row.copy(icon = it) } ?: row
 
     /** Rows nobody picked: a feature added one and the plan doesn't know it yet. */
     fun leftovers(): List<SettingRow> = rows.values.map { it.second }
@@ -427,7 +513,7 @@ fun settingsCatalog(): List<SettingsCategory> {
         appearanceSections() + listOf(
             librarySettings(onRescan), droidDeckSettings(onRescan), gameNativeSettings(onRescan), gameFoldersSettings(), systemsSettings(), scrapingSettings(), homeSettings(), flairSettings(), orbitSettings(), spotlightHomeSettings(), stageSettings(), widgetsSettings(),
             achievementsSettings(), steamSettings(), discordSettings(), dataSettings(), aboutSettings(), cocoonSetupSettings(), developerSettings(),
-            performanceSettings(), screenOffSettings(), deckSettings(), weekSettings(),
+            performanceSettings(), screenOffSettings(), deckSettings(), weekSettings(), passSettings(),
             SettingSection("Extras", listOf(resumePageRow(), continueCardRow())), // tx-ok: a plan key, never shown (the plan places the row)
             languageSettings(),
         ) + controllerSettings(),
@@ -539,7 +625,7 @@ fun settingsCatalog(): List<SettingsCategory> {
             ),
         ),
         tile(
-            "play", Glyph.Chart, Palette.Mint, R.string.settings_page_play_blurb,
+            "play", Glyph.PlayCircle, Palette.Mint, R.string.settings_page_play_blurb,
             parts(
                 Tx.s(if (shizuku) R.string.settings_page_play_resume_ready else R.string.settings_page_play_resume_shizuku),
                 Tx.s(if (isHome) R.string.settings_page_play_home else R.string.settings_page_play_not_home),

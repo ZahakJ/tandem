@@ -204,7 +204,7 @@ fun FitText(
 @Composable
 fun PartsText(text: String, style: TextStyle, modifier: Modifier = Modifier, color: Color = Color.Unspecified) {
     val measurer = rememberTextMeasurer()
-    BoxWithConstraints(modifier) {
+    IntrinsicText(text, style, 1, modifier) { BoxWithConstraints {
         val maxW = constraints.maxWidth
         val shown = remember(text, style, maxW) {
             if (maxW == Constraints.Infinity) return@remember text to style
@@ -220,5 +220,44 @@ fun PartsText(text: String, style: TextStyle, modifier: Modifier = Modifier, col
             best to fitted
         }
         Text(shown.first, style = shown.second, color = color, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    } }
+}
+
+
+/**
+ * Text measured by [content] (which may subcompose, like BoxWithConstraints) that still answers intrinsic sizes, from
+ * [text] itself. A parent that asks for them (a settings row sizing its label and control, a FlowRow) crashes on a
+ * plain BoxWithConstraints ("intrinsic measurements of SubcomposeLayout"), which took Tandem down on 2026-11-26.
+ */
+@Composable
+internal fun IntrinsicText(text: String, style: TextStyle, maxLines: Int, modifier: Modifier, content: @Composable () -> Unit) {
+    val measurer = rememberTextMeasurer()
+    val policy = remember(text, style, maxLines, measurer) {
+        object : androidx.compose.ui.layout.MeasurePolicy {
+            override fun androidx.compose.ui.layout.MeasureScope.measure(
+                measurables: List<androidx.compose.ui.layout.Measurable>, constraints: Constraints,
+            ): androidx.compose.ui.layout.MeasureResult {
+                val p = measurables.firstOrNull()?.measure(constraints)
+                return layout(p?.width ?: constraints.minWidth, p?.height ?: constraints.minHeight) { p?.place(0, 0) }
+            }
+            private fun oneLine(s: String) = measurer.measure(s, style, maxLines = 1, softWrap = false).size.width
+            private fun tall(w: Int) = measurer.measure(
+                text, style, maxLines = maxLines, overflow = TextOverflow.Ellipsis,
+                constraints = if (w == Constraints.Infinity || w <= 0) Constraints() else Constraints(maxWidth = w),
+            ).size.height
+            override fun androidx.compose.ui.layout.IntrinsicMeasureScope.maxIntrinsicWidth(
+                measurables: List<androidx.compose.ui.layout.IntrinsicMeasurable>, height: Int,
+            ) = oneLine(text)
+            override fun androidx.compose.ui.layout.IntrinsicMeasureScope.minIntrinsicWidth(
+                measurables: List<androidx.compose.ui.layout.IntrinsicMeasurable>, height: Int,
+            ) = text.split(' ').filter { it.isNotBlank() }.maxOfOrNull { oneLine(it) } ?: 0
+            override fun androidx.compose.ui.layout.IntrinsicMeasureScope.minIntrinsicHeight(
+                measurables: List<androidx.compose.ui.layout.IntrinsicMeasurable>, width: Int,
+            ) = tall(width)
+            override fun androidx.compose.ui.layout.IntrinsicMeasureScope.maxIntrinsicHeight(
+                measurables: List<androidx.compose.ui.layout.IntrinsicMeasurable>, width: Int,
+            ) = tall(width)
+        }
     }
+    Layout(content, modifier, policy)
 }

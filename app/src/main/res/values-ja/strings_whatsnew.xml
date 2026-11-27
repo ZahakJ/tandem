@@ -89,7 +89,36 @@
     <string name="whatsnew_0100_settings_body">設定は8枚のタイルから。どれも中身を映す小さな動くスケッチつきです。困ったときは「不具合を報告」で、パソコンなしでレポートを保存できます。</string>
     <string name="whatsnew_0100_settings_short">設定</string>
 
-    <string name="whatsnew_0100_music_title">新BGM「Plaza」</string>
-    <string name="whatsnew_0100_music_body">新しい標準のBGMは「Plaza」。ホームでは口笛のメロディ、設定ではほっこりボサノバ、スクリーンセーバーではオルゴールのワルツ、うれしい知らせには小さなファンファーレ。設定 › サウンドとBGMで変えられます。</string>
+    <string name="whatsnew_0100_music_title">ほっこり新BGM</string>
+    <string name="whatsnew_0100_music_body">ライブラリを眺めるお供に、やさしくてあたたかい新しいBGM。毛布みたいにくるんでくれます。設定 › サウンドとBGMで音量を上げてどうぞ。</string>
     <string name="whatsnew_0100_music_short">BGM</string>
+
+    <string name="whatsnew_0110_tagline">ばったり、こんにちは</string>
+    <string name="whatsnew_0110_pass_title">「ばったり」で出会おう</string>
+    <string name="whatsnew_0110_pass_body">ほかの Tandem とばったり会うと、カードを交換。キャラ、あいさつ、お気に入りのゲームが届きます。使うのは Bluetooth だけ。設定 › プレイとシステム › ばったり でオンにするまではオフです。</string>
+    <string name="whatsnew_0110_pass_short">ばったり</string>
+
+    <string name="whatsnew_0110_plaza_title">ひろば</string>
+    <string name="whatsnew_0110_plaza_body">ばったり会った人たちは、小さな町のひろばに集まります。おさんぽ、おしゃべり、ベンチでひと休み、そして手をふってくれることも。手をふり返すと、次に会ったときに届きます。</string>
+    <string name="whatsnew_0110_plaza_short">ひろば</string>
+
+    <string name="whatsnew_0110_me_title">自分をつくろう</string>
+    <string name="whatsnew_0110_me_body">「わたし」はキャラづくりの場所。顔、目、髪型、帽子、服などを、もっと親しみやすく描き直しました。迷ったら X でおまかせ、Y でひとつ戻せます。</string>
+    <string name="whatsnew_0110_me_short">わたし</string>
+
+    <string name="whatsnew_0110_grooves_title">新しいグルーヴが3つ</string>
+    <string name="whatsnew_0110_grooves_body">前のBGMに代わって Plaza、Lagoon、Terrace が登場。マリンバ、カリンバ、はじく弦の、ゆるくて心地いいBGMで、Tandem の中で作った音楽です。設定 › サウンドとBGM で選べます。</string>
+    <string name="whatsnew_0110_grooves_short">グルーヴ</string>
+
+    <string name="whatsnew_0110_glyphs_title">設定ひとつに、アイコンひとつ</string>
+    <string name="whatsnew_0110_glyphs_body">設定のホームは1列3つの、ゆったりしたタイルに。どの設定にも専用の小さなアイコンがついて、ひと目で見つかります。</string>
+    <string name="whatsnew_0110_glyphs_short">設定アイコン</string>
+
+    <string name="whatsnew_0110_switch_title">Switch のセーブはひとつ</string>
+    <string name="whatsnew_0110_switch_body">両方の Peanuts アプリでビルドしたゲームは、いつも最新の公式 Peanuts Native で遊ぶようになりました。もう一方のセーブも、ちゃんと引き継がれます。</string>
+    <string name="whatsnew_0110_switch_short">Switch のセーブ</string>
+
+    <string name="whatsnew_0110_steady_title">カーソルがぶれない</string>
+    <string name="whatsnew_0110_steady_body">「今週のおすすめ」で段を引き直しても、カーソルはその場に。カーソルが端で切れることもなくなり、文字をおさめるときに落ちる不具合も直しました。</string>
+    <string name="whatsnew_0110_steady_short">修正</string>
 </resources>

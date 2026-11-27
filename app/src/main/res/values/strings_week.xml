@@ -20,6 +20,8 @@
     <string name="week_hint_reroll">Re-roll</string>
     <!-- X pressed on the Up next row, which is the user's own list and can't be re-rolled. -->
     <string name="week_reroll_upnext">Up next is your own list: X re-rolls the other rows</string>
+    <!-- X pressed on a row whose every candidate is already showing: the draw came out the same. -->
+    <string name="week_reroll_none">That’s every pick this row has this week</string>
 
     <!-- Each kind of pick, short: a tag on the bottom screen and on the big card. -->
     <string name="week_tag_upnext">Up next</string>

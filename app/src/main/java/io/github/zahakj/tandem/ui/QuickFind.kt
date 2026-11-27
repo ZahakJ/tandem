@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.Libraries
 import io.github.zahakj.tandem.Selected
 import io.github.zahakj.tandem.Selection
-import io.github.zahakj.tandem.Collections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -56,8 +55,9 @@ fun rememberQuickFinds(q: String): List<QuickFind> {
     val apps by produceState<List<AppEntry>>(emptyList()) { value = withContext(Dispatchers.IO) { Dock.allApps(ctx) } }
     if (q.length < 2) return emptyList()
     val systems = Libraries.all.orEmpty().filter { lib ->
-        Collections.visible(lib.games).isNotEmpty() &&
-            (normalize(lib.platform.name).contains(q) || normalize(lib.platform.shortName).startsWith(q) || normalize(lib.platform.id) == q)
+        // A system that matches, with a game it may show (any, rather than filtering the whole system on every key).
+        (normalize(lib.platform.name).contains(q) || normalize(lib.platform.shortName).startsWith(q) || normalize(lib.platform.id) == q) &&
+            lib.games.any { io.github.zahakj.tandem.Privacy.canShow(it) }
     }.take(3).map { lib ->
         QuickFind("qf:s:${lib.platform.id}", lib.platform.name, Tx.s(R.string.home_find_system), Palette.forName(lib.platform.id), { SystemIcon(lib.platform, 30.dp) }) {
             Nav.closeOverlays(); Nav.go(Route.System(lib.platform.id))
@@ -66,7 +66,8 @@ fun rememberQuickFinds(q: String): List<QuickFind> {
     val appHits = apps.filter { a -> normalize(a.label).split(" ").any { it.startsWith(q) } || normalize(a.label).startsWith(q) }.take(2).map { a ->
         QuickFind("qf:a:${a.pkg}", a.label, Tx.s(R.string.home_find_app), Palette.Sky, { AppIcon(a.pkg, Modifier.size(30.dp)) }) { Nav.closeOverlays(); Dock.open(ctx, a.pkg) }
     }
-    val settings = matchHits(settingsHits(), q, 3).map { h ->
+    // Settings found by their names and synonyms only, not by a word in their help.
+    val settings = matchHits(rememberSettingsHits(), q, 3, help = false).map { h ->
         QuickFind("qf:set:${h.key}|${h.where}", h.title, h.where.substringBefore(" › More"), h.color, { if (h.icon != null) GlyphChip(h.icon, h.color) else GlyphChip(Glyph.Info, h.color) }) {
             Nav.closeOverlays(); h.go()
         }

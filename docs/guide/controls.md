@@ -123,10 +123,11 @@ Switches for the device (brightness, Wi-Fi, Battery saver, the screensaver) are 
 | All apps | The apps drawer |
 | Search | Search all games |
 | Stats & trophies | The Stats screen; beside it, the trophies earned so far |
+| Plaza | Everyone you've bumped into (see [Bump and the Plaza](plaza.md)), with how many are new beside it, or "Bump is off". Not in private mode |
 | New ▸ | On the icon grid: New folder…, Smart folder…, Add to home…, Widget…. Otherwise: Widget… |
 | Sort ▸ | On the icon grid: close the gaps, or the home grid A to Z, by recently or most played, or systems first; then how games are sorted |
 | Layout | Try every home layout on the home itself (see [Switching layouts](#switching-layouts)); the one in use is named beside it. Among a system's or collection's games this row is **Games view**, the same way |
-| Edit grid | On the icon grid: the highlighted tile starts moving; other layouts get Edit widgets |
+| Edit widgets | On layouts with widgets (not the icon grid, where <kbd>Y</kbd> lifts a tile and holding <kbd>Y</kbd> moves it) |
 | Undo | For 15 minutes after a change on the icon grid, with what it takes back beside it (older steps: <kbd>Y</kbd> › **More › Undo last change**) |
 | Hidden | Only while something is hidden: see [Hidden games](privacy.md#hidden-games-folders-and-systems) |
 | Settings | Settings' home, where every page and the search are |
@@ -134,7 +135,7 @@ Switches for the device (brightness, Wi-Fi, Battery saver, the screensaver) are 
 
 Themes, sounds and music are in **Settings › Look & feel** and **Settings › Sound & music**, and in the **Themes** app.
 
-![The Start panel folded open from the left: All apps, Search, Stats & trophies, then New, Sort and Edit widgets (Edit grid on the icon grid), then Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
+![The Start panel folded open from the left: All apps, Search, Stats & trophies and the Plaza, then New, Sort, Layout and Edit widgets (on layouts with widgets), then Settings.](../../site/assets/screenshots/start-panel.webp "The Start panel")
 
 ### Switching layouts
 
@@ -463,6 +464,7 @@ Tandem's own apps sit on the icon grid like any other tile (<kbd>Y</kbd> › **E
 | Up next | <kbd>A</kbd> plays (or edits a note), <kbd>X</kbd> adds a game or note, <kbd>Y</kbd> removes, <kbd>Select</kbd> clears played games |
 | Files | <kbd>A</kbd> opens a folder, <kbd>Y</kbd> deletes the file or folder after a confirm, <kbd>B</kbd> goes up a folder |
 | Controller test | Every button and stick lights up as you press it; hold <kbd>B</kbd> to leave |
+| Plaza | Everyone you've bumped into: <kbd>L1</kbd> / <kbd>R1</kbd> New or Everyone, <kbd>A</kbd> or <kbd>Y</kbd> on someone for Wave back, Hide and Block, <kbd>X</kbd> edits Me (see [Bump and the Plaza](plaza.md)) |
 | Themes, Stats, Trophies | Open their screens (Trophies opens Stats on its Trophies tab; <kbd>L1</kbd> and <kbd>R1</kbd> switch tabs there) |
 
 ## Reading a manual

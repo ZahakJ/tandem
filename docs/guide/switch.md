@@ -18,7 +18,7 @@ Tandem picks the app for each game on its own; you can override it per game.
 
 For one game, Tandem decides like this:
 
-1. **A game Peanuts Native has built plays there**, unless you picked another emulator for that game. If both Peanuts apps have built it, it plays in the fuller one (Peanuts Native+).
+1. **A game Peanuts Native has built plays there**, unless you picked another emulator for that game. If both Peanuts apps have built it, it plays in the official Peanuts Native, the one kept up to date; a game only Peanuts Native+ has built plays there.
 2. Otherwise it plays in the emulator you picked for it (<kbd>Y</kbd> › **More › Emulator**), or else the system's emulator (Eden Duo, then Eden; **Settings › Library & art › Systems and emulators** changes the system's).
 3. A game Peanuts Native hasn't built never goes to Peanuts, even if you pick it.
 
@@ -78,6 +78,8 @@ A game is matched to Peanuts' library by its file, by the folder Peanuts importe
 Play a game in either app and carry on in the other.
 
 A game built by Peanuts Native keeps a save of its own, apart from Eden Duo's. Tandem keeps the two in step: right before either app starts a game the other also has, it copies the **newer** save over the one about to be played. Play an hour in Eden Duo, start the game from Tandem in Peanuts, and you carry on from the Eden Duo save; go back to Eden Duo and you carry on from the native one.
+
+The two Peanuts apps each keep their own save too. Starting a game in one first copies a newer save from the other, so moving a game between Peanuts Native and Peanuts Native+ never loses play.
 
 When it copies, Pip says **Carried on from your Eden Duo save** or **Carried on from your native save**. When the two saves are the same age, nothing is copied and nothing is said.
 

@@ -228,7 +228,7 @@ data class SharedLook(
         heroGradient = heroGradient.oneOf("fade", "strong", "vignette", "none"),
         kenBurns = kenBurns,
         soundPack = soundPack.oneOf(*Ids.soundPack),
-        soundtrack = soundtrack.oneOf("plaza", "calm", "meadow"),
+        soundtrack = soundtrack.oneOf(*io.github.zahakj.tandem.audio.Tracks.ids.toTypedArray()),
     )
 
     companion object {

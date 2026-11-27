@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bump (code: pass/), Me (the character maker) and the Plaza: ui/MeEditor.kt, ui/PlazaScreen.kt, ui/PassSettings.kt. -->
+<resources>
+    <!-- The Plaza as a built-in app: its tile and the Start panel row. Keep short. -->
+    <string name="plaza_app_title">Plaza</string>
+    <string name="plaza_app_blurb">Everyone you\'ve bumped into, gathered in one cozy square.</string>
+    <!-- The character maker's name, in the top bar. -->
+    <string name="plaza_me_title">Me</string>
+    <!-- Shown for someone who gave no name. -->
+    <string name="plaza_unnamed">Friend</string>
+
+    <!-- The preset greetings a card can carry (never free text). Playful, friendly, short: they sit in a speech bubble. -->
+    <string name="plaza_greeting_1">Hi there!</string>
+    <string name="plaza_greeting_2">Nice to meet you!</string>
+    <string name="plaza_greeting_3">Let\'s play sometime!</string>
+    <string name="plaza_greeting_4">Greetings from the sofa!</string>
+    <string name="plaza_greeting_5">Have a lovely day!</string>
+    <string name="plaza_greeting_6">Game on!</string>
+    <string name="plaza_greeting_7">Hello, fellow player!</string>
+    <string name="plaza_greeting_8">Just one more level…</string>
+    <string name="plaza_greeting_9">High five!</string>
+    <string name="plaza_greeting_10">Snack break?</string>
+    <string name="plaza_greeting_11">Good luck on your quest!</string>
+    <string name="plaza_greeting_12">Pip says hi!</string>
+    <string name="plaza_greeting_13">Collecting all the stars!</string>
+    <string name="plaza_greeting_14">Off to save the world!</string>
+    <string name="plaza_greeting_15">So glad we crossed paths!</string>
+    <string name="plaza_greeting_16">May your saves stay safe!</string>
+
+    <!-- Me's tabs (L1 / R1). Eight across a narrow strip: one short word each. -->
+    <string name="plaza_tab_face">Face</string>
+    <string name="plaza_tab_eyes">Eyes</string>
+    <string name="plaza_tab_hair">Hair</string>
+    <string name="plaza_tab_hat">Hats</string>
+    <string name="plaza_tab_outfit">Outfit</string>
+    <string name="plaza_tab_extras">Extras</string>
+    <string name="plaza_tab_colour">Colour</string>
+    <string name="plaza_tab_card">Card</string>
+    <!-- Section titles above each part's choices. -->
+    <string name="plaza_part_shape">Face shape</string>
+    <string name="plaza_part_skin">Skin tone</string>
+    <string name="plaza_part_eyes">Eyes</string>
+    <string name="plaza_part_eye_color">Eye colour</string>
+    <string name="plaza_part_brows">Brows</string>
+    <string name="plaza_part_mouth">Mouth</string>
+    <string name="plaza_part_cheeks">Cheeks</string>
+    <string name="plaza_part_hair">Hairstyle</string>
+    <string name="plaza_part_hair_color">Hair colour</string>
+    <string name="plaza_part_headwear">On your head</string>
+    <string name="plaza_part_top">Top</string>
+    <string name="plaza_part_top_color">Top colour</string>
+    <string name="plaza_part_glasses">Glasses</string>
+    <string name="plaza_part_earrings">Earrings</string>
+    <string name="plaza_part_theme">Card colour</string>
+    <!-- Me: freckles, a beauty mark, a plaster, face paint, heart blush, a sweat drop. -->
+    <string name="plaza_part_face_extra">Face details</string>
+    <string name="plaza_part_beard">Beard &amp; moustache</string>
+    <!-- Spoken by screen readers for a choice chip: %1$d is its number, %2$d how many there are. -->
+    <string name="plaza_option_n">Choice %1$d of %2$d</string>
+
+    <!-- Me's Card tab. -->
+    <string name="plaza_card_name">Name</string>
+    <string name="plaza_card_name_ask">Your name on the Plaza</string>
+    <string name="plaza_card_name_empty">Not set</string>
+    <string name="plaza_card_greeting">Greeting</string>
+    <string name="plaza_card_greeting_pick">Pick a greeting</string>
+    <string name="plaza_card_favorite">Favourite game</string>
+    <string name="plaza_card_favorite_none">None</string>
+    <string name="plaza_card_favorite_pick">Pick your favourite</string>
+    <string name="plaza_card_favorite_clear">No favourite</string>
+    <string name="plaza_card_recent">Share what I played last</string>
+    <string name="plaza_card_note">Your card shows game titles only, never your library, play time or hidden games. The last-played one only if you turn it on.</string>
+    <!-- Above your own card on the bottom screen and in What others see. -->
+    <string name="plaza_card_preview_header">What others see</string>
+
+    <!-- Me's button hints. -->
+    <string name="plaza_hint_random">Surprise me</string>
+    <string name="plaza_hint_undo">Undo</string>
+    <string name="plaza_hint_done">Done</string>
+    <string name="plaza_undo_none">Nothing to undo yet.</string>
+
+    <!-- Pip's three steps the first time Me opens. -->
+    <string name="plaza_guide_1">Hi! Let\'s make you. Pick a face, eyes, hair and an outfit. L1 and R1 switch tabs.</string>
+    <string name="plaza_guide_2">Feeling lucky? X makes a surprise look, and Y undoes a step.</string>
+    <string name="plaza_guide_3">On the Card tab, give yourself a name and a greeting. That\'s what the people you bump into will see!</string>
+    <string name="plaza_guide_next">Next</string>
+    <string name="plaza_guide_go">Let\'s go</string>
+    <!-- "1 of 3": %1$d is the step, %2$d how many. -->
+    <string name="plaza_guide_step">%1$d of %2$d</string>
+
+    <!-- The Plaza. -->
+    <string name="plaza_filter_new">New</string>
+    <string name="plaza_filter_all">Everyone</string>
+    <plurals name="plaza_met_count">
+        <item quantity="one">%1$d person met</item>
+        <item quantity="other">%1$d people met</item>
+    </plurals>
+    <string name="plaza_status_passing">Bumping</string>
+    <string name="plaza_status_find_only">Bumping (can find, can\'t be found)</string>
+    <string name="plaza_status_paused">Paused while you play</string>
+    <string name="plaza_status_off">Bump is off</string>
+    <string name="plaza_status_not_made">Make your Me first</string>
+    <string name="plaza_status_needs">Needs Bluetooth permission</string>
+    <string name="plaza_status_bt_off">Bluetooth is off</string>
+    <string name="plaza_status_private">Resting in private mode</string>
+    <string name="plaza_status_old">Needs Android 12 or newer</string>
+    <string name="plaza_status_no_bt">No Bluetooth on this handheld</string>
+    <string name="plaza_empty_off">Turn on Bump and meet other Tandems as you go about your day.</string>
+    <string name="plaza_empty_off_action">Set up Bump</string>
+    <string name="plaza_empty_none">No one yet. Take your handheld out and about!</string>
+    <string name="plaza_empty_none_action">Edit Me</string>
+    <string name="plaza_empty_new">No one new since you last looked.</string>
+    <string name="plaza_empty_new_action">Show everyone</string>
+    <string name="plaza_private_title">The Plaza is resting</string>
+    <string name="plaza_private_detail">Private mode is on: Bump pauses and the Plaza stays closed.</string>
+    <string name="plaza_hint_options">Options</string>
+    <string name="plaza_hint_me">Edit Me</string>
+    <!-- A small tag on someone not looked at yet. One short word. -->
+    <string name="plaza_new_badge">New</string>
+
+    <!-- Someone's menu on the Plaza. -->
+    <string name="plaza_menu_wave">Wave back</string>
+    <string name="plaza_menu_unwave">Take back my wave</string>
+    <string name="plaza_menu_hide">Hide from the Plaza</string>
+    <string name="plaza_menu_block">Block</string>
+    <string name="plaza_menu_note">A wave reaches them the next time you bump into each other. Hidden people come back the next time you bump into them; blocked ones never do.</string>
+    <!-- %1$s is their name. -->
+    <string name="plaza_waved_done">You\'ll wave at %1$s the next time you bump into each other.</string>
+    <string name="plaza_unwaved_done">Wave taken back.</string>
+    <string name="plaza_hidden_done">%1$s is hidden until you bump into them again.</string>
+    <string name="plaza_blocked_done">%1$s is blocked.</string>
+
+    <!-- A card, big, on the bottom screen. -->
+    <plurals name="plaza_passed_times">
+        <item quantity="one">Bumped once</item>
+        <item quantity="other">Bumped %1$d times</item>
+    </plurals>
+    <!-- After "Bumped 3 times": %1$s is a time of day ("18:40"). -->
+    <string name="plaza_last_at">last at %1$s</string>
+    <!-- After "Bumped 3 times": %1$s is a date ("21 Nov"). -->
+    <string name="plaza_last_on">last on %1$s</string>
+    <!-- %1$s is a date. -->
+    <string name="plaza_first_met">First met %1$s</string>
+    <!-- How many Tandems someone has bumped into, by their own count. -->
+    <plurals name="plaza_their_passes">
+        <item quantity="one">Has bumped into %1$d Tandem</item>
+        <item quantity="other">Has bumped into %1$d Tandems</item>
+    </plurals>
+    <!-- Your own count, under you on the bottom screen. -->
+    <plurals name="plaza_your_passes">
+        <item quantity="one">You\'ve bumped into %1$d Tandem</item>
+        <item quantity="other">You\'ve bumped into %1$d Tandems</item>
+    </plurals>
+    <string name="plaza_fav_label">Favourite</string>
+    <string name="plaza_recent_label">Played lately</string>
+    <string name="plaza_waved_at_you">Waved at you!</string>
+    <string name="plaza_you_waved">You\'re waving back</string>
+    <string name="plaza_wave_sent">Your wave reached them</string>
+
+    <!-- A toast when you bump into someone new while Tandem is open. %1$s is their name. -->
+    <string name="plaza_arrival">You bumped into %1$s!</string>
+    <string name="plaza_arrival_open">See the Plaza</string>
+
+    <!-- The Start panel row's value and line. -->
+    <plurals name="plaza_start_new">
+        <item quantity="one">%1$d new</item>
+        <item quantity="other">%1$d new</item>
+    </plurals>
+    <string name="plaza_start_off">Bump is off</string>
+
+    <!-- Settings › Play & system › Bump. Bump is the feature's name (bumping into someone): use your language's chosen word from its glossary. -->
+    <string name="plaza_settings_title">Bump</string>
+    <string name="plaza_settings_sub_help">Meet other Tandems nearby: your character, your card and the Plaza.</string>
+    <string name="plaza_settings_on">Bump</string>
+    <string name="plaza_settings_on_help">Swaps a small card with other Tandems you bump into, over Bluetooth only. Nothing else leaves your handheld and nothing goes online. Off until you turn it on.</string>
+    <string name="plaza_settings_playing">Bump while playing</string>
+    <string name="plaza_settings_playing_help">Keeps bumping while a game is in front, with a notification. Off: Bump pauses in games, which saves battery.</string>
+    <string name="plaza_settings_me">Edit Me</string>
+    <string name="plaza_settings_me_help">Your character, name, greeting and favourite game.</string>
+    <string name="plaza_settings_preview">What others see</string>
+    <string name="plaza_settings_preview_help">Exactly what your card carries, and what it never does.</string>
+    <string name="plaza_settings_preview_action">Show</string>
+    <string name="plaza_settings_open">Open the Plaza</string>
+    <string name="plaza_settings_open_help">Everyone you\'ve bumped into, strolling about.</string>
+    <string name="plaza_settings_blocked">Blocked people</string>
+    <string name="plaza_settings_blocked_none">None</string>
+    <plurals name="plaza_settings_blocked_n">
+        <item quantity="one">%1$d blocked</item>
+        <item quantity="other">%1$d blocked</item>
+    </plurals>
+    <string name="plaza_settings_blocked_help">Blocked people never show on the Plaza, and their cards are refused and never answered. Hold A to unblock everyone.</string>
+    <string name="plaza_settings_blocked_none_toast">No one is blocked.</string>
+    <string name="plaza_settings_unblock_action">Unblock all</string>
+    <string name="plaza_unblock_title">Unblock everyone?</string>
+    <string name="plaza_unblock_detail">They can show on the Plaza again the next time you bump into them.</string>
+    <string name="plaza_settings_unblocked">Everyone is unblocked.</string>
+    <string name="plaza_settings_clear">Clear Plaza</string>
+    <string name="plaza_settings_clear_help">Forgets everyone you\'ve met. Blocks, your card and your bump count stay.</string>
+    <string name="plaza_clear_title">Clear the Plaza?</string>
+    <string name="plaza_clear_detail">Everyone you\'ve met leaves the Plaza. This can\'t be undone.</string>
+    <string name="plaza_clear_yes">Clear</string>
+    <string name="plaza_settings_cleared">The Plaza is empty again.</string>
+    <string name="plaza_settings_id">Bump ID</string>
+    <string name="plaza_settings_id_none">Not made yet</string>
+    <!-- %1$s is a safety number: groups of letters and digits, keep it as it is. -->
+    <string name="plaza_settings_id_help">The safety number of your Bump key: %1$s. It\'s the same one Concord would show, and the key never leaves this handheld.</string>
+    <string name="plaza_settings_id_help_none">Your Bump key is made on this handheld the first time you turn Bump on.</string>
+    <string name="plaza_settings_id_action">Show</string>
+    <!-- %1$s is the safety number. -->
+    <string name="plaza_settings_id_toast">Safety number: %1$s</string>
+
+    <!-- Toasts when turning it on. -->
+    <string name="plaza_on_toast">Bump is on. Happy bumping!</string>
+    <string name="plaza_bt_off_toast">Bump is on. Turn on Bluetooth to start bumping.</string>
+    <string name="plaza_old_android">Bump needs Android 12 or newer.</string>
+    <string name="plaza_no_bluetooth">This handheld has no Bluetooth LE.</string>
+
+    <!-- The permission primer, before Android asks. -->
+    <string name="plaza_primer_title">Bump uses Bluetooth</string>
+    <string name="plaza_primer_intro">Android will ask about nearby devices. Here is what Tandem does with it:</string>
+    <string name="plaza_primer_denied">Without the nearby devices permission Bump stays off. You can allow it in Android\'s settings.</string>
+    <string name="plaza_primer_scan_title">Find</string>
+    <string name="plaza_primer_scan">Look for other Tandems close by, a few seconds at a time.</string>
+    <string name="plaza_primer_advertise_title">Be found</string>
+    <string name="plaza_primer_advertise">Let other Tandems find yours, with a random code that changes every 15 minutes.</string>
+    <string name="plaza_primer_connect_title">Swap cards</string>
+    <string name="plaza_primer_connect">Swap your card with a Tandem in reach, then let go.</string>
+    <string name="plaza_primer_never">Never used to tell where you are: Tandem doesn\'t ask for your location at all.</string>
+    <string name="plaza_primer_later">Not now</string>
+    <string name="plaza_primer_continue">Continue</string>
+    <string name="plaza_primer_settings">Open settings</string>
+
+    <!-- What others see. -->
+    <string name="plaza_privacy_title">What others see</string>
+    <string name="plaza_privacy_sent">On your card</string>
+    <string name="plaza_privacy_item_character">Your character</string>
+    <!-- %1$s is your name. -->
+    <string name="plaza_privacy_item_name">Name: %1$s</string>
+    <!-- %1$s is your greeting. -->
+    <string name="plaza_privacy_item_greeting">Greeting: %1$s</string>
+    <!-- %1$s is a game title. -->
+    <string name="plaza_privacy_item_fav">Favourite: %1$s</string>
+    <string name="plaza_privacy_item_recent">Played lately: %1$s</string>
+    <plurals name="plaza_privacy_item_passes">
+        <item quantity="one">Your count: bumped into %1$d Tandem</item>
+        <item quantity="other">Your count: bumped into %1$d Tandems</item>
+    </plurals>
+    <string name="plaza_privacy_item_key">A key that proves the card is yours</string>
+    <string name="plaza_privacy_never">Never sent</string>
+    <string name="plaza_privacy_never_1">Your location, accounts or anything you type</string>
+    <string name="plaza_privacy_never_2">Hidden games, play time, files or your library</string>
+    <string name="plaza_privacy_never_3">Anything at all over the internet</string>
+    <string name="plaza_privacy_how">Your card goes only to Tandems within Bluetooth reach, signed so it can\'t be faked or played back. Private mode pauses it all.</string>
+    <string name="plaza_privacy_close">Got it</string>
+
+    <!-- The notification while Bump while playing is on. -->
+    <string name="plaza_note_channel">Bump</string>
+    <string name="plaza_note_title">Bump is on</string>
+    <string name="plaza_note_text">Bumping into other Tandems over Bluetooth while you play.</string>
+</resources>

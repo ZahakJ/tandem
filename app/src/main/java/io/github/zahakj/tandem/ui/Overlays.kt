@@ -635,6 +635,9 @@ fun SearchOverlay() {
             Collections.visibleGames().map { Searchable(it, normalize(it.title), Collections.filterView(it, tidied)) }
         }
     }
+    // Made once per index, not on every letter typed (the filter row keys its own work on the list it gets).
+    val indexGames = remember(index) { index.map { it.game } }
+    val indexViews = remember(index) { index.map { it.game to it.view } }
     Scrim(open, onClose = { Nav.closeOverlays() }) {
         val query = SearchState.query
         val q = normalize(query)
@@ -670,7 +673,7 @@ fun SearchOverlay() {
                     items(KEYS, key = { it }, span = { k -> GridItemSpan(if (k.length > 1 || k == "⌫") 2 else 1) }) { k ->
                         FocusCard(
                             Modifier.height(34.dp).takesFocus("search", "key:$k", !SearchState.inResults && keyTarget == "key:$k"),
-                            glow = Palette.Mint, shape = RoundedCornerShape(10.dp),
+                            glow = Palette.Mint, shape = RoundedCornerShape(10.dp), lifts = false,
                             onClick = {
                                 SearchState.query = when (k) {
                                     "⌫" -> query.dropLast(1)
@@ -694,7 +697,7 @@ fun SearchOverlay() {
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f).fillMaxHeight()) {
                 // The filters, above the results; Up from the first row of results reaches them.
-                SearchFilterRow(index.map { it.game }, SearchState.inFilters)
+                SearchFilterRow(indexGames, SearchState.inFilters)
                 Box(Modifier.weight(1f).fillMaxWidth()) {
                 if (results.isEmpty() && finds.isEmpty()) {
                     Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -757,7 +760,7 @@ fun SearchOverlay() {
         }
     }
     // A chip's values (SearchFilters.kt), over the search.
-    SearchFilterSheet(index.map { it.game to it.view })
+    SearchFilterSheet(indexViews)
 }
 
 /** One line of text that always shows its end (the latest letters typed), scrolling the start out of view. */

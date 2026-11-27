@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -116,6 +117,10 @@ fun CartCaseView(
     onLong: (GridItem) -> Unit,
 ) {
     val grid = rememberLazyGridState()
+    androidx.compose.runtime.DisposableEffect(Unit) { CaseShells.hold(); onDispose { CaseShells.release() } }
+    // Every cell's colour looked up in one background pass as the case opens, not one start per cartridge.
+    val ctx = LocalContext.current
+    remember(sections) { CoverColors.warm(ctx, sections.flatMap { s -> s.items.mapNotNull { it.game } }); Unit }
     // Every cell's index in the grid (section tapes take a row each), for keeping the highlighted one in view.
     val index = remember(sections) {
         val m = HashMap<String, Int>()
@@ -135,7 +140,7 @@ fun CartCaseView(
             GridCells.Adaptive(cell),
             Modifier.fillMaxSize().fadingEdges(grid),
             state = grid,
-            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 18.dp),
+            contentPadding = PaddingValues(horizontal = 22.dp, vertical = FocusRoom),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
@@ -147,34 +152,91 @@ fun CartCaseView(
     }
 }
 
-/** The case: a hard shell rim around grey egg-crate foam, drawn once into a picture per size and then just shown. */
+/**
+ * The case: a hard shell rim around grey egg-crate foam, drawn once into a picture per size and then just shown. The
+ * picture (some two thousand shaded dimples, drawn in software) was made on the main thread in the frame the Case view
+ * opened, every time; now it is made in the background and kept a minute after the view goes ([CaseShells]). Until it
+ * is ready, the first time, the same drawing goes straight to the screen.
+ */
 private fun Modifier.caseShell(): Modifier = clip(RoundedCornerShape(26.dp)).drawWithCache {
     val w = size.width.toInt().coerceAtLeast(1)
     val h = size.height.toInt().coerceAtLeast(1)
-    val picture = androidx.compose.ui.graphics.ImageBitmap(w, h)
-    androidx.compose.ui.graphics.drawscope.CanvasDrawScope().draw(this, layoutDirection, androidx.compose.ui.graphics.Canvas(picture), size) {
-        val rim = 7.dp.toPx()
-        val foam = Color(0xFF2B2C31)
-        val dimple = Brush.radialGradient(listOf(Color.White.copy(alpha = 0.05f), Color.Black.copy(alpha = 0.22f)), radius = 7.dp.toPx())
-        val step = 16.dp.toPx()
-        drawRect(Brush.verticalGradient(listOf(Color(0xFF3C3E46), Color(0xFF24252B))))
-        drawRoundRect(foam, Offset(rim, rim), Size(size.width - rim * 2, size.height - rim * 2), CornerRadius(20.dp.toPx()))
-        var y = rim + step / 2
-        var odd = false
-        while (y < size.height - rim) {
-            var x = rim + (if (odd) step else step / 2)
-            while (x < size.width - rim) {
-                translateTo(x, y) { drawCircle(dimple, 6.dp.toPx(), Offset.Zero) }
-                x += step
-            }
-            y += step * 0.87f
-            odd = !odd
+    // Read here, so a picture finished in the background replaces the direct drawing.
+    CaseShells.made
+    val picture = CaseShells.get(w, h, androidx.compose.ui.unit.Density(density, fontScale), layoutDirection)
+    if (picture != null) onDrawBehind { drawImage(picture) } else onDrawBehind { drawShell() }
+}
+
+/** The shell's drawing, over the whole of this scope. */
+private fun DrawScope.drawShell() {
+    val rim = 7.dp.toPx()
+    val foam = Color(0xFF2B2C31)
+    val dimple = Brush.radialGradient(listOf(Color.White.copy(alpha = 0.05f), Color.Black.copy(alpha = 0.22f)), radius = 7.dp.toPx())
+    val step = 16.dp.toPx()
+    drawRect(Brush.verticalGradient(listOf(Color(0xFF3C3E46), Color(0xFF24252B))))
+    drawRoundRect(foam, Offset(rim, rim), Size(size.width - rim * 2, size.height - rim * 2), CornerRadius(20.dp.toPx()))
+    var y = rim + step / 2
+    var odd = false
+    while (y < size.height - rim) {
+        var x = rim + (if (odd) step else step / 2)
+        while (x < size.width - rim) {
+            translateTo(x, y) { drawCircle(dimple, 6.dp.toPx(), Offset.Zero) }
+            x += step
         }
-        // The rim's light edge and the foam's shade under it.
-        drawRoundRect(Color.White.copy(alpha = 0.12f), Offset(1f, 1f), Size(size.width - 2f, size.height - 2f), CornerRadius(26.dp.toPx()), style = Stroke(1.5f))
-        drawRect(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.4f), Color.Transparent), startY = rim, endY = rim + 22.dp.toPx()))
+        y += step * 0.87f
+        odd = !odd
     }
-    onDrawBehind { drawImage(picture) }
+    // The rim's light edge and the foam's shade under it.
+    drawRoundRect(Color.White.copy(alpha = 0.12f), Offset(1f, 1f), Size(size.width - 2f, size.height - 2f), CornerRadius(26.dp.toPx()), style = Stroke(1.5f))
+    drawRect(Brush.verticalGradient(listOf(Color.Black.copy(alpha = 0.4f), Color.Transparent), startY = rim, endY = rim + 22.dp.toPx()))
+}
+
+/**
+ * The shell's picture for the size the Case view has, made in the background and kept while a Case view shows and a
+ * minute after the last one goes (it is a screen-sized bitmap). Main thread only.
+ */
+private object CaseShells {
+    private data class Key(val w: Int, val h: Int, val density: Float, val fontScale: Float, val dir: androidx.compose.ui.unit.LayoutDirection)
+
+    private var kept: Pair<Key, androidx.compose.ui.graphics.ImageBitmap>? = null
+    private var making: Key? = null
+    private var users = 0
+    private val main = android.os.Handler(android.os.Looper.getMainLooper())
+    private val drop = Runnable { kept = null }
+
+    /** Counts up as each picture is ready. */
+    var made by androidx.compose.runtime.mutableIntStateOf(0)
+        private set
+
+    /** The picture for this size, or null while it is being made (its making is started here). */
+    fun get(w: Int, h: Int, density: androidx.compose.ui.unit.Density, dir: androidx.compose.ui.unit.LayoutDirection): androidx.compose.ui.graphics.ImageBitmap? {
+        val key = Key(w, h, density.density, density.fontScale, dir)
+        kept?.let { (k, picture) -> if (k == key) return picture }
+        if (making == key) return null
+        making = key
+        var picture: androidx.compose.ui.graphics.ImageBitmap? = null
+        inBackground({
+            val bitmap = androidx.compose.ui.graphics.ImageBitmap(w, h)
+            androidx.compose.ui.graphics.drawscope.CanvasDrawScope().draw(density, dir, androidx.compose.ui.graphics.Canvas(bitmap), Size(w.toFloat(), h.toFloat())) { drawShell() }
+            picture = bitmap
+        }) {
+            if (making == key) making = null
+            val done = picture
+            if (done != null) {
+                kept = key to done
+                if (users == 0) { main.removeCallbacks(drop); main.postDelayed(drop, 60_000) }
+                made++
+            }
+        }
+        return null
+    }
+
+    fun hold() { users++; main.removeCallbacks(drop) }
+
+    fun release() {
+        users = (users - 1).coerceAtLeast(0)
+        if (users == 0) { main.removeCallbacks(drop); main.postDelayed(drop, 60_000) }
+    }
 }
 
 private inline fun DrawScope.translateTo(x: Float, y: Float, block: DrawScope.() -> Unit) {
@@ -205,7 +267,7 @@ private fun Slot(route: String, item: GridItem, wanted: Boolean, aspect: Float, 
     val liftState = animateFloatAsState(if (focused) 1f else 0f, Motion.soft(), label = "cart-lift")
     // A glint that sweeps across the label once each time it is picked up.
     val glint = remember { Animatable(0f) }
-    LaunchedEffect(focused) { if (focused) { glint.snapTo(0f); glint.animateTo(1f, tween(650)) } }
+    LaunchedEffect(focused) { if (focused) { glint.snapTo(0f); glint.animateTo(1f, tween(650)) } else glint.snapTo(1f) }
     val game = item.game
     val kind = game?.let { CartKind.of(it.platform.id) }
     Box(

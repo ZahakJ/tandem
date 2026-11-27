@@ -158,7 +158,7 @@ fun Modifier.logoLife(key: Any, entranceDelayMs: Long = 140, sway: Boolean = tru
         while (true) {
             delay(gap)
             val ready = {
-                repeatOn.value && if (steady != null) steady.energy >= 0.99f else !Ambient.covered && !Ambient.resting
+                repeatOn.value && if (steady != null) steady.energy >= 0.99f else !Ambient.covered && !Ambient.settled
             }
             if (!ready()) {
                 // Resting (dimmed, covered, in the background): the next pass comes a full gap after it wakes.

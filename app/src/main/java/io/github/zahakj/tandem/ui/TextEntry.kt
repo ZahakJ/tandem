@@ -132,7 +132,7 @@ fun TextEntryOverlay() {
                     val on = (k == "⇧" && upper && !symbols) || (k == "#+=" && symbols)
                     FocusCard(
                         Modifier.height(34.dp).takesFocus(ROUTE, "key:$k", target == "key:$k"),
-                        glow = if (k == "Done") Palette.Mint else Palette.Lavender, shape = RoundedCornerShape(10.dp),
+                        glow = if (k == "Done") Palette.Mint else Palette.Lavender, shape = RoundedCornerShape(10.dp), lifts = false,
                         onClick = {
                             Sounds.key()
                             when (k) {

@@ -1843,7 +1843,8 @@ internal fun gridCanGrab(): Boolean {
 @Composable
 private fun rememberWobble(on: Boolean): androidx.compose.runtime.State<Float> {
     val a = remember { androidx.compose.animation.core.Animatable(0f) }
-    val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion
+    // Rests once Tandem has settled too (a tile left carried with nobody there).
+    val still = Motion.style == AnimationStyle.Off || Store.settings.reduceMotion || Ambient.settled
     LaunchedEffect(on, still) {
         if (!on || still) { a.animateTo(0f, tween(140)); return@LaunchedEffect }
         a.animateTo(1f, tween(110))
@@ -2812,7 +2813,7 @@ fun FolderSheet(
             .graphicsLayer { shape = RoundedCornerShape(30.dp); clip = true; shadowElevation = 24f * density }
             .background(Palette.Card.copy(alpha = 0.97f)).swallowTaps(),
     ) {
-        Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 16.dp, top = 16.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().padding(start = 14.dp, end = 16.dp, top = FocusRoom, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
             Row(
                 Modifier.clip(RoundedCornerShape(50)).background(Palette.CardHigh).swallowTaps(onBack).padding(start = 6.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,

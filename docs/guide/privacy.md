@@ -1,6 +1,6 @@
 # Privacy and scraping
 
-Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, the Discord status if you connect it, and the look gallery when you open it. The two exceptions are a daily check for a new version of Tandem, and art for Steam shortcuts, both below.
+Your library and play history stay on your handheld. Tandem has no analytics, telemetry, ads or account of its own, and goes online only for features you start: scraping artwork and details, RetroAchievements or Steam achievements if you sign in, the Discord status if you connect it, and the look gallery when you open it. The two exceptions are a daily check for a new version of Tandem, and art for Steam shortcuts, both below. [Bump](#bump), if you switch it on, swaps a small card with Tandems in Bluetooth reach and never goes online.
 
 ## When Tandem uses the network
 
@@ -9,7 +9,6 @@ Here is every moment Tandem talks to the internet. Almost all of them start with
 - **Scraping**: **Settings › Library & art › Scrape library**, <kbd>Y</kbd> › **Scrape these games** on a system, or <kbd>Y</kbd> › **Scrape this game** on a game. A scrape you start keeps going in the background, with its progress on the bottom screen, until it finishes or you stop it.
 - <kbd>Y</kbd> › **Choose artwork** on a game, which asks your sources for pictures of that one game.
 - **Fetch system art** (**Settings › Look & feel › System icons**, the **Scrape library** screen, or a system's **Edit › Look › Artwork**), which fetches photos, logos and backdrops of your systems themselves, never anything about your games. See [System art](scraping.md#system-art).
-- **Fetch system art** (**Settings › Look & feel › System icons**, the **Scrape library** screen, or a system's **Edit › Look › Artwork**), which fetches photos, logos and backdrops of your systems themselves. See [System art](scraping.md#system-art).
 - **Test** on a source's card, which looks up one well-known game, never one of yours.
 - **The LaunchBox database**, downloaded only after you agree to it. A scrape you start refreshes a month-old copy, on Wi-Fi only.
 - **RetroAchievements**, only after you sign in with your username and web API key: your profile and recent unlocks on Stats › Achievements, a game's progress when it is highlighted (at most every ten minutes), its whole list when you open <kbd>Y</kbd> › **Achievements** (or the in-game **Achievements** page, when nothing was kept from before), and **Find match** in a game's Edit details when you open it. An achievement's comments (players' hints) are fetched only when you press <kbd>A</kbd> or tap that achievement, never ahead. Nothing is checked while you play, and never for a hidden game.
@@ -69,6 +68,29 @@ Tandem can show what you play as your Discord status: "Playing" and the game's t
 - Tandem keeps only the token Discord gives it, in its private storage, outside Tandem's backups and Android's backups. **Disconnect Discord** (the row below it) clears your status, revokes the token with Discord and forgets it. Removing Tandem from **Authorized Apps** in Discord's settings works too.
 - The status uses Discord's own Social SDK, which is not open source. A build made without it has no Discord status at all and never contacts Discord; see [Building from source](building.md#discord-status).
 
+## Bump
+
+[Bump](plaza.md) swaps a small card with other Tandems you bump into, over Bluetooth LE. It never goes online, and
+it is off until you switch it on in **Settings › Play & system › Bump**.
+
+- **What goes out, and to whom**: your card, only to Tandems within Bluetooth reach, only while Bump is on and
+  running: your character, the name you gave it, a preset greeting (never free text), your favourite game's title if
+  you picked one, the title you played last only if you share it, how many Tandems you've bumped into, and the public key
+  that signs the card. **What others see** (on the same page) shows exactly that, from your current card. Hidden games
+  are never on it.
+- **What never goes out**: your location, accounts, anything you typed, your library, play time, files, and anything
+  at all over the internet. Tandem doesn't ask for the location permission; Android's **Nearby devices** permission is
+  declared "never for location".
+- **On the air**: an advertisement with Bump's service and a random code that changes about every 15 minutes.
+  No name, no Bluetooth name and no fixed number, so nobody can tell it's the same handheld from one quarter of an hour
+  to the next by listening. The swap itself is a short Bluetooth connection; each card is signed over a fresh random
+  number from the other side, so it can't be forged or recorded and replayed. It isn't encrypted: someone listening
+  nearby could read the card as it passes, which is no more than anyone you bump into sees on their Plaza.
+- **When it runs**: only while Tandem is in front, unless you switch on **Bump while playing**, which keeps it going
+  in games with a notification. Private mode pauses it and closes the Plaza.
+- **People you met** stay on your handheld (`plaza.json`). **Hide**, **Block** (by key: their cards are refused and
+  never answered) and **Clear Plaza** are in the Plaza and on the settings page.
+
 ## Hidden games, folders and systems
 
 One place lists everything you've hidden, so nothing gets lost. <kbd>Start</kbd> › **Hidden** shows games, folders, systems and home folders:
@@ -113,6 +135,7 @@ While private mode is on, Tandem itself sends nothing online:
 - No Discord status, and no cover lookups for it.
 - No look gallery and no look downloads; a `.tandem` file you pick still imports.
 - No pictures from the web: only those already in Tandem's picture cache show.
+- No Bump: it pauses (nothing is advertised or listened for) and the Plaza stays closed.
 
 Nothing is kept to send later. Turning private mode off only makes the next lookup you start possible again.
 
@@ -141,6 +164,8 @@ Everything Tandem knows lives on your device. Here is each piece, where it sits 
 | Play history: play count, total play time, last played, first seen | `library.json` | Continue playing, Most played, sorting |
 | This week: whether it shows, the games you said aren't for you, what the board showed in the last eight weeks, this week's re-rolls, and a random number made once on the handheld | `week.json` in Tandem's private storage | To keep the board the same all week and not repeat itself. The picks and your taste are worked out on the handheld each time; nothing is sent anywhere, and hidden games never take part. In Tandem's backups with the game data, never in a shared look. See [This week](library.md#this-week) |
 | Settings | `settings.json` in Tandem's private storage | To remember your choices |
+| Bump: its switches, your card (Me), the people you bumped into (their latest card, how often and when you bumped into them, waves), and the keys you blocked | `plaza.json` in Tandem's private storage | For the Plaza. In Tandem's backups with the game data, never in a shared look, and never in Android's cloud backup (it holds other people's cards). See [Bump](plaza.md) |
+| Your Bump key (a 32-byte seed) | `pass-identity.bin` in Tandem's private no-backup storage, sealed with a key that stays in the Android keystore | To sign your card. Never in Tandem's backups, Android's backups or a transfer: a new handheld makes a new key |
 | Journal notes and play sessions | Tandem's private storage | The journal and the stats screen |
 | Notes, with their screenshots and drawings | `ROMs/notes/<notebook>/` as plain Markdown files, pictures in `<note>.assets/` | So they are yours: readable in any app, kept after uninstalling. Never sent anywhere; any app with storage access can read them. A hidden game's notebook stays out of Tandem's lists while hidden games are hidden. See [Notes](notes.md) |
 | Scraping keys and logins (ScreenScraper, IGDB, SteamGridDB), your RetroAchievements key, and your Steam Web API key and account | `scraping.json`, `achievements.json` and `steam.json` in Tandem's private storage | To talk to the services you set up. Left out of Tandem's backups unless you include them, and never in Android's cloud backup |
@@ -184,6 +209,8 @@ Every permission Tandem asks for, and the one thing each is for. The optional on
 | Access to the games folders you pick | Handing individual game files to emulators that only accept shared files. |
 | See installed apps | Finding your emulators and bringing a running one back to the front. |
 | Notification access (optional, off until you allow it) | Showing your notifications in the side panel (<kbd>R2</kbd> on home), where <kbd>A</kbd> opens one and <kbd>Y</kbd> clears it. They are kept in memory only, never stored or sent; in private mode only the app and time show. With Shizuku, Tandem can switch this on for itself when you ask. |
+| Nearby devices: Bluetooth scan, advertise and connect (optional, asked only when you switch Bump on) | [Bump](plaza.md): finding other Tandems close by, being found with a code that changes every 15 minutes, and swapping cards. Declared never for location; Tandem doesn't ask for location at all. Android 12 and newer only. |
+| Connected-device foreground service (optional) | **Bump while playing**: Bump keeps going behind a game, with its notification. Only while that setting is on. |
 | Microphone and screen capture (optional) | The companion's 15-second clips: the game's screen and sound, and your voice unless **Voice in clips** is off. With Shizuku, Tandem grants these to itself so a clip starts without asking. |
 | Shizuku (optional) | Checking whether an emulator is still running, and closing it before switching games, and the other features listed in [What Shizuku is used for](resume.md#what-shizuku-is-used-for). In private mode, also turning airplane mode on while a hidden game plays. With root, also copying Switch saves between Eden Duo and Peanuts Native ([Switch games](switch.md#one-save-across-eden-duo-and-peanuts-native)). |
 | Accessibility: "Tandem: Controller Home button" (optional, off until you switch it on) | Making a Bluetooth or USB controller's Home (guide) button work in other apps. It filters key events only: it keeps that one button from external controllers and lets everything else through. It cannot read the screen, records nothing and sends nothing. See [Controls](controls.md#bluetooth-and-usb-controllers). |

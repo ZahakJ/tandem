@@ -85,14 +85,16 @@ private fun <T> stepIn(list: List<T>, current: T, step: Int): T {
 /**
  * A row that picks one of [options] (id to label), showing them all (Choices.kt): a few short ones as a segmented
  * control on the row, where A steps on; more as the value, where A opens the picker. Left and Right move along the
- * options and stop at the ends. [look] draws one option as a miniature: the picker's cards show it, and without a
- * [preview] of its own the side panel plays every option in turn ([ChoiceShowcase]).
+ * options and stop at the ends. [look] draws one option as a miniature and [details] gives some a line: the
+ * picker's cards show them; without a [preview] of its own the side panel plays every option in turn
+ * ([ChoiceShowcase]).
  */
 internal fun choice(
     label: String, icon: Glyph, color: Color, help: String,
     options: List<Pair<String, String>>, current: String,
     preview: (@Composable () -> Unit)? = null,
     look: (@Composable (String) -> Unit)? = null,
+    details: Map<String, String>? = null,
     extra: Pair<String, () -> Unit>? = null,
     en: String = label,
     set: (String) -> Unit,
@@ -105,7 +107,7 @@ internal fun choice(
         label, options.firstOrNull { it.first == current }?.second ?: options.first().second, color, icon, help,
         onLeft = { move(-1) }, onRight = { move(1) },
         preview = preview ?: look?.let { l -> { ChoiceShowcase(options, current, color) { l(it) } } },
-        options = options, selected = current, pick = set, optionLook = look, pickerExtra = extra, en = en,
+        options = options, selected = current, pick = set, optionLook = look, optionDetails = details, pickerExtra = extra, en = en,
         onClick = { if (row.picker) ChoicePicker.open(row) else set(stepIn(ids, current, 1)) },
     )
     return row

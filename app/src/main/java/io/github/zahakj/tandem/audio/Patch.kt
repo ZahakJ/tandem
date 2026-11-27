@@ -56,6 +56,8 @@ enum class Osc {
     Vibes,
     /** Music box: a plucked steel comb tine, sweet and a little glassy. */
     MusicBox,
+    /** Kalimba: a thumb-plucked steel tine on a small wooden box, rounder and shorter than a music box. */
+    Kalimba,
 }
 
 /**

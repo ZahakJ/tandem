@@ -67,11 +67,14 @@ object PeanutsNative {
      */
     fun of(game: Game): Entry? = appFor(game)?.let { of(game, it) }
 
-    /** The Peanuts app [game] belongs to: the fullest one it is ready in, else the fullest one that can build it. */
+    /**
+     * The Peanuts app [game] belongs to: the official app when it has built it (it is the one kept up to date), else
+     * the other one it is ready in, else the first that can build it. Saves follow between the two (SaveSync).
+     */
     fun appFor(game: Game): String? {
         val rows = PACKAGES.mapNotNull { p -> of(game, p)?.let { p to it } }
-        return rows.lastOrNull { it.second.state == "ready" }?.first
-            ?: rows.lastOrNull { it.second.state == "build" || it.second.state == "building" }?.first
+        return rows.firstOrNull { it.second.state == "ready" }?.first
+            ?: rows.firstOrNull { it.second.state == "build" || it.second.state == "building" }?.first
             ?: rows.firstOrNull()?.first
     }
 

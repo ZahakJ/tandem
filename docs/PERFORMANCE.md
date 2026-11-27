@@ -150,15 +150,29 @@ without a Shizuku call while the screen is off.
   backdrops, Ken Burns art, folder sheens, Pip, the Pulse highlight. Motion reads `Ambient.ms` inside layer or draw
   lambdas, never in composition or layout. The clock ticks only while a showing, resumed screen watches it
   (`rememberAmbient`).
-- **Calmer over time.** Ten seconds after the last input it ticks on a timer at about 30 fps, and about 12 fps
-  after half a minute; the main thread sleeps between ticks. `Ambient.livelyMs` stands still when idle (Pip stops
-  bobbing; blinks and glances carry on, rarer). With only Pip watching, no frames are requested until the next input.
+- **The idle budget** (`IdleBudget` in ui/IdleBudget.kt, unit-tested) sets the pace by time since the last button,
+  stick or touch (`Idle.poke`, from MainActivity and the bottom screen's dispatch): every vsync while in use; after
+  10 s a timer at about 30 fps, after 20 s about 12 fps; the main thread sleeps between ticks. `Ambient.livelyMs`
+  stands still from 10 s (Pip stops bobbing; blinks and glances carry on, rarer). With only Pip watching, no frames
+  are requested until the next input.
+- **Settled after half a minute** (`Ambient.settled`): the clock parks and every ambient motion holds the frame it is
+  on (no jump; it carries on from there). Wallpaper videos and video snaps hold their frame, animated icons and art
+  pause, the cover wall eases to rest, Pip stops blinking and glancing, a logo's shine waits. Motion with a frame loop
+  of its own waits too: Settings' showcases and What's new (`rememberIdleLoop`, which replaced their infinite
+  transitions), the sound visualizer, Spotlight's drifting story (`Ambient.awaitAwake`), a carried tile's wobble.
+  Measured on the idle home before this: 312 frames in 5 s (both screens at the 30 fps tier) and about 25 % of one
+  core; settled it should draw nothing but the minute clock. Any input wakes everything at once.
 - **One tick for everything.** Short decorative animations (Pip's blinks and glances, a logo's shine) run on
   `AmbientFrames`: the display's frames while Tandem is in use, the ambient clock's ticks once idle, with their values
   written inside the tick's frame callback. So idle motion draws 30 frames a second per screen, never extra frames
   in between.
-- **Resting after three minutes** without input (`Ambient.resting`): the clock stops, Pip rests, wallpaper videos
-  hold their frame and then let their player go. Clocks on screen keep their own minute timer. Any input wakes it.
+- **Resting after three minutes** without input (`Ambient.resting`): the Plaza's crowd, which may mill about longer
+  than the rest, stops too. A held wallpaper video lets its player go 4 s after it holds (a still frame stands in).
+  Clocks on screen keep their own minute timer. Any input wakes it.
+- **Off screen, nothing runs.** Behind a game, with the screen off or under the screensaver no ambient watcher is
+  registered (`rememberAmbient` needs a resumed screen), Compose's frame clock pauses with the stopped activity, and
+  the music synth fades out and ends its thread (`Music.pause` in `onStop`). The game companion on the bottom
+  screen is the one exception by design: its own 30 fps `SteadyClock`, dimming and switching off on its timer.
 - **What the home grid holds rests when idle.** Motion inside the grid (the Resume page's logo and dot,
   `floating(restsWhenIdle = true)`) stops with `livelyMs`: every tick of it redrew the whole grid under its faded
   edges (about 2.4 ms of RenderThread a frame). Idle on the home, the top screen draws only for Pip.

@@ -17,6 +17,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.GraphicsLayerScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -103,6 +105,104 @@ fun Modifier.floating(seed: Int = 0, bob: Dp = 6.dp, periodMs: Int = 3600, breat
 }
 
 /**
+ * Fades a layer that may hold a highlighted card to [a] without clipping it. A layer fading with the default
+ * strategy is drawn through an offscreen buffer the size of its own bounds, which cuts off whatever reaches past
+ * them: a highlighted FocusCard's growth, lift and glow. Modulating each drawing's alpha instead keeps it whole (pieces
+ * that overlap inside the layer show through each other a little while it fades, which an entrance never shows).
+ */
+fun GraphicsLayerScope.fadeWhole(a: Float) {
+    alpha = a
+    compositingStrategy = CompositingStrategy.ModulateAlpha
+}
+
+/** Dims something that holds or is a FocusCard to [a] without clipping its highlight (see [fadeWhole]). */
+fun Modifier.dimWhole(a: Float): Modifier = if (a >= 1f) this else graphicsLayer { fadeWhole(a) }
+
+/**
+ * A row of covers dealt again (This week's re-roll): the old covers slide out together towards the start while they
+ * fade, then the new ones arrive one after another from the end side, easing to a stop. Only sideways moves and
+ * [fadeWhole], never a scale or an alpha layer: the covers, their chips and names and the highlight stay inside the
+ * room the row leaves them (FocusRoom), nothing is drawn through a buffer that cuts them, and the row keeps its
+ * height. One clock read while drawing, so nothing recomposes per frame. Only the row being dealt moves.
+ */
+@androidx.compose.runtime.Stable
+class Redeal {
+    /** The row being dealt again, or null. */
+    var row by mutableStateOf<Any?>(null)
+        private set
+    /** Times a row was dealt again, and the last one: a row scrolls back to its start when its new covers go in. */
+    var deals by androidx.compose.runtime.mutableIntStateOf(0)
+        private set
+    var dealt: Any? = null
+        private set
+    internal val clock = Animatable(DONE)
+
+    /**
+     * Deals [row] again: [swap] puts its new covers in once the old ones are out (at once when [still]). Pressed again
+     * while it runs, the covers go out from where they are instead of jumping back.
+     */
+    suspend fun run(row: Any, still: Boolean, swap: () -> Unit) {
+        if (still) { reset(); swapIn(row, swap); return }
+        val t = clock.value
+        val from = when {
+            this.row != row || t >= DONE -> 0f
+            t < OUT_MS -> t
+            // Arriving: leave from as far as the first new cover had come.
+            else -> OUT_MS * (1f - arrive(t, 0))
+        }
+        this.row = row
+        clock.snapTo(from)
+        clock.animateTo(OUT_MS, tween((OUT_MS - from).toInt().coerceAtLeast(1), easing = LinearEasing))
+        swapIn(row, swap)
+        clock.animateTo(DONE, tween((DONE - OUT_MS).toInt(), easing = LinearEasing))
+        this.row = null
+    }
+
+    private fun swapIn(row: Any, swap: () -> Unit) {
+        dealt = row
+        swap()
+        deals++
+    }
+
+    /** Stops any deal: every cover shows still. */
+    fun reset() { row = null }
+
+    internal fun leave(t: Float): Float = androidx.compose.animation.core.FastOutLinearInEasing.transform((t / OUT_MS).coerceIn(0f, 1f))
+
+    internal fun arrive(t: Float, index: Int): Float {
+        val x = ((t - OUT_MS - minOf(index, MAX_STAGGER) * STAGGER_MS) / IN_MS).coerceIn(0f, 1f)
+        val c = 1f - x
+        return 1f - c * c * c
+    }
+
+    companion object {
+        const val OUT_MS = 110f
+        const val IN_MS = 220f
+        const val STAGGER_MS = 30f
+        /** Covers after this many arrive with it: they are past the screen's edge anyway. */
+        const val MAX_STAGGER = 6
+        const val DONE = OUT_MS + IN_MS + STAGGER_MS * MAX_STAGGER
+    }
+}
+
+/** The cover at [index] of [row] while [redeal] deals it again (see [Redeal]); still otherwise. */
+@Composable
+fun Modifier.redealt(redeal: Redeal, row: Any, index: Int, reach: Dp = 28.dp): Modifier {
+    val dir = if (androidx.compose.ui.platform.LocalLayoutDirection.current == androidx.compose.ui.unit.LayoutDirection.Rtl) -1f else 1f
+    // The move and the fade are separate layers, the fade inside the move: were the fade ever drawn through a buffer
+    // (a software canvas does), the buffer moves with the cover rather than cutting it at the place it left.
+    return graphicsLayer {
+        if (redeal.row != row) return@graphicsLayer
+        val t = redeal.clock.value
+        translationX = if (t < Redeal.OUT_MS) -dir * redeal.leave(t) * reach.toPx() * 0.3f else dir * (1f - redeal.arrive(t, index)) * reach.toPx()
+    }.graphicsLayer {
+        if (redeal.row != row) return@graphicsLayer
+        val t = redeal.clock.value
+        fadeWhole(if (t < Redeal.OUT_MS) 1f - redeal.leave(t) else redeal.arrive(t, index))
+    }
+}
+
+/**
  * Rises in with a spring and a fade whenever [key] changes; [index] staggers several pieces (logo first, then the
  * card under it). [distance] is how far below it starts. [delayMs] replaces the stagger's wait (for long lists).
  */
@@ -118,7 +218,7 @@ fun Modifier.riseIn(key: Any?, index: Int = 0, distance: Dp = 22.dp, fromScale: 
     val px = with(LocalDensity.current) { distance.toPx() } * Flair.amount.coerceAtMost(1.3f)
     return graphicsLayer {
         val v = p.value
-        alpha = v.coerceIn(0f, 1f)
+        fadeWhole(v.coerceIn(0f, 1f))
         translationY = (1f - v) * px
         val s = fromScale + (1f - fromScale) * v
         scaleX = s; scaleY = s
@@ -134,7 +234,7 @@ fun Modifier.slideInFrom(key: Any?, fromRight: Boolean = true, distance: Dp = 26
     val px = with(LocalDensity.current) { distance.toPx() } * if (fromRight) 1f else -1f
     return graphicsLayer {
         val v = p.value
-        alpha = v.coerceIn(0f, 1f)
+        fadeWhole(v.coerceIn(0f, 1f))
         translationX = (1f - v) * px
     }
 }
@@ -243,7 +343,7 @@ object PipMind {
         override fun run() {
             if (!idle) return
             val quiet = android.os.SystemClock.uptimeMillis() - lastNudge > 1500
-            if (quiet && !Store.settings.reduceMotion && !Ambient.resting) {
+            if (quiet && !Store.settings.reduceMotion && !Ambient.settled) {
                 when (random.nextInt(6)) {
                     0, 1, 2 -> { lookX = random.nextInt(3) - 1f; lookY = random.nextInt(3) - 1f }
                     3 -> { lookX = -1f; lookY = 0f; handler.postDelayed({ if (idle) { lookX = 1f } }, 420) }

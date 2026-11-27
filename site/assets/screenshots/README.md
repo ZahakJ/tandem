@@ -6,9 +6,9 @@ the landing page (`site/index.html`) and the README. They are WebP, resized to
 
 | File | Screen | What it shows |
 | --- | --- | --- |
-| `spotlight.webp` | Top | The Spotlight home on Hades II (hero) |
-| `spotlight-bottom.webp` | Bottom | The same moment: Hades II's art with its details (hero) |
-| `spotlight-odyssey.webp` | Top | Spotlight on Super Mario Odyssey |
+| `spotlight.webp` | Top | The Spotlight home on a PC game (hero) |
+| `spotlight-bottom.webp` | Bottom | The same moment: the game's art with its details (hero) |
+| `spotlight-odyssey.webp` | Top | Spotlight on a Switch game |
 | `spotlight-expedition.webp` | Top | Spotlight on a streamed PC game |
 | `spotlight-menu.webp` | Top | The Y menu on Spotlight |
 | `orbit.webp` | Top | The Orbit home, Nintendo 3DS in front |
@@ -28,7 +28,10 @@ the landing page (`site/index.html`) and the README. They are WebP, resized to
 | `game-menu.webp` | Top | The Y menu on a game, over the grid (controls guide) |
 | `search.webp` | Top | Search with four letters typed |
 | `resume.webp` | Top | The Resume card after pressing Home mid-game |
-| `settings.webp` | Top | Settings, its seven pages |
+| `settings.webp` | Top | Settings home: eight tiles with live sketches |
+| `this-week.webp` | Top | The This week board as a page, Pick of the week highlighted |
+| `plaza.webp` | Top | The Plaza square, Bump on |
+| `plaza-bottom.webp` | Bottom | Your card in the Plaza: character, name, Bumping |
 | `start-panel.webp` | Top | The Start side panel |
 | `screensaver.webp` | Top | The screensaver |
 
@@ -51,6 +54,11 @@ the landing page (`site/index.html`) and the README. They are WebP, resized to
 | `guide/systems-emulators.webp` | Top | A system in Systems and emulators |
 | `guide/game-details-bottom.webp` | Bottom | A highlighted game's details |
 | `guide/peanuts-native-badge.webp` | Bottom | A natively built Switch game, ⚡ Native |
+| `guide/this-week.webp` | Top | This week as a page, a card in the second row highlighted |
+| `guide/this-week-bottom.webp` | Bottom | A This week pick: art, chip and the reason |
+| `guide/me-editor.webp` | Top | Me on the Hats tab |
+| `guide/plaza.webp` | Top | The Plaza square |
+| `guide/plaza-card-bottom.webp` | Bottom | Your card in the Plaza |
 
 ## Before capturing
 

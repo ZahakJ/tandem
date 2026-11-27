@@ -81,6 +81,8 @@ object BuiltInApps {
         BuiltInApp("upnext", R.string.apps_upnext_title, R.string.apps_upnext_blurb, TIcon.UpNext, Color(0xFF4F8CF2)) { Nav.go(Route.Tool("upnext")) },
         BuiltInApp("files", R.string.apps_files_title, R.string.apps_files_blurb, TIcon.Files, Color(0xFF7C8AA8)) { Nav.go(Route.Tool("files")) },
         BuiltInApp("pad", R.string.apps_pad_title, R.string.apps_pad_blurb, TIcon.Controller, Color(0xFF4FBF6A)) { Nav.go(Route.Tool("pad")) },
+        // Tandem Pass's Plaza (PlazaScreen.kt): everyone you passed; Me first while there is no Me.
+        BuiltInApp(PlazaUi.ID, R.string.plaza_app_title, R.string.plaza_app_blurb, TIcon.Plaza, Color(0xFFEF7F7A)) { PlazaUi.open() },
         BuiltInApp("settings", R.string.apps_settings_title, R.string.apps_settings_blurb, TIcon.Gear, Color(0xFF8A94B8), onHome = false) { Nav.go(Route.Settings) },
     )
 
@@ -97,6 +99,8 @@ fun ToolScreen(route: Route.Tool) {
         "upnext" -> UpNextScreen()
         "files" -> FilesScreen()
         "pad" -> ControllerTestScreen()
+        PlazaUi.ID -> PlazaScreen()
+        MeEditor.ROUTE_ID -> MeEditorScreen()
         else -> PipNote(Tx.s(R.string.apps_gone_title), Tx.s(R.string.apps_gone), mood = 2)
     }
 }

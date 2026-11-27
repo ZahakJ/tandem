@@ -373,6 +373,9 @@ private fun Details(selected: Selected, mode: String, spotlight: Boolean, onPill
     } else if (SmartFolderForm.folderId != null) {
         // The smart folder editor's live preview (SmartFolderForm.kt).
         SmartPreview()
+    } else if (PlazaBottom.active) {
+        // The Plaza's highlighted visitor, or your own card while Me is open (PlazaScreen.kt).
+        PlazaBottomView()
     } else if (mode == "clock") {
         ClockFace()
     } else AnimatedContent(

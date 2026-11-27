@@ -10,6 +10,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MonotonicFrameClock
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -18,11 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.staticCompositionLocalOf
 import io.github.zahakj.tandem.Idle
 import io.github.zahakj.tandem.Screensaver
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 /*
@@ -33,20 +36,18 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  *  - The motion reads [Ambient.ms] (or [Ambient.livelyMs]) inside graphics-layer and draw lambdas only, so a tick
  *    redraws those layers and never recomposes or re-lays out anything.
  *  - The clock ticks only while something on a showing, resumed screen watches it ([rememberAmbient]).
- *  - Ten seconds after the last button, stick or touch it drops to about 30 fps ("idle"), and to about 12 fps after
- *    half a minute; between those ticks the main thread sleeps instead of waking on every vsync. [livelyMs] stops when
- *    idle: Pip stops bobbing and sheens rest, while blinks and glances carry on, rarer and on the clock's own ticks
- *    ([AmbientFrames]). After three minutes everything rests ([resting]), wallpaper videos too.
+ *  - It follows the idle budget ([IdleBudget]): every vsync while Tandem is in use; ten seconds after the last
+ *    button, stick or touch about 30 fps ("idle"), about 12 fps after twenty, and after half a minute it stops
+ *    ([settled]): every motion holds the frame it is on, videos and animated art pause, Pip stops blinking. Between
+ *    ticks the main thread sleeps instead of waking on every vsync. [livelyMs] already stops at ten seconds (Pip stops
+ *    bobbing, sheens rest). After three minutes [resting] stops the Plaza's crowd as well. Any input wakes it at once.
  *  - While the D-pad is held it ticks at the idle pace, so the other screen doesn't redraw on every frame of a scroll.
  *  - While a popup, panel or the launch animation covers the screen it stops altogether (the screensaver's own
- *    scene keeps it running for itself; everything under the screensaver stops watching).
+ *    scene keeps it running for itself, never settling; everything under the screensaver stops watching).
  */
 object Ambient {
     /** How long without input before ambient motion calms down to ~30 fps. */
-    const val IDLE_AFTER_MS = 10_000L
-
-    /** How long without input before it slows further, to ~12 fps (slow drifts and bobs still look smooth). */
-    const val DEEP_IDLE_AFTER_MS = 30_000L
+    const val IDLE_AFTER_MS = IdleBudget.CALM_AFTER_MS
 
     private val clock = mutableLongStateOf(0L)
     private val livelyClock = mutableLongStateOf(0L)
@@ -62,12 +63,14 @@ object Ambient {
         private set
 
     /**
-     * How long without input before idle motion stops altogether: the clock stands still, wallpaper videos hold
-     * their frame and Pip rests. Clocks on screen still tick (they have their own minute timer).
+     * True once nobody has used Tandem for [IdleBudget.SETTLE_AFTER_MS] (never while a screensaver scene runs): the
+     * clock stands still, wallpaper videos, video snaps and animated art hold their frame, Pip rests, and motion with a
+     * frame loop of its own waits ([awaitAwake], [rememberIdleLoop]). Clocks on screen still tick once a minute.
      */
-    const val REST_AFTER_MS = 3 * 60_000L
+    var settled by mutableStateOf(false)
+        private set
 
-    /** True once nobody has used Tandem for [REST_AFTER_MS] (never while a screensaver scene runs). */
+    /** True once nobody has used Tandem for [IdleBudget.REST_AFTER_MS]: the Plaza's crowd stops milling about too. */
     var resting by mutableStateOf(false)
         private set
 
@@ -95,20 +98,24 @@ object Ambient {
         if (!running) lastNanos = 0L
         running = true
         parked = false
-        armRest()
+        refreshStage()
         main.removeCallbacks(wake)
         schedule()
         var done = false
         return { if (!done) { done = true; watchers--; if (!livelyOnly) fullWatchers-- } }
     }
 
+    private fun sinceInput(): Long = SystemClock.elapsedRealtime() - Idle.last
+
+    private fun screensaverOn(): Boolean = Screensaver.active || io.github.zahakj.tandem.Dreaming.active
+
     /** True while nobody has used Tandem for [IDLE_AFTER_MS] (read now, not at the last tick). */
-    internal fun idleNow(): Boolean = SystemClock.elapsedRealtime() - Idle.last > IDLE_AFTER_MS
+    internal fun idleNow(): Boolean = sinceInput() > IDLE_AFTER_MS
 
     /** Runs [tick] on the next tick (see [AmbientFrames]); the returned function cancels it. */
     internal fun onNextTick(tick: (Long) -> Unit): () -> Unit {
         tickers += tick
-        armRest()
+        armStage()
         if (!running || parked) {
             if (!running) lastNanos = 0L
             running = true
@@ -120,10 +127,17 @@ object Ambient {
         return { tickers.remove(tick) }
     }
 
-    /** A button, stick or touch (Idle.poke): motion that stopped ([resting], or parked while idle) comes back at once. */
+    /** A button, stick or touch (Idle.poke): motion that stopped ([settled], or parked while idle) comes back at once. */
     fun onInput() {
-        if (!resting && !parked) return
-        if (resting) { resting = false; armRest() }
+        armStage()
+        if (!settled && !resting && !parked) return
+        if (settled || resting) {
+            settled = false
+            resting = false
+            main.removeCallbacks(stageCheck)
+            stageArmed = false
+            armStage()
+        }
         if (parked && watchers > 0) {
             parked = false
             main.removeCallbacks(wake)
@@ -131,23 +145,41 @@ object Ambient {
         }
     }
 
-    private var restArmed = false
-    private val restCheck = Runnable {
-        restArmed = false
-        val left = Idle.last + REST_AFTER_MS - SystemClock.elapsedRealtime()
-        when {
-            left > 0 -> armRest(left)
-            // A screensaver scene runs for hours on this clock: it never rests.
-            Screensaver.active || io.github.zahakj.tandem.Dreaming.active -> armRest(REST_AFTER_MS)
-            else -> resting = true
-        }
+    private var stageArmed = false
+    private val stageCheck = Runnable { stageArmed = false; refreshStage() }
+
+    /**
+     * Brings [settled] and [resting] up to date now and keeps their timer running. Called when Tandem comes to the
+     * front (HomeHost), so a home with only videos or animated art (nothing on the clock) settles too, and when
+     * something starts watching (a screensaver scene beginning on a settled home must move at once).
+     */
+    fun keepTime() = refreshStage()
+
+    private fun refreshStage() {
+        val stage = IdleBudget.stage(sinceInput(), screensaverOn())
+        val nowSettled = stage >= IdleBudget.Stage.Settled
+        val nowResting = stage == IdleBudget.Stage.Resting
+        if (settled != nowSettled) settled = nowSettled
+        if (resting != nowResting) resting = nowResting
+        armStage()
     }
 
-    /** Keeps the timer for [resting] running: it fires when the idle time runs out (and waits on after new input). */
-    fun armRest(delayMs: Long = Idle.last + REST_AFTER_MS - SystemClock.elapsedRealtime()) {
-        if (restArmed || resting) return
-        restArmed = true
-        main.postDelayed(restCheck, delayMs.coerceAtLeast(1_000L))
+    /**
+     * Keeps the timer for [settled] and [resting] running: it fires when the next of them is due (and, after new input,
+     * finds it later and waits on). Never armed for later than the next change, so it never misses one.
+     */
+    private fun armStage() {
+        if (stageArmed) return
+        val next = IdleBudget.nextChangeMs(sinceInput(), screensaverOn()) ?: return
+        stageArmed = true
+        main.postDelayed(stageCheck, next.coerceAtLeast(250L))
+    }
+
+    /** Suspends while [settled]; true if it had to wait. For motion with a frame loop of its own. */
+    suspend fun awaitAwake(): Boolean {
+        if (!settled) return false
+        snapshotFlow { settled }.first { !it }
+        return true
     }
 
     /**
@@ -178,17 +210,18 @@ object Ambient {
             main.postDelayed(wake, 120)
             return
         }
-        val idle = idleNow()
+        val stage = IdleBudget.stage(sinceInput(), screensaverOn())
+        val idle = stage != IdleBudget.Stage.Active
         if (lively == idle) lively = !idle
-        // Something reads ms, and motion hasn't stopped for good.
-        val ticking = fullWatchers > 0 && !resting
+        // Something reads ms, and motion hasn't settled.
+        val ticking = fullWatchers > 0 && !settled
         if (idle && !ticking && tickers.isEmpty()) {
-            // Only resting motion is watching (Pip's bob), or everything rests: no frames at all until the next input.
+            // Only lively motion is watching (Pip's bob), or everything has settled: no frames until the next input.
             lastNanos = 0L
             pending = 0L
             Snapshot.sendApplyNotifications()
             main.removeCallbacks(wake)
-            if (resting) parked = true else main.postDelayed(wake, 250)
+            if (settled) parked = true else main.postDelayed(wake, 250)
             return
         }
         if (ticking || !idle) {
@@ -210,12 +243,11 @@ object Ambient {
         // A held D-pad scrolls the grid on every frame: the decorative motion steps at the idle pace meanwhile, so
         // the other screen draws half as often and the main thread stays free for the scrolling screen.
         if (!idle && !io.github.zahakj.tandem.Selection.held) { schedule(); return }
-        if (!idle) { main.removeCallbacks(wake); main.postDelayed(wake, 28L); return }
-        // Idle: about 30 ticks a second, and about 12 after half a minute without input. In between the main thread sleeps
-        // rather than waking on every vsync (120 times a second on a 120 Hz screen) only to skip it.
-        val deep = SystemClock.elapsedRealtime() - Idle.last > DEEP_IDLE_AFTER_MS
+        // Idle (or a held D-pad): on a timer, so the main thread sleeps between ticks rather than waking on every vsync
+        // (120 times a second on a 120 Hz screen) only to skip it. Settled with a blink still finishing: the idle pace.
+        val wait = IdleBudget.tickMs(stage)?.takeIf { it > 0L } ?: 28L
         main.removeCallbacks(wake)
-        main.postDelayed(wake, if (deep) 80L else 28L)
+        main.postDelayed(wake, wait)
     }
 
     /** 0..1, looping every [periodMs], offset by [offset] (0..1). */
@@ -230,6 +262,29 @@ object Ambient {
         val p = (t % (2L * halfMs)) / halfMs.toFloat()
         return FastOutSlowInEasing.transform(if (p <= 1f) p else 2f - p)
     }
+}
+
+/**
+ * 0 to 1 over [periodMs], round and round, for a small looping picture with a frame loop of its own (Settings'
+ * showcases, the sound pickers, What's new): every vsync while Tandem is in use, holding its frame once Tandem has
+ * [Ambient.settled] and carrying on from there with the next input. Held at [stillValue] while [still]. Read it in
+ * draw or layer lambdas. (An infinite transition would run on every vsync for as long as it is on screen.)
+ */
+@Composable
+fun rememberIdleLoop(periodMs: Int, still: Boolean, stillValue: Float = 0f): State<Float> {
+    val t = remember { mutableFloatStateOf(if (still) stillValue else 0f) }
+    LaunchedEffect(periodMs, still, stillValue) {
+        if (still) { t.floatValue = stillValue; return@LaunchedEffect }
+        var last = 0L
+        while (true) {
+            if (Ambient.awaitAwake()) last = 0L
+            withFrameNanos { now ->
+                if (last != 0L) t.floatValue = (t.floatValue + (now - last) / 1_000_000f / periodMs) % 1f
+                last = now
+            }
+        }
+    }
+    return t
 }
 
 /**

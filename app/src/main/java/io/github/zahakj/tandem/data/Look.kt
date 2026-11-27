@@ -169,10 +169,10 @@ data class Look(
      */
     val myMusic: Boolean = true,
     /**
-     * The built-in soundtrack (audio/Tracks.kt): "plaza", "calm" or "meadow" (Meadow Tales). Null until chosen, which
-     * reads as Plaza, the default ([soundtrackId]). Calm, the default before Plaza, was written down for every setup
-     * when its welcome finished; unless it was picked ([soundtrackPicked]) it moves to Plaza with the default
-     * (Store.keepSoundtrack). Meadow Tales stays.
+     * The built-in soundtrack (audio/Tracks.kt): "plaza", "lagoon" or "terrace". Null until chosen, which reads as
+     * Plaza, the default ([soundtrackId]). The soundtracks before these ("calm", "meadow" for Meadow Tales) are gone:
+     * a setup that still names one is forgotten on load and follows the default to Plaza (Store.keepSoundtrack), and
+     * [soundtrackId] reads any id it doesn't know as Plaza too.
      */
     val soundtrack: String? = null,
     /** [soundtrack] was chosen on purpose (in Sound & music, or with a look), so a new default leaves it alone. */
@@ -189,7 +189,7 @@ data class Look(
     /** System icon style for drawn icons ("neon", "pixel"...), or null for the theme's own. */
     val iconStyle: String? = null,
 ) {
-    val soundtrackId: String get() = soundtrack ?: io.github.zahakj.tandem.audio.Tracks.DEFAULT
+    val soundtrackId: String get() = soundtrack?.takeIf { it in io.github.zahakj.tandem.audio.Tracks.ids } ?: io.github.zahakj.tandem.audio.Tracks.DEFAULT
 }
 
 /** Which parts of a theme pack are used. Each can be switched off on its own in Theme packs. */

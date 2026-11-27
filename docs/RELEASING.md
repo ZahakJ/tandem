@@ -37,15 +37,18 @@ The release workflow stops with a clear error if any of them is missing. The sec
    fail until it has one (`WhatsNewTest`). A patch (x.Y.z) needs nothing: it shows its minor's deck.
 3. Add a changelog for F-Droid: `fastlane/metadata/android/en-US/changelogs/<versionCode>.txt`, a few plain lines, under 500 characters.
 4. Tick off what shipped in `ROADMAP.md`.
-5. Commit, then tag and push:
+5. For any new feature or UI/UX change, update `README.md`, the landing page (`site/index.html`) and the
+   screenshots in `site/assets/screenshots/` (retake any that no longer match; see its `README.md`). Move features
+   that were marked "coming in" into the main list.
+6. Commit, then tag and push:
 
    ```sh
    git tag v0.3.0
    git push origin main v0.3.0
    ```
 
-6. The [release workflow](../.github/workflows/release.yml) checks that the tag matches `versionName`, builds the release APK, signs it, and creates the GitHub Release with `tandem-<version>.apk`, a `SHA256SUMS` file and generated notes. If you drafted the release by hand first, it uploads the files to your draft instead.
-7. Edit the release notes on GitHub to say what changed for players, in plain words. Write them as **bold part titles** (or `##` headings) with `-` points under each: the update popup turns every part into a card of its own.
+7. The [release workflow](../.github/workflows/release.yml) checks that the tag matches `versionName`, builds the release APK, signs it, and creates the GitHub Release with `tandem-<version>.apk`, a `SHA256SUMS` file and generated notes. If you drafted the release by hand first, it uploads the files to your draft instead.
+8. Edit the release notes on GitHub to say what changed for players, in plain words. Write them as **bold part titles** (or `##` headings) with `-` points under each: the update popup turns every part into a card of its own.
 
 To rebuild a release (for example after fixing a secret), run the workflow from the Actions tab with **Run workflow** and the tag name. It replaces the files on the existing release.
 

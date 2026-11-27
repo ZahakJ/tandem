@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="plaza_app_title">广场</string>
+    <string name="plaza_app_blurb">偶遇过的人，都聚在这个温馨的小广场。</string>
+    <string name="plaza_me_title">我</string>
+    <string name="plaza_unnamed">朋友</string>
+
+    <string name="plaza_greeting_1">你好呀！</string>
+    <string name="plaza_greeting_2">很高兴认识你！</string>
+    <string name="plaza_greeting_3">改天一起玩吧！</string>
+    <string name="plaza_greeting_4">沙发上向你问好！</string>
+    <string name="plaza_greeting_5">祝你今天愉快！</string>
+    <string name="plaza_greeting_6">开玩啦！</string>
+    <string name="plaza_greeting_7">嗨，玩家同好！</string>
+    <string name="plaza_greeting_8">就再玩一关……</string>
+    <string name="plaza_greeting_9">击个掌！</string>
+    <string name="plaza_greeting_10">来点零食歇一歇？</string>
+    <string name="plaza_greeting_11">冒险顺利哦！</string>
+    <string name="plaza_greeting_12">Pip 向你问好！</string>
+    <string name="plaza_greeting_13">星星我全都要！</string>
+    <string name="plaza_greeting_14">拯救世界去了，马上回来！</string>
+    <string name="plaza_greeting_15">真开心能和你偶遇！</string>
+    <string name="plaza_greeting_16">愿你的存档平平安安！</string>
+
+    <string name="plaza_tab_face">脸</string>
+    <string name="plaza_tab_eyes">眼睛</string>
+    <string name="plaza_tab_hair">头发</string>
+    <string name="plaza_tab_hat">帽子</string>
+    <string name="plaza_tab_outfit">衣服</string>
+    <string name="plaza_tab_extras">配饰</string>
+    <string name="plaza_tab_colour">颜色</string>
+    <string name="plaza_tab_card">名片</string>
+    <string name="plaza_part_shape">脸型</string>
+    <string name="plaza_part_skin">肤色</string>
+    <string name="plaza_part_eyes">眼睛</string>
+    <string name="plaza_part_eye_color">瞳色</string>
+    <string name="plaza_part_brows">眉毛</string>
+    <string name="plaza_part_mouth">嘴巴</string>
+    <string name="plaza_part_cheeks">脸颊</string>
+    <string name="plaza_part_hair">发型</string>
+    <string name="plaza_part_hair_color">发色</string>
+    <string name="plaza_part_headwear">头饰</string>
+    <string name="plaza_part_top">上衣</string>
+    <string name="plaza_part_top_color">上衣颜色</string>
+    <string name="plaza_part_glasses">眼镜</string>
+    <string name="plaza_part_earrings">耳饰</string>
+    <string name="plaza_part_theme">名片颜色</string>
+    <string name="plaza_part_face_extra">脸部小点缀</string>
+    <string name="plaza_part_beard">胡子</string>
+    <string name="plaza_option_n">第 %1$d 个，共 %2$d 个</string>
+
+    <string name="plaza_card_name">名字</string>
+    <string name="plaza_card_name_ask">你在广场上的名字</string>
+    <string name="plaza_card_name_empty">未设置</string>
+    <string name="plaza_card_greeting">招呼语</string>
+    <string name="plaza_card_greeting_pick">选一句招呼语</string>
+    <string name="plaza_card_favorite">最爱的游戏</string>
+    <string name="plaza_card_favorite_none">无</string>
+    <string name="plaza_card_favorite_pick">选出你的最爱</string>
+    <string name="plaza_card_favorite_clear">不设最爱</string>
+    <string name="plaza_card_recent">分享最近玩的游戏</string>
+    <string name="plaza_card_note">名片上只有游戏名，不会有你的游戏库、游玩时间或隐藏的游戏。最近玩的游戏只有在你打开后才会显示。</string>
+    <string name="plaza_card_preview_header">别人看到的样子</string>
+
+    <string name="plaza_hint_random">随机一下</string>
+    <string name="plaza_hint_undo">撤销</string>
+    <string name="plaza_hint_done">完成</string>
+    <string name="plaza_undo_none">还没有可以撤销的。</string>
+
+    <string name="plaza_guide_1">嗨！来捏一个你吧。选好脸、眼睛、头发和衣服，按 L1 和 R1 切换分类。</string>
+    <string name="plaza_guide_2">想碰碰运气？按 X 随机搭配，按 Y 撤销一步。</string>
+    <string name="plaza_guide_3">在“名片”里写下名字和招呼语，偶遇你的人看到的就是它！</string>
+    <string name="plaza_guide_next">下一步</string>
+    <string name="plaza_guide_go">出发</string>
+    <string name="plaza_guide_step">%1$d / %2$d</string>
+
+    <string name="plaza_filter_new">新来的</string>
+    <string name="plaza_filter_all">所有人</string>
+    <plurals name="plaza_met_count">
+        <item quantity="other">已遇见 %1$d 人</item>
+    </plurals>
+    <string name="plaza_status_passing">偶遇中</string>
+    <string name="plaza_status_find_only">偶遇中（能找到别人，但别人找不到你）</string>
+    <string name="plaza_status_paused">游戏时暂停</string>
+    <string name="plaza_status_off">“偶遇”已关闭</string>
+    <string name="plaza_status_not_made">先捏一个“我”吧</string>
+    <string name="plaza_status_needs">需要蓝牙权限</string>
+    <string name="plaza_status_bt_off">蓝牙已关闭</string>
+    <string name="plaza_status_private">隐私模式下休息中</string>
+    <string name="plaza_status_old">需要 Android 12 或更高版本</string>
+    <string name="plaza_status_no_bt">这台设备没有蓝牙</string>
+    <string name="plaza_empty_off">打开“偶遇”，出门在外也能和别的 Tandem 不期而遇。</string>
+    <string name="plaza_empty_off_action">设置“偶遇”</string>
+    <string name="plaza_empty_none">还没有人。带上掌机出去逛逛吧！</string>
+    <string name="plaza_empty_none_action">编辑“我”</string>
+    <string name="plaza_empty_new">上次看过之后没有新人来。</string>
+    <string name="plaza_empty_new_action">看看所有人</string>
+    <string name="plaza_private_title">广场休息中</string>
+    <string name="plaza_private_detail">隐私模式已开启：“偶遇”暂停，广场也关着门。</string>
+    <string name="plaza_hint_options">选项</string>
+    <string name="plaza_hint_me">编辑“我”</string>
+    <string name="plaza_new_badge">新</string>
+
+    <string name="plaza_menu_wave">挥手回应</string>
+    <string name="plaza_menu_unwave">收回挥手</string>
+    <string name="plaza_menu_hide">在广场隐藏</string>
+    <string name="plaza_menu_block">屏蔽</string>
+    <string name="plaza_menu_note">下次偶遇时，对方会收到你的挥手。隐藏的人再次偶遇后会回来，屏蔽的人不会再出现。</string>
+    <string name="plaza_waved_done">下次偶遇时，你会向 %1$s 挥手。</string>
+    <string name="plaza_unwaved_done">已收回挥手。</string>
+    <string name="plaza_hidden_done">已隐藏 %1$s，直到下次偶遇。</string>
+    <string name="plaza_blocked_done">已屏蔽 %1$s。</string>
+
+    <plurals name="plaza_passed_times">
+        <item quantity="other">偶遇 %1$d 次</item>
+    </plurals>
+    <string name="plaza_last_at">最近一次 %1$s</string>
+    <string name="plaza_last_on">最近一次 %1$s</string>
+    <string name="plaza_first_met">初次相遇 %1$s</string>
+    <plurals name="plaza_their_passes">
+        <item quantity="other">已偶遇 %1$d 台 Tandem</item>
+    </plurals>
+    <plurals name="plaza_your_passes">
+        <item quantity="other">你已偶遇 %1$d 台 Tandem</item>
+    </plurals>
+    <string name="plaza_fav_label">最爱</string>
+    <string name="plaza_recent_label">最近在玩</string>
+    <string name="plaza_waved_at_you">向你挥手啦！</string>
+    <string name="plaza_you_waved">你会挥手回应</string>
+    <string name="plaza_wave_sent">挥手已送达</string>
+
+    <string name="plaza_arrival">偶遇了 %1$s！</string>
+    <string name="plaza_arrival_open">去广场</string>
+
+    <plurals name="plaza_start_new">
+        <item quantity="other">%1$d 位新朋友</item>
+    </plurals>
+    <string name="plaza_start_off">“偶遇”已关闭</string>
+
+    <string name="plaza_settings_title">偶遇</string>
+    <string name="plaza_settings_sub_help">和附近的 Tandem 相遇：你的形象、名片和广场。</string>
+    <string name="plaza_settings_on">偶遇</string>
+    <string name="plaza_settings_on_help">只通过蓝牙，和偶遇的其他 Tandem 交换一张小名片。除此之外什么都不会离开你的设备，也不会联网。打开前一直是关闭的。</string>
+    <string name="plaza_settings_playing">游戏时也偶遇</string>
+    <string name="plaza_settings_playing_help">游戏在前台时也继续偶遇，并显示一条通知。关闭则游戏时暂停，更省电。</string>
+    <string name="plaza_settings_me">编辑“我”</string>
+    <string name="plaza_settings_me_help">你的形象、名字、招呼语和最爱的游戏。</string>
+    <string name="plaza_settings_preview">别人看到的样子</string>
+    <string name="plaza_settings_preview_help">名片上到底有什么，又绝不会有什么。</string>
+    <string name="plaza_settings_preview_action">查看</string>
+    <string name="plaza_settings_open">打开广场</string>
+    <string name="plaza_settings_open_help">偶遇过的所有人，都在这里散步。</string>
+    <string name="plaza_settings_blocked">已屏蔽的人</string>
+    <string name="plaza_settings_blocked_none">无</string>
+    <plurals name="plaza_settings_blocked_n">
+        <item quantity="other">已屏蔽 %1$d 人</item>
+    </plurals>
+    <string name="plaza_settings_blocked_help">被屏蔽的人不会出现在广场上，他们的名片会被拒收，也不会得到回应。按住 A 可解除全部屏蔽。</string>
+    <string name="plaza_settings_blocked_none_toast">没有屏蔽任何人。</string>
+    <string name="plaza_settings_unblock_action">全部解除</string>
+    <string name="plaza_unblock_title">解除所有屏蔽？</string>
+    <string name="plaza_unblock_detail">下次偶遇时，他们可能会再次出现在广场上。</string>
+    <string name="plaza_settings_unblocked">已解除所有屏蔽。</string>
+    <string name="plaza_settings_clear">清空广场</string>
+    <string name="plaza_settings_clear_help">忘掉遇见过的所有人。屏蔽、你的名片和偶遇次数都会保留。</string>
+    <string name="plaza_clear_title">清空广场？</string>
+    <string name="plaza_clear_detail">遇见过的人都会离开广场。此操作无法撤销。</string>
+    <string name="plaza_clear_yes">清空</string>
+    <string name="plaza_settings_cleared">广场又空啦。</string>
+    <string name="plaza_settings_id">偶遇 ID</string>
+    <string name="plaza_settings_id_none">尚未生成</string>
+    <string name="plaza_settings_id_help">你的“偶遇”密钥的安全码：%1$s。和 Concord 显示的一样，密钥永远不会离开这台设备。</string>
+    <string name="plaza_settings_id_help_none">第一次打开“偶遇”时，会在这台设备上生成你的密钥。</string>
+    <string name="plaza_settings_id_action">查看</string>
+    <string name="plaza_settings_id_toast">安全码：%1$s</string>
+
+    <string name="plaza_on_toast">“偶遇”已开启，愿你处处有惊喜！</string>
+    <string name="plaza_bt_off_toast">“偶遇”已开启。打开蓝牙就能开始偶遇了。</string>
+    <string name="plaza_old_android">“偶遇”需要 Android 12 或更高版本。</string>
+    <string name="plaza_no_bluetooth">这台设备不支持低功耗蓝牙。</string>
+
+    <string name="plaza_primer_title">“偶遇”会用到蓝牙</string>
+    <string name="plaza_primer_intro">Android 会询问“附近的设备”权限。Tandem 用它来做这些：</string>
+    <string name="plaza_primer_denied">没有附近设备权限，“偶遇”会一直关闭。你可以在 Android 设置里允许。</string>
+    <string name="plaza_primer_scan_title">寻找</string>
+    <string name="plaza_primer_scan">寻找附近的其他 Tandem，每次只找几秒钟。</string>
+    <string name="plaza_primer_advertise_title">被找到</string>
+    <string name="plaza_primer_advertise">让其他 Tandem 找到你，用的是每 15 分钟换一次的随机代码。</string>
+    <string name="plaza_primer_connect_title">交换名片</string>
+    <string name="plaza_primer_connect">和附近的 Tandem 交换名片，然后马上断开。</string>
+    <string name="plaza_primer_never">绝不用来判断你在哪里：Tandem 根本不会请求你的位置。</string>
+    <string name="plaza_primer_later">以后再说</string>
+    <string name="plaza_primer_continue">继续</string>
+    <string name="plaza_primer_settings">打开设置</string>
+
+    <string name="plaza_privacy_title">别人看到的样子</string>
+    <string name="plaza_privacy_sent">名片上有</string>
+    <string name="plaza_privacy_item_character">你的形象</string>
+    <string name="plaza_privacy_item_name">名字：%1$s</string>
+    <string name="plaza_privacy_item_greeting">招呼语：%1$s</string>
+    <string name="plaza_privacy_item_fav">最爱：%1$s</string>
+    <string name="plaza_privacy_item_recent">最近在玩：%1$s</string>
+    <plurals name="plaza_privacy_item_passes">
+        <item quantity="other">你的偶遇次数：%1$d 台 Tandem</item>
+    </plurals>
+    <string name="plaza_privacy_item_key">一把证明名片属于你的密钥</string>
+    <string name="plaza_privacy_never">绝不会发送</string>
+    <string name="plaza_privacy_never_1">你的位置、账号或你输入的任何内容</string>
+    <string name="plaza_privacy_never_2">隐藏的游戏、游玩时间、文件或游戏库</string>
+    <string name="plaza_privacy_never_3">任何经过互联网的东西</string>
+    <string name="plaza_privacy_how">名片只会送到蓝牙范围内的 Tandem，并且带有签名，无法伪造或重放。隐私模式会暂停这一切。</string>
+    <string name="plaza_privacy_close">知道了</string>
+
+    <string name="plaza_note_channel">偶遇</string>
+    <string name="plaza_note_title">“偶遇”已开启</string>
+    <string name="plaza_note_text">你玩游戏时，也在通过蓝牙等待和其他 Tandem 偶遇。</string>
+</resources>

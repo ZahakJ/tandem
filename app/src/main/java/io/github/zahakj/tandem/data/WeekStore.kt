@@ -42,8 +42,9 @@ object WeekStore {
         val (before, snapshot) = synchronized(this) { state.let { b -> b to change(b).also { state = it } } }
         if (snapshot == before) return
         val d = dir ?: return
-        val text = json.encodeToString(snapshot)
+        // Encoded on the writer thread too, in order: a re-roll saves on every press.
         writer.execute {
+            val text = json.encodeToString(snapshot)
             val tmp = File(d, "$FILE.tmp")
             tmp.writeText(text)
             tmp.renameTo(File(d, FILE))

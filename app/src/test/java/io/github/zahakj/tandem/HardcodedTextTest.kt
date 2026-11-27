@@ -49,7 +49,7 @@ class HardcodedTextTest {
         "data/WidgetStore.kt",
         "DeviceInfo.kt",
         "ui/SettingsCatalog.kt", "ui/Settings.kt", "ui/SettingsSearch.kt", "ui/SettingsHome.kt", "ui/Choices.kt", "ui/Showcase.kt",
-        "ui/SoundSettings.kt", "ui/Sound.kt", "audio/Sfx.kt", "audio/Calm.kt", "audio/Meadow.kt", "audio/Tracks.kt", "audio/Song.kt",
+        "ui/SoundSettings.kt", "ui/Sound.kt", "audio/Sfx.kt", "audio/Plaza.kt", "audio/Tracks.kt", "audio/Song.kt",
         "ui/Appearance.kt", "ui/Theme.kt", "ui/ThemeGallery.kt", "ui/ThemePacks.kt", "ui/ThemePacksScreen.kt", "ui/PackImport.kt",
         "ui/LookShare.kt", "ui/LookScreens.kt", "data/LookFile.kt", "data/LookGallery.kt",
         "ui/Flair.kt", "ui/Presets.kt", "ui/Perf.kt", "ui/StartFlow.kt", "ui/Welcome.kt",
@@ -163,6 +163,8 @@ class HardcodedTextTest {
         "ui/WeekBoardUi.kt", "WeekPicks.kt", "data/WeekBoard.kt", "data/WeekStore.kt",
         "Discs.kt", "ui/Playlists.kt", "ui/SlotSpin.kt", "BugReport.kt", "data/Redact.kt",
         "RaList.kt", "ui/RaUi.kt", "ui/SearchFilters.kt", "data/SearchFilter.kt", "ui/RaCompanion.kt",
+        "ui/MeEditor.kt", "ui/PlazaScreen.kt", "ui/PassSettings.kt", "ui/AvatarArt.kt", "data/PlazaStore.kt",
+        "pass/TandemPass.kt", "pass/PassService.kt", "pass/PassRadio.kt", "pass/IdentityStore.kt",
     )
 
     /** Calls that show their string arguments, and how many leading arguments are ids, not text. */

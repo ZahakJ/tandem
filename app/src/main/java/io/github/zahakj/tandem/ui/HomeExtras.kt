@@ -348,8 +348,8 @@ fun RecentStrip(routeKey: String, target: String?, games: List<Game>, overlay: B
                 }
             }
             LazyRow(
-                Modifier.fillMaxWidth().height(92.dp).fadingEdges(state, horizontal = true), state = state,
-                contentPadding = PaddingValues(horizontal = 30.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(10.dp),
+                Modifier.fillMaxWidth().height(68.dp + FocusRoom * 2).fadingEdges(state, horizontal = true), state = state,
+                contentPadding = PaddingValues(horizontal = 30.dp, vertical = FocusRoom), horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 itemsIndexed(games, key = { _, g -> g.key }) { _, g ->
                     val k = HomeExtras.recentKey(g)

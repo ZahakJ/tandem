@@ -90,6 +90,9 @@ object FocusMemory {
     /** The item holding focus on each route, with the [Nav.focusTick] it took it on (see [movedOn]). */
     private val holders = HashMap<String, Pair<String, Int>>()
 
+    /** The item holding the focus on [route] right now, if any. */
+    fun holder(route: String): String? = holders[route]?.first
+
     fun hold(route: String, item: String, has: Boolean) {
         if (has) holders[route] = item to Nav.focusTick
         else if (holders[route]?.first == item) holders.remove(route)

@@ -61,7 +61,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 
 /** The launch animation and Pip's launch problems. Shown above everything by [LaunchOverlay]. */
 object LaunchFx {
-    class Launch(val ctx: Context, val plan: Launcher.Plan, val id: Int) {
+    class Launch(val ctx: Context, val plan: Launcher.Plan, val id: Int, val quick: Boolean = false) {
         /** Set once the emulator has been asked to start: a launch is never started twice. */
         @Volatile var started = false
     }
@@ -82,7 +82,8 @@ object LaunchFx {
     /** Animate only when the overlay is on screen and the user hasn't turned motion down. */
     fun canAnimate(): Boolean = hosts > 0 && !Store.settings.reduceMotion && SystemPrefs.data.launchAnimation
 
-    fun play(ctx: Context, plan: Launcher.Plan) { playing = Launch(ctx, plan, ++serial); PipMind.cheer() }
+    /** [quick]: a game that is already running comes back with a short zoom, not the whole launch. */
+    fun play(ctx: Context, plan: Launcher.Plan, quick: Boolean = false) { playing = Launch(ctx, plan, ++serial, quick); PipMind.cheer() }
 
     /** A launch waiting for an answer: starting it would close the games in it (CloseAsk.kt). */
     var closeAsk by mutableStateOf<CloseAsk?>(null)
@@ -156,8 +157,8 @@ private fun LaunchAnimation(launch: LaunchFx.Launch) {
         // Ask Shizuku which apps are running while the art animates, so starting is instant at the end.
         launch(Dispatchers.IO) { Processes.names(maxAgeMs = 0) }
         launch { pop.animateTo(1f, spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)) }
-        delay(240)
-        zoom.animateTo(1f, tween(360, easing = FastOutSlowInEasing))
+        if (!launch.quick) delay(240)
+        zoom.animateTo(1f, tween(if (launch.quick) 160 else 360, easing = FastOutSlowInEasing))
         launch.started = true
         val problem = withContext(Dispatchers.IO) { Launcher.start(launch.ctx, plan) }
         if (problem != null) {

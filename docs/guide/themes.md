@@ -211,7 +211,7 @@ Give any folder, system, collection or genre on the icon grid a look of its own:
 **Your own pictures** come from `ROMs/tandem/art/` (and one folder below it), or **Upload your own** opens the system picker and copies the picture into `ROMs/tandem/art/folders/`:
 
 - PNG, JPEG, WebP and HEIC up to 24 MB. They are scaled down as they come in (768 pixels on the longest side for an icon or a logo, 1920 for a hero) and saved as PNG (icons, logos) or JPEG (heroes).
-- **GIF and animated WebP move.** Up to 8 MB and 1024 pixels on the longest side, kept as they are. They play on the tile only while it is on screen and Tandem is in front, never while a game runs, never with Reduce motion, and rest when Tandem has been idle a while. **Settings › Home & layout › Grid shape › Animated icons**: **Always**, **While highlighted** (only the tile the highlight is on) or **Off**. A moving picture as a hero or logo shows its first frame.
+- **GIF and animated WebP move.** Up to 8 MB and 1024 pixels on the longest side, kept as they are. They play on the tile only while it is on screen and Tandem is in front, never while a game runs, never with Reduce motion, and hold their frame once nobody has touched Tandem for half a minute. **Settings › Home & layout › Grid shape › Animated icons**: **Always**, **While highlighted** (only the tile the highlight is on) or **Off**. A moving picture as a hero or logo shows its first frame.
 
 Covers, mosaics and pictures always show whole inside the tile, on the folder colour, and a circle leaves room so nothing is cut off.
 
@@ -311,11 +311,13 @@ Videos play muted and looping, and stop whenever Tandem isn't on screen, so they
 - **Theme pack:** when your theme pack brings music or recorded sounds of its own (Cocoon themes link theirs from `ROMs/assets/music` and `ROMs/assets/sounds`), **Theme pack music** and **Theme pack sounds** switch them on or off. The same switches are on the pack in **Manage packs**. While they're on, they play instead of the choices below.
 - **Sounds:** **UI sounds** is Off, one of Tandem's nine packs (Modern, Playful, Chiptune, Bubbly, Minimal, Studio, Glass, Air, and **Thock**: deep, muted keyboard thocks with a thud under every sound), or **Custom**, which picks among every recorded pack you have (Cocoon's in `ROMs/assets/sounds`, or a theme pack's own). Sounds a recorded pack doesn't have come from Tandem's pack. With **Pip's voice** on (and UI sounds on), Pip hums a few soft notes when it has something to tell you.
 - **Music:** **Music** is Off, **My music** (your own MP3, OGG, Opus, FLAC, M4A or WAV files from `ROMs/tandem/music/`), or one of Tandem's own soundtracks:
-  - **Plaza** (the default): bright, catchy menu music for marimba, vibraphone, a whistled tune, bossa guitar and brushes. Its music follows where you are: **Plaza** on the home screen, **Shop** (a cozy bossa nova) in Settings and **Lounge** (a music-box waltz) on the screensaver; **Passby**, a ten-second jingle, cuts in for good news (new games found, a new trophy or achievement) at most once a minute.
-  - **Calm**: two slow, soft pieces for piano, harp and celesta.
-  - **Meadow Tales**: six original pieces for a small orchestra.
+  - **Plaza** (the default): soft marimba chords on a swinging two-bar "took took" figure, a plucked bass and brushes, in B-flat at 104 BPM.
+  - **Lagoon**: a kalimba picking the chords on a slow, dreamy bossa figure, a plucked bass, a rim clicking a clave and a shaker, in E-flat at 96 BPM.
+  - **Terrace**: a fingerpicked nylon guitar letting each chord ring, a round bass, a shaker and a soft rim, in G at 100 BPM.
 
-  **Music volume** and **Next song** sit below it. Calm and Meadow Tales play through their pieces in turn; Plaza keeps the piece of the moment until you go somewhere else (**Next song** still moves it on). **Shuffle my music** mixes up your own. Music fades out when a game starts and back in when you return.
+  All three are rhythm beds, like a console menu's idle music: the same small rhythm every bar on a few slowly changing chords, with no tune, no ornaments and no fills, looping without a seam. The one you pick plays everywhere: on the home screen, in Settings and under the screensaver (quieter there). **Passby**, a short jingle, cuts in for good news (new games found, a new trophy or achievement) at most once a minute, whichever you pick.
+
+  **Music volume** and **Next song** sit below it. **Next song** moves on to the next groove for a while; picking a soundtrack again goes back to it. **Shuffle my music** mixes up your own. Music fades out when a game starts and back in when you return.
 
 > [!TIP]
 > To save battery, **Battery saver** in Quick settings (hold <kbd>Start</kbd>) stills the screens and turns the music off in one go, and puts back exactly what it changed when you turn it off.
@@ -323,7 +325,7 @@ Videos play muted and looping, and stop whenever Tandem isn't on screen, so they
 <details>
 <summary>Sound files and jingles</summary>
 
-- Tandem's eight sound packs are made by Tandem as it starts, so there are no sound files.
+- Tandem's nine sound packs are made by Tandem as it starts, so there are no sound files.
 - There are no system or game jingles any more: a game starts with the launch sound of the sound pack that's playing.
 
 </details>

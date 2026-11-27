@@ -123,6 +123,25 @@ object CoverColors {
         })
         return state.value
     }
+
+    /**
+     * Starts every unknown colour in [games] in one background pass, as a folder opens: each spine asking for its own
+     * started a coroutine apiece in the frame the folder opened.
+     */
+    fun warm(ctx: Context, games: List<Game>) {
+        val todo = games.filter { it.key !in colors }.distinctBy { it.key }
+        if (todo.isEmpty()) return
+        val states = todo.associate { it.key to androidx.compose.runtime.mutableStateOf<Color?>(null) }
+        colors.putAll(states)
+        val app = ctx.applicationContext
+        val main = android.os.Handler(android.os.Looper.getMainLooper())
+        inBackground({
+            for (g in todo) {
+                val path = Libraries.of(g)?.box(g)?.path ?: continue
+                FolderArtCache.dominant(app, path)?.let { c -> main.post { states.getValue(g.key).value = Color(c) } }
+            }
+        })
+    }
 }
 
 /**
@@ -133,14 +152,14 @@ object CoverColors {
  * of a session; a cover whose picture changed size is measured again. [warm] measures a whole list ahead of time.
  */
 object CoverShapes {
-    private val shapes = HashMap<String, androidx.compose.runtime.MutableState<Float?>>()
+    // Filled on the main thread, and by [load] in the background (a state it makes is new, so no one reads it yet).
+    private val shapes = java.util.concurrent.ConcurrentHashMap<String, androidx.compose.runtime.MutableState<Float?>>()
     private val sizes = HashMap<String, Long>()
-    private var loaded = false
     private var saveDue = false
     private val main = android.os.Handler(android.os.Looper.getMainLooper())
 
     fun of(ctx: Context, g: Game): Float? {
-        load(ctx)
+        ready(ctx)
         val known = shapes[g.key]
         if (known != null) return known.value
         val state = androidx.compose.runtime.mutableStateOf<Float?>(null)
@@ -154,7 +173,7 @@ object CoverShapes {
 
     /** Measures every unknown cover in [games] in one background pass, so the rail or shelf never meets a stranger. */
     fun warm(ctx: Context, games: List<Game>) {
-        load(ctx)
+        ready(ctx)
         val todo = games.filter { shapes[it.key] == null }
         if (todo.isEmpty()) return
         val states = todo.associate { it.key to androidx.compose.runtime.mutableStateOf<Float?>(null) }
@@ -180,25 +199,54 @@ object CoverShapes {
 
     private fun cache(ctx: Context) = File(ctx.filesDir, "cover-shapes.tsv")
 
-    /** Reads the remembered shapes once; a shape whose picture is now another size is dropped so it is measured again. */
-    private fun load(ctx: Context) {
-        if (loaded) return
-        loaded = true
-        val f = cache(ctx)
-        if (!f.isFile) return
-        runCatching {
-            for (line in f.readLines()) {
-                val parts = line.split('\t')
-                if (parts.size != 3) continue
-                val key = parts[0]
-                val ratio = parts[1].toFloatOrNull() ?: continue
-                val size = parts[2].toLongOrNull() ?: continue
-                val game = Libraries.byKey(key) ?: continue
-                val file = Libraries.of(game)?.box(game) ?: continue
-                if (file.length() != size) continue
-                shapes[key] = androidx.compose.runtime.mutableStateOf(ratio)
-                sizes[key] = size
+    /**
+     * Reads the remembered shapes in the background (Tandem calls it once the library is in, well before a shelf is
+     * opened); a shape whose picture is now another size is dropped so it is measured again. It checks every
+     * remembered picture's size on the storage, a file at a time, which on the main thread was most of the first
+     * shelf's opening frame.
+     */
+    fun load(ctx: Context) {
+        // Only with the library in: a shape is kept only for a game it knows.
+        if (Libraries.all == null || !started.compareAndSet(false, true)) return
+        val app = ctx.applicationContext
+        inBackground({ read(app) })
+    }
+
+    /**
+     * The remembered shapes, before a cover is asked for: read here (on the main thread, as before) if [load] hasn't
+     * started, or waited for briefly if it is still reading, so a cover is never drawn in the wrong box at first.
+     */
+    private fun ready(ctx: Context) {
+        if (readDone.count == 0L) return
+        if (Libraries.all != null && started.compareAndSet(false, true)) { read(ctx); return }
+        if (started.get()) readDone.await(400, java.util.concurrent.TimeUnit.MILLISECONDS)
+    }
+
+    private val started = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val readDone = java.util.concurrent.CountDownLatch(1)
+
+    private fun read(ctx: Context) {
+        try {
+            val f = cache(ctx)
+            if (!f.isFile) return
+            runCatching {
+                for (line in f.readLines()) {
+                    val parts = line.split('\t')
+                    if (parts.size != 3) continue
+                    val key = parts[0]
+                    val ratio = parts[1].toFloatOrNull() ?: continue
+                    val size = parts[2].toLongOrNull() ?: continue
+                    val game = Libraries.byKey(key) ?: continue
+                    val file = Libraries.of(game)?.box(game) ?: continue
+                    if (file.length() != size) continue
+                    synchronized(sizes) { sizes[key] = size }
+                    // A cover asked for meanwhile is being measured; whichever comes first fills it in.
+                    val asked = shapes.putIfAbsent(key, androidx.compose.runtime.mutableStateOf(ratio))
+                    if (asked != null) main.post { if (asked.value == null) asked.value = ratio }
+                }
             }
+        } finally {
+            readDone.countDown()
         }
     }
 
@@ -208,7 +256,7 @@ object CoverShapes {
         saveDue = true
         main.postDelayed({
             saveDue = false
-            val lines = shapes.mapNotNull { (k, s) -> s.value?.let { r -> sizes[k]?.let { n -> "$k\t$r\t$n" } } }
+            val lines = synchronized(sizes) { shapes.mapNotNull { (k, s) -> s.value?.let { r -> sizes[k]?.let { n -> "$k\t$r\t$n" } } } }
             inBackground({ runCatching { cache(ctx).writeText(lines.joinToString("\n")) } })
         }, 1500)
     }
@@ -386,11 +434,17 @@ fun BookshelfView(
     val look = ShelfLooks.current()
     val ctx = LocalContext.current
     val games = remember(sections) { sections.flatMap { s -> s.items.mapNotNull { it.game } } }
-    // Every spine's logo, packaging and cover shape looked up in the background as the folder opens, ahead of the scroll.
-    LaunchedEffect(games) {
+    // Every spine's logo, packaging, colour and cover shape looked up in the background as the folder opens, ahead of
+    // the scroll: started before the shelves compose, in one pass each, so no spine starts a lookup of its own.
+    remember(games) {
         ShelfPacks.warm(ctx, games)
         CoverShapes.warm(ctx, games)
+        CoverColors.warm(ctx, games)
     }
+    val measurer = rememberTextMeasurer(cacheSize = 0)
+    val density = LocalDensity.current
+    val direction = androidx.compose.ui.platform.LocalLayoutDirection.current
+    val texts = remember(measurer, density, direction) { SpineTexts(measurer, density, direction) }
     // A scrape that just finished may have brought box and spine scans.
     val scraped = io.github.zahakj.tandem.data.Scraper.run?.finished == true
     LaunchedEffect(scraped) { if (scraped) ShelfPacks.recheck(ctx, games) }
@@ -414,6 +468,7 @@ fun BookshelfView(
         val fill = ((maxHeight / shelfH).toInt() + 1 - rows.size).coerceAtLeast(0)
         val rowOf = remember(rows) { rows.withIndex().flatMap { (i, r) -> r.items.map { it.key to i } }.toMap() }
         KeepInView(list, target?.let { rowOf[it] } ?: -1)
+        androidx.compose.runtime.CompositionLocalProvider(LocalSpineTexts provides texts) {
         LazyColumn(Modifier.fillMaxSize().fadingEdges(list), state = list) {
             items(rows.size, key = { rows[it].key }) { i ->
                 ShelfRow(route, rows[i], size, shelfH, plank, side, look, i == 0, target, onFocus, onOpen, onLong)
@@ -421,6 +476,7 @@ fun BookshelfView(
             items(fill, key = { "empty:$it" }) { i ->
                 ShelfRow(route, null, size, shelfH, plank, side, look, rows.isEmpty() && i == 0, target, onFocus, onOpen, onLong, pip = i == 0)
             }
+        }
         }
     }
 }
@@ -698,8 +754,7 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
     val found = pack?.takeIf { scan == null }
     val logo = found?.logo
     val logoPainter = remember(logo) { logo?.let { androidx.compose.ui.graphics.painter.BitmapPainter(it) } }
-    val measurer = rememberTextMeasurer()
-    val texts = remember(measurer) { SpineTexts(measurer) }
+    val texts = LocalSpineTexts.current
     val status = game.meta.playStatus
     val publisher = game.meta.publisher
     val plastic = spec?.plastic?.let { Color(it) }
@@ -768,17 +823,32 @@ private fun Spine(game: Game, spec: PackSpec?, pack: ShelfPacks.Pack?, w: Dp, h:
 }
 
 /**
- * A spine's words, laid out once and kept: the canvas is drawn again whenever the shelf around it moves, and laying
- * the same line out on every draw was a good part of each frame.
+ * The spines' words, laid out once and kept: the canvas is drawn again whenever the shelf around it moves, and laying
+ * the same line out on every draw was a good part of each frame. Kept for every spine and every opening (a folder's
+ * spines share their system's mark, and opening it again lays out nothing), by density and direction.
  */
-private class SpineTexts(private val measurer: androidx.compose.ui.text.TextMeasurer) {
-    private val laid = HashMap<List<Any>, androidx.compose.ui.text.TextLayoutResult>()
+private class SpineTexts(
+    private val measurer: androidx.compose.ui.text.TextMeasurer,
+    private val density: androidx.compose.ui.unit.Density,
+    private val direction: androidx.compose.ui.unit.LayoutDirection,
+) {
+    fun line(text: String, style: TextStyle, maxWidth: Int = Constraints.Infinity, overflow: TextOverflow = TextOverflow.Clip): androidx.compose.ui.text.TextLayoutResult {
+        val key = listOf(text, style, maxWidth, overflow, density.density, density.fontScale, direction)
+        laid.get(key)?.let { return it }
+        return measurer.measure(
+            text, style, overflow = overflow, maxLines = 1, constraints = Constraints(maxWidth = maxWidth),
+            layoutDirection = direction, density = density,
+        ).also { laid.put(key, it) }
+    }
 
-    fun line(text: String, style: TextStyle, maxWidth: Int = Constraints.Infinity, overflow: TextOverflow = TextOverflow.Clip) =
-        laid.getOrPut(listOf(text, style, maxWidth, overflow)) {
-            measurer.measure(text, style, overflow = overflow, maxLines = 1, constraints = Constraints(maxWidth = maxWidth))
-        }
+    private companion object {
+        /** A few shelves' worth of lines (each spine has two or three). */
+        val laid = android.util.LruCache<List<Any>, androidx.compose.ui.text.TextLayoutResult>(1200)
+    }
 }
+
+/** The bookcase's [SpineTexts], one for all its spines. */
+private val LocalSpineTexts = androidx.compose.runtime.staticCompositionLocalOf<SpineTexts> { error("no bookcase") }
 
 /**
  * A scanned spine filling the print: stretched across the spine's width (the drawn spine is thicker than the real

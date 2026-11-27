@@ -253,8 +253,8 @@ fun Pip(size: Dp, modifier: Modifier = Modifier, mood: Int = 0, bounce: Boolean 
         val rnd = java.util.Random()
         kotlinx.coroutines.delay(400L + rnd.nextInt(2200))
         while (true) {
-            // After a long idle Pip rests with its eyes open, until the next input.
-            if (Ambient.resting) androidx.compose.runtime.snapshotFlow { Ambient.resting }.first { !it }
+            // Once Tandem has settled (half a minute idle) Pip rests with its eyes open, until the next input.
+            if (Ambient.settled) androidx.compose.runtime.snapshotFlow { Ambient.settled }.first { !it }
             val times = if (rnd.nextInt(5) == 0) 2 else 1
             kotlinx.coroutines.withContext(AmbientFrames) {
                 repeat(times) { i ->
@@ -419,6 +419,8 @@ fun FocusCard(
     val shine = remember { Animatable(1f) }
     LaunchedEffect(focused) {
         if (focused && theme.animation != AnimationStyle.Off) { shine.snapTo(0f); shine.animateTo(1f, tween(650, delayMillis = 60, easing = FastOutSlowInEasing)) }
+        // Left mid-sweep (a quick pass over a row of keys): the band must not stay frozen on the card.
+        else shine.snapTo(1f)
     }
     val style = theme.highlight
     // The Pulse highlight breathes on the shared ambient clock (calmer once idle), read only in the draw lambda.

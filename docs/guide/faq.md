@@ -72,6 +72,10 @@ To stop the daily check, its message and the Start panel row, switch **Settings 
 
 Eden Duo (or Eden), unless Peanuts Native has built it: then it plays natively, with a **⚡ Native** badge. With both Eden Duo and Peanuts Native, the newer save follows the game across. See [Switch games](switch.md).
 
+### Does Tandem use battery while it sits on the home screen?
+
+Very little. While you use it, everything moves as designed. Ten seconds after you last press, push or touch anything, the drifting art, glows and Pip calm down, and after half a minute Tandem settles: every animation holds still where it is, videos and animated icons pause, and only the clock changes, once a minute. Settled like that, Tandem uses about 1 % of the CPU on the AYN Thor. The next press brings it all back at once. Behind a game, with the screen off or under the screensaver, Tandem draws nothing and its music stops. The Plaza's crowd keeps milling about for three minutes before it rests too.
+
 ### Is Tandem affiliated with AYN?
 
 No. Tandem is an independent community project. It isn't affiliated with AYN or with any emulator project, and product names belong to their owners.

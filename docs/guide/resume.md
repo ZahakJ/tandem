@@ -9,6 +9,7 @@ Leave a game, browse a little, come back to exactly where you were.
 Press <kbd>Home</kbd> mid-game, look around, then pick the same game again: if it is still open in its emulator, Tandem brings the emulator back to the front exactly as you left it.
 
 - A highlighted game that is still running shows a **● Running** badge, and the <kbd>A</kbd> hint says **Resume**.
+- A resume is quick: a short zoom instead of the whole launch animation, and no "close the running game?" question, since nothing gets closed.
 - A resume counts toward play time, but not as a new play.
 
 ## Why it needs Shizuku

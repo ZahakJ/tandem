@@ -46,8 +46,16 @@ data class WeekGame(
     val achEarned: Int = -1,
     val achTotal: Int = 0,
 ) {
-    val gameStatus: GameStatus? get() = GameStatus.entries.firstOrNull { it.id == status }
+    // Worked out once per game: the board asks for these many times over the whole library on every build, and the
+    // device keeps the same WeekGames from one build to the next while the library and its details stay (WeekPicks.kt).
+    val gameStatus: GameStatus? = GameStatus.entries.firstOrNull { it.id == status }
     val beaten: Boolean get() = gameStatus?.beaten == true
+    /** Its genre buckets ([WeekBoard.bucketsOf]). */
+    internal val buckets: List<String> = Genres.bucketsOf(genres)
+    /** Its developer, trimmed and in lower case; null when there is none or it is blank. */
+    internal val studio: String? = developer?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
+    /** Its series ([WeekBoard.seriesOf]): only "Because you finished" asks. */
+    internal val series: String? by lazy(LazyThreadSafetyMode.PUBLICATION) { WeekBoard.seriesOf(title) }
 }
 
 /** The board's rows, in the order they show. */
@@ -177,7 +185,7 @@ object WeekBoard {
     // ------------------------------------------------------------------------------------------------ genres
 
     /** A game's genre buckets, as search and smart folders see them (Genres.kt): "RPG & Strategy" is both. */
-    fun bucketsOf(g: WeekGame): List<String> = Genres.bucketsOf(g.genres)
+    fun bucketsOf(g: WeekGame): List<String> = g.buckets
 
     /**
      * A title's series, for "more of the same": what comes before a colon, a dash or a bracket, without a trailing
@@ -219,7 +227,7 @@ object WeekBoard {
                     genre.merge(b, w, Double::plus)
                     genreSeconds.merge(b, g.playSeconds, Long::plus)
                 }
-                g.developer?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }?.let { developer.merge(it, w, Double::plus) }
+                g.studio?.let { developer.merge(it, w, Double::plus) }
                 platform.merge(g.platform, w, Double::plus)
             }
             empty = !any
@@ -232,7 +240,7 @@ object WeekBoard {
         /** 0..1: how much [g] is your kind of game. */
         fun of(g: WeekGame): Double {
             val gen = bucketsOf(g).maxOfOrNull { genre[it] ?: 0.0 } ?: 0.0
-            val dev = g.developer?.trim()?.lowercase()?.let { developer[it] } ?: 0.0
+            val dev = g.studio?.let { developer[it] } ?: 0.0
             val sys = platform[g.platform] ?: 0.0
             return 0.6 * gen + 0.25 * dev + 0.15 * sys
         }
@@ -287,13 +295,41 @@ object WeekBoard {
         val recentWeeks = weeksBefore(now, zone, AVOID_WEEKS).toSet()
         val recent = state.shown.filter { it.week in recentWeeks }.map { it.key }.toSet()
         val sticky = state.shown.filter { it.week == week }.groupBy({ it.slot }, { it.key })
+        // This week's picks are pinned to their rows: a row drawing again (a re-roll, or a pick that stopped
+        // qualifying) never takes a game another row showed, so a re-roll changes its own row and nothing else.
+        val pinned = HashMap<String, String>()
+        for ((slot, keys) in sticky) for (k in keys) if (k !in skipped) pinned.putIfAbsent(k, slot)
 
         val used = HashSet<String>()
         val onBoard = ArrayList<WeekGame>()
         val rows = ArrayList<WeekRow>()
 
+        /** [key] may go in [slot]'s row: not on the board yet, and not pinned to another row. */
+        fun free(key: String, slot: WeekSlot) = key !in used && (pinned[key] ?: slot.id) == slot.id
+
+        // When each re-rolled game was re-rolled away: the longest ago comes back first once nothing new is left.
+        val skipOrder = HashMap<String, Int>().apply { skipped.forEachIndexed { i, k -> put(k, i) } }
+
+        /**
+         * Of a row's possible subjects (a finished game, a genre), the one it shows. While this week's picks of [slot]
+         * still show, theirs: what frees up elsewhere (a re-roll skips games) doesn't change another row's subject.
+         * Re-rolled, of those that fill the row, the one with the most games it hasn't shown (its own on a tie), so the
+         * row is dealt afresh and whole. Otherwise the first that fills the row, or failing that the one that comes closest.
+         */
+        fun <T> subjectOf(slot: WeekSlot, options: List<Pair<T, List<Cand>>>, size: Int = slot.size): Pair<T, List<Cand>>? {
+            if (options.isEmpty()) return null
+            val mine = sticky[slot.id].orEmpty().toSet()
+            fun shows(o: Pair<T, List<Cand>>, keys: Set<String>) = o.second.count { it.g.key in keys && free(it.g.key, slot) }
+            fun all(o: Pair<T, List<Cand>>) = minOf(size, o.second.count { free(it.g.key, slot) })
+            fun unseen(o: Pair<T, List<Cand>>) = minOf(size, o.second.count { free(it.g.key, slot) && it.g.key !in skipped && it.g.key !in recent })
+            val kept = if (mine.isEmpty()) null else options.map { it to shows(it, mine) }.filter { it.second > 0 }.maxByOrNull { it.second }?.first
+            if (kept != null && shows(kept, mine - skipped) > 0) return kept
+            if (kept != null) return options.maxWithOrNull(compareBy<Pair<T, List<Cand>>>({ all(it) }, { unseen(it) }, { it === kept }))
+            return options.firstOrNull { all(it) >= size } ?: options.maxWithOrNull(compareBy { all(it) })
+        }
+
         fun add(slot: WeekSlot, cands: List<Cand>, subject: String? = null, min: Int = 1) {
-            val ranked = cands.filter { it.g.key !in used }.sortedWith(compareByDescending<Cand> { it.score }.thenBy { it.g.key })
+            val ranked = cands.filter { free(it.g.key, slot) }.sortedWith(compareByDescending<Cand> { it.score }.thenBy { it.g.key })
             if (ranked.size < min) return
             val n = rerolls[slot.id] ?: 0
             val chosen = ArrayList<Cand>()
@@ -306,10 +342,15 @@ object WeekBoard {
             while (chosen.size < slot.size) {
                 val left = ranked.filter { c -> chosen.none { it.g.key == c.g.key } }
                 if (left.isEmpty()) break
-                val unseen = left.filter { it.g.key !in recent && it.g.key !in skipped }
-                // Only what showed lately (or was re-rolled away) is left: it fills an empty row, never a started one.
-                if (unseen.isEmpty() && chosen.isNotEmpty()) break
-                val fresh = unseen.ifEmpty { left }
+                val fresh = left.filter { it.g.key !in recent && it.g.key !in skipped }
+                if (fresh.isEmpty()) {
+                    // Nothing new is left: the row stays as full as it was with the best of what it showed before, what
+                    // showed in the last weeks first, then what was re-rolled away, the longest ago first (the covers
+                    // just re-rolled away come back last). A row never shrinks while the library has games for it.
+                    chosen += left.sortedWith(compareBy<Cand> { skipOrder[it.g.key] ?: -1 }.thenByDescending { it.score }.thenBy { it.g.key })
+                        .take(slot.size - chosen.size)
+                    break
+                }
                 val window = (if (slot == WeekSlot.Pick) HERO_WINDOW else WINDOW) * (1 + n)
                 // Diversity: games of a system or genre already on the board score lower, more so the more there are.
                 // Only the best few are weighed (a lower score only falls further), so a big library stays quick.
@@ -377,16 +418,16 @@ object WeekBoard {
         })
 
         // Because you finished X: a finish of the last six months, newest first, with more of its series or studio
-        // left to play; failing that, a well-rated game of its genre.
+        // left to play, topped up with well-rated games of its genre; failing that, its genre alone.
         val anchors = visible.filter { it.beaten && maxOf(it.finishedAt, it.statusAt) > now - 180 * DAY }
             .sortedWith(compareByDescending<WeekGame> { maxOf(it.finishedAt, it.statusAt) }.thenBy { it.key }).take(3)
         fun alike(a: WeekGame): List<Cand> {
-            val dev = a.developer?.trim()?.lowercase()?.takeIf { it.isNotEmpty() }
-            val series = seriesOf(a.title)
+            val dev = a.studio
+            val series = a.series
             return pool.filter { fresh(it) && it.key != a.key && it.key !in used }.mapNotNull { g ->
                 when {
-                    series != null && seriesOf(g.title) == series && g.title != a.title -> Cand(g, 1.2 + 0.5 * quality(g), WeekWhy.Series(a.title))
-                    dev != null && g.developer?.trim()?.lowercase() == dev -> Cand(g, 1.0 + 0.5 * quality(g), WeekWhy.Studio(a.title, a.developer!!.trim()))
+                    series != null && g.series == series && g.title != a.title -> Cand(g, 1.2 + 0.5 * quality(g), WeekWhy.Series(a.title))
+                    dev != null && g.studio == dev -> Cand(g, 1.0 + 0.5 * quality(g), WeekWhy.Studio(a.title, a.developer!!.trim()))
                     else -> null
                 }
             }
@@ -397,8 +438,16 @@ object WeekBoard {
                 Cand(g, 0.4 + 0.5 * quality(g), WeekWhy.SameGenre(a.title, taste.nameOf(bucketsOf(g).first { it in aBuckets })))
             }
         }
-        (anchors.firstNotNullOfOrNull { a -> alike(a).takeIf { it.isNotEmpty() }?.let { a to it } }
-            ?: anchors.firstNotNullOfOrNull { a -> sameGenre(a).takeIf { it.isNotEmpty() }?.let { a to it } })
+        // A finished game's series and studio first (they score a tier above), then its genre, so the row is full.
+        fun following(a: WeekGame): List<Cand> {
+            val more = alike(a)
+            val keys = more.mapTo(HashSet()) { it.g.key }
+            return more + sameGenre(a).filter { it.g.key !in keys }
+        }
+        // Finishes with more of their series or studio left come first (newest first among them), then the rest.
+        val follows = anchors.map { a -> a to following(a) }.filter { (_, c) -> c.any { free(it.g.key, WeekSlot.Because) } }
+            .sortedByDescending { (_, c) -> c.any { it.why !is WeekWhy.SameGenre && free(it.g.key, WeekSlot.Because) } }
+        subjectOf(WeekSlot.Because, follows)
             ?.let { (a, cands) -> add(WeekSlot.Because, cands, subject = a.title) }
 
         // Pick up where you left off: being played, last touched between three days and four months ago.
@@ -451,16 +500,24 @@ object WeekBoard {
 
         // Genre shelves: your favourite genre, then one you rarely play.
         fun genreCands(b: String, why: WeekWhy) = pool.filter { g -> !g.beaten && g.playSeconds < HOUR && b in bucketsOf(g) }.map { g ->
-            Cand(g, 0.6 * quality(g) + 0.25 * (taste.developer[g.developer?.trim()?.lowercase()] ?: 0.0) + 0.15 * (taste.platform[g.platform] ?: 0.0), why)
+            Cand(g, 0.6 * quality(g) + 0.25 * (g.studio?.let { taste.developer[it] } ?: 0.0) + 0.15 * (taste.platform[g.platform] ?: 0.0), why)
         }
-        if (!taste.empty) taste.topGenres.firstOrNull { b -> genreCands(b, WeekWhy.TopRated).count { it.g.key !in used } >= 3 }?.let { b ->
-            add(WeekSlot.Genre, genreCands(b, WeekWhy.YourGenre(taste.nameOf(b), taste.genreSeconds[b] ?: 0L)), subject = taste.nameOf(b), min = 3)
+        if (!taste.empty) {
+            val shelves = taste.topGenres.map { b -> b to genreCands(b, WeekWhy.TopRated) }.filter { (_, c) -> c.count { free(it.g.key, WeekSlot.Genre) } >= 3 }
+            subjectOf(WeekSlot.Genre, shelves)?.let { (b, _) ->
+                add(WeekSlot.Genre, genreCands(b, WeekWhy.YourGenre(taste.nameOf(b), taste.genreSeconds[b] ?: 0L)), subject = taste.nameOf(b), min = 3)
+            }
         }
         val all = pool.flatMap { bucketsOf(it) }.groupingBy { it }.eachCount()
         val rare = all.filter { (b, count) -> count >= 4 && (taste.genre[b] ?: 0.0) < 0.15 && rows.none { it.slot == WeekSlot.Genre && it.subject == taste.nameOf(b) } }
             .keys.sorted()
         if (rare.isNotEmpty()) {
-            val b = rare[Random(fnv("$week|explore|${rerolls[WeekSlot.Explore.id] ?: 0}") xor state.salt).nextInt(rare.size)]
+            // A genre of the week drawn at random (among those that fill the row, while any do), kept all week; a
+            // re-roll moves on to the one with the most games not shown yet.
+            val options = rare.map { it to genreCands(it, WeekWhy.TopRated) }
+            val full = options.filter { (_, c) -> c.count { free(it.g.key, WeekSlot.Explore) } >= WeekSlot.Explore.size }.ifEmpty { options }
+            val b = (if (sticky[WeekSlot.Explore.id].isNullOrEmpty()) null else subjectOf(WeekSlot.Explore, options))?.first
+                ?: full[Random(fnv("$week|explore|${rerolls[WeekSlot.Explore.id] ?: 0}") xor state.salt).nextInt(full.size)].first
             add(WeekSlot.Explore, genreCands(b, WeekWhy.NewGenre(taste.nameOf(b), taste.empty)), subject = taste.nameOf(b), min = 3)
         }
 
@@ -499,16 +556,22 @@ object WeekBoard {
         return if (next == state) state else next
     }
 
-    /** [state] after X on [slot]: its picks are skipped this week and the next draw goes a little deeper. */
+    /**
+     * [state] after X on [slot]: its picks are skipped this week and the next draw goes a little deeper. The rest of
+     * [board] is pinned as this week's (whether or not it was noted yet), so only [slot]'s row draws again. The row's
+     * own picks stay noted too (skipped, they don't come back while anything else is left): they say which subject
+     * the row had, so "Because you finished" keeps its game while that game has more to offer.
+     */
     fun reroll(state: WeekState, board: WeekBoardResult, slot: WeekSlot): WeekState {
         val week = board.week
         val sameWeek = state.week == week
         val keys = board.rows.filter { it.slot == slot }.flatMap { r -> r.picks.map { it.key } }
         val rerolls = (if (sameWeek) state.rerolls else emptyMap()).let { it + (slot.id to ((it[slot.id] ?: 0) + 1)) }
+        val rest = board.picks.filter { it.slot != WeekSlot.UpNext }.map { WeekShown(week, it.slot.id, it.key) }
         return state.copy(
             week = week, rerolls = rerolls,
-            skipped = (if (sameWeek) state.skipped else emptySet()) + keys,
-            shown = state.shown.filterNot { it.week == week && it.slot == slot.id },
+            skipped = (if (sameWeek) state.skipped - keys.toSet() else emptySet()) + keys,
+            shown = state.shown.filterNot { it.week == week } + rest,
         )
     }
 

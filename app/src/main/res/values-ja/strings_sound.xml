@@ -27,9 +27,9 @@
 
     <string name="sound_music">BGM</string>
     <string name="sound_music_folder">マイミュージック</string>
-    <string name="sound_music_help_empty">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は空なので、内蔵のサウンドトラック（%1$s）が流れます。Tandemのオリジナルは、マリンバと口笛とボサノバで明るく弾む「Plaza」、ゆったりやさしいピアノ・ハープ・チェレスタの「Calm」、小さなオーケストラの「Meadow Tales」です。</string>
+    <string name="sound_music_help_empty">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は空なので、内蔵のサウンドトラック（%1$s）が流れます。Tandemのオリジナルは、マリンバとブラシの「Plaza」、夕暮れのカリンバ・ボサノバ「Lagoon」、朝にぴったり、指弾きギターの「Terrace」です。</string>
     <plurals name="sound_music_help_found">
-        <item quantity="other">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は%1$d曲あります。Tandemのオリジナルは、マリンバと口笛とボサノバで明るく弾む「Plaza」、ゆったりやさしいピアノ・ハープ・チェレスタの「Calm」、小さなオーケストラの「Meadow Tales」です。</item>
+        <item quantity="other">メニューを見ている間に流れるBGMです。ゲーム中はフェードアウトして止まり、ほかのアプリが音を流しているときは鳴りません。「マイミュージック」はROMs/tandem/musicにある自分の曲（MP3、OGG、Opus、FLAC、M4A、WAV）を流します。今は%1$d曲あります。Tandemのオリジナルは、マリンバとブラシの「Plaza」、夕暮れのカリンバ・ボサノバ「Lagoon」、朝にぴったり、指弾きギターの「Terrace」です。</item>
     </plurals>
     <string name="sound_music_folder_empty">先にROMs/tandem/musicに曲を入れてください</string>
     <string name="sound_shuffle">マイミュージックをシャッフル</string>
@@ -69,16 +69,8 @@
     <string name="sound_pack_air">そよかぜ</string>
     <string name="sound_pack_air_blurb">やわらかな息づかいと、まるく澄んだ音色。おだやかで広がりのある音です。</string>
 
-    <string name="sound_mood_still_water">夕暮れの静かな湖に、やさしいピアノ</string>
-    <string name="sound_mood_soft_morning">朝の光が差しこむ、ハープとチェレスタ</string>
-    <string name="sound_mood_hillside_breeze">風の吹く晴れた丘で、フルートとピアノ</string>
-    <string name="sound_mood_lantern_town">ランプの灯る小さな町の、アコーディオンのワルツ</string>
-    <string name="sound_mood_seaside_train">海ぞいを走る小さな列車、窓の外には波</string>
-    <string name="sound_mood_forest_spirits">古い木々のあいだで踊る、小さな精霊たち</string>
-    <string name="sound_mood_summer_rain">けだるい夏の午後、ピアノとやさしい雨</string>
-    <string name="sound_mood_flying_home">野原の上を飛んで、おうちへ帰ろう</string>
-    <string name="sound_mood_plaza">日なたの小さな広場で、口笛とマリンバ</string>
-    <string name="sound_mood_shop">ナイロンギターとボサノバで、お店をぶらり</string>
-    <string name="sound_mood_lounge">静かな時間に、オルゴールのワルツ</string>
+    <string name="sound_mood_plaza">日なたの広場で、マリンバとブラシ</string>
+    <string name="sound_mood_lagoon">夕暮れの水辺で、カリンバのボサノバ</string>
+    <string name="sound_mood_terrace">晴れた朝に、ぽろぽろ指弾きギター</string>
     <string name="sound_mood_passby">うれしい知らせに、明るいファンファーレ</string>
 </resources>

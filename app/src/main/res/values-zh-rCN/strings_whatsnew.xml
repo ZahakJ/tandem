@@ -89,7 +89,36 @@
     <string name="whatsnew_0100_settings_body">设置首页是八个图块，每块都有一幅会动的小速写，展示里面的内容。遇到怪事？「发送错误报告」帮你存一份，不用电脑。</string>
     <string name="whatsnew_0100_settings_short">设置</string>
 
-    <string name="whatsnew_0100_music_title">阳光满满的新配乐 Plaza</string>
-    <string name="whatsnew_0100_music_body">新的默认配乐是 Plaza：主页有口哨小调，设置里是温馨的波萨诺瓦，屏保时是八音盒华尔兹，有好消息时还有一小段欢快号角。可在 设置 › 声音与音乐 里更换。</string>
+    <string name="whatsnew_0100_music_title">温馨的新配乐</string>
+    <string name="whatsnew_0100_music_body">全新的背景音乐，柔和温暖，像给游戏库盖上一条小毯子。在 设置 › 声音与音乐 里调大音量吧。</string>
     <string name="whatsnew_0100_music_short">配乐</string>
+
+    <string name="whatsnew_0110_tagline">不期而遇，打个招呼</string>
+    <string name="whatsnew_0110_pass_title">来一场偶遇</string>
+    <string name="whatsnew_0110_pass_body">和别的 Tandem 偶遇，就会互换名片：你的形象、一句问候、最爱的游戏。全程只用蓝牙；在 设置 › 游玩与系统 › 偶遇 里打开前，它一直是关闭的。</string>
+    <string name="whatsnew_0110_pass_short">偶遇</string>
+
+    <string name="whatsnew_0110_plaza_title">广场</string>
+    <string name="whatsnew_0110_plaza_body">偶遇过的人都会来到一座小镇广场：散散步、聊聊天、在长椅上坐坐，还会朝你挥手。挥手回应，下次偶遇时他们就能收到。</string>
+    <string name="whatsnew_0110_plaza_short">广场</string>
+
+    <string name="whatsnew_0110_me_title">捏一个你</string>
+    <string name="whatsnew_0110_me_body">在“我”里捏出你的形象：脸型、眼睛、发型、帽子、衣服等等，全都重画得更亲切了。没主意？按 X 随机来一个，按 Y 撤销。</string>
+    <string name="whatsnew_0110_me_short">“我”</string>
+
+    <string name="whatsnew_0110_grooves_title">三段新律动</string>
+    <string name="whatsnew_0110_grooves_body">Plaza、Lagoon 和 Terrace 取代了旧配乐：马林巴、卡林巴和拨弦奏出的轻松背景律动，全在 Tandem 里做成。可在 设置 › 声音与音乐 里挑选。</string>
+    <string name="whatsnew_0110_grooves_short">律动</string>
+
+    <string name="whatsnew_0110_glyphs_title">每项设置，都有图标</string>
+    <string name="whatsnew_0110_glyphs_body">设置主页换成了更宽敞的方块，一行三个；每项设置都有自己的小图标，一眼就能找到。</string>
+    <string name="whatsnew_0110_glyphs_short">设置图标</string>
+
+    <string name="whatsnew_0110_switch_title">Switch 存档不分家</string>
+    <string name="whatsnew_0110_switch_body">两个 Peanuts 应用都构建过的游戏，现在会在官方的 Peanuts Native 里运行，它一直保持最新。另一个应用里的存档也会跟过来。</string>
+    <string name="whatsnew_0110_switch_short">Switch 存档</string>
+
+    <string name="whatsnew_0110_steady_title">选中更稳了</string>
+    <string name="whatsnew_0110_steady_body">在“本周推荐”里重新抽一排，选中框还留在原地。选中框不再在边缘被切掉，文字自动缩放时的闪退也修好了。</string>
+    <string name="whatsnew_0110_steady_short">修复</string>
 </resources>

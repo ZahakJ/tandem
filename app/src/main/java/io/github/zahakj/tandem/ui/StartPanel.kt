@@ -385,7 +385,7 @@ private fun Modifier.unfoldRow(i: Int, n: Int, progress: () -> Float): Modifier 
     rotationX = -78f * (1f - e)
     cameraDistance = 14f * density
     transformOrigin = TransformOrigin(0.5f, 0f)
-    alpha = (local * 2.2f).coerceIn(0f, 1f)
+    fadeWhole((local * 2.2f).coerceIn(0f, 1f))
     translationY = -6f * density * (1f - e)
 }
 
@@ -440,6 +440,8 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
             add(MenuAction("stats", Tx.s(R.string.panels_start_stats), null, Palette.Butter, icon = TIcon.Trophy, sub = startStatsLine()) {
                 StartMenu.go { StatsTabs.tab = StatsTabs.OVERVIEW; if (Nav.route != Route.Stats) Nav.go(Route.Stats) }
             })
+            // The Plaza, with how many people are new there (PassSettings.kt).
+            plazaStartRow()?.let { add(it) }
             add(MenuAction("new", Tx.s(R.string.panels_start_new), Glyph.Plus, Palette.Mint, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":new"); StartMenu.page = "new" })
             add(MenuAction("sort", Tx.s(R.string.panels_start_sort), Glyph.Sort, Palette.Sky, value = "▸") { FocusMemory.forget(StartMenu.ROUTE + ":sort"); StartMenu.page = "sort" })
             // Try-on mode for every home layout (or, among a system's or collection's games, every games view): the panel
@@ -456,7 +458,7 @@ private fun startRows(ctx: android.content.Context, page: String?): List<MenuAct
                 },
             )
             if (grid) {
-                add(MenuAction("edit", Tx.s(R.string.panels_start_edit_grid), Glyph.Move, Palette.Butter) { StartMenu.go { editGrid() } })
+                // No "Edit grid" row: the grid is edited where you are, Y lifts a tile and holding Y moves it.
                 // Only for a while after a change on the grid: an undo kept from days ago (they are saved) would
                 // only be a puzzle here. Older ones are still in Y › More › Undo last change on the grid.
                 IconGridStore.undoLabel?.takeIf { IconGridStore.undoAt > 0 && System.currentTimeMillis() - IconGridStore.undoAt < UNDO_FRESH_MS }?.let { label ->
@@ -482,14 +484,6 @@ private const val UNDO_FRESH_MS = 15 * 60_000L
 
 /** The rows that open a group on the main page, with a hairline above them. */
 private val StartGroupStarts = setOf("new", "settings")
-
-/** Edit grid: the highlighted tile (or the first) starts moving, like Y › Move. */
-private fun editGrid() {
-    if (Nav.route != Route.Home) { Nav.replace(Route.Home); Toasts.show(Tx.s(R.string.panels_start_edit_grid_pick)); return }
-    val (_, arranged) = IconGrid.menuData ?: return
-    val key = FocusMemory.get(Route.Home.key)?.takeIf { it in arranged } ?: arranged.firstOrNull() ?: return
-    startMove(key, null, homeShown().slots)
-}
 
 /** Sort › Home: puts the home grid in a new order (Y › Move still works after). */
 internal fun sortHome(by: String) {

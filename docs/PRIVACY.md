@@ -106,6 +106,21 @@ notification meanwhile. With Shizuku, Tandem gives itself Android's screen-captu
 permission so a clip starts without asking. **Share** in the Gallery hands a copy of one picture or clip to the app
 you pick in Android's share sheet, and only that app can read it.
 
+## Bump (Bluetooth LE, no network)
+
+Bump (code: `pass/`, off by default) contacts no address. Over Bluetooth LE it advertises Bump's service
+UUID with an 8-byte random token in the scan response (fresh every 13 to 17 minutes, never derived from the identity;
+no device name, no transmit power), scans for that UUID in short windows, and swaps cards over GATT with another
+Tandem: the finder reads a 16-byte nonce and the other side's public key (and stops there if it has that key blocked), writes its card signed (Ed25519) over that nonce, reads the other card
+signed over its own nonce, and writes a wave byte. A card carries the character (16 bytes), the name (cleaned, ≤ 12
+characters), a preset greeting number, the bump count, the public key, the signing time, and only if the owner
+chose them a favourite game's title and the last-played title (never a hidden game's). The exchange is signed, not
+encrypted. Scanning is declared `neverForLocation`, and Tandem doesn't ask for location. Nothing runs in private mode,
+and behind a game only with Bump while playing on (a connected-device foreground service with a notification).
+`plaza.json` (people met, blocks, your card) is in Tandem's backups but excluded from Android's cloud backup; the
+identity seed (`pass-identity.bin`, sealed with an AES key held in the Android keystore) is in the no-backup folder.
+User-facing detail: [Bump and the Plaza](guide/plaza.md).
+
 ## Notifications
 
 The side panel (R2 on home) shows the device's notifications once you allow Tandem in Android's **Notification

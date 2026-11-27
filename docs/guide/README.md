@@ -1,7 +1,7 @@
 # Tandem user guide
 
-Every page of the guide, in reading order. New to Tandem? Start with **[Getting started](getting-started.md)**: it walks through install,
-your games, the first launch and getting artwork. The same pages are on the website at
+Every page of the guide, in reading order. If you're new, start with **[Getting started](getting-started.md)**: install,
+your games, the first launch and artwork. The same pages are on the website at
 [zahakj.github.io/tandem/docs](https://zahakj.github.io/tandem/docs/).
 
 ## Start
@@ -20,6 +20,7 @@ your games, the first launch and getting artwork. The same pages are on the webs
 | [Resume and Shizuku](resume.md) | Bringing a running game back, closing games, and everything else Shizuku is used for |
 | [Switch games](switch.md) | Eden Duo, Peanuts Native (⚡ Native, Build native version) and one save across both |
 | [Streaming from a home PC](streaming.md) | Sunshine on the PC, Moonlight on the handheld, a tile per streamed game |
+| [Bump and the Plaza](plaza.md) | Make your character (Me), meet other Tandems by bumping into them over Bluetooth, the Plaza, privacy and battery |
 
 ## Make it yours
 

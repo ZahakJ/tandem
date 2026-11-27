@@ -899,8 +899,14 @@ private fun ClampedStory(st: RailState, story: String, style: TextStyle, lines: 
     LaunchedEffect(clamp, overflow, st.nudges, st.clean, Themes.still) {
         clamp.drift = 0f
         if (overflow < 1f || st.clean || Themes.still) return@LaunchedEffect
-        val start = withFrameMillis { it }
+        var start = withFrameMillis { it }
         while (true) {
+            // Holds where it is once Tandem has settled, and carries on from there with the next input.
+            if (Ambient.settled) {
+                val held = withFrameMillis { it } - start
+                Ambient.awaitAwake()
+                start = withFrameMillis { it } - held
+            }
             val now = withFrameMillis { it } - start
             clamp.drift = StoryDrift.position(now, overflow, speed)
             val rest = StoryDrift.stillFor(now, overflow, speed)

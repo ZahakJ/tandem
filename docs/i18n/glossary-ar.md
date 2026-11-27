@@ -32,7 +32,7 @@ The words Tandem uses in Arabic, chosen once and used everywhere. Read this befo
 Tandem, Shizuku, Cocoon, ES-DE, RetroAchievements, Steam, Discord, GitHub, LaunchBox, libretro, IGDB, SteamGridDB,
 ScreenScraper, HowLongToBeat, Sunshine, Moonlight, Eden Duo, Peanuts Native, the emulators, system and console
 names (Switch, PlayStation, Game Boy…: Nintendo and Sony market them in Latin letters in the Arab world), game
-titles, song titles and soundtrack names (Plaza, Calm, Meadow Tales), file paths and formats (ROMs/…, gamelist.xml, PNG),
+titles, song titles and soundtrack names (Plaza, Lagoon, Terrace), file paths and formats (ROMs/…, gamelist.xml, PNG),
 button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD", "USB", "Wi-Fi", "GPL-3.0".
 
 ## Android's own words (match the device)
@@ -237,3 +237,21 @@ button letters (A, B, X, Y, L1, R1, L2, R2, Start, Select, Home), "OLED", "LCD",
 | Year of the Horse… | عام الحصان | Rat الفأر، Ox الثور، Tiger النمر، Rabbit الأرنب، Dragon التنين، Snake الأفعى، Horse الحصان، Goat الماعز، Monkey القرد، Rooster الديك، Dog الكلب، Pig الخنزير |
 
 Dates keep Western digits like every number.
+
+## Bump and the Plaza (strings_plaza.xml)
+
+| English | Arabic | Why |
+| --- | --- | --- |
+| Bump (the feature; code and old builds: Tandem Pass) | صدفة | From «يا محاسن الصدف»: warm, everyday, no console maker's word. Feminine: «صدفة» تعمل / متوقفة. Quoted «صدفة» inside a sentence, bare as a title, switch or channel name |
+| the Plaza (where the people you bumped into gather) | الساحة | The feature is translated; the soundtrack Plaza stays Plaza |
+| Me (the character maker) | «أنا» | Quoted when it names the screen: عدّل «أنا» |
+| bump into (someone) / bumped / bumping | صادف / صادفت / بانتظار الصدف | "التقيتما صدفةً 3 مرات" for bumping into each other; toast «يا محاسن الصدف! صادفت سام»; never مرّ بـ or التمرير |
+| card (what is swapped) | بطاقة | |
+| Face details (Me: freckles, face paint, a plaster...) | لمسات على الوجه | Light and playful; تفاصيل الوجه reads like a form |
+| Beard & moustache (Me) | اللحية والشارب | |
+| greeting | تحية | Preset lines only |
+| wave back | لوّح له / تلويحة | |
+| block / blocked people | حظر / المحظورون | Like phones' Arabic |
+| character (your avatar) | شخصيتك | Never "مي" or any other game's word |
+| Nearby devices (Android's permission) | الأجهزة المجاورة | Android's Arabic |
+| safety number | رقم الأمان | As Signal and WhatsApp say it |

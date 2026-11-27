@@ -131,6 +131,8 @@ fun HomeHost() {
     LaunchedEffect(activity) {
         activity.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             Screensaver.wake()
+            // The idle budget's timer runs from the first frame in front, before any input.
+            Ambient.keepTime()
             while (true) {
                 delay(5_000)
                 val minutes = HomeStore.settings.screensaverMinutes

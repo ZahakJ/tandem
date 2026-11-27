@@ -2,16 +2,15 @@
 
 Every row in Tandem's Settings, page by page: what it does in plain words, and what it is set to until you change it. Open Settings with <kbd>Start</kbd> › **Settings**.
 
-<!-- Screenshot to retake: site/assets/screenshots/guide/settings-home.webp (and settings-arabic.webp), Settings home now eight equal tiles in a four by two grid, Search the last one, each tile with its live sketch, Look & feel highlighted. -->
 ![Settings opened on its eight tiles: Look & feel, Home & layout, Two screens, Sound & music, Controls, Library & art, Play & system and Search.](../../site/assets/screenshots/guide/settings-home.webp "Settings: one tile per page, and Search")
 
-**Finding a setting.** Settings opens on eight tiles of one size, four by two: the seven pages, then **Search**. They all wear your theme's accent, and each shows a tiny live sketch of what is set inside, so a glance tells you where things stand: your theme's colours on **Look & feel**, your home layout on **Home & layout**, which screen has the games on **Two screens** (the other only an outline with one screen), an equaliser on **Sound & music** that dances while sounds or music play, which buttons select and go back on **Controls**, how many games you have on **Library & art**, and the battery (with a dot when an update is waiting) on **Play & system**. The panel beside them lists the main settings of the highlighted page with their values. A page is a few short groups, the settings people change most first, and nothing is folded away.
+**Finding a setting.** Settings opens on eight boxy tiles, three to a row: the seven pages, then **Search**, two columns wide. Each has its glyph and name along the top. They all wear your theme's accent, and each shows a tiny live sketch of what is set inside, so a glance tells you where things stand: your theme's colours on **Look & feel**, your home layout on **Home & layout**, which screen has the games on **Two screens** (the other only an outline with one screen), an equaliser on **Sound & music** that dances while sounds or music play, which buttons select and go back on **Controls**, how many games you have on **Library & art**, and the battery (with a dot when an update is waiting) on **Play & system**. The panel beside them lists the main settings of the highlighted page with their values. A page is a few short groups, the settings people change most first, and nothing is folded away.
 
 - <kbd>X</kbd> (or the **Search** tile) searches every row on every page by its name or by what it does ("nintendo", "bigger", "quiet"); <kbd>A</kbd> on a result takes you to it.
 - A row with **›** that names a group of settings (**Wallpaper ›**, **Dock & widgets ›**, **Accounts ›**) opens a short page of its own; <kbd>B</kbd> goes back to the page it came from.
 - <kbd>L1</kbd> / <kbd>R1</kbd> flip pages, <kbd>B</kbd> goes back to the tiles, <kbd>Start</kbd> closes Settings.
 
-Each row's help shows beside it and on the other screen. See [Controls › Settings](controls.md#settings) for every button.
+Every row has a small glyph of its own, so you can find a setting again by its picture. Each row's help shows beside it and on the other screen. See [Controls › Settings](controls.md#settings) for every button.
 
 **Every choice shows its options.** A few short ones sit on the row itself, the one in use filled: <kbd>◀</kbd> / <kbd>▶</kbd> move along them. Longer ones open as cards with <kbd>A</kbd> (each with a little picture when the setting changes how something looks), starting on the one in use. A number is a slider.
 
@@ -175,7 +174,7 @@ Clicks, chimes, Pip's voice and the music while you browse.
 | Sounds | Custom sounds | | Shown with Custom: which recorded pack plays (Cocoon's from `ROMs/assets/sounds`, or a theme pack's own). |
 | Sounds | Sound volume | 50 % | How loud UI sounds are, compared with the system volume. |
 | Sounds | Pip's voice | On | Pip hums a few soft notes when it has something to tell you. |
-| Music | Music | My music | Music while you browse, and where it comes from: **Off**, **My music** (your songs from `ROMs/tandem/music`: MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in soundtrack: **Plaza** (bright, catchy menu music on marimba, whistle and bossa guitar, the default), **Calm** (slow, soft piano, harp and celesta) or **Meadow Tales** (a small orchestra). An empty folder plays the built-in soundtrack, Plaza unless you pick another (one you picked stays yours). It fades out while a game runs and stays quiet while another app plays. |
+| Music | Music | My music | Music while you browse, and where it comes from: **Off**, **My music** (your songs from `ROMs/tandem/music`: MP3, OGG, Opus, FLAC, M4A, WAV), or a built-in groove: **Plaza** (marimba and brushes in a sunny square, the default), **Lagoon** (a kalimba bossa by the water at dusk) or **Terrace** (fingerpicked guitar on a sunny morning). An empty folder plays the built-in soundtrack, Plaza unless you pick another (one you picked stays yours). It fades out while a game runs and stays quiet while another app plays. |
 | Music | Music volume | 40 % | How loud the music plays. |
 | Music | Shuffle my music | On | Plays your music folder in a random order. |
 | Music | Next song | | Skips to another song. |
@@ -268,6 +267,7 @@ What happens when you start a game, plus privacy, your data and updates.
 | Playing | Immersion mode | On | Do Not Disturb while a game plays, put back as it was when you return. Needs Do Not Disturb access; <kbd>A</kbd> allows it. |
 | Playing | Launch animation | On | The game's art zooms up while its emulator starts. |
 | Playing | Performance & sleep › | | Opens **Performance & sleep** (below). |
+| Tandem | Bump › | | Opens **Bump** (below). |
 | Tandem | Privacy & hidden › | | Opens **Privacy & hidden** (below). |
 | Tandem | Your data › | | Opens **Your data** (below). |
 | Tandem | Use Tandem as the Home screen | Off | Asks Android to make Tandem your Home app. |
@@ -280,6 +280,19 @@ What happens when you start a game, plus privacy, your data and updates.
 | --- | --- | --- |
 | Performance mode, Fan mode, Refresh rate | Keep | AYN handhelds: the modes while any game plays; Keep leaves them alone. Needs Shizuku. Elsewhere a single **Performance profiles** row says why they're missing. See [Performance profiles](ayn-thor.md#performance-profiles). |
 | Pause games in sleep | On | A minute after the screen goes off, games left open are paused so the handheld really sleeps. Needs Shizuku running as root. |
+
+**Play & system › Bump**
+
+| Setting | Default | What it does |
+| --- | --- | --- |
+| Bump | Off | Swaps a small card with other Tandems you bump into, over Bluetooth only, and gathers them on the Plaza. The first time it opens Me if you have no character yet, then explains Bluetooth before Android asks for Nearby devices. Android 12 and newer. See [Bump and the Plaza](plaza.md). |
+| Bump while playing | Off | Keeps bumping while a game is in front, with a notification. Off, Bump pauses whenever Tandem isn't in front. |
+| Edit Me | | Opens Me: your character, name, greeting, favourite game and whether your last game is shared. |
+| What others see | | Your card as others see it, and what it never carries. |
+| Open the Plaza | | Everyone you've bumped into. |
+| Blocked people | None | How many are blocked; hold <kbd>A</kbd> to unblock everyone. |
+| Clear Plaza | | Forgets everyone you've met (hold <kbd>A</kbd>). Your card, blocks and pass count stay. |
+| Bump ID | | Your key's safety number, the same Concord would show; <kbd>A</kbd> shows it whole. |
 
 **Play & system › Privacy & hidden**
 
@@ -305,7 +318,7 @@ What happens when you start a game, plus privacy, your data and updates.
 | Setting | Default | What it does |
 | --- | --- | --- |
 | Updates | | This version, and where an update stands: *Up to date*, *0.6.1 available* (<kbd>A</kbd> opens the preview and Update), the download's progress, or what went wrong. <kbd>A</kbd> asks GitHub at once. See [Software updates](getting-started.md#software-updates). Builds without the updater (F-Droid) show **About Tandem** (the version and licence) instead. |
-| What's new in 0.9 | | <kbd>A</kbd> opens the tour of what this version brought, slide by slide (the side panel plays its pictures). See [What's new after an update](getting-started.md#whats-new-after-an-update). |
+| What's new in 0.11 | | <kbd>A</kbd> opens the tour of what this version brought, slide by slide (the side panel plays its pictures). See [What's new after an update](getting-started.md#whats-new-after-an-update). |
 | Show what's new | On | After an update to a new version, the tour opens once by itself. Off, it never does; **What's new** still shows it. |
 | Check automatically | On | Look for a new Tandem once a day while it is open, say so once and show it in the Start panel. Off, only <kbd>A</kbd> on **Updates** looks. |
 | Send a bug report | | Saves `ROMs/tandem/reports/tandem-report-<date>.zip`: `report.txt` (Tandem's version, the device, Android, the settings that change behaviour, each system's game count and emulator) and `logcat.txt` (Tandem's own log lines). Redacted first: account keys and logins, passwords, tokens, e-mail and IP addresses, hidden games' names, and every folder or file name in a path except Tandem's and the systems'. Then **Share…** opens Android's share sheet; nothing is ever uploaded by itself. See [Reporting a bug](faq.md#reporting-a-bug). |

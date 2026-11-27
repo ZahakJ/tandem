@@ -122,6 +122,23 @@ needs it. Paths below are relative to `app/src/main/java/io/github/zahakj/tandem
   `ShellDeck`, one `sh` through Shizuku fed `input -d 0` lines; `DeckSession` picks the first that works and keeps
   the pointer and modifiers), `ui/DeckPanel.kt` (the panel and its Settings rows).
 
+- Bump (code: `pass/`, `TandemPass` and friends; user guide [plaza.md](guide/plaza.md)): bumping into other Tandems over Bluetooth LE. Pure and
+  tested: `Ed25519.kt` (RFC 8032 over BigInteger; Android has none before 13), `PassIdentity.kt` (the identity as a
+  Concord account: a 32-byte seed, Concord's safety number, the libp2p PeerID), `Avatar.kt` (`AvatarSpec`, its
+  16-byte `AvatarCodec`, `AvatarColors`, the preset `Greetings`), `PassCard.kt` (`CardCodec`: the card body, signed
+  over the receiver's nonce with a domain and a length prefix, typed extensions for chat later), `PassProtocol.kt`
+  (the service and its four characteristics, the beacon token, `ServerSession` and `ClientSession`), `PassPlanner.kt`
+  (rotation, scan duty cycles, the hourly cap, who connects) and `PassBook.kt` (`PlazaData`, `plaza.json`'s model:
+  visitors by key, repeats once per six hours, waves, hide, block). Android: `PassRadio.kt` (advertiser, duty-cycled
+  scanner, GATT server and client on one thread), `TandemPass.kt` (when it runs: switch, Me, Android 12+, the
+  Nearby devices permissions, Bluetooth, private mode, Tandem in front or `PassService`), `PassService.kt` (Bump
+  while playing, a connected-device foreground service), `IdentityStore.kt` (the seed, sealed by an Android keystore
+  key, in the no-backup folder). `data/PlazaStore.kt` keeps `plaza.json`. UI: `ui/AvatarArt.kt` (the characters, drawn
+  in a 100 × 120 box, `AvatarView` with blinks, bob and reactions), `ui/MeEditor.kt` (Me, `Route.Tool("me")`),
+  `ui/PlazaScreen.kt` (the Plaza, `Route.Tool("plaza")`, its scene, visitor menu, cards on the bottom screen through
+  `PlazaBottom`, the tile badge, arrivals), `ui/PassSettings.kt` (Settings › Play & system › Bump, the
+  permission primer, What others see, the Start row).
+
 ## Data
 
 - `data/Store.kt`: persistent JSON in `filesDir` (`library.json` per-game `GameMeta`, `settings.json`). Both are
@@ -175,7 +192,9 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
 - `ui/Theme.kt`: `ThemeSpec`, `BuiltInThemes` (Pastel Night, Paper, OLED Black; `renamed` maps retired ids),
   `Themes` (live theme with cross-fade, `readableOn` for accents), `Motion`.
 - Smoothness ([PERFORMANCE.md](PERFORMANCE.md)): `ui/Warm.kt` (`Facts`, `AfterFrames`), `ui/Ambient.kt` (the shared
-  ambient clock, `AmbientFrames`), `ui/QuietSemantics.kt` (no accessibility tree for services that can't read it),
+  ambient clock, `AmbientFrames`, `rememberIdleLoop`), `ui/IdleBudget.kt` (the idle stages: full rate in use, 30 then
+  12 fps from 10 s, settled and still from 30 s, Plaza resting from 3 min; decorative motion reads `Ambient.settled`
+  or `Ambient.awaitAwake`; a looping picture uses `rememberIdleLoop`, not `rememberInfiniteTransition`), `ui/QuietSemantics.kt` (no accessibility tree for services that can't read it),
   `ui/Perf.kt` (frame timing overlay, logcat tag `TandemJank`).
 
 ## Screens and features
@@ -220,7 +239,7 @@ keeps. UI: `ui/ScrapeScreen.kt`, `ui/ArtSetup.kt`, `ui/GameEditor.kt`. See [SCRA
   `PadLink.kt` runs the helper `src/padlink/padlink.c` through Shizuku or su, `PadMap.kt` (translation table),
   `PadPlan.kt` (which pad, state machine), `ui/PadLinkUi.kt` (the offer on the companion).
 - Sound: `audio/` is pure Kotlin (runs on a desktop JVM too): DSP, synth and acoustic voices, drums, a tracker-style
-  song DSL, sequencer and mixer, the Plaza, Calm and Meadow Tales soundtracks and the UI sound packs.
+  song DSL, sequencer and mixer, the built-in grooves (Plaza, Lagoon, Terrace) and the UI sound packs.
   `ui/Sound.kt` (`Sounds`, `Music`, Pip's hum), `ui/SoundEngine.kt` (audio thread while music plays),
   `ui/SoundSettings.kt`, `ui/SoundFiles.kt` (recorded sound packs: file names to sounds). Theme packs bring music and
   sounds as parts (`PackParts`), Cocoon packs through `asset_refs` into `ROMs/assets/music` and `ROMs/assets/sounds`.

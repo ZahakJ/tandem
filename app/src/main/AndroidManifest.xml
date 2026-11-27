@@ -30,6 +30,19 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <!-- Tandem Pass (pass/, docs/guide/plaza.md): off until you turn it on, asked for then, Android 12 and newer only.
+         Finds other Tandems nearby and swaps cards with them over Bluetooth LE. neverForLocation: scans are never used
+         to work out where you are, and Tandem doesn't ask for location at all. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:targetApi="s" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Pass while playing: Tandem Pass keeps going behind a game, with a notification, only when you turn it on. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
     <!-- Show and hide a Switch game's own second screen in Eden Duo (GameScreens.kt). -->
     <uses-permission android:name="io.github.zahakj.edenduo.permission.CONTROL_COMPANION" />
     <!-- Read the games installed in DroidDeck through its library provider, once it has one (DroidDeck.kt). -->
@@ -169,6 +182,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
+
+        <!-- Tandem Pass while a game plays (pass/PassService.kt): only with "Pass while playing" on, with its notification. -->
+        <service
+            android:name=".pass.PassService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
 
         <!-- Records a clip with its sound (GameClip.kt): runs only while one records. -->
         <service

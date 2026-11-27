@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +45,10 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.zahakj.tandem.Command
@@ -60,8 +64,9 @@ import kotlin.math.sin
 /*
  * The Settings home's tiles: eight of one make (the seven pages and Search), in one colour story. Each is a glass
  * tile in the theme's own card colour with the accent only in its glyph and glow, so every theme and theme pack
- * gives a set that belongs to it. A tile holds three things, centred: the page's glyph on a medallion (filled with
- * the accent while highlighted), a tiny live sketch of what is set inside, and the page's name. The sketches are
+ * gives a set that belongs to it. A tile is a gently landscape box laid out the same way every time: a header with
+ * the page's glyph on a small medallion (filled with the accent while highlighted) and its name beside it, then a
+ * sketch box of one size with a tiny live drawing of what is set inside, centred. The sketches are
  * drawings, never sentences: the theme's colours, the home layout, the two screens, an equaliser, the A and B
  * buttons, the game count, the battery.
  *
@@ -73,6 +78,7 @@ import kotlin.math.sin
 @Composable
 internal fun SettingsHomeTile(
     name: String,
+    nameStyle: TextStyle,
     glyph: Glyph,
     modifier: Modifier,
     shape: Shape,
@@ -91,7 +97,7 @@ internal fun SettingsHomeTile(
         val px = with(LocalDensity.current) { 1.dp.toPx() }
         fun sway(): Float = if (!swaying) 0f else sin(Ambient.loop(5200, lively = true) * 2f * PI.toFloat()) * f.value
         val dark = t.dark
-        // Glass: lit from the top, a little deeper at the foot, a pool of the accent behind the medallion and a fine
+        // Glass: lit from the top, a little deeper at the foot, a pool of the accent behind the sketch and a fine
         // highlight along the top edge. Drawn over the theme's card surface (its material: solid, frosted, outlined).
         Box(
             Modifier.fillMaxSize().drawBehind {
@@ -105,8 +111,9 @@ internal fun SettingsHomeTile(
                     ),
                 )
                 val glow = 0.10f + 0.20f * f.value
-                val c = Offset(w / 2f, h * 0.30f)
-                drawCircle(Brush.radialGradient(listOf(accent.copy(alpha = glow), Color.Transparent), c, w * 0.85f), w * 0.85f, c)
+                val c = Offset(w / 2f, h * 0.66f)
+                val reach = minOf(w * 0.6f, h)
+                drawCircle(Brush.radialGradient(listOf(accent.copy(alpha = glow), Color.Transparent), c, reach), reach, c)
                 val r = minOf(t.corner.dp.toPx(), w / 3f)
                 drawLine(
                     Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = if (dark) 0.22f else 0.7f), Color.Transparent), r * 0.5f, w - r * 0.5f),
@@ -114,34 +121,37 @@ internal fun SettingsHomeTile(
                 )
             },
         )
-        Column(
-            Modifier.fillMaxSize().padding(horizontal = 10.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // The medallion: a soft accent disc at rest, filled with the accent while highlighted. It drifts a touch
-            // against the sketch's sway, and rises a little.
+        Column(Modifier.fillMaxSize().padding(12.dp)) {
+            // The header: the medallion and the page's name on one line, the same height on every tile, so names
+            // line up across a row whether they take one line or two.
+            Row(Modifier.fillMaxWidth().height(TileHeader), verticalAlignment = Alignment.CenterVertically) {
+                // The medallion: a soft accent disc at rest, filled with the accent while highlighted. It drifts a touch
+                // against the sketch's sway, and rises a little.
+                Box(
+                    Modifier.size(30.dp)
+                        .graphicsLayer {
+                            val s = sway()
+                            translationX = -s * 3f * px
+                            translationY = -f.value * 2f * px
+                        }
+                        .drawBehind {
+                            val v = f.value
+                            val rad = size.minDimension / 2f
+                            drawCircle(accent.copy(alpha = 0.16f * (1f - v)), rad)
+                            if (v > 0.01f) drawCircle(
+                                Brush.linearGradient(listOf(lerp(accent, Color.White, 0.22f), accent, lerp(accent, t.background, 0.25f)), Offset.Zero, Offset(size.width, size.height)),
+                                rad, alpha = v,
+                            )
+                            drawCircle(lerp(accent, Color.White, 0.4f).copy(alpha = 0.35f + 0.25f * v), rad - 0.5f * px, style = Stroke(1f * px))
+                        },
+                    contentAlignment = Alignment.Center,
+                ) { GlyphIcon(glyph, lerp(ink, t.onAccent, f.value), Modifier.padding(7.dp)) }
+                Spacer(Modifier.width(8.dp))
+                TileName(name, nameStyle, Modifier.weight(1f).fillMaxHeight())
+            }
+            // The sketch: one box of one size under every header, the drawing centred in it.
             Box(
-                Modifier.size(44.dp)
-                    .graphicsLayer {
-                        val s = sway()
-                        translationX = -s * 3f * px
-                        translationY = -f.value * 2f * px
-                    }
-                    .drawBehind {
-                        val v = f.value
-                        val rad = size.minDimension / 2f
-                        drawCircle(accent.copy(alpha = 0.16f * (1f - v)), rad)
-                        if (v > 0.01f) drawCircle(
-                            Brush.linearGradient(listOf(lerp(accent, Color.White, 0.22f), accent, lerp(accent, t.background, 0.25f)), Offset.Zero, Offset(size.width, size.height)),
-                            rad, alpha = v,
-                        )
-                        drawCircle(lerp(accent, Color.White, 0.4f).copy(alpha = 0.35f + 0.25f * v), rad - 0.5f * px, style = Stroke(1f * px))
-                    },
-                contentAlignment = Alignment.Center,
-            ) { GlyphIcon(glyph, lerp(ink, t.onAccent, f.value), Modifier.padding(11.dp)) }
-            Spacer(Modifier.height(8.dp))
-            Box(
-                Modifier.weight(1f).fillMaxWidth()
+                Modifier.weight(1f).fillMaxWidth().padding(top = 6.dp)
                     .graphicsLayer {
                         val s = sway()
                         rotationY = s * 7f
@@ -150,17 +160,45 @@ internal fun SettingsHomeTile(
                         alpha = 0.78f + 0.22f * f.value
                     },
                 contentAlignment = Alignment.Center,
-            ) { Box(Modifier.heightIn(max = 44.dp).fillMaxHeight(), contentAlignment = Alignment.Center) { hint() } }
-            Spacer(Modifier.height(6.dp))
-            // One size on every tile; a long name wraps onto a second line and only shrinks if two can't hold it.
-            Box(Modifier.fillMaxWidth().height(42.dp), contentAlignment = Alignment.Center) {
-                ShrinkText(
-                    name, MaterialTheme.typography.titleMedium.copy(lineHeight = MaterialTheme.typography.titleMedium.fontSize * 1.15f),
-                    maxLines = 2, minScale = 0.8f, textAlign = TextAlign.Center,
-                )
-            }
+            ) { Box(Modifier.heightIn(max = SketchHeight).fillMaxHeight(), contentAlignment = Alignment.Center) { hint() } }
         }
     }
+}
+
+private val TileHeader = 36.dp
+private val SketchHeight = 44.dp
+
+/** The room for a name in a one-column tile: the tile's width less its padding, the medallion and the gap after it. */
+internal val TileNameInset = 12.dp * 2 + 30.dp + 8.dp
+
+/**
+ * The one size of every tile's name: titleMedium, shrunk (to 84 % at most) until every name that can be one line
+ * fits [width] on one line. A name too long even then (French, Arabic) takes two lines in that size.
+ */
+@Composable
+internal fun tileNameStyle(names: List<String>, width: Dp): TextStyle {
+    val base = MaterialTheme.typography.titleMedium
+    val measurer = rememberTextMeasurer()
+    val room = with(LocalDensity.current) { width.toPx() }
+    return remember(names, base, room) {
+        val scale = names.map { room / measurer.measure(it, base, maxLines = 1, softWrap = false).size.width }
+            .filter { it >= 0.84f }.minOrNull()?.coerceAtMost(1f) ?: 1f
+        base.copy(fontSize = base.fontSize * scale, lineHeight = base.fontSize * scale * 1.1f)
+    }
+}
+
+/** A tile's name in the set's one [style]: one line when it fits, else two (shrinking only if two can't hold it). */
+@Composable
+private fun TileName(name: String, style: TextStyle, modifier: Modifier) {
+    val measurer = rememberTextMeasurer()
+    IntrinsicText(name, style, 2, modifier) { BoxWithConstraints(contentAlignment = Alignment.CenterStart) {
+        val maxW = constraints.maxWidth
+        val oneLine = remember(name, style, maxW) {
+            maxW == Constraints.Infinity || measurer.measure(name, style, maxLines = 1, softWrap = false).size.width <= maxW
+        }
+        if (oneLine) FitText(name, style, minScale = 0.95f)
+        else ShrinkText(name, style, maxLines = 2, minScale = 0.8f)
+    } }
 }
 
 /** The live sketch for page [id] (or "search"). */

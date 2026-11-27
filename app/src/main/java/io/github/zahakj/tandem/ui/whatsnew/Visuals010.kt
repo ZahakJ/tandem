@@ -60,6 +60,8 @@ import io.github.zahakj.tandem.ui.Pip
 import io.github.zahakj.tandem.ui.SettingsCategories
 import io.github.zahakj.tandem.ui.SettingsHomeTile
 import io.github.zahakj.tandem.ui.SettingsTileHint
+import io.github.zahakj.tandem.ui.TileNameInset
+import io.github.zahakj.tandem.ui.tileNameStyle
 import io.github.zahakj.tandem.ui.ShrinkText
 import io.github.zahakj.tandem.ui.WeekText
 import io.github.zahakj.tandem.ui.mirroredInRtl
@@ -518,19 +520,22 @@ internal fun SettingsVisual() {
     val shape = RoundedCornerShape(16.dp)
     // The tiles are pictures here: they never take the focus, which stays on the deck's own buttons. Laid out near
     // their real size and scaled down as one, so every page's name has the room it has on the Settings home.
-    DesignBox(Modifier.fillMaxSize().focusProperties { canFocus = false }, width = 496.dp, height = 328.dp) {
+    DesignBox(Modifier.fillMaxSize().focusProperties { canFocus = false }, width = 501.dp, height = 381.dp) {
+        // As on the Settings home: three to a row, Search two columns wide, every name in one size.
+        val names = ids.map { if (it == "search") Tx.s(R.string.settings_hint_search) else SettingsCategories.title(it) }
+        val nameStyle = tileNameStyle(names, 155.dp - TileNameInset)
         for (i in ids.indices) {
-            val r = i / 4
-            val c = i % 4
-            val name = if (ids[i] == "search") Tx.s(R.string.settings_hint_search) else SettingsCategories.title(ids[i])
+            val r = i / 3
+            val c = i % 3
+            val wide = ids[i] == "search"
             Box(
-                Modifier.offset((4 + c * 124).dp, (4 + r * 164).dp).size(116.dp, 156.dp).arrive(i).graphicsLayer {
+                Modifier.offset((4 + c * 169).dp, (4 + r * 129).dp).size(if (wide) 324.dp else 155.dp, 115.dp).arrive(i).graphicsLayer {
                     val on = i == at
                     val s = if (on) 1.06f else 1f
                     scaleX = s; scaleY = s
                 }.then(if (i == at) Modifier.border(2.dp, Palette.Accent, shape) else Modifier),
             ) {
-                SettingsHomeTile(name, glyphs[i], Modifier.fillMaxSize().focusProperties { canFocus = false }, shape, onFocus = {}, onClick = {}) {
+                SettingsHomeTile(names[i], nameStyle, glyphs[i], Modifier.fillMaxSize().focusProperties { canFocus = false }, shape, onFocus = {}, onClick = {}) {
                     SettingsTileHint(ids[i])
                 }
             }

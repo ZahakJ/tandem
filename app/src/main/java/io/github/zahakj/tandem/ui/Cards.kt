@@ -29,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
@@ -139,7 +138,7 @@ fun GroupCard(
     /** A hidden folder, showing while hidden games are revealed: dimmed, with the hidden mark. */
     hidden: Boolean = false,
 ) {
-    val faded = if (hidden) modifier.alpha(HiddenAlpha) else modifier
+    val faded = if (hidden) modifier.dimWhole(HiddenAlpha) else modifier
     if (art != null) {
         FocusCard(faded, glow = color, onFocus = onFocus, entry = true, onClick = onClick) {
             AsyncImage(art, title, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
@@ -253,7 +252,7 @@ fun ShrinkText(
     textAlign: TextAlign? = null,
 ) {
     val measurer = rememberTextMeasurer()
-    BoxWithConstraints(modifier) {
+    IntrinsicText(text, style, maxLines, modifier) { BoxWithConstraints {
         val maxW = constraints.maxWidth
         val maxH = constraints.maxHeight
         val fitted = remember(text, style, maxW, maxH, maxLines) {
@@ -283,7 +282,7 @@ fun ShrinkText(
             chosen
         }
         Text(fitted.first, style = fitted.second, color = color, maxLines = maxLines, overflow = TextOverflow.Ellipsis, textAlign = textAlign)
-    }
+    } }
 }
 
 /** Box art for up to [n] of [games], stopping as soon as it has enough. */
@@ -328,7 +327,7 @@ fun SystemCard(
     val ink = if (tiles == "pastel" || tiles == "solid") Palette.OnAccent else Palette.Text
     // A hidden system, showing while hidden games are revealed: dimmed, with the hidden mark.
     val hidden = io.github.zahakj.tandem.HiddenFolders.isHidden(lib.platform.id, null)
-    FocusCard(if (hidden) modifier.alpha(HiddenAlpha) else modifier, glow = color, onFocus = onFocus, entry = true, onClick = onClick) { focused ->
+    FocusCard(if (hidden) modifier.dimWhole(HiddenAlpha) else modifier, glow = color, onFocus = onFocus, entry = true, onClick = onClick) { focused ->
         when (tiles) {
             "solid" -> Box(Modifier.fillMaxSize().background(color))
             "glass" -> {

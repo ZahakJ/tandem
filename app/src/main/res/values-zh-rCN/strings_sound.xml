@@ -27,9 +27,9 @@
 
     <string name="sound_music">背景音乐</string>
     <string name="sound_music_folder">我的音乐</string>
-    <string name="sound_music_help_empty">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；那里现在是空的，所以播放内置原声（%1$s）。Tandem 自带的有：Plaza，马林巴、口哨与波萨诺瓦，明快又轻盈；Calm，舒缓轻柔的钢琴、竖琴与钢片琴；以及 Meadow Tales，一支小型管弦乐队。</string>
+    <string name="sound_music_help_empty">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；那里现在是空的，所以播放内置原声（%1$s）。Tandem 自带的有：Plaza，马林巴与鼓刷；Lagoon，黄昏水边的卡林巴波萨；以及 Terrace，清晨轻轻的指弹吉他。</string>
     <plurals name="sound_music_help_found">
-        <item quantity="other">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；已找到 %1$d 首。Tandem 自带的有：Plaza，马林巴、口哨与波萨诺瓦，明快又轻盈；Calm，舒缓轻柔的钢琴、竖琴与钢片琴；以及 Meadow Tales，一支小型管弦乐队。</item>
+        <item quantity="other">浏览时播放的音乐；游戏运行时会淡出并停止，其他应用在放音乐时也会保持安静。“我的音乐”播放 ROMs/tandem/music 里你自己的歌（MP3、OGG、Opus、FLAC、M4A、WAV）；已找到 %1$d 首。Tandem 自带的有：Plaza，马林巴与鼓刷；Lagoon，黄昏水边的卡林巴波萨；以及 Terrace，清晨轻轻的指弹吉他。</item>
     </plurals>
     <string name="sound_music_folder_empty">请先把歌曲放进 ROMs/tandem/music</string>
     <string name="sound_shuffle">随机播放我的音乐</string>
@@ -69,16 +69,8 @@
     <string name="sound_pack_air">空气</string>
     <string name="sound_pack_air_blurb">轻柔的气息和纯净圆润的音色。平静而开阔。</string>
 
-    <string name="sound_mood_still_water">黄昏时分，静谧湖面上的轻柔钢琴</string>
-    <string name="sound_mood_soft_morning">晨光洒进来时的竖琴与钢片琴</string>
-    <string name="sound_mood_hillside_breeze">阳光与风中的山坡上，长笛与钢琴</string>
-    <string name="sound_mood_lantern_town">灯火小镇里的一支手风琴圆舞曲</string>
-    <string name="sound_mood_seaside_train">沿海岸行驶的小火车，窗外是海浪</string>
-    <string name="sound_mood_forest_spirits">小精灵们在古树之间起舞</string>
-    <string name="sound_mood_summer_rain">慵懒夏日午后的钢琴与细雨</string>
-    <string name="sound_mood_flying_home">在回家的路上，飞越田野</string>
-    <string name="sound_mood_plaza">阳光小广场上，口哨与马林巴</string>
-    <string name="sound_mood_shop">尼龙弦吉他配波萨诺瓦，慢慢逛货架</string>
-    <string name="sound_mood_lounge">安静时光里的八音盒圆舞曲</string>
+    <string name="sound_mood_plaza">阳光小广场，马林巴配鼓刷</string>
+    <string name="sound_mood_lagoon">黄昏水边，卡林巴轻摇波萨</string>
+    <string name="sound_mood_terrace">晴朗早晨，轻轻的指弹吉他</string>
     <string name="sound_mood_passby">好消息来啦，一小段欢快的旋律</string>
 </resources>

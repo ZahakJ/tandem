@@ -13,64 +13,141 @@
   <img src="site/assets/screenshots/demo.webp" alt="A short tour of Tandem on the AYN Thor's top screen: moving along Continue playing, opening the Nintendo 3DS system and its folders, the Start panel, the quick settings panel with brightness, volume and device tiles, and Settings." width="820">
 </p>
 
-Tandem is a free, open-source game frontend for Android handhelds, made for
-dual-screen devices like the AYN Thor. The top screen is your library; the
-bottom screen shows the art and details for whatever is highlighted. Pick a game
-and Tandem starts it in the right emulator. Press Home, pick it again, and you're
-back where you left off instead of at the title screen.
+**Tandem is a game frontend for Android handhelds with two screens, like the AYN Thor.** You pick a game on the top
+screen and the bottom screen shows its art, details and play time. Press A and it opens in the right emulator. Press
+Home mid-game, pick it again, and you're back where you were, not at the title screen. Free and open source.
 
-Tandem speaks English, العربية (every screen mirrors), 日本語, 简体中文 and Français, and shows dates in the
-Gregorian, Hijri or Chinese calendar, or two at once.
-
-No ads, no accounts, no analytics. Tandem only goes online for things you start
-yourself: scraping artwork, RetroAchievements if you sign in, and the Discord status if you
-connect it. The exceptions: a daily check on GitHub for a new Tandem (which you can turn off), and Steam
-shortcuts missing art get Steam's store pictures by app id after a scan. Private mode keeps all of it offline.
-
+**[Download](https://github.com/ZahakJ/tandem/releases/latest)** ·
 **[Website](https://zahakj.github.io/tandem/)** ·
 **[Docs](https://zahakj.github.io/tandem/docs/)** ·
-**[Download](https://github.com/ZahakJ/tandem/releases/latest)** ·
 **[Roadmap](ROADMAP.md)**
+
+## What it does
+
+- **Uses both screens.** Browse on top, details below. X swaps them. One screen works too.
+- **D-pad first.** A opens, B goes back, Y has options for anything, Start opens the side panel. Touch works too.
+- **Finds your emulators.** It knows 104 systems and offers the emulators you have installed for each. Add more in a
+  JSON file, no rebuild. With Shizuku, a running game resumes instead of restarting.
+- **Plays Switch ports natively.** Games that [Peanuts Native](docs/guide/switch.md) has rebuilt run as native apps
+  (with Shizuku), and on a rooted handheld they share one save with Eden Duo.
+- **Looks the way you like.** Eight home layouts you try on live, themes and theme packs, drawn system art or real
+  console photos, nine sound packs and three original background grooves (Plaza, Lagoon, Terrace).
+- **Meets other Tandems.** Make a character, turn on Bump, and swap a small card over Bluetooth with any Tandem you
+  pass. Everyone you meet walks around your [Plaza](docs/guide/plaza.md). Off until you turn it on.
+- **Private.** No ads, no account, no analytics. It goes online only for things you start ([details](#privacy)).
 
 <table>
   <tr>
-    <td width="61%"><img src="site/assets/screenshots/spotlight.webp" alt="The Spotlight home on the AYN Thor's top screen: Hades II's art fills the screen, a rail of covers on the left, its logo, story and play time on the right."></td>
-    <td><img src="site/assets/screenshots/spotlight-bottom.webp" alt="The bottom screen at the same moment: Hades II's art and logo, with its genres, play time and description."></td>
+    <td width="61%"><img src="site/assets/screenshots/spotlight.webp" alt="The Spotlight home on the AYN Thor's top screen: one game's art fills the screen, a rail of covers on the left, its logo, story and play time on the right."></td>
+    <td><img src="site/assets/screenshots/spotlight-bottom.webp" alt="The bottom screen at the same moment: the game's art and logo, with its genres, play time and description."></td>
   </tr>
   <tr>
     <td><img src="site/assets/screenshots/orbit.webp" alt="The Orbit home: systems on a curved ring of round icons, the Nintendo 3DS in front with its games fanned out above."></td>
-    <td><img src="site/assets/screenshots/ingame-art.webp" alt="The bottom screen while Pokémon Emerald is running: its art, logo and session time."></td>
+    <td><img src="site/assets/screenshots/ingame-art.webp" alt="The bottom screen while a game runs: its art, logo and session time."></td>
   </tr>
   <tr>
-    <td><img src="site/assets/screenshots/shelf.webp" alt="The Nintendo DS folder in Shelf view: game spines on a wooden shelf, one turned to show its cover."></td>
+    <td><img src="site/assets/screenshots/shelf.webp" alt="A Nintendo DS folder in Shelf view: game spines on a wooden shelf, one turned to show its cover."></td>
     <td><img src="site/assets/screenshots/game-bottom.webp" alt="The bottom screen for a running game: a Running badge and A Resume."></td>
   </tr>
 </table>
 
+<!-- Screenshots to add as a fourth row once taken: site/assets/screenshots/plaza.webp (top) and plaza-bottom.webp (bottom). -->
+
 <sub>Real screenshots from an AYN Thor: top screen on the left, bottom screen on the right.</sub>
+
+## Coming from another frontend
+
+Setup takes a few minutes: install, allow file access, pick your games folder, answer or skip a short welcome.
+Tandem never changes another frontend's files, so your old one keeps working.
+
+What Tandem picks up by itself:
+
+- **Your games, where they are.** Any folder, on the device or an SD card. A folder per system (`n3ds`, `3DS`,
+  `Nintendo 3DS` all work), the `ROMs/<system>` layout ES-DE and Cocoon use, or everything mixed together.
+  Subfolders become folders.
+- **Your emulators.** Installed ones are found and offered for each system. Cocoon and Daijisho platform files in
+  `ROMs/platforms/` are read too, so what they could launch, Tandem can.
+- **Your artwork.** Art in `ROMs/downloaded_media/` (ES-DE's layout) is used as it is.
+- **Your details.** The first scan reads ES-DE `gamelist.xml` files and Cocoon backups: titles, descriptions,
+  genres, favourites, play time and art paths. It only fills gaps.
+- **Cocoon looks.** Cocoon theme packs show up in Settings, and **Import my Cocoon setup** brings over your home grid,
+  folders and theme (you can undo it).
+- **PC games.** Games installed in DroidDeck and GameNative join the Windows system, with their art (needs Shizuku
+  with root).
+
+No art yet? LaunchBox needs no account: one download and you can scrape. [Getting started](docs/guide/getting-started.md)
+walks through it, and [Importing](docs/guide/importing.md) has the details.
 
 ## Features
 
-- **Two screens.** Library on top; art, details and play time on the bottom. **X** swaps the screens with a little animation, and everything works on a single screen too.
-- **While you play,** the bottom screen can show the game's art and session time, or a companion with a clock and quick controls, or stay free for emulators that use it.
-- **Resume where you left off.** If a game is still open in its emulator, Tandem brings it back instead of restarting it; a game switcher lists every running game. Needs [Shizuku](https://shizuku.rikka.app/); without it, games start fresh as usual.
-- **Controller first.** A to play, B back, Y options on anything, an on-screen keyboard for search, a **Start** panel, **hold Start** for quick settings (brightness, volume, Wi-Fi, Battery saver), **R2** for a side panel with your notifications, **Select** for a random unplayed game. Bluetooth pads get a working Home button and per-controller Nintendo A/B layout, and with Shizuku or root a pad connected mid-game can take over the built-in controls in any emulator. Touch works too.
-- **Make it yours.** Theme packs (Tandem's own and Cocoon's, with their music and sounds) on top of three built-in themes, eight home layouts (shelves, an icon grid with 1 to 5 rows, carousel, list, console, Orbit, Spotlight with one game's art across the screen, and Stage, a page per system that L1/R1 slide across), tried live from Start › Layout, animated and picture wallpapers, 15 widgets, three original soundtracks (Plaza, Calm and Meadow Tales) or your own music, nine UI sound packs (Thock among them), and real system art (console photos and logos) or Tandem's own drawn art sets.
-- **Playing.** Stream PC games from a home computer with Moonlight, set performance and fan modes per game on AYN handhelds, keep notifications quiet with Do Not Disturb while a game plays, read a game's manual on the bottom screen, or turn that screen off.
-- **Switch games** play in Eden Duo (with each game's own second screen on the bottom), or natively in Peanuts Native once it has built them, and keep one save across the two ([how](docs/guide/switch.md)).
-- **Artwork and details.** Optional scraping from LaunchBox and libretro thumbnails (no account: one LaunchBox download and you can scrape), ScreenScraper, IGDB and SteamGridDB (your keys) and HowLongToBeat. A setup guide tests each source; scrapes run in the background with progress on the bottom screen.
-- **Play tracking.** Play time, sessions and streaks in a stats screen, a status for every game (backlog, playing, finished...), Tandem's own trophies on every system, a journal for notes, CSV export, RetroAchievements progress and Steam achievements.
-- **Notes while you play,** per game, as plain Markdown files: text, checklists, glossaries with drawn symbols, sketches, and screenshots taken from the bottom screen straight into a note.
-- **Organized your way.** Folders (shown as a grid, a bookshelf, a cartridge case or a carousel), smart folders that fill themselves, collections, favourites and Up next; hide anything you'd rather not see, with an optional PIN that also keeps Tandem offline.
-- **Discord status** (optional, in builds with Discord's Social SDK): shows the game you're playing with its cover; off until you connect.
-- **Home-screen mode,** with an apps drawer, a dock, and a screensaver (also as Android's own).
-- **Your files as they are.** Reads `ROMs/<system>/`, turns subfolders into folders, uses and saves art in `ROMs/downloaded_media/` (the ES-DE layout), and imports `gamelist.xml` and other launchers' backups.
-- **Open data.** Over 100 systems and their emulators live in an editable [`platforms.json`](app/src/main/assets/platforms.json); your library and settings are plain JSON with backup and restore.
+**Playing**
+
+- Resume a game that's still open, and a switcher for every running game (needs [Shizuku](https://shizuku.rikka.app/)).
+- While you play, the bottom screen shows the game's art and session time, a companion with a clock and quick
+  controls, the manual, notes, or stays free for emulators that use it.
+- Switch games in Eden Duo or natively in Peanuts Native, with one save across them (needs root). A game built in
+  both Peanuts apps plays in the official one, and with root its save comes along.
+- Stream PC games with Moonlight; per-game performance and fan modes on AYN handhelds; Do Not Disturb while you play.
+
+**Your library**
+
+- **This week:** every Monday, a board of picks from your own library, each with the reason: a Pick of the week,
+  Because you finished, Almost there and more. X re-rolls just the row you're on. Worked out on the handheld.
+- **Surprise me** (Select) spins a reel of covers and stops on a game for you.
+- Folders as a grid, bookshelf, cartridge case or carousel; smart folders with rules (rating, developer, play
+  time…); collections, favourites and Up next. Multi-disc games are one tile.
+- Search with filters by system, genre, year, rating, status and more.
+- Art and details from LaunchBox and libretro (no account), ScreenScraper, IGDB and SteamGridDB (your keys) and
+  HowLongToBeat, scraped in the background.
+
+**Progress**
+
+- Play time, sessions and streaks in a stats screen, and a status for every game (backlog, playing, finished...).
+- Tandem's own trophies on every system, RetroAchievements with full lists and players' hints, and Steam
+  achievements.
+- Notes per game as plain Markdown: checklists, sketches, and screenshots from the bottom screen.
+
+**Make it yours**
+
+- Eight home layouts (shelves, icon grid, carousel, list, console, Orbit, Spotlight and Stage), tried live from
+  **Start › Layout**.
+- Built-in themes and theme packs (Cocoon's work too), animated or picture wallpapers, your own pictures and GIFs as
+  tile art, 15 widgets.
+- Real system art from the web, or Tandem's own drawn art sets.
+- Three original background grooves (Plaza, Lagoon, Terrace), nine UI sound packs, or your own music.
+- Share your look, or get one from the community gallery.
+- English, العربية (every screen mirrors), 日本語, 简体中文 and Français; Gregorian, Hijri or Chinese calendars.
+
+**Everyday**
+
+- Home-screen mode with an apps drawer, a dock and a screensaver.
+- Quick settings (hold Start), a notifications panel, Bluetooth pads with a working Home button and Nintendo-style
+  A/B per controller.
+- A tour of what's new after each update, updates in one press, and a bug report without adb.
+
+- Settings on eight tiles with a search, and a small glyph for every row.
+- Light when idle: half a minute after your last press, Tandem stops animating and draws almost nothing.
+
+**Bump and the Plaza**
+
+- Make a character of yourself in **Me**: face, eyes and eye colour, hairstyles, hats, outfits, glasses and more.
+  L1 and R1 switch tabs; the Card tab holds your name, a greeting and a favourite game.
+- Turn on Bump and carry your handheld around. When another Tandem with Bump on comes within Bluetooth range, a
+  phone included, you swap a small card.
+- Everyone you met walks around your Plaza, a little town square whose sky follows the clock. Wave back, hide or
+  block anyone.
+- Off until you turn it on; no internet, no account. Android 12 or newer. ([How it works](docs/guide/plaza.md))
+
+## Privacy
+
+No ads, no accounts, no analytics. Tandem goes online only for things you start: scraping art, fetching system art,
+RetroAchievements or Steam if you sign in, the Discord status if you connect it, and the look gallery. Two exceptions
+run by themselves: a daily check on GitHub for a new Tandem (you can turn it off), and Steam store pictures for Steam
+shortcuts that have no art. Private mode keeps all of it offline. [What each service receives](docs/guide/privacy.md).
 
 ## Supported systems
 
-Tandem detects the emulators you have installed and offers every one that fits.
-A few of the 104 systems it knows:
+Tandem detects the emulators you have installed and offers every one that fits. A few of the 104 systems it knows:
 
 | System | Emulators |
 | --- | --- |
@@ -78,55 +155,47 @@ A few of the 104 systems it knows:
 | Switch · Wii U · Wii and GameCube | Eden Duo, Eden, Peanuts Native · Cemu · Dolphin |
 | Game Boy, Color, Advance · NES · SNES · N64 | RetroArch cores (mGBA, Gambatte, Mesen, Snes9x, Mupen64Plus…) |
 | PlayStation · PS2 · PSP · Vita | DuckStation · NetherSX2, ARMSX2 · PPSSPP · Vita3K |
-| Dreamcast · Saturn · Genesis and friends | Flycast, Redream · Yaba Sanshiro · RetroArch |
+| Dreamcast · Saturn · Genesis, Master System, Game Gear | Flycast, Redream · Yaba Sanshiro · RetroArch |
 | Arcade · Windows · DOS · ScummVM | FinalBurn Neo, MAME · GameNative, Winlator · DOSBox Pure · ScummVM |
 
-Any other emulator can be added by editing `platforms.json`, without rebuilding
-the app: see [Systems and emulators](docs/guide/platforms.md).
+Missing one? Add it to `platforms.json`, no rebuild needed: see [Systems and emulators](docs/guide/platforms.md).
 
 ## Install
 
-- **[GitHub Releases](https://github.com/ZahakJ/tandem/releases/latest):** download `tandem-<version>.apk` and open it on your handheld. After that Tandem tells you when a new version is out and installs it when you press Update ([how](docs/guide/getting-started.md#software-updates)).
-- **[Obtainium](https://obtainium.imranr.dev/):** add `https://github.com/ZahakJ/tandem` to get updates straight from releases.
+- **[GitHub Releases](https://github.com/ZahakJ/tandem/releases/latest):** open `tandem-<version>.apk` on your
+  handheld. Tandem then tells you about new versions and installs them when you press Update.
+- **[Obtainium](https://obtainium.imranr.dev/):** add `https://github.com/ZahakJ/tandem`.
 - **F-Droid:** planned; the listing is ready in [`fastlane/`](fastlane/metadata/android/en-US).
 
-Tandem needs Android 11 or newer. It doesn't include games, BIOS files or emulators.
+Android 11 or newer. Bring your own games: Tandem doesn't include games, BIOS files or emulators, and never downloads
+them.
 
 ## Quick start
 
-1. Have your games in any folder on the device or an SD card: a folder per system (`n3ds`, `GBA`, `PlayStation 2`…), one system's folder, or everything together. `ROMs/` in internal storage is the default.
-2. Install and open Tandem, then allow **All files access** so it can read your games.
-3. Pick your games folder when asked, so Tandem can share games with emulators that need it.
-4. Optional: with Shizuku running, allow Tandem in it to enable resume.
-5. Artwork with no account: **Settings › Library & art › Set up sources › LaunchBox › Download**, then **Scrape library**.
+1. Put your games in any folder, one subfolder per system. `ROMs/` in internal storage is the default.
+2. Open Tandem and allow **All files access**.
+3. Pick your games folder when asked, so emulators that need it can open your games.
+4. Optional: allow Tandem in Shizuku for resume.
+5. Art with no account: **Settings › Library & art › Set up sources › LaunchBox › Download**, then **Scrape library**.
 
-The [getting started guide](docs/guide/getting-started.md) has the details, the [guide index](docs/guide/README.md) lists every page, and
-[Setting up on the AYN Thor](docs/guide/ayn-thor.md) covers the Thor.
+More in [Getting started](docs/guide/getting-started.md), and [Setting up on the AYN Thor](docs/guide/ayn-thor.md).
 
 ## Documentation
 
-The docs are at **[zahakj.github.io/tandem/docs](https://zahakj.github.io/tandem/docs/)**,
-built from the Markdown in [`docs/`](docs/):
+All of it is at **[zahakj.github.io/tandem/docs](https://zahakj.github.io/tandem/docs/)**, built from [`docs/`](docs/).
+The [guide index](docs/guide/README.md) lists every page. Good places to start:
 
 | | |
 | --- | --- |
-| [Getting started](docs/guide/getting-started.md) | Install, lay out your games, first launch, art with no account |
-| [Every setting](docs/guide/settings.md) | Every row in Settings, with its default and what it does |
-| [AYN Thor](docs/guide/ayn-thor.md) | Emulators, the bottom screen, Shizuku on the Thor |
-| [Your library](docs/guide/library.md) | Folders, artwork, collections, play time, your data |
+| [Getting started](docs/guide/getting-started.md) | Install, your games, first launch, art with no account |
+| [Every setting](docs/guide/settings.md) | Every row in Settings, with its default |
 | [Controller reference](docs/guide/controls.md) | Every button on every screen |
+| [Your library](docs/guide/library.md) | Folders, This week, collections, achievements, play time, backups |
 | [Systems and emulators](docs/guide/platforms.md) | The `platforms.json` reference |
-| [Artwork and scraping](docs/guide/scraping.md) | Art with no account, free keys, when a scrape finds nothing |
-| [Importing](docs/guide/importing.md) | From ES-DE gamelists and launcher backups |
-| [Resume and Shizuku](docs/guide/resume.md) | How resume works, and everything Shizuku is used for |
-| [Switch games](docs/guide/switch.md) | Eden Duo, Peanuts Native and one save across both |
-| [Themes](docs/guide/themes.md) · [Widgets](docs/guide/widgets.md) | Looks, layouts, packs, sounds; widgets |
-| [Android apps](docs/guide/apps.md) | The app menu, the drawer, choosing and moving screens |
-| [Notes](docs/guide/notes.md) | Notes per game: text, checklists, glossaries, sketches, screenshots |
-| [Streaming from a home PC](docs/guide/streaming.md) | Sunshine on the PC, Moonlight on the handheld |
-| [Privacy and scraping](docs/guide/privacy.md) | What is stored, and what each service receives |
-| [FAQ and troubleshooting](docs/guide/faq.md) | Common questions and fixes |
-| [Architecture](docs/ARCHITECTURE.md) · [Contributing](CONTRIBUTING.md) | For developers |
+| [Switch games](docs/guide/switch.md) | Eden Duo, Peanuts Native and one save |
+| [Themes](docs/guide/themes.md) | Layouts, packs, art sets, sounds and music |
+| [Bump and the Plaza](docs/guide/plaza.md) | Your character, bumping into other Tandems, privacy |
+| [Privacy](docs/guide/privacy.md) · [FAQ](docs/guide/faq.md) | What goes where; common fixes |
 
 ## Building
 
@@ -136,12 +205,8 @@ JDK 17 and the Android SDK (platform 34, build-tools 34.0.0):
 ./gradlew assembleDebug
 ```
 
-On Nix or NixOS, `nix-shell --run './gradlew assembleDebug'` provides everything.
-Release builds are shrunk with R8 and ship a baseline profile for quick starts.
-[Building from source](docs/guide/building.md) has more, and every pull request
-gets a debug APK from CI.
-
-To preview the website and docs locally:
+On Nix, `nix-shell --run './gradlew assembleDebug'`. Every pull request also gets a debug APK from CI.
+[Building from source](docs/guide/building.md) has more. To preview the website and docs:
 
 ```sh
 node scripts/build-docs.mjs && python3 -m http.server -d site 8000
@@ -149,13 +214,11 @@ node scripts/build-docs.mjs && python3 -m http.server -d site 8000
 
 ## Contributing
 
-Bug reports, emulator configs, docs and code are all welcome; see
-[CONTRIBUTING.md](CONTRIBUTING.md). Please report security problems privately, as
-described in [SECURITY.md](SECURITY.md).
+Bug reports, ideas, emulator entries, translations, themes and code all help. Small pull requests are easiest to
+review. See [CONTRIBUTING.md](CONTRIBUTING.md). Security problems go privately, as in [SECURITY.md](SECURITY.md).
 
 ## License
 
-GPL-3.0-or-later. See [LICENSE](LICENSE). Tandem uses the Nunito typeface
-(SIL Open Font License). It is an independent project, not affiliated with AYN
-or any emulator project. Game titles and artwork in the screenshots belong to
-their owners.
+GPL-3.0-or-later. See [LICENSE](LICENSE). Tandem uses the Nunito typeface (SIL Open Font License). It is an
+independent project, not affiliated with AYN or any emulator project. Game titles and artwork in the screenshots
+belong to their owners.

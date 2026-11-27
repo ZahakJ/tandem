@@ -110,17 +110,17 @@ fun performanceActions(ctx: Context, g: Game): List<MenuAction> {
     val fans = PerformancePlan.fans.map { it.first }
     val hz = Performance.supportedHz(ctx)
     return listOf(
-        MenuAction("perfmode", Tx.s(R.string.play_perf_mode), Glyph.Motion, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help,
+        MenuAction("perfmode", Tx.s(R.string.play_perf_mode), Glyph.Bolt, Palette.Peach, value = name(own.mode, base.mode, PerformancePlan::modeName), more = true, help = help,
             step = { by -> set(own.copy(mode = next(own.mode, modes, by))) },
             choices = options(own.mode, modes, base.mode, PerformancePlan::modeName) { v -> set(own.copy(mode = v)) }) {
             set(own.copy(mode = next(own.mode, modes)))
         },
-        MenuAction("perffan", Tx.s(R.string.play_perf_fan), Glyph.Refresh, Palette.Peach, value = name(own.fan, base.fan, PerformancePlan::fanName), more = true, help = help,
+        MenuAction("perffan", Tx.s(R.string.play_perf_fan), Glyph.Fan, Palette.Peach, value = name(own.fan, base.fan, PerformancePlan::fanName), more = true, help = help,
             step = { by -> set(own.copy(fan = next(own.fan, fans, by))) },
             choices = options(own.fan, fans, base.fan, PerformancePlan::fanName) { v -> set(own.copy(fan = v)) }) {
             set(own.copy(fan = next(own.fan, fans)))
         },
-        MenuAction("perfhz", Tx.s(R.string.play_perf_refresh), Glyph.Screens, Palette.Peach, value = name(own.hz, base.hz, PerformancePlan::hzName), more = true, help = help,
+        MenuAction("perfhz", Tx.s(R.string.play_perf_refresh), Glyph.Hz, Palette.Peach, value = name(own.hz, base.hz, PerformancePlan::hzName), more = true, help = help,
             step = { by -> set(own.copy(hz = next(own.hz, hz, by))) },
             choices = options(own.hz, hz, base.hz, PerformancePlan::hzName) { v -> set(own.copy(hz = v)) }) {
             set(own.copy(hz = next(own.hz, hz)))

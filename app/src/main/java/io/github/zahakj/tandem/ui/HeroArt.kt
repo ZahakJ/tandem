@@ -130,8 +130,8 @@ fun HeroArt(game: Game, modifier: Modifier = Modifier, onShown: (() -> Unit)? = 
                 KenBurns(rememberSizedRequest(choice.file, maxOf(w, h)), Modifier.fillMaxSize(), moving = look.kenBurns, alignment = choice.align, onShown = onShown)
             }
         }
-        // After minutes without input it holds its frame, like every other motion (Ambient.resting).
-        snap?.let { LoopingVideo(it, Modifier.fillMaxSize(), paused = Ambient.resting) }
+        // Half a minute after the last input it holds its frame, like every other motion (Ambient.settled).
+        snap?.let { LoopingVideo(it, Modifier.fillMaxSize(), paused = Ambient.settled) }
     }
 }
 

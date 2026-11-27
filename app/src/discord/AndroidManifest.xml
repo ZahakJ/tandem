@@ -8,7 +8,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" tools:node="remove" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" tools:node="remove" />
     <uses-permission android:name="android.permission.BLUETOOTH" tools:node="remove" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" tools:node="remove" />
+    <!-- Only the SDK's own BLUETOOTH_CONNECT goes: Tandem Pass asks for it itself (main manifest), and a plain remove
+         took Tandem's too, so Android never asked for it and Tandem Pass could never be switched on. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" tools:node="remove" tools:selector="com.discord.socialsdk" />
 
     <application>
         <!-- Connecting a Discord account: Discord (or a browser) sends the authorization back to

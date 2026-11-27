@@ -8,6 +8,7 @@
     <string name="week_header_of">Semaine du %1$s</string>
     <string name="week_hint_reroll">Relancer</string>
     <string name="week_reroll_upnext">« Prochains jeux » est ta liste à toi : X relance les autres rangées</string>
+    <string name="week_reroll_none">Cette rangée a déjà tout montré cette semaine</string>
 
     <string name="week_tag_upnext">Prochains jeux</string>
     <string name="week_tag_pick">Choix de la semaine</string>

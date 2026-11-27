@@ -1,8 +1,6 @@
 package io.github.zahakj.tandem.audio
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
@@ -13,9 +11,11 @@ import kotlin.math.log10
 import kotlin.math.sqrt
 
 /**
- * The Plaza soundtrack: every piece plays through cleanly, as loud as the others, and comes round its loop without a
- * jump in level. With TANDEM_MUSIC_OUT set to a folder, it also writes each piece there as a WAV to listen to (two
- * passes of a looping piece, so its seam is heard twice; the jingle once) with a table of the numbers.
+ * The built-in music, Plaza and its sister grooves Lagoon and Terrace: every groove plays through cleanly, as loud as
+ * the others and quiet enough for background music, has no tune out in front, and comes round its loop without a
+ * jump in level or a click. With TANDEM_MUSIC_OUT set to a folder, it also writes each piece there as a WAV to listen
+ * to (two passes of a groove, so its seam is heard twice; the jingle once), a 45-second excerpt of each groove around
+ * its first seam ("<id>-preview.wav"), and a table of the numbers.
  */
 class PlazaTest {
     private val rate = 48000
@@ -142,33 +142,100 @@ class PlazaTest {
             report.append('\n')
             report.append("        parts: " + song.parts.indices.joinToString(" ") { "%s %.2f".format(song.parts[it].name, r.partPeaks[it]) } + '\n')
             out?.let { writeWav(File(it, "${song.id}.wav"), r.data) }
+            if (!song.oneShot) out?.let { writeWav(File(it, "${song.id}-preview.wav"), excerpt(r.data, r.seams[0] - 25 * rate, r.seams[0] + 20 * rate)) }
         }
         val mean = levels.values.average()
         for ((id, l) in levels) check("$id is ${l - mean} dB from the others", abs(l - mean) <= 1.5)
-        // For reference: the older soundtracks' first pieces.
-        for (song in listOf(Calm.all.first(), Meadow.all.first())) {
-            val r = render(song, passes = 1, tail = 0.0)
-            report.append("%-16s peak %6.2f dBFS  loudness %6.2f LUFS (reference)\n".format(song.id, db(peak(r.data).toDouble()), loudness(r.data)))
-        }
+        // Every groove (and the jingle) at the same, background level: -23 LUFS give or take half a dB, a few dB
+        // under the first Plaza (about -19.5 LUFS), so picking another never makes the music jump.
+        for ((id, l) in levels) check("$id is at $l LUFS, not -23 +-0.5", l in -23.5..-22.5)
         println(report)
         out?.let { File(it, "levels.txt").writeText(report.toString()) }
         assertTrue(problems.joinToString("; "), problems.isEmpty())
     }
 
-    @Test fun plazaFollowsTheSceneAndOthersDont() {
-        assertEquals("plaza", Tracks.forScene("plaza", Tracks.Scene.Home)?.id)
-        assertEquals("shop", Tracks.forScene("plaza", Tracks.Scene.Settings)?.id)
-        assertEquals("lounge", Tracks.forScene("plaza", Tracks.Scene.Idle)?.id)
-        assertNull(Tracks.forScene("calm", Tracks.Scene.Settings))
-        assertNull(Tracks.forScene("meadow", Tracks.Scene.Home))
-        assertNotNull(Tracks.jingle("plaza"))
-        assertNull(Tracks.jingle("calm"))
-        assertTrue(Plaza.passby.oneShot)
-        assertEquals(Plaza.all, Tracks.of("plaza"))
-        assertEquals(Plaza.all, Tracks.of("nonsense"))
-        // The jingle is short; the pieces are long enough not to wear thin.
-        assertTrue(Plaza.passby.seconds in 8.0..12.5)
-        for (s in Plaza.all) assertTrue("${s.id} is ${s.seconds} s", s.seconds > 45)
+    @Test fun threeGroovesThatPlayEverywhere() {
+        assertEquals(listOf("plaza", "lagoon", "terrace"), Plaza.all.map { it.id })
+        assertEquals(Tracks.ids, Plaza.all.map { it.id })
+        assertEquals(Tracks.DEFAULT, Tracks.ids.first())
+        for (s in Plaza.all) assertEquals(s, Tracks.of(s.id))
+        // A removed soundtrack, or nonsense, is Plaza.
+        for (id in listOf("calm", "meadow", "shop", "lounge", "nonsense")) assertEquals("plaza", Tracks.of(id).id)
+        assertTrue(Tracks.jingle.oneShot)
+        assertEquals(Plaza.passby, Tracks.jingle)
+        assertEquals(Plaza.all + Plaza.passby, Tracks.all)
+        // Each its own: different keys (the first chord) and tempos.
+        assertEquals(3, Plaza.all.map { it.bpm }.toSet().size)
+        assertEquals(3, Plaza.all.map { it.sections.getValue(it.form[it.loopFrom]).chords.substringBefore(' ') }.toSet().size)
+        // The jingle is short; the grooves loop over half a minute or more.
+        assertTrue("passby is ${Plaza.passby.seconds} s", Plaza.passby.seconds in 6.0..10.0)
+        for (s in Plaza.all) assertTrue("${s.id} is ${s.seconds} s", s.seconds > 30)
+    }
+
+    @Test fun groovesAreRhythmBeds() {
+        val ornaments = setOf("lead", "whistle", "melody", "tune", "motif", "answer", "glock", "celesta", "vibes", "pad", "keys")
+        for (s in Plaza.all) {
+            // Only a chord instrument, a bass and percussion: no tune, no motif, no ornaments.
+            for (p in s.parts) assertTrue("${s.id} has a ${p.name}", p.name !in ornaments)
+            for ((name, sec) in s.sections) for (g in sec.gens) {
+                assertTrue("${s.id}/$name writes out a line (${g::class.simpleName})", g !is MelodyGen && g !is PadGen && g !is ArpGen)
+                if (g is DrumGen) assertTrue("${s.id}/$name has fills, a crash or a riser", g.fills.isEmpty() && !g.crash && !g.riser)
+            }
+            val bars = s.form.drop(s.loopFrom).sumOf { s.sections.getValue(it).bars }
+            assertTrue("${s.id} loops over $bars bars", bars in 16..32 && bars % 2 == 0)
+            // Every note always plays (nothing only sometimes, nothing only from the second pass)...
+            val t = Compiler.compile(s)
+            val loop = t.events.filter { it.start >= t.loopStart - 1e-6 }
+            for (e in loop) assertTrue("${s.id}: ${s.parts[e.part].name} has a maybe-note", e.prob >= 1f && e.minLoop == 0)
+            // ...and every part, the chord instrument above all, plays the very same rhythm every two bars: only the
+            // pitches move, with the chords. A note outside its part's pattern would show up as a different bar.
+            val period = 2 * s.stepsPerBar
+            for (part in s.parts.indices) {
+                val rhythms = loop.filter { it.part == part }
+                    .groupBy { ((it.start - t.loopStart) / period).toInt() }
+                    .mapValues { (_, evs) -> evs.map { (it.start - t.loopStart) % period }.toSortedSet() }
+                assertEquals("${s.id}: ${s.parts[part].name} skips a bar", bars / 2, rhythms.size)
+                assertEquals("${s.id}: ${s.parts[part].name} changes its rhythm", 1, rhythms.values.toSet().size)
+            }
+        }
+    }
+
+    @Test fun removedSoundtracksMoveToPlaza() {
+        fun after(look: io.github.zahakj.tandem.data.Look) =
+            io.github.zahakj.tandem.data.Store.keepSoundtrack(io.github.zahakj.tandem.data.Settings(welcomeDone = true, look = look)).look
+        // New setups, and ones that never chose, play Plaza.
+        assertEquals("plaza", after(io.github.zahakj.tandem.data.Look()).soundtrackId)
+        // Calm and Meadow Tales are gone: picked or not, a setup that named one follows the default to Plaza.
+        for (old in listOf("calm", "meadow", "something-else")) for (picked in listOf(false, true)) {
+            val look = after(io.github.zahakj.tandem.data.Look(soundtrack = old, soundtrackPicked = picked))
+            assertEquals(null, look.soundtrack)
+            assertEquals(false, look.soundtrackPicked)
+            assertEquals("plaza", look.soundtrackId)
+        }
+        // An old id read without the migration still reads as Plaza.
+        assertEquals("plaza", io.github.zahakj.tandem.data.Look(soundtrack = "meadow").soundtrackId)
+        // The three grooves, picked, stay.
+        for (id in Tracks.ids) {
+            val look = after(io.github.zahakj.tandem.data.Look(soundtrack = id, soundtrackPicked = true))
+            assertEquals(id, look.soundtrackId)
+            assertTrue(look.soundtrackPicked)
+        }
+    }
+
+    /**
+     * [d]'s frames from [from] until [to] with 0.5 s fades at either end, for a short preview around a seam. Not a
+     * test of anything: the fades are only so the excerpt doesn't start or stop with a click.
+     */
+    private fun excerpt(d: FloatArray, from: Int, to: Int): FloatArray {
+        val f = from.coerceAtLeast(0); val t = to.coerceAtMost(d.size / 2)
+        val out = d.copyOfRange(f * 2, t * 2)
+        val fade = rate / 2
+        val n = out.size / 2
+        for (i in 0 until minOf(fade, n)) {
+            val g = i.toFloat() / fade
+            for (c in 0..1) { out[i * 2 + c] *= g; out[(n - 1 - i) * 2 + c] *= g }
+        }
+        return out
     }
 
     private fun writeWav(file: File, samples: FloatArray) {

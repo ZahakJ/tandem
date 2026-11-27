@@ -38,7 +38,7 @@ class Deck(val version: String, @StringRes val tagline: Int, val slides: List<Sl
 
 object Decks {
     /** Every deck, oldest first. A new minor version adds its own at the end. */
-    val all: List<Deck> by lazy { listOf(deck090, deck0100) }
+    val all: List<Deck> by lazy { listOf(deck090, deck0100, deck0110) }
 
     val versions: List<String> get() = all.map { it.version }
 
@@ -76,5 +76,22 @@ private val deck0100 = Deck(
         Slide("ra", R.string.whatsnew_0100_ra_title, R.string.whatsnew_0100_ra_body, R.string.whatsnew_0100_ra_short, Glyph.Trophy, Tint.Butter, 1) { AchievementsVisual() },
         Slide("settings", R.string.whatsnew_0100_settings_title, R.string.whatsnew_0100_settings_body, R.string.whatsnew_0100_settings_short, Glyph.Grid, Tint.Peach, 0) { SettingsVisual() },
         Slide("music", R.string.whatsnew_0100_music_title, R.string.whatsnew_0100_music_body, R.string.whatsnew_0100_music_short, Glyph.Music, Tint.Lavender, 1) { MusicVisual() },
+    ),
+)
+
+/**
+ * 0.11: Bump, the Plaza, Me, three new grooves, a glyph for every setting, Switch saves that follow, and a steadier
+ * highlight (the quieter fixes, grouped). Pictures in Visuals011.kt.
+ */
+private val deck0110 = Deck(
+    "0.11.0", R.string.whatsnew_0110_tagline,
+    listOf(
+        Slide("pass", R.string.whatsnew_0110_pass_title, R.string.whatsnew_0110_pass_body, R.string.whatsnew_0110_pass_short, Glyph.Bump, Tint.Peach, 1) { PassVisual() },
+        Slide("plaza", R.string.whatsnew_0110_plaza_title, R.string.whatsnew_0110_plaza_body, R.string.whatsnew_0110_plaza_short, Glyph.Fountain, Tint.Mint, 1) { PlazaVisual() },
+        Slide("me", R.string.whatsnew_0110_me_title, R.string.whatsnew_0110_me_body, R.string.whatsnew_0110_me_short, Glyph.FacePencil, Tint.Butter, 1) { MeVisual() },
+        Slide("grooves", R.string.whatsnew_0110_grooves_title, R.string.whatsnew_0110_grooves_body, R.string.whatsnew_0110_grooves_short, Glyph.Music, Tint.Lavender, 0) { GroovesVisual() },
+        Slide("glyphs", R.string.whatsnew_0110_glyphs_title, R.string.whatsnew_0110_glyphs_body, R.string.whatsnew_0110_glyphs_short, Glyph.Shapes, Tint.Sky, 0) { GlyphsVisual() },
+        Slide("switch", R.string.whatsnew_0110_switch_title, R.string.whatsnew_0110_switch_body, R.string.whatsnew_0110_switch_short, Glyph.Save, Tint.Peach, 0) { SwitchVisual() },
+        Slide("steady", R.string.whatsnew_0110_steady_title, R.string.whatsnew_0110_steady_body, R.string.whatsnew_0110_steady_short, Glyph.Highlight, Tint.Mint, 0) { SteadyVisual() },
     ),
 )

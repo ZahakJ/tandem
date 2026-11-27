@@ -367,7 +367,7 @@ fun <T> ChoicePopup(
                     val rows = (count + columns - 1) / columns
                     val tileH = if (!pictures) (if (details) 78.dp else 56.dp) else {
                         val band = if (details) 50.dp else 34.dp
-                        val cardW = (maxWidth - FocusRoomSide - gap * (columns - 1)) / columns
+                        val cardW = (maxWidth - FocusRoomSide * 2 - gap * (columns - 1)) / columns
                         val ideal = cardW / 1.6f + band + 6.dp
                         val fit = (maxHeight - FocusRoom * 2 - gap * (rows - 1)) / rows
                         // Never so small the picture stops reading; past that the grid scrolls instead.
@@ -377,7 +377,7 @@ fun <T> ChoicePopup(
                     KeepInView(grid, keys.indexOf(target))
                     LazyVerticalGrid(
                         GridCells.Fixed(columns), Modifier.fadingEdges(grid), state = grid,
-                        contentPadding = PaddingValues(horizontal = FocusRoomSide / 2, vertical = FocusRoom),
+                        contentPadding = PaddingValues(horizontal = FocusRoomSide, vertical = FocusRoom),
                         horizontalArrangement = Arrangement.spacedBy(gap), verticalArrangement = Arrangement.spacedBy(gap),
                     ) {
                         itemsIndexed(list, key = { i, _ -> "c:$i" }) { i, c ->
@@ -484,7 +484,7 @@ fun ChoicePickerOverlay() {
     val r = rememberLatest(open) ?: return
     val look = r.optionLook
     val choices = remember(r) {
-        r.options.orEmpty().map { (id, label) -> PickOption(id, label, art = look?.let { l -> { l(id) } }) }
+        r.options.orEmpty().map { (id, label) -> PickOption(id, label, detail = r.optionDetails?.get(id), art = look?.let { l -> { l(id) } }) }
     }
     ChoicePopup(
         open != null, r.label, null, choices, r.selected, r.color, ChoicePicker.ROUTE,

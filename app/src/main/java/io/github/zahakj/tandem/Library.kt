@@ -42,7 +42,13 @@ class PlatformLibrary(val platform: Platform, val games: List<Game>, val art: Ar
     /** Subfolder names, in alphabetical order. */
     val groups: List<String> = games.mapNotNull { it.group }.distinct().sortedBy { it.lowercase() }
 
-    fun gamesIn(group: String?): List<Game> = games.filter { it.group == group }
+    fun gamesIn(group: String?): List<Game> = byGroup[group].orEmpty()
+
+    /**
+     * The games of each subfolder (null: the loose ones), in [games]' order, grouped once: opening a system asked for
+     * each subfolder's games in turn, filtering every game of the system each time.
+     */
+    private val byGroup: Map<String?, List<Game>> by lazy { games.groupBy { it.group } }
 
     fun box(game: Game): File? = FileChecks.file(game.meta.box) ?: art.find(ArtIndex.Kind.Box, game)
         ?: platform.fallbackArt?.invoke(game)

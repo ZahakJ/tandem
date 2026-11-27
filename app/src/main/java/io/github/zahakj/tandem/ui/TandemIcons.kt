@@ -31,7 +31,7 @@ import kotlin.math.sin
 
 enum class TIcon {
     // Built-in apps
-    Gallery, Journal, Notes, Themes, Stats, Trophy, UpNext, Files, Controller, Gear,
+    Gallery, Journal, Notes, Themes, Stats, Trophy, UpNext, Files, Controller, Gear, Plaza,
     // Collections
     Heart, Flame, NewBox, Rewind, Sprout, Genres, AllApps, Week,
     // Genres
@@ -128,6 +128,19 @@ fun DrawScope.drawTIcon(icon: TIcon, s: Float, ink: Color, cut: Color) {
     // Details punched into a filled shape: the tile colour, or (on a transparent glyph) just left out.
     fun punch(block: () -> Unit) { if (hole != Color.Transparent) block() }
     when (icon) {
+        TIcon.Plaza -> {
+            // Two friends side by side, the smaller one waving: the people you passed.
+            circle(8.2f, 7.6f, 4.3f)
+            rect(2.5f, 13.2f, 11.4f, 9f, 4.5f)
+            circle(16.8f, 10f, 3.5f)
+            rect(12.6f, 15f, 8.6f, 7.2f, 3.6f)
+            line(20.4f, 15.6f, 22f, 11.6f, w = 2.3f * u)
+            punch {
+                circle(6.8f, 7.4f, 0.75f, c = hole); circle(9.6f, 7.4f, 0.75f, c = hole)
+                circle(15.7f, 9.8f, 0.6f, c = hole); circle(17.9f, 9.8f, 0.6f, c = hole)
+                line(12.4f, 15.2f, 12.4f, 22f, hole, 0.9f * u)
+            }
+        }
         TIcon.Gallery -> {
             rect(2.5f, 4f, 19f, 16f, 3.5f)
             punch { rect(4.5f, 6f, 15f, 12f, 2f, c = hole) }

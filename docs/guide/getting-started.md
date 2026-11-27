@@ -16,8 +16,6 @@ Four things, and only the first three are required.
 
 ## Install the app
 
-Pick whichever way you like:
-
 - **GitHub Releases.** Download the newest `tandem-<version>.apk` from the [releases page](https://github.com/ZahakJ/tandem/releases/latest) on your handheld and open it. Android asks once whether your browser or file manager may install apps; allow it.
 - **Obtainium.** [Obtainium](https://obtainium.imranr.dev/) installs apps straight from GitHub and keeps them updated. Tap **Add app**, paste `https://github.com/ZahakJ/tandem`, and tap **Add**. It then tells you when a new release is out.
 - **F-Droid.** Planned; the store listing is ready in the repository.
@@ -37,7 +35,7 @@ Once a day while Tandem is open, it asks GitHub for the number of its latest rel
 
 To update:
 
-1. Press <kbd>A</kbd> on that row to see what's coming: the jump from your version to the new one, the download's size and the day it came out, and the release notes as a card per part (each with its own glyph and colour). When the release comes with pictures, they show big beside the notes: <kbd>L1</kbd> and <kbd>R1</kbd> (or a swipe) walk them. <kbd>▲</kbd> <kbd>▼</kbd> scroll the notes.
+1. Press <kbd>A</kbd> on that row to see what's coming: the jump from your version to the new one, the download's size and the day it came out, and the release notes. If the release has pictures, they show beside the notes: <kbd>L1</kbd> and <kbd>R1</kbd> (or a swipe) walk them. <kbd>▲</kbd> <kbd>▼</kbd> scroll the notes.
 2. Choose **Update** (or **Not now**).
 3. Tandem downloads the APK, checks it, and installs it. With [Shizuku](resume.md) running it installs straight away; otherwise Android asks once to allow installs from Tandem, then to confirm.
 
@@ -62,11 +60,11 @@ You can also update by hand: download the new `tandem-<version>.apk` from the [r
 
 ### What's new after an update
 
-The first time you open a new version (0.9, 0.10…), Pip walks you through what it brought: a few slides on the top screen, each with a live piece of Tandem drawn with sample systems (the lift's card, the layouts being tried on, a Stage page, the art sets) and a line or two about it. The bottom screen lists the slides with the one on show lit.
+The first time you open a new version (0.9, 0.10, 0.11…), Pip shows what it brought: a few slides on the top screen, each with the new thing running live on sample systems and a line or two about it. The bottom screen lists the slides with the one on show lit.
 
 - <kbd>◀</kbd> <kbd>▶</kbd>, <kbd>L1</kbd> <kbd>R1</kbd> or a swipe go back and forth (in Arabic, <kbd>◀</kbd> is the next slide); <kbd>A</kbd> is **Next**, then **Let's play!** on the last one; <kbd>B</kbd> closes it. A tap on a dot or on a name on the bottom screen goes straight there.
 - It shows once per version. A bug-fix update (0.9.1, 0.9.2) shows nothing new; if you skip versions, you see only the one you now have. A new install skips it (the welcome is your tour).
-- **Settings › Play & system › Updates › What's new in 0.9** shows it again whenever you like, and **Show what's new** (next to it) turns the automatic one off.
+- **Settings › Play & system › Updates › What's new in …** (your version) shows it again whenever you like, and **Show what's new** (next to it) turns the automatic one off.
 - With **Reduce motion** on, the slides swap with a fade and the pictures hold still.
 
 ## Put your games in place
@@ -140,7 +138,7 @@ After the first scan, Pip walks you through a few choices. Every step can be ski
 
 ## Get artwork
 
-Box art, logos and descriptions make the library come alive, and you can get most of it without an account.
+You can get most box art, logos and descriptions without an account.
 
 > [!TIP]
 > **Art with no account:**
@@ -150,7 +148,7 @@ Box art, logos and descriptions make the library come alive, and you can get mos
 >
 > It is the closest thing to Cocoon's zero-setup scraper: no account, no key, and games are looked up on the handheld.
 
-That gives most systems box art, logos, hero art, screenshots and descriptions. For more, free keys of your own for SteamGridDB (great for PC and Switch), IGDB and ScreenScraper are optional. [Artwork and scraping](scraping.md) has every step, a worked example, and what to do when a scrape finds nothing.
+That gives most systems box art, logos, hero art, screenshots and descriptions. For more, free keys of your own for SteamGridDB (best for PC and Switch), IGDB and ScreenScraper are optional. [Artwork and scraping](scraping.md) has every step, a worked example, and what to do when a scrape finds nothing.
 
 <details>
 <summary>Why Tandem can't come with keys built in</summary>
@@ -167,7 +165,7 @@ The top screen is your library. How the home screen looks depends on the layout 
 
 - **Continue playing**, the games you played most recently (a game still running comes first).
 - **Systems**, one card per system that has at least one game.
-- **Collections**: Favorites, Most played, Recently added, Never played and Genres. A collection appears once it has something in it.
+- **Collections**: [This week](library.md#this-week) first, then Playing, Backlog, Finished, Favorites, Most played, Recently added, Never played and Genres. A collection appears once it has something in it.
 
 ![The top screen: Tandem's home screen as an icon grid of systems, with the Nintendo 3DS highlighted and a dock of Tandem's apps along the bottom.](../../site/assets/screenshots/home-top.webp "Top screen: the home screen, here in the icon grid layout")
 ![The bottom screen at the same moment: a big Nintendo 3DS icon with its game count and play time.](../../site/assets/screenshots/home-bottom-system.webp "Bottom screen: details for what is highlighted")
@@ -187,13 +185,11 @@ The [controller reference](controls.md) lists every button.
 
 Along the top of most screens runs the **top bar**: where you are, a **✦ Scraping** pill while a scrape runs, **▶ 2 open** while games are running (the game switcher), the games view chip inside a system, **★ Stats**, **◐ Quick** (quick settings), the battery and the clock. Press <kbd>▲</kbd> to reach it and <kbd>▼</kbd> to go back to the page. (The icon grid has no top bar: it gives its icons the whole screen.)
 
-![The Y menu on Animal Crossing: New Horizons: Play, Favorite, Status, Add to Up next, Notes, Edit details and More….](../../site/assets/screenshots/guide/game-menu.webp "Y on a game")
+![The Y menu on a game: Play, Favorite, Status, Add to Up next, Notes, Edit details and More….](../../site/assets/screenshots/guide/game-menu.webp "Y on a game")
 
 To play, highlight a game and press <kbd>A</kbd>. Tandem starts it in the system's emulator. When you come back to Tandem (with <kbd>Home</kbd>, or by quitting the emulator), your place in the library is just as you left it.
 
 ## Next steps
-
-Where to go from here:
 
 - On an AYN Thor? [Setting up on the AYN Thor](ayn-thor.md) has device-specific tips.
 - What every setting does, with its default: [Every setting](settings.md).
@@ -201,4 +197,5 @@ Where to go from here:
 - Add a system or a different emulator: [Systems and emulators](platforms.md).
 - Switch games in Eden Duo and Peanuts Native, with one save: [Switch games](switch.md).
 - Make games come back where you left them: [Resume and Shizuku](resume.md).
+- Make a character and meet other Tandems as you bump into them: [Bump and the Plaza](plaza.md).
 - Something not working: [FAQ and troubleshooting](faq.md).

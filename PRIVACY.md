@@ -7,6 +7,8 @@ Tandem keeps your library and play history on your device. There are no analytic
 - **Scraping** artwork and details, only when you start it (for the whole library, a system, or one game), from the sources you leave switched on: LaunchBox, libretro thumbnails, ScreenScraper, IGDB, SteamGridDB and HowLongToBeat. The last four are off until you add your own keys or switch them on.
 - **RetroAchievements,** only after you sign in with your own username and API key.
 
+**Bump,** off until you turn it on, never goes online: over Bluetooth LE it swaps a small signed card (a character, a name, a preset greeting, game titles only if you share them) with other Tandems in reach, under a random code that changes every 15 minutes. No location is asked for. See [Bump and the Plaza](docs/guide/plaza.md).
+
 **Hidden games are never sent anywhere,** nor are games in hidden folders or systems. Keys and logins stay in Tandem's private storage and are left out of every backup.
 
 **What it stores, all locally:**

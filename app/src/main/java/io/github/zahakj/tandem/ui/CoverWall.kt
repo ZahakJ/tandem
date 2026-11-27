@@ -48,7 +48,7 @@ fun CoverWall(games: List<Game>, color: Color, modifier: Modifier = Modifier, mo
     val covers = remember(games) {
         FolderLooks.strongGames(games).asSequence().mapNotNull { g -> Libraries.of(g)?.box(g) }.distinct().take(36).toList()
     }
-    val clock = rememberSteadyClock(moving && !Store.settings.reduceMotion && rememberResumed() && !Screensaver.active && !Ambient.resting, fps = 20)
+    val clock = rememberSteadyClock(moving && !Store.settings.reduceMotion && rememberResumed() && !Screensaver.active && !Ambient.settled, fps = 20)
     BoxWithConstraints(modifier.clipToBounds().background(lerp(color, Palette.Night, 0.7f))) {
         if (covers.isNotEmpty()) {
             // Tilted, the wall needs to reach past the corners.

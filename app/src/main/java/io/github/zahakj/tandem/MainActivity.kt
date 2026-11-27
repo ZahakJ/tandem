@@ -17,6 +17,8 @@ import io.github.zahakj.tandem.ui.Themes
 
 class MainActivity : ComponentActivity() {
     companion object {
+        /** The Tandem activities started now (see onStop). */
+        private val showing = HashSet<Int>()
         /** How long the bottom screen stays hidden in the background before it is taken down (see parkBottom). */
         private const val KEEP_BOTTOM_MS = 5 * 60_000L
 
@@ -87,6 +89,7 @@ class MainActivity : ComponentActivity() {
         io.github.zahakj.tandem.ui.CocoonSetup.init(this)
         io.github.zahakj.tandem.data.ExtrasStore.init(this)
         io.github.zahakj.tandem.data.WeekStore.init(this)
+        io.github.zahakj.tandem.data.PlazaStore.init(this)
         io.github.zahakj.tandem.data.ControllerStore.init(this)
         // Swap A and B / Swap X and Y from an older setup become bindings.
         io.github.zahakj.tandem.ui.Prompts.migrateSwaps()
@@ -203,8 +206,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
+        showing += System.identityHashCode(this)
         // Hosted Android widgets update only while the library is in front (AppWidgets.kt).
         io.github.zahakj.tandem.ui.AppWidgetHosting.start(this)
+        // Tandem Pass passes while Tandem is in front (or, with Pass while playing, behind a game too).
+        io.github.zahakj.tandem.pass.TandemPass.front(this, true)
         // Home is bringing the game back instead (HomeBack): Tandem is only passing through, so nothing comes back yet.
         if (homeBack) return
         returned()
@@ -252,7 +258,7 @@ class MainActivity : ComponentActivity() {
         }
         pendingMusic = io.github.zahakj.tandem.ui.AfterFrames.run(frames = 2, delayMs = 220) {
             pendingMusic = null
-            Music.resume()
+            Music.resume(this@MainActivity)
         }
         pendingGuest = io.github.zahakj.tandem.ui.AfterFrames.run(frames = 2, delayMs = 600) {
             pendingGuest = null
@@ -381,8 +387,14 @@ class MainActivity : ComponentActivity() {
         // The screen going off, or Tandem's own screensaver, isn't leaving: the library is still what shows on waking.
         if (getSystemService(android.os.PowerManager::class.java)?.isInteractive != false && !Dreaming.active) UpdateReturn.mark(this, false)
         homeBack = false
-        io.github.zahakj.tandem.ui.AppWidgetHosting.stop()
-        io.github.zahakj.tandem.ui.PipMind.stopIdle()
+        showing -= System.identityHashCode(this)
+        // Android can run a second home activity for a moment (after an update, or bringing the launcher back): that
+        // one stopping isn't Tandem leaving the screen, so widgets, Bump and Pip carry on for the one still showing.
+        if (showing.isEmpty()) {
+            io.github.zahakj.tandem.ui.AppWidgetHosting.stop()
+            io.github.zahakj.tandem.pass.TandemPass.front(this, false)
+            io.github.zahakj.tandem.ui.PipMind.stopIdle()
+        }
         // The next cold start opens in this theme's colour (a no-op unless the theme changed).
         StartLook.remember(this, Themes.target)
         stoppedSinceIntent = true
@@ -392,7 +404,7 @@ class MainActivity : ComponentActivity() {
         // isn't needed any more.
         cancelPending()
         Sounds.fadeTail()
-        Music.pause()
+        Music.pause(this)
         val screen = bottomScreen
         if (WakeGate.keepBottomScreen(Dreaming.active, screen?.isShowing == true, io.github.zahakj.tandem.data.SystemPrefs.data.singleScreen)) {
             // Only Tandem's screensaver covers the top screen: the bottom screen stays, as the window this device hands

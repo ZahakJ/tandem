@@ -578,7 +578,7 @@ fun Modifier.widgetTap(scope: WidgetScope, onTap: () -> Unit): Modifier =
 @Composable
 fun Modifier.movable(id: String, area: WidgetArea): Modifier {
     val moving = WidgetUi.moving == id
-    val wiggle = if (moving && !io.github.zahakj.tandem.data.Store.settings.reduceMotion) {
+    val wiggle = if (moving && !io.github.zahakj.tandem.data.Store.settings.reduceMotion && !Ambient.settled) {
         val t = rememberInfiniteTransition(label = "wiggle")
         t.animateFloat(-1.2f, 1.2f, infiniteRepeatable(tween(260, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "w").value
     } else 0f

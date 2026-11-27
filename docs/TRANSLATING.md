@@ -392,8 +392,8 @@ the frame, About and Library rows), `ui/SettingsSearch.kt` (42), `ui/SettingsHom
 `ui/Showcase.kt` (17). Then: `ui/Appearance.kt` (189), `ui/Theme.kt` (61: theme names and taglines),
 `ui/ThemeGallery.kt` (4), `ui/ThemePacks.kt` (9), `ui/ThemePacksScreen.kt` (38), `ui/PackImport.kt` (7),
 `ui/Flair.kt` (19), `ui/Presets.kt` (32), `ui/Welcome.kt` (45), `ui/StartFlow.kt` (3), `ui/Perf.kt` (7),
-`ui/SoundSettings.kt` (38), `ui/Sound.kt` (5), `audio/Sfx.kt` (16: sound pack names), `audio/Calm.kt` (16),
-`audio/Meadow.kt` (82), `audio/Tracks.kt`, `audio/Song.kt` (song titles: names, leave them; only labels around them).
+`ui/SoundSettings.kt` (38), `ui/Sound.kt` (5), `audio/Sfx.kt` (16: sound pack names), `audio/Plaza.kt`,
+`audio/Tracks.kt`, `audio/Song.kt` (song titles: names, leave them; only labels around them).
 
 ### B. Home, grid and menus: `strings_home.xml`, `strings_grid.xml`, `strings_menus.xml` (≈ 1,000)
 

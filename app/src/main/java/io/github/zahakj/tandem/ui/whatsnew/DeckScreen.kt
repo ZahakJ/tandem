@@ -5,9 +5,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -67,6 +64,7 @@ import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Tx
 import io.github.zahakj.tandem.ui.AnimationStyle
 import io.github.zahakj.tandem.ui.ButtonHint
+import io.github.zahakj.tandem.ui.FocusRoom
 import io.github.zahakj.tandem.ui.Glyph
 import io.github.zahakj.tandem.ui.GlyphChip
 import io.github.zahakj.tandem.ui.InterceptButtons
@@ -76,6 +74,7 @@ import io.github.zahakj.tandem.ui.Palette
 import io.github.zahakj.tandem.ui.PillButton
 import io.github.zahakj.tandem.ui.Pip
 import io.github.zahakj.tandem.ui.ShrinkText
+import io.github.zahakj.tandem.ui.fadeWhole
 import io.github.zahakj.tandem.ui.isRtl
 import io.github.zahakj.tandem.ui.rememberFocusTarget
 import io.github.zahakj.tandem.ui.rememberLatest
@@ -152,7 +151,7 @@ internal fun Modifier.arrive(i: Int): Modifier {
     return graphicsLayer {
         val p = ((clock.value - i * 1.4f) / 3f).coerceIn(0f, 1f)
         val e = 1f - (1f - p) * (1f - p)
-        alpha = e
+        fadeWhole(e)
         translationY = (1f - e) * 12.dp.toPx()
         val s = 0.94f + 0.06f * e
         scaleX = s; scaleY = s
@@ -161,10 +160,9 @@ internal fun Modifier.arrive(i: Int): Modifier {
 
 /** 0 to 1 over [periodMs], round and round; held at [still] with Reduce motion. Read it in draw or layer lambdas. */
 @Composable
-internal fun rememberLoop(periodMs: Int, still: Float): State<Float> {
-    if (showcaseStill()) return remember(still) { mutableFloatStateOf(still) }
-    return rememberInfiniteTransition(label = "wn-loop").animateFloat(0f, 1f, infiniteRepeatable(tween(periodMs, easing = LinearEasing)), label = "t")
-}
+internal fun rememberLoop(periodMs: Int, still: Float): State<Float> =
+    // Holds its frame once Tandem has settled, like every other loop (rememberIdleLoop).
+    io.github.zahakj.tandem.ui.rememberIdleLoop(periodMs, showcaseStill(), still)
 
 /** Where [t] is between [a] and [b], eased out: 0 before, 1 after. */
 internal fun seg(t: Float, a: Float, b: Float): Float {
@@ -222,7 +220,7 @@ private fun DeckPanel(d: Deck) {
                 if (e.type == KeyEventType.KeyDown) WhatsNew.step(s)
                 true
             }
-            .padding(horizontal = 22.dp, vertical = 16.dp),
+            .padding(start = 22.dp, end = 22.dp, top = 16.dp, bottom = FocusRoom),
     ) {
         Header(d, index, tint)
         Spacer(Modifier.height(12.dp))

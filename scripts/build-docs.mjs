@@ -59,6 +59,7 @@ export const SECTIONS = [
       ["resume", "docs/guide/resume.md", "Resume and Shizuku"],
       ["switch", "docs/guide/switch.md", "Switch games"],
       ["streaming", "docs/guide/streaming.md", "Streaming from a home PC"],
+      ["plaza", "docs/guide/plaza.md", "Bump and the Plaza"],
     ],
   },
   {

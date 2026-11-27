@@ -58,7 +58,10 @@ object Launcher {
                 else Plan(prepared.game, prepared.spec, prepared.intent, prepared.uri, bottom)
                 if (LaunchFx.busy || LaunchFx.closeAsk != null || checking) return
                 // Android apps never close anything (Tandem only brings them up), and asking may be switched off.
-                if (game.platform.isApps || !RunningGames.askBeforeClosingOn()) { proceed(ctx, p); return }
+                // Already running: it comes back (Launcher.open resumes it, closing nothing), so there is nothing to ask and no
+                // reason to wait for a check or the whole launch zoom.
+                val resuming = RunningGames.list.any { it.game?.key == game.key }
+                if (resuming || game.platform.isApps || !RunningGames.askBeforeClosingOn()) { proceed(ctx, p, quick = resuming); return }
                 checking = true
                 scope.launch {
                     val closing = try {
@@ -80,10 +83,10 @@ object Launcher {
     }
 
     /** Starts [p] without asking: the launch sound, then the animation (or straight away with motion off). */
-    fun proceed(ctx: Context, p: Plan) {
+    fun proceed(ctx: Context, p: Plan, quick: Boolean = false) {
         if (LaunchFx.busy) return
         io.github.zahakj.tandem.ui.Sounds.launch()
-        if (LaunchFx.canAnimate()) LaunchFx.play(ctx, p)
+        if (LaunchFx.canAnimate()) LaunchFx.play(ctx, p, quick)
         // No animation: still keep the Shizuku checks off the main thread.
         else scope.launch { withContext(Dispatchers.IO) { start(ctx, p) }?.let { LaunchFx.problem = it } }
     }

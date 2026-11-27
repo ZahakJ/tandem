@@ -27,6 +27,10 @@ fun newestInSdk(what: String): String? {
         ?.maxWithOrNull { a, b -> parts(a).zip(parts(b)).map { (x, y) -> x.compareTo(y) }.firstOrNull { it != 0 } ?: 0 }
 }
 
+// Screenshots without a device (`-Ptandem.shots`, see docs/guide/building.md): Robolectric draws a screen at the
+// Thor's top-screen size into PNGs. Off by default, so ordinary builds and tests fetch and run nothing more.
+val shots = providers.gradleProperty("tandem.shots").isPresent
+
 val discordNdk = if (discordAar != null) newestInSdk("ndk") else null
 val withDiscord = discordAar != null && discordAppId != null && discordNdk != null
 if (discordAar != null && !withDiscord) {
@@ -72,8 +76,8 @@ android {
         applicationId = "io.github.zahakj.tandem"
         minSdk = 30
         targetSdk = 34
-        versionCode = 18
-        versionName = "0.10.0"
+        versionCode = 19
+        versionName = "0.11.0"
         buildConfigField("long", "DISCORD_APP_ID", "${if (withDiscord) discordAppId else "0"}L")
         buildConfigField("boolean", "SELF_UPDATE", selfUpdate.toString())
         buildConfigField("String", "UPDATE_FROM", "\"$updateFrom\"")
@@ -100,7 +104,9 @@ android {
         // Build-type manifests merge over the main one: the SDK's sign-in activity and its redirect, only with the SDK.
         if (withDiscord) listOf("debug", "release").forEach { getByName(it).manifest.srcFile("src/discord/AndroidManifest.xml") }
         if (buildPadLink != null) getByName("main").jniLibs.srcDir(padlinkLibs)
+        if (shots) getByName("test").java.srcDir("src/shots/java")
     }
+    if (shots) testOptions.unitTests.isIncludeAndroidResources = true
 
     // Local release signing. CI (the release workflow) builds unsigned and signs with apksigner, so nothing here
     // applies there. Locally, a keystore.properties in the project root (storeFile, storePassword, keyAlias,
@@ -195,8 +201,20 @@ dependencies {
     testImplementation("net.sf.kxml:kxml2:2.3.0")
     // A real SQLite for GameNativeLibraryTest: GameNative's database read with the same queries as on the device.
     testImplementation("org.xerial:sqlite-jdbc:3.46.1.3")
+    if (shots) {
+        testImplementation("org.robolectric:robolectric:4.14.1")
+        testImplementation(composeBom)
+        testImplementation("androidx.compose.ui:ui-test-junit4")
+        debugImplementation("androidx.compose.ui:ui-test-manifest")
+    }
 }
 
 if (buildPadLink != null) {
     tasks.matching { it.name.startsWith("merge") && it.name.endsWith("JniLibFolders") }.configureEach { dependsOn(buildPadLink) }
+}
+
+// With -Ptandem.shots=<folder> the PNGs land there (default: app/build/shots).
+if (shots) tasks.withType<Test>().configureEach {
+    val out = providers.gradleProperty("tandem.shots").get().takeIf { it.isNotBlank() && it != "true" }
+    systemProperty("tandem.shots", out ?: layout.buildDirectory.dir("shots").get().asFile.path)
 }

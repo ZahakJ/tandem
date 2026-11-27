@@ -156,7 +156,7 @@ fun AnimatedTileArt(file: File, color: Color, size: Dp) {
     val policy = ExtrasStore.settings.animatedArt
     val highlighted = (IconGrid.spot?.art?.bare as? TileArt.Animated)?.file?.path == file.path
     val play = anim != null && resumed && policy != AnimatedArt.OFF && (policy != AnimatedArt.FOCUSED || highlighted) &&
-        !Store.settings.reduceMotion && !Themes.still && !Ambient.resting
+        !Store.settings.reduceMotion && !Themes.still && !Ambient.settled
     DisposableEffect(anim) {
         anim?.callback = object : Drawable.Callback {
             override fun invalidateDrawable(who: Drawable) { frame.intValue++ }

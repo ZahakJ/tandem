@@ -2,10 +2,6 @@ package io.github.zahakj.tandem.ui
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -50,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import io.github.zahakj.tandem.R
 import io.github.zahakj.tandem.Screensaver
 import io.github.zahakj.tandem.Tx
+import io.github.zahakj.tandem.audio.Plaza
 import io.github.zahakj.tandem.audio.SoundPack
 import io.github.zahakj.tandem.audio.Tracks
 import io.github.zahakj.tandem.data.Store
@@ -160,22 +157,25 @@ fun soundSettings(trackCount: Int): SettingSection {
             choice(
                 Tx.s(R.string.sound_music), Glyph.Music, Palette.Peach,
                 withFallback(
-                    if (trackCount == 0) Tx.s(R.string.sound_music_help_empty, Tracks.soundtracks.first { it.first == look.soundtrackId }.second)
+                    if (trackCount == 0) Tx.s(R.string.sound_music_help_empty, Tracks.of(look.soundtrackId).title)
                     else Tx.p(R.plurals.sound_music_help_found, trackCount),
                 ),
-                // The soundtracks' names (Plaza, Calm, Meadow Tales) are names, the same in every language.
+                // The soundtracks' names (Plaza, Lagoon, Terrace) are names, the same in every language; the line on
+                // each card says what it is like.
                 listOf("off" to Tx.s(R.string.common_off), "folder" to Tx.s(R.string.sound_music_folder)) + Tracks.soundtracks,
                 musicNow,
                 preview = nowCard,
+                look = { v -> MusicChoiceArt(v) },
+                details = Plaza.all.associate { it.id to it.mood },
                 en = "Music",
             ) { v ->
                 when (v) {
                     "off" -> updateLook { it.copy(music = false) }
                     "folder" -> updateLook { it.copy(music = true, myMusic = true) }
-                    else -> updateLook { it.copy(music = true, myMusic = false, soundtrack = v, soundtrackPicked = true) }
+                    else -> { updateLook { it.copy(music = true, myMusic = false, soundtrack = v, soundtrackPicked = true) }; Music.backToChosen() }
                 }
                 if (v == "folder" && trackCount == 0) Toasts.show(Tx.s(R.string.sound_music_folder_empty))
-            }.copy(keywords = "music from soundtrack bgm background folder songs built-in plaza calm meadow tales mute quiet"),
+            }.copy(keywords = "music from soundtrack bgm background folder songs built-in plaza lagoon terrace grooves mute quiet"),
             toggle(Tx.s(R.string.sound_shuffle), Glyph.Refresh, Palette.Peach, Tx.s(R.string.sound_shuffle_help), look.musicShuffle, en = "Shuffle my music") { on ->
                 updateLook { it.copy(musicShuffle = on) }
             },
@@ -239,9 +239,6 @@ fun SoundCues() {
         if (saver != wasSaver) { if (saver) Sounds.saverIn() else Sounds.saverOut(); wasSaver = saver }
         Music.dim(saver)
     }
-    // Where Tandem is, for a soundtrack whose music follows it (Plaza: home, Settings, the screensaver).
-    val scene = when { saver -> Tracks.Scene.Idle; Nav.inSettings -> Tracks.Scene.Settings; else -> Tracks.Scene.Home }
-    LaunchedEffect(scene) { Music.scene(scene) }
 
     val problem = LaunchFx.problem
     LaunchedEffect(problem) { if (problem != null) { Sounds.error(); Sounds.pipSays("Oh no, that one won't start"); Music.gameClosed() } } // tx-ok: never shown, it only shapes the babble
@@ -280,7 +277,8 @@ private fun PackCard(id: String) {
 @Composable
 private fun SoundPackPreview(pack: SoundPack?, play: Boolean) {
     if (play && pack != null) LaunchedEffect(pack) { delay(260); Sounds.preview(pack) }
-    val t by rememberInfiniteTransition(label = "pack").animateFloat(0f, 1f, infiniteRepeatable(tween(2400, easing = LinearEasing)), label = "t")
+    // Only the lit pack moves, and it holds its frame once Tandem has settled.
+    val t by rememberIdleLoop(2400, still = pack == null || Themes.still)
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         for (p in SoundPack.entries) {
             val on = p == pack
@@ -358,7 +356,7 @@ fun NowPlayingCard(modifier: Modifier = Modifier) {
         else -> Music.trackId()
     }
     val song = Tracks.byId(id)
-    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: Tx.s(R.string.sound_now_your_music) else song?.title ?: Tracks.of(look.soundtrackId).first().title
+    val title = if (ownFiles) np?.takeIf { it.own }?.title ?: Tx.s(R.string.sound_now_your_music) else song?.title ?: Tracks.of(look.soundtrackId).title
     val mood = if (ownFiles) Music.source else song?.mood.orEmpty()
     Column(modifier) {
         Box(Modifier.fillMaxWidth().aspectRatio(1.7f).clip(RoundedCornerShape(18.dp))) {
@@ -385,7 +383,10 @@ private fun Visualizer(modifier: Modifier) {
     var frame by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
         while (true) {
-            withFrameMillis { ms ->
+            // Holds its bars once Tandem has settled, and draws nothing while they rest with no music playing.
+            Ambient.awaitAwake()
+            val moved = withFrameMillis { ms ->
+                var moved = false
                 val lv = Music.levels()
                 val t = ms / 1000.0
                 for (i in 0 until n) {
@@ -397,10 +398,14 @@ private fun Visualizer(modifier: Modifier) {
                         Music.playing -> 0.25f + 0.2f * sin(t * 5.0 + i).toFloat()
                         else -> 0.06f
                     }
-                    bars[i] += (target - bars[i]) * if (target > bars[i]) 0.5f else 0.15f
+                    val step = (target - bars[i]) * if (target > bars[i]) 0.5f else 0.15f
+                    if (kotlin.math.abs(step) > 0.0005f) moved = true
+                    bars[i] += step
                 }
-                frame++
+                if (moved) frame++
+                moved
             }
+            if (!moved) delay(250)
         }
     }
     val colors = listOf(Palette.Mint, Palette.Sky, Palette.Lavender, Palette.Peach, Palette.Butter)
@@ -418,129 +423,111 @@ private fun Visualizer(modifier: Modifier) {
     }
 }
 
-/** A little animated picture for each track's mood, drawn in code. */
+/** A little animated picture for each groove's mood, drawn in code. */
 @Composable
 fun MoodArt(id: String, modifier: Modifier = Modifier) {
     val still = Themes.still
-    val t by rememberInfiniteTransition(label = "mood").animateFloat(0f, 1f, infiniteRepeatable(tween(12000, easing = LinearEasing), RepeatMode.Restart), label = "t")
-    if (id == "pips-jam") {
-        Box(modifier, contentAlignment = Alignment.Center) {
-            Canvas(Modifier.fillMaxSize()) { drawPipsJam(if (still) 0f else t) }
-            Pip(64.dp, Modifier.padding(bottom = 18.dp), mood = 1)
-        }
-        return
-    }
+    // No frames at all while still (the old infinite transition ran on every vsync even then).
+    val t by rememberIdleLoop(12000, still)
     Canvas(modifier) {
         val time = if (still) 0f else t
         when (id) {
-            "starlight-arcade" -> drawArcade(time)
-            "sakura-breeze" -> drawSakura(time)
-            "rainy-library" -> drawRain(time)
-            "synthwave-drive" -> drawSynthwave(time)
+            "plaza" -> drawPlaza(time)
+            "lagoon" -> drawLagoon(time)
+            "terrace" -> drawTerrace(time)
             "file" -> drawVinyl(time)
-            "hillside-breeze" -> drawHills(time, dusk = false)
-            "flying-home" -> drawHills(time, dusk = true)
-            "soft-morning" -> drawHills(time, dusk = false)
-            "seaside-train" -> drawSeaside(time)
-            "lantern-town" -> drawLanterns(time)
-            "forest-spirits" -> drawSpirits(time)
-            "summer-rain" -> drawRain(time)
             else -> drawPastelNight(time)
         }
     }
 }
 
-/** Rolling hills under drifting clouds; at dusk the sky turns peach and a little bird glides home. */
-private fun DrawScope.drawHills(t: Float, dusk: Boolean) {
+/** An option of Music on the picker's cards: Off a quiet line, My music a record, a groove its mood picture. */
+@Composable
+private fun MusicChoiceArt(id: String) {
+    when (id) {
+        "off" -> Box(Modifier.fillMaxSize().background(Palette.NightDeep).padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
+            Canvas(Modifier.fillMaxWidth().height(40.dp)) {
+                drawLine(Palette.Muted, Offset(0f, size.height / 2), Offset(size.width, size.height / 2), 2.dp.toPx(), StrokeCap.Round)
+            }
+        }
+        "folder" -> MoodArt("file", Modifier.fillMaxSize())
+        else -> MoodArt(id, Modifier.fillMaxSize())
+    }
+}
+
+/** A sunny little square: pastel house fronts with awnings, bunting swaying across, the sun over the roofs. */
+private fun DrawScope.drawPlaza(t: Float) {
     val w = size.width; val h = size.height
-    drawRect(Brush.verticalGradient(if (dusk) listOf(c(0x6C6BB5), c(0xF7A98B), c(0xFFD9A0)) else listOf(c(0x7EC8F2), c(0xCDEBFA))))
-    if (dusk) drawCircle(c(0xFFF1C1).copy(alpha = 0.9f), h * 0.12f, Offset(w * 0.72f, h * 0.55f))
+    drawRect(Brush.verticalGradient(listOf(c(0x8ED1F5), c(0xFDF1D2))))
+    drawCircle(Brush.radialGradient(listOf(c(0xFFF3B0), c(0xFFE07A).copy(alpha = 0f)), Offset(w * 0.78f, h * 0.22f), h * 0.3f), h * 0.3f, Offset(w * 0.78f, h * 0.22f))
+    drawCircle(c(0xFFE07A), h * 0.1f, Offset(w * 0.78f, h * 0.22f))
+    val fronts = listOf(c(0xF7B5A0), c(0xF9DE8F), c(0xA8DCC5), c(0xC9B8F2), c(0xF7B5A0), c(0x9FD0F0))
+    val awnings = listOf(c(0xE4572E), c(0x3C8DBC), c(0xF3A712), c(0x4E9A4C), c(0x8E6FD8), c(0xE4572E))
+    for (i in fronts.indices) {
+        val bw = w / fronts.size
+        val bh = h * (0.38f + 0.12f * hash(i, 61))
+        val x = i * bw
+        drawRect(fronts[i], Offset(x, h - bh), Size(bw + 1f, bh))
+        drawRect(c(0xFFF8E7).copy(alpha = 0.85f), Offset(x + bw * 0.3f, h - bh * 0.78f), Size(bw * 0.4f, bh * 0.22f))
+        // A striped awning over the door.
+        for (s in 0 until 4) {
+            drawRect(if (s % 2 == 0) awnings[i] else Color.White, Offset(x + bw * (0.15f + 0.175f * s), h - bh * 0.42f), Size(bw * 0.175f, bh * 0.1f))
+        }
+    }
+    // Bunting from one side of the square to the other, swaying a little.
+    val sway = sin(t * 4 * PI).toFloat() * h * 0.015f
+    for (i in 0 until 12) {
+        val f = (i + 0.5f) / 12f
+        val y = h * 0.3f + sin(f * PI).toFloat() * h * 0.1f + sway
+        val x = f * w
+        val flag = Path().apply { moveTo(x - w * 0.03f, y); lineTo(x + w * 0.03f, y); lineTo(x, y + h * 0.08f); close() }
+        drawPath(flag, listOf(c(0xFF8A5B), c(0xFFC75F), c(0x8EECC8), c(0xB8A8FF))[i % 4])
+    }
+}
+
+/** Dusk over still water: a violet-to-peach sky, the low sun's reflection, ripples glinting as they drift. */
+private fun DrawScope.drawLagoon(t: Float) {
+    val w = size.width; val h = size.height
+    val horizon = h * 0.58f
+    drawRect(Brush.verticalGradient(listOf(c(0x5B5A9E), c(0xC98BB0), c(0xFFC9A0)), 0f, horizon), size = Size(w, horizon))
+    drawRect(Brush.verticalGradient(listOf(c(0x4B4F8C), c(0x23264D)), horizon, h), Offset(0f, horizon), Size(w, h - horizon))
+    val sun = Offset(w * 0.36f, horizon - h * 0.02f)
+    drawCircle(c(0xFFE3B0), h * 0.11f, sun)
+    // The sun's path on the water, broken into ripples.
+    for (k in 0 until 7) {
+        val y = horizon + h * (0.04f + 0.055f * k)
+        val half = w * (0.1f - 0.008f * k) * (0.8f + 0.2f * sin((t * 6 + k * 0.4f) * 2 * PI).toFloat())
+        drawLine(c(0xFFD9A8).copy(alpha = 0.75f - 0.08f * k), Offset(sun.x - half, y), Offset(sun.x + half, y), strokeWidth = 2.5f, cap = StrokeCap.Round)
+    }
+    for (i in 0 until 14) {
+        val tw = (sin((t * 5 + hash(i, 71)) * 2 * PI).toFloat() + 1) / 2
+        val x = ((hash(i, 72) + t * 0.2f) % 1f) * w
+        val y = horizon + h * (0.06f + 0.34f * hash(i, 73))
+        drawLine(Color.White.copy(alpha = 0.35f * tw), Offset(x, y), Offset(x + h * 0.06f, y), strokeWidth = 1.5f, cap = StrokeCap.Round)
+    }
+    // A first star.
+    drawCircle(Color.White.copy(alpha = 0.6f + 0.4f * sin(t * 6 * PI).toFloat().coerceAtLeast(0f)), 1.8f, Offset(w * 0.8f, h * 0.14f))
+}
+
+/** A sunny morning: rolling hills under drifting clouds, grass swaying in the breeze. */
+private fun DrawScope.drawTerrace(t: Float) {
+    val w = size.width; val h = size.height
+    drawRect(Brush.verticalGradient(listOf(c(0x7EC8F2), c(0xCDEBFA))))
     for (i in 0 until 4) {
         val x = ((hash(i, 11) + t * (0.5f + 0.3f * hash(i, 12))) % 1.3f) * w * 1.1f - w * 0.25f
         val y = h * (0.15f + 0.25f * hash(i, 13))
         val r = h * (0.07f + 0.04f * hash(i, 14))
-        val cloud = Color.White.copy(alpha = if (dusk) 0.55f else 0.85f)
+        val cloud = Color.White.copy(alpha = 0.85f)
         drawCircle(cloud, r, Offset(x, y)); drawCircle(cloud, r * 1.3f, Offset(x + r * 1.2f, y - r * 0.3f)); drawCircle(cloud, r, Offset(x + r * 2.4f, y))
     }
-    drawCircle(if (dusk) c(0x6E8C5A) else c(0x8FD18A), h * 0.9f, Offset(w * 0.2f, h * 1.55f))
-    drawCircle(if (dusk) c(0x58744A) else c(0x6DBB6B), h * 1.0f, Offset(w * 0.85f, h * 1.7f))
+    drawCircle(c(0x8FD18A), h * 0.9f, Offset(w * 0.2f, h * 1.55f))
+    drawCircle(c(0x6DBB6B), h * 1.0f, Offset(w * 0.85f, h * 1.7f))
     // Grass blades swaying in the wind.
     for (i in 0 until 22) {
         val x = hash(i, 21) * w
         val base = h * (0.8f + 0.15f * hash(i, 22))
         val sway = sin((t * 6 + hash(i, 23)) * 2 * PI).toFloat() * h * 0.02f
-        drawLine(if (dusk) c(0x3F5A35) else c(0x4E9A4C), Offset(x, base), Offset(x + sway, base - h * 0.06f), strokeWidth = 2f, cap = StrokeCap.Round)
-    }
-    if (dusk) {
-        val bx = w * (0.15f + 0.7f * t); val by = h * (0.3f + 0.04f * sin(t * 8 * PI).toFloat())
-        val flap = sin(t * 40 * PI).toFloat() * h * 0.02f
-        drawLine(c(0x2E2440), Offset(bx - h * 0.04f, by - flap), Offset(bx, by), strokeWidth = 2.5f, cap = StrokeCap.Round)
-        drawLine(c(0x2E2440), Offset(bx, by), Offset(bx + h * 0.04f, by - flap), strokeWidth = 2.5f, cap = StrokeCap.Round)
-    }
-}
-
-/** A little train running along the shore, with the sea sparkling behind it. */
-private fun DrawScope.drawSeaside(t: Float) {
-    val w = size.width; val h = size.height
-    drawRect(Brush.verticalGradient(listOf(c(0x8FD3F4), c(0xE6F6FF))), size = Size(w, h * 0.55f))
-    drawRect(Brush.verticalGradient(listOf(c(0x3C8DBC), c(0x2A6F9E))), Offset(0f, h * 0.55f), Size(w, h * 0.3f))
-    for (i in 0 until 16) {
-        val tw = (sin((t * 8 + hash(i, 31)) * 2 * PI).toFloat() + 1) / 2
-        drawLine(Color.White.copy(alpha = 0.6f * tw), Offset(hash(i, 32) * w, h * (0.58f + 0.22f * hash(i, 33))), Offset(hash(i, 32) * w + h * 0.05f, h * (0.58f + 0.22f * hash(i, 33))), strokeWidth = 1.5f)
-    }
-    drawRect(c(0xE9D8A6), Offset(0f, h * 0.85f), Size(w, h * 0.15f))
-    drawLine(c(0x7A5C3E), Offset(0f, h * 0.84f), Offset(w, h * 0.84f), strokeWidth = 3f)
-    val x0 = ((t * 1.5f) % 1.4f) * w * 1.2f - w * 0.4f
-    val carW = h * 0.22f; val carH = h * 0.12f
-    for (k in 0 until 3) {
-        val x = x0 - k * (carW + h * 0.03f)
-        drawRoundRect(if (k == 0) c(0xE4572E) else c(0xF3A712), Offset(x, h * 0.84f - carH - h * 0.03f), Size(carW, carH), CornerRadius(h * 0.03f))
-        drawRect(c(0xFFF4D6), Offset(x + carW * 0.15f, h * 0.84f - carH), Size(carW * 0.3f, carH * 0.35f))
-        drawRect(c(0xFFF4D6), Offset(x + carW * 0.55f, h * 0.84f - carH), Size(carW * 0.3f, carH * 0.35f))
-        drawCircle(c(0x333333), h * 0.022f, Offset(x + carW * 0.25f, h * 0.84f - h * 0.02f))
-        drawCircle(c(0x333333), h * 0.022f, Offset(x + carW * 0.75f, h * 0.84f - h * 0.02f))
-    }
-}
-
-/** Strings of warm lanterns swinging over a little town at night. */
-private fun DrawScope.drawLanterns(t: Float) {
-    val w = size.width; val h = size.height
-    drawRect(Brush.verticalGradient(listOf(c(0x1D1B3A), c(0x3B2A4A))))
-    for (i in 0 until 7) {
-        val bw = w * (0.1f + 0.08f * hash(i, 41)); val bh = h * (0.25f + 0.25f * hash(i, 42))
-        val x = i * w / 6.5f - w * 0.05f
-        drawRect(c(0x16142B), Offset(x, h - bh), Size(bw, bh))
-        drawRect(c(0xFFD27A).copy(alpha = 0.8f), Offset(x + bw * 0.35f, h - bh * 0.7f), Size(bw * 0.25f, bh * 0.15f))
-    }
-    for (row in 0 until 2) {
-        val y0 = h * (0.22f + 0.18f * row)
-        for (i in 0 until 7) {
-            val x = w * (i + 0.5f) / 7f
-            val sag = sin((i + 0.5f) / 7f * PI).toFloat() * h * 0.08f
-            val swing = sin((t * 5 + i * 0.3f + row) * 2 * PI).toFloat() * h * 0.01f
-            val p = Offset(x + swing, y0 + sag + h * 0.04f)
-            val col = listOf(c(0xFF8A5B), c(0xFFC75F), c(0xF9F871))[(i + row) % 3]
-            drawCircle(Brush.radialGradient(listOf(col.copy(alpha = 0.45f), Color.Transparent), p, h * 0.1f), h * 0.1f, p)
-            drawCircle(col, h * 0.025f, p)
-        }
-    }
-}
-
-/** Little glowing forest spirits drifting between dark trees. */
-private fun DrawScope.drawSpirits(t: Float) {
-    val w = size.width; val h = size.height
-    drawRect(Brush.verticalGradient(listOf(c(0x16302B), c(0x0B1A17))))
-    for (i in 0 until 6) {
-        val x = w * (i + 0.3f * hash(i, 51)) / 5.5f
-        drawRect(c(0x0A1512), Offset(x, 0f), Size(w * (0.04f + 0.03f * hash(i, 52)), h))
-    }
-    for (i in 0 until 14) {
-        val ph = (t * (0.6f + hash(i, 53)) + hash(i, 54)) * 2 * PI
-        val x = hash(i, 55) * w + cos(ph).toFloat() * w * 0.04f
-        val y = h * (0.25f + 0.6f * hash(i, 56)) + sin(ph * 1.3).toFloat() * h * 0.05f
-        val glow = 0.5f + 0.5f * sin(ph * 2).toFloat()
-        drawCircle(Brush.radialGradient(listOf(c(0xD8FFB0).copy(alpha = 0.5f * glow), Color.Transparent), Offset(x, y), h * 0.07f), h * 0.07f, Offset(x, y))
-        drawCircle(c(0xF1FFD6).copy(alpha = 0.6f + 0.4f * glow), h * 0.012f, Offset(x, y))
+        drawLine(c(0x4E9A4C), Offset(x, base), Offset(x + sway, base - h * 0.06f), strokeWidth = 2f, cap = StrokeCap.Round)
     }
 }
 
@@ -568,107 +555,6 @@ private fun DrawScope.drawPastelNight(t: Float) {
     val moon = Offset(w * 0.78f, h * 0.28f)
     drawCircle(c(0xFFE49A), h * 0.13f, moon)
     drawCircle(c(0x262347), h * 0.12f, moon + Offset(h * 0.06f, -h * 0.03f))
-}
-
-private fun DrawScope.drawArcade(t: Float) {
-    drawRect(c(0x0C0517))
-    val w = size.width; val h = size.height
-    val px = h / 28
-    for (i in 0 until 30) {
-        val on = ((t * 24 + hash(i, 5) * 8).toInt() % 3) != 0
-        if (!on) continue
-        val col = listOf(c(0x5CF2D6), c(0xFF5DA2), c(0xFFD166), c(0x4CC9F0))[i % 4]
-        drawRect(col, Offset((hash(i) * w / px).toInt() * px, (hash(i, 1) * h * 0.8f / px).toInt() * px), Size(px, px))
-    }
-    // A bouncing pixel coin.
-    val bounce = kotlin.math.abs(sin(t * 12 * PI)).toFloat()
-    val cx = w / 2; val cy = h * 0.62f - bounce * h * 0.2f
-    val coin = listOf("..XXXX..", ".XYYYYX.", "XYYXYYYX", "XYYXYYYX", "XYYXYYYX", "XYYXYYYX", ".XYYYYX.", "..XXXX..")
-    for ((ry, line) in coin.withIndex()) for ((rx, ch) in line.withIndex()) {
-        val col = when (ch) { 'X' -> c(0xC77D1F); 'Y' -> c(0xFFD166); else -> continue }
-        drawRect(col, Offset(cx + (rx - 4) * px, cy + (ry - 4) * px), Size(px, px))
-    }
-    for (y in 0 until (h / 3).toInt()) drawRect(Color.Black.copy(alpha = 0.12f), Offset(0f, y * 3f), Size(w, 1f))
-}
-
-private fun DrawScope.drawSakura(t: Float) {
-    drawRect(Brush.verticalGradient(listOf(c(0x4A2A3D), c(0x1F1219))))
-    val w = size.width; val h = size.height
-    drawCircle(c(0xFFB7C5).copy(alpha = 0.35f), h * 0.32f, Offset(w * 0.7f, h * 0.38f))
-    drawLine(c(0x120A0E), Offset(0f, h * 0.2f), Offset(w * 0.45f, h * 0.32f), strokeWidth = h * 0.04f, cap = StrokeCap.Round)
-    drawLine(c(0x120A0E), Offset(w * 0.25f, h * 0.26f), Offset(w * 0.38f, h * 0.12f), strokeWidth = h * 0.025f, cap = StrokeCap.Round)
-    for (i in 0 until 18) {
-        val speed = 0.6f + hash(i, 7) * 0.8f
-        val y = ((hash(i, 1) + t * speed * 2) % 1f) * (h * 1.1f) - h * 0.05f
-        val x = hash(i) * w + sin((t * 4 + hash(i, 2)) * 2 * PI).toFloat() * w * 0.04f
-        val ang = (t * 360 * speed + hash(i, 3) * 360)
-        rotate(ang, Offset(x, y)) {
-            drawOval(c(0xFFC6D9).copy(alpha = 0.85f), Offset(x - 5f, y - 3f), Size(10f, 6f))
-        }
-    }
-}
-
-private fun DrawScope.drawRain(t: Float) {
-    drawRect(Brush.verticalGradient(listOf(c(0x1B2A3F), c(0x0D1522))))
-    val w = size.width; val h = size.height
-    // Warm lamp glow.
-    drawCircle(Brush.radialGradient(listOf(c(0xFFC857).copy(alpha = 0.45f), Color.Transparent), Offset(w * 0.15f, h * 0.8f), h * 0.6f), h * 0.6f, Offset(w * 0.15f, h * 0.8f))
-    // Rain on the glass.
-    for (i in 0 until 40) {
-        val x = hash(i) * w
-        val y = ((hash(i, 1) + t * (6 + hash(i, 2) * 4)) % 1f) * h
-        drawLine(c(0xA9C7FF).copy(alpha = 0.35f), Offset(x, y), Offset(x - 2f, y + h * 0.07f), strokeWidth = 1.5f)
-    }
-    // Window frame and books.
-    drawRoundRect(c(0x2A1E14), Offset(w * 0.08f, h * 0.08f), Size(w * 0.84f, h * 0.6f), CornerRadius(8f), style = Stroke(width = h * 0.035f))
-    drawLine(c(0x2A1E14), Offset(w / 2, h * 0.08f), Offset(w / 2, h * 0.68f), strokeWidth = h * 0.025f)
-    var x = w * 0.45f
-    val books = listOf(c(0xE0A6D8), c(0x8CC8E8), c(0xFF9466), c(0xA8E6B8), c(0xFFC857), c(0xB8A8FF))
-    var k = 0
-    while (x < w * 0.95f) {
-        val bw = w * (0.03f + hash(k, 9) * 0.025f)
-        val bh = h * (0.16f + hash(k, 4) * 0.08f)
-        drawRect(books[k % books.size].copy(alpha = 0.8f), Offset(x, h - bh), Size(bw, bh))
-        x += bw + 2f; k++
-    }
-}
-
-private fun DrawScope.drawSynthwave(t: Float) {
-    val w = size.width; val h = size.height
-    val horizon = h * 0.58f
-    drawRect(Brush.verticalGradient(listOf(c(0x1A0F2E), c(0x7A2A6E), c(0xFF5DA2)), endY = horizon), size = Size(w, horizon))
-    // Striped sun.
-    val sunC = Offset(w / 2, horizon)
-    val r = h * 0.34f
-    drawCircle(Brush.verticalGradient(listOf(c(0xFFD166), c(0xFF5DA2)), startY = horizon - r, endY = horizon), r, sunC)
-    for (k in 0 until 5) {
-        val y = horizon - r * (0.12f + k * 0.12f)
-        drawRect(c(0xB8467E), Offset(0f, y), Size(w, r * 0.03f + k * 1.2f))
-    }
-    drawRect(c(0x14061F), Offset(0f, horizon), Size(w, h - horizon))
-    val grid = c(0xFF5DA2).copy(alpha = 0.7f)
-    for (k in 0 until 8) {
-        val p = ((k + t * 8) % 8f) / 8f
-        val y = horizon + (h - horizon) * p * p
-        drawLine(grid, Offset(0f, y), Offset(w, y), strokeWidth = 1.5f)
-    }
-    for (k in -6..6) drawLine(grid, Offset(w / 2 + k * w * 0.02f, horizon), Offset(w / 2 + k * w * 0.16f, h), strokeWidth = 1.5f)
-}
-
-private fun DrawScope.drawPipsJam(t: Float) {
-    drawRect(Brush.verticalGradient(listOf(c(0x8EECC8).copy(alpha = 0.55f), c(0x8FD3FF).copy(alpha = 0.45f))))
-    val w = size.width; val h = size.height
-    val notes = listOf(c(0xFF6F7F), c(0x9B7BFF), c(0xE0A400), c(0x2BB894))
-    for (i in 0 until 8) {
-        val p = (hash(i, 1) + t * 3) % 1f
-        val x = hash(i) * w + sin((p * 2 + hash(i, 2)) * 2 * PI).toFloat() * w * 0.03f
-        val y = h * (1.05f - p * 1.1f)
-        val col = notes[i % notes.size].copy(alpha = (1 - p).coerceIn(0f, 1f))
-        val r = h * 0.035f
-        drawCircle(col, r, Offset(x, y))
-        drawLine(col, Offset(x + r * 0.9f, y), Offset(x + r * 0.9f, y - r * 3), strokeWidth = r * 0.45f)
-        drawLine(col, Offset(x + r * 0.9f, y - r * 3), Offset(x + r * 2.2f, y - r * 2.3f), strokeWidth = r * 0.45f)
-    }
 }
 
 private fun DrawScope.drawVinyl(t: Float) {

@@ -3,6 +3,7 @@ package io.github.zahakj.tandem
 import android.os.Handler
 import android.os.Looper
 import io.github.zahakj.tandem.data.GameStatus
+import io.github.zahakj.tandem.data.UpNextEntry
 import io.github.zahakj.tandem.data.Store
 import io.github.zahakj.tandem.data.WeekBoard
 import io.github.zahakj.tandem.data.WeekBoardResult
@@ -14,6 +15,12 @@ import io.github.zahakj.tandem.data.WeekStore
 import io.github.zahakj.tandem.data.WidgetStore
 import io.github.zahakj.tandem.ui.Palette
 import java.time.ZoneId
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 /**
  * This week's board on the device: [WeekBoard] fed from the library, cached with a fingerprint of what it was built
@@ -53,29 +60,45 @@ object ThisWeek {
         val state = WeekStore.state
         if (!state.on) return null
         val now = System.currentTimeMillis()
-        val key = listOf(Libraries.all, Store.meta, Privacy.view, state, WidgetStore.config.upNext, WeekBoard.weekOf(now, zone()))
+        val key = keyOf(state, now)
         memo?.let { m -> if (m.fits(key)) return m }
-        return synchronized(this) { memo?.takeIf { it.fits(key) } ?: build(key, state, now).also { memo = it } }
+        return synchronized(this) {
+            memo?.takeIf { it.fits(key) } ?: build(key, state, now).also { b ->
+                memo = b.memo
+                // What showed this week sticks, and stays away for the next four: noted after this frame, never while
+                // composing. Built from the state with it noted, the board is the same, so the cache is keyed as if it
+                // had been: noting it doesn't build it again.
+                if (b.noted != state) main.post { WeekStore.update { WeekBoard.remember(it, b.memo.board, now, zone()) } }
+            }.memo
+        }
     }
+
+    /** What a board is good for: see [Memo]. Read on the main thread (or wherever the board is asked for). */
+    private fun keyOf(state: WeekState, now: Long): List<Any?> =
+        listOf(Libraries.all, Store.meta, Privacy.view, state, WidgetStore.config.upNext, WeekBoard.weekOf(now, zone()))
 
     /** The library and the details are big: the same object or not. The rest are small values. */
     private fun same(a: List<Any?>, b: List<Any?>): Boolean =
         a[0] === b[0] && a[1] === b[1] && (2 until a.size).all { a[it] === b[it] || a[it] == b[it] }
 
-    private fun build(key: List<Any?>, state: WeekState, now: Long): Memo {
+    /** A board built for a key, and [state] with what it showed noted. */
+    private class Built(val memo: Memo, val noted: WeekState)
+
+    /** Builds the board for [key] ([state] is its This week part). Pure: changes nothing, so it may run on any thread. */
+    private fun build(key: List<Any?>, state: WeekState, now: Long): Built {
         val all = Libraries.games
         val input = all.map(::weekGame)
-        val upNext = WidgetStore.config.upNext.mapNotNull { it.key }
+        @Suppress("UNCHECKED_CAST")
+        val upNext = (key[UP_NEXT] as List<UpNextEntry>).mapNotNull { it.key }
         val board = WeekBoard.build(input, now, zone(), state, upNext)
         val byKey = all.associateBy { it.key }
         val games = board.picks.mapNotNull { byKey[it.key] }
-        // What showed this week sticks, and stays away for the next four: noted after this frame, never while composing.
-        // Built from the state with it noted, the board is the same, so the cache is keyed as if it had been: noting
-        // it doesn't build it again.
         val noted = WeekBoard.remember(state, board, now, zone())
-        if (noted != state) main.post { WeekStore.update { WeekBoard.remember(it, board, now, zone()) } }
-        return Memo(listOf(key, key.toMutableList().also { it[STATE] = noted }), board, games)
+        return Built(Memo(listOf(key, key.toMutableList().also { it[STATE] = noted }), board, games), noted)
     }
+
+    /** Where the Up next list sits in a [Memo]'s key. */
+    private const val UP_NEXT = 4
 
     private fun weekGame(g: Game): WeekGame {
         val m = g.meta
@@ -104,11 +127,36 @@ object ThisWeek {
 
     // ---------------------------------------------------------------------------------------------- feedback
 
-    /** X on a row: draws it again, a little deeper down its ranking. */
-    fun reroll(slot: WeekSlot) {
-        val b = board()
-        WeekStore.update { WeekBoard.reroll(it, b, slot) }
+    private val scope = MainScope()
+    /** One re-roll at a time, each from the board the one before it left: X held or spammed draws in order. */
+    private val rerolling = Mutex()
+
+    /**
+     * X on a row: draws it again, a little deeper down its ranking; the other rows stay as they are. [done] hears, on
+     * the main thread, whether the row changed (false: it came out the same, nothing else is left to draw for it).
+     *
+     * The new board is built on a background thread (it goes over the whole library) and goes in with the new state in
+     * one step, already noted, so the main thread only shows it: the board on screen never builds it again.
+     */
+    fun reroll(slot: WeekSlot, done: (Boolean) -> Unit) {
+        scope.launch {
+            rerolling.withLock {
+                val b = board()
+                val state = WeekStore.state
+                val next = WeekBoard.reroll(state, b, slot)
+                val now = System.currentTimeMillis()
+                val key = keyOf(next, now)
+                val built = if (next.on) withContext(Dispatchers.Default) { build(key, next, now) } else null
+                synchronized(this@ThisWeek) { if (built != null) memo = built.memo }
+                // Something else changed This week meanwhile (Y › Not for me): the re-roll goes on top of it, and the
+                // board is built again when it is next asked for, as any change does.
+                WeekStore.update { if (it == state && built != null) built.noted else WeekBoard.reroll(it, b, slot) }
+                done(rowOf(board(), slot) != rowOf(b, slot))
+            }
+        }
     }
+
+    private fun rowOf(b: WeekBoardResult, slot: WeekSlot) = b.rows.firstOrNull { it.slot == slot }?.picks?.map { it.key }
 
     /** Y › Not for me: never suggested again (until Reset suggestions). */
     fun notForMe(g: Game) = WeekStore.update { WeekBoard.notForMe(it, g.key) }

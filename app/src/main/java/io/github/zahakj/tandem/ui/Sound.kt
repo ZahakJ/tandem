@@ -94,6 +94,9 @@ object Sounds {
     }
 
     private var lastAt = 0L
+    /** When Tandem last played one of its own sounds (any kind): the music doesn't mistake it for someone's music. */
+    @Volatile var playedAt = 0L
+        private set
     private var lastKind: Sfx? = null
     private var lastMoveAt = 0L
     private var quietUntil = 0L
@@ -197,7 +200,7 @@ object Sounds {
     /** Stops a [holdRise] tone: let go early, or the hold confirmed and [confirm] takes over. */
     fun stopHold(ticket: Int) { if (ticket != 0) player.post { streams.remove(ticket)?.let { pool?.stop(it) } } }
     fun achievement() { play(Sfx.Achievement) }
-    /** Real good news (a new trophy or achievement, new games found): the sound, and the soundtrack's jingle if it has one. */
+    /** Real good news (a new trophy or achievement, new games found): the sound, and the built-in music's jingle. */
     fun goodNews() { play(Sfx.Achievement); Music.jingle() }
     fun key() { play(Sfx.Key) }
     fun saverIn() { play(Sfx.SaverIn) }
@@ -369,7 +372,8 @@ object Sounds {
 
     private fun playId(id: Int, kind: Sfx, vol: Float, rate: Float, mark: Boolean = true, keep: Boolean = false): Int {
         if (pool == null) return 0
-        if (mark) { lastAt = SystemClock.uptimeMillis(); lastKind = kind }
+        playedAt = SystemClock.uptimeMillis()
+        if (mark) { lastAt = playedAt; lastKind = kind }
         val v = (vol * Store.settings.look.soundVolume).coerceIn(0f, 1f)
         // When all streams are busy, SoundPool drops the lowest priority first: ticks give way to everything else.
         val priority = when (kind) { Sfx.Move, Sfx.Key -> 0; Sfx.Launch, Sfx.Achievement -> 2; else -> 1 }
@@ -456,8 +460,16 @@ object Music {
 
     fun init(ctx: Context) { app = ctx.applicationContext }
 
-    /** Tandem is on screen. */
-    fun resume() {
+    /**
+     * The Tandem windows on screen. Android can run a second home activity for a moment (after an update, or when it
+     * brings the launcher back), and that one stopping must not silence the one still showing: the music stops only
+     * when none is left.
+     */
+    private val shownBy = HashSet<Int>()
+
+    /** Tandem ([owner], an activity) is on screen. */
+    fun resume(owner: Any) {
+        shownBy += System.identityHashCode(owner)
         visible = true
         dim = 1f
         // Back from a game: whatever is still playing is that game, left open behind Tandem (an emulator keeps its audio
@@ -469,13 +481,50 @@ object Music {
         // (back from the screensaver with an emulator left running) plays through its audio stream too; that isn't
         // someone's music either, and taking it for that kept the theme's music off after every screensaver.
         val gameOpen = io.github.zahakj.tandem.RunningGames.list.isNotEmpty()
-        yielded = !fromGame && !gameOpen && am != null && am.isMusicActive && player == null && !SynthEngine.running
+        // Tandem's own sounds play on the same stream: a click or whoosh still ringing (the Home press that brought
+        // Tandem back) made it look like someone's music, and the music stayed off.
+        val ownSound = SystemClock.uptimeMillis() - Sounds.playedAt < 2500
+        // Our own music still fading out (Tandem left and came straight back) is on that stream too: taken for someone's
+        // music, it kept Tandem silent until the next time it left the screen.
+        val ownFade = SystemClock.uptimeMillis() - stoppedAt < 4000
+        yielded = !ownFade && !fromGame && !gameOpen && !ownSound && am != null && am.isMusicActive && player == null && !SynthEngine.running
+        if (yielded) Log.i(TAG, "Music: other music is playing, staying quiet")
         refresh()
+        heal()
     }
 
-    /** Tandem left the screen (a game is running, or the device slept): fade out and stop completely. */
-    fun pause() {
+    /**
+     * While Tandem is on screen, every few seconds: music that should play and doesn't starts again, and music that kept
+     * quiet for someone else's comes back once theirs has stopped. Whatever stopped it (a focus change, a race at start),
+     * it never stays off until Tandem happens to leave the screen and come back.
+     */
+    private val healer = object : Runnable {
+        override fun run() {
+            if (!visible) return
+            main.postDelayed(this, HEAL_MS)
+            val look = Store.settings.look
+            if (!look.music || gameUp || jingling || playing) return
+            if (yielded) {
+                if (audio()?.isMusicActive == true) return
+                yielded = false
+            }
+            Log.i(TAG, "Music: should be playing and isn't, starting it again")
+            refresh()
+        }
+    }
+
+    private fun heal() { main.removeCallbacks(healer); main.postDelayed(healer, HEAL_MS) }
+    private const val HEAL_MS = 5_000L
+    private const val TAG = "Tandem"
+    /** When the music last stopped, so its fade-out isn't taken for someone else's music. */
+    private var stoppedAt = 0L
+
+    /** [owner] left the screen (a game is running, or the device slept): with no Tandem window left, fade out and stop. */
+    fun pause(owner: Any) {
+        shownBy -= System.identityHashCode(owner)
+        if (shownBy.isNotEmpty()) { Log.i(TAG, "Music: another Tandem window stopped, still showing"); return }
         visible = false
+        main.removeCallbacks(healer)
         stopAll()
     }
 
@@ -497,55 +546,45 @@ object Music {
             stopFile()
             val ctx = app ?: return
             SynthEngine.volume = synthVolume()
-            // A jingle is playing: it hands back to the piece of the moment by itself when it ends.
+            // A jingle is playing: it hands back to the groove by itself when it ends.
             if (jingling) return
-            val song = Tracks.byId(trackId()) ?: pieces().first()
-            // The built-in soundtrack plays through its pieces, the next one each time a song comes round, unless its
-            // music follows where you are (Plaza): then the piece keeps going until you go somewhere else.
-            SynthEngine.onLooped = { main.post { if (Tracks.forScene(Store.settings.look.soundtrackId, scene) == null) nextPiece() } }
+            val song = Tracks.byId(trackId()) ?: Tracks.of(Store.settings.look.soundtrackId)
+            // The groove loops on by itself, without a seam; it changes only when another is picked or on Next song.
+            SynthEngine.onLooped = null
             SynthEngine.play(ctx, song)
             now = NowPlaying(song.id, song.title, own = false)
         }
     }
 
-    /** The chosen built-in soundtrack's pieces. */
-    private fun pieces() = Tracks.of(Store.settings.look.soundtrackId)
-
     /**
-     * The built-in piece playing now, or the one to start with: the one for where you are when the soundtrack follows
-     * that ([Tracks.forScene]), else a random one of the chosen soundtrack, once per run and again when another
-     * soundtrack is chosen.
+     * The built-in groove playing now: the chosen soundtrack's, or the one Next song moved on to since ([skipped],
+     * which only counts while that soundtrack is still the chosen one).
      */
     fun trackId(): String {
-        val pieces = pieces()
-        builtInTrack?.takeIf { id -> pieces.any { it.id == id } }?.let { return it }
-        val start = Tracks.forScene(Store.settings.look.soundtrackId, scene) ?: pieces.random()
-        return start.id.also { builtInTrack = it }
+        val chosen = Store.settings.look.soundtrackId
+        skipped?.takeIf { it.first == chosen }?.let { return it.second }
+        return Tracks.of(chosen).id
     }
 
-    private var builtInTrack: String? = null
+    /** Next song on the built-in music: (the soundtrack chosen then, the groove it moved on to). */
+    private var skipped: Pair<String, String>? = null
 
     private fun nextPiece() {
-        val ids = pieces().map { it.id }
-        builtInTrack = ids[(ids.indexOf(builtInTrack) + 1) % ids.size]
+        val ids = Tracks.ids
+        skipped = Store.settings.look.soundtrackId to ids[(ids.indexOf(trackId()) + 1) % ids.size]
         refresh()
     }
 
-    /** Next song: another file (the theme pack's or the music folder's), or the soundtrack's next piece. */
+    /** A soundtrack was picked (perhaps the same one again): it plays, whatever Next song moved on to before. */
+    fun backToChosen() {
+        if (skipped == null) return
+        skipped = null
+        refresh()
+    }
+
+    /** Next song: another file (the theme pack's or the music folder's), or the next of the built-in grooves. */
     fun skip() {
         if (files().isNotEmpty()) { stopFile(); next() } else { jingling = false; nextPiece() }
-    }
-
-    /** Where Tandem is, for a soundtrack whose music follows it (SoundCues sets it). */
-    private var scene = Tracks.Scene.Home
-
-    /** Tandem moved to [s] (home, Settings, the screensaver): a soundtrack that follows it changes piece. */
-    fun scene(s: Tracks.Scene) {
-        if (s == scene) return
-        scene = s
-        if (Tracks.forScene(Store.settings.look.soundtrackId, s) == null) return
-        builtInTrack = null
-        refresh()
     }
 
     /** A jingle is playing (or about to); [refresh] leaves it be. */
@@ -553,16 +592,16 @@ object Music {
     private var lastJingle = 0L
 
     /**
-     * Good news (new games found, an achievement): the soundtrack's short jingle cuts in, if it has one and is what
-     * plays right now, then the piece of the moment comes back. At most once a minute, so news in a row isn't a
+     * Good news (new games found, an achievement): the built-in music's short jingle cuts in, when the built-in
+     * music is what plays right now, then the groove comes back. At most once a minute, so news in a row isn't a
      * medley. Safe from any thread.
      */
     fun jingle() {
         main.post {
             val now = SystemClock.uptimeMillis()
             val look = Store.settings.look
-            val song = Tracks.jingle(look.soundtrackId)
-            if (song == null || jingling || now - lastJingle < 60_000 || !look.music || !visible || yielded || gameUp) return@post
+            val song = Tracks.jingle
+            if (jingling || now - lastJingle < 60_000 || !look.music || !visible || yielded || gameUp) return@post
             if (!SynthEngine.running || playsFiles) return@post
             val ctx = app ?: return@post
             lastJingle = now
@@ -604,6 +643,7 @@ object Music {
 
     /** Fades out and stops; [fast] (a game launching) takes a quarter of a second, so the launch sound has the room. */
     private fun stopAll(fast: Boolean = false) {
+        if (playing) stoppedAt = SystemClock.uptimeMillis()
         jingling = false
         SynthEngine.stop(if (fast) 0.25f else SynthEngine.FADE_SECONDS)
         fadeTo(0f, if (fast) 0.16f else 0.08f) { stopFile() }
@@ -620,7 +660,7 @@ object Music {
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> { duck = 0.25f; applyVolume() }
             AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> { jingling = false; SynthEngine.stop(); fadeTo(0f) { player?.takeIf { it.isPlaying }?.pause() } }
             // Lost to another app for good, unless it's the game Tandem just started: that one's back is a fresh start.
-            AudioManager.AUDIOFOCUS_LOSS -> { hasFocus = false; if (!gameUp) yielded = true; stopAll() }
+            AudioManager.AUDIOFOCUS_LOSS -> { Log.i(TAG, "Music: another app took the sound"); hasFocus = false; if (!gameUp) yielded = true; stopAll() }
         }
     }
 

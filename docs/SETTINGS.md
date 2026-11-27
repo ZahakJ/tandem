@@ -1,6 +1,7 @@
 # Settings: where everything lives
 
-Settings opens on eight equal tiles, four by two: one per page, then Search, each with a tiny live sketch of what is set.
+Settings opens on eight boxy tiles, three to a row: one per page, then Search (two columns wide), each with its glyph and
+name on one line and a tiny live sketch of what is set.
 Each page is a few short groups, the rows people change most first, and nothing folds away: a page fits in about a
 screen and a half. A coherent set of rarer rows (the wallpapers, the dock and widgets, accounts, performance) is a
 short **subpage**, opened from one › row on its page; B goes back to the page. X searches every row of every page and
@@ -63,7 +64,7 @@ screen of its own already holds (the scrape options, the source order, the hidde
 | Sound & music | sound pack and music (nothing while the theme pack brings its own audio) | Theme pack (only when the theme pack has music or sounds); Sounds; Music |
 | Controls | prompt style, A/B swapped, how many buttons are rebound | Buttons; Controllers (Connected controllers ›, Deck ›) |
 | Library & art | games, systems, sources, RetroAchievements, Steam | Games & systems (DroidDeck ›, GameNative ›); Artwork & accounts (Accounts ›: RetroAchievements, Steam, Discord) |
-| Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Privacy & hidden ›, Your data ›, Updates ›, For tinkerers ›) |
+| Play & system | resume state, Home screen | Playing (Performance & sleep ›); Tandem (Bump ›, Privacy & hidden ›, Your data ›, Updates ›, For tinkerers ›) |
 
 ## Every setting and where it is
 
@@ -134,7 +135,7 @@ A "›" step after a page is its subpage.
 | `Look.sounds`, `soundPack`, `soundVolume` | Sound & music › Sounds › UI sounds (Off, Tandem's 8 packs, then **Custom** when any recorded pack is on the device) / Sound volume | choice / slider |
 | `Look.soundFiles` | Sound & music › Sounds › Custom sounds (shown while UI sounds is Custom: Cocoon's sound packs in `ROMs/assets/sounds`, then theme packs' own `sounds`; `none` is no recorded pack) | choice |
 | `Look.pipVoice` | Sound & music › Sounds › Pip's voice (a few soft hummed notes with Pip's messages) | toggle |
-| `Look.music`, `myMusic`, `soundtrack`, `soundtrackPicked`, `musicVolume` | Sound & music › Music › Music (Off, My music, Plaza, Calm, Meadow Tales; `soundtrack` null reads as Plaza; picking one sets `soundtrackPicked`, and a `"calm"` that wasn't picked, the old default the welcome wrote down, reads as Plaza) / Music volume | choice / slider |
+| `Look.music`, `myMusic`, `soundtrack`, `soundtrackPicked`, `musicVolume` | Sound & music › Music › Music (Off, My music, Plaza, Lagoon, Terrace; `soundtrack` null reads as Plaza; picking one sets `soundtrackPicked`; an id Tandem no longer has, such as the removed `"calm"` or `"meadow"`, is forgotten on load and reads as Plaza) / Music volume | choice / slider |
 | `Look.musicShuffle` | Sound & music › Music › Shuffle my music | toggle |
 | (next song) | Sound & music › Music › Next song | action |
 | `Look.prompts`, `xButton` | Controls › Buttons › Button prompts / X button (swap on the icon grid and Orbit homes, everywhere, or search; on Spotlight the first opens the story) | choice |
@@ -172,6 +173,13 @@ A "›" step after a page is its subpage.
 | (none) | Play & system › Performance & sleep › Performance profiles: the one row that stands in for the three above on a device without AYN's modes ("AYN devices only"), or while Shizuku is not running ("Needs Shizuku": Android lets only the shell write AYN's keys) | action |
 | `GameMeta.perf` | Y on a game › More › Performance mode / Fan mode / Refresh rate (Default, Keep, or a value for this game) | menu |
 | `HomeSettings.freezeAsleep` | Play & system › Performance & sleep › Pause games in sleep (shows "Needs root Shizuku" without it) | toggle |
+| `PlazaData.on` (`plaza.json`) | Play & system › Bump › Bump (Me first when there is none, then the permission primer; `PassSwitch`) | toggle |
+| `PlazaData.whilePlaying` | Play & system › Bump › Bump while playing (the connected-device foreground service, `PassService`) | toggle |
+| `PlazaData.me` (`MeCard`) | Play & system › Bump › Edit Me (Me's own screen, `Route.Tool("me")`) | link |
+| (what the card carries) | Play & system › Bump › What others see (a popup, `PassPrivacy`) | action |
+| `PlazaData.visitors` | Play & system › Bump › Open the Plaza / Clear Plaza (hold) | link / action |
+| `PlazaData.blocked` | Play & system › Bump › Blocked people (hold A unblocks all) | action |
+| (`pass-identity.bin`, no-backup) | Play & system › Bump › Bump ID (the key's safety number) | action |
 | `HomeSettings.privateMode` | Play & system › Privacy & hidden › Private mode | toggle |
 | `Settings.showHidden` | Play & system › Privacy & hidden › Show hidden games (in private mode it asks for the PIN) | toggle |
 | `HomeSettings.offlineHidden`, `offlineUntilClosed` | Play & system › Privacy & hidden › Offline for hidden games (Off, Until closed, While playing) | choice |

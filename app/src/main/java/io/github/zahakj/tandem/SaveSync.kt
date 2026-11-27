@@ -44,9 +44,46 @@ object SaveSync {
         if (!Emulators.isInstalled(EDEN) || !Emulators.isInstalled(peanuts) || !Shell.ready()) return null
         // A game already open is brought back as it is; its save is the one in memory.
         if (RunningGames.list.any { it.game?.key == game.key }) return null
-        return runCatching { sync(ctx, title, peanutsRoot(peanuts), toPeanuts = PeanutsNative.isPeanuts(pkg)) }
+        // Starting in one Peanuts app: a newer save made in the other one (the official app and Peanuts Native+ each
+        // keep their own) comes over first, so moving a game between them never loses play.
+        val between = if (PeanutsNative.isPeanuts(pkg)) runCatching { fromOtherPeanuts(ctx, title, pkg) }
+            .onFailure { Log.w("Tandem", "Save sync between Peanuts apps for $title failed", it) }.getOrNull() else null
+        return runCatching { sync(ctx, title, peanutsRoot(peanuts), toPeanuts = PeanutsNative.isPeanuts(pkg)) ?: between }
             .onFailure { Log.w("Tandem", "Save sync for $title failed", it) }
             .getOrElse { Tx.s(R.string.play_save_failed, it.message.toString()) }
+    }
+
+    /**
+     * Copies [title]'s save from the other Peanuts app into [pkg] when the other one's is newer. Both keep saves the
+     * same way (saves/<title>, saves/<title>_device) under the same account, so it is a plain copy; the one replaced
+     * is kept in the backups first.
+     */
+    private fun fromOtherPeanuts(ctx: Context, title: String, pkg: String): String? {
+        val other = PeanutsNative.PACKAGES.firstOrNull { it != pkg && Emulators.isInstalled(it) } ?: return null
+        val script = Shell.script(ctx, "save-sync.sh")
+        fun sh(vararg args: String): String = Shell.su(script, *args) ?: error("root isn't available")
+        fun age(dir: String) = sh("age", dir).trim().toLongOrNull() ?: 0L
+        val stageRoot = File(ctx.cacheDir, "save-sync").apply { mkdirs() }
+        var copied = false
+        try {
+            for (part in listOf(title, "${title}_device")) {
+                val src = "${peanutsRoot(other)}/$part"
+                val dst = "${peanutsRoot(pkg)}/$part"
+                val srcAge = age(src)
+                if (srcAge == 0L || srcAge - age(dst) < SAME_S) continue
+                val stage = File(stageRoot, "$part-peanuts")
+                sh("stage", src, stage.path, ctx.cacheDir.path)
+                check(stage.isDirectory) { "couldn't read the save" }
+                val said = sh("install", stage.path, dst, "$BACKUPS/$title/peanuts", "work")
+                check("synced" in said) { said.trim().ifEmpty { "the copy failed" } }
+                copied = true
+            }
+        } finally {
+            stageRoot.listFiles()?.filter { it.name.startsWith(title) }?.forEach { it.deleteRecursively() }
+        }
+        if (!copied) return null
+        Log.i("Tandem", "Save of $title brought from $other to $pkg")
+        return Tx.s(R.string.play_save_from_native)
     }
 
     private fun sync(ctx: Context, title: String, peanutsRoot: String, toPeanuts: Boolean): String? {

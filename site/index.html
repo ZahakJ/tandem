@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tandem: a cozy, open-source game frontend for dual-screen handhelds</title>
-<meta name="description" content="Tandem is a free, open-source Android game frontend for dual-screen handhelds like the AYN Thor. Your library on the top screen, art and details on the bottom, games that resume where you left off, themes, artwork scraping and play stats. No ads, no accounts, no tracking.">
+<title>Tandem: a game frontend for dual-screen Android handhelds</title>
+<meta name="description" content="Tandem is a free, open-source Android game frontend for dual-screen handhelds like the AYN Thor. Pick a game on the top screen, see its art and details on the bottom, press A to play, and resume where you left off. No ads, no accounts, no tracking.">
 <meta name="theme-color" content="#13121C" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#FAF8FF" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="dark light">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Tandem">
-<meta property="og:description" content="A cozy, open-source game frontend for dual-screen Android handhelds. No ads, no accounts, no tracking.">
+<meta property="og:description" content="A free, open-source game frontend for dual-screen Android handhelds. No ads, no accounts, no tracking.">
 <meta property="og:image" content="https://zahakj.github.io/tandem/assets/brand/social-preview.png">
 <meta property="og:image:width" content="1280">
 <meta property="og:image:height" content="640">
@@ -33,6 +33,7 @@
   <div class="wrap">
     <a class="brand" href="./" aria-label="Tandem home"><img src="assets/brand/pip.svg" alt="" width="34" height="33">Tandem</a>
     <div class="links">
+      <a class="opt" href="#switching">Switching</a>
       <a class="opt" href="#features">Features</a>
       <a class="opt" href="#systems">Systems</a>
       <a class="opt" href="#privacy">Privacy</a>
@@ -48,9 +49,9 @@
 <header class="hero">
   <div class="wrap">
     <div class="copy">
-      <span class="kicker"><b>v0.7</b> Free and open source</span>
+      <span class="kicker"><b>v0.11</b> Free and open source</span>
       <h1>Games up top.<br><span class="grad">Pip down below.</span></h1>
-      <p class="lede">Tandem is a game frontend for Android handhelds, made for dual-screen devices like the AYN Thor. Browse on the top screen while Pip, a small companion, keeps the bottom one with each game's art and details. Then pick a game up right where you left it.</p>
+      <p class="lede">Tandem is a game frontend for Android handhelds with two screens, like the AYN Thor. Pick a game on top and the bottom screen shows its art and details. Press A and it opens in the right emulator, or natively for Switch games Peanuts Native has built. Press Home mid-game, pick it again, and you're back where you were.</p>
       <div class="cta">
         <a class="btn primary" href="https://github.com/ZahakJ/tandem/releases/latest"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>Download the APK</a>
         <a class="btn" href="#install">Get updates with Obtainium</a>
@@ -69,7 +70,7 @@
       <div class="hinge" aria-hidden="true"></div>
       <div class="shell base">
         <div class="ctl" aria-hidden="true"><div class="stick"></div><div class="dpad"></div></div>
-        <div class="glass"><img src="assets/screenshots/spotlight-bottom.webp" width="1000" height="871" alt="The bottom screen at the same moment: Hades II's art and logo, with its genres, rating, play time and description below."></div>
+        <div class="glass"><img src="assets/screenshots/spotlight-bottom.webp" width="1000" height="871" alt="The bottom screen at the same moment: the game's art and logo, with its genres, rating, play time and description below."></div>
         <div class="ctl" aria-hidden="true"><div class="abxy"><i></i><i></i><i></i><i></i></div><div class="stick"></div></div>
       </div>
       <img class="pip" src="assets/brand/pip.svg" alt="" width="90" height="87">
@@ -81,8 +82,8 @@
   <div class="wrap">
     <div class="head center reveal">
       <span class="eyebrow" style="--c:var(--sky)">How it works</span>
-      <h2 id="how-title">Made for the way you hold it</h2>
-      <p class="lede">A dual-screen handheld has two places to look. Tandem uses both, and works just as well on one.</p>
+      <h2 id="how-title">Two screens, one job each</h2>
+      <p class="lede">A dual-screen handheld has two places to look. Tandem uses both, and works fine on one.</p>
     </div>
     <div class="steps">
       <div class="step reveal" style="--c:var(--mint)"><h3>Browse on top</h3><p>Systems, folders, collections and your Android apps, moved through with the D-pad or stick. Touch works too.</p></div>
@@ -92,11 +93,27 @@
   </div>
 </section>
 
+<section id="switching" aria-labelledby="switching-title" style="padding-top:0">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="eyebrow" style="--c:var(--lav)">Switching over</span>
+      <h2 id="switching-title">Bring your setup, keep your old one</h2>
+      <p class="lede">Setup takes a few minutes. Tandem reads what you already have and never changes another frontend's files, so it keeps working too.</p>
+    </div>
+    <div class="grid">
+      <article class="feat reveal" style="--c:var(--mint)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><h3>Your games, where they are</h3><p>Any folder, on the device or an SD card. A folder per system with forgiving names, the <code>ROMs/</code> layout ES-DE and Cocoon use, or everything mixed together.</p></article>
+      <article class="feat reveal" style="--c:var(--sky)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M7 10v4M5 12h4M15 11h.01M18 13h.01"/></svg></span><h3>Your emulators</h3><p>Installed ones are found and offered for each system. Cocoon and Daijisho platform files are read too, so what they launched, Tandem can.</p></article>
+      <article class="feat reveal" style="--c:var(--peach)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg></span><h3>Your art and details</h3><p>Art in <code>downloaded_media</code> is used as it is. ES-DE gamelists and Cocoon backups bring titles, descriptions, favourites and play time.</p></article>
+    </div>
+    <p class="note reveal">From Cocoon, one press also brings your home grid, folders and theme pack (and can be undone). <a href="docs/importing/">Importing</a> has the details.</p>
+  </div>
+</section>
+
 <section id="features" aria-labelledby="features-title" style="padding-top:0">
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow">Features</span>
-      <h2 id="features-title">Small app, thoughtful details</h2>
+      <h2 id="features-title">What's in it</h2>
       <p class="lede">Every screenshot here was taken on an AYN Thor running Tandem.</p>
     </div>
 
@@ -104,11 +121,12 @@
       <div class="copy">
         <span class="eyebrow" style="--c:var(--lav)">Make it yours</span>
         <h3>Your home screen, your way</h3>
-        <p>Pick a layout and a look, then fine-tune it. Changes apply instantly, with a soft cross-fade.</p>
+        <p>Pick a layout and a look, then adjust it. Changes show at once.</p>
         <ul>
-          <li><span><b>Theme packs and three built-in themes,</b> with animated, game-flavoured wallpapers and icon styles. All their art is original.</span></li>
+          <li><span><b>Three built-in themes,</b> with animated wallpapers and drawn icon styles. All their art is original.</span></li>
           <li><span><b>Eight home layouts:</b> shelves, an icon grid (1 to 5 rows, or sized to fit), carousel, list, console, and Tandem's own Orbit, Spotlight and Stage, tried live from Start.</span></li>
           <li><span><b>Theme packs</b> from your ROMs folder, including community packs, with each part (colours, wallpaper, icons) switchable on its own.</span></li>
+          <li><span><b>System art your way:</b> real console photos and logos fetched from the web, or Tandem's own drawn art sets.</span></li>
           <li><span><b>Folders that make sense:</b> subfolders and genres show up with a fan of the covers inside, and open as a grid, a bookshelf, a cartridge case or a carousel.</span></li>
         </ul>
         <a class="more" href="docs/themes/">Themes and layouts →</a>
@@ -120,23 +138,23 @@
       <div class="copy">
         <span class="eyebrow" style="--c:var(--peach)">Spotlight</span>
         <h3>One game, the whole screen</h3>
-        <p>Spotlight is a home made for looking at your games. The highlighted game's art fills the screen, and everything about it sits beside a simple rail of covers.</p>
+        <p>Spotlight shows one game at a time. Its art fills the screen, and its details sit beside a rail of covers.</p>
         <ul>
           <li><span><b>Logo, details and story</b> on one side, with your play time, last session and status. Long stories scroll by themselves after a moment.</span></li>
-          <li><span><b>Readable on any art:</b> the words sit on a soft fade of the picture, so bright or busy art never swallows them.</span></li>
+          <li><span><b>Readable on any art:</b> the text sits on a fade of the picture, so bright or busy art doesn't drown it.</span></li>
           <li><span><b>L1 and R1 switch groups:</b> your systems, your collections and lists like Most played.</span></li>
           <li><span><b>The bottom screen joins in</b> with the same game's art in one piece, its details on the faded lower part.</span></li>
         </ul>
         <a class="more" href="docs/themes/">Themes and layouts →</a>
       </div>
-      <figure class="shot"><img src="assets/screenshots/spotlight-odyssey.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Spotlight on Super Mario Odyssey: the city art across the screen, the cover highlighted in the rail on the left, and the logo, platform, year, story and play time on the right."><figcaption>Spotlight, on the game you are about to play.</figcaption></figure>
+      <figure class="shot"><img src="assets/screenshots/spotlight-odyssey.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Spotlight on a Switch game: its art across the screen, the cover highlighted in the rail on the left, and the logo, platform, year, story and play time on the right."><figcaption>Spotlight, on the game you are about to play.</figcaption></figure>
     </div>
 
     <div class="story reveal" style="--c:var(--butter)">
       <div class="copy">
         <span class="eyebrow" style="--c:var(--butter)">Folder views</span>
-        <h3>A collection you can see</h3>
-        <p>Every folder picks how it shows what is inside. Press X in a folder to try the next view.</p>
+        <h3>Four ways to show a folder</h3>
+        <p>A grid, or one of these. Each folder keeps its own view; press X in a folder to try the next one.</p>
         <ul>
           <li><span><b>Shelf:</b> spines on wooden shelves, one shelf per folder inside, and the highlighted game turns to show its cover.</span></li>
           <li><span><b>Case:</b> cartridges and discs in a foam-lined case.</span></li>
@@ -145,17 +163,17 @@
         </ul>
         <a class="more" href="docs/library/">Your library →</a>
       </div>
-      <figure class="shot"><img src="assets/screenshots/shelf.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo DS folder in Shelf view: game spines on a wooden shelf, with Advance Wars: Dual Strike turned to show its cover."><figcaption>The Shelf view, with one game turned out.</figcaption></figure>
+      <figure class="shot"><img src="assets/screenshots/shelf.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo DS folder in Shelf view: game spines on a wooden shelf, with one game turned to show its cover."><figcaption>The Shelf view, with one game turned out.</figcaption></figure>
     </div>
 
     <div class="story flip reveal" style="--c:var(--sky)">
       <div class="copy">
         <span class="eyebrow" style="--c:var(--sky)">Two screens</span>
-        <h3>The second screen earns its place</h3>
+        <h3>What the bottom screen shows</h3>
         <p>The bottom screen follows the highlight above. When nothing is highlighted, it shows Pip, the clock and your widgets.</p>
         <ul>
           <li><span><b>Four bottom-screen modes:</b> details, art and info, animated art, or a big clock. Video snaps play if you have them.</span></li>
-          <li><span><b>Swap the screens with X,</b> with a little animation that flows across the hinge.</span></li>
+          <li><span><b>Swap the screens with X</b> if you'd rather browse on the bottom one.</span></li>
           <li><span><b>While you play,</b> the bottom screen can show the game's art and your session time, or a companion with a clock and quick controls, or stay out of the way for emulators that use it.</span></li>
           <li><span><b>Manuals on the bottom screen,</b> or turn it off while you play.</span></li>
           <li><span><b>15 widgets:</b> storage, battery, play stats, up next, achievements and more, on either screen, plus your Android widgets.</span></li>
@@ -163,8 +181,8 @@
         <a class="more" href="docs/ayn-thor/">Setting up the AYN Thor →</a>
       </div>
       <div class="pair">
-        <figure class="shot"><img src="assets/screenshots/game-art-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen with Super Mario 3D Land's artwork and logo, and A Play, Y Options, X Swap hints."><figcaption>Bottom screen, game highlighted.</figcaption></figure>
-        <figure class="shot"><img src="assets/screenshots/ingame-art.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen during play: Pokémon Emerald's art and logo, with the session time and total play time."><figcaption>And while you play.</figcaption></figure>
+        <figure class="shot"><img src="assets/screenshots/game-art-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen with a highlighted game's artwork and logo, and A Play, Y Options, X Swap hints."><figcaption>Bottom screen, game highlighted.</figcaption></figure>
+        <figure class="shot"><img src="assets/screenshots/ingame-art.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen during play: the game's art and logo, with the session time and total play time."><figcaption>And while you play.</figcaption></figure>
       </div>
     </div>
 
@@ -174,19 +192,19 @@
         <h3>Back where you left off, not at the title screen</h3>
         <p>Press Home mid-game and browse a little. Tandem keeps a Resume card for the game that is still open, and picking it again brings the emulator straight back instead of starting over.</p>
         <ul>
-          <li><span><b>Works with Shizuku.</b> Android doesn't let apps see what else is running, so Tandem asks <a href="https://shizuku.rikka.app/">Shizuku</a>. Without it, games simply start fresh.</span></li>
+          <li><span><b>Works with Shizuku.</b> Android doesn't let apps see what else is running, so Tandem asks <a href="https://shizuku.rikka.app/">Shizuku</a>. Without it, games start fresh.</span></li>
           <li><span><b>A game switcher</b> (hold Select) lists every running game, to resume or close.</span></li>
           <li><span><b>Home-screen mode:</b> make Tandem your launcher, with an apps drawer and a dock, and the Home button always lands on your game.</span></li>
         </ul>
         <a class="more" href="docs/resume/">How resume works →</a>
       </div>
-      <figure class="shot"><img src="assets/screenshots/resume.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Home screen with a Continue card for Pokémon Emerald Version, running in RetroArch, with A Resume and Y Close."><figcaption>The Resume card, after pressing Home mid-game.</figcaption></figure>
+      <figure class="shot"><img src="assets/screenshots/resume.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Home screen with a Continue card for a game still running in RetroArch, with A Resume and Y Close."><figcaption>The Resume card, after pressing Home mid-game.</figcaption></figure>
     </div>
 
     <div class="story flip reveal" style="--c:var(--peach)">
       <div class="copy">
         <span class="eyebrow" style="--c:var(--peach)">Artwork and details</span>
-        <h3>A library that looks finished</h3>
+        <h3>Art and details for every game</h3>
         <p>Box art, logos, hero images, screenshots, video snaps and descriptions, from the sources you choose, saved next to your games where other frontends can use them too.</p>
         <ul>
           <li><span><b>Six sources:</b> LaunchBox and libretro thumbnails need no account; ScreenScraper, IGDB and SteamGridDB use your own keys; HowLongToBeat adds time to beat.</span></li>
@@ -196,7 +214,7 @@
         </ul>
         <a class="more" href="docs/privacy/">What scraping sends, and to whom →</a>
       </div>
-      <figure class="shot"><img src="assets/screenshots/settings.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Settings: a search box above seven pages, Look and feel, Home and layout, Two screens, Sound and music, Controls, Library and art, and Play and system, with a summary of the highlighted page on the right."><figcaption>Settings: seven pages, each with a summary.</figcaption></figure>
+      <figure class="shot"><img src="assets/screenshots/settings.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Settings: eight tiles, each with a small picture of what it holds: Look and feel, Home and layout, Two screens, Sound and music, Controls, Library and art, Play and system, and a wide Search tile; a summary of the highlighted page on the right."><figcaption>Settings: a tile per page, and a summary of the one you're on.</figcaption></figure>
     </div>
 
     <div class="story reveal" style="--c:var(--butter)">
@@ -206,14 +224,47 @@
         <p>A to open or play, B to go back, Y for options on anything. Every screen remembers what you had highlighted.</p>
         <ul>
           <li><span><b>Search without a keyboard:</b> an on-screen keyboard made for the D-pad finds games, apps and settings as you type.</span></li>
-          <li><span><b>Start</b> opens a side panel for search, sorting, editing the grid and settings; <b>hold Start</b> for brightness, volume and Wi-Fi.</span></li>
-          <li><span><b>Select</b> picks a random game you have never played.</span></li>
+          <li><span><b>Start</b> opens a side panel for search, sorting, layouts, the Plaza and settings; <b>hold Start</b> for brightness, volume and Wi-Fi.</span></li>
+          <li><span><b>Select</b> spins Surprise me, a reel of covers that lands on a game for you.</span></li>
+          <li><span><b>Search filters</b> by system, genre, year, rating, status and more.</span></li>
           <li><span><b>Rebind any button,</b> and open the Deck, a keyboard and trackpad for PC games and apps.</span></li>
           <li><span><b>Bluetooth controllers:</b> make a pad's Home button work everywhere, and swap A/B and X/Y per controller for Nintendo-style pads.</span></li>
         </ul>
         <a class="more" href="docs/controls/">Controller reference →</a>
       </div>
-      <figure class="shot"><img src="assets/screenshots/search.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Search with zeld typed on a D-pad keyboard, showing 13 matching Zelda games."><figcaption>Search: four letters, thirteen Zeldas.</figcaption></figure>
+      <figure class="shot"><img src="assets/screenshots/search.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Search with four letters typed on a D-pad keyboard, and the matching games beside it."><figcaption>Search: four letters on the D-pad keyboard.</figcaption></figure>
+    </div>
+
+    <div class="story flip reveal" style="--c:var(--sky)">
+      <div class="copy">
+        <span class="eyebrow" style="--c:var(--sky)">This week</span>
+        <h3>A few games from your own shelf</h3>
+        <p>Every Monday Tandem picks games you already have and says why each one. It is worked out on the handheld from how you play; nothing leaves it.</p>
+        <ul>
+          <li><span><b>A Pick of the week</b> on a banner: a game you haven't started, your kind of game, well rated.</span></li>
+          <li><span><b>Rows with a reason:</b> Pick up where you left off, Almost there, Short tonight, Because you finished, Hidden gems and more. A row shows only when something fits.</span></li>
+          <li><span><b>X re-rolls the row you're on.</b> It stays full, the rest of the board stays put, and the highlight stays on the same card.</span></li>
+          <li><span><b>Y on a pick:</b> other picks for this row, not for me, or played it elsewhere.</span></li>
+        </ul>
+        <a class="more" href="docs/library/#this-week">How This week picks →</a>
+      </div>
+      <figure class="shot"><img src="assets/screenshots/this-week.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The This week board: a Pick of the week banner with the game's art, then rows of wide cards, Pick up where you left off and Because you finished, each card with its box, a reason chip and the game's name."><figcaption>This week: picks from your own library, each with why.</figcaption></figure>
+    </div>
+
+    <div class="story reveal" style="--c:var(--lav)">
+      <div class="copy">
+        <span class="eyebrow" style="--c:var(--lav)">Bump and the Plaza</span>
+        <h3>Meet the Tandems you pass</h3>
+        <p>Make a character of yourself, turn on Bump and carry your handheld around. When another Tandem with Bump on comes within Bluetooth range, a phone included, you swap a small card.</p>
+        <ul>
+          <li><span><b>Me</b> is the character maker: face, eyes and eye colour, hairstyles, hats, outfits, glasses and more. L1 and R1 switch tabs; X picks a random look, Y undoes.</span></li>
+          <li><span><b>Your card</b> carries your character, a name, a preset greeting and a favourite game, plus your last game only if you share it. Never your location or your library.</span></li>
+          <li><span><b>The Plaza</b> is a little town square where everyone you met walks, chats and sits on the benches. The sky follows your clock.</span></li>
+          <li><span><b>Off until you turn it on</b> in Settings › Play &amp; system › Bump. Bluetooth only, no internet, no account. Android 12 or newer.</span></li>
+        </ul>
+        <a class="more" href="docs/plaza/">How Bump works →</a>
+      </div>
+      <figure class="shot"><img src="assets/screenshots/guide/me-editor.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Me, the character maker: your character on the left in a beret and monocle, and on the right the Hats tab, a grid of the same character in caps, beanies, a crown, bunny ears, a straw hat, a top hat, a wizard hat and more."><figcaption>Me: dress your character, then go bump into people.</figcaption></figure>
     </div>
   </div>
 </section>
@@ -222,15 +273,16 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow" style="--c:var(--peach)">And also</span>
-      <h2 id="more-title">The rest of the toolbox</h2>
+      <h2 id="more-title">Everything else</h2>
     </div>
     <div class="grid">
       <article class="feat reveal" style="--c:var(--butter)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3>Play stats and a journal</h3><p>Play time, sessions, streaks and a 30-day chart, a journal for notes on each session, and CSV export.</p></article>
-      <article class="feat reveal" style="--c:var(--mint)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><h3>RetroAchievements</h3><p>Sign in to see your profile, recent unlocks and each game's progress. Games are matched by a hash made on the device.</p></article>
-      <article class="feat reveal" style="--c:var(--peach)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><h3>Music and sounds</h3><p>Meadow Tales, an original soundtrack, eight UI sound packs, a theme pack's own music and sounds, or your own tracks.</p></article>
-      <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></span><h3>Organized your way</h3><p>Folders, collections, favourites and Up next. Tuck away anything you'd rather not see.</p></article>
+      <article class="feat reveal" style="--c:var(--mint)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><h3>RetroAchievements</h3><p>Sign in to see your profile, recent unlocks and each game's full list, with filters and players' hints. Games, discs too, are matched by a hash made on the device.</p></article>
+      <article class="feat reveal" style="--c:var(--peach)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><h3>Music and sounds</h3><p>Three original background grooves (Plaza, Lagoon and Terrace), nine UI sound packs, a theme pack's own music and sounds, or your own tracks.</p></article>
+      <article class="feat reveal" style="--c:var(--sky)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></span><h3>Settings you can find</h3><p>Eight tiles, each with a sketch of what is set inside, a small glyph on every row, and a search that finds any setting by what it does.</p></article>
+      <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg></span><h3>Switch games, one save</h3><p>Games Peanuts Native has built play natively; one built in both Peanuts apps plays in the official one. On a rooted handheld the newer save follows the game between Eden Duo and Peanuts.</p></article>
+      <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></span><h3>Organized your way</h3><p>Folders, collections, favourites and Up next. Hide games you'd rather not see.</p></article>
       <article class="feat reveal" style="--c:var(--sky)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg></span><h3>A screensaver</h3><p>Your covers drift past a big clock while Pip naps. Also available as Android's own screensaver.</p></article>
-      <article class="feat reveal" style="--c:var(--mint)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span><h3>Bring your library</h3><p>Reads ES-DE <code>gamelist.xml</code> files and other launchers' backups: titles, descriptions, favorites, play time and art.</p></article>
       <article class="feat reveal" style="--c:var(--butter)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H6a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg></span><h3>Open data</h3><p>Systems and emulators live in an editable <code>platforms.json</code>. Your library and settings are plain JSON, with backup and restore.</p></article>
       <article class="feat reveal" style="--c:var(--peach)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/></svg></span><h3>Built-in apps</h3><p>A screenshot gallery, a file browser, an Up next list and a controller tester sit on the grid next to your systems.</p></article>
       <article class="feat reveal" style="--c:var(--sky)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span><h3>Stream from your PC</h3><p>PC games streamed with Moonlight sit in your library like any other game, with their art and play time.</p></article>
@@ -239,7 +291,8 @@
       <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M3 3l18 18"/></svg></span><h3>Quiet while you play</h3><p>Do Not Disturb holds notifications while a game plays, then goes back as it was when you return.</p></article>
       <article class="feat reveal" style="--c:var(--butter)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M9 14.5 8 22l4-2 4 2-1-7.5"/></svg></span><h3>Steam achievements</h3><p>Your unlocks for Steam games, next to Tandem's own trophies and RetroAchievements.</p></article>
       <article class="feat reveal" style="--c:var(--sky)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h5v18H6a2 2 0 0 1-2-2z"/><path d="M20 5a2 2 0 0 0-2-2h-5v18h5a2 2 0 0 0 2-2z"/></svg></span><h3>Manuals and guides</h3><p>Read a game's manual page by page, on the bottom screen while it plays. Tandem remembers your page for each game.</p></article>
-      <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><h3>Quick on a handheld</h3><p>A baseline profile for fast starts, work kept off the frame, and background jobs that pause the moment a game starts.</p></article>
+      <article class="feat reveal" style="--c:var(--lav)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><h3>Light on the handheld</h3><p>Starts fast, and background work like scraping pauses the moment a game starts. Left alone for half a minute, it stops animating and uses almost no CPU.</p></article>
+      <article class="feat reveal" style="--c:var(--mint)"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><h3>Five languages</h3><p>English, العربية (every screen mirrors), 日本語, 简体中文 and Français, with Gregorian, Hijri or Chinese dates.</p></article>
     </div>
   </div>
 </section>
@@ -248,20 +301,20 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow" style="--c:var(--lav)">A look around</span>
-      <h2 id="gallery-title">More from the device</h2>
+      <h2 id="gallery-title">More screenshots</h2>
       <p class="lede">The top screen is 1920×1080, the bottom one 1240×1080.</p>
     </div>
     <div class="gallery">
-      <figure class="shot reveal"><img src="assets/screenshots/spotlight-expedition.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Spotlight on Clair Obscur: Expedition 33, a PC game: a figure on a cliff fills the screen beside its story and play time."><figcaption><b>Spotlight</b> on a streamed PC game.</figcaption></figure>
-      <figure class="shot reveal"><img src="assets/screenshots/spotlight-menu.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Y menu on Hades II: the cover lifted with the game's name under it, beside Play, Favorite, Status, Add to Up next, Notes, Edit details and More."><figcaption><b>Y on a game:</b> favorite, status, notes, and more.</figcaption></figure>
-      <figure class="shot reveal"><img src="assets/screenshots/case.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo DS folder in Case view: cartridges in a dark foam-lined case, with Age of Empires lifted."><figcaption><b>The Case view:</b> cartridges in foam.</figcaption></figure>
-      <figure class="shot reveal"><img src="assets/screenshots/carousel.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo Switch folder in Carousel view: Advance Wars 1+2: Re-Boot Camp in front, Animal Crossing and Celeste turning away."><figcaption><b>The Carousel view,</b> one cover at a time.</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/screenshots/spotlight-expedition.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Spotlight on a streamed PC game: its art fills the screen beside its story and play time."><figcaption><b>Spotlight</b> on a streamed PC game.</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/screenshots/spotlight-menu.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Y menu on a game: the cover lifted with the game's name under it, beside Play, Favorite, Status, Add to Up next, Notes, Edit details and More."><figcaption><b>Y on a game:</b> favorite, status, notes, and more.</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/screenshots/case.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo DS folder in Case view: cartridges in a dark foam-lined case, with one lifted."><figcaption><b>The Case view:</b> cartridges in foam.</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/screenshots/carousel.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Nintendo Switch folder in Carousel view: one cover in front, the others turning away."><figcaption><b>The Carousel view,</b> one cover at a time.</figcaption></figure>
       <figure class="shot reveal"><img src="assets/screenshots/icon-grid.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Icon grid home: big system tiles, Tandem's apps, and battery, memory and storage widgets, with a dock below."><figcaption><b>The Icon grid,</b> with widgets beside your systems.</figcaption></figure>
       <figure class="shot reveal"><img src="assets/screenshots/stats.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Play stats: total play time, games played, streak and sessions, above a chart of the last 30 days."><figcaption><b>Play stats,</b> with a 30-day chart.</figcaption></figure>
       <figure class="shot sm reveal"><img src="assets/screenshots/home-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen greeting: Pip, the time, a greeting, how many games are ready to play, and the last game played."><figcaption><b>Pip says hello</b> when nothing is highlighted.</figcaption></figure>
-      <figure class="shot sm reveal"><img src="assets/screenshots/game-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen for Pokémon Emerald with a Running badge and A Resume."><figcaption><b>Still running?</b> A says Resume.</figcaption></figure>
+      <figure class="shot sm reveal"><img src="assets/screenshots/game-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen for a running game with a Running badge and A Resume."><figcaption><b>Still running?</b> A says Resume.</figcaption></figure>
       <figure class="shot sm reveal"><img src="assets/screenshots/folder-bottom.webp" width="1000" height="871" loading="lazy" decoding="async" alt="Bottom screen for a highlighted folder: Action and Adventure, with its game count and a fan of covers."><figcaption><b>A folder</b> fans out its covers.</figcaption></figure>
-      <figure class="shot reveal"><img src="assets/screenshots/start-panel.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Start panel over a blurred home: All apps, Search and Stats and trophies, then New, Sort and Edit widgets, then Settings."><figcaption><b>Start</b> opens the side panel.</figcaption></figure>
+      <figure class="shot reveal"><img src="assets/screenshots/start-panel.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The Start panel over a blurred home: All apps, Search, Stats and trophies and the Plaza, then New, Sort, Layout and Edit widgets, then Settings."><figcaption><b>Start</b> opens the side panel.</figcaption></figure>
       <figure class="shot reveal"><img src="assets/screenshots/screensaver.webp" width="1600" height="900" loading="lazy" decoding="async" alt="The screensaver: a large clock and date, game covers drifting around, and a sleeping Pip."><figcaption><b>The screensaver,</b> with a sleepy Pip.</figcaption></figure>
     </div>
   </div>
@@ -271,13 +324,13 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow" style="--c:var(--mint)">Systems</span>
-      <h2 id="systems-title">Over a hundred systems, ready to go</h2>
+      <h2 id="systems-title">104 systems</h2>
       <p class="lede">Tandem finds the emulators you have installed and offers every one that fits. A few of the 104 systems it knows:</p>
     </div>
     <ul class="systems reveal">
       <li><b>Nintendo 3DS</b><span>Azahar</span></li>
       <li><b>Nintendo DS</b><span>melonDS, DraStic, RetroArch</span></li>
-      <li><b>Nintendo Switch</b><span>Eden</span></li>
+      <li><b>Nintendo Switch</b><span>Eden Duo, Eden, Peanuts Native</span></li>
       <li><b>Wii U</b><span>Cemu</span></li>
       <li><b>Wii and GameCube</b><span>Dolphin</span></li>
       <li><b>Nintendo 64</b><span>Mupen64Plus FZ, RetroArch</span></li>
@@ -305,13 +358,13 @@
     <div class="band reveal">
       <div>
         <span class="eyebrow">Privacy</span>
-        <h2 id="privacy-title">Your library is nobody's business</h2>
-        <p class="lede" style="margin-bottom:22px">What you play, and for how long, stays on your handheld. There is no account to make and nothing phoning home. You can check: the code is right there.</p>
+        <h2 id="privacy-title">What stays on the handheld</h2>
+        <p class="lede" style="margin-bottom:22px">What you play, and for how long, stays on your handheld. There is no account and no tracking. The code is public if you want to check.</p>
         <a class="btn" href="docs/privacy/">Read the privacy page <span aria-hidden="true">→</span></a>
       </div>
       <ul class="promises">
-        <li><span class="ic" style="--c:var(--mint)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="M3 3l18 18"/></svg></span><div><b>No analytics, ads or accounts</b><span>No telemetry, no crash reports, no update checks. Free software under the GPL.</span></div></li>
-        <li><span class="ic" style="--c:var(--sky)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></span><div><b>Online only when you ask</b><span>The internet is used for scraping you start and RetroAchievements you sign in to. Each source can be switched off, and keys stay on the device.</span></div></li>
+        <li><span class="ic" style="--c:var(--mint)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/><path d="M3 3l18 18"/></svg></span><div><b>No analytics, ads or accounts</b><span>No telemetry and no crash reports. Free software under the GPL.</span></div></li>
+        <li><span class="ic" style="--c:var(--sky)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></span><div><b>Online only when you ask</b><span>For scraping you start, and achievements or Discord you sign in to. The exceptions: a daily update check you can turn off, and Steam's store pictures for Steam shortcuts with no art. Private mode keeps it all offline.</span></div></li>
         <li><span class="ic" style="--c:var(--peach)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><path d="M3 3l18 18"/></svg></span><div><b>Works offline</b><span>Your library, play time and settings need no connection at all.</span></div></li>
         <li><span class="ic" style="--c:var(--lav)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H6a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg></span><div><b>Data you can take with you</b><span>Plain JSON, and artwork saved next to your games in the layout other frontends read.</span></div></li>
       </ul>
@@ -332,14 +385,14 @@
       <div class="way reveal"><h3>F-Droid <span class="pill" style="--c:var(--butter)">Later</span></h3><p>The store listing is ready in the repository. Until Tandem is accepted, use one of the other two.</p></div>
     </div>
     <ol class="steps-list reveal">
-      <li>Put your games in <code>ROMs/</code>, one folder per system (<code>ROMs/n3ds</code>, <code>ROMs/gba</code>…).</li>
+      <li>Put your games in any folder, one subfolder per system (<code>n3ds</code>, <code>GBA</code>…). <code>ROMs/</code> is the default.</li>
       <li>Open Tandem and allow <b>All files access</b>.</li>
-      <li>Pick the <b>ROMs</b> folder when asked, so emulators can open your games.</li>
+      <li>Pick your games folder when asked, so emulators can open your games.</li>
       <li>Optional: run Shizuku for resume, and scrape your art.</li>
     </ol>
     <div class="need reveal">
       <div><b>Android 11+</b>Any handheld; two screens are a bonus.</div>
-      <div><b>Your games</b>In internal storage. Tandem includes none.</div>
+      <div><b>Your games</b>On the device or an SD card. Tandem includes none.</div>
       <div><b>Your emulators</b>Installed separately; Tandem finds them.</div>
       <div><b>Shizuku</b>Optional, for resuming running games.</div>
     </div>
@@ -350,7 +403,7 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow" style="--c:var(--peach)">FAQ</span>
-      <h2 id="faq-title">Questions, answered</h2>
+      <h2 id="faq-title">Common questions</h2>
     </div>
     <div class="faq">
       <div>
@@ -358,14 +411,14 @@
         <details><summary>Which devices does it run on?</summary><p>Any Android 11 or newer device. It is designed around the AYN Thor's two screens and uses a second display on any device that has one. On a single screen, everything still works.</p></details>
         <details><summary>Why does it ask for "All files access"?</summary><p>To read your ROMs folder and its artwork quickly, and to save artwork you scrape next to your games. It also asks you to pick the ROMs folder once, so it can hand games to emulators that only open shared files.</p></details>
         <details><summary>Is Shizuku required?</summary><p>No. Shizuku only powers resume and the game switcher: seeing whether a game is still open in its emulator. Without it, every game starts fresh. <a href="docs/resume/">More on resume</a>.</p></details>
-        <details><summary>Does it go online?</summary><p>Only for what you start: scraping artwork and details, and RetroAchievements if you sign in. No analytics, no ads, no update checks. <a href="docs/privacy/">The privacy page</a> lists exactly what each service receives.</p></details>
+        <details><summary>Does it go online?</summary><p>Only for what you start: scraping artwork and details, and RetroAchievements, Steam or Discord if you sign in. It also checks GitHub once a day for a new Tandem, which you can turn off. No analytics, no ads. Bump uses Bluetooth only, never the internet, and is off until you turn it on. <a href="docs/privacy/">The privacy page</a> lists exactly what each service receives.</p></details>
       </div>
       <div>
         <details><summary>My emulator isn't listed. Can I add it?</summary><p>Yes. Copy <code>platforms.json</code> to <code>ROMs/tandem/platforms.json</code> and add an entry; no rebuild needed. <a href="docs/platforms/">The reference</a> explains every field, and requests are welcome on GitHub.</p></details>
-        <details><summary>I already use another frontend. Do I lose my data?</summary><p>No. Tandem reads ES-DE gamelists and other launchers' backups and brings over titles, descriptions, genres, favorites, play time and artwork. It doesn't change their files, so your old frontend keeps working. <a href="docs/importing/">Importing</a>.</p></details>
+        <details><summary>I already use another frontend. Do I lose my data?</summary><p>No. Tandem reads your games where they are, uses art in <code>downloaded_media</code>, and brings over titles, descriptions, genres, favorites and play time from ES-DE gamelists and Cocoon backups. It doesn't change their files, so your old frontend keeps working. <a href="docs/importing/">Importing</a>.</p></details>
         <details><summary>Can it be my home screen?</summary><p>Yes, if you like: Tandem can be Android's Home app, with an apps drawer and a dock, so the Home button always brings you back to your games.</p></details>
-        <details><summary>Is it really free?</summary><p>Yes: GPL-3.0, no ads, no paid tier, no account. Bug reports, emulator configs, docs and code are all welcome.</p></details>
-        <details><summary>Is Tandem made by AYN?</summary><p>No. Tandem is an independent community project, not affiliated with AYN or any emulator project.</p></details>
+        <details><summary>Does it cost anything?</summary><p>No. It's GPL-3.0, with no ads, no paid tier and no account. Bug reports, emulator entries, docs and code all help.</p></details>
+        <details><summary>Is Tandem made by AYN?</summary><p>No. Tandem is an independent project, not affiliated with AYN or any emulator project.</p></details>
       </div>
     </div>
   </div>
@@ -374,8 +427,8 @@
 <section class="final" aria-labelledby="final-title" style="padding-top:0">
   <div class="wrap">
     <img src="assets/brand/pip.svg" alt="" width="110" height="106">
-    <h2 id="final-title">Ready when you are</h2>
-    <p class="lede" style="margin:0 auto 28px">Grab the APK, point Tandem at your ROMs, and say hi to Pip.</p>
+    <h2 id="final-title">Try it</h2>
+    <p class="lede" style="margin:0 auto 28px">Install the APK, point Tandem at your games folder, and say hi to Pip.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/ZahakJ/tandem/releases/latest">Download the APK</a>
       <a class="btn" href="docs/">Read the docs</a>
@@ -389,7 +442,7 @@
   <div class="wrap">
     <div>
       <a class="brand" href="./"><img src="assets/brand/pip.svg" alt="" width="34" height="33">Tandem</a>
-      <p style="margin-top:12px;max-width:34ch">A cozy, open-source game frontend for dual-screen Android handhelds.</p>
+      <p style="margin-top:12px;max-width:34ch">A free, open-source game frontend for dual-screen Android handhelds.</p>
     </div>
     <div><h4>Use it</h4><ul><li><a href="docs/getting-started/">Getting started</a></li><li><a href="docs/ayn-thor/">AYN Thor setup</a></li><li><a href="docs/controls/">Controls</a></li><li><a href="docs/faq/">FAQ and troubleshooting</a></li></ul></div>
     <div><h4>Make it yours</h4><ul><li><a href="docs/platforms/">Systems and emulators</a></li><li><a href="docs/themes/">Themes</a></li><li><a href="docs/widgets/">Widgets</a></li><li><a href="docs/privacy/">Privacy</a></li></ul></div>
